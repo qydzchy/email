@@ -39,7 +39,7 @@ public class MailboxGeneralSingle extends BaseEntity
     private Integer defaultCcFlag;
 
     /** 默认抄送,请使用";"分隔多个邮箱 */
-    @Excel(name = "默认抄送,请使用";"分隔多个邮箱")
+    @Excel(name = "默认抄送,请使用';'分隔多个邮箱")
     private String defaultCc;
 
     /** 默认密送: 0.关闭 1.启用 */
@@ -47,7 +47,7 @@ public class MailboxGeneralSingle extends BaseEntity
     private Integer defaultBccFlag;
 
     /** 默认密送,请使用";"分隔多个邮箱 */
-    @Excel(name = "默认密送,请使用";"分隔多个邮箱")
+    @Excel(name = "默认密送,请使用';'分隔多个邮箱")
     private String defaultBcc;
 
     /** 是否追踪邮件: 0.否 1.是 */
