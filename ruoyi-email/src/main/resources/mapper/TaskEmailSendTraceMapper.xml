@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskEmailSendTraceMapper">
+    
+    <resultMap type="TaskEmailSendTrace" id="TaskEmailSendTraceResult">
+        <result property="id"    column="id"    />
+        <result property="emailSendId"    column="email_send_id"    />
+        <result property="beijingTime"    column="beijing_time"    />
+        <result property="localTime"    column="local_time"    />
+        <result property="ip"    column="ip"    />
+        <result property="location"    column="location"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTaskEmailSendTraceVo">
+        select id, email_send_id, beijing_time, local_time, ip, location, del_flag, create_by, create_time, update_by, update_time from mailbox_task_email_send_trace
+    </sql>
+
+    <select id="selectTaskEmailSendTraceList" parameterType="TaskEmailSendTrace" resultMap="TaskEmailSendTraceResult">
+        <include refid="selectTaskEmailSendTraceVo"/>
+        <where>  
+            <if test="emailSendId != null "> and email_send_id = #{emailSendId}</if>
+            <if test="beijingTime != null "> and beijing_time = #{beijingTime}</if>
+            <if test="localTime != null "> and local_time = #{localTime}</if>
+            <if test="ip != null  and ip != ''"> and ip = #{ip}</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskEmailSendTraceById" parameterType="Long" resultMap="TaskEmailSendTraceResult">
+        <include refid="selectTaskEmailSendTraceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTaskEmailSendTrace" parameterType="TaskEmailSendTrace" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_email_send_trace
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="emailSendId != null">email_send_id,</if>
+            <if test="beijingTime != null">beijing_time,</if>
+            <if test="localTime != null">local_time,</if>
+            <if test="ip != null and ip != ''">ip,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="emailSendId != null">#{emailSendId},</if>
+            <if test="beijingTime != null">#{beijingTime},</if>
+            <if test="localTime != null">#{localTime},</if>
+            <if test="ip != null and ip != ''">#{ip},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskEmailSendTrace" parameterType="TaskEmailSendTrace">
+        update mailbox_task_email_send_trace
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="emailSendId != null">email_send_id = #{emailSendId},</if>
+            <if test="beijingTime != null">beijing_time = #{beijingTime},</if>
+            <if test="localTime != null">local_time = #{localTime},</if>
+            <if test="ip != null and ip != ''">ip = #{ip},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTaskEmailSendTraceById" parameterType="Long">
+        delete from mailbox_task_email_send_trace where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskEmailSendTraceByIds" parameterType="String">
+        delete from mailbox_task_email_send_trace where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

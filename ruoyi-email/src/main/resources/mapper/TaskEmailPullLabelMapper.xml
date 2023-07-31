@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskEmailPullLabelMapper">
+    
+    <resultMap type="TaskEmailPullLabel" id="TaskEmailPullLabelResult">
+        <result property="id"    column="id"    />
+        <result property="emailPullId"    column="email_pull_id"    />
+        <result property="labelId"    column="label_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTaskEmailPullLabelVo">
+        select id, email_pull_id, label_id, del_flag, create_by, create_time, update_by, update_time from mailbox_task_email_pull_label
+    </sql>
+
+    <select id="selectTaskEmailPullLabelList" parameterType="TaskEmailPullLabel" resultMap="TaskEmailPullLabelResult">
+        <include refid="selectTaskEmailPullLabelVo"/>
+        <where>  
+            <if test="emailPullId != null "> and email_pull_id = #{emailPullId}</if>
+            <if test="labelId != null "> and label_id = #{labelId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskEmailPullLabelById" parameterType="Long" resultMap="TaskEmailPullLabelResult">
+        <include refid="selectTaskEmailPullLabelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTaskEmailPullLabel" parameterType="TaskEmailPullLabel" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_email_pull_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="emailPullId != null">email_pull_id,</if>
+            <if test="labelId != null">label_id,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="emailPullId != null">#{emailPullId},</if>
+            <if test="labelId != null">#{labelId},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskEmailPullLabel" parameterType="TaskEmailPullLabel">
+        update mailbox_task_email_pull_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="emailPullId != null">email_pull_id = #{emailPullId},</if>
+            <if test="labelId != null">label_id = #{labelId},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTaskEmailPullLabelById" parameterType="Long">
+        delete from mailbox_task_email_pull_label where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskEmailPullLabelByIds" parameterType="String">
+        delete from mailbox_task_email_pull_label where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

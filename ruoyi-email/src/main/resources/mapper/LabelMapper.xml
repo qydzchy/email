@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.LabelMapper">
+    
+    <resultMap type="Label" id="LabelResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="color"    column="color"    />
+        <result property="type"    column="type"    />
+        <result property="order"    column="order"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLabelVo">
+        select id, name, color, type, order, del_flag, create_by, create_time, update_by, update_time from mailbox_label
+    </sql>
+
+    <select id="selectLabelList" parameterType="Label" resultMap="LabelResult">
+        <include refid="selectLabelVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="color != null  and color != ''"> and color = #{color}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="order != null "> and order = #{order}</if>
+        </where>
+    </select>
+    
+    <select id="selectLabelById" parameterType="Long" resultMap="LabelResult">
+        <include refid="selectLabelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertLabel" parameterType="Label" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="color != null and color != ''">color,</if>
+            <if test="type != null">type,</if>
+            <if test="order != null">order,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="color != null and color != ''">#{color},</if>
+            <if test="type != null">#{type},</if>
+            <if test="order != null">#{order},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLabel" parameterType="Label">
+        update mailbox_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="color != null and color != ''">color = #{color},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="order != null">order = #{order},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLabelById" parameterType="Long">
+        delete from mailbox_label where id = #{id}
+    </delete>
+
+    <delete id="deleteLabelByIds" parameterType="String">
+        delete from mailbox_label where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

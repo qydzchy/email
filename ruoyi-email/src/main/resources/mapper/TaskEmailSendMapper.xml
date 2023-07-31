@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskEmailSendMapper">
+    
+    <resultMap type="TaskEmailSend" id="TaskEmailSendResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="fromer"    column="fromer"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="bcc"    column="bcc"    />
+        <result property="cc"    column="cc"    />
+        <result property="title"    column="title"    />
+        <result property="status"    column="status"    />
+        <result property="delayedTxFlag"    column="delayed_tx_flag"    />
+        <result property="recipientTimeZone"    column="recipient_time_zone"    />
+        <result property="recipientLocalTime"    column="recipient_local_time"    />
+        <result property="pendingFlag"    column="pending_flag"    />
+        <result property="pendingTime"    column="pending_time"    />
+        <result property="fixedFlag"    column="fixed_flag"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTaskEmailSendVo">
+        select id, task_id, fromer, receiver, bcc, cc, title, status, delayed_tx_flag, recipient_time_zone, recipient_local_time, pending_flag, pending_time, fixed_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_task_email_send
+    </sql>
+
+    <select id="selectTaskEmailSendList" parameterType="TaskEmailSend" resultMap="TaskEmailSendResult">
+        <include refid="selectTaskEmailSendVo"/>
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="fromer != null  and fromer != ''"> and fromer = #{fromer}</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="bcc != null  and bcc != ''"> and bcc = #{bcc}</if>
+            <if test="cc != null  and cc != ''"> and cc = #{cc}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="delayedTxFlag != null "> and delayed_tx_flag = #{delayedTxFlag}</if>
+            <if test="recipientTimeZone != null  and recipientTimeZone != ''"> and recipient_time_zone = #{recipientTimeZone}</if>
+            <if test="recipientLocalTime != null "> and recipient_local_time = #{recipientLocalTime}</if>
+            <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
+            <if test="pendingTime != null "> and pending_time = #{pendingTime}</if>
+            <if test="fixedFlag != null "> and fixed_flag = #{fixedFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskEmailSendById" parameterType="Long" resultMap="TaskEmailSendResult">
+        <include refid="selectTaskEmailSendVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTaskEmailSend" parameterType="TaskEmailSend" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_email_send
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="fromer != null and fromer != ''">fromer,</if>
+            <if test="receiver != null and receiver != ''">receiver,</if>
+            <if test="bcc != null">bcc,</if>
+            <if test="cc != null">cc,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="status != null">status,</if>
+            <if test="delayedTxFlag != null">delayed_tx_flag,</if>
+            <if test="recipientTimeZone != null">recipient_time_zone,</if>
+            <if test="recipientLocalTime != null">recipient_local_time,</if>
+            <if test="pendingFlag != null">pending_flag,</if>
+            <if test="pendingTime != null">pending_time,</if>
+            <if test="fixedFlag != null">fixed_flag,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="fromer != null and fromer != ''">#{fromer},</if>
+            <if test="receiver != null and receiver != ''">#{receiver},</if>
+            <if test="bcc != null">#{bcc},</if>
+            <if test="cc != null">#{cc},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delayedTxFlag != null">#{delayedTxFlag},</if>
+            <if test="recipientTimeZone != null">#{recipientTimeZone},</if>
+            <if test="recipientLocalTime != null">#{recipientLocalTime},</if>
+            <if test="pendingFlag != null">#{pendingFlag},</if>
+            <if test="pendingTime != null">#{pendingTime},</if>
+            <if test="fixedFlag != null">#{fixedFlag},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskEmailSend" parameterType="TaskEmailSend">
+        update mailbox_task_email_send
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="fromer != null and fromer != ''">fromer = #{fromer},</if>
+            <if test="receiver != null and receiver != ''">receiver = #{receiver},</if>
+            <if test="bcc != null">bcc = #{bcc},</if>
+            <if test="cc != null">cc = #{cc},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delayedTxFlag != null">delayed_tx_flag = #{delayedTxFlag},</if>
+            <if test="recipientTimeZone != null">recipient_time_zone = #{recipientTimeZone},</if>
+            <if test="recipientLocalTime != null">recipient_local_time = #{recipientLocalTime},</if>
+            <if test="pendingFlag != null">pending_flag = #{pendingFlag},</if>
+            <if test="pendingTime != null">pending_time = #{pendingTime},</if>
+            <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTaskEmailSendById" parameterType="Long">
+        delete from mailbox_task_email_send where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskEmailSendByIds" parameterType="String">
+        delete from mailbox_task_email_send where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

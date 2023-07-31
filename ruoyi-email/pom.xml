@@ -12,7 +12,7 @@
     <artifactId>ruoyi-email</artifactId>
 
     <description>
-        mailbox邮箱模块
+        email邮件模块
     </description>
 
     <dependencies>

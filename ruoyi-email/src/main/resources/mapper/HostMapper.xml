@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.HostMapper">
+    
+    <resultMap type="Host" id="HostResult">
+        <result property="id"    column="id"    />
+        <result property="domain"    column="domain"    />
+        <result property="popHost"    column="pop_host"    />
+        <result property="imapHost"    column="imap_host"    />
+        <result property="exchangeHost"    column="exchange_host"    />
+        <result property="smtpHost"    column="smtp_host"    />
+        <result property="popPort"    column="pop_port"    />
+        <result property="imapPort"    column="imap_port"    />
+        <result property="exchangePort"    column="exchange_port"    />
+        <result property="smtpPort"    column="smtp_port"    />
+    </resultMap>
+
+    <sql id="selectHostVo">
+        select id, domain, pop_host, imap_host, exchange_host, smtp_host, pop_port, imap_port, exchange_port, smtp_port from mailbox_host
+    </sql>
+
+    <select id="selectHostList" parameterType="Host" resultMap="HostResult">
+        <include refid="selectHostVo"/>
+        <where>  
+            <if test="domain != null  and domain != ''"> and domain = #{domain}</if>
+            <if test="popHost != null  and popHost != ''"> and pop_host = #{popHost}</if>
+            <if test="imapHost != null  and imapHost != ''"> and imap_host = #{imapHost}</if>
+            <if test="exchangeHost != null  and exchangeHost != ''"> and exchange_host = #{exchangeHost}</if>
+            <if test="smtpHost != null  and smtpHost != ''"> and smtp_host = #{smtpHost}</if>
+            <if test="popPort != null "> and pop_port = #{popPort}</if>
+            <if test="imapPort != null "> and imap_port = #{imapPort}</if>
+            <if test="exchangePort != null "> and exchange_port = #{exchangePort}</if>
+            <if test="smtpPort != null "> and smtp_port = #{smtpPort}</if>
+        </where>
+    </select>
+    
+    <select id="selectHostById" parameterType="Long" resultMap="HostResult">
+        <include refid="selectHostVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHost" parameterType="Host" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_host
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="domain != null and domain != ''">domain,</if>
+            <if test="popHost != null">pop_host,</if>
+            <if test="imapHost != null">imap_host,</if>
+            <if test="exchangeHost != null">exchange_host,</if>
+            <if test="smtpHost != null">smtp_host,</if>
+            <if test="popPort != null">pop_port,</if>
+            <if test="imapPort != null">imap_port,</if>
+            <if test="exchangePort != null">exchange_port,</if>
+            <if test="smtpPort != null">smtp_port,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="domain != null and domain != ''">#{domain},</if>
+            <if test="popHost != null">#{popHost},</if>
+            <if test="imapHost != null">#{imapHost},</if>
+            <if test="exchangeHost != null">#{exchangeHost},</if>
+            <if test="smtpHost != null">#{smtpHost},</if>
+            <if test="popPort != null">#{popPort},</if>
+            <if test="imapPort != null">#{imapPort},</if>
+            <if test="exchangePort != null">#{exchangePort},</if>
+            <if test="smtpPort != null">#{smtpPort},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHost" parameterType="Host">
+        update mailbox_host
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="domain != null and domain != ''">domain = #{domain},</if>
+            <if test="popHost != null">pop_host = #{popHost},</if>
+            <if test="imapHost != null">imap_host = #{imapHost},</if>
+            <if test="exchangeHost != null">exchange_host = #{exchangeHost},</if>
+            <if test="smtpHost != null">smtp_host = #{smtpHost},</if>
+            <if test="popPort != null">pop_port = #{popPort},</if>
+            <if test="imapPort != null">imap_port = #{imapPort},</if>
+            <if test="exchangePort != null">exchange_port = #{exchangePort},</if>
+            <if test="smtpPort != null">smtp_port = #{smtpPort},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHostById" parameterType="Long">
+        delete from mailbox_host where id = #{id}
+    </delete>
+
+    <delete id="deleteHostByIds" parameterType="String">
+        delete from mailbox_host where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

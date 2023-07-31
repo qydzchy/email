@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.FolderMapper">
+    
+    <resultMap type="Folder" id="FolderResult">
+        <result property="id"    column="id"    />
+        <result property="parentFolderId"    column="parent_folder_id"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="order"    column="order"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFolderVo">
+        select id, parent_folder_id, name, type, order, del_flag, create_by, create_time, update_by, update_time from mailbox_folder
+    </sql>
+
+    <select id="selectFolderList" parameterType="Folder" resultMap="FolderResult">
+        <include refid="selectFolderVo"/>
+        <where>  
+            <if test="parentFolderId != null "> and parent_folder_id = #{parentFolderId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="order != null "> and order = #{order}</if>
+        </where>
+    </select>
+    
+    <select id="selectFolderById" parameterType="Long" resultMap="FolderResult">
+        <include refid="selectFolderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFolder" parameterType="Folder" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_folder
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentFolderId != null">parent_folder_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="type != null">type,</if>
+            <if test="order != null">order,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentFolderId != null">#{parentFolderId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="order != null">#{order},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFolder" parameterType="Folder">
+        update mailbox_folder
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentFolderId != null">parent_folder_id = #{parentFolderId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="order != null">order = #{order},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFolderById" parameterType="Long">
+        delete from mailbox_folder where id = #{id}
+    </delete>
+
+    <delete id="deleteFolderByIds" parameterType="String">
+        delete from mailbox_folder where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
