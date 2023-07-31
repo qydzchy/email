@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.MailboxGeneralSingleMapper">
+    
+    <resultMap type="MailboxGeneralSingle" id="MailboxGeneralSingleResult">
+        <result property="id"    column="id"    />
+        <result property="generalId"    column="general_id"    />
+        <result property="letterNickname"    column="letter_nickname"    />
+        <result property="defaultSignatureId"    column="default_signature_id"    />
+        <result property="replySignatureId"    column="reply_signature_id"    />
+        <result property="defaultCcFlag"    column="default_cc_flag"    />
+        <result property="defaultCc"    column="default_cc"    />
+        <result property="defaultBccFlag"    column="default_bcc_flag"    />
+        <result property="defaultBcc"    column="default_bcc"    />
+        <result property="traceFlag"    column="trace_flag"    />
+        <result property="returnReceiptFlag"    column="return_receipt_flag"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMailboxGeneralSingleVo">
+        select id, general_id, letter_nickname, default_signature_id, reply_signature_id, default_cc_flag, default_cc, default_bcc_flag, default_bcc, trace_flag, return_receipt_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_general_single
+    </sql>
+
+    <select id="selectMailboxGeneralSingleList" parameterType="MailboxGeneralSingle" resultMap="MailboxGeneralSingleResult">
+        <include refid="selectMailboxGeneralSingleVo"/>
+        <where>  
+            <if test="generalId != null "> and general_id = #{generalId}</if>
+            <if test="letterNickname != null  and letterNickname != ''"> and letter_nickname like concat('%', #{letterNickname}, '%')</if>
+            <if test="defaultSignatureId != null "> and default_signature_id = #{defaultSignatureId}</if>
+            <if test="replySignatureId != null "> and reply_signature_id = #{replySignatureId}</if>
+            <if test="defaultCcFlag != null "> and default_cc_flag = #{defaultCcFlag}</if>
+            <if test="defaultCc != null  and defaultCc != ''"> and default_cc = #{defaultCc}</if>
+            <if test="defaultBccFlag != null "> and default_bcc_flag = #{defaultBccFlag}</if>
+            <if test="defaultBcc != null  and defaultBcc != ''"> and default_bcc = #{defaultBcc}</if>
+            <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
+            <if test="returnReceiptFlag != null "> and return_receipt_flag = #{returnReceiptFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectMailboxGeneralSingleById" parameterType="Long" resultMap="MailboxGeneralSingleResult">
+        <include refid="selectMailboxGeneralSingleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMailboxGeneralSingle" parameterType="MailboxGeneralSingle" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_general_single
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="generalId != null">general_id,</if>
+            <if test="letterNickname != null and letterNickname != ''">letter_nickname,</if>
+            <if test="defaultSignatureId != null">default_signature_id,</if>
+            <if test="replySignatureId != null">reply_signature_id,</if>
+            <if test="defaultCcFlag != null">default_cc_flag,</if>
+            <if test="defaultCc != null">default_cc,</if>
+            <if test="defaultBccFlag != null">default_bcc_flag,</if>
+            <if test="defaultBcc != null">default_bcc,</if>
+            <if test="traceFlag != null">trace_flag,</if>
+            <if test="returnReceiptFlag != null">return_receipt_flag,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="generalId != null">#{generalId},</if>
+            <if test="letterNickname != null and letterNickname != ''">#{letterNickname},</if>
+            <if test="defaultSignatureId != null">#{defaultSignatureId},</if>
+            <if test="replySignatureId != null">#{replySignatureId},</if>
+            <if test="defaultCcFlag != null">#{defaultCcFlag},</if>
+            <if test="defaultCc != null">#{defaultCc},</if>
+            <if test="defaultBccFlag != null">#{defaultBccFlag},</if>
+            <if test="defaultBcc != null">#{defaultBcc},</if>
+            <if test="traceFlag != null">#{traceFlag},</if>
+            <if test="returnReceiptFlag != null">#{returnReceiptFlag},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMailboxGeneralSingle" parameterType="MailboxGeneralSingle">
+        update mailbox_general_single
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="generalId != null">general_id = #{generalId},</if>
+            <if test="letterNickname != null and letterNickname != ''">letter_nickname = #{letterNickname},</if>
+            <if test="defaultSignatureId != null">default_signature_id = #{defaultSignatureId},</if>
+            <if test="replySignatureId != null">reply_signature_id = #{replySignatureId},</if>
+            <if test="defaultCcFlag != null">default_cc_flag = #{defaultCcFlag},</if>
+            <if test="defaultCc != null">default_cc = #{defaultCc},</if>
+            <if test="defaultBccFlag != null">default_bcc_flag = #{defaultBccFlag},</if>
+            <if test="defaultBcc != null">default_bcc = #{defaultBcc},</if>
+            <if test="traceFlag != null">trace_flag = #{traceFlag},</if>
+            <if test="returnReceiptFlag != null">return_receipt_flag = #{returnReceiptFlag},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMailboxGeneralSingleById" parameterType="Long">
+        delete from mailbox_general_single where id = #{id}
+    </delete>
+
+    <delete id="deleteMailboxGeneralSingleByIds" parameterType="String">
+        delete from mailbox_general_single where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

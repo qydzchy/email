@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.MailboxGeneralMapper">
+    
+    <resultMap type="MailboxGeneral" id="MailboxGeneralResult">
+        <result property="id"    column="id"    />
+        <result property="defaultTaskId"    column="default_task_id"    />
+        <result property="maxPerPage"    column="max_per_page"    />
+        <result property="emailReadingModeFlag"    column="email_reading_mode_flag"    />
+        <result property="moveDeleteReport"    column="move_delete_report"    />
+        <result property="language"    column="language"    />
+        <result property="defaultFont"    column="default_font"    />
+        <result property="fontSize"    column="font_size"    />
+        <result property="wordColor"    column="word_color"    />
+        <result property="groupBoxView"    column="group_box_view"    />
+        <result property="remind"    column="remind"    />
+        <result property="signatureId"    column="signature_id"    />
+        <result property="writeLetter"    column="write_letter"    />
+        <result property="autoResponseFlag"    column="auto_response_flag"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="lastDay"    column="last_day"    />
+        <result property="reContent"    column="re_content"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMailboxGeneralVo">
+        select id, default_task_id, max_per_page, email_reading_mode_flag, move_delete_report, language, default_font, font_size, word_color, group_box_view, remind, signature_id, write_letter, auto_response_flag, start_time, last_day, re_content, del_flag, create_by, create_time, update_by, update_time from mailbox_general
+    </sql>
+
+    <select id="selectMailboxGeneralList" parameterType="MailboxGeneral" resultMap="MailboxGeneralResult">
+        <include refid="selectMailboxGeneralVo"/>
+        <where>  
+            <if test="defaultTaskId != null "> and default_task_id = #{defaultTaskId}</if>
+            <if test="maxPerPage != null "> and max_per_page = #{maxPerPage}</if>
+            <if test="emailReadingModeFlag != null "> and email_reading_mode_flag = #{emailReadingModeFlag}</if>
+            <if test="moveDeleteReport != null "> and move_delete_report = #{moveDeleteReport}</if>
+            <if test="language != null "> and language = #{language}</if>
+            <if test="defaultFont != null  and defaultFont != ''"> and default_font = #{defaultFont}</if>
+            <if test="fontSize != null  and fontSize != ''"> and font_size = #{fontSize}</if>
+            <if test="wordColor != null  and wordColor != ''"> and word_color = #{wordColor}</if>
+            <if test="groupBoxView != null "> and group_box_view = #{groupBoxView}</if>
+            <if test="remind != null "> and remind = #{remind}</if>
+            <if test="signatureId != null "> and signature_id = #{signatureId}</if>
+            <if test="writeLetter != null  and writeLetter != ''"> and write_letter = #{writeLetter}</if>
+            <if test="autoResponseFlag != null "> and auto_response_flag = #{autoResponseFlag}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="lastDay != null "> and last_day = #{lastDay}</if>
+            <if test="reContent != null  and reContent != ''"> and re_content = #{reContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectMailboxGeneralById" parameterType="Long" resultMap="MailboxGeneralResult">
+        <include refid="selectMailboxGeneralVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMailboxGeneral" parameterType="MailboxGeneral" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_general
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="defaultTaskId != null">default_task_id,</if>
+            <if test="maxPerPage != null">max_per_page,</if>
+            <if test="emailReadingModeFlag != null">email_reading_mode_flag,</if>
+            <if test="moveDeleteReport != null">move_delete_report,</if>
+            <if test="language != null">language,</if>
+            <if test="defaultFont != null and defaultFont != ''">default_font,</if>
+            <if test="fontSize != null and fontSize != ''">font_size,</if>
+            <if test="wordColor != null and wordColor != ''">word_color,</if>
+            <if test="groupBoxView != null">group_box_view,</if>
+            <if test="remind != null">remind,</if>
+            <if test="signatureId != null">signature_id,</if>
+            <if test="writeLetter != null">write_letter,</if>
+            <if test="autoResponseFlag != null">auto_response_flag,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="lastDay != null">last_day,</if>
+            <if test="reContent != null">re_content,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="defaultTaskId != null">#{defaultTaskId},</if>
+            <if test="maxPerPage != null">#{maxPerPage},</if>
+            <if test="emailReadingModeFlag != null">#{emailReadingModeFlag},</if>
+            <if test="moveDeleteReport != null">#{moveDeleteReport},</if>
+            <if test="language != null">#{language},</if>
+            <if test="defaultFont != null and defaultFont != ''">#{defaultFont},</if>
+            <if test="fontSize != null and fontSize != ''">#{fontSize},</if>
+            <if test="wordColor != null and wordColor != ''">#{wordColor},</if>
+            <if test="groupBoxView != null">#{groupBoxView},</if>
+            <if test="remind != null">#{remind},</if>
+            <if test="signatureId != null">#{signatureId},</if>
+            <if test="writeLetter != null">#{writeLetter},</if>
+            <if test="autoResponseFlag != null">#{autoResponseFlag},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="lastDay != null">#{lastDay},</if>
+            <if test="reContent != null">#{reContent},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMailboxGeneral" parameterType="MailboxGeneral">
+        update mailbox_general
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="defaultTaskId != null">default_task_id = #{defaultTaskId},</if>
+            <if test="maxPerPage != null">max_per_page = #{maxPerPage},</if>
+            <if test="emailReadingModeFlag != null">email_reading_mode_flag = #{emailReadingModeFlag},</if>
+            <if test="moveDeleteReport != null">move_delete_report = #{moveDeleteReport},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="defaultFont != null and defaultFont != ''">default_font = #{defaultFont},</if>
+            <if test="fontSize != null and fontSize != ''">font_size = #{fontSize},</if>
+            <if test="wordColor != null and wordColor != ''">word_color = #{wordColor},</if>
+            <if test="groupBoxView != null">group_box_view = #{groupBoxView},</if>
+            <if test="remind != null">remind = #{remind},</if>
+            <if test="signatureId != null">signature_id = #{signatureId},</if>
+            <if test="writeLetter != null">write_letter = #{writeLetter},</if>
+            <if test="autoResponseFlag != null">auto_response_flag = #{autoResponseFlag},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="lastDay != null">last_day = #{lastDay},</if>
+            <if test="reContent != null">re_content = #{reContent},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMailboxGeneralById" parameterType="Long">
+        delete from mailbox_general where id = #{id}
+    </delete>
+
+    <delete id="deleteMailboxGeneralByIds" parameterType="String">
+        delete from mailbox_general where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.MailboxTaskEmailDealingsMapper">
+    
+    <resultMap type="MailboxTaskEmailDealings" id="MailboxTaskEmailDealingsResult">
+        <result property="id"    column="id"    />
+        <result property="uid"    column="uid"    />
+        <result property="fromer"    column="fromer"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMailboxTaskEmailDealingsVo">
+        select id, uid, fromer, receiver, del_flag, create_by, create_time, update_by, update_time from mailbox_task_email_dealings
+    </sql>
+
+    <select id="selectMailboxTaskEmailDealingsList" parameterType="MailboxTaskEmailDealings" resultMap="MailboxTaskEmailDealingsResult">
+        <include refid="selectMailboxTaskEmailDealingsVo"/>
+        <where>  
+            <if test="uid != null  and uid != ''"> and uid = #{uid}</if>
+            <if test="fromer != null  and fromer != ''"> and fromer = #{fromer}</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+        </where>
+    </select>
+    
+    <select id="selectMailboxTaskEmailDealingsById" parameterType="Long" resultMap="MailboxTaskEmailDealingsResult">
+        <include refid="selectMailboxTaskEmailDealingsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMailboxTaskEmailDealings" parameterType="MailboxTaskEmailDealings" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_email_dealings
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null and uid != ''">uid,</if>
+            <if test="fromer != null and fromer != ''">fromer,</if>
+            <if test="receiver != null and receiver != ''">receiver,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null and uid != ''">#{uid},</if>
+            <if test="fromer != null and fromer != ''">#{fromer},</if>
+            <if test="receiver != null and receiver != ''">#{receiver},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMailboxTaskEmailDealings" parameterType="MailboxTaskEmailDealings">
+        update mailbox_task_email_dealings
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uid != null and uid != ''">uid = #{uid},</if>
+            <if test="fromer != null and fromer != ''">fromer = #{fromer},</if>
+            <if test="receiver != null and receiver != ''">receiver = #{receiver},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMailboxTaskEmailDealingsById" parameterType="Long">
+        delete from mailbox_task_email_dealings where id = #{id}
+    </delete>
+
+    <delete id="deleteMailboxTaskEmailDealingsByIds" parameterType="String">
+        delete from mailbox_task_email_dealings where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

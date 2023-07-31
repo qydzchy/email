@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.MailboxOtherConfigMapper">
+    
+    <resultMap type="MailboxOtherConfig" id="MailboxOtherConfigResult">
+        <result property="id"    column="id"    />
+        <result property="delayedMailDelivery"    column="delayed_mail_delivery"    />
+        <result property="sendingInterval"    column="sending_interval"    />
+        <result property="localRealTimeTime"    column="local_real_time_time"    />
+        <result property="emailRemindersFlag"    column="email_reminders_flag"    />
+        <result property="emailTranslationFunctionFlag"    column="email_translation_function_flag"    />
+        <result property="pendingClose"    column="pending_close"    />
+        <result property="automationPending"    column="automation_pending"    />
+        <result property="abnormalMailboxDetection"    column="abnormal_mailbox_detection"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMailboxOtherConfigVo">
+        select id, delayed_mail_delivery, sending_interval, local_real_time_time, email_reminders_flag, email_translation_function_flag, pending_close, automation_pending, abnormal_mailbox_detection, create_by, create_time, update_by, update_time from mailbox_other_config
+    </sql>
+
+    <select id="selectMailboxOtherConfigList" parameterType="MailboxOtherConfig" resultMap="MailboxOtherConfigResult">
+        <include refid="selectMailboxOtherConfigVo"/>
+        <where>  
+            <if test="delayedMailDelivery != null "> and delayed_mail_delivery = #{delayedMailDelivery}</if>
+            <if test="sendingInterval != null  and sendingInterval != ''"> and sending_interval = #{sendingInterval}</if>
+            <if test="localRealTimeTime != null "> and local_real_time_time = #{localRealTimeTime}</if>
+            <if test="emailRemindersFlag != null "> and email_reminders_flag = #{emailRemindersFlag}</if>
+            <if test="emailTranslationFunctionFlag != null "> and email_translation_function_flag = #{emailTranslationFunctionFlag}</if>
+            <if test="pendingClose != null "> and pending_close = #{pendingClose}</if>
+            <if test="automationPending != null "> and automation_pending = #{automationPending}</if>
+            <if test="abnormalMailboxDetection != null "> and abnormal_mailbox_detection = #{abnormalMailboxDetection}</if>
+        </where>
+    </select>
+    
+    <select id="selectMailboxOtherConfigById" parameterType="Long" resultMap="MailboxOtherConfigResult">
+        <include refid="selectMailboxOtherConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMailboxOtherConfig" parameterType="MailboxOtherConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_other_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delayedMailDelivery != null">delayed_mail_delivery,</if>
+            <if test="sendingInterval != null and sendingInterval != ''">sending_interval,</if>
+            <if test="localRealTimeTime != null">local_real_time_time,</if>
+            <if test="emailRemindersFlag != null">email_reminders_flag,</if>
+            <if test="emailTranslationFunctionFlag != null">email_translation_function_flag,</if>
+            <if test="pendingClose != null">pending_close,</if>
+            <if test="automationPending != null">automation_pending,</if>
+            <if test="abnormalMailboxDetection != null">abnormal_mailbox_detection,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delayedMailDelivery != null">#{delayedMailDelivery},</if>
+            <if test="sendingInterval != null and sendingInterval != ''">#{sendingInterval},</if>
+            <if test="localRealTimeTime != null">#{localRealTimeTime},</if>
+            <if test="emailRemindersFlag != null">#{emailRemindersFlag},</if>
+            <if test="emailTranslationFunctionFlag != null">#{emailTranslationFunctionFlag},</if>
+            <if test="pendingClose != null">#{pendingClose},</if>
+            <if test="automationPending != null">#{automationPending},</if>
+            <if test="abnormalMailboxDetection != null">#{abnormalMailboxDetection},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMailboxOtherConfig" parameterType="MailboxOtherConfig">
+        update mailbox_other_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delayedMailDelivery != null">delayed_mail_delivery = #{delayedMailDelivery},</if>
+            <if test="sendingInterval != null and sendingInterval != ''">sending_interval = #{sendingInterval},</if>
+            <if test="localRealTimeTime != null">local_real_time_time = #{localRealTimeTime},</if>
+            <if test="emailRemindersFlag != null">email_reminders_flag = #{emailRemindersFlag},</if>
+            <if test="emailTranslationFunctionFlag != null">email_translation_function_flag = #{emailTranslationFunctionFlag},</if>
+            <if test="pendingClose != null">pending_close = #{pendingClose},</if>
+            <if test="automationPending != null">automation_pending = #{automationPending},</if>
+            <if test="abnormalMailboxDetection != null">abnormal_mailbox_detection = #{abnormalMailboxDetection},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMailboxOtherConfigById" parameterType="Long">
+        delete from mailbox_other_config where id = #{id}
+    </delete>
+
+    <delete id="deleteMailboxOtherConfigByIds" parameterType="String">
+        delete from mailbox_other_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

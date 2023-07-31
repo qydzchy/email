@@ -62,7 +62,7 @@
         <!-- 邮箱模块-->
         <dependency>
             <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-mailbox</artifactId>
+            <artifactId>ruoyi-email</artifactId>
         </dependency>
 
         <dependency>
