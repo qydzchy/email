@@ -23,6 +23,7 @@
             <artifactId>ruoyi-common</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
