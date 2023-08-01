@@ -1,12 +1,14 @@
-package com.ruoyi.email.service.handler.server;
+package com.ruoyi.email.service.handler.email;
 
 import com.ruoyi.common.enums.ProxyTypeEnum;
+import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.imap.IMAPStore;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import java.text.ParseException;
@@ -17,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
+@Component
 public class ImapService implements IMailService {
 
     public ImapService() {
@@ -198,5 +201,10 @@ public class ImapService implements IMailService {
             var7.printStackTrace();
             throw new MailPlusException(var7.getMessage());
         }
+    }
+
+    @Override
+    public ProtocolTypeEnum getProtocolTypeEnum() {
+        return ProtocolTypeEnum.IMAP;
     }
 }

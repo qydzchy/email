@@ -1,6 +1,7 @@
-package com.ruoyi.email.service.handler.server;
+package com.ruoyi.email.service.handler.email;
 
 
+import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import microsoft.exchange.webservices.data.search.FindItemsResults;
 import microsoft.exchange.webservices.data.search.FolderView;
 import microsoft.exchange.webservices.data.search.ItemView;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -27,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
+@Component
 public class MyExchangeService implements IMailService {
 
     public MyExchangeService() {
@@ -166,5 +169,10 @@ public class MyExchangeService implements IMailService {
             var5.printStackTrace();
             throw new MailPlusException(var5.getMessage());
         }
+    }
+
+    @Override
+    public ProtocolTypeEnum getProtocolTypeEnum() {
+        return ProtocolTypeEnum.EXCHANGE;
     }
 }

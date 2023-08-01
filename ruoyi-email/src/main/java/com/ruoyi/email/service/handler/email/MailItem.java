@@ -1,4 +1,4 @@
-package com.ruoyi.email.service.handler.server;
+package com.ruoyi.email.service.handler.email;
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Message;
 import lombok.Builder;

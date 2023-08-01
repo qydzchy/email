@@ -1,4 +1,4 @@
-package com.ruoyi.email.service.handler.server;
+package com.ruoyi.email.service.handler.email;
 
 import com.ruoyi.common.enums.ProxyTypeEnum;
 import lombok.*;

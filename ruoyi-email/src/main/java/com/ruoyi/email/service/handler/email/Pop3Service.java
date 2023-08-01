@@ -1,11 +1,13 @@
-package com.ruoyi.email.service.handler.server;
+package com.ruoyi.email.service.handler.email;
 
 import com.ruoyi.common.enums.ProxyTypeEnum;
+import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.sun.mail.pop3.POP3Folder;
 import com.sun.mail.pop3.POP3Message;
 import com.sun.mail.pop3.POP3Store;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Slf4j
+@Component
 public class Pop3Service implements IMailService {
 
     public Pop3Service() {
@@ -82,5 +85,10 @@ public class Pop3Service implements IMailService {
             var7.printStackTrace();
             throw new MailPlusException(var7.getMessage());
         }
+    }
+
+    @Override
+    public ProtocolTypeEnum getProtocolTypeEnum() {
+        return ProtocolTypeEnum.POP3;
     }
 }

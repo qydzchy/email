@@ -1,4 +1,4 @@
-package com.ruoyi.email.service.handler.server;
+package com.ruoyi.email.service.handler.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
