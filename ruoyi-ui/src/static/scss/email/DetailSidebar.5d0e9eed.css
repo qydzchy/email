@@ -1,0 +1,52 @@
+.mail-side-card {
+  position:relative;
+  border-left:1px solid #e6e6e6;
+  background:#fafafa;
+  display:flex;
+  flex-direction:column
+}
+.mail-side-card.collapsing {
+  width:20px
+}
+.mail-side-card.collapsing.is-company {
+  width:0
+}
+.mail-side-card.expanding {
+  width:400px
+}
+.mail-side-card.expanding .mail-position-toogle .icon-left-small {
+  width:auto;
+  transform:rotate(180deg)
+}
+.mail-side-card .mail-position-toogle {
+  display:flex;
+  position:absolute;
+  top:50%;
+  left:0;
+  width:21px;
+  height:54px;
+  border:1px solid #e6e6e6;
+  border-right:none;
+  border-radius:10px 0 0 10px;
+  background:#fafafa;
+  cursor:pointer;
+  transform:translate(-100%,-50%);
+  align-items:center
+}
+.mail-side-card .mail-position-toogle .icon-left-small {
+  width:6px;
+  color:#5d5d5d;
+  font-size:20px
+}
+.mail-side-card .mail-position-toogle.has-new .icon-left-small:first-child {
+  color:#0884f3
+}
+.mail-side-card .mail-position-toogle.has-new .icon-left-small:nth-child(2) {
+  color:rgba(8,132,243,.4)
+}
+.mail-side-card .mail-position-toogle.has-new .icon-left-small:last-child {
+  color:rgba(8,132,243,.15)
+}
+.mail-side-card.slide-fade {
+  transition:width .3s ease
+}
