@@ -58,4 +58,11 @@ public interface IHostService
      * @return 结果
      */
     public int deleteHostById(Long id);
+
+    /**
+     * 根据域名获取邮箱服务器信息
+     * @param account
+     * @return
+     */
+    Host getByDomain(String account);
 }

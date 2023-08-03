@@ -90,4 +90,9 @@ public class HostServiceImpl implements IHostService
     {
         return hostMapper.deleteHostById(id);
     }
+
+    @Override
+    public Host getByDomain(String account) {
+        return hostMapper.getByDomain(account);
+    }
 }

@@ -58,4 +58,6 @@ public interface TaskMapper
      * @return 结果
      */
     public int deleteTaskByIds(Long[] ids);
+
+    int countAccount(String account);
 }

@@ -21,12 +21,18 @@ public class BaseEntity implements Serializable
     @JsonIgnore
     private String searchValue;
 
+    /** 创建者ID */
+    private Long createId;
+
     /** 创建者 */
     private String createBy;
 
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    /** 更新者ID */
+    private Long updateId;
 
     /** 更新者 */
     private String updateBy;
@@ -52,6 +58,14 @@ public class BaseEntity implements Serializable
         this.searchValue = searchValue;
     }
 
+    public Long getCreateId() {
+        return createId;
+    }
+
+    public void setCreateId(Long createId) {
+        this.createId = createId;
+    }
+
     public String getCreateBy()
     {
         return createBy;
@@ -70,6 +84,14 @@ public class BaseEntity implements Serializable
     public void setCreateTime(Date createTime)
     {
         this.createTime = createTime;
+    }
+
+    public Long getUpdateId() {
+        return updateId;
+    }
+
+    public void setUpdateId(Long updateId) {
+        this.updateId = updateId;
     }
 
     public String getUpdateBy()

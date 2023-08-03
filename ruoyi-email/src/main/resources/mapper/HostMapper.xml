@@ -40,7 +40,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectHostVo"/>
         where id = #{id}
     </select>
-        
+    <select id="getByDomain" resultType="com.ruoyi.email.domain.Host">
+        select * from mailbox_host where domain = #{domain}
+    </select>
+
     <insert id="insertHost" parameterType="Host" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_host
         <trim prefix="(" suffix=")" suffixOverrides=",">

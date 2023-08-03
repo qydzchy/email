@@ -1,7 +1,5 @@
 package com.ruoyi.email.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -40,124 +38,165 @@ public class Host extends BaseEntity
 
     /** pop端口号 */
     @Excel(name = "pop端口号")
-    private Long popPort;
+    private Integer popPort;
 
     /** imap端口号 */
     @Excel(name = "imap端口号")
-    private Long imapPort;
+    private Integer imapPort;
 
     /** 冗余字段 */
     @Excel(name = "冗余字段")
-    private Long exchangePort;
+    private Integer exchangePort;
 
     /** smtp端口号 */
     @Excel(name = "smtp端口号")
-    private Long smtpPort;
+    private Integer smtpPort;
 
-    public void setId(Long id) 
-    {
+    /** pop ssl */
+    @Excel(name = "pop ssl")
+    private Boolean popSsl;
+
+    /** imap ssl */
+    @Excel(name = "imap ssl")
+    private Boolean imapSsl;
+
+    /** exchange ssl */
+    @Excel(name = "exchange ssl")
+    private Boolean exchangeSsl;
+
+    /** smtp ssl */
+    @Excel(name = "smtp ssl")
+    private Boolean smtpSsl;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
-        return id;
+    public String getDomain() {
+        return domain;
     }
-    public void setDomain(String domain) 
-    {
+
+    public void setDomain(String domain) {
         this.domain = domain;
     }
 
-    public String getDomain() 
-    {
-        return domain;
+    public String getPopHost() {
+        return popHost;
     }
-    public void setPopHost(String popHost) 
-    {
+
+    public void setPopHost(String popHost) {
         this.popHost = popHost;
     }
 
-    public String getPopHost() 
-    {
-        return popHost;
+    public String getImapHost() {
+        return imapHost;
     }
-    public void setImapHost(String imapHost) 
-    {
+
+    public void setImapHost(String imapHost) {
         this.imapHost = imapHost;
     }
 
-    public String getImapHost() 
-    {
-        return imapHost;
+    public String getExchangeHost() {
+        return exchangeHost;
     }
-    public void setExchangeHost(String exchangeHost) 
-    {
+
+    public void setExchangeHost(String exchangeHost) {
         this.exchangeHost = exchangeHost;
     }
 
-    public String getExchangeHost() 
-    {
-        return exchangeHost;
+    public String getSmtpHost() {
+        return smtpHost;
     }
-    public void setSmtpHost(String smtpHost) 
-    {
+
+    public void setSmtpHost(String smtpHost) {
         this.smtpHost = smtpHost;
     }
 
-    public String getSmtpHost() 
-    {
-        return smtpHost;
+    public Integer getPopPort() {
+        return popPort;
     }
-    public void setPopPort(Long popPort) 
-    {
+
+    public void setPopPort(Integer popPort) {
         this.popPort = popPort;
     }
 
-    public Long getPopPort() 
-    {
-        return popPort;
+    public Integer getImapPort() {
+        return imapPort;
     }
-    public void setImapPort(Long imapPort) 
-    {
+
+    public void setImapPort(Integer imapPort) {
         this.imapPort = imapPort;
     }
 
-    public Long getImapPort() 
-    {
-        return imapPort;
+    public Integer getExchangePort() {
+        return exchangePort;
     }
-    public void setExchangePort(Long exchangePort) 
-    {
+
+    public void setExchangePort(Integer exchangePort) {
         this.exchangePort = exchangePort;
     }
 
-    public Long getExchangePort() 
-    {
-        return exchangePort;
+    public Integer getSmtpPort() {
+        return smtpPort;
     }
-    public void setSmtpPort(Long smtpPort) 
-    {
+
+    public void setSmtpPort(Integer smtpPort) {
         this.smtpPort = smtpPort;
     }
 
-    public Long getSmtpPort() 
-    {
-        return smtpPort;
+    public Boolean getPopSsl() {
+        return popSsl;
+    }
+
+    public void setPopSsl(Boolean popSsl) {
+        this.popSsl = popSsl;
+    }
+
+    public Boolean getImapSsl() {
+        return imapSsl;
+    }
+
+    public void setImapSsl(Boolean imapSsl) {
+        this.imapSsl = imapSsl;
+    }
+
+    public Boolean getExchangeSsl() {
+        return exchangeSsl;
+    }
+
+    public void setExchangeSsl(Boolean exchangeSsl) {
+        this.exchangeSsl = exchangeSsl;
+    }
+
+    public Boolean getSmtpSsl() {
+        return smtpSsl;
+    }
+
+    public void setSmtpSsl(Boolean smtpSsl) {
+        this.smtpSsl = smtpSsl;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("domain", getDomain())
-            .append("popHost", getPopHost())
-            .append("imapHost", getImapHost())
-            .append("exchangeHost", getExchangeHost())
-            .append("smtpHost", getSmtpHost())
-            .append("popPort", getPopPort())
-            .append("imapPort", getImapPort())
-            .append("exchangePort", getExchangePort())
-            .append("smtpPort", getSmtpPort())
-            .toString();
+        return "Host{" +
+                "id=" + id +
+                ", domain='" + domain + '\'' +
+                ", popHost='" + popHost + '\'' +
+                ", imapHost='" + imapHost + '\'' +
+                ", exchangeHost='" + exchangeHost + '\'' +
+                ", smtpHost='" + smtpHost + '\'' +
+                ", popPort=" + popPort +
+                ", imapPort=" + imapPort +
+                ", exchangePort=" + exchangePort +
+                ", smtpPort=" + smtpPort +
+                ", popSsl=" + popSsl +
+                ", imapSsl=" + imapSsl +
+                ", exchangeSsl=" + exchangeSsl +
+                ", smtpSsl=" + smtpSsl +
+                '}';
     }
 }

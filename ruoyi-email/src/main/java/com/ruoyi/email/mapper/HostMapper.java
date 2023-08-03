@@ -58,4 +58,11 @@ public interface HostMapper
      * @return 结果
      */
     public int deleteHostByIds(Long[] ids);
+
+    /**
+     * 根据域名查询邮箱服务器信息
+     * @param account
+     * @return
+     */
+    Host getByDomain(String account);
 }

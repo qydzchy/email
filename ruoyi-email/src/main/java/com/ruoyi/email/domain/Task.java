@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 邮箱任务对象 mailbox_task
  * 
@@ -19,10 +21,12 @@ public class Task extends BaseEntity
     private Long id;
 
     /** 邮箱账号 */
+    @NotBlank(message = "邮箱账号不能为空")
     @Excel(name = "邮箱账号")
     private String account;
 
     /** 邮箱密码 */
+    @NotBlank(message = "邮箱密码不能为空")
     @Excel(name = "邮箱密码")
     private String password;
 
@@ -44,11 +48,11 @@ public class Task extends BaseEntity
 
     /** 收件端口 */
     @Excel(name = "收件端口")
-    private Long receivingPort;
+    private Integer receivingPort;
 
     /** 收件SSL: 0.否 1.是 */
     @Excel(name = "收件SSL: 0.否 1.是")
-    private Integer receivingSslFlag;
+    private Boolean receivingSslFlag;
 
     /** 发件服务器 */
     @Excel(name = "发件服务器")
@@ -56,15 +60,15 @@ public class Task extends BaseEntity
 
     /** 发件端口 */
     @Excel(name = "发件端口")
-    private Long outgoingPort;
+    private Integer outgoingPort;
 
     /** 发件SSL: 0.否 1.是 */
     @Excel(name = "发件SSL: 0.否 1.是")
-    private Integer outgoingSslFlag;
+    private Boolean outgoingSslFlag;
 
     /** 自定义代理: 0.关闭 1.开启 */
     @Excel(name = "自定义代理: 0.关闭 1.开启")
-    private Integer customProxyFlag;
+    private Boolean customProxyFlag;
 
     /** 代理服务器类型 */
     @Excel(name = "代理服务器类型")
@@ -76,7 +80,7 @@ public class Task extends BaseEntity
 
     /** 代理端口 */
     @Excel(name = "代理端口")
-    private Long proxyPort;
+    private Integer proxyPort;
 
     /** 代理用户名 */
     @Excel(name = "代理用户名")
@@ -93,185 +97,164 @@ public class Task extends BaseEntity
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
-    public void setId(Long id) 
-    {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
-        return id;
+    public String getAccount() {
+        return account;
     }
-    public void setAccount(String account) 
-    {
+
+    public void setAccount(String account) {
         this.account = account;
     }
 
-    public String getAccount() 
-    {
-        return account;
+    public String getPassword() {
+        return password;
     }
-    public void setPassword(String password) 
-    {
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getPassword() 
-    {
-        return password;
+    public String getAlias() {
+        return alias;
     }
-    public void setAlias(String alias) 
-    {
+
+    public void setAlias(String alias) {
         this.alias = alias;
     }
 
-    public String getAlias() 
-    {
-        return alias;
+    public Integer getConnStatus() {
+        return connStatus;
     }
-    public void setConnStatus(Integer connStatus) 
-    {
+
+    public void setConnStatus(Integer connStatus) {
         this.connStatus = connStatus;
     }
 
-    public Integer getConnStatus() 
-    {
-        return connStatus;
+    public String getConnExceptionReason() {
+        return connExceptionReason;
     }
-    public void setConnExceptionReason(String connExceptionReason) 
-    {
+
+    public void setConnExceptionReason(String connExceptionReason) {
         this.connExceptionReason = connExceptionReason;
     }
 
-    public String getConnExceptionReason() 
-    {
-        return connExceptionReason;
+    public String getReceivingServer() {
+        return receivingServer;
     }
-    public void setReceivingServer(String receivingServer) 
-    {
+
+    public void setReceivingServer(String receivingServer) {
         this.receivingServer = receivingServer;
     }
 
-    public String getReceivingServer() 
-    {
-        return receivingServer;
+    public Integer getReceivingPort() {
+        return receivingPort;
     }
-    public void setReceivingPort(Long receivingPort) 
-    {
+
+    public void setReceivingPort(Integer receivingPort) {
         this.receivingPort = receivingPort;
     }
 
-    public Long getReceivingPort() 
-    {
-        return receivingPort;
+    public Boolean getReceivingSslFlag() {
+        return receivingSslFlag;
     }
-    public void setReceivingSslFlag(Integer receivingSslFlag) 
-    {
+
+    public void setReceivingSslFlag(Boolean receivingSslFlag) {
         this.receivingSslFlag = receivingSslFlag;
     }
 
-    public Integer getReceivingSslFlag() 
-    {
-        return receivingSslFlag;
+    public String getOutgoingServer() {
+        return outgoingServer;
     }
-    public void setOutgoingServer(String outgoingServer) 
-    {
+
+    public void setOutgoingServer(String outgoingServer) {
         this.outgoingServer = outgoingServer;
     }
 
-    public String getOutgoingServer() 
-    {
-        return outgoingServer;
+    public Integer getOutgoingPort() {
+        return outgoingPort;
     }
-    public void setOutgoingPort(Long outgoingPort) 
-    {
+
+    public void setOutgoingPort(Integer outgoingPort) {
         this.outgoingPort = outgoingPort;
     }
 
-    public Long getOutgoingPort() 
-    {
-        return outgoingPort;
+    public Boolean getOutgoingSslFlag() {
+        return outgoingSslFlag;
     }
-    public void setOutgoingSslFlag(Integer outgoingSslFlag) 
-    {
+
+    public void setOutgoingSslFlag(Boolean outgoingSslFlag) {
         this.outgoingSslFlag = outgoingSslFlag;
     }
 
-    public Integer getOutgoingSslFlag() 
-    {
-        return outgoingSslFlag;
+    public Boolean getCustomProxyFlag() {
+        return customProxyFlag;
     }
-    public void setCustomProxyFlag(Integer customProxyFlag) 
-    {
+
+    public void setCustomProxyFlag(Boolean customProxyFlag) {
         this.customProxyFlag = customProxyFlag;
     }
 
-    public Integer getCustomProxyFlag() 
-    {
-        return customProxyFlag;
+    public Integer getProxyServerType() {
+        return proxyServerType;
     }
-    public void setProxyServerType(Integer proxyServerType) 
-    {
+
+    public void setProxyServerType(Integer proxyServerType) {
         this.proxyServerType = proxyServerType;
     }
 
-    public Integer getProxyServerType() 
-    {
-        return proxyServerType;
+    public String getProxyServer() {
+        return proxyServer;
     }
-    public void setProxyServer(String proxyServer) 
-    {
+
+    public void setProxyServer(String proxyServer) {
         this.proxyServer = proxyServer;
     }
 
-    public String getProxyServer() 
-    {
-        return proxyServer;
+    public Integer getProxyPort() {
+        return proxyPort;
     }
-    public void setProxyPort(Long proxyPort) 
-    {
+
+    public void setProxyPort(Integer proxyPort) {
         this.proxyPort = proxyPort;
     }
 
-    public Long getProxyPort() 
-    {
-        return proxyPort;
+    public String getProxyUsername() {
+        return proxyUsername;
     }
-    public void setProxyUsername(String proxyUsername) 
-    {
+
+    public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
     }
 
-    public String getProxyUsername() 
-    {
-        return proxyUsername;
+    public String getProxyPassword() {
+        return proxyPassword;
     }
-    public void setProxyPassword(String proxyPassword) 
-    {
+
+    public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
     }
 
-    public String getProxyPassword() 
-    {
-        return proxyPassword;
+    public Integer getSynchronizeFolderFlag() {
+        return synchronizeFolderFlag;
     }
-    public void setSynchronizeFolderFlag(Integer synchronizeFolderFlag) 
-    {
+
+    public void setSynchronizeFolderFlag(Integer synchronizeFolderFlag) {
         this.synchronizeFolderFlag = synchronizeFolderFlag;
     }
 
-    public Integer getSynchronizeFolderFlag() 
-    {
-        return synchronizeFolderFlag;
-    }
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
+    public String getDelFlag() {
+        return delFlag;
     }
 
-    public String getDelFlag() 
-    {
-        return delFlag;
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
     }
 
     @Override
