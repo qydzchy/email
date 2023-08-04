@@ -22,8 +22,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fixedFlag"    column="fixed_flag"    />
         <result property="spamFlag"    column="spam_flag"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
@@ -77,11 +79,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fixedFlag != null">fixed_flag,</if>
             <if test="spamFlag != null">spam_flag,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="taskId != null">#{taskId},</if>
             <if test="uid != null and uid != ''">#{uid},</if>
@@ -99,11 +103,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fixedFlag != null">#{fixedFlag},</if>
             <if test="spamFlag != null">#{spamFlag},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateTaskEmailPull" parameterType="TaskEmailPull">
@@ -125,8 +131,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
             <if test="spamFlag != null">spam_flag = #{spamFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null and createId != ''">create_Id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>

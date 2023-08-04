@@ -93,4 +93,9 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     {
         return taskEmailAttachmentMapper.deleteTaskEmailAttachmentById(id);
     }
+
+    @Override
+    public void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments) {
+        taskEmailAttachmentMapper.batchInsertTaskEmailAttachment(emailAttachments);
+    }
 }

@@ -9,7 +9,7 @@ import com.ruoyi.email.domain.TaskEmailAttachment;
  * @author tangJM
  * @date 2023-07-31
  */
-public interface TaskEmailAttachmentMapper 
+public interface TaskEmailAttachmentMapper
 {
     /**
      * 查询邮件附件
@@ -58,4 +58,10 @@ public interface TaskEmailAttachmentMapper
      * @return 结果
      */
     public int deleteTaskEmailAttachmentByIds(Long[] ids);
+
+    /**
+     * 批量插入邮件附件
+     * @param emailAttachments
+     */
+    void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments);
 }

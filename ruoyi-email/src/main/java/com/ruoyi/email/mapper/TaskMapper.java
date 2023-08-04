@@ -59,5 +59,11 @@ public interface TaskMapper
      */
     public int deleteTaskByIds(Long[] ids);
 
-    int countAccount(String account);
+    /**
+     * 查询当前邮箱是否已经存在
+     * @param account
+     * @param userId
+     * @return
+     */
+    int countAccount(String account, Long userId);
 }

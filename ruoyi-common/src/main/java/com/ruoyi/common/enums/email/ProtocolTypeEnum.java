@@ -1,5 +1,6 @@
 package com.ruoyi.common.enums.email;
 
+import com.ruoyi.common.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ProtocolTypeEnum {
 
-    IMAP(1), POP3(2), EXCHANGE(3), SMTP(4);
+    IMAP(1, "imap"), POP3(2, "pop"), EXCHANGE(3, "exchange"), SMTP(4, "smtp");
 
     private int type;
+    private String name;
 
 
     public static ProtocolTypeEnum getByType(Integer type) {
@@ -21,6 +23,19 @@ public enum ProtocolTypeEnum {
 
         for (ProtocolTypeEnum value : ProtocolTypeEnum.values()) {
             if (value.getType() == type.intValue()) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public static ProtocolTypeEnum getByServer(String server) {
+        if (StringUtils.isBlank(server)) {
+            return null;
+        }
+
+        for (ProtocolTypeEnum value : ProtocolTypeEnum.values()) {
+            if (server.contains(value.getName())) {
                 return value;
             }
         }

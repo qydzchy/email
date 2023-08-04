@@ -81,6 +81,19 @@ public class TaskController extends BaseController
     }
 
     /**
+     * 邮箱检测
+     * @param id
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:task:test')")
+    @Log(title = "邮箱检测", businessType = BusinessType.TEST)
+    @PostMapping
+    public AjaxResult test(@RequestBody Long id)
+    {
+        return toAjax(taskService.test(id));
+    }
+
+    /**
      * 修改邮箱任务
      */
     @PreAuthorize("@ss.hasPermi('email:task:edit')")

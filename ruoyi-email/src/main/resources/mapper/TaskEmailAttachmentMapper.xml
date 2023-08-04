@@ -62,6 +62,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="batchInsertTaskEmailAttachment" >
+        insert into mailbox_task_email_attachment (email_id, type, name, path, del_flag, create_by, create_time, update_by, update_time)
+        values
+        <foreach collection="emailAttachments" item="item" index="index" separator=",">
+            (#{item.emailId}, #{item.type}, #{item.name}, #{item.path}, #{item.delFlag}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
     <update id="updateTaskEmailAttachment" parameterType="TaskEmailAttachment">
         update mailbox_task_email_attachment
         <trim prefix="SET" suffixOverrides=",">

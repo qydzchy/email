@@ -58,4 +58,10 @@ public interface ITaskEmailAttachmentService
      * @return 结果
      */
     public int deleteTaskEmailAttachmentById(Long id);
+
+    /**
+     * 批量新增
+     * @param emailAttachments
+     */
+    void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments);
 }

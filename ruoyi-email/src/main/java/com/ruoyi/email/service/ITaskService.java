@@ -33,7 +33,7 @@ public interface ITaskService
      * @param task 邮箱任务
      * @return 结果
      */
-    public int insertTask(Task task);
+    public Boolean insertTask(Task task);
 
     /**
      * 修改邮箱任务
@@ -58,4 +58,11 @@ public interface ITaskService
      * @return 结果
      */
     public int deleteTaskById(Long id);
+
+    /**
+     * 邮箱检测
+     * @param id
+     * @return
+     */
+    Boolean test(Long id);
 }
