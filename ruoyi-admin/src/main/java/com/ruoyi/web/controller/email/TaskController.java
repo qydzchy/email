@@ -74,7 +74,7 @@ public class TaskController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:task:add')")
     @Log(title = "邮箱任务", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody Task task)
     {
         return toAjax(taskService.insertTask(task));
@@ -87,7 +87,7 @@ public class TaskController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:task:test')")
     @Log(title = "邮箱检测", businessType = BusinessType.TEST)
-    @PostMapping
+    @PostMapping("test")
     public AjaxResult test(@RequestBody Long id)
     {
         return toAjax(taskService.test(id));
