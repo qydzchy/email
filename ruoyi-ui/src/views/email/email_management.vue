@@ -100,7 +100,7 @@
                     <!---->
                     <div class="okki-space-item">
                       <!---->
-                      <button class="okki-btn okki-btn-primary okki-btn-round" type="button" @click="openDialog">
+                      <button class="okki-btn okki-btn-primary okki-btn-round" type="button" @click="addEmailBtn">
                         <!---->
                         <span>新建邮箱</span>
                       </button>
@@ -740,11 +740,7 @@
       </div>
     </div>
 
-    <div>
-      <add-email-template :visible.sync="dialogVisible"></add-email-template>
-    </div>
-
-
+    <addEmailTemplate ref="addEmail"></addEmailTemplate>
   </div>
 
 </template>
@@ -760,16 +756,23 @@ import addEmailTemplate from './add_email.vue';
 export default {
   data() {
     return {
-      dialogVisible: false, // 控制 Dialog 的显示与隐藏
+      dialogVisible: false,  // 控制 Dialog 的显示与隐藏
     };
   },
   components: {
-    'add-email-template': addEmailTemplate, // 注册 MyTemplate 组件
+    addEmailTemplate, // 注册 MyTemplate 组件
   },
   methods: {
     openDialog() {
       this.dialogVisible = true; // 打开 Dialog
     },
-  },
-};
+    closeDialog() {
+      this.dialogVisible = false; // 关闭 Dialog
+    },
+    //点击弹窗新建邮箱弹窗
+    addEmailBtn() {
+      this.$refs.addEmail.open();
+    }
+  }
+}
 </script>

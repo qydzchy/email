@@ -1,9 +1,13 @@
 <template>
-  <div class="mm-modal--mask mm-modal novice-tour-add-mail-dialog" id="report-stat-config-sub-routes-manage" modal="[object Object]" component="[object Object]" v-portal="" v-portal-fixed="" style="z-index: 100;">
+  <el-dialog :visible="addEmailPage"
+              width="0%"
+              :append-to-body="true"
+              @close="close">
+  <div class="mm-modal--mask mm-modal novice-tour-add-mail-dialog" id="report-stat-config-sub-routes-manage" modal="[object Object]" component="[object Object]" style="z-index: 100;">
     <div class="mm-modal-mask"></div>
     <div class="mm-modal-wrapper" style="padding-top: 15vh;">
       <div class="bind-mail-modal mm-modal-content" style="width: 560px; border-color: transparent; transition: transform 0.1s ease 0s; transform: translate(0px, 0px);">
-        <svg class="mm-icon mm-icon-close mm-modal-close" viewBox="0 0 24 24" name="close" fill="currentColor" style="height: 14px; width: 14px;">
+        <svg class="mm-icon mm-icon-close mm-modal-close" viewBox="0 0 24 24" name="close" fill="currentColor" style="height: 14px; width: 14px;" @click="close">
           <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"></path>
         </svg>
         <div class="mm-modal-header">
@@ -22,20 +26,20 @@
                     <!---->
                                 </span>
                   <!---->
-                  <div class="mm-form-field">
+<!--                  <div class="mm-form-field">
                     <div class="mm-form-field-label">
                       <span>收发件服务器验证</span>
                     </div>
                     <div class="mm-form-field-control">
                                         <span class="mm-form-field-children">
                                             <span class="mm-select">
-                                                <div class="mm-selector--single mm-selector" tabindex="0">
-                                                    <!---->
+                                                <div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
+                                                    &lt;!&ndash;&ndash;&gt;
                                                     <div class="mm-selector-rendered">
                                                         <span title="与邮箱相同" class="mm-selector-selected-value" style="opacity: 1;">与邮箱相同</span>
-                                                      <!---->
+                                                      &lt;!&ndash;&ndash;&gt;
                                                     </div>
-                                                  <!---->
+                                                  &lt;!&ndash;&ndash;&gt;
                                                     <span class="mm-selector-suffix-icon">
                                                         <svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
                                                             <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
@@ -44,10 +48,10 @@
                                                 </div>
                                             </span>
                                         </span>
-                      <!---->
-                      <!---->
+                      &lt;!&ndash;&ndash;&gt;
+                      &lt;!&ndash;&ndash;&gt;
                     </div>
-                  </div>
+                  </div>-->
                   <div class="mm-form-field--required mm-form-field work-email-field">
                     <div class="mm-form-field-label">
                       <span>工作邮箱</span>
@@ -58,7 +62,7 @@
                                                 <!---->
                                                 <span class="mm-input-affix-wrapper">
                                                     <!---->
-                                                    <input modelmodifiers="[object Object]" placeholder="请输入邮箱账号" type="text" class="mm-input-inner" value="">
+                                                    <input id="account" modelmodifiers="[object Object]" placeholder="请输入邮箱账号" type="text" class="mm-input-inner" value="">
                                                   <!---->
                                                     </span>
                                               <!---->
@@ -92,7 +96,7 @@
                                                     <!---->
                                                     <span class="mm-input-affix-wrapper">
                                                         <!---->
-                                                        <input autocomplete="new-password" placeholder="请输入邮箱密码或授权码" type="password" class="mm-input-inner" value="">
+                                                        <input id="password" autocomplete="new-password"  placeholder="请输入邮箱密码或授权码" type="password" class="mm-input-inner" value="">
                                                       <!---->
                                                         </span>
                                                   <!---->
@@ -133,7 +137,6 @@
                                                                     </label>
                                                                 </div>
                                                                 <div class="protocol-tip">由于exchange协议支持问题，网易邮箱推荐使用IMAP协议。</div>
-                                                                <div class="protocol-tip"> 如需调整协议类型，请联系小满客服 </div>
                                                             </span>
                       <!---->
                       <!---->
@@ -151,7 +154,7 @@
                                                                             <!---->
                                                                             <span class="mm-input-affix-wrapper">
                                                                                 <!---->
-                                                                                <input modelmodifiers="[object Object]" placeholder="收邮件服务器" type="text" class="mm-input-inner" value="">
+                                                                                <input id="receivingServer" modelmodifiers="[object Object]" placeholder="收邮件服务器" type="text" class="mm-input-inner" value="">
                                                                               <!---->
                                                                                 </span>
                                                                           <!---->
@@ -165,7 +168,7 @@
                                                                                 <!---->
                                                                                 <span class="mm-input-affix-wrapper">
                                                                                     <!---->
-                                                                                    <input modelmodifiers="[object Object]" placeholder="端口" type="text" class="mm-input-inner" value="">
+                                                                                    <input id="receivingPort" modelmodifiers="[object Object]" placeholder="端口" type="text" class="mm-input-inner" value="">
                                                                                   <!---->
                                                                                     </span>
                                                                               <!---->
@@ -173,7 +176,7 @@
                                                                             </div>
                                                                             <div class="mm-col mm-col-4">
                                                                                 <label class="mm-checkbox">
-                                                                                    <input true-value="1" false-value="0" type="checkbox">
+                                                                                    <input id="receivingSslFlag" true-value="1" false-value="0" type="checkbox">
                                                                                         <span class="mm-checkbox-input"></span>
                                                                                         <span class="mm-checkbox-label"> SSL </span>
                                                                                     </label>
@@ -197,7 +200,7 @@
                                                                                         <!---->
                                                                                         <span class="mm-input-affix-wrapper">
                                                                                             <!---->
-                                                                                            <input modelmodifiers="[object Object]" placeholder="发邮件服务器" type="text" class="mm-input-inner" value="">
+                                                                                            <input id="outgoingServer" modelmodifiers="[object Object]" placeholder="发邮件服务器" type="text" class="mm-input-inner" value="">
                                                                                           <!---->
                                                                                             </span>
                                                                                       <!---->
@@ -211,7 +214,7 @@
                                                                                             <!---->
                                                                                             <span class="mm-input-affix-wrapper">
                                                                                                 <!---->
-                                                                                                <input modelmodifiers="[object Object]" placeholder="端口" type="text" class="mm-input-inner" value="">
+                                                                                                <input id="outgoingPort" modelmodifiers="[object Object]" placeholder="端口" type="text" class="mm-input-inner" value="">
                                                                                               <!---->
                                                                                                 </span>
                                                                                           <!---->
@@ -219,7 +222,7 @@
                                                                                         </div>
                                                                                         <div class="mm-col mm-col-4">
                                                                                             <label class="mm-checkbox">
-                                                                                                <input true-value="1" false-value="0" type="checkbox">
+                                                                                                <input id="outgoingSslFlag" true-value="1" false-value="0" type="checkbox">
                                                                                                     <span class="mm-checkbox-input"></span>
                                                                                                     <span class="mm-checkbox-label"> SSL </span>
                                                                                                 </label>
@@ -251,7 +254,7 @@
                                                                                     <span class="mm-form-field-children">
                                                                                         <div class="mm-radio-group">
                                                                                             <label class="mm-radio">
-                                                                                                <input name="mm-radio-group-61" type="radio" value="1" checked="">
+                                                                                                <input id="customProxyFlag" name="mm-radio-group-61" type="radio" value="1" checked="">
                                                                                                     <span class="mm-radio-faux">
                                                                                                         <span class="mm-radio-input"></span>
                                                                                                         <span class="mm-radio-label">开启</span>
@@ -309,7 +312,7 @@
                                                                                                             <!---->
                                                                                                             <span class="mm-input-affix-wrapper">
                                                                                                                 <!---->
-                                                                                                                <input modelmodifiers="[object Object]" placeholder="服务器" type="text" class="mm-input-inner" value="">
+                                                                                                                <input id="proxyServer" modelmodifiers="[object Object]" placeholder="服务器" type="text" class="mm-input-inner" value="">
                                                                                                               <!---->
                                                                                                                 </span>
                                                                                                           <!---->
@@ -323,7 +326,7 @@
                                                                                                                 <!---->
                                                                                                                 <span class="mm-input-affix-wrapper">
                                                                                                                     <!---->
-                                                                                                                    <input modelmodifiers="[object Object]" placeholder="端口" type="text" class="mm-input-inner" value="">
+                                                                                                                    <input id="proxyPort" modelmodifiers="[object Object]" placeholder="端口" type="text" class="mm-input-inner" value="">
                                                                                                                   <!---->
                                                                                                                     </span>
                                                                                                               <!---->
@@ -345,7 +348,7 @@
                                                                                                             <!---->
                                                                                                             <span class="mm-input-affix-wrapper">
                                                                                                                 <!---->
-                                                                                                                <input modelmodifiers="[object Object]" placeholder="请输入用户名" type="text" class="mm-input-inner" value="">
+                                                                                                                <input id="proxyUsername" modelmodifiers="[object Object]" placeholder="请输入用户名" type="text" class="mm-input-inner" value="">
                                                                                                               <!---->
                                                                                                                 </span>
                                                                                                           <!---->
@@ -365,7 +368,7 @@
                                                                                                                 <!---->
                                                                                                                 <span class="mm-input-affix-wrapper">
                                                                                                                     <!---->
-                                                                                                                    <input placeholder="请输入密码" type="password" class="mm-input-inner" value="">
+                                                                                                                    <input id="proxyPassword" placeholder="请输入密码" type="password" class="mm-input-inner" value="">
                                                                                                                   <!---->
                                                                                                                     </span>
                                                                                                               <!---->
@@ -444,13 +447,6 @@
                         </a>
                       </li>
                     </ul>
-                    <button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__medium contact-btn">
-                      <!---->
-                      <!---->
-                      <i class="m-icon icon-service-chat service-chat" style="color: rgb(0, 79, 217);"></i>联系客服
-
-                      <!---->
-                    </button>
                   </div>
                   <div class="microsoft-login-tip">
                                                                                                                 <span class="okki-icon-wrap" color="#0072C6">​
@@ -484,7 +480,7 @@
                     <!---->
                   </div>
                   <div class="mm-space-item">
-                    <button type="button" class="mm-button mm-button__primary ames-btn">
+                    <button type="button" class="mm-button mm-button__primary ames-btn" @click="save">
                       <!---->
                       <!---->
                       <span>确定</span>
@@ -500,10 +496,34 @@
       </div>
     </div>
   </div>
+  </el-dialog>
 </template>
 <style lang="scss">
 @import '../../static/scss/email/email_management/543.f903fa2e.css';
 @import '../../static/scss/email/email_management/MailInformationExtension.504babf1.css';
 </style>
 <script>
+export default {
+  components: {},
+  data() {
+    return {
+      form: {},
+      addEmailPage: false,
+    };
+  },
+  methods: {
+    open() {
+      console.log("新建邮箱页面打开");
+      this.addEmailPage = true;
+    },
+    close() {
+      console.log("新建邮箱页面关闭");
+      this.addEmailPage = false;
+    },
+    save() {
+      console.log("保存邮箱");
+
+    },
+  },
+};
 </script>
