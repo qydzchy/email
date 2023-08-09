@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
+import com.ruoyi.common.enums.email.ConnStatusEnum;
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
@@ -93,10 +94,22 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱账号已存在");
         }
 
-        // 获取邮箱协议
-        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByServer(task.getReceivingServer());
+        ProtocolTypeEnum protocolTypeEnum = getProtocolTypeEnum(task.getProtocolType(), task.getReceivingServer());
         if (protocolTypeEnum == null) {
             throw new ServiceException("暂不支持该协议类型");
+        }
+
+        // 没有选择协议类型，则获取服务器信息
+        if (task.getProtocolType() == null) {
+            String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
+            Host host = hostService.selectHostByDomain(domain);
+            if (host == null) {
+                throw new ServiceException("暂不支持该邮箱类型");
+            }
+
+            task.setReceivingServer(host.getImapHost());
+            task.setReceivingPort(host.getImapPort());
+            task.setReceivingSslFlag(host.getImapSsl());
         }
 
         // 邮箱连接
@@ -107,12 +120,16 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱连接失败");
         }
 
+        task.setReceivingServer(mailConnCfg.getHost());
+        task.setReceivingPort(mailConnCfg.getPort());
+        task.setReceivingSslFlag(mailConnCfg.isSsl());
         task.setCreateId(loginUser.getUserId());
         task.setCreateBy(loginUser.getUsername());
         task.setCreateTime(DateUtils.getNowDate());
         task.setUpdateId(loginUser.getUserId());
         task.setUpdateBy(loginUser.getUsername());
         task.setUpdateTime(DateUtils.getNowDate());
+        task.setConnStatus(ConnStatusEnum.NORMAL.getType());
         // 插入邮箱任务
         taskMapper.insertTask(task);
 
@@ -122,6 +139,19 @@ public class TaskServiceImpl implements ITaskService
         }).start();
 
         return true;
+    }
+
+    /**
+     * 获取邮箱协议
+     * @param protocolType
+     * @param receivingServer
+     * @return
+     */
+    private ProtocolTypeEnum getProtocolTypeEnum(Integer protocolType, String receivingServer) {
+        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(protocolType);
+        if (protocolTypeEnum != null) return protocolTypeEnum;
+
+        return ProtocolTypeEnum.getByServer(receivingServer);
     }
 
     /**
@@ -212,7 +242,7 @@ public class TaskServiceImpl implements ITaskService
         mailConnCfg.setPassword(task.getPassword());
         mailConnCfg.setHost(task.getReceivingServer());
         mailConnCfg.setPort(task.getReceivingPort());
-        mailConnCfg.setSsl(Optional.of(task.getReceivingSslFlag()).orElse(false));
+        mailConnCfg.setSsl(Optional.ofNullable(task.getReceivingSslFlag()).orElse(false));
 
         Boolean customProxyFlag = task.getCustomProxyFlag();
         if (Optional.ofNullable(customProxyFlag).orElse(false)) return mailConnCfg;

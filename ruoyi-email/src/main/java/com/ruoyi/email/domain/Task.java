@@ -42,6 +42,9 @@ public class Task extends BaseEntity
     @Excel(name = "连接异常原因")
     private String connExceptionReason;
 
+    @Excel(name = "协议类型 1.IMAP 2.POP3 3.EXCHANGE 4.SMTP")
+    private Integer protocolType;
+
     /** 收件服务器 */
     @Excel(name = "收件服务器")
     private String receivingServer;
@@ -92,7 +95,7 @@ public class Task extends BaseEntity
 
     /** 同步文件夹 */
     @Excel(name = "同步文件夹")
-    private Integer synchronizeFolderFlag;
+    private Boolean synchronizeFolderFlag;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -143,6 +146,14 @@ public class Task extends BaseEntity
 
     public void setConnExceptionReason(String connExceptionReason) {
         this.connExceptionReason = connExceptionReason;
+    }
+
+    public Integer getProtocolType() {
+        return protocolType;
+    }
+
+    public void setProtocolType(Integer protocolType) {
+        this.protocolType = protocolType;
     }
 
     public String getReceivingServer() {
@@ -241,11 +252,11 @@ public class Task extends BaseEntity
         this.proxyPassword = proxyPassword;
     }
 
-    public Integer getSynchronizeFolderFlag() {
+    public Boolean getSynchronizeFolderFlag() {
         return synchronizeFolderFlag;
     }
 
-    public void setSynchronizeFolderFlag(Integer synchronizeFolderFlag) {
+    public void setSynchronizeFolderFlag(Boolean synchronizeFolderFlag) {
         this.synchronizeFolderFlag = synchronizeFolderFlag;
     }
 

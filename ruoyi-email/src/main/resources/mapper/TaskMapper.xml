@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="alias"    column="alias"    />
         <result property="connStatus"    column="conn_status"    />
         <result property="connExceptionReason"    column="conn_exception_reason"    />
+        <result property="protocolType"    column="protocol_type"    />
         <result property="receivingServer"    column="receiving_server"    />
         <result property="receivingPort"    column="receiving_port"    />
         <result property="receivingSslFlag"    column="receiving_ssl_flag"    />
@@ -34,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTaskVo">
-        select id, account, password, alias, conn_status, conn_exception_reason, receiving_server, receiving_port, receiving_ssl_flag, outgoing_server, outgoing_port, outgoing_ssl_flag, custom_proxy_flag, proxy_server_type, proxy_server, proxy_port, proxy_username, proxy_password, synchronize_folder_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_task
+        select id, account, password, alias, conn_status, conn_exception_reason, protocol_type, receiving_server, receiving_port, receiving_ssl_flag, outgoing_server, outgoing_port, outgoing_ssl_flag, custom_proxy_flag, proxy_server_type, proxy_server, proxy_port, proxy_username, proxy_password, synchronize_folder_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_task
     </sql>
 
     <select id="selectTaskList" parameterType="Task" resultMap="TaskResult">
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alias != null  and alias != ''"> and alias = #{alias}</if>
             <if test="connStatus != null "> and conn_status = #{connStatus}</if>
             <if test="connExceptionReason != null  and connExceptionReason != ''"> and conn_exception_reason = #{connExceptionReason}</if>
+            <if test="protocolType != null and protocolType != ''"> and protocol_type = #{protocolType},</if>
             <if test="receivingServer != null  and receivingServer != ''"> and receiving_server = #{receivingServer}</if>
             <if test="receivingPort != null "> and receiving_port = #{receivingPort}</if>
             <if test="receivingSslFlag != null "> and receiving_ssl_flag = #{receivingSslFlag}</if>
@@ -78,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alias != null and alias != ''">alias,</if>
             <if test="connStatus != null">conn_status,</if>
             <if test="connExceptionReason != null">conn_exception_reason,</if>
+            <if test="protocolType != null and protocolType != ''">protocol_type,</if>
             <if test="receivingServer != null and receivingServer != ''">receiving_server,</if>
             <if test="receivingPort != null">receiving_port,</if>
             <if test="receivingSslFlag != null">receiving_ssl_flag,</if>
@@ -105,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alias != null and alias != ''">#{alias},</if>
             <if test="connStatus != null">#{connStatus},</if>
             <if test="connExceptionReason != null">#{connExceptionReason},</if>
+            <if test="protocolType != null and protocolType != ''">#{protocolType},</if>
             <if test="receivingServer != null and receivingServer != ''">#{receivingServer},</if>
             <if test="receivingPort != null">#{receivingPort},</if>
             <if test="receivingSslFlag != null">#{receivingSslFlag},</if>
@@ -136,6 +140,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alias != null and alias != ''">alias = #{alias},</if>
             <if test="connStatus != null">conn_status = #{connStatus},</if>
             <if test="connExceptionReason != null">conn_exception_reason = #{connExceptionReason},</if>
+            <if test="protocolType != null and protocolType != ''">#{protocolType},</if>
             <if test="receivingServer != null and receivingServer != ''">receiving_server = #{receivingServer},</if>
             <if test="receivingPort != null">receiving_port = #{receivingPort},</if>
             <if test="receivingSslFlag != null">receiving_ssl_flag = #{receivingSslFlag},</if>

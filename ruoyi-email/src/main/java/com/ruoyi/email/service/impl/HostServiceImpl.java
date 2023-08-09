@@ -92,7 +92,7 @@ public class HostServiceImpl implements IHostService
     }
 
     @Override
-    public Host getByDomain(String account) {
+    public Host selectHostByDomain(String account) {
         return hostMapper.getByDomain(account);
     }
 }

@@ -60,9 +60,9 @@ public interface IHostService
     public int deleteHostById(Long id);
 
     /**
-     * 根据域名获取邮箱服务器信息
-     * @param account
+     * 根据domain查询邮箱服务器信息
+     * @param domain
      * @return
      */
-    Host getByDomain(String account);
+    Host selectHostByDomain(String domain);
 }

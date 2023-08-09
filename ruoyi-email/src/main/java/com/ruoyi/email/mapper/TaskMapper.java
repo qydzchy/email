@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.Task;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 邮箱任务Mapper接口
@@ -65,5 +66,5 @@ public interface TaskMapper
      * @param userId
      * @return
      */
-    int countAccount(String account, Long userId);
+    int countAccount(@Param("account") String account, @Param("userId") Long userId);
 }

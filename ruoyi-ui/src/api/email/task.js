@@ -12,7 +12,7 @@ export function listTask(query) {
 // 新增邮箱任务
 export function addTask(data) {
   return request({
-    url: '/mailbox/task/add',
+    url: '/email/task/add',
     method: 'post',
     data: data
   })
