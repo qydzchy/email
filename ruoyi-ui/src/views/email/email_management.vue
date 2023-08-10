@@ -366,12 +366,12 @@ export default {
     addEmailBtn() {
       this.$refs.addEmail.open();
     },
-    fetchEmailList() {
+    /*fetchEmailList() {
       emailList(this.formData).then((response) => {
         this.$message.success("新增成功");
         this.addEmailPage = false;
       });
-    }
+    }*/
   }
 }
 </script>
