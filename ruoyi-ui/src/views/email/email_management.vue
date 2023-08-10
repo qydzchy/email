@@ -179,399 +179,7 @@
                             </div>
                             <div class="surely-table-center">
                               <div class="surely-table-center-container" style="width: 1573px; height: 495px;">
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-even surely-table-no-height" role="row" data-row-key="1" style="opacity: 1; transform: translateY(0px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="0" data-height="55" data-row-key="1" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales17@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="2" style="opacity: 1; transform: translateY(55px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="55" data-height="55" data-row-key="2" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales18@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-even surely-table-no-height" role="row" data-row-key="3" style="opacity: 1; transform: translateY(110px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="110" data-height="55" data-row-key="3" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales19@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="4" style="opacity: 1; transform: translateY(165px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="165" data-height="55" data-row-key="4" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales22@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-even surely-table-no-height" role="row" data-row-key="5" style="opacity: 1; transform: translateY(220px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="220" data-height="55" data-row-key="5" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales23@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="6" style="opacity: 1; transform: translateY(275px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="275" data-height="55" data-row-key="6" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales24@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-even surely-table-no-height" role="row" data-row-key="7" style="opacity: 1; transform: translateY(330px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="330" data-height="55" data-row-key="7" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>sales25@allxchips.com</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="8" style="opacity: 1; transform: translateY(385px); height: 55px;">
+<!--                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="8" style="opacity: 1; transform: translateY(385px); height: 55px;">
                                   <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
 																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="385" data-height="55" data-row-key="8" data-row-key-type="string" unselectable="on">
 																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
@@ -580,109 +188,93 @@
 																												</span>
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        <!---->
+                                        &lt;!&ndash;&ndash;&gt;
                                         <p>sharon@htesemi.com</p>
                                       </div>
                                     </div>
                                   </div>
                                   <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
+                                    &lt;!&ndash;&ndash;&gt;
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        <!---->
+                                        &lt;!&ndash;&ndash;&gt;
                                         <div class="flex items-center">
 																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
+                                                                &lt;!&ndash;&ndash;&gt;
 																															</span>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                   <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
+                                    &lt;!&ndash;&ndash;&gt;
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        <!---->
+                                        &lt;!&ndash;&ndash;&gt;
                                         <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
+                                          &lt;!&ndash;&ndash;&gt;
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>添加别名邮箱</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>检测</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>修改</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>解绑</span>
                                           </button>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <!--v-if-->
-                                </div>
-                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-even surely-table-no-height" role="row" data-row-key="9" style="opacity: 1; transform: translateY(440px); height: 55px;">
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
-																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="440" data-height="55" data-row-key="9" data-row-key-type="string" unselectable="on">
-																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-																														<path d="M300 276.5a56 56 0 1056-97 56 56 0 00-56 97zm0 284a56 56 0 1056-97 56 56 0 00-56 97zM640 228a56 56 0 10112 0 56 56 0 00-112 0zm0 284a56 56 0 10112 0 56 56 0 00-112 0zM300 844.5a56 56 0 1056-97 56 56 0 00-56 97zM640 796a56 56 0 10112 0 56 56 0 00-112 0z"></path>
-																													</svg>
-																												</span>
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <p>w0r1d_space@sohu.com</p>
-                                      </div>
-                                    </div>
+                                  &lt;!&ndash;v-if&ndash;&gt;
+                                </div>-->
+
+                                <div v-for="email in emailList" :key="email.id" class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height">
+                                  <!-- 邮箱名称 Email Name -->
+                                  <div class="surely-table-cell">
+                                    <p>{{ email.name }}</p>
                                   </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    <!---->
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        <!---->
-                                        <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                <!---->
-																															</span>
-                                        </div>
-                                      </div>
-                                    </div>
+                                  <!-- 邮箱状态 Email Status -->
+                                  <div class="surely-table-cell">
+                                    <span class="okki-tag">{{ email.status }}</span>
                                   </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    <!---->
+                                  <!-- 操作 Actions -->
+                                  <div class="surely-table-cell">
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        <!---->
+                                        &lt;!&ndash;&ndash;&gt;
                                         <div class="space-x-2 flex w-full justify-end items-center">
-                                          <!---->
+                                          &lt;!&ndash;&ndash;&gt;
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>添加别名邮箱</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>检测</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>修改</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                             <span>解绑</span>
                                           </button>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <!--v-if-->
                                 </div>
+
+
                                 <div class="surely-table-body-contextmenu-container">
                                   <div class="surely-table-body-contextmenu-container-inner">
                                     <!--v-if-->
@@ -752,6 +344,7 @@
 </style>
 <script>
 import addEmailTemplate from './add_email.vue';
+import {addTask} from "@/api/email/task";
 
 export default {
   data() {
@@ -772,6 +365,12 @@ export default {
     //点击弹窗新建邮箱弹窗
     addEmailBtn() {
       this.$refs.addEmail.open();
+    },
+    fetchEmailList() {
+      emailList(this.formData).then((response) => {
+        this.$message.success("新增成功");
+        this.addEmailPage = false;
+      });
     }
   }
 }
