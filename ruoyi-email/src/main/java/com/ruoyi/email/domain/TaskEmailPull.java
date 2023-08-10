@@ -62,11 +62,11 @@ public class TaskEmailPull extends BaseEntity
 
     /** 是否已读: 0.否 1.是 */
     @Excel(name = "是否已读: 0.否 1.是")
-    private Integer readFlag;
+    private Boolean readFlag;
 
     /** 是否待处理: 0.否 1.是 */
     @Excel(name = "是否待处理: 0.否 1.是")
-    private Integer pendingFlag;
+    private Boolean pendingFlag;
 
     /** 待处理时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -75,11 +75,11 @@ public class TaskEmailPull extends BaseEntity
 
     /** 是否固定: 0.否 1.是 */
     @Excel(name = "是否固定: 0.否 1.是")
-    private Integer fixedFlag;
+    private Boolean fixedFlag;
 
     /** 垃圾邮件: 0.否 1.是 */
     @Excel(name = "垃圾邮件: 0.否 1.是")
-    private Integer spamFlag;
+    private Boolean spamFlag;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -183,52 +183,48 @@ public class TaskEmailPull extends BaseEntity
     {
         return emlPath;
     }
-    public void setReadFlag(Integer readFlag) 
-    {
+
+    public Boolean getReadFlag() {
+        return readFlag;
+    }
+
+    public void setReadFlag(Boolean readFlag) {
         this.readFlag = readFlag;
     }
 
-    public Integer getReadFlag() 
-    {
-        return readFlag;
+    public Boolean getPendingFlag() {
+        return pendingFlag;
     }
-    public void setPendingFlag(Integer pendingFlag) 
-    {
+
+    public void setPendingFlag(Boolean pendingFlag) {
         this.pendingFlag = pendingFlag;
     }
 
-    public Integer getPendingFlag() 
-    {
-        return pendingFlag;
+    public Date getPendingTime() {
+        return pendingTime;
     }
-    public void setPendingTime(Date pendingTime) 
-    {
+
+    public void setPendingTime(Date pendingTime) {
         this.pendingTime = pendingTime;
     }
 
-    public Date getPendingTime() 
-    {
-        return pendingTime;
+    public Boolean getFixedFlag() {
+        return fixedFlag;
     }
-    public void setFixedFlag(Integer fixedFlag) 
-    {
+
+    public void setFixedFlag(Boolean fixedFlag) {
         this.fixedFlag = fixedFlag;
     }
 
-    public Integer getFixedFlag() 
-    {
-        return fixedFlag;
+    public Boolean getSpamFlag() {
+        return spamFlag;
     }
-    public void setSpamFlag(Integer spamFlag) 
-    {
+
+    public void setSpamFlag(Boolean spamFlag) {
         this.spamFlag = spamFlag;
     }
 
-    public Integer getSpamFlag() 
-    {
-        return spamFlag;
-    }
-    public void setDelFlag(String delFlag) 
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }

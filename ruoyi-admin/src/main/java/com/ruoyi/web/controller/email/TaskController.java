@@ -1,8 +1,10 @@
 package com.ruoyi.web.controller.email;
 
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.exception.ServiceException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,7 +79,39 @@ public class TaskController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody Task task)
     {
+        // 新建任务时，检查参数
+        addParamCheck(task);
         return toAjax(taskService.insertTask(task));
+    }
+
+    /**
+     * 新建任务时，检查参数
+     * @param task
+     */
+    private void addParamCheck(Task task) {
+        if (task.getProtocolType() != null) {
+            if (task.getReceivingServer() == null) {
+                throw new ServiceException("接收服务器不能为空");
+            }
+            if (task.getReceivingPort() == null) {
+                throw new ServiceException("接收端口不能为空");
+            }
+            if (task.getOutgoingServer() == null) {
+                throw new ServiceException("发送服务器不能为空");
+            }
+            if (task.getOutgoingPort() == null) {
+                throw new ServiceException("发送端口不能为空");
+            }
+        }
+
+        if (Optional.ofNullable(task.getCustomProxyFlag()).orElse(false)) {
+            if (task.getProxyServer() == null) {
+                throw new ServiceException("代理服务器不能为空");
+            }
+            if (task.getProxyPort() == null) {
+                throw new ServiceException("代理端口不能为空");
+            }
+        }
     }
 
     /**

@@ -1,17 +1,19 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
 import com.ruoyi.common.enums.email.ConnStatusEnum;
+import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskMapper;
 
@@ -94,32 +97,37 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱账号已存在");
         }
 
-        ProtocolTypeEnum protocolTypeEnum = getProtocolTypeEnum(task.getProtocolType(), task.getReceivingServer());
-        if (protocolTypeEnum == null) {
-            throw new ServiceException("暂不支持该协议类型");
-        }
+        // 获取协议连接配置信息
+        List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = getProtocolConnCfg(task);
 
-        // 没有选择协议类型，则获取服务器信息
-        if (task.getProtocolType() == null) {
-            String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
-            Host host = hostService.selectHostByDomain(domain);
-            if (host == null) {
-                throw new ServiceException("暂不支持该邮箱类型");
-            }
-
-            task.setReceivingServer(host.getImapHost());
-            task.setReceivingPort(host.getImapPort());
-            task.setReceivingSslFlag(host.getImapSsl());
-        }
-
-        // 邮箱连接
+        boolean flag = false;
         MailConnCfg mailConnCfg = getMailConnCfg(task);
-        try {
-            mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
-        } catch (MailPlusException e) {
+        int protocolType = 0;
+        for (Pair<ProtocolTypeEnum, MailConnCfg> protocolConnCfgPair : protocolConnCfgPairList) {
+            ProtocolTypeEnum protocolTypeEnum = protocolConnCfgPair.getFirst();
+            MailConnCfg receivingServerInfo = protocolConnCfgPair.getSecond();
+
+            // 邮箱连接
+            mailConnCfg.setHost(receivingServerInfo.getHost());
+            mailConnCfg.setPort(receivingServerInfo.getPort());
+            mailConnCfg.setSsl(receivingServerInfo.isSsl());
+
+            try {
+                mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
+                flag = true;
+                protocolType = protocolTypeEnum.getType();
+                break;
+            } catch (MailPlusException e) {
+                log.error("邮箱连接失败{}，\n" +
+                        "配置信息为{}", e, mailConnCfg);
+            }
+        }
+
+        if (!flag) {
             throw new ServiceException("邮箱连接失败");
         }
 
+        task.setProtocolType(protocolType);
         task.setReceivingServer(mailConnCfg.getHost());
         task.setReceivingPort(mailConnCfg.getPort());
         task.setReceivingSslFlag(mailConnCfg.isSsl());
@@ -142,16 +150,57 @@ public class TaskServiceImpl implements ITaskService
     }
 
     /**
-     * 获取邮箱协议
-     * @param protocolType
-     * @param receivingServer
+     * 获取协议连接配置信息
      * @return
      */
-    private ProtocolTypeEnum getProtocolTypeEnum(Integer protocolType, String receivingServer) {
-        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(protocolType);
-        if (protocolTypeEnum != null) return protocolTypeEnum;
+    private List<Pair<ProtocolTypeEnum, MailConnCfg>> getProtocolConnCfg(Task task) {
+        List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = new ArrayList<>();
+        if (task.getProtocolType() != null) {
+            ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
+            if (protocolTypeEnum == null) {
+                throw new ServiceException("暂不支持该协议类型");
+            }
 
-        return ProtocolTypeEnum.getByServer(receivingServer);
+            MailConnCfg mailConnCfg = MailConnCfg.builder().host(task.getReceivingServer()).port(task.getReceivingPort()).ssl(Optional.ofNullable(task.getReceivingSslFlag()).orElse(false)).build();
+            protocolConnCfgPairList.add(Pair.of(protocolTypeEnum, mailConnCfg));
+        } else {
+            // 没有选择协议类型，则获取服务器信息
+            String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
+            Host host = hostService.selectHostByDomain(domain);
+            if (host == null) {
+                throw new ServiceException("暂不支持该邮箱类型");
+            }
+
+            if (StringUtils.isNotBlank(host.getImapHost()) && host.getImapPort() != null) {
+                MailConnCfg imapMailConnCfg = MailConnCfg.builder().host(host.getImapHost()).port(host.getImapPort()).ssl(Optional.ofNullable(host.getImapSsl()).orElse(false)).build();
+                protocolConnCfgPairList.add(Pair.of(ProtocolTypeEnum.IMAP, imapMailConnCfg));
+            }
+
+            if (StringUtils.isNotBlank(host.getPopHost()) && host.getPopPort() != null) {
+                MailConnCfg pop3MailConnCfg = MailConnCfg.builder().host(host.getPopHost()).port(host.getPopPort()).ssl(Optional.ofNullable(host.getPopSsl()).orElse(false)).build();
+                protocolConnCfgPairList.add(Pair.of(ProtocolTypeEnum.POP3, pop3MailConnCfg));
+            }
+
+            if (protocolConnCfgPairList.isEmpty()) {
+                throw new ServiceException("暂不支持该邮箱类型");
+            }
+        }
+
+        return protocolConnCfgPairList;
+    }
+
+    /**
+     * 获取邮箱协议
+     * @param protocolType
+     * @return
+     */
+    private List<ProtocolTypeEnum> getProtocolTypeEnumList(Integer protocolType) {
+        // 先根据协议类型获取
+        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(protocolType);
+        if (protocolTypeEnum != null) return Arrays.asList(protocolTypeEnum);
+
+        // 默认协议类型
+        return Arrays.asList(ProtocolTypeEnum.IMAP, ProtocolTypeEnum.POP3);
     }
 
     /**
@@ -161,7 +210,7 @@ public class TaskServiceImpl implements ITaskService
     private void pullEmail(Task task) {
         try {
             // 获取邮箱协议
-            ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByServer(task.getReceivingServer());
+            ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
             if (protocolTypeEnum == null) {
                 log.info("暂不支持该协议类型");
                 return;
@@ -211,6 +260,7 @@ public class TaskServiceImpl implements ITaskService
         // 邮件内容
         TaskEmailContent emailContent = new TaskEmailContent();
         emailContent.setEmailId(emailId);
+        emailContent.setType(EmailTypeEnum.PULL.getType());
         emailContent.setContent(universalMail.getContent());
         emailContent.setCreateTime(DateUtils.getNowDate());
         taskEmailContentService.insertTaskEmailContent(emailContent);
@@ -223,6 +273,7 @@ public class TaskServiceImpl implements ITaskService
                 TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
                 BeanUtils.copyProperties(attachment, emailAttachment);
                 emailAttachment.setEmailId(emailId);
+                emailAttachment.setType(EmailTypeEnum.PULL.getType());
                 emailAttachment.setCreateTime(DateUtils.getNowDate());
                 emailAttachments.add(emailAttachment);
             }
@@ -328,7 +379,7 @@ public class TaskServiceImpl implements ITaskService
         }
 
         // 获取邮箱协议
-        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByServer(task.getReceivingServer());
+        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
         if (protocolTypeEnum == null) {
             log.info("暂不支持该协议类型");
             throw new ServiceException("暂不支持该协议类型");

@@ -15,10 +15,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="imapPort"    column="imap_port"    />
         <result property="exchangePort"    column="exchange_port"    />
         <result property="smtpPort"    column="smtp_port"    />
+        <result property="popSsl"    column="pop_ssl"    />
+        <result property="imapSsl"    column="imap_ssl"    />
+        <result property="exchangeSsl"    column="exchange_ssl"    />
+        <result property="smtpSsl"    column="smtp_ssl"    />
     </resultMap>
 
     <sql id="selectHostVo">
-        select id, domain, pop_host, imap_host, exchange_host, smtp_host, pop_port, imap_port, exchange_port, smtp_port from mailbox_host
+        select id, domain, pop_host, imap_host, exchange_host, smtp_host, pop_port, imap_port, exchange_port, smtp_port, pop_ssl, imap_ssl, exchange_ssl, smtp_ssl from mailbox_host
     </sql>
 
     <select id="selectHostList" parameterType="Host" resultMap="HostResult">
@@ -33,6 +37,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="imapPort != null "> and imap_port = #{imapPort}</if>
             <if test="exchangePort != null "> and exchange_port = #{exchangePort}</if>
             <if test="smtpPort != null "> and smtp_port = #{smtpPort}</if>
+            <if test="popSsl != null "> and pop_ssl = #{popSsl}</if>
+            <if test="imapSsl != null "> and imap_ssl = #{imapSsl}</if>
+            <if test="exchangeSsl != null "> and exchange_ssl = #{exchangeSsl}</if>
+            <if test="smtpSsl != null "> and smtp_ssl = #{smtpSsl}</if>
         </where>
     </select>
     
@@ -40,8 +48,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectHostVo"/>
         where id = #{id}
     </select>
-    <select id="getByDomain" resultType="com.ruoyi.email.domain.Host">
-        select * from mailbox_host where domain = #{domain}
+
+    <select id="selectByDomain" parameterType="String" resultMap="HostResult">
+        <include refid="selectHostVo"/>
+        where domain = #{domain}
     </select>
 
     <insert id="insertHost" parameterType="Host" useGeneratedKeys="true" keyProperty="id">

@@ -28,17 +28,4 @@ public enum ProtocolTypeEnum {
         }
         return null;
     }
-
-    public static ProtocolTypeEnum getByServer(String server) {
-        if (StringUtils.isBlank(server)) {
-            return null;
-        }
-
-        for (ProtocolTypeEnum value : ProtocolTypeEnum.values()) {
-            if (server.contains(value.getName())) {
-                return value;
-            }
-        }
-        return null;
-    }
 }

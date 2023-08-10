@@ -64,5 +64,5 @@ public interface HostMapper
      * @param account
      * @return
      */
-    Host getByDomain(String account);
+    Host selectByDomain(String account);
 }
