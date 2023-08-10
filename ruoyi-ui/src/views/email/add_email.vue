@@ -64,6 +64,7 @@
                                                     <span class="mm-input-affix-wrapper">
                                                         <!---->
                                                         <input v-model="formData.account" modelmodifiers="[object Object]" placeholder="请输入邮箱账号" type="text" class="mm-input-inner" value="">
+                                                        <div v-if="errors.account" class="error-text">{{ errors.account }}</div>
                                                       <!---->
                                                         </span>
                                                   <!---->
@@ -98,6 +99,7 @@
                                                         <span class="mm-input-affix-wrapper">
                                                             <!---->
                                                             <input v-model="formData.password" autocomplete="new-password"  placeholder="请输入邮箱密码或授权码" type="password" class="mm-input-inner" value="">
+                                                            <div v-if="errors.password" class="error-text">{{ errors.password }}</div>
                                                           <!---->
                                                             </span>
                                                       <!---->
@@ -107,7 +109,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field mail-bind-radio-field">
+                      <div class="mm-form-field--required mm-form-field mail-bind-radio-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                           <span>协议类型</span>
                         </div>
@@ -143,7 +145,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field">
+                      <div class="mm-form-field--required mm-form-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                           <span>收邮件服务器</span>
                         </div>
@@ -189,7 +191,7 @@
                         </div>
                       </div>
                       <!---->
-                      <div class="mm-form-field--required mm-form-field">
+                      <div class="mm-form-field--required mm-form-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                           <span>发邮件服务器</span>
                         </div>
@@ -235,7 +237,7 @@
                         </div>
                       </div>
                       <!---->
-                      <div class="mm-form-field mail-bind-radio-field">
+                      <div class="mm-form-field mail-bind-radio-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                                                                                         <span class="mm-tooltip">
                                                                                             <span class="mm-tooltip-trigger">
@@ -255,14 +257,14 @@
                                                                                         <span class="mm-form-field-children">
                                                                                             <div class="mm-radio-group">
                                                                                                 <label class="mm-radio">
-                                                                                                    <input v-model="formData.customProxyFlag" name="mm-radio-group-61" type="radio" value="true" checked="">
+                                                                                                    <input v-model="formData.customProxyFlag" @change="toggleProxySettings(true)" name="mm-radio-group-61" type="radio" value="true" checked="">
                                                                                                         <span class="mm-radio-faux">
                                                                                                             <span class="mm-radio-input"></span>
                                                                                                             <span class="mm-radio-label">开启</span>
                                                                                                         </span>
                                                                                                     </label>
                                                                                                     <label class="mm-radio">
-                                                                                                        <input v-model="formData.customProxyFlag" name="mm-radio-group-61" type="radio" value="false">
+                                                                                                        <input v-model="formData.customProxyFlag" @change="toggleProxySettings(false)" name="mm-radio-group-61" type="radio" value="false">
                                                                                                             <span class="mm-radio-faux">
                                                                                                                 <span class="mm-radio-input"></span>
                                                                                                                 <span class="mm-radio-label">关闭</span>
@@ -274,7 +276,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field">
+                      <div class="mm-form-field--required mm-form-field" v-if="formData.customProxyFlag && showManualConfig">
                         <div class="mm-form-field-label">
                           <span>服务器类型</span>
                         </div>
@@ -285,7 +287,7 @@
                           </el-select>
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field">
+                      <div class="mm-form-field--required mm-form-field" v-if="formData.customProxyFlag && showManualConfig" >
                         <div class="mm-form-field-label">
                           <span>服务器</span>
                         </div>
@@ -323,7 +325,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field">
+                      <div class="mm-form-field" v-if="formData.customProxyFlag && showManualConfig">
                         <div class="mm-form-field-label">
                           <span>用户名</span>
                         </div>
@@ -343,7 +345,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field">
+                      <div class="mm-form-field" v-if="formData.customProxyFlag && showManualConfig">
                         <div class="mm-form-field-label">
                           <span>密码</span>
                         </div>
@@ -363,7 +365,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field mail-bind-radio-field">
+                      <div class="mm-form-field mail-bind-radio-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                                                                                                                 <span class="mm-tooltip">
                                                                                                                     <span class="mm-tooltip-trigger">
@@ -405,7 +407,7 @@
                       <div class="mm-form-field">
                         <div class="mm-form-field-label">
                           <div class="toggleMore">
-                            <a>收起手动配置</a>
+                            <a @click="toggleManualConfig">{{ showManualConfig ? '收起手动配置' : '手动配置' }}</a>
                           </div>
                         </div>
                         <div class="mm-form-field-control">
@@ -495,22 +497,23 @@ export default {
   components: {},
   data() {
     return {
+      showManualConfig: false,
       formData: {
         account: undefined,
         password: undefined,
-        protocolType: undefined,
+        protocolType: undefined, // 默认选中 IMAP
         receivingServer: undefined,
         receivingPort: undefined,
         receivingSslFlag: undefined,
         outgoingServer: undefined,
         outgoingPort: undefined,
         outgoingSslFlag: undefined,
-        customProxyFlag: undefined,
+        customProxyFlag: undefined, // 自定义代理默认关闭
         proxyServer: undefined,
         proxyPort: undefined,
         proxyUsername: undefined,
         proxyPassword: undefined,
-        synchronizeFolderFlag: undefined,
+        synchronizeFolderFlag: undefined, // 同步文件夹默认开启
       },
       rules: {
         account: [{
@@ -525,6 +528,10 @@ export default {
         }]
       },
       addEmailPage: false,
+      errors: {
+        account: undefined,
+        password: undefined
+      }
     }
   },
   methods: {
@@ -532,40 +539,65 @@ export default {
       console.log("新建邮箱页面打开");
       this.addEmailPage = true;
     },
+
     close() {
       console.log("新建邮箱页面关闭");
       this.addEmailPage = false;
+      this.formData = {};
+      this.errors = {};
     },
+
+    toggleProxySettings(value) {
+      this.formData.customProxyFlag = value;
+    },
+
+    toggleManualConfig() {
+      this.showManualConfig = !this.showManualConfig;
+      if (this.showManualConfig) {
+        this.formData.protocolType = 1; // 默认选中 IMAP
+        this.formData.customProxyFlag = false; // 自定义代理默认关闭
+        this.formData.synchronizeFolderFlag = true; // 同步文件夹默认开启
+      } else {
+        this.formData.protocolType = undefined;
+        this.formData.customProxyFlag = undefined;
+        this.formData.synchronizeFolderFlag = undefined;
+      }
+    },
+
+    validateForm() {
+      let isValid = true;
+
+      // 验证账号
+      if (!this.formData.account) {
+        this.errors.account = "账号不能为空";
+        isValid = false;
+      } else if (this.formData.account.length < 5) {
+        this.errors.account = "账号长度必须至少为5个字符";
+        isValid = false;
+      } else {
+        this.errors.account = null;
+      }
+
+      // 验证密码
+      if (!this.formData.password) {
+        this.errors.password = "密码不能为空";
+        isValid = false;
+      } else {
+        this.errors.password = null;
+      }
+
+      return isValid;
+    },
+
     save() {
-      console.log("保存邮箱");
-      this.$refs.elForm.validate(valid => {
-        console.log(valid);
-        if (valid) {
-          /*const formData = {
-            account: this.formData.account,
-            password: this.formData.password,
-            protocolType: this.formData.protocolType,
-            receivingServer: this.formData.receivingServer,
-            receivingPort: this.formData.receivingPort,
-            receivingSslFlag: this.formData.receivingSslFlag,
-            outgoingServer: this.formData.outgoingServer,
-            outgoingPort: this.formData.outgoingPort,
-            outgoingSslFlag: this.formData.outgoingSslFlag,
-            customProxyFlag: this.formData.customProxyFlag,
-            proxyServer: this.formData.proxyServer,
-            proxyPort: this.formData.proxyPort,
-            proxyUsername: this.formData.proxyUsername,
-            proxyPassword: this.formData.proxyPassword,
-            synchronizeFolderFlag: this.formData.synchronizeFolderFlag,
-          };*/
-          addTask(this.formData).then((response) => {
-            this.$message.success("新增成功");
-            this.closeDialog();
-          });
-        } else {
-          this.$message.error("请填写正确的表单信息");
-        }
-      })
+      if (this.validateForm()) {
+        addTask(this.formData).then((response) => {
+          this.$message.success("新增成功");
+          this.addEmailPage = false;
+        });
+      }
+
+      this.errors = {};
     },
   },
 };

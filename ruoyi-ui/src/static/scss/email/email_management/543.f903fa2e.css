@@ -25265,7 +25265,7 @@ textarea.okki-input-affix-wrapper {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-
+}
 
 .okki-input:placeholder-shown {
   text-overflow: ellipsis;

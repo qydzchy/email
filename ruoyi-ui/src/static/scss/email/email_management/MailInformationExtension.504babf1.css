@@ -1217,3 +1217,14 @@ a.format-text-btn:focus {
   display: block;
   overflow: hidden;
 }
+
+.dialog-container {
+  overflow-y: auto; /* 滚动条只在内容超出时出现 */
+  max-height: 100vh; /* 设置最大高度为视口高度，确保不会超出 */
+}
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
