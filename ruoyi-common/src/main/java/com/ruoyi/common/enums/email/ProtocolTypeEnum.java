@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ProtocolTypeEnum {
 
-    IMAP(1, "imap"), POP3(2, "pop"), EXCHANGE(3, "exchange"), SMTP(4, "smtp");
+    IMAP(1, "IMAP"), POP3(2, "POP"), EXCHANGE(3, "EXCHANGE"), SMTP(4, "SMTP");
 
     private int type;
     private String name;

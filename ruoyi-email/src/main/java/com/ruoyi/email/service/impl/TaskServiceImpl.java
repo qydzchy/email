@@ -191,20 +191,6 @@ public class TaskServiceImpl implements ITaskService
     }
 
     /**
-     * 获取邮箱协议
-     * @param protocolType
-     * @return
-     */
-    private List<ProtocolTypeEnum> getProtocolTypeEnumList(Integer protocolType) {
-        // 先根据协议类型获取
-        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(protocolType);
-        if (protocolTypeEnum != null) return Arrays.asList(protocolTypeEnum);
-
-        // 默认协议类型
-        return Arrays.asList(ProtocolTypeEnum.IMAP, ProtocolTypeEnum.POP3);
-    }
-
-    /**
      * 拉去邮件
      * @param task
      */
@@ -337,6 +323,7 @@ public class TaskServiceImpl implements ITaskService
     @Override
     public int updateTask(Task task)
     {
+        // 根据ID查询邮箱任务
         task.setUpdateTime(DateUtils.getNowDate());
         return taskMapper.updateTask(task);
     }

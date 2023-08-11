@@ -1,6 +1,7 @@
 package com.ruoyi.email.domain;
 
 import com.ruoyi.common.enums.email.ConnStatusEnum;
+import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -271,6 +272,11 @@ public class Task extends BaseEntity
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getProtocolTypeName() {
+        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(this.getProtocolType());
+        return protocolTypeEnum == null ? "" : protocolTypeEnum.getName();
     }
 
     @Override

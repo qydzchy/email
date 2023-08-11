@@ -18,6 +18,14 @@ export function addTask(data) {
   })
 }
 
+export function editTask(data) {
+  return request({
+    url: '/email/task/edit',
+    method: 'put',
+    data: data
+  })
+}
+
 // 拉取邮件
 export function pullEmail() {
   return request({

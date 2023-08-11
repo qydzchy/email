@@ -85,36 +85,6 @@ public class TaskController extends BaseController
     }
 
     /**
-     * 新建任务时，检查参数
-     * @param task
-     */
-    private void addParamCheck(Task task) {
-        if (task.getProtocolType() != null) {
-            if (task.getReceivingServer() == null) {
-                throw new ServiceException("接收服务器不能为空");
-            }
-            if (task.getReceivingPort() == null) {
-                throw new ServiceException("接收端口不能为空");
-            }
-            if (task.getOutgoingServer() == null) {
-                throw new ServiceException("发送服务器不能为空");
-            }
-            if (task.getOutgoingPort() == null) {
-                throw new ServiceException("发送端口不能为空");
-            }
-        }
-
-        if (Optional.ofNullable(task.getCustomProxyFlag()).orElse(false)) {
-            if (task.getProxyServer() == null) {
-                throw new ServiceException("代理服务器不能为空");
-            }
-            if (task.getProxyPort() == null) {
-                throw new ServiceException("代理端口不能为空");
-            }
-        }
-    }
-
-    /**
      * 邮箱检测
      * @param id
      * @return
@@ -147,5 +117,35 @@ public class TaskController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(taskService.deleteTaskByIds(ids));
+    }
+
+    /**
+     * 新建任务时，检查参数
+     * @param task
+     */
+    private void addParamCheck(Task task) {
+        if (task.getProtocolType() != null) {
+            if (task.getReceivingServer() == null) {
+                throw new ServiceException("接收服务器不能为空");
+            }
+            if (task.getReceivingPort() == null) {
+                throw new ServiceException("接收端口不能为空");
+            }
+            if (task.getOutgoingServer() == null) {
+                throw new ServiceException("发送服务器不能为空");
+            }
+            if (task.getOutgoingPort() == null) {
+                throw new ServiceException("发送端口不能为空");
+            }
+        }
+
+        if (Optional.ofNullable(task.getCustomProxyFlag()).orElse(false)) {
+            if (task.getProxyServer() == null) {
+                throw new ServiceException("代理服务器不能为空");
+            }
+            if (task.getProxyPort() == null) {
+                throw new ServiceException("代理端口不能为空");
+            }
+        }
     }
 }
