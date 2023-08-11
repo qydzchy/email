@@ -487,7 +487,11 @@
   </el-dialog>
 </template>
 <style lang="scss">
-@import '../../static/scss/email/email_management/543.f903fa2e.css';
+label {
+  font-weight: initial;
+}
+
+@import '../../static/scss/email/email_management/9755.4df34767.css';
 @import '../../static/scss/email/email_management/MailInformationExtension.504babf1.css';
 </style>
 <script>

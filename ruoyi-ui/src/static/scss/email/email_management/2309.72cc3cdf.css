@@ -6785,3 +6785,6 @@ svg.icon {
   margin-right: 8px;
 }
 
+.mm-scrollbar--hidden {
+  overflow: hidden;
+}
