@@ -131,6 +131,7 @@ public class TaskServiceImpl implements ITaskService
         task.setReceivingServer(mailConnCfg.getHost());
         task.setReceivingPort(mailConnCfg.getPort());
         task.setReceivingSslFlag(mailConnCfg.isSsl());
+        task.setOutgoingSslFlag(Optional.ofNullable(task.getOutgoingSslFlag()).orElse(false));
         task.setCreateId(loginUser.getUserId());
         task.setCreateBy(loginUser.getUsername());
         task.setCreateTime(DateUtils.getNowDate());

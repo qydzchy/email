@@ -133,7 +133,7 @@
                                     <!--v-if-->
                                     <!--v-if-->
                                   </div>
-                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="1" colend="1" style="width: 647px; height: 55px; left: 646px;">
+                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="1" colend="1" style="width: 647px; height: 55px; left: 626px;">
 																												<span class="surely-table-column-title surely-table-cell-box">
 																													<div class="surely-table-header-cell-title">
 																														<span class="surely-table-header-cell-title-inner surely-table-cell-text-ellipsis" title="" style="">邮箱状态</span>
@@ -143,7 +143,7 @@
                                     <!--v-if-->
                                     <!--v-if-->
                                   </div>
-                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="2" colend="2" style="width: 280px; height: 55px; left: 1293px;">
+                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="2" colend="2" style="width: 280px; height: 55px; left: 1183px;">
 																												<span class="surely-table-column-title surely-table-cell-box">
 																													<div class="surely-table-header-cell-title">
 																														<span class="surely-table-header-cell-title-inner surely-table-cell-text-ellipsis" title="" style="">操作</span>
@@ -179,7 +179,11 @@
                             </div>
                             <div class="surely-table-center">
                               <div class="surely-table-center-container" style="width: 1573px; height: 495px;">
-<!--                                <div class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="8" style="opacity: 1; transform: translateY(385px); height: 55px;">
+                                <div
+                                  v-for="(email, index) in emails"
+                                  :key="email.id"
+                                  :style="{ transform: `translateY(${index * 55}px)` }"
+                                  class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height" role="row" data-row-key="8" style="opacity: 1; transform: translateY(0px); height: 55px;">
                                   <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 646px; left: 0px;">
 																												<span class="surely-table-drag-handle" aria-grabbed="false" aria-hidden="true" data-scroll-top="385" data-height="55" data-row-key="8" data-row-key-type="string" unselectable="on">
 																													<svg viewBox="64 64 896 896" focusable="false" data-icon="holder" width="1em" height="1em" fill="currentColor" aria-hidden="true">
@@ -188,84 +192,41 @@
 																												</span>
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        &lt;!&ndash;&ndash;&gt;
-                                        <p>sharon@htesemi.com</p>
+                                        <p style="margin-bottom: 0em">{{ email.account }}</p>
                                       </div>
                                     </div>
                                   </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 646px;">
-                                    &lt;!&ndash;&ndash;&gt;
+                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 647px; left: 626px;">
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        &lt;!&ndash;&ndash;&gt;
                                         <div class="flex items-center">
-																															<span class="okki-tag" style="background-color: rgb(217, 246, 235); color: rgb(0, 123, 75); border: none; border-radius: 4px;">正常
-                                                                &lt;!&ndash;&ndash;&gt;
+																															<span class="okki-tag"
+                                                                    :style="{
+                                                                        'background-color': email.connStatus === 1 ? 'rgb(217, 246, 235)' : 'rgb(255, 226, 224)',
+                                                                        color: email.connStatus === 1 ? 'rgb(0, 123, 75)' : 'rgb(182, 31, 31)',
+                                                                        border: 'none',
+                                                                        borderRadius: '4px'
+                                                                    }">
+                                                                {{ email.connStatus === 1 ? '正常' : '异常' }}
 																															</span>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1293px;">
-                                    &lt;!&ndash;&ndash;&gt;
+                                  <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1183px;">
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        &lt;!&ndash;&ndash;&gt;
                                         <div class="space-x-2 flex w-full justify-end items-center">
-                                          &lt;!&ndash;&ndash;&gt;
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
                                             <span>添加别名邮箱</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
                                             <span>检测</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
                                             <span>修改</span>
                                           </button>
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
-                                            <span>解绑</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  &lt;!&ndash;v-if&ndash;&gt;
-                                </div>-->
-
-                                <div v-for="email in emailList" :key="email.id" class="surely-table-row surely-table-row-level-0 surely-table-row-odd surely-table-no-height">
-                                  <!-- 邮箱名称 Email Name -->
-                                  <div class="surely-table-cell">
-                                    <p>{{ email.name }}</p>
-                                  </div>
-                                  <!-- 邮箱状态 Email Status -->
-                                  <div class="surely-table-cell">
-                                    <span class="okki-tag">{{ email.status }}</span>
-                                  </div>
-                                  <!-- 操作 Actions -->
-                                  <div class="surely-table-cell">
-                                    <div class="surely-table-cell-inner" style="">
-                                      <div class="surely-table-cell-content">
-                                        &lt;!&ndash;&ndash;&gt;
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          &lt;!&ndash;&ndash;&gt;
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
-                                            <span>添加别名邮箱</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
-                                            <span>检测</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
-                                            <span>修改</span>
-                                          </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
-                                            &lt;!&ndash;&ndash;&gt;
                                             <span>解绑</span>
                                           </button>
                                         </div>
@@ -273,7 +234,6 @@
                                     </div>
                                   </div>
                                 </div>
-
 
                                 <div class="surely-table-body-contextmenu-container">
                                   <div class="surely-table-body-contextmenu-container-inner">
@@ -344,11 +304,12 @@
 </style>
 <script>
 import addEmailTemplate from './add_email.vue';
-import {addTask} from "@/api/email/task";
+import {listTask} from "@/api/email/task";
 
 export default {
   data() {
     return {
+      emails: [],
       dialogVisible: false,  // 控制 Dialog 的显示与隐藏
     };
   },
@@ -366,12 +327,17 @@ export default {
     addEmailBtn() {
       this.$refs.addEmail.open();
     },
-    /*fetchEmailList() {
-      emailList(this.formData).then((response) => {
-        this.$message.success("新增成功");
-        this.addEmailPage = false;
+  },
+
+  created() {
+    listTask().then((response) => {
+      this.emails = response.rows;
+      this.emails.forEach((email) => {
+        email.id = email.id;
+        email.account = email.account;
+        email.connStatus = email.connStatus;
       });
-    }*/
+    });
   }
 }
 </script>

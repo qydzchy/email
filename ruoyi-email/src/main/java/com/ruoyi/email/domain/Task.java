@@ -1,5 +1,6 @@
 package com.ruoyi.email.domain;
 
+import com.ruoyi.common.enums.email.ConnStatusEnum;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -258,6 +259,10 @@ public class Task extends BaseEntity
 
     public void setSynchronizeFolderFlag(Boolean synchronizeFolderFlag) {
         this.synchronizeFolderFlag = synchronizeFolderFlag;
+    }
+
+    public String getConnStatusName() {
+        return this.connStatus.intValue() == ConnStatusEnum.NORMAL.getType() ? "正常" : "异常";
     }
 
     public String getDelFlag() {

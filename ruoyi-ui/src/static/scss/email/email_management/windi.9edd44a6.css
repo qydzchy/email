@@ -4388,3 +4388,8 @@
   -webkit-line-clamp: 4;
 }
 
+.surely-table-body {
+  /* 隐藏水平和垂直滚动条 */
+  overflow-x: hidden;
+  overflow-y: hidden;
+}

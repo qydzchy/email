@@ -1,17 +1,26 @@
 package com.ruoyi.email;
 
+import com.ruoyi.email.domain.Task;
+import com.ruoyi.email.service.ITaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.*;
 import javax.mail.internet.MimeMultipart;
+import java.util.List;
 import java.util.Properties;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class EmailTest {
+
+    @Autowired
+    private ITaskService taskService;
 
     @Test
     public void getEmailTest() {
@@ -55,5 +64,11 @@ public class EmailTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void taskList() {
+        List<Task> tasks = taskService.selectTaskList(new Task());
+        log.info("{}", tasks);
     }
 }
