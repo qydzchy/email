@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.email.domain.dto.EditTaskDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,10 +103,10 @@ public class TaskController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:task:edit')")
     @Log(title = "邮箱任务", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody Task task)
+    @PostMapping("/edit")
+    public AjaxResult edit(@RequestBody EditTaskDTO editTaskDTO)
     {
-        return toAjax(taskService.updateTask(task));
+        return toAjax(taskService.updateTask(editTaskDTO));
     }
 
     /**

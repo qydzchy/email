@@ -21,7 +21,7 @@ export function addTask(data) {
 export function editTask(data) {
   return request({
     url: '/email/task/edit',
-    method: 'put',
+    method: 'post',
     data: data
   })
 }

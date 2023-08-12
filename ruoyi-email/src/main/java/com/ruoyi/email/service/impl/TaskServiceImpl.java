@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
+import com.ruoyi.email.domain.dto.EditTaskDTO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import lombok.extern.slf4j.Slf4j;
@@ -317,13 +318,33 @@ public class TaskServiceImpl implements ITaskService
     /**
      * 修改邮箱任务
      * 
-     * @param task 邮箱任务
+     * @param editTaskDTO 邮箱任务
      * @return 结果
      */
     @Override
-    public int updateTask(Task task)
+    public int updateTask(EditTaskDTO editTaskDTO)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        Task task = taskMapper.getTaskById(editTaskDTO.getId(), userId);
+        BeanUtils.copyProperties(editTaskDTO, task);
+
+        MailConnCfg mailConnCfg = getMailConnCfg(task);
+        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
+
+        try {
+            mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
+        } catch (MailPlusException e) {
+            log.error("邮箱连接失败{}，\n" +
+                    "配置信息为{}", e, mailConnCfg);
+            throw new ServiceException("邮箱连接失败");
+        }
+
         // 根据ID查询邮箱任务
+        task.setUpdateId(userId);
+        task.setUpdateBy(username);
         task.setUpdateTime(DateUtils.getNowDate());
         return taskMapper.updateTask(task);
     }

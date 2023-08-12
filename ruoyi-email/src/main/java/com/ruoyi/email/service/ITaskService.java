@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Task;
+import com.ruoyi.email.domain.dto.EditTaskDTO;
 
 /**
  * 邮箱任务Service接口
@@ -38,10 +39,10 @@ public interface ITaskService
     /**
      * 修改邮箱任务
      * 
-     * @param task 邮箱任务
+     * @param editTaskDTO 邮箱任务
      * @return 结果
      */
-    public int updateTask(Task task);
+    public int updateTask(EditTaskDTO editTaskDTO);
 
     /**
      * 批量删除邮箱任务

@@ -67,4 +67,12 @@ public interface TaskMapper
      * @return
      */
     int countAccount(@Param("account") String account, @Param("userId") Long userId);
+
+    /**
+     * 根据任务id和创建人查询任务
+     * @param id
+     * @param userId
+     * @return
+     */
+    Task getTaskById(@Param("id") Long id, @Param("createId") Long userId);
 }

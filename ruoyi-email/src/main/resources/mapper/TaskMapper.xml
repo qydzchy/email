@@ -68,6 +68,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="getTaskById" resultMap="TaskResult">
+        <include refid="selectTaskVo"/>
+        where id = #{id} and create_id = #{createId}
+    </select>
+
     <select id="countAccount" resultType="java.lang.Integer">
         select count(*) from mailbox_task where account = #{account} and create_id = #{userId} and del_flag = 0
     </select>
@@ -140,7 +145,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alias != null and alias != ''">alias = #{alias},</if>
             <if test="connStatus != null">conn_status = #{connStatus},</if>
             <if test="connExceptionReason != null">conn_exception_reason = #{connExceptionReason},</if>
-            <if test="protocolType != null and protocolType != ''">#{protocolType},</if>
+            <if test="protocolType != null">protocol_type = #{protocolType},</if>
             <if test="receivingServer != null and receivingServer != ''">receiving_server = #{receivingServer},</if>
             <if test="receivingPort != null">receiving_port = #{receivingPort},</if>
             <if test="receivingSslFlag != null">receiving_ssl_flag = #{receivingSslFlag},</if>
