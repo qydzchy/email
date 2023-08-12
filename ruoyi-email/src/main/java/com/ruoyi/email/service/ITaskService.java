@@ -3,6 +3,7 @@ package com.ruoyi.email.service;
 import java.util.List;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
+import com.ruoyi.email.domain.vo.ListTaskVO;
 
 /**
  * 邮箱任务Service接口
@@ -14,19 +15,11 @@ public interface ITaskService
 {
     /**
      * 查询邮箱任务
-     * 
+     *
      * @param id 邮箱任务主键
      * @return 邮箱任务
      */
     public Task selectTaskById(Long id);
-
-    /**
-     * 查询邮箱任务列表
-     * 
-     * @param task 邮箱任务
-     * @return 邮箱任务集合
-     */
-    public List<Task> selectTaskList(Task task);
 
     /**
      * 新增邮箱任务
@@ -65,5 +58,11 @@ public interface ITaskService
      * @param id
      * @return
      */
-    Boolean test(Long id);
+    Boolean testTask(Long id);
+
+    /**
+     * 列表
+     * @return
+     */
+    List<ListTaskVO> listTask();
 }

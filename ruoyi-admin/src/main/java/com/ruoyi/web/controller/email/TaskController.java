@@ -2,15 +2,13 @@ package com.ruoyi.web.controller.email;
 
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpServletResponse;
-
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
+import com.ruoyi.email.domain.vo.ListTaskVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +20,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.service.ITaskService;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
@@ -43,23 +40,10 @@ public class TaskController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:task:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Task task)
+    public TableDataInfo list()
     {
-        List<Task> list = taskService.selectTaskList(task);
+        List<ListTaskVO> list = taskService.listTask();
         return getDataTable(list);
-    }
-
-    /**
-     * 导出邮箱任务列表
-     */
-    @PreAuthorize("@ss.hasPermi('email:task:export')")
-    @Log(title = "邮箱任务", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, Task task)
-    {
-        List<Task> list = taskService.selectTaskList(task);
-        ExcelUtil<Task> util = new ExcelUtil<Task>(Task.class);
-        util.exportExcel(response, list, "邮箱任务数据");
     }
 
     /**
@@ -95,7 +79,7 @@ public class TaskController extends BaseController
     @PostMapping("test")
     public AjaxResult test(@RequestBody Long id)
     {
-        return toAjax(taskService.test(id));
+        return toAjax(taskService.testTask(id));
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -16,6 +15,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
+import com.ruoyi.email.domain.vo.ListTaskVO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import lombok.extern.slf4j.Slf4j;
@@ -71,14 +71,16 @@ public class TaskServiceImpl implements ITaskService
 
     /**
      * 查询邮箱任务列表
-     * 
-     * @param task 邮箱任务
+     *
      * @return 邮箱任务
      */
     @Override
-    public List<Task> selectTaskList(Task task)
+    public List<ListTaskVO> listTask()
     {
-        return taskMapper.selectTaskList(task);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        return taskMapper.listTask(userId);
     }
 
     /**
@@ -379,7 +381,7 @@ public class TaskServiceImpl implements ITaskService
      * @return
      */
     @Override
-    public Boolean test(Long id) {
+    public Boolean testTask(Long id) {
         Task task = selectTaskById(id);
 
         if (task == null) {

@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.Task;
+import com.ruoyi.email.domain.vo.ListTaskVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -75,4 +76,11 @@ public interface TaskMapper
      * @return
      */
     Task getTaskById(@Param("id") Long id, @Param("createId") Long userId);
+
+    /**
+     * 列表
+     * @param userId
+     * @return
+     */
+    List<ListTaskVO> listTask(@Param("createId")Long userId);
 }

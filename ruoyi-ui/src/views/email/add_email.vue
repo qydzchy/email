@@ -3,7 +3,7 @@
               width="0%"
               :append-to-body="true"
               @close="close">
-    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
+    <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
       <div class="mm-modal--mask mm-modal novice-tour-add-mail-dialog" id="report-stat-config-sub-routes-manage" modal="[object Object]" component="[object Object]" style="z-index: 100;">
         <div class="mm-modal-mask"></div>
         <div class="mm-modal-wrapper" style="padding-top: 15vh;">
@@ -496,30 +496,16 @@ export default {
     return {
       showManualConfig: false,
       formData: {},
-      rules: {
-        account: [{
-          required: true,
-          message: '请输入账号',
-          trigger: 'blur'
-        }],
-        password: [{
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }]
-      },
       addEmailPage: false,
       errors: {}
     }
   },
   methods: {
     open() {
-      console.log("新建邮箱页面打开");
       this.addEmailPage = true;
     },
 
     close() {
-      console.log("新建邮箱页面关闭");
       this.addEmailPage = false;
       this.formData = {};
       this.errors = {};
@@ -576,7 +562,7 @@ export default {
       }
 
       this.errors = {};
-    },
+    }
   }
 };
 </script>
