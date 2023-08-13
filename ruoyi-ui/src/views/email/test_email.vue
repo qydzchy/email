@@ -28,7 +28,7 @@
 											<div class="mm-form-field-control" style="margin-left: 120px;">
 												<span class="mm-form-field-children">
 													<div class="itemValue">
-														<span>{{formData.account}}}
+														<span>{{formData.account}}
                               <!---->
 														</span>
                             <!---->
@@ -44,16 +44,19 @@
 											</div>
 											<div class="mm-form-field-control" style="margin-left: 120px;">
 												<span class="mm-form-field-children">
-													<div class="itemValue" style="color: rgb(0, 156, 81);">
+													<div class="itemValue" :style="responseStyle">
 														<span>********
                               <!---->
 														</span>
 														<span class="result">
-															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+                              <span v-if="isChecking">
+                                <div class="loader"></div>
+                              </span>
+<!--															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
 																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
 																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
 																</svg>
-															</span>
+															</span>-->
 														</span>
 													</div>
 												</span>
@@ -84,16 +87,20 @@
 											</div>
 											<div class="mm-form-field-control" style="margin-left: 120px;">
 												<span class="mm-form-field-children">
-													<div class="itemValue" style="color: rgb(0, 156, 81);">
+													<div class="itemValue" :style="responseStyle">
 														<span>{{formData.receivingServer}}
                               <!---->
 														</span>
 														<span class="result">
-															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+                              <span v-if="isChecking">
+                                <div class="loader"></div>
+                              </span>
+
+<!--															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
 																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
 																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
 																</svg>
-															</span>
+															</span>-->
 														</span>
 													</div>
 												</span>
@@ -107,16 +114,19 @@
 											</div>
 											<div class="mm-form-field-control" style="margin-left: 120px;">
 												<span class="mm-form-field-children">
-													<div class="itemValue" style="color: rgb(0, 156, 81);">
+													<div class="itemValue" :style="responseStyle">
 														<span>{{formData.outgoingServer}}
                               <!---->
 														</span>
 														<span class="result">
-															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+                              <span v-if="isChecking">
+                                <div class="loader"></div>
+                              </span>
+<!--															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
 																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
 																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
 																</svg>
-															</span>
+															</span>-->
 														</span>
 													</div>
 												</span>
@@ -179,10 +189,9 @@
 									<div>
 										<div class="mm-space mm-space__horizontal">
 											<div class="mm-space-item">
-												<button type="button" class="mm-button mm-button__primary ames-btn">
-													<!---->
-                          <!---->重新检测
-                          <!---->
+												<button type="button" :class="recheckButtonClass" class="mm-button mm-button__primary ames-btn" :disabled="isChecking" @click="checkEmail">
+													<span v-if="isChecking">加载中...</span>
+                          <span v-else>重新检测</span>
 												</button>
 											</div>
 										</div>
@@ -199,9 +208,20 @@
   </el-dialog>
 </template>
 <style lang="scss">
-label {
-  font-weight: initial;
+.loader {
+  border: 2px solid #f3f3f3; // 这将创建一个灰色的圆环
+  border-top: 2px solid #3498db; // 顶部的线条是蓝色
+  border-radius: 50%; // 使其成为一个完整的圆
+  width: 18px; // 你可以根据需要调整大小
+  height: 18px;
+  animation: spin 2s linear infinite; // 使用spin动画
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 @import '../../static/scss/email/email_management/1972.59786a6e.css';
 @import '../../static/scss/email/email_management/8372.43beae95.css';
@@ -215,27 +235,15 @@ export default {
     return {
       formData: {},
       testEmailPage: false,
-    }
-  },
-  watch: {
-    emailData: {
-      immediate: true,
-      handler(newValue) {
-        this.formData = { ...newValue };
-      }
+      isChecking: false, // 是否正在进行检测
+      responseStatus: null  // 用于保存接口的返回状态
     }
   },
   methods: {
     open(email) {
       this.formData = email;
       this.testEmailPage = true;
-
-      const data = {
-        id: this.formData.id
-      }
-      testTask(data).then((response) => {
-        this.addEmailPage = false;
-      });
+      this.checkEmail();
     },
 
     close() {
@@ -244,57 +252,38 @@ export default {
       this.errors = {};
     },
 
-    toggleProxySettings(value) {
-      this.formData.customProxyFlag = value;
+    async checkEmail() {
+      this.isChecking = true;
+
+      try {
+        let response = await testTask(this.formData.id);
+        console.log(response);
+        this.responseStatus = response.status;  // 设置responseStatus为接口返回的状态码
+      } catch (error) {
+        console.log(error);
+        //console.error("检测邮件出错:", error);
+        this.responseStatus = error.response ? error.response.status : null;
+      }
+
+      this.isChecking = false;
     },
-
-    toggleManualConfig() {
-      this.showManualConfig = !this.showManualConfig;
-      if (this.showManualConfig) {
-        this.formData.protocolType = 1; // 默认选中 IMAP
-        this.formData.customProxyFlag = false; // 自定义代理默认关闭
-        this.formData.synchronizeFolderFlag = true; // 同步文件夹默认开启
-      } else {
-        this.formData.protocolType = undefined;
-        this.formData.customProxyFlag = undefined;
-        this.formData.synchronizeFolderFlag = undefined;
+  },
+  computed: {
+    responseStyle() {
+      if (this.responseStatus === 200) {
+        return { color: 'rgb(0, 156, 81)' };
+      } else if (this.responseStatus === 500) {
+        return { color: 'rgb(221, 60, 60)' };
       }
+      return {};
     },
-
-    validateForm() {
-      let isValid = true;
-
-      // 验证账号
-      if (!this.formData.account) {
-        this.errors.account = "账号不能为空";
-        isValid = false;
-      } else if (this.formData.account.length < 5) {
-        this.errors.account = "账号长度必须至少为5个字符";
-        isValid = false;
-      } else {
-        this.errors.account = null;
+    recheckButtonClass() {
+      if (this.responseStatus === 200) {
+        return ['mm-button', 'mm-button__primary', 'ames-btn'];
+      } else if (this.responseStatus === 500) {
+        return ['mm-button', 'ames-btn'];
       }
-
-      // 验证密码
-      if (!this.formData.password) {
-        this.errors.password = "密码不能为空";
-        isValid = false;
-      } else {
-        this.errors.password = null;
-      }
-
-      return isValid;
-    },
-
-    confirm() {
-      if (this.validateForm()) {
-        addTask(this.formData).then((response) => {
-          this.$message.success("新增成功");
-          this.addEmailPage = false;
-        });
-      }
-
-      this.errors = {};
+      return ['mm-button'];
     }
   }
 };

@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
 import com.ruoyi.email.domain.vo.ListTaskVO;
+import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -70,10 +71,11 @@ public class TaskController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:task:test')")
     @Log(title = "邮箱检测", businessType = BusinessType.TEST)
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/test/{id}")
     public AjaxResult test(@PathVariable("id") Long id)
     {
-        return toAjax(taskService.testTask(id));
+        Pair<Boolean, String> booleanStringPair = taskService.testTask(id);
+        return null;
     }
 
     /**

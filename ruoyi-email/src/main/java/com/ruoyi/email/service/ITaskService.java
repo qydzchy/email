@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
 import com.ruoyi.email.domain.vo.ListTaskVO;
+import org.springframework.data.util.Pair;
 
 /**
  * 邮箱任务Service接口
@@ -58,7 +59,7 @@ public interface ITaskService
      * @param id
      * @return
      */
-    Boolean testTask(Long id);
+    Pair<Boolean, String> testTask(Long id);
 
     /**
      * 列表

@@ -381,7 +381,7 @@ public class TaskServiceImpl implements ITaskService
      * @return
      */
     @Override
-    public Boolean testTask(Long id) {
+    public Pair<Boolean, String> testTask(Long id) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
@@ -402,11 +402,11 @@ public class TaskServiceImpl implements ITaskService
         MailConnCfg mailConnCfg = getMailConnCfg(task);
         try {
             mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
-        } catch (MailPlusException e) {
+        } catch (Exception e) {
             log.error("邮箱连接失败");
-            return false;
+            return Pair.of(false, e.getMessage());
         }
 
-        return true;
+        return Pair.of(true, "");
     }
 }
