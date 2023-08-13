@@ -382,8 +382,10 @@ public class TaskServiceImpl implements ITaskService
      */
     @Override
     public Boolean testTask(Long id) {
-        Task task = selectTaskById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
 
+        Task task = taskMapper.getTaskById(id, userId);
         if (task == null) {
             log.info("任务为空，id为【{}】", id);
             throw new ServiceException("任务为空");

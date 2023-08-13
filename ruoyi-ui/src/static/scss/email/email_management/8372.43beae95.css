@@ -1,0 +1,701 @@
+.department-selector-container {
+  display:flex
+}
+.department-selector-container .mm-tree-select {
+  width:100%
+}
+.department-selector-container .department-selector-content {
+  margin-right:15px;
+  flex:1
+}
+.department-selector-container .department-selector-members {
+  flex:1.5
+}
+.department-selector-container .department-selector-text input[readonly] {
+  background:#fff
+}
+.department-selector-item-disabled {
+  cursor:not-allowed;
+  background:#eee
+}
+.department-selector-item-folder {
+  margin-right:5px;
+  color:#9acbf8
+}
+.department-selector-item-avatar.department-avatar-improve-priority {
+  margin-right:5px;
+  width:18px;
+  height:18px;
+  line-height:18px;
+  top:-2px
+}
+.bind-email-guide-carousel .mm-carousel-indicators .carousel-indicator:before {
+  width:8px;
+  height:8px;
+  border-radius:4px;
+  background-color:#0064ff
+}
+.mm-carousel .mm-carousel-item {
+  width:100%!important
+}
+.bind-email-guide-modal {
+  z-index:1041!important
+}
+.bind-email-guide-modal .mm-modal-wrapper {
+  padding:0;
+  background-color:#000
+}
+.bind-email-guide-modal .mm-modal-body {
+  background-color:#000
+}
+.bind-email-guide-modal .mm-modal-body .mm-carousel-arrow .carousel-arrow-left {
+  background-color:#aaa;
+  left:23%
+}
+.bind-email-guide-modal .mm-modal-body .mm-carousel-arrow .carousel-arrow-right {
+  background-color:#aaa;
+  right:23%
+}
+@media screen and (min-width:1440px) {
+  .bind-email-guide-modal .mm-modal-content {
+    padding-top:30px
+  }
+}@media screen and (min-width:1880px) {
+  .bind-email-guide-modal .mm-modal-content {
+    padding-top:100px
+  }
+}.bind-email-help-wrap {
+   position:relative
+ }
+.bind-email-help-wrap .help-title {
+  font-size:14px;
+  font-weight:700;
+  color:#2a2a2a
+}
+.bind-email-help-wrap .help-list {
+  margin:10px 0
+}
+.bind-email-help-wrap .help-link {
+  color:#666;
+  line-height:22px;
+  font-size:12px
+}
+.bind-email-help-wrap .help-link:hover {
+  color:#002a8c;
+  text-decoration:none
+}
+.bind-email-help-wrap .contact-btn {
+  position:absolute;
+  top:0;
+  right:0;
+  color:#004fd9;
+  font-size:14px;
+  margin-top:-3px
+}
+.bind-email-help-wrap .contact-btn .service-chat {
+  margin-right:6px;
+  font-size:14px
+}
+.sub-field[data-v-40354a2a] {
+  margin-bottom:10px
+}
+.sub-field[data-v-40354a2a]:last-child {
+  margin-bottom:0
+}
+.sub-field .sub-field-icon[data-v-40354a2a] {
+  margin-top:6px
+}
+.sub-field .sub-field-icon .icon-btn.disabled[data-v-40354a2a] {
+  color:#909090;
+  cursor:not-allowed
+}
+.sub-field-label[data-v-40354a2a] {
+  font-size:12px;
+  color:#909090;
+  line-height:26px;
+  padding-right:8px
+}
+.icon-btn[data-v-40354a2a] {
+  cursor:pointer;
+  color:#bfbfbf
+}
+.icon-btn[data-v-40354a2a]:hover {
+  color:#0a6aff
+}
+.sub-mail-tip[data-v-40354a2a] {
+  white-space:break-spaces;
+  max-width:unset
+}
+.bind-email-dialog {
+  position:relative
+}
+.bind-email-dialog .microsoft-login-text {
+  font-size:12px;
+  color:#4c637e;
+  line-height:20px;
+  margin-top:-15px
+}
+.bind-email-dialog .microsoft-login-text span {
+  color:#004fd9
+}
+.bind-email-dialog .microsoft-login-tip {
+  font-size:12px;
+  color:#666;
+  cursor:pointer
+}
+.bind-email-dialog .microsoft-login-tip:hover {
+  color:#002a8c
+}
+.bind-email-dialog .microsoft-login-tip.microsoft-login-bottom-tips {
+  margin-top:5px
+}
+.bind-email-dialog .microsoft-login-btn {
+  margin-left:8px;
+  height:34px;
+  width:110px;
+  flex-shrink:0;
+  line-height:34px;
+  text-align:center;
+  color:#003bb3;
+  border:1px solid #bfbfbf;
+  border-radius:17px;
+  cursor:pointer
+}
+.bind-email-dialog .bind-email-content {
+  padding:0 18px;
+  box-sizing:border-box;
+  max-height:60vh;
+  overflow:auto
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form {
+  min-width:420px
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .mailbox-type-selector {
+  display:flex
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .mailbox-type-selector .pubilc-mailbox-tip {
+  margin-left:22px;
+  color:#9ea2a8;
+  font-size:12px
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .mailbox-type-selector .mailbox-type-selector-label .mm-tooltip-trigger {
+  padding-left:24px;
+  margin-left:-24px
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .mm-form-field {
+  margin-bottom:20px
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .work-email-field {
+  position:relative
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .work-email-field .work-email-tip {
+  position:absolute;
+  top:-4px;
+  left:62px;
+  color:#b8bbc0
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .email-password {
+  position:relative
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .email-password .enter-code-guide {
+  position:absolute;
+  top:-4px;
+  right:2px
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .toggleMore a {
+  color:#004fd9
+}
+[lang=en] .bind-email-dialog .bind-email-content .bind-email-dialog-form .toggleMore {
+  width:160px
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .mail-bind-radio-field .mm-radio {
+  vertical-align:sub
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .mail-bind-radio-field .radio-label {
+  vertical-align:top
+}
+.bind-email-dialog .bind-email-content .bind-email-dialog-form .protocol-tip {
+  font-size:12px;
+  color:#e95b5b;
+  line-height:20px
+}
+.bind-email-dialog .bind-email-content .help-wrap {
+  min-height:125px;
+  padding:12px 0 24px
+}
+.bind-email-dialog .form-actions-wrapper {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  height:60px;
+  padding:0 18px;
+  box-sizing:border-box
+}
+.modify-pwd-step {
+  font-size:12px;
+  text-align:center;
+  margin-top:15px
+}
+.popover-zindex {
+  z-index:1050
+}
+.block-item {
+  width:350px;
+  height:400px
+}
+.bind-email-modal {
+  width:400px
+}
+.bind-email-wrapper .error-detail {
+  -webkit-hyphens:auto;
+  hyphens:auto;
+  word-break:break-word
+}
+.bind-email-wrapper .c-link {
+  text-decoration:underline
+}
+.bind-mail-modal .mm-modal-body {
+  padding:16px 0 0
+}
+.auth-view-base .auth-view-base-tooltip {
+  width:100%
+}
+.super-button-permission-wrap.auth-view-base,.super-button-permission-wrap.mm-popconfirm>div {
+  display:inline-flex
+}
+.format-text-btn,.mm__theme .mm-button.format-text-btn,.mm__theme.mm-button.format-text-btn,.super-button-permission-wrap.format-text-btn {
+  padding:0;
+  min-width:unset;
+  border:none;
+  height:auto;
+  box-shadow:none;
+  text-align:left;
+  line-height:inherit;
+  vertical-align:initial
+}
+.format-text-btn:active,.mm__theme .mm-button.format-text-btn:active,.mm__theme.mm-button.format-text-btn:active,.super-button-permission-wrap.format-text-btn:active {
+  opacity:.5
+}
+a.format-text-btn {
+  line-height:inherit
+}
+a.format-text-btn:visited {
+  color:#0064ff
+}
+a.format-text-btn:focus {
+  box-shadow:none
+}
+.super-button-confirm {
+  display:flex;
+  margin:0 0 16px
+}
+.super-button-confirm .title {
+  font-size:14px;
+  font-weight:400;
+  margin-bottom:4px;
+  color:#1e2026
+}
+.super-button-confirm .tips {
+  font-size:12px;
+  color:#686c73
+}
+.mm-dropdown-popper .super-button-permission-wrap,.mm-dropdown-popper .super-button-permission-wrap .mm-popconfirm,.mm-dropdown-popper .super-button-permission-wrap .mm-popconfirm>div,.mm-dropdown-popper .super-button-permission-wrap.mm-popconfirm,.mm-dropdown-popper .super-button-permission-wrap.mm-popconfirm>div {
+  width:100%
+}
+.mm-dropdown-popper .super-button-permission-wrap .mm-button,.mm-dropdown-popper .super-button-permission-wrap.mm-button {
+  width:100%;
+  text-align:left;
+  height:auto;
+  padding:0;
+  margin:0;
+  min-width:auto;
+  line-height:18px;
+  color:#595959
+}
+.mm-dropdown-popper .super-button-permission-wrap .mm-button__text[disabled],.mm-dropdown-popper .super-button-permission-wrap.mm-button__text[disabled] {
+  color:silver
+}
+.checkEmailSettingWrapper {
+  position:relative;
+  display:flex;
+  width:100%;
+  min-height:375px;
+  box-sizing:border-box;
+  flex-direction:column;
+  align-items:center
+}
+.checkEmailSettingWrapper .mm-form-field {
+  margin-bottom:12px
+}
+.checkEmailSettingWrapper .mm-form-field .mm-form-field-label {
+  font-size:14px;
+  line-height:20px;
+  color:#686c73
+}
+.checkEmailSettingWrapper .mm-form-field .mm-form-field-control {
+  line-height:20px;
+  color:#1e2126
+}
+.checkEmailSettingWrapper .check-mail-content {
+  padding-bottom:72px
+}
+.checkEmailSettingWrapper .check-mail-content .mailDetailList {
+  display:flex;
+  width:360px;
+  padding-top:8px;
+  flex-direction:column;
+  justify-content:space-between
+}
+.checkEmailSettingWrapper .check-mail-content .mailDetailList .itemValue {
+  color:#1e2126;
+  width:280px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+.checkEmailSettingWrapper .check-mail-content .mailDetailList .result {
+  font-size:12px;
+  width:50px;
+  height:20px
+}
+.checkEmailSettingWrapper .check-mail-content .mailDetailList .tip-icon {
+  margin-left:5px
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips {
+  width:360px
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips .mm-form-field-control,.checkEmailSettingWrapper .check-mail-content .check-error-tips .mm-form-field-label {
+  color:#dd3c3c
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips .format-text-btn {
+  color:#017aff
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips .error-detail-expand-btn {
+  margin-left:8px
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips .error-detail-field {
+  margin-top:-8px
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips .error-detail {
+  color:#686c73;
+  font-size:12px
+}
+.checkEmailSettingWrapper .check-mail-content .check-error-tips .format-text-btn {
+  vertical-align:top
+}
+.checkEmailSettingWrapper .mailFooterAction {
+  position:absolute;
+  bottom:19px
+}
+.checkEmailSettingWrapper .mailFooterAction .loading:before {
+  background-color:#0159ba
+}
+.ames-update-modal .mm-modal-wrapper {
+  padding-bottom:0!important;
+  padding-top:0
+}
+.ames-update-modal .mm-modal-wrapper .ames-update {
+  width:calc(100vw - 239px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  margin:0 0 0 239px;
+  border-radius:0
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .mm-modal-body {
+  padding:0
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .title-banner {
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:436px;
+  background:#e5f5fe
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .title-banner .title-desc {
+  display:flex;
+  flex-direction:column;
+  justify-content:center
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .title-banner .title-desc .big-title {
+  font-family:Source Han Sans CN;
+  font-weight:700;
+  font-size:46.723px;
+  line-height:70px;
+  color:#424242
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .title-banner .title-desc .small-title {
+  font-family:Source Han Sans CN;
+  font-weight:400;
+  font-size:28.2744px;
+  line-height:42px;
+  color:#424242
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .title-banner img {
+  width:650px;
+  height:358px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .title-banner .close-btn {
+  position:fixed;
+  top:24px;
+  right:36px;
+  cursor:pointer
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner {
+  display:flex;
+  flex-direction:column;
+  justify-content:center
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content {
+  width:100%;
+  height:500px;
+  margin-top:100px;
+  display:flex;
+  justify-content:center;
+  align-items:center
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content {
+  font-family:Source Han Sans CN;
+  width:410px;
+  height:300px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content .item-title {
+  font-weight:700;
+  font-size:50px;
+  line-height:31px;
+  color:#0064ff
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content .item-title-desc {
+  font-weight:700;
+  font-size:34px;
+  line-height:51px;
+  color:#333;
+  margin-top:50px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content .item-content {
+  font-weight:400;
+  font-size:18px;
+  line-height:31px;
+  color:#333;
+  margin-top:28px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .img-ml {
+  margin-left:120px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .img-mr {
+  margin-right:120px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .content-banner .even {
+  flex-direction:row-reverse
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner {
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  width:72%;
+  height:404px;
+  margin:100px auto;
+  box-sizing:border-box;
+  border-radius:12px;
+  background:linear-gradient(.789turn,#bfddff,#dee9ff 99.99%)
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .logo {
+  position:absolute;
+  top:20px;
+  left:240px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .left-content {
+  position:relative;
+  height:100%;
+  width:610px;
+  padding:32px 0 0 60px;
+  box-sizing:border-box
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .left-content .banner-title {
+  font-weight:600;
+  font-size:28px;
+  line-height:28px;
+  color:#000;
+  margin-bottom:24px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .left-content .function-desc {
+  font-weight:500;
+  font-size:16px;
+  line-height:32px;
+  color:#3d3d3d
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .line {
+  margin:auto 0;
+  width:1px;
+  height:300px;
+  background:#0064ff;
+  opacity:.1
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:370px;
+  height:100%;
+  margin:32px 120px 0 100px;
+  box-sizing:border-box
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .contact-title {
+  font-weight:600;
+  font-size:24px;
+  line-height:24px;
+  color:#000;
+  margin-bottom:10px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .contact-desc {
+  font-size:14px;
+  line-height:24px;
+  color:#3d3d3d;
+  margin-bottom:32px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form {
+  width:370px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item {
+  margin-bottom:18px;
+  height:36px
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item .mm-form-field-label {
+  font-size:14px;
+  color:#000
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item .mm-form-field-explain {
+  color:#f33200
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item .verify-code {
+  position:relative
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item .verify-code .get-verify-code-btn {
+  position:absolute;
+  right:1px;
+  top:1px;
+  height:28px;
+  background:#fff;
+  line-height:28px;
+  border-radius:0
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item .user-mobile {
+  position:relative
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .form-field-item .user-mobile .reverify {
+  position:absolute;
+  right:1px;
+  top:1px;
+  height:28px;
+  background:#fff;
+  line-height:28px;
+  border-radius:0
+}
+.ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content .update-contact-form .submit-btn {
+  width:132px;
+  height:36px;
+  margin-top:4px
+}
+@media screen and (max-width:1441px) {
+  .ames-update-modal .mm-modal-wrapper .ames-update .title-banner {
+    height:400px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .title-banner .title-desc .big-title {
+    font-size:44px;
+    line-height:66px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .title-banner .title-desc .small-title {
+    font-size:26px;
+    line-height:39px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .title-banner img {
+    width:585px;
+    height:322px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content {
+    height:440px;
+    margin-top:80px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content {
+    width:369px;
+    height:249px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content .item-title {
+    font-size:44px;
+    line-height:28px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content .item-title-desc {
+    font-size:30px;
+    line-height:45px;
+    margin-top:40px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .text-content .item-content {
+    font-size:16px;
+    line-height:28px;
+    margin-top:25px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .img-ml {
+    height:435px;
+    width:594px;
+    margin-left:100px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .content-banner .content .img-mr {
+    height:435px;
+    width:594px;
+    margin-right:100px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .footer-banner {
+    width:90%
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .logo {
+    position:absolute;
+    top:20px;
+    left:200px
+  }
+  .ames-update-modal .mm-modal-wrapper .ames-update .footer-banner .right-content {
+    margin:32px 50px 0 50px
+  }
+}.unbind-email-dialog .unbind-content {
+   margin:20px 0 30px 15px
+ }
+.unbind-email-dialog .unbind-content h3 {
+  padding-bottom:15px;
+  font-size:16px;
+  color:#000;
+  font-weight:400
+}
+.unbind-email-dialog .unbind-content p {
+  line-height:30px
+}
+.unbind-email-dialog .unbind-content .tip-text {
+  color:#6e6e6e;
+  display:flex;
+  line-height:24px
+}
+.unbind-email-dialog .unbind-content .tip-text .point {
+  height:24px;
+  margin-right:10px;
+  display:flex;
+  align-items:center
+}
+.unbind-email-dialog .unbind-content .tip-text .point:before {
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#000
+}
+.unbind-email-dialog .unbind-content .mt-15 {
+  margin-top:15px
+}
+.unbind-email-dialog .mail-config-btn-list {
+  text-align:center
+}
+.okki-galio-mail-manange {
+  width:100%;
+  display:flex;
+  justify-content:center;
+  box-sizing:border-box
+}

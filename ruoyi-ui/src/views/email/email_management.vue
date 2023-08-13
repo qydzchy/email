@@ -220,7 +220,11 @@
                                           <button class="okki-btn okki-btn-link okki-btn-round" type="button">
                                             <span>添加别名邮箱</span>
                                           </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
+                                          <button
+                                            class="okki-btn okki-btn-link okki-btn-round"
+                                            type="button"
+                                            @click="testEmailBtn(email)"
+                                          >
                                             <span>检测</span>
                                           </button>
                                            <button
@@ -298,6 +302,7 @@
 
     <addEmailTemplate ref="addEmail"></addEmailTemplate>
     <editEmailTemplate ref="editEmail"></editEmailTemplate>
+    <testEmailTemplate ref="testEmail"></testEmailTemplate>
   </div>
 
 </template>
@@ -310,6 +315,7 @@
 <script>
 import addEmailTemplate from './add_email.vue';
 import editEmailTemplate from './edit_email.vue';
+import testEmailTemplate from './test_email.vue';
 import {listTask} from "@/api/email/task";
 
 export default {
@@ -322,6 +328,7 @@ export default {
   components: {
     addEmailTemplate,
     editEmailTemplate,
+    testEmailTemplate,
   },
   methods: {
     openDialog() {
@@ -337,6 +344,10 @@ export default {
     //点击弹窗编辑邮箱弹窗
     editEmailBtn(email) {
       this.$refs.editEmail.open(email);
+    },
+    //点击弹窗编辑邮箱弹窗
+    testEmailBtn(email) {
+      this.$refs.testEmail.open(email);
     },
   },
 

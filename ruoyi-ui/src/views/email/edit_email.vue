@@ -446,7 +446,6 @@ export default {
   },
   methods: {
     open(email) {
-      console.log(email);
       this.formData = email;
       this.editEmailPage = true;
     },

@@ -18,6 +18,7 @@ export function addTask(data) {
   })
 }
 
+// 邮箱编辑
 export function editTask(data) {
   return request({
     url: '/email/task/edit',
@@ -26,11 +27,11 @@ export function editTask(data) {
   })
 }
 
-// 拉取邮件
-export function pullEmail() {
+// 邮箱测试
+export function testTask(id) {
   return request({
-    url: '/mailbox/task/pull',
-    method: 'post'
+    url: '/email/task/test/' + id,
+    method: 'get'
   })
 }
 
