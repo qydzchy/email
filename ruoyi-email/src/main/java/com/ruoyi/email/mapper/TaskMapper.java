@@ -83,4 +83,11 @@ public interface TaskMapper
      * @return
      */
     List<ListTaskVO> listTask(@Param("createId")Long userId);
+
+    /**
+     * 解绑
+     * @param id
+     * @param userId
+     */
+    int unbindTaskById(@Param("id") Long id, @Param("createId") Long userId);
 }

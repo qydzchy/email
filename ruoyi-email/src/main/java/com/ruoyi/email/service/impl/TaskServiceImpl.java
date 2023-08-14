@@ -16,6 +16,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
 import com.ruoyi.email.domain.vo.ListTaskVO;
+import com.ruoyi.email.domain.vo.TestTaskVO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,20 @@ public class TaskServiceImpl implements ITaskService
         Long userId = loginUser.getUserId();
 
         return taskMapper.listTask(userId);
+    }
+
+    /**
+     * 解绑
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean unbind(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        int result = taskMapper.unbindTaskById(id, userId);
+        return result > 0 ? true : false;
     }
 
     /**
@@ -381,7 +396,7 @@ public class TaskServiceImpl implements ITaskService
      * @return
      */
     @Override
-    public Pair<Boolean, String> testTask(Long id) {
+    public TestTaskVO testTask(Long id) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
@@ -404,9 +419,9 @@ public class TaskServiceImpl implements ITaskService
             mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
         } catch (Exception e) {
             log.error("邮箱连接失败");
-            return Pair.of(false, e.getMessage());
+            return TestTaskVO.builder().connStatus(false).connExceptionReason(e.getMessage()).build();
         }
 
-        return Pair.of(true, "");
+        return TestTaskVO.builder().connStatus(true).connExceptionReason(null).build();
     }
 }

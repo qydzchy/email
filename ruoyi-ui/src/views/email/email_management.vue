@@ -123,7 +123,7 @@
                               </div>
                               <div class="surely-table-center surely-table-row-wrapper surely-table-last-columns">
                                 <div class="surely-table-center-container" style="width: 1573px;">
-                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="0" colend="0" style="width: 646px; height: 55px; left: 0px;">
+                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="0" colend="0" style="width: 636px; height: 55px; left: 0px;">
 																												<span class="surely-table-column-title surely-table-cell-box">
 																													<div class="surely-table-header-cell-title">
 																														<span class="surely-table-header-cell-title-inner surely-table-cell-text-ellipsis" title="" style="">邮箱名称</span>
@@ -133,7 +133,7 @@
                                     <!--v-if-->
                                     <!--v-if-->
                                   </div>
-                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="1" colend="1" style="width: 647px; height: 55px; left: 626px;">
+                                  <div tabindex="-1" role="cell" class="surely-table-cell surely-table-header-cell" colspan="1" colstart="1" colend="1" style="width: 567px; height: 55px; left: 626px;">
 																												<span class="surely-table-column-title surely-table-cell-box">
 																													<div class="surely-table-header-cell-title">
 																														<span class="surely-table-header-cell-title-inner surely-table-cell-text-ellipsis" title="" style="">邮箱状态</span>
@@ -234,7 +234,11 @@
                                            >
                                             <span>修改</span>
                                           </button>
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
+                                          <button
+                                            class="okki-btn okki-btn-link okki-btn-round"
+                                            type="button"
+                                            @click="unbindEmailBtn(email)"
+                                          >
                                             <span>解绑</span>
                                           </button>
                                         </div>
@@ -308,6 +312,42 @@
 </template>
 
 <style lang="scss">
+.surely-table-wrapper, .surely-table {
+  width: 100%;
+}
+
+.surely-table-center-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.surely-table-cell {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .surely-table-center-container {
+    flex-direction: column;
+  }
+
+  .surely-table-cell {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .surely-table-cell-content .okki-btn {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}
+
 @import '../../static/scss/email/email_management/2309.72cc3cdf.css';
 @import '../../static/scss/email/email_management/9755.4df34767.css';
 @import '../../static/scss/email/email_management/windi.9edd44a6.css';
@@ -316,7 +356,7 @@
 import addEmailTemplate from './add_email.vue';
 import editEmailTemplate from './edit_email.vue';
 import testEmailTemplate from './test_email.vue';
-import {listTask} from "@/api/email/task";
+import {listTask, unbindTask} from "@/api/email/task";
 
 export default {
   data() {
@@ -349,17 +389,30 @@ export default {
     testEmailBtn(email) {
       this.$refs.testEmail.open(email);
     },
+    //解绑
+    unbindEmailBtn(email) {
+      const data = {
+        "id": email.id
+      }
+      unbindTask(data).then((response) => {
+        this.$message.success("解绑成功");
+        this.refreshEmailList();
+      })
+    },
+    refreshEmailList() {
+      listTask().then((response) => {
+        this.emails = response.rows;
+        this.emails.forEach((email) => {
+          email.id = email.id;
+          email.account = email.account;
+          email.connStatus = email.connStatus;
+        });
+      });
+    }
   },
 
   created() {
-    listTask().then((response) => {
-      this.emails = response.rows;
-      this.emails.forEach((email) => {
-        email.id = email.id;
-        email.account = email.account;
-        email.connStatus = email.connStatus;
-      });
-    });
+    this.refreshEmailList();
   }
 }
 </script>

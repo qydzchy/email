@@ -96,11 +96,11 @@
                                 <div class="loader"></div>
                               </span>
 
-<!--															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
 																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
 																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
-																</svg>
-															</span>-->
+															</svg>
+															</span>
 														</span>
 													</div>
 												</span>
@@ -122,11 +122,11 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-<!--															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
 																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
 																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
 																</svg>
-															</span>-->
+															</span>
 														</span>
 													</div>
 												</span>
@@ -222,7 +222,6 @@
   100% { transform: rotate(360deg); }
 }
 
-
 @import '../../static/scss/email/email_management/1972.59786a6e.css';
 @import '../../static/scss/email/email_management/8372.43beae95.css';
 </style>
@@ -236,7 +235,7 @@ export default {
       formData: {},
       testEmailPage: false,
       isChecking: false, // 是否正在进行检测
-      responseStatus: null  // 用于保存接口的返回状态
+      connStatus: null  // 用于保存接口的返回状态
     }
   },
   methods: {
@@ -257,12 +256,10 @@ export default {
 
       try {
         let response = await testTask(this.formData.id);
-        console.log(response);
-        this.responseStatus = response.status;  // 设置responseStatus为接口返回的状态码
+        let data = response.data;
+        this.connStatus = data.connStatus;
       } catch (error) {
-        console.log(error);
-        //console.error("检测邮件出错:", error);
-        this.responseStatus = error.response ? error.response.status : null;
+        this.connStatus = false;
       }
 
       this.isChecking = false;
@@ -270,17 +267,18 @@ export default {
   },
   computed: {
     responseStyle() {
-      if (this.responseStatus === 200) {
+      if (this.connStatus === true) {
         return { color: 'rgb(0, 156, 81)' };
-      } else if (this.responseStatus === 500) {
+      } else if (this.connStatus === false) {
         return { color: 'rgb(221, 60, 60)' };
       }
       return {};
     },
+
     recheckButtonClass() {
-      if (this.responseStatus === 200) {
+      if (this.connStatus === true) {
         return ['mm-button', 'mm-button__primary', 'ames-btn'];
-      } else if (this.responseStatus === 500) {
+      } else if (this.connStatus === false) {
         return ['mm-button', 'ames-btn'];
       }
       return ['mm-button'];

@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.dto.EditTaskDTO;
 import com.ruoyi.email.domain.vo.ListTaskVO;
+import com.ruoyi.email.domain.vo.TestTaskVO;
 import org.springframework.data.util.Pair;
 
 /**
@@ -59,11 +60,18 @@ public interface ITaskService
      * @param id
      * @return
      */
-    Pair<Boolean, String> testTask(Long id);
+    TestTaskVO testTask(Long id);
 
     /**
      * 列表
      * @return
      */
     List<ListTaskVO> listTask();
+
+    /**
+     * 解绑
+     * @param id
+     * @return
+     */
+    Boolean unbind(Long id);
 }

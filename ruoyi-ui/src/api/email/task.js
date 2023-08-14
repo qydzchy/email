@@ -35,6 +35,15 @@ export function testTask(id) {
   })
 }
 
+// 邮箱解绑
+export function unbindTask(data) {
+  return request({
+    url: '/email/task/unbind',
+    method: 'post',
+    params: data
+  })
+}
+
 // 查询邮箱邮件列表
 export function headerList(query) {
   return request({

@@ -74,8 +74,7 @@ public class TaskController extends BaseController
     @GetMapping(value = "/test/{id}")
     public AjaxResult test(@PathVariable("id") Long id)
     {
-        Pair<Boolean, String> booleanStringPair = taskService.testTask(id);
-        return null;
+        return AjaxResult.success(taskService.testTask(id));
     }
 
     /**
@@ -92,12 +91,25 @@ public class TaskController extends BaseController
     /**
      * 删除邮箱任务
      */
-    @PreAuthorize("@ss.hasPermi('email:task:remove')")
+  /*  @PreAuthorize("@ss.hasPermi('email:task:remove')")
     @Log(title = "邮箱任务", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(taskService.deleteTaskByIds(ids));
+    }*/
+
+    /**
+     * 解绑
+     * @param id
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:task:unbind')")
+    @Log(title = "邮箱任务", businessType = BusinessType.DELETE)
+    @PostMapping("/unbind")
+    public AjaxResult unbind(@RequestParam Long id)
+    {
+        return toAjax(taskService.unbind(id));
     }
 
     /**

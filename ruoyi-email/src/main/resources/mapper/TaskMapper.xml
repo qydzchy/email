@@ -70,7 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getTaskById" resultMap="TaskResult">
         <include refid="selectTaskVo"/>
-        where id = #{id} and create_id = #{createId}
+        where id = #{id} and create_id = #{createId} and del_flag = 0
     </select>
 
     <select id="countAccount" resultType="java.lang.Integer">
@@ -80,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="listTask" resultMap="TaskResult">
         <include refid="selectTaskVo"/>
         where create_id = #{createId}
+        and del_flag = 0
         order by create_time desc
     </select>
 
@@ -174,6 +175,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="unbindTaskById">
+        update mailbox_task set del_flag = 2 where id = #{id} and create_id = #{createId}
     </update>
 
     <delete id="deleteTaskById" parameterType="Long">
