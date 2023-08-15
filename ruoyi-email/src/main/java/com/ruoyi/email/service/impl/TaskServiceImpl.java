@@ -413,15 +413,22 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("暂不支持该协议类型");
         }
 
+        int connStatus = 1;
+        String connExceptionReason = null;
         // 邮箱连接
         MailConnCfg mailConnCfg = getMailConnCfg(task);
         try {
             mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
         } catch (Exception e) {
             log.error("邮箱连接失败");
-            return TestTaskVO.builder().connStatus(false).connExceptionReason(e.getMessage()).build();
+            connStatus = 2;
+            connExceptionReason = e.getMessage();
         }
 
-        return TestTaskVO.builder().connStatus(true).connExceptionReason(null).build();
+        task.setConnStatus(connStatus);
+        task.setConnExceptionReason(connExceptionReason);
+        taskMapper.updateTask(task);
+
+        return TestTaskVO.builder().connStatus(connStatus).connExceptionReason(connExceptionReason).build();
     }
 }

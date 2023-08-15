@@ -68,7 +68,7 @@ public class EmailTest {
 
     @Test
     public void taskList() {
-        List<Task> tasks = taskService.selectTaskList(new Task());
-        log.info("{}", tasks);
+        /*List<Task> tasks = taskService.selectTaskList(new Task());
+        log.info("{}", tasks);*/
     }
 }

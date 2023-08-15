@@ -495,7 +495,11 @@ export default {
   data() {
     return {
       showManualConfig: false,
-      formData: {},
+      formData: {
+        protocolType: 1, // 默认选中 IMAP
+        customProxyFlag: false, // 自定义代理默认关闭
+        synchronizeFolderFlag: true // 同步文件夹默认开启
+      },
       addEmailPage: false,
       errors: {}
     }
@@ -512,6 +516,9 @@ export default {
     },
 
     toggleProxySettings(value) {
+      console.log("toggleProxySettings", value);
+      console.log("showManualConfig", this.showManualConfig);
+      console.log(this.formData.customProxyFlag && this.showManualConfig)
       this.formData.customProxyFlag = value;
     },
 

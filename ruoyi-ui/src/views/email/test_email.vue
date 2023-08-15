@@ -52,13 +52,13 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-															<span v-else-if="connStatus" class="okki-icon-wrap" color="#009C51">
+															<span v-else-if="connStatus === 1" class="okki-icon-wrap" color="#009C51">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
                                       <path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
                                   </svg>
                               </span>
-                              <span v-else-if="!connStatus" class="okki-icon-wrap" color="#DD3C3C">
+                              <span v-else-if="connStatus === 2" class="okki-icon-wrap" color="#DD3C3C">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#DD3C3C">
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 4.929A10 10 0 104.93 19.072 10 10 0 0019.07 4.929zM6.343 17.657A8 8 0 1117.657 6.343 8 8 0 016.343 17.657z"></path>
                                       <path d="M15.536 9.879a1 1 0 10-1.415-1.415L12 10.586 9.879 8.464A1 1 0 108.464 9.88L10.586 12l-2.122 2.121a1 1 0 101.415 1.415L12 13.414l2.121 2.122a1 1 0 101.415-1.415L13.414 12l2.122-2.121z"></path>
@@ -102,13 +102,13 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-                              <span v-else-if="connStatus" class="okki-icon-wrap" color="#009C51">
+                              <span v-else-if="connStatus === 1" class="okki-icon-wrap" color="#009C51">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
                                       <path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
                                   </svg>
                               </span>
-                              <span v-else-if="!connStatus" class="okki-icon-wrap" color="#DD3C3C">
+                              <span v-else-if="connStatus === 2" class="okki-icon-wrap" color="#DD3C3C">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#DD3C3C">
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 4.929A10 10 0 104.93 19.072 10 10 0 0019.07 4.929zM6.343 17.657A8 8 0 1117.657 6.343 8 8 0 016.343 17.657z"></path>
                                       <path d="M15.536 9.879a1 1 0 10-1.415-1.415L12 10.586 9.879 8.464A1 1 0 108.464 9.88L10.586 12l-2.122 2.121a1 1 0 101.415 1.415L12 13.414l2.121 2.122a1 1 0 101.415-1.415L13.414 12l2.122-2.121z"></path>
@@ -135,13 +135,13 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-															<span v-else-if="connStatus" class="okki-icon-wrap" color="#009C51">
+															<span v-else-if="connStatus === 1" class="okki-icon-wrap" color="#009C51">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
                                       <path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
                                   </svg>
                               </span>
-                              <span v-else-if="!connStatus" class="okki-icon-wrap" color="#DD3C3C">
+                              <span v-else-if="connStatus === 2" class="okki-icon-wrap" color="#DD3C3C">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#DD3C3C">
                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 4.929A10 10 0 104.93 19.072 10 10 0 0019.07 4.929zM6.343 17.657A8 8 0 1117.657 6.343 8 8 0 016.343 17.657z"></path>
                                       <path d="M15.536 9.879a1 1 0 10-1.415-1.415L12 10.586 9.879 8.464A1 1 0 108.464 9.88L10.586 12l-2.122 2.121a1 1 0 101.415 1.415L12 13.414l2.121 2.122a1 1 0 101.415-1.415L13.414 12l2.122-2.121z"></path>
@@ -161,15 +161,14 @@
 											<div class="mm-form-field-control" style="margin-left: 120px;">
 												<span class="mm-form-field-children">
 													<div class="itemValue">
-														<span>{{ formData.customProxyFlag === 1 ? '开启' : '关闭' }}<span class="mm-tooltip tip-icon">
+														<span>{{ formData.customProxyFlag === 1 ? '开启' : '关闭' }}<!--<span class="mm-tooltip tip-icon">
 																<span class="mm-tooltip-trigger">
 																	<span class="okki-icon-wrap" color="#aeaeae">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#aeaeae">
 																			<path fill-rule="evenodd" clip-rule="evenodd" d="M6.444 3.685a10 10 0 1111.112 16.63A10 10 0 016.444 3.685zm1.111 14.967a8 8 0 108.89-13.305 8 8 0 00-8.89 13.305zM12.072 6.93c-.43 0-.827.046-1.192.142a3.829 3.829 0 00-1.078.479c-.26.157-.442.394-.442.711 0 .213.083.4.232.548a.76.76 0 00.548.232.831.831 0 00.461-.143 2.14 2.14 0 01.618-.25l.006-.001c.247-.065.497-.098.751-.098.542 0 .894.105 1.105.266.196.149.311.377.311.742a.622.622 0 01-.148.41 4.175 4.175 0 01-.626.579l-.002.001a7.704 7.704 0 00-.725.65 2.81 2.81 0 00-.498.752c-.15.32-.221.68-.221 1.076 0 .213.083.4.232.548l.009.009.01.008c.164.14.363.203.577.203.21 0 .405-.066.566-.203l.01-.009a.743.743 0 00.252-.556c0-.265.068-.465.188-.62.156-.197.396-.429.73-.692a7.65 7.65 0 00.662-.576l.005-.005c.184-.193.337-.42.461-.677l.002-.003c.133-.286.196-.607.196-.955 0-.777-.281-1.417-.852-1.887-.556-.464-1.282-.681-2.148-.681zm-.096 8.116a.99.99 0 00-.716.304.97.97 0 00-.292.704c0 .276.097.522.286.722l.006.006.006.006c.198.187.439.286.71.286a.984.984 0 00.716-.292c.2-.199.304-.447.304-.728a.95.95 0 00-.304-.704.965.965 0 00-.716-.304z"></path>
 																		</svg>
 																	</span>
 																</span>
-                              <!---->
-															</span>
+															</span>-->
 														</span>
                             <!---->
 													</div>
@@ -185,15 +184,15 @@
 											<div class="mm-form-field-control" style="margin-left: 120px;">
 												<span class="mm-form-field-children">
 													<div class="itemValue">
-														<span>{{ formData.synchronizeFolderFlag === 1 ? '开启' : '关闭' }}<span class="mm-tooltip tip-icon">
+														<span>{{ formData.synchronizeFolderFlag === 1 ? '开启' : '关闭' }}<!--<span class="mm-tooltip tip-icon">
 																<span class="mm-tooltip-trigger">
 																	<span class="okki-icon-wrap" color="#aeaeae">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#aeaeae">
 																			<path fill-rule="evenodd" clip-rule="evenodd" d="M6.444 3.685a10 10 0 1111.112 16.63A10 10 0 016.444 3.685zm1.111 14.967a8 8 0 108.89-13.305 8 8 0 00-8.89 13.305zM12.072 6.93c-.43 0-.827.046-1.192.142a3.829 3.829 0 00-1.078.479c-.26.157-.442.394-.442.711 0 .213.083.4.232.548a.76.76 0 00.548.232.831.831 0 00.461-.143 2.14 2.14 0 01.618-.25l.006-.001c.247-.065.497-.098.751-.098.542 0 .894.105 1.105.266.196.149.311.377.311.742a.622.622 0 01-.148.41 4.175 4.175 0 01-.626.579l-.002.001a7.704 7.704 0 00-.725.65 2.81 2.81 0 00-.498.752c-.15.32-.221.68-.221 1.076 0 .213.083.4.232.548l.009.009.01.008c.164.14.363.203.577.203.21 0 .405-.066.566-.203l.01-.009a.743.743 0 00.252-.556c0-.265.068-.465.188-.62.156-.197.396-.429.73-.692a7.65 7.65 0 00.662-.576l.005-.005c.184-.193.337-.42.461-.677l.002-.003c.133-.286.196-.607.196-.955 0-.777-.281-1.417-.852-1.887-.556-.464-1.282-.681-2.148-.681zm-.096 8.116a.99.99 0 00-.716.304.97.97 0 00-.292.704c0 .276.097.522.286.722l.006.006.006.006c.198.187.439.286.71.286a.984.984 0 00.716-.292c.2-.199.304-.447.304-.728a.95.95 0 00-.304-.704.965.965 0 00-.716-.304z"></path>
 																		</svg>
 																	</span>
 																</span>
-                              <!---->
-															</span>
+                              &lt;!&ndash;&ndash;&gt;
+															</span>-->
 														</span>
                             <!---->
 													</div>
@@ -293,7 +292,7 @@ export default {
         let response = await testTask(this.formData.id);
         let data = response.data;
         this.connStatus = data.connStatus;
-        if (!this.connStatus) {
+        if (this.connStatus === 2) {
           this.connExceptionReason = data.connExceptionReason;
         } else {
           this.connExceptionReason = '';  // 清除之前的错误消息
@@ -307,18 +306,18 @@ export default {
   },
   computed: {
     responseStyle() {
-      if (this.connStatus === true) {
+      if (this.connStatus === 1) {
         return { color: 'rgb(0, 156, 81)' };
-      } else if (this.connStatus === false) {
+      } else if (this.connStatus === 2) {
         return { color: 'rgb(221, 60, 60)' };
       }
       return {};
     },
 
     recheckButtonClass() {
-      if (this.connStatus === true) {
+      if (this.connStatus === 1) {
         return ['mm-button', 'mm-button__primary', 'ames-btn'];
-      } else if (this.connStatus === false) {
+      } else if (this.connStatus === 2) {
         return ['mm-button', 'ames-btn'];
       }
       return ['mm-button'];

@@ -10,7 +10,7 @@ public class TestTaskVO {
     /**
      * 连接状态
      */
-    private Boolean connStatus;
+    private Integer connStatus;
 
     /**
      * 连接异常原因

@@ -92,7 +92,7 @@
                   <p class="text-xl font-semibold">绑定邮箱</p>
                   <div class="okki-space okki-space-horizontal okki-space-align-center" style="gap: 8px;">
                     <div class="okki-space-item" style="">
-                      <button class="okki-btn okki-btn-default okki-btn-round" type="button">
+                      <button class="okki-btn okki-btn-default okki-btn-round" type="button" @click="checkAllEmails">
                         <!---->
                         <span>检查全部邮箱</span>
                       </button>
@@ -200,15 +200,16 @@
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
                                         <div class="flex items-center">
-																															<span class="okki-tag"
-                                                                    :style="{
-                                                                        'background-color': email.connStatus === 1 ? 'rgb(217, 246, 235)' : 'rgb(255, 226, 224)',
-                                                                        color: email.connStatus === 1 ? 'rgb(0, 123, 75)' : 'rgb(182, 31, 31)',
-                                                                        border: 'none',
-                                                                        borderRadius: '4px'
-                                                                    }">
-                                                                {{ email.connStatus === 1 ? '正常' : '异常' }}
-																															</span>
+                                          <span v-if="checkingStatus.includes(email.id)" class="loading-icon"></span>
+                                          <span v-else class="okki-tag"
+                                                :style="{
+                                                   'background-color': email.connStatus === 1 ? 'rgb(217, 246, 235)' : 'rgb(255, 226, 224)',
+                                                    color: email.connStatus === 1 ? 'rgb(0, 123, 75)' : 'rgb(182, 31, 31)',
+                                                    border: 'none',
+                                                    borderRadius: '4px'
+                                                }">
+                                                {{ email.connStatus === 1 ? '正常' : '异常' }}
+																					</span>
                                         </div>
                                       </div>
                                     </div>
@@ -216,10 +217,10 @@
                                   <div colspan="1" rowspan="1" tabindex="-1" role="cell" class="surely-table-cell" style="overflow: initial; width: 280px; left: 1183px;">
                                     <div class="surely-table-cell-inner" style="">
                                       <div class="surely-table-cell-content">
-                                        <div class="space-x-2 flex w-full justify-end items-center">
-                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
+                                        <div>
+<!--                                          <button class="okki-btn okki-btn-link okki-btn-round" type="button">
                                             <span>添加别名邮箱</span>
-                                          </button>
+                                          </button>-->
                                           <button
                                             class="okki-btn okki-btn-link okki-btn-round"
                                             type="button"
@@ -356,13 +357,14 @@
 import addEmailTemplate from './add_email.vue';
 import editEmailTemplate from './edit_email.vue';
 import testEmailTemplate from './test_email.vue';
-import {listTask, unbindTask} from "@/api/email/task";
+import {listTask, testTask, unbindTask} from "@/api/email/task";
 
 export default {
   data() {
     return {
       emails: [],
       dialogVisible: false,  // 控制 Dialog 的显示与隐藏
+      checkingStatus: [],
     };
   },
   components: {
@@ -408,6 +410,30 @@ export default {
           email.connStatus = email.connStatus;
         });
       });
+    },
+    async checkAllEmails() {
+      // Step 1: Mark all emails as being checked
+      this.emails.forEach(email => {
+        this.checkingStatus.push(email.id);
+      });
+
+      // Step 2: Check each email sequentially (or in parallel, depending on your needs)
+      const checkPromises = this.emails.map(async email => {
+        try {
+          await testTask(email.id); // Assume testTask is an asynchronous method
+        } catch (error) {
+          console.error("Error checking email", error);
+        } finally {
+          // Remove the email from the checking list regardless of whether the check succeeded or failed
+          this.checkingStatus = this.checkingStatus.filter(id => id !== email.id);
+        }
+      });
+
+      // Wait for all checks to complete
+      await Promise.all(checkPromises);
+
+      // Step 3: After all emails have been checked, refresh the list
+      this.refreshEmailList();
     }
   },
 
