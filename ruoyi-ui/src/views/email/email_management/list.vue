@@ -349,14 +349,14 @@
   }
 }
 
-@import '../../static/scss/email/email_management/2309.72cc3cdf.css';
-@import '../../static/scss/email/email_management/9755.4df34767.css';
-@import '../../static/scss/email/email_management/windi.9edd44a6.css';
+@import '../../../static/scss/email/email_management/2309.72cc3cdf.css';
+@import '../../../static/scss/email/email_management/9755.4df34767.css';
+@import '../../../static/scss/email/email_management/windi.9edd44a6.css';
 </style>
 <script>
-import addEmailTemplate from './add_email.vue';
-import editEmailTemplate from './edit_email.vue';
-import testEmailTemplate from './test_email.vue';
+import addEmailTemplate from './add.vue';
+import editEmailTemplate from './edit.vue';
+import testEmailTemplate from './test.vue';
 import {listTask, testTask, unbindTask} from "@/api/email/task";
 
 export default {

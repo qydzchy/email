@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="editEmailPage"
+  <el-dialog :visible="addEmailPage"
               width="0%"
               :append-to-body="true"
               @close="close">
@@ -13,7 +13,7 @@
             </svg>
             <div class="mm-modal-header">
               <div class="mm-modal-title">
-                <span>修改配置</span>
+                <span>新增邮箱</span>
               </div>
             </div>
             <div class="mm-modal-body">
@@ -26,6 +26,33 @@
                                         <span class="mm-tooltip-trigger"></span>
                         <!---->
                                     </span>
+                      <!---->
+    <!--                  <div class="mm-form-field">
+                        <div class="mm-form-field-label">
+                          <span>收发件服务器验证</span>
+                        </div>
+                        <div class="mm-form-field-control">
+                                            <span class="mm-form-field-children">
+                                                <span class="mm-select">
+                                                    <div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <div class="mm-selector-rendered">
+                                                            <span title="与邮箱相同" class="mm-selector-selected-value" style="opacity: 1;">与邮箱相同</span>
+                                                          &lt;!&ndash;&ndash;&gt;
+                                                        </div>
+                                                      &lt;!&ndash;&ndash;&gt;
+                                                        <span class="mm-selector-suffix-icon">
+                                                            <svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
+                                                                <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </span>
+                                            </span>
+                          &lt;!&ndash;&ndash;&gt;
+                          &lt;!&ndash;&ndash;&gt;
+                        </div>
+                      </div>-->
                       <div class="mm-form-field--required mm-form-field work-email-field">
                         <div class="mm-form-field-label">
                           <span>工作邮箱</span>
@@ -36,7 +63,7 @@
                                                     <!---->
                                                     <span class="mm-input-affix-wrapper">
                                                         <!---->
-                                                        <input v-model="formData.account" modelmodifiers="[object Object]" placeholder="请输入邮箱账号" type="text" class="mm-input-inner" value="" readonly>
+                                                        <input v-model="formData.account" modelmodifiers="[object Object]" placeholder="请输入邮箱账号" type="text" class="mm-input-inner" value="">
                                                         <div v-if="errors.account" class="error-text">{{ errors.account }}</div>
                                                       <!---->
                                                         </span>
@@ -75,18 +102,43 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field mail-bind-radio-field">
+                      <div class="mm-form-field--required mm-form-field mail-bind-radio-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                           <span>协议类型</span>
                         </div>
                         <div class="mm-form-field-control">
-												<span class="mm-form-field-children">
-													<span>{{formData.protocolTypeName}}</span>
-													<div class="protocol-tip">由于exchange协议支持问题，网易邮箱推荐使用IMAP协议。</div>
-												</span>
+                                                    <span class="mm-form-field-children">
+                                                        <!---->
+                                                        <div class="mm-radio-group">
+                                                            <label class="mm-radio">
+                                                                <input v-model="formData.protocolType" show="function(){return!0}" name="mm-radio-group-60" type="radio" value="1" checked>
+                                                                    <span class="mm-radio-faux">
+                                                                        <span class="mm-radio-input"></span>
+                                                                        <span class="mm-radio-label">IMAP</span>
+                                                                    </span>
+                                                                </label>
+                                                                <label class="mm-radio">
+                                                                    <input v-model="formData.protocolType" show="function(){return!0}" name="mm-radio-group-60" type="radio" value="2">
+                                                                        <span class="mm-radio-faux">
+                                                                            <span class="mm-radio-input"></span>
+                                                                            <span class="mm-radio-label">POP3 (不推荐,无法同步发件)</span>
+                                                                        </span>
+                                                                    </label>
+                                                                    <label class="mm-radio">
+                                                                        <input v-model="formData.protocolType" show="function(e){return e.setting.multi_user_name_flag!==We.CUSTOM}" name="mm-radio-group-60" type="radio" value="3">
+                                                                            <span class="mm-radio-faux">
+                                                                                <span class="mm-radio-input"></span>
+                                                                                <span class="mm-radio-label">Exchange</span>
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="protocol-tip">由于exchange协议支持问题，网易邮箱推荐使用IMAP协议。</div>
+                                                                </span>
+                          <!---->
+                          <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field">
+                      <div class="mm-form-field--required mm-form-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                           <span>收邮件服务器</span>
                         </div>
@@ -132,7 +184,7 @@
                         </div>
                       </div>
                       <!---->
-                      <div class="mm-form-field--required mm-form-field">
+                      <div class="mm-form-field--required mm-form-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                           <span>发邮件服务器</span>
                         </div>
@@ -178,7 +230,7 @@
                         </div>
                       </div>
                       <!---->
-                      <div class="mm-form-field mail-bind-radio-field">
+                      <div class="mm-form-field mail-bind-radio-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                                                                                         <span class="mm-tooltip">
                                                                                             <span class="mm-tooltip-trigger">
@@ -217,7 +269,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field" v-if="formData.customProxyFlag">
+                      <div class="mm-form-field--required mm-form-field" v-if="formData.customProxyFlag && showManualConfig">
                         <div class="mm-form-field-label">
                           <span>服务器类型</span>
                         </div>
@@ -228,7 +280,7 @@
                           </el-select>
                         </div>
                       </div>
-                      <div class="mm-form-field--required mm-form-field" v-if="formData.customProxyFlag">
+                      <div class="mm-form-field--required mm-form-field" v-if="formData.customProxyFlag && showManualConfig" >
                         <div class="mm-form-field-label">
                           <span>服务器</span>
                         </div>
@@ -266,7 +318,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field" v-if="formData.customProxyFlag">
+                      <div class="mm-form-field" v-if="formData.customProxyFlag && showManualConfig">
                         <div class="mm-form-field-label">
                           <span>用户名</span>
                         </div>
@@ -286,7 +338,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field" v-if="formData.customProxyFlag">
+                      <div class="mm-form-field" v-if="formData.customProxyFlag && showManualConfig">
                         <div class="mm-form-field-label">
                           <span>密码</span>
                         </div>
@@ -306,7 +358,7 @@
                           <!---->
                         </div>
                       </div>
-                      <div class="mm-form-field mail-bind-radio-field">
+                      <div class="mm-form-field mail-bind-radio-field" v-if="showManualConfig">
                         <div class="mm-form-field-label">
                                                                                                                 <span class="mm-tooltip">
                                                                                                                     <span class="mm-tooltip-trigger">
@@ -341,6 +393,18 @@
                                                                                                                                 </label>
                                                                                                                             </div>
                                                                                                                         </span>
+                          <!---->
+                          <!---->
+                        </div>
+                      </div>
+                      <div class="mm-form-field">
+                        <div class="mm-form-field-label">
+                          <div class="toggleMore">
+                            <a @click="toggleManualConfig">{{ showManualConfig ? '收起手动配置' : '手动配置' }}</a>
+                          </div>
+                        </div>
+                        <div class="mm-form-field-control">
+                          <span class="mm-form-field-children"></span>
                           <!---->
                           <!---->
                         </div>
@@ -420,44 +484,52 @@ label {
   font-weight: initial;
 }
 
-@import '../../static/scss/email/email_management/9755.4df34767.css';
-@import '../../static/scss/email/email_management/MailInformationExtension.504babf1.css';
+@import '../../../static/scss/email/email_management/9755.4df34767.css';
+@import '../../../static/scss/email/email_management/MailInformationExtension.504babf1.css';
 </style>
 <script>
-import {editTask} from "@/api/email/task";
+import {addTask} from "@/api/email/task";
 
 export default {
   components: {},
   data() {
     return {
       showManualConfig: false,
-      formData: {},
-      editEmailPage: false,
+      formData: {
+        protocolType: 1, // 默认选中 IMAP
+        customProxyFlag: false, // 自定义代理默认关闭
+        synchronizeFolderFlag: true // 同步文件夹默认开启
+      },
+      addEmailPage: false,
       errors: {}
     }
   },
-  watch: {
-    emailData: {
-      immediate: true,
-      handler(newValue) {
-        this.formData = { ...newValue };
-      }
-    }
-  },
   methods: {
-    open(email) {
-      this.formData = email;
-      this.editEmailPage = true;
+    open() {
+      this.addEmailPage = true;
     },
 
     close() {
-      this.editEmailPage = false;
+      this.addEmailPage = false;
       this.formData = {};
       this.errors = {};
     },
 
     toggleProxySettings(value) {
       this.formData.customProxyFlag = value;
+    },
+
+    toggleManualConfig() {
+      this.showManualConfig = !this.showManualConfig;
+      if (this.showManualConfig) {
+        this.formData.protocolType = 1; // 默认选中 IMAP
+        this.formData.customProxyFlag = false; // 自定义代理默认关闭
+        this.formData.synchronizeFolderFlag = true; // 同步文件夹默认开启
+      } else {
+        this.formData.protocolType = undefined;
+        this.formData.customProxyFlag = undefined;
+        this.formData.synchronizeFolderFlag = undefined;
+      }
     },
 
     validateForm() {
@@ -486,16 +558,15 @@ export default {
     },
 
     confirm() {
-      console.log(this.formData);
       if (this.validateForm()) {
-        editTask(this.formData).then((response) => {
-          this.$message.success("修改成功");
-          this.editEmailPage = false;
+        addTask(this.formData).then((response) => {
+          this.$message.success("新增成功");
+          this.addEmailPage = false;
         });
       }
 
       this.errors = {};
-    },
+    }
   }
 };
 </script>

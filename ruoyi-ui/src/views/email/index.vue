@@ -1098,7 +1098,7 @@
 
 <script>
 import emailContentLayout from './email_content.vue';
-import emailManagementLayout from './email_management.vue';
+import setup from './setup.vue';
 
 export default {
   data() {
@@ -1108,7 +1108,7 @@ export default {
   },
   components: {
     'email_content': emailContentLayout,
-    'email_management': emailManagementLayout,
+    'setup': setup,
   },
   methods: {
     switchLayout(layout) {

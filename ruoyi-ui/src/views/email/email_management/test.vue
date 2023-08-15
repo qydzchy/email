@@ -254,8 +254,8 @@
   100% { transform: rotate(360deg); }
 }
 
-@import '../../static/scss/email/email_management/1972.59786a6e.css';
-@import '../../static/scss/email/email_management/8372.43beae95.css';
+@import '../../../static/scss/email/email_management/1972.59786a6e.css';
+@import '../../../static/scss/email/email_management/8372.43beae95.css';
 </style>
 <script>
 import {testTask} from "@/api/email/task";
