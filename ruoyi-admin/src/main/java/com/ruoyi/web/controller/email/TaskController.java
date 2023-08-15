@@ -89,17 +89,6 @@ public class TaskController extends BaseController
     }
 
     /**
-     * 删除邮箱任务
-     */
-  /*  @PreAuthorize("@ss.hasPermi('email:task:remove')")
-    @Log(title = "邮箱任务", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
-        return toAjax(taskService.deleteTaskByIds(ids));
-    }*/
-
-    /**
      * 解绑
      * @param id
      * @return

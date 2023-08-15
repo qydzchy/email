@@ -4,7 +4,7 @@
               :append-to-body="true"
               @close="close">
     <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
-      <div class="mm-modal--mask mm-modal" v-portal="" v-portal-fixed="" style="z-index: 99;">
+      <div class="mm-modal--mask mm-modal" style="z-index: 99;">
         <div class="mm-modal-mask"></div>
         <div class="mm-modal-wrapper" style="padding-top: 15vh;">
           <div class="mm-modal-content" style="width: 560px; border-color: transparent;">
@@ -52,11 +52,18 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-<!--															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
-																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
-																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
-																</svg>
-															</span>-->
+															<span v-else-if="connStatus" class="okki-icon-wrap" color="#009C51">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+                                      <path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
+                                  </svg>
+                              </span>
+                              <span v-else-if="!connStatus" class="okki-icon-wrap" color="#DD3C3C">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#DD3C3C">
+                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 4.929A10 10 0 104.93 19.072 10 10 0 0019.07 4.929zM6.343 17.657A8 8 0 1117.657 6.343 8 8 0 016.343 17.657z"></path>
+                                      <path d="M15.536 9.879a1 1 0 10-1.415-1.415L12 10.586 9.879 8.464A1 1 0 108.464 9.88L10.586 12l-2.122 2.121a1 1 0 101.415 1.415L12 13.414l2.121 2.122a1 1 0 101.415-1.415L13.414 12l2.122-2.121z"></path>
+                                  </svg>
+                              </span>
 														</span>
 													</div>
 												</span>
@@ -95,12 +102,18 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-
-															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
-																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
-																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
-															</svg>
-															</span>
+                              <span v-else-if="connStatus" class="okki-icon-wrap" color="#009C51">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+                                      <path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
+                                  </svg>
+                              </span>
+                              <span v-else-if="!connStatus" class="okki-icon-wrap" color="#DD3C3C">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#DD3C3C">
+                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 4.929A10 10 0 104.93 19.072 10 10 0 0019.07 4.929zM6.343 17.657A8 8 0 1117.657 6.343 8 8 0 016.343 17.657z"></path>
+                                      <path d="M15.536 9.879a1 1 0 10-1.415-1.415L12 10.586 9.879 8.464A1 1 0 108.464 9.88L10.586 12l-2.122 2.121a1 1 0 101.415 1.415L12 13.414l2.121 2.122a1 1 0 101.415-1.415L13.414 12l2.122-2.121z"></path>
+                                  </svg>
+                              </span>
 														</span>
 													</div>
 												</span>
@@ -122,11 +135,18 @@
                               <span v-if="isChecking">
                                 <div class="loader"></div>
                               </span>
-															<span class="okki-icon-wrap" color="#009C51">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
-																	<path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
-																	<path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
-																</svg>
-															</span>
+															<span v-else-if="connStatus" class="okki-icon-wrap" color="#009C51">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#009C51">
+                                      <path d="M12 20a8 8 0 100-16 8 8 0 000 16zm10-8c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M17.194 8.28a1 1 0 01.026 1.414l-5.786 6a1 1 0 01-1.44 0L6.78 12.361a1 1 0 011.44-1.389l2.494 2.587 5.066-5.253a1 1 0 011.414-.026z"></path>
+                                  </svg>
+                              </span>
+                              <span v-else-if="!connStatus" class="okki-icon-wrap" color="#DD3C3C">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#DD3C3C">
+                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 4.929A10 10 0 104.93 19.072 10 10 0 0019.07 4.929zM6.343 17.657A8 8 0 1117.657 6.343 8 8 0 016.343 17.657z"></path>
+                                      <path d="M15.536 9.879a1 1 0 10-1.415-1.415L12 10.586 9.879 8.464A1 1 0 108.464 9.88L10.586 12l-2.122 2.121a1 1 0 101.415 1.415L12 13.414l2.121 2.122a1 1 0 101.415-1.415L13.414 12l2.122-2.121z"></path>
+                                  </svg>
+                              </span>
 														</span>
 													</div>
 												</span>
@@ -182,8 +202,21 @@
                         <!---->
 											</div>
 										</div>
+
+                    <div class="mm-form-field" v-if="connExceptionReason">
+                      <div class="mm-form-field-label" style="width: 120px;">
+                          <span style="color: rgb(221, 60, 60)">错误原因</span>
+                      </div>
+                      <div class="mm-form-field-control" style="margin-left: 120px;">
+                          <span class="mm-form-field-children">
+                              <div class="itemValue" style="color: rgb(221, 60, 60)">
+                                  <span>{{ connExceptionReason }}</span>
+                              </div>
+                          </span>
+                      </div>
+                    </div>
+
 									</form>
-                  <!---->
 								</div>
 								<div class="mailFooterAction">
 									<div>
@@ -235,7 +268,8 @@ export default {
       formData: {},
       testEmailPage: false,
       isChecking: false, // 是否正在进行检测
-      connStatus: null  // 用于保存接口的返回状态
+      connStatus: null,  // 用于保存接口的返回状态
+      connExceptionReason: ''
     }
   },
   methods: {
@@ -253,11 +287,17 @@ export default {
 
     async checkEmail() {
       this.isChecking = true;
-
+      this.connStatus = null;
+      this.connExceptionReason = '';
       try {
         let response = await testTask(this.formData.id);
         let data = response.data;
         this.connStatus = data.connStatus;
+        if (!this.connStatus) {
+          this.connExceptionReason = data.connExceptionReason;
+        } else {
+          this.connExceptionReason = '';  // 清除之前的错误消息
+        }
       } catch (error) {
         this.connStatus = false;
       }
