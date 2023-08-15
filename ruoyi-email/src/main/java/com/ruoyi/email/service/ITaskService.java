@@ -2,10 +2,9 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Task;
-import com.ruoyi.email.domain.dto.EditTaskDTO;
-import com.ruoyi.email.domain.vo.ListTaskVO;
-import com.ruoyi.email.domain.vo.TestTaskVO;
-import org.springframework.data.util.Pair;
+import com.ruoyi.email.domain.dto.task.EditTaskDTO;
+import com.ruoyi.email.domain.vo.task.ListTaskVO;
+import com.ruoyi.email.domain.vo.task.TestTaskVO;
 
 /**
  * 邮箱任务Service接口

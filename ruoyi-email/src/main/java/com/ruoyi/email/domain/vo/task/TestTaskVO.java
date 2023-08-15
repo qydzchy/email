@@ -1,4 +1,4 @@
-package com.ruoyi.email.domain.vo;
+package com.ruoyi.email.domain.vo.task;
 
 import lombok.Builder;
 import lombok.Data;

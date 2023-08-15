@@ -3,11 +3,9 @@ package com.ruoyi.web.controller.email;
 import java.util.List;
 import java.util.Optional;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.email.domain.dto.EditTaskDTO;
-import com.ruoyi.email.domain.vo.ListTaskVO;
-import org.springframework.data.util.Pair;
+import com.ruoyi.email.domain.dto.task.EditTaskDTO;
+import com.ruoyi.email.domain.vo.task.ListTaskVO;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -16,6 +14,8 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.service.ITaskService;
 import com.ruoyi.common.core.page.TableDataInfo;
+
+import javax.annotation.Resource;
 
 /**
  * 邮箱任务Controller
@@ -27,7 +27,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RequestMapping("/email/task")
 public class TaskController extends BaseController
 {
-    @Autowired
+    @Resource
     private ITaskService taskService;
 
     /**
@@ -39,16 +39,6 @@ public class TaskController extends BaseController
     {
         List<ListTaskVO> list = taskService.listTask();
         return getDataTable(list);
-    }
-
-    /**
-     * 获取邮箱任务详细信息
-     */
-    @PreAuthorize("@ss.hasPermi('email:task:query')")
-    @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
-        return success(taskService.selectTaskById(id));
     }
 
     /**
@@ -70,7 +60,7 @@ public class TaskController extends BaseController
      * @return
      */
     @PreAuthorize("@ss.hasPermi('email:task:test')")
-    @Log(title = "邮箱检测", businessType = BusinessType.TEST)
+    @Log(title = "邮箱检测", businessType = BusinessType.UPDATE)
     @GetMapping(value = "/test/{id}")
     public AjaxResult test(@PathVariable("id") Long id)
     {

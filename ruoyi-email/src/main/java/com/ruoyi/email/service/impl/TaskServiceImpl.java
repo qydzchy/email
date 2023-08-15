@@ -14,18 +14,19 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
-import com.ruoyi.email.domain.dto.EditTaskDTO;
-import com.ruoyi.email.domain.vo.ListTaskVO;
-import com.ruoyi.email.domain.vo.TestTaskVO;
+import com.ruoyi.email.domain.dto.task.EditTaskDTO;
+import com.ruoyi.email.domain.vo.task.ListTaskVO;
+import com.ruoyi.email.domain.vo.task.TestTaskVO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskMapper;
+
+import javax.annotation.Resource;
 
 /**
  * 邮箱任务Service业务层处理
@@ -37,22 +38,22 @@ import com.ruoyi.email.mapper.TaskMapper;
 @Service
 public class TaskServiceImpl implements ITaskService
 {
-    @Autowired
+    @Resource
     private TaskMapper taskMapper;
 
-    @Autowired
+    @Resource
     private MailContext mailContext;
 
-    @Autowired
+    @Resource
     private IHostService hostService;
 
-    @Autowired
+    @Resource
     private ITaskEmailPullService taskEmailPullService;
 
-    @Autowired
+    @Resource
     private ITaskEmailContentService taskEmailContentService;
 
-    @Autowired
+    @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
 
     @Value("${email.path}")

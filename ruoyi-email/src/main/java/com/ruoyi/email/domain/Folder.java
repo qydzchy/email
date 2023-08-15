@@ -32,7 +32,7 @@ public class Folder extends BaseEntity
 
     /** 顺序 */
     @Excel(name = "顺序")
-    private Long order;
+    private Long orderNum;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -73,16 +73,16 @@ public class Folder extends BaseEntity
     {
         return type;
     }
-    public void setOrder(Long order) 
-    {
-        this.order = order;
+
+    public Long getOrderNum() {
+        return orderNum;
     }
 
-    public Long getOrder() 
-    {
-        return order;
+    public void setOrderNum(Long orderNum) {
+        this.orderNum = orderNum;
     }
-    public void setDelFlag(String delFlag) 
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
@@ -99,7 +99,7 @@ public class Folder extends BaseEntity
             .append("parentFolderId", getParentFolderId())
             .append("name", getName())
             .append("type", getType())
-            .append("order", getOrder())
+            .append("orderNum", getOrderNum())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

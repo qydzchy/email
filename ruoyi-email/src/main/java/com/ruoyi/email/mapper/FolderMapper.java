@@ -2,6 +2,8 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.Folder;
+import com.ruoyi.email.domain.vo.folder.FolderListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 文件夹Mapper接口
@@ -58,4 +60,11 @@ public interface FolderMapper
      * @return 结果
      */
     public int deleteFolderByIds(Long[] ids);
+
+    /**
+     * 获取文件夹列表
+     * @param userId
+     * @return
+     */
+    List<FolderListVO> getFolderList(@Param("createId") Long userId);
 }

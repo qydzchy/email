@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Folder;
+import com.ruoyi.email.domain.vo.folder.FolderListVO;
 
 /**
  * 文件夹Service接口
@@ -58,4 +59,10 @@ public interface IFolderService
      * @return 结果
      */
     public int deleteFolderById(Long id);
+
+    /**
+     * 获取文件夹列表(树型)
+     * @return
+     */
+    List<FolderListVO> getFolderTree();
 }

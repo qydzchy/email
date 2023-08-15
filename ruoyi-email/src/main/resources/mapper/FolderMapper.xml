@@ -35,7 +35,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFolderVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="getFolderList" resultType="com.ruoyi.email.domain.vo.folder.FolderListVO">
+        <include refid="selectFolderVo"/>
+        where create_id = #{createId}
+    </select>
+
     <insert id="insertFolder" parameterType="Folder" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_folder
         <trim prefix="(" suffix=")" suffixOverrides=",">

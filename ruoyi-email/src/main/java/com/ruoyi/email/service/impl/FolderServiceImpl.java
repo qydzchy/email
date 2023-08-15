@@ -1,12 +1,18 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.folder.FolderListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.FolderMapper;
 import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.service.IFolderService;
+
+import javax.annotation.Resource;
 
 /**
  * 文件夹Service业务层处理
@@ -17,7 +23,7 @@ import com.ruoyi.email.service.IFolderService;
 @Service
 public class FolderServiceImpl implements IFolderService 
 {
-    @Autowired
+    @Resource
     private FolderMapper folderMapper;
 
     /**
@@ -92,5 +98,29 @@ public class FolderServiceImpl implements IFolderService
     public int deleteFolderById(Long id)
     {
         return folderMapper.deleteFolderById(id);
+    }
+
+    @Override
+    public List<FolderListVO> getFolderTree() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        List<FolderListVO> folderList = folderMapper.getFolderList(userId); //
+        return buildTree(folderList, -1L);
+    }
+
+    private List<FolderListVO> buildTree(List<FolderListVO> folders, Long parentId) {
+        List<FolderListVO> children = new ArrayList<>();
+
+        for (FolderListVO folder : folders) {
+            if ((parentId == null && folder.getParentFolderId() == null)
+                    || (parentId != null && parentId.equals(folder.getParentFolderId()))) {
+                List<FolderListVO> childFolders = buildTree(folders, folder.getId());
+                folder.setChildren(childFolders); // 假设FolderListVO有一个children字段
+                children.add(folder);
+            }
+        }
+
+        return children;
     }
 }
