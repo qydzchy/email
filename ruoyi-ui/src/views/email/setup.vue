@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      currentTab: 'defaultTabName'  // 你可以设置为第一个标签的名字，例如 "常规"
+      currentTab: '常规'  // 你可以设置为第一个标签的名字，例如 "常规"
     };
   },
   methods: {
