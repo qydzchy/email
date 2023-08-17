@@ -46,7 +46,8 @@ export default {
   },
   data() {
     return {
-      folders: [] //从API或其他地方加载的数据
+      folders: [], //从API或其他地方加载的数据
+      openFolders: {}
     };
   },
   methods: {
