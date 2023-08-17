@@ -20,7 +20,7 @@
           </div>
           <div class="select-wrapper"></div>
 
-          <FolderItem></FolderItem>
+          <FolderItem :folders="folders"></FolderItem>
 
           <span id="dragImage" class="dragging-tag"></span>
         </div>
