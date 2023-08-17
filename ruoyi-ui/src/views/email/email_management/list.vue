@@ -1,15 +1,5 @@
 <template>
   <div class="mm-tabs-content">
-    <div id="pane-0" aria-hidden="true" aria-labelledby="tab-0" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-1" aria-hidden="true" aria-labelledby="tab-1" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-2" aria-hidden="false" aria-labelledby="tab-2" class="mm-tab-pane" role="tabpanel" style=""></div>
-    <div id="pane-3" aria-hidden="true" aria-labelledby="tab-3" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-4" aria-hidden="true" aria-labelledby="tab-4" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-5" aria-hidden="true" aria-labelledby="tab-5" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-6" aria-hidden="true" aria-labelledby="tab-6" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-7" aria-hidden="true" aria-labelledby="tab-7" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-8" aria-hidden="true" aria-labelledby="tab-8" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
-    <div id="pane-9" aria-hidden="true" aria-labelledby="tab-9" class="mm-tab-pane" role="tabpanel" style="display: none;"></div>
     <div class="okki-galio-valar-app okki-galio-mail-manange config-page-item">
       <!---->
       <div class="okki-galio-valar-app okki-galio-mail-manange" data-v-app="">

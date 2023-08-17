@@ -1,0 +1,233 @@
+.dragging-tag {
+  position: fixed;
+  top: -100px;
+  background: #017aff;
+  height: 28px;
+  color: #fff;
+  border-radius: 4px;
+  line-height: 28px;
+  padding: 0 8px
+}
+
+.tree-wrap {
+  position: relative;
+  font-size: 14px;
+  color: #3a4550
+}
+
+.tree-wrap .select-wrapper {
+  position: absolute;
+  box-sizing: border-box;
+  top: -1000px;
+  right: 0;
+  border: 0;
+  pointer-events: none;
+  border-radius: 4px;
+  z-index: 10
+}
+
+.tree-wrap .folder-tree-body {
+  max-height: calc(100vh - 215px);
+  overflow-y: auto
+}
+
+.tree-wrap .drag-over-item>.mm-collapse>.mm-collapse-item>.mm-collapse-item-header-wrap>.mm-collapse-item-header {
+  background: #ecf9ff
+}
+
+.tree-wrap .folder-to-child {
+  height: 40px;
+  border: 2px solid #017aff;
+  border-radius: 4px
+}
+
+.tree-wrap .folder-to-up {
+  height: 2px;
+  background: #017aff
+}
+
+.tree-wrap .folder-to-up:before {
+  position: absolute;
+  left: -8px;
+  top: -3px;
+  display: block;
+  content: " ";
+  width: 8px;
+  height: 8px;
+  border: 2px solid #017aff;
+  box-sizing: border-box;
+  border-radius: 50%
+}
+
+.tree-wrap .folder-to-down {
+  height: 2px;
+  background: #017aff
+}
+
+.tree-wrap .folder-to-down:before {
+  position: absolute;
+  left: -8px;
+  top: -3px;
+  display: block;
+  content: " ";
+  width: 8px;
+  height: 8px;
+  border: 2px solid #017aff;
+  box-sizing: border-box;
+  border-radius: 50%
+}
+
+.tree-wrap .folder-node-no .mm-collapse-item-wrap {
+  display: none
+}
+
+.tree-wrap .dragging .folder-name {
+  color: #9ea1a8 !important
+}
+
+.tree-wrap .folder-item {
+  position: relative;
+  cursor: pointer;
+  line-height: 40px;
+  box-sizing: border-box
+}
+
+.tree-wrap .folder-item .folder-line {
+  position: absolute;
+  width: 1px;
+  top: -20px;
+  left: -10px;
+  background: #dfe1e5
+}
+
+.tree-wrap .folder-item .folder-line:after {
+  position: absolute;
+  left: 1px;
+  top: 40px;
+  display: block;
+  content: " ";
+  width: 9px;
+  height: 1px;
+  background: #dfe1e5;
+  z-index: 100
+}
+
+.tree-wrap .folder-item .mm-collapse-item-header-wrap {
+  height: 40px;
+  box-sizing: border-box
+}
+
+.tree-wrap .folder-item .mm-collapse-item-header {
+  box-sizing: border-box;
+  border: 0;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 0 0 4px
+}
+
+.tree-wrap .folder-item .mm-collapse-item-header:hover {
+  background: #f7f8fb;
+  border-radius: 4px
+}
+
+.tree-wrap .folder-item .mm-collapse-item-content {
+  position: relative;
+  padding: 5px 0 3px 22px
+}
+
+.tree-wrap .folder-item .mm-collapse,
+.tree-wrap .folder-item .mm-collapse-item-wrap {
+  border: 0
+}
+
+.tree-wrap .folder-item .folder-icon {
+  display: flex;
+  align-items: center
+}
+
+.tree-wrap .folder-item .folder-icon .folder-drag-icon {
+  margin-right: 5px
+}
+
+.tree-wrap .folder-item .folder-icon .expand {
+  transition: transform .3s ease-in;
+  transform: rotate(90deg)
+}
+
+.tree-wrap .folder-item .folder-name-edit {
+  max-width: 100%;
+  width: 240px
+}
+
+.tree-wrap .folder-item .folder-name {
+  font-size: 14px;
+  color: #1e2126;
+  font-weight: 400
+}
+
+.tree-wrap .folder-item .btn-list {
+  float: right;
+  height: 40px;
+  line-height: 40px
+}
+
+.tree-wrap .folder-columns {
+  width: 100%;
+  display: flex;
+  justify-content: space-between
+}
+
+.tree-wrap .list-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: default;
+  background-color: #f1f1f1;
+  line-height: 38px;
+  border-bottom: 1px solid #d9d9d9;
+  color: #3a4550;
+  padding: 0 25px;
+  box-sizing: border-box
+}
+
+.mail-plus-folder {
+  overflow-y: auto;
+  height: calc(100vh - 103px)
+}
+
+.mail-plus-folder .mail-folder-list {
+  margin-top: 14px;
+  padding-bottom: 20px
+}
+
+.mail-plus-folder .mail-folder-list .tree-wrap .tree {
+  line-height: 38px;
+  border-bottom: 1px solid #d9d9d9
+}
+
+.mail-plus-folder .rename-folder .component-input .input {
+  width: 222px
+}
+
+.mail-plus-folder .list-container {
+  padding: 10px
+}
+
+.mail-plus-folder li {
+  list-style: none
+}
+
+.mail-plus-folder .e-add-top-folder {
+  background: #ff5252
+}
+
+.mail-plus-folder .m-list-item {
+  border-right: none;
+  border-left: none
+}
+
+.mail-plus-folder .m-list-item .c-cell-main .folder-item {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}

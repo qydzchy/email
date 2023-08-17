@@ -7,6 +7,7 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.vo.folder.FolderListVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.FolderMapper;
 import com.ruoyi.email.domain.Folder;
@@ -105,8 +106,15 @@ public class FolderServiceImpl implements IFolderService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        List<FolderListVO> folderList = folderMapper.getFolderList(userId); //
-        return buildTree(folderList, -1L);
+        List<Folder> folderList = folderMapper.getFolderList(userId); //
+        List<FolderListVO> folderListVOList = new ArrayList<>();
+        for (Folder folder : folderList) {
+            FolderListVO folderListVO = new FolderListVO();
+            BeanUtils.copyProperties(folder, folderListVO);
+            folderListVOList.add(folderListVO);
+        }
+
+        return buildTree(folderListVOList, -1L);
     }
 
     private List<FolderListVO> buildTree(List<FolderListVO> folders, Long parentId) {

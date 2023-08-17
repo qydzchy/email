@@ -66,5 +66,5 @@ public interface FolderMapper
      * @param userId
      * @return
      */
-    List<FolderListVO> getFolderList(@Param("createId") Long userId);
+    List<Folder> getFolderList(@Param("createId") Long userId);
 }

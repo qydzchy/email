@@ -9,16 +9,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="parentFolderId"    column="parent_folder_id"    />
         <result property="name"    column="name"    />
         <result property="type"    column="type"    />
-        <result property="order"    column="order"    />
+        <result property="orderNum"    column="order_num"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectFolderVo">
-        select id, parent_folder_id, name, type, order, del_flag, create_by, create_time, update_by, update_time from mailbox_folder
+        select id, parent_folder_id, name, type, order_num, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_folder
     </sql>
 
     <select id="selectFolderList" parameterType="Folder" resultMap="FolderResult">
@@ -27,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="parentFolderId != null "> and parent_folder_id = #{parentFolderId}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="type != null "> and type = #{type}</if>
-            <if test="order != null "> and order = #{order}</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
         </where>
     </select>
     
@@ -36,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="getFolderList" resultType="com.ruoyi.email.domain.vo.folder.FolderListVO">
+    <select id="getFolderList" resultMap="FolderResult">
         <include refid="selectFolderVo"/>
         where create_id = #{createId}
     </select>
@@ -47,10 +49,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="parentFolderId != null">parent_folder_id,</if>
             <if test="name != null and name != ''">name,</if>
             <if test="type != null">type,</if>
-            <if test="order != null">order,</if>
+            <if test="orderNum != null">order_num,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
          </trim>
@@ -58,10 +62,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="parentFolderId != null">#{parentFolderId},</if>
             <if test="name != null and name != ''">#{name},</if>
             <if test="type != null">#{type},</if>
-            <if test="order != null">#{order},</if>
+            <if test="orderNum != null">#{orderNum},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
@@ -73,10 +79,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="parentFolderId != null">parent_folder_id = #{parentFolderId},</if>
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="type != null">type = #{type},</if>
-            <if test="order != null">order = #{order},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>

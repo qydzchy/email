@@ -9,6 +9,7 @@
 
 <script>
 import EmailManagementComponent from './email_management/list.vue';
+import FolderComponent from './folder/list.vue';
 
 export default {
   data() {
@@ -21,6 +22,8 @@ export default {
     dynamicComponent() {
       if (this.selectedTab === '邮箱管理') {
         return EmailManagementComponent;
+      } else if (this.selectedTab === '文件夹') {
+        return FolderComponent;
       }
       // ... 可以为其他选项项返回其他组件
       return null;
