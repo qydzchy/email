@@ -59,6 +59,7 @@
               :parentFolderId="folder.id"
               @save="handleSaveSubfolder"
               @cancel="cancelAddSubfolder"
+              ref="inputComponent"
             ></FolderInput>
 
             <FolderItem v-if="folder.children && folder.children.length && openFolders[folder.name]" :folders="folder.children" />
@@ -98,39 +99,26 @@ export default {
     },
     startAddSubfolder(folderId) {
       this.folderAddingSubfolder = folderId;
+      this.$nextTick(() => {
+        this.$refs.inputComponent.focusInput();
+      });
     },
 
-/*    async checkAndSave() {
-      if (this.newFolderName.trim()) {
-        const data = {
-          "parentFolderId": this.parentFolderId,  // 使用从父组件传递的属性
-          "name": this.newFolderName
-        };
-
-        try {
-          const response = await this.addFolder(data);
-          if (response.code === 200) {
-            this.$emit('save', { name: this.newFolderName, children: [] });
-            this.newFolderName = '';
-          } else {
-            console.error('Failed to add folder:', response.message);
-          }
-        } catch (error) {
-          console.error('Error saving the folder:', error);
+    handleSaveSubfolder(newSubfolder) {
+      const parentFolder = this.folders.find(f => f.id === this.folderAddingSubfolder);
+      if (parentFolder) {
+        if (!parentFolder.children) {
+          this.$set(parentFolder, 'children', []);
         }
-
-      } else {
-        this.$emit('cancel');
+        // 使用 unshift 插入新文件夹到 children 数组的开头
+        parentFolder.children.unshift(newSubfolder);
       }
-    },*/
+      this.folderAddingSubfolder = null;
+    },
 
     cancelAddSubfolder() {
       this.folderAddingSubfolder = null;
     },
-
-    created() {
-      console.log("FolderInput created with parentFolderId:", this.parentFolderId);  // 添加调试信息
-    }
 
   }
 };
