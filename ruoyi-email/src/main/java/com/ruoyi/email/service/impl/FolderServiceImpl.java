@@ -60,7 +60,16 @@ public class FolderServiceImpl implements IFolderService
     @Override
     public int insertFolder(Folder folder)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        folder.setCreateId(userId);
+        folder.setCreateBy(username);
         folder.setCreateTime(DateUtils.getNowDate());
+        folder.setUpdateId(userId);
+        folder.setUpdateBy(username);
+        folder.setUpdateTime(DateUtils.getNowDate());
         return folderMapper.insertFolder(folder);
     }
 

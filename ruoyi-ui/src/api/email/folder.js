@@ -8,3 +8,12 @@ export function listTask(query) {
     params: query
   })
 }
+
+// 新增文件夹
+export function addFolder(data) {
+  return request({
+    url: '/email/folder/add',
+    method: 'post',
+    data: data
+  })
+}

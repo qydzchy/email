@@ -1,6 +1,6 @@
 <template>
   <div>
-  <div v-for="folder in folders" :key="folder.name" class="folder-item" draggable="true">
+  <div v-for="folder in folders" :key="folder.id" class="folder-item" draggable="true">
     <div class="mm-collapse">
       <div class="mm-collapse-item">
         <div class="mm-collapse-item-header-wrap">
@@ -13,7 +13,8 @@
 							</span>
 
               <span
-                @click="toggleFolder(folder.name)"
+                v-if="folder.children && folder.children.length > 0"
+                @click.stop="toggleFolder(folder.name)"
                 class="okki-icon-wrap"
                 :class="{'expand': isFolderOpen(folder.name)}"
                 color="#9EA1A8">
@@ -83,7 +84,6 @@ export default {
       this.$set(this.openFolders, folderName, !this.openFolders[folderName]);
     },
     isFolderOpen(folderName) {
-      console.log(!!this.openFolders[folderName]);
       return !!this.openFolders[folderName];
     }
   }

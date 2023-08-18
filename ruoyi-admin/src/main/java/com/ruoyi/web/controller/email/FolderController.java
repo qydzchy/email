@@ -49,7 +49,7 @@ public class FolderController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:folder:add')")
     @Log(title = "文件夹", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody Folder folder)
     {
         return toAjax(folderService.insertFolder(folder));
