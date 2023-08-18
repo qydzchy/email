@@ -1,8 +1,6 @@
 <template>
   <div>
   <div v-for="folder in folders" :key="folder.id" class="folder-item" draggable="true">
-    {{ folder.id }} <!-- 打印出每个文件夹的ID -->
-
     <div class="mm-collapse">
       <div class="mm-collapse-item">
         <div class="mm-collapse-item-header-wrap">
@@ -102,7 +100,7 @@ export default {
       this.folderAddingSubfolder = folderId;
     },
 
-    async checkAndSave() {
+/*    async checkAndSave() {
       if (this.newFolderName.trim()) {
         const data = {
           "parentFolderId": this.parentFolderId,  // 使用从父组件传递的属性
@@ -124,7 +122,7 @@ export default {
       } else {
         this.$emit('cancel');
       }
-    },
+    },*/
 
     cancelAddSubfolder() {
       this.folderAddingSubfolder = null;

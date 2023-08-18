@@ -39,7 +39,7 @@ export default {
     async checkAndSave() {
       if (this.newFolderName.trim()) {
         const data = {
-          "parentFolderId": -1,
+          "parentFolderId": this.parentFolderId === null || this.parentFolderId === undefined ? -1 : this.parentFolderId;
           "name": this.newFolderName
         };
 
