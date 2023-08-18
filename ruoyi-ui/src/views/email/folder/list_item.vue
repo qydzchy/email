@@ -1,6 +1,8 @@
 <template>
   <div>
   <div v-for="folder in folders" :key="folder.id" class="folder-item" draggable="true">
+    {{ folder.id }} <!-- 打印出每个文件夹的ID -->
+
     <div class="mm-collapse">
       <div class="mm-collapse-item">
         <div class="mm-collapse-item-header-wrap">
@@ -31,7 +33,7 @@
               </div>
               <div class="folder-columns-item" style="width: 120px; text-align: right; flex: 0 0 auto;">
                 <div class="btn-list">
-                  <button type="button" class="mm-button mm-button__text btn-list-item">
+                  <button type="button" class="mm-button mm-button__text btn-list-item" @click="startAddSubfolder(folder.id)">
                     <!---->
                     <!---->添加子文件夹
                     <!---->
@@ -54,6 +56,13 @@
 
         <div class="mm-collapse-item-wrap" v-if="openFolders[folder.name]" style="" data-old-padding-top="" data-old-padding-bottom="" data-old-overflow="">
           <div class="mm-collapse-item-content">
+            <FolderInput
+              v-if="folderAddingSubfolder === folder.id"
+              :parentFolderId="folder.id"
+              @save="handleSaveSubfolder"
+              @cancel="cancelAddSubfolder"
+            ></FolderInput>
+
             <FolderItem v-if="folder.children && folder.children.length && openFolders[folder.name]" :folders="folder.children" />
           </div>
         </div>
@@ -66,16 +75,19 @@
 
 <script>
 import FolderItem from './list_item.vue';
+import FolderInput from './list_input.vue';
 
 export default {
   data() {
     return {
-      openFolders: [] // 用于跟踪哪些文件夹是打开的
+      openFolders: [], // 用于跟踪哪些文件夹是打开的
+      folderAddingSubfolder: null
     };
   },
   name: 'FolderItem',
   components: {
-    FolderItem
+    FolderItem,
+    FolderInput
   },
   props: ['folders'],
   methods: {
@@ -85,7 +97,43 @@ export default {
     },
     isFolderOpen(folderName) {
       return !!this.openFolders[folderName];
+    },
+    startAddSubfolder(folderId) {
+      this.folderAddingSubfolder = folderId;
+    },
+
+    async checkAndSave() {
+      if (this.newFolderName.trim()) {
+        const data = {
+          "parentFolderId": this.parentFolderId,  // 使用从父组件传递的属性
+          "name": this.newFolderName
+        };
+
+        try {
+          const response = await this.addFolder(data);
+          if (response.code === 200) {
+            this.$emit('save', { name: this.newFolderName, children: [] });
+            this.newFolderName = '';
+          } else {
+            console.error('Failed to add folder:', response.message);
+          }
+        } catch (error) {
+          console.error('Error saving the folder:', error);
+        }
+
+      } else {
+        this.$emit('cancel');
+      }
+    },
+
+    cancelAddSubfolder() {
+      this.folderAddingSubfolder = null;
+    },
+
+    created() {
+      console.log("FolderInput created with parentFolderId:", this.parentFolderId);  // 添加调试信息
     }
+
   }
 };
 </script>

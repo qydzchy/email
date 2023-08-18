@@ -41,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getFolderList" resultMap="FolderResult">
         <include refid="selectFolderVo"/>
         where create_id = #{createId}
+        order by create_time desc
     </select>
 
     <insert id="insertFolder" parameterType="Folder" useGeneratedKeys="true" keyProperty="id">
