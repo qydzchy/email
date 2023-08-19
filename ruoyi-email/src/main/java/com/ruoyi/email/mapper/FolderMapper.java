@@ -84,4 +84,12 @@ public interface FolderMapper
      * @return
      */
     Folder getById(@Param("id") Long id, @Param("createId") Long userId);
+
+    /**
+     * 根据id删除
+     * @param id
+     * @param userId
+     * @return
+     */
+    int deleteById(Long id, Long userId);
 }

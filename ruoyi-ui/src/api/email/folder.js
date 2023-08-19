@@ -17,3 +17,12 @@ export function addFolder(data) {
     data: data
   })
 }
+
+
+export function updateFolder(data) {
+  return request({
+    url: '/email/folder/edit',
+    method: 'post',
+    data: data
+  })
+}

@@ -119,6 +119,7 @@ public class FolderServiceImpl implements IFolderService
             throw new ServiceException("文件夹名称已存在");
         }
 
+        folder.setName(dto.getName());
         folder.setUpdateId(userId);
         folder.setUpdateBy(username);
         folder.setUpdateTime(new Date());
@@ -163,6 +164,13 @@ public class FolderServiceImpl implements IFolderService
         }
 
         return buildTree(folderListVOList, -1L);
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        return folderMapper.deleteById(id, userId);
     }
 
     private List<FolderListVO> buildTree(List<FolderListVO> folders, Long parentId) {

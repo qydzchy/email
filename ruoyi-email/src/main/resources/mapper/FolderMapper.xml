@@ -115,4 +115,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <delete id="deleteById">
+        update mailbox_folder set del_flag = 2
+        where id = #{id} and create_id = #{createId}
+    </delete>
 </mapper>

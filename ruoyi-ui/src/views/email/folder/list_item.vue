@@ -27,7 +27,16 @@
             </div>
             <div class="folder-columns">
               <div class="folder-columns-item" style="width: 0px; flex: 1 1 0%;">
-                <div class="folder-name ellipsis">{{ folder.name }}</div>
+<!--                <div class="folder-name ellipsis">{{ folder.name }}</div>-->
+                <span v-if="editingFolder !== folder.id">{{ folder.name }}</span>
+                <FolderEditInput
+                  :id="folder.id"
+                  v-if="editingFolder === folder.id"
+                  v-model="editingName"
+                  @blur="finishEditing(folder)"
+                  @edit-success="handleEditSuccess"
+                  ref="editingInput"
+                ></FolderEditInput>
               </div>
               <div class="folder-columns-item" style="width: 120px; text-align: right; flex: 0 0 auto;">
                 <div class="btn-list">
@@ -36,7 +45,7 @@
                     <!---->添加子文件夹
                     <!---->
                   </button>
-                  <button type="button" class="mm-button mm-button__text btn-list-item">
+                  <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="startEditing(folder)">
                     <!---->
                     <!---->编辑
                     <!---->
@@ -75,19 +84,22 @@
 <script>
 import FolderItem from './list_item.vue';
 import FolderInput from './list_input.vue';
+import FolderEditInput from './list_edit_input.vue';
 
 export default {
   data() {
     return {
       openFolders: [], // 用于跟踪哪些文件夹是打开的
       folderAddingSubfolder: null,
-
+      editingFolder: null,     // 正在编辑的文件夹的ID
+      editingName: '',         // 编辑中的文件夹名称
     };
   },
   name: 'FolderItem',
   components: {
     FolderItem,
-    FolderInput
+    FolderInput,
+    FolderEditInput
   },
   props: ['folders'],
   methods: {
@@ -107,10 +119,7 @@ export default {
       this.$set(this.openFolders, folder.name, true);
       this.folderAddingSubfolder = folder.id;
       this.$nextTick(() => {
-        console.log(this.$refs.inputSubComponent);
-        if(this.$refs.inputSubComponent) {
-          this.$refs.inputSubComponent.focusInput();
-        }
+        this.$refs.inputSubComponent.focusInput();
       });
     },
 
@@ -129,6 +138,29 @@ export default {
     cancelAddSubfolder() {
       this.folderAddingSubfolder = null;
     },
+
+    startEditing(folder) {
+      this.editingFolder = folder.id;
+      this.editingName = folder.name;
+
+      this.$nextTick(() => {
+        if (this.$refs.editingInput && typeof this.$refs.editingInput.focus === 'function') {
+          this.$refs.editingInput.focus();
+        }
+      });
+    },
+
+    finishEditing(folder) {
+      if (this.editingName.trim()) {
+        this.$set(folder, 'name', this.editingName.trim());
+      }
+      this.editingFolder = null;
+    },
+
+    handleEditSuccess() {
+      console.log("Received edit success event");
+      this.editingFolder = null;
+    }
 
   }
 };

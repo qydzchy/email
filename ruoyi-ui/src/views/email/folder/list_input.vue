@@ -37,7 +37,6 @@ export default {
     },
 
     async checkAndSave() {
-      console.log("Current parentFolderId:", this.parentFolderId);  // 添加此行以进行调试
 
       if (this.newFolderName.trim()) {
         const data = {

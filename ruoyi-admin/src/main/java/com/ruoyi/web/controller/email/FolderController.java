@@ -3,17 +3,11 @@ package com.ruoyi.web.controller.email;
 import java.util.List;
 import javax.annotation.Resource;
 
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.folder.FolderListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -61,20 +55,24 @@ public class FolderController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:folder:edit')")
     @Log(title = "文件夹", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("edit")
     public AjaxResult edit(@RequestBody FolderSaveOrUpdateDTO dto)
     {
+        if (dto.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
         return toAjax(folderService.updateFolder(dto));
     }
 
     /**
      * 删除文件夹
      */
-    @PreAuthorize("@ss.hasPermi('email:folder:remove')")
+    @PreAuthorize("@ss.hasPermi('email:folder:delete')")
     @Log(title = "文件夹", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
+    @PostMapping("/delete")
+    public AjaxResult delete(@RequestParam Long id)
     {
-        return toAjax(folderService.deleteFolderByIds(ids));
+        return toAjax(folderService.deleteById(id));
     }
 }

@@ -66,4 +66,11 @@ public interface IFolderService
      * @return
      */
     List<FolderListVO> getFolderTree();
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    int deleteById(Long id);
 }
