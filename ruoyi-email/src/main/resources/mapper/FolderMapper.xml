@@ -44,6 +44,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by create_time desc
     </select>
 
+    <select id="countByParentFolderIdAndName" resultType="java.lang.Integer">
+        select count(*) from mailbox_folder
+        where parent_folder_id = #{parentFolderId} and name = #{name} and create_id = #{createId}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+    <select id="getById" resultMap="FolderResult">
+        <include refid="selectFolderVo"/>
+        where id = #{id} and create_id = #{createId}
+    </select>
+
     <insert id="insertFolder" parameterType="Folder" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_folder
         <trim prefix="(" suffix=")" suffixOverrides=",">

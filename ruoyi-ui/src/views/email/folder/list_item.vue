@@ -4,7 +4,7 @@
     <div class="mm-collapse">
       <div class="mm-collapse-item">
         <div class="mm-collapse-item-header-wrap">
-          <div class="mm-collapse-item-header--active mm-collapse-item-header" @click="toggleFolder(folder.name)">
+          <div class="mm-collapse-item-header--active mm-collapse-item-header" @click="toggleFolder(folder, $event)">
             <div class="folder-icon">
               <span class="okki-icon-wrap folder-drag-icon" color="#9EA1A8">​
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#9EA1A8">
@@ -31,7 +31,7 @@
               </div>
               <div class="folder-columns-item" style="width: 120px; text-align: right; flex: 0 0 auto;">
                 <div class="btn-list">
-                  <button type="button" class="mm-button mm-button__text btn-list-item" @click="startAddSubfolder(folder.id)">
+                  <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="startAddSubfolder(folder)">
                     <!---->
                     <!---->添加子文件夹
                     <!---->
@@ -59,7 +59,7 @@
               :parentFolderId="folder.id"
               @save="handleSaveSubfolder"
               @cancel="cancelAddSubfolder"
-              ref="inputComponent"
+              ref="inputSubComponent"
             ></FolderInput>
 
             <FolderItem v-if="folder.children && folder.children.length && openFolders[folder.name]" :folders="folder.children" />
@@ -80,7 +80,8 @@ export default {
   data() {
     return {
       openFolders: [], // 用于跟踪哪些文件夹是打开的
-      folderAddingSubfolder: null
+      folderAddingSubfolder: null,
+
     };
   },
   name: 'FolderItem',
@@ -90,17 +91,26 @@ export default {
   },
   props: ['folders'],
   methods: {
-    toggleFolder(folderName) {
-      // 当文件夹被点击时，更改其打开状态
-      this.$set(this.openFolders, folderName, !this.openFolders[folderName]);
+    toggleFolder(folder) {
+      // 如果当前文件夹正在添加子文件夹，则不进行展开/收起操作
+      if (this.folderAddingSubfolder === folder.id) return;
+      this.$set(this.openFolders, folder.name, !this.openFolders[folder.name]);
     },
+
+
     isFolderOpen(folderName) {
       return !!this.openFolders[folderName];
     },
-    startAddSubfolder(folderId) {
-      this.folderAddingSubfolder = folderId;
+
+    startAddSubfolder(folder) {
+      // 强制展开文件夹
+      this.$set(this.openFolders, folder.name, true);
+      this.folderAddingSubfolder = folder.id;
       this.$nextTick(() => {
-        this.$refs.inputComponent.focusInput();
+        console.log(this.$refs.inputSubComponent);
+        if(this.$refs.inputSubComponent) {
+          this.$refs.inputSubComponent.focusInput();
+        }
       });
     },
 

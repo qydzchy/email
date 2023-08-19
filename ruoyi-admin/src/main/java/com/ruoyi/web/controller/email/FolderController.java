@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.email;
 import java.util.List;
 import javax.annotation.Resource;
 
+import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.folder.FolderListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,9 +51,9 @@ public class FolderController extends BaseController
     @PreAuthorize("@ss.hasPermi('email:folder:add')")
     @Log(title = "文件夹", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody Folder folder)
+    public AjaxResult add(@RequestBody FolderSaveOrUpdateDTO dto)
     {
-        return toAjax(folderService.insertFolder(folder));
+        return toAjax(folderService.insertFolder(dto));
     }
 
     /**
@@ -61,9 +62,9 @@ public class FolderController extends BaseController
     @PreAuthorize("@ss.hasPermi('email:folder:edit')")
     @Log(title = "文件夹", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Folder folder)
+    public AjaxResult edit(@RequestBody FolderSaveOrUpdateDTO dto)
     {
-        return toAjax(folderService.updateFolder(folder));
+        return toAjax(folderService.updateFolder(dto));
     }
 
     /**

@@ -67,4 +67,21 @@ public interface FolderMapper
      * @return
      */
     List<Folder> getFolderList(@Param("createId") Long userId);
+
+    /**
+     * 是否存在同一文件夹下相同的文件夹名称
+     * @param id
+     * @param parentFolderId
+     * @param name
+     * @param userId
+     */
+    int countByParentFolderIdAndName(@Param("id") Long id, @Param("parentFolderId") Long parentFolderId, @Param("name") String name, @Param("createId") Long userId);
+
+    /**
+     * 根据id查询文件夹信息
+     * @param id
+     * @param userId
+     * @return
+     */
+    Folder getById(@Param("id") Long id, @Param("createId") Long userId);
 }

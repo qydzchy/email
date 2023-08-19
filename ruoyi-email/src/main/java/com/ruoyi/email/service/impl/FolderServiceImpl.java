@@ -1,11 +1,15 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.email.FolderTypeEnum;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.folder.FolderListVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -54,16 +58,26 @@ public class FolderServiceImpl implements IFolderService
     /**
      * 新增文件夹
      * 
-     * @param folder 文件夹
+     * @param dto 文件夹
      * @return 结果
      */
     @Override
-    public int insertFolder(Folder folder)
+    public int insertFolder(FolderSaveOrUpdateDTO dto)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        // 查询是否已经存在文件夹名称
+        boolean exist = existFolderName(null, dto.getParentFolderId(), dto.getName(), userId);
+        if (exist) {
+            throw new ServiceException("文件夹名称已存在");
+        }
+
+        Folder folder = new Folder();
+        folder.setParentFolderId(dto.getParentFolderId());
+        folder.setName(dto.getName());
+        folder.setType(FolderTypeEnum.CUSTOM.getType());
         folder.setCreateId(userId);
         folder.setCreateBy(username);
         folder.setCreateTime(DateUtils.getNowDate());
@@ -74,15 +88,40 @@ public class FolderServiceImpl implements IFolderService
     }
 
     /**
+     * 是否存在文件夹名称
+     * @param parentFolderId
+     * @param name
+     * @param userId
+     * @return
+     */
+    private boolean existFolderName(Long id, Long parentFolderId, String name, Long userId) {
+        int count = folderMapper.countByParentFolderIdAndName(id, parentFolderId, name, userId);
+        return count > 0 ? true : false;
+    }
+
+    /**
      * 修改文件夹
      * 
-     * @param folder 文件夹
+     * @param dto 文件夹
      * @return 结果
      */
     @Override
-    public int updateFolder(Folder folder)
+    public int updateFolder(FolderSaveOrUpdateDTO dto)
     {
-        folder.setUpdateTime(DateUtils.getNowDate());
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        Folder folder = folderMapper.getById(dto.getId(), userId);
+
+        // 查询是否已经存在文件夹名称
+        boolean exist = existFolderName(null, dto.getParentFolderId(), dto.getName(), userId);
+        if (exist) {
+            throw new ServiceException("文件夹名称已存在");
+        }
+
+        folder.setUpdateId(userId);
+        folder.setUpdateBy(username);
+        folder.setUpdateTime(new Date());
         return folderMapper.updateFolder(folder);
     }
 

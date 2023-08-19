@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Folder;
+import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.folder.FolderListVO;
 
 /**
@@ -31,18 +32,18 @@ public interface IFolderService
     /**
      * 新增文件夹
      * 
-     * @param folder 文件夹
+     * @param dto
      * @return 结果
      */
-    public int insertFolder(Folder folder);
+    public int insertFolder(FolderSaveOrUpdateDTO dto);
 
     /**
      * 修改文件夹
      * 
-     * @param folder 文件夹
+     * @param dto 文件夹
      * @return 结果
      */
-    public int updateFolder(Folder folder);
+    public int updateFolder(FolderSaveOrUpdateDTO dto);
 
     /**
      * 批量删除文件夹
