@@ -35,6 +35,7 @@
                   @edit-success="editingFolder = null"
                   :value="folder.name"
                   @input="updateFolderName(folder, $event)"
+                  @cancel="cancel"
                 />
 
               </div>
@@ -153,16 +154,8 @@ export default {
       });
     },
 
-    finishEditing(folder) {
-      if (this.editingName.trim()) {
-        this.$set(folder, 'name', this.editingName.trim());
-      }
-      this.editingFolder = null;
-    },
-
     updateFolderName(folder, newName) {
       const data = this.folders.find(f => f.id === folder.id);
-      console.log("data = " + data);
       if (data) {
         data.name = newName;
       }
@@ -194,8 +187,15 @@ export default {
             "id": folderId
           };
 
-          deleteFolder(data);
-          this.removeFolderFromList(folderId, this.folders);
+          deleteFolder(data).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.$emit('delete-success', folderId);
+            this.removeFolderFromList(folderId, this.folders);
+          });
+
         } catch (error) {
           console.error("Failed to delete folder:", error);
           // 或者向用户显示错误消息
@@ -206,6 +206,10 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+
+    cancel() {
+      this.editingFolder = null;
     }
   }
 };

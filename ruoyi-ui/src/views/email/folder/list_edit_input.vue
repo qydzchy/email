@@ -45,7 +45,6 @@ export default {
       this.$emit('input', event.target.value);
     },
     async handleBlur() {
-      console.log(this.id);
       if (this.folderName.trim()) {
         const data = {
           "id": this.id,
