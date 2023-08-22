@@ -250,6 +250,8 @@
 import addEmailTemplate from './add.vue';
 import editEmailTemplate from './edit.vue';
 import testEmailTemplate from './test.vue';
+import { EventBus } from "@/api/email/event-bus";
+
 import {listTask, testTask, unbindTask} from "@/api/email/task";
 
 export default {
@@ -328,6 +330,14 @@ export default {
       // Step 3: After all emails have been checked, refresh the list
       this.refreshEmailList();
     }
+  },
+
+  mounted() {
+    EventBus.$on('emailAdded', this.refreshEmailList);
+  },
+
+  beforeDestroy() {
+    EventBus.$off('emailAdded', this.refreshEmailList);
   },
 
   created() {

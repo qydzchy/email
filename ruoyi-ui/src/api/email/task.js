@@ -70,3 +70,12 @@ export function sendMail(data) {
   })
 }
 
+// 首页邮箱列表（拉取）
+export function listTaskPull(query) {
+  return request({
+    url: '/email/task/pull/list',
+    method: 'get',
+    params: query
+  })
+}
+

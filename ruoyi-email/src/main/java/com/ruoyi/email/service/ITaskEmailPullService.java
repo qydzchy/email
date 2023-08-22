@@ -1,6 +1,8 @@
 package com.ruoyi.email.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.email.domain.TaskEmailPull;
 
 /**
@@ -58,4 +60,12 @@ public interface ITaskEmailPullService
      * @return 结果
      */
     public int deleteTaskEmailPullById(Long id);
+
+    /**
+     * 获取拉取邮件数量
+     * @param ids
+     * @param userId
+     * @return
+     */
+    Map<Long, Integer> getPullEmailQuantityByIds(List<Long> ids, Long userId);
 }

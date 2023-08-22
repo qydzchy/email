@@ -1,7 +1,10 @@
 package com.ruoyi.email.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.email.domain.TaskEmailPull;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 拉取邮件Mapper接口
@@ -58,4 +61,12 @@ public interface TaskEmailPullMapper
      * @return 结果
      */
     public int deleteTaskEmailPullByIds(Long[] ids);
+
+    /**
+     * 获取拉取邮件数量
+     * @param ids
+     * @param userId
+     * @return
+     */
+    Map<Long, Integer> getPullEmailQuantityByIds(@Param("ids") List<Long> ids, @Param("createId") Long userId);
 }

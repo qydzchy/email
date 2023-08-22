@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
+import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
 import com.ruoyi.email.domain.vo.task.ListTaskVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,17 @@ public class TaskController extends BaseController
     public TableDataInfo list()
     {
         List<ListTaskVO> list = taskService.listTask();
+        return getDataTable(list);
+    }
+
+    /**
+     * 首页邮箱列表（收件）
+     */
+    @PreAuthorize("@ss.hasPermi('email:task:pull:list')")
+    @GetMapping("/pull/list")
+    public TableDataInfo pullList()
+    {
+        List<HomeListTaskVO> list = taskService.pullList();
         return getDataTable(list);
     }
 

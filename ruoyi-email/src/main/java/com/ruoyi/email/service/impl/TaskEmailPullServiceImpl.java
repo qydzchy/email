@@ -1,6 +1,8 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.email.service.ITaskEmailPullService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +94,16 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
     public int deleteTaskEmailPullById(Long id)
     {
         return taskEmailPullMapper.deleteTaskEmailPullById(id);
+    }
+
+    /**
+     * 获取邮箱拉取的邮件数量
+     * @param ids
+     * @param userId
+     * @return
+     */
+    @Override
+    public Map<Long, Integer> getPullEmailQuantityByIds(List<Long> ids, Long userId) {
+        return taskEmailPullMapper.getPullEmailQuantityByIds(ids, userId);
     }
 }

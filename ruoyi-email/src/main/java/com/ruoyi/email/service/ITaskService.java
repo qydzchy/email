@@ -3,6 +3,7 @@ package com.ruoyi.email.service;
 import java.util.List;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
+import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
 import com.ruoyi.email.domain.vo.task.ListTaskVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
 
@@ -73,4 +74,10 @@ public interface ITaskService
      * @return
      */
     Boolean unbind(Long id);
+
+    /**
+     * 首页邮箱列表（收件）
+     * @return
+     */
+    List<HomeListTaskVO> pullList();
 }

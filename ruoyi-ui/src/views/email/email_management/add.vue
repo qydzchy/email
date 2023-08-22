@@ -488,7 +488,9 @@ label {
 @import '../../../static/scss/email/email_management/MailInformationExtension.504babf1.css';
 </style>
 <script>
+import { EventBus } from "@/api/email/event-bus";
 import {addTask} from "@/api/email/task";
+import {updateFolder} from "@/api/email/folder";
 
 export default {
   components: {},
@@ -501,7 +503,8 @@ export default {
         synchronizeFolderFlag: true // 同步文件夹默认开启
       },
       addEmailPage: false,
-      errors: {}
+      errors: {},
+      emailList: []
     }
   },
   methods: {
@@ -557,12 +560,33 @@ export default {
       return isValid;
     },
 
-    confirm() {
+    async confirm() {
+      if (!this.showManualConfig) {
+        this.formData.protocolType = undefined;
+        this.formData.customProxyFlag = undefined;
+        this.formData.synchronizeFolderFlag = undefined;
+      }
+
       if (this.validateForm()) {
-        addTask(this.formData).then((response) => {
-          this.$message.success("新增成功");
-          this.addEmailPage = false;
-        });
+        try {
+          const response = await addTask(this.formData);
+          if (response.code === 200) {
+            this.$message.success("新增成功");
+            this.addEmailPage = false;
+            this.formData = { // 重置表单数据为默认值
+              protocolType: 1,
+              customProxyFlag: false,
+              synchronizeFolderFlag: true
+            };
+            this.errors = {}; // 清除错误信息
+
+            EventBus.$emit('emailAdded');
+          } else {
+            this.$message.error("新增失败");
+          }
+        } catch (error) {
+          console.error('Error saving the folder:', error);
+        }
       }
 
       this.errors = {};

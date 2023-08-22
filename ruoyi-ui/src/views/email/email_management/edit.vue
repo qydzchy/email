@@ -486,7 +486,6 @@ export default {
     },
 
     confirm() {
-      console.log(this.formData);
       if (this.validateForm()) {
         editTask(this.formData).then((response) => {
           this.$message.success("修改成功");

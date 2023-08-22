@@ -1,7 +1,11 @@
 package com.ruoyi.email.domain.vo.task;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ListTaskVO {
 

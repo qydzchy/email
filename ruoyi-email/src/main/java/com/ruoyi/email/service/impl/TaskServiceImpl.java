@@ -1,8 +1,8 @@
 package com.ruoyi.email.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
 import com.ruoyi.common.enums.email.ConnStatusEnum;
@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
+import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
 import com.ruoyi.email.domain.vo.task.ListTaskVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
 import com.ruoyi.email.service.*;
@@ -55,6 +56,12 @@ public class TaskServiceImpl implements ITaskService
 
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
+
+    @Resource
+    private ITaskEmailPullService taskEmailPullServiceImpl;
+
+    @Resource
+    private ITaskEmailSendService taskEmailSendService;
 
     @Value("${email.path}")
     private String emailPath;
@@ -99,6 +106,40 @@ public class TaskServiceImpl implements ITaskService
         return result > 0 ? true : false;
     }
 
+    @Override
+    public List<HomeListTaskVO> pullList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        Task paramTask = new Task();
+        paramTask.setCreateId(userId);
+        List<Task> taskList = taskMapper.selectTaskList(paramTask);
+        if (taskList == null || taskList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> taskIds = taskList.stream().map(Task::getId).collect(Collectors.toList());
+        Map<Long, Integer> idMailQuantityMap = taskEmailPullServiceImpl.getPullEmailQuantityByIds(taskIds, userId);
+        if (idMailQuantityMap == null) {
+            idMailQuantityMap = new HashMap<>();
+        }
+
+        List<HomeListTaskVO> homeListTaskVOList = new ArrayList<>(taskIds.size());
+
+        Map<Long, Integer> finalIdMailQuantityMap = idMailQuantityMap;
+        taskList.stream().forEach(task -> {
+            HomeListTaskVO homeListTaskVO = new HomeListTaskVO();
+            BeanUtils.copyProperties(task, homeListTaskVO);
+
+            Integer mailQuantity = finalIdMailQuantityMap.get(task.getId());
+            homeListTaskVO.setMailQuantity(mailQuantity == null ? 0 : mailQuantity != null ? mailQuantity : 0);
+
+            homeListTaskVOList.add(homeListTaskVO);
+        });
+
+        return homeListTaskVOList;
+    }
+
     /**
      * 新增邮箱任务
      * 
@@ -116,8 +157,15 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱账号已存在");
         }
 
+        // 没有选择协议类型，则获取服务器信息
+        String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
+        Host host = hostService.selectHostByDomain(domain);
+        if (host == null) {
+            throw new ServiceException("暂不支持该邮箱类型");
+        }
+
         // 获取协议连接配置信息
-        List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = getProtocolConnCfg(task);
+        List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = getProtocolConnCfg(task, host);
 
         boolean flag = false;
         MailConnCfg mailConnCfg = getMailConnCfg(task);
@@ -146,11 +194,18 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱连接失败");
         }
 
+        String outgoingServer = StringUtils.isNotBlank(task.getOutgoingServer()) ? task.getOutgoingServer() : host.getSmtpHost();
+        Integer outgoingPort = task.getOutgoingPort() != null ? task.getOutgoingPort() : host.getSmtpPort();
+        Boolean outgoingSslFlag = task.getOutgoingSslFlag() != null ? task.getOutgoingSslFlag() : Optional.ofNullable(host.getSmtpSsl()).orElse(false);
+
+
         task.setProtocolType(protocolType);
         task.setReceivingServer(mailConnCfg.getHost());
         task.setReceivingPort(mailConnCfg.getPort());
         task.setReceivingSslFlag(mailConnCfg.isSsl());
-        task.setOutgoingSslFlag(Optional.ofNullable(task.getOutgoingSslFlag()).orElse(false));
+        task.setOutgoingServer(outgoingServer);
+        task.setOutgoingPort(outgoingPort);
+        task.setOutgoingSslFlag(outgoingSslFlag);
         task.setCreateId(loginUser.getUserId());
         task.setCreateBy(loginUser.getUsername());
         task.setCreateTime(DateUtils.getNowDate());
@@ -173,7 +228,7 @@ public class TaskServiceImpl implements ITaskService
      * 获取协议连接配置信息
      * @return
      */
-    private List<Pair<ProtocolTypeEnum, MailConnCfg>> getProtocolConnCfg(Task task) {
+    private List<Pair<ProtocolTypeEnum, MailConnCfg>> getProtocolConnCfg(Task task, Host host) {
         List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = new ArrayList<>();
         if (task.getProtocolType() != null) {
             ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
@@ -184,12 +239,7 @@ public class TaskServiceImpl implements ITaskService
             MailConnCfg mailConnCfg = MailConnCfg.builder().host(task.getReceivingServer()).port(task.getReceivingPort()).ssl(Optional.ofNullable(task.getReceivingSslFlag()).orElse(false)).build();
             protocolConnCfgPairList.add(Pair.of(protocolTypeEnum, mailConnCfg));
         } else {
-            // 没有选择协议类型，则获取服务器信息
-            String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
-            Host host = hostService.selectHostByDomain(domain);
-            if (host == null) {
-                throw new ServiceException("暂不支持该邮箱类型");
-            }
+
 
             if (StringUtils.isNotBlank(host.getImapHost()) && host.getImapPort() != null) {
                 MailConnCfg imapMailConnCfg = MailConnCfg.builder().host(host.getImapHost()).port(host.getImapPort()).ssl(Optional.ofNullable(host.getImapSsl()).orElse(false)).build();

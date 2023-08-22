@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTaskEmailPullVo">
-        select id, task_id, uid, fromer, receiver, bcc, cc, folder, folder_id, title, eml_path, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_task_email_pull
+        select id, task_id, uid, fromer, receiver, bcc, cc, folder, folder_id, title, eml_path, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email_pull
     </sql>
 
     <select id="selectTaskEmailPullList" parameterType="TaskEmailPull" resultMap="TaskEmailPullResult">
@@ -59,7 +59,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTaskEmailPullVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="getPullEmailQuantityByIds" resultType="java.util.Map">
+        select id, count(*) as quantity from mailbox_task_email_pull where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and create_id = #{createId}
+        and del_flag = '0'
+        group by id
+    </select>
+
     <insert id="insertTaskEmailPull" parameterType="TaskEmailPull" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_pull
         <trim prefix="(" suffix=")" suffixOverrides=",">

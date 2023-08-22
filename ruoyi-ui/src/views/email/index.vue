@@ -77,7 +77,7 @@
                                 <!---->
                               </div>
                             </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                            <li v-for="email in emails" :key="email.id" class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
@@ -88,166 +88,24 @@
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
                                         <!---->
-                                        <span title="sales17@allxchips.com" class="ellipsis">sales17@allxchips.com</span>
+                                        <span :title="email.account" class="ellipsis">{{email.account}}}</span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                                 <span class="mm-tooltip mail-menu-item-count">
-																						<span class="mm-tooltip-trigger">8</span>
+																						<span class="mm-tooltip-trigger">{{email.mailQuantity}}</span>
                                   <!---->
 																					</span>
                                 <!---->
                               </div>
                             </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
+
+<!--                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                              &lt;!&ndash;&ndash;&gt;
+                              &lt;!&ndash;&ndash;&gt;
                               <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sales18@allxchips.com" class="ellipsis">sales18@allxchips.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sales19@allxchips.com" class="ellipsis">sales19@allxchips.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sales22@allxchips.com" class="ellipsis">sales22@allxchips.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sales23@allxchips.com" class="ellipsis">sales23@allxchips.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sales24@allxchips.com" class="ellipsis">sales24@allxchips.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sales25@allxchips.com" class="ellipsis">sales25@allxchips.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-                                    <!---->
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        <!---->
-                                        <span title="sharon@htesemi.com" class="ellipsis">sharon@htesemi.com</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <span class="mm-tooltip mail-menu-item-count">
-																						<span class="mm-tooltip-trigger">4</span>
-                                  <!---->
-																					</span>
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
+                                &lt;!&ndash;&ndash;&gt;
                                 <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <div class="mailbox-item ellipsis">
 																							<span class="mm-tooltip mailbox-item-error-icon">
@@ -256,16 +114,16 @@
 																										<path d="M12 .9C5.9.9.9 5.9.9 12s5 11.1 11.1 11.1 11.1-5 11.1-11.1S18.1.9 12 .9zm0 5.6c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4zm2.3 9.7c0 .2-.2.4-.5.4h-3.6c-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5.2 0 .4-.2.4-.4v-1.9c0-.2-.2-.5-.4-.5-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5h2.7c.3 0 .5.2.5.5v3.7c0 .2.2.4.4.4.3 0 .5.2.5.5v.9z"></path>
 																									</svg>
 																								</span>
-                                                <!---->
+                                                &lt;!&ndash;&ndash;&gt;
 																							</span>
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
-                                        <!---->
+                                        &lt;!&ndash;&ndash;&gt;
                                         <span class="mm-tooltip mailbox-item-email-error-tip">
 																										<span class="mm-tooltip-trigger">
 																											<span title="w0r1d_space@sohu.com" class="ellipsis">w0r1d_space@sohu.com</span>
 																										</span>
-                                          <!---->
+                                          &lt;!&ndash;&ndash;&gt;
 																									</span>
                                       </div>
                                     </div>
@@ -273,11 +131,11 @@
                                 </div>
                                 <span class="mm-tooltip mail-menu-item-count">
 																						<span class="mm-tooltip-trigger">746</span>
-                                  <!---->
+                                  &lt;!&ndash;&ndash;&gt;
 																					</span>
-                                <!---->
+                                &lt;!&ndash;&ndash;&gt;
                               </div>
-                            </li>
+                            </li>-->
                           </ul>
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
@@ -1099,10 +957,12 @@
 <script>
 import emailContentLayout from './email_content.vue';
 import setup from './setup.vue';
+import {listTask, listTaskPull} from "@/api/email/task";
 
 export default {
   data() {
     return {
+      emails: [],
       currentLayout: 'email_content', //
       isLeftPaneVisible: true,
     };
@@ -1119,7 +979,25 @@ export default {
     toggleLeftPane() {
       this.isLeftPaneVisible = !this.isLeftPaneVisible;
     },
+
+    refreshPullEmailList() {
+      listTaskPull().then((response) => {
+        this.emails = response.rows;
+        this.emails.forEach((email) => {
+          email.id = email.id;
+          email.account = email.account;
+          email.connStatus = email.connStatus;
+          email.mailQuantity = email.mailQuantity;
+        });
+      });
+    }
   },
+
+  mounted() {
+    this.refreshPullEmailList();
+  },
+
+
 };
 </script>
 
