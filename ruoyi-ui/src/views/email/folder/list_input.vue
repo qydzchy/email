@@ -32,10 +32,10 @@ export default {
     };
   },
   methods: {
+
     focusInput() {
       this.$refs.folderInput.focus();
     },
-
     async checkAndSave() {
 
       if (this.newFolderName.trim()) {

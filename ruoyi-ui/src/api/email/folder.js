@@ -26,3 +26,12 @@ export function updateFolder(data) {
     data: data
   })
 }
+
+
+export function deleteFolder(data) {
+  return request({
+    url: '/email/folder/delete',
+    method: 'post',
+    data: data
+  })
+}

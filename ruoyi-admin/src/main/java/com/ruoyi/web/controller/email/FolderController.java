@@ -71,8 +71,12 @@ public class FolderController extends BaseController
     @PreAuthorize("@ss.hasPermi('email:folder:delete')")
     @Log(title = "文件夹", businessType = BusinessType.DELETE)
     @PostMapping("/delete")
-    public AjaxResult delete(@RequestParam Long id)
+    public AjaxResult delete(@RequestBody Folder folder)
     {
-        return toAjax(folderService.deleteById(id));
+        if (folder.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        return toAjax(folderService.deleteById(folder.getId()));
     }
 }

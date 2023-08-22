@@ -27,12 +27,12 @@
             </div>
             <div class="folder-columns">
               <div class="folder-columns-item" style="width: 0px; flex: 1 1 0%;">
-<!--                <div class="folder-name ellipsis">{{ folder.name }}</div>-->
                 <span v-if="editingFolder !== folder.id">{{ folder.name }}</span>
                 <FolderEditInput
                   :id="folder.id"
                   v-if="editingFolder === folder.id"
                   v-model="editingName"
+                  @input="editingName = $event"
                   @blur="finishEditing(folder)"
                   @edit-success="handleEditSuccess"
                   ref="editingInput"
@@ -50,7 +50,7 @@
                     <!---->编辑
                     <!---->
                   </button>
-                  <button type="button" class="mm-button mm-button__text btn-list-item">
+                  <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="deleteFolder(folder.id)">
                     <!---->
                     <!---->删除
                     <!---->
@@ -85,6 +85,8 @@
 import FolderItem from './list_item.vue';
 import FolderInput from './list_input.vue';
 import FolderEditInput from './list_edit_input.vue';
+
+import { deleteFolder } from "@/api/email/folder";
 
 export default {
   data() {
@@ -158,8 +160,32 @@ export default {
     },
 
     handleEditSuccess() {
-      console.log("Received edit success event");
       this.editingFolder = null;
+    },
+
+    deleteFolder(id) {
+      this.$confirm('此操作将永久删除该文件夹, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const data = {
+          "id": id
+        };
+
+        deleteFolder(data).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$emit('delete-success', id);
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
 
   }

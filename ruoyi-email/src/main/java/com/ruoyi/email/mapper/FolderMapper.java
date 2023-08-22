@@ -91,5 +91,5 @@ public interface FolderMapper
      * @param userId
      * @return
      */
-    int deleteById(Long id, Long userId);
+    int deleteById(@Param("id") Long id, @Param("createId") Long userId);
 }
