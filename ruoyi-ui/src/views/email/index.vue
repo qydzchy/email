@@ -4,11 +4,11 @@
     <div class="riven-layout-container" data-v-app="">
       <div class="view-content-wrapper layout-extraSidebar" sidebar-collapse="">
         <div class="view-content-teleport-anchor"></div>
-        <div class="mm-split mail-layout-split expanding">
+        <div :class="['mm-split', 'mail-layout-split', isLeftPaneVisible ? 'expanding' : 'collapsing']">
           <div class="mm-split-horizontal">
-            <div class="mm-split-pane mm-split-pane__left" style="right: 87.7165%;">
+            <div class="mm-split-pane mm-split-pane__left" :style="{right: isLeftPaneVisible ? '87.7165%' : '98.9177%'}">
               <div class="layout-extraSidebar-sidebar">
-                <nav class="main-plus-nav">
+                <nav v-if="isLeftPaneVisible" class="main-plus-nav">
                   <div class="mail-nav" transition="menu">
                     <div class="mail-nav-switch">
                       <a class="active">
@@ -898,13 +898,13 @@
                               </ul>
                             </li>
                             <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
-                                <!---->
-                                <span class="mm-menu-title">
+<div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
+  <!---->
+  <span class="mm-menu-title">
 																						<div class="right-click-menu-handler mail-menu-item-title ellipsis">
 																							<span class="flex items-center" title="自定义标签">自定义标签</span>
 																						</div>
-                                  <!---->
+    <!---->
 																						<span>
 																							<div class="mm-dropdown mail-nav-item-dropdown">
 																								<div class="mm-dropdown-trigger">
@@ -917,21 +917,21 @@
 																							</div>
 																						</span>
 																					</span>
-                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                                </svg>
-                              </div>
-                              <ul role="menu" class="mm-menu mm-menu--inline">
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(97, 188, 129);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="价格">价格</span>
-                                    </div>
-                                    <!---->
-                                    <span>
+  <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+    <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+  </svg>
+</div>
+<ul role="menu" class="mm-menu mm-menu--inline">
+  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+    <!---->
+    <!---->
+    <div class="mail-sidebar-menu-item">
+      <span class="mail-menu-item-tag-color" style="background-color: rgb(97, 188, 129);"></span>
+      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+        <span class="flex items-center" title="价格">价格</span>
+      </div>
+      <!---->
+      <span>
 																								<div class="mm-dropdown mail-nav-item-dropdown">
 																									<div class="mm-dropdown-trigger">
 																										<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -942,18 +942,18 @@
                                                   <!---->
 																								</div>
 																							</span>
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(97, 188, 129);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="客户">客户</span>
-                                    </div>
-                                    <!---->
-                                    <span>
+    </div>
+  </li>
+  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+    <!---->
+    <!---->
+    <div class="mail-sidebar-menu-item">
+      <span class="mail-menu-item-tag-color" style="background-color: rgb(97, 188, 129);"></span>
+      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+        <span class="flex items-center" title="客户">客户</span>
+      </div>
+      <!---->
+      <span>
 																								<div class="mm-dropdown mail-nav-item-dropdown">
 																									<div class="mm-dropdown-trigger">
 																										<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -964,122 +964,122 @@
                                                   <!---->
 																								</div>
 																							</span>
-                                  </div>
-                                </li>
-                              </ul>
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
-                            <!---->
-                            <span class="mm-menu-title">
+    </div>
+  </li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+<div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
+  <!---->
+  <span class="mm-menu-title">
 																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
 																					<span class="flex items-center" title="显示更多">显示更多</span>
 																				</div>
-                              <!---->
-                              <!---->
+    <!---->
+    <!---->
 																			</span>
-                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                            </svg>
-                          </div>
-                          <ul role="menu" class="mm-menu mm-menu--inline">
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <span class="flex items-center" title="已删除邮件">已删除邮件</span>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <span class="flex items-center" title="垃圾邮件">垃圾邮件</span>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <span class="flex items-center" title="追踪信息">追踪信息</span>
-                                </div>
-                                <!---->
-                                <!---->
-                              </div>
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
-                          <!---->
-                          <!---->
-                          <div class="mail-sidebar-menu-item">
-                            <a class="mail-download-app-menu" data-savepage-href="https://bestmail.xiaoman.cn" href="https://bestmail.xiaoman.cn/" target="_blank">App即刻处理邮件<span class="hot-logo">HOT</span>
-                            </a>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </nav>
-                <span class="position-toogle expanding">
+  <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+    <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+  </svg>
+</div>
+<ul role="menu" class="mm-menu mm-menu--inline">
+  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+    <!---->
+    <!---->
+    <div class="mail-sidebar-menu-item">
+      <!---->
+      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+        <span class="flex items-center" title="已删除邮件">已删除邮件</span>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </li>
+  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+    <!---->
+    <!---->
+    <div class="mail-sidebar-menu-item">
+      <!---->
+      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+        <span class="flex items-center" title="垃圾邮件">垃圾邮件</span>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </li>
+  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+    <!---->
+    <!---->
+    <div class="mail-sidebar-menu-item">
+      <!---->
+      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+        <span class="flex items-center" title="追踪信息">追踪信息</span>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </li>
+</ul>
+</li>
+<li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+<!---->
+<!---->
+<div class="mail-sidebar-menu-item">
+  <a class="mail-download-app-menu" data-savepage-href="https://bestmail.xiaoman.cn" href="https://bestmail.xiaoman.cn/" target="_blank">App即刻处理邮件<span class="hot-logo">HOT</span>
+  </a>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<span :class="['position-toogle', isLeftPaneVisible ? 'expanding' : 'collapsing']" @click="toggleLeftPane">
 														<i class="m-icon icon-left-small"></i>
 													</span>
-              </div>
-            </div>
-            <div class="mm-split-trigger-wrap" style="left: 12.2835%;">
-              <div class="mm-split-trigger mm-split-trigger-vertical">
-                <div class="mm-split-trigger-bar-wrap">
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                  <i class="mm-split-trigger-bar"></i>
-                </div>
-              </div>
-            </div>
+</div>
+</div>
+<div class="mm-split-trigger-wrap" :style="{left: isLeftPaneVisible ? '12.2835%' : '1.08225%'}">
+<div class="mm-split-trigger mm-split-trigger-vertical">
+  <div class="mm-split-trigger-bar-wrap">
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+    <i class="mm-split-trigger-bar"></i>
+  </div>
+</div>
+</div>
 
-            <!-- 使用动态组件切换BC布局 -->
-            <component :is="currentLayout" @switch="switchLayout"></component>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!---->
-    <div class="side-chat-button-wrap" style="display: none;">
-      <div class="side-chat-button">
+<!-- 使用动态组件切换BC布局 -->
+<component :is="currentLayout" @switch="switchLayout"></component>
+</div>
+</div>
+</div>
+</div>
+<!---->
+<div class="side-chat-button-wrap" style="display: none;">
+<div class="side-chat-button">
 									<span class="close-btn">
 										<svg class="svg-icon" aria-hidden="true" color="rgba(0,0,0,0.5)" style="width: 16px; height: 16px;">
 											<use xlink:href="#common-iconfont-close-btn"></use>
 										</svg>
 									</span>
-        <i class="common-iconfont common-iconfont-chat1" style="font-size: 18px; color: rgb(255, 255, 255);"></i>
-        <div class="chat-text">客服</div>
-      </div>
-    </div>
-    <!---->
-    <div class="novice-wrapper">
-      <!---->
-      <!--portal-->
-    </div>
-    <div style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 999999; pointer-events: none;"></div>
-  </div>
+  <i class="common-iconfont common-iconfont-chat1" style="font-size: 18px; color: rgb(255, 255, 255);"></i>
+  <div class="chat-text">客服</div>
+</div>
+</div>
+<!---->
+<div class="novice-wrapper">
+<!---->
+<!--portal-->
+</div>
+<div style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 999999; pointer-events: none;"></div>
+</div>
 </template>
 
 <style lang="scss">
@@ -1104,6 +1104,7 @@ export default {
   data() {
     return {
       currentLayout: 'email_content', //
+      isLeftPaneVisible: true,
     };
   },
   components: {
@@ -1113,6 +1114,10 @@ export default {
   methods: {
     switchLayout(layout) {
       this.currentLayout = layout; // 切换布局
+    },
+
+    toggleLeftPane() {
+      this.isLeftPaneVisible = !this.isLeftPaneVisible;
     },
   },
 };
