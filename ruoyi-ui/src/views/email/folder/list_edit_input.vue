@@ -45,6 +45,7 @@ export default {
       this.$emit('input', event.target.value);
     },
     async handleBlur() {
+      console.log(this.id);
       if (this.folderName.trim()) {
         const data = {
           "id": this.id,
@@ -54,8 +55,8 @@ export default {
         try {
           const response = await updateFolder(data);
           if (response.code === 200) {
-            this.$emit('input', this.folderName);  // 通知父组件更新文件夹名称
-            this.$emit('edit-success');  // 发射事件
+            this.$emit('input', this.folderName);
+            this.$emit('edit-success');
             this.folderName = '';
           } else {
             console.error('Failed to add folder:', response.code);

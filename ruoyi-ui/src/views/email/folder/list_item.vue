@@ -28,15 +28,15 @@
             <div class="folder-columns">
               <div class="folder-columns-item" style="width: 0px; flex: 1 1 0%;">
                 <span v-if="editingFolder !== folder.id">{{ folder.name }}</span>
+
                 <FolderEditInput
                   :id="folder.id"
                   v-if="editingFolder === folder.id"
-                  v-model="editingName"
-                  @input="editingName = $event"
-                  @blur="finishEditing(folder)"
-                  @edit-success="handleEditSuccess"
-                  ref="editingInput"
-                ></FolderEditInput>
+                  @edit-success="editingFolder = null"
+                  :value="folder.name"
+                  @input="updateFolderName(folder, $event)"
+                />
+
               </div>
               <div class="folder-columns-item" style="width: 120px; text-align: right; flex: 0 0 auto;">
                 <div class="btn-list">
@@ -50,7 +50,7 @@
                     <!---->编辑
                     <!---->
                   </button>
-                  <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="deleteFolder(folder.id)">
+                  <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="handleDeleteFolder(folder.id)">
                     <!---->
                     <!---->删除
                     <!---->
@@ -95,6 +95,7 @@ export default {
       folderAddingSubfolder: null,
       editingFolder: null,     // 正在编辑的文件夹的ID
       editingName: '',         // 编辑中的文件夹名称
+      editingFolderId: null,   // 编辑中的文件夹ID
     };
   },
   name: 'FolderItem',
@@ -159,27 +160,46 @@ export default {
       this.editingFolder = null;
     },
 
-    handleEditSuccess() {
-      this.editingFolder = null;
+    updateFolderName(folder, newName) {
+      const data = this.folders.find(f => f.id === folder.id);
+      console.log("data = " + data);
+      if (data) {
+        data.name = newName;
+      }
     },
 
-    deleteFolder(id) {
+    removeFolderFromList(folderId, list) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].id === folderId) {
+          list.splice(i, 1);  // 如果找到了匹配的文件夹ID，从数组中移除它
+          return true;
+        } else if (list[i].children && list[i].children.length > 0) {
+          // 递归地查找子文件夹
+          if (this.removeFolderFromList(folderId, list[i].children)) {
+            return true;  // 如果子文件夹中找到并删除了匹配的文件夹，停止查找
+          }
+        }
+      }
+      return false;
+    },
+
+    handleDeleteFolder(folderId) {
       this.$confirm('此操作将永久删除该文件夹, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const data = {
-          "id": id
-        };
+        try {
+          const data = {
+            "id": folderId
+          };
 
-        deleteFolder(data).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.$emit('delete-success', id);
-        });
+          deleteFolder(data);
+          this.removeFolderFromList(folderId, this.folders);
+        } catch (error) {
+          console.error("Failed to delete folder:", error);
+          // 或者向用户显示错误消息
+        }
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -187,7 +207,6 @@ export default {
         });
       });
     }
-
   }
 };
 </script>
