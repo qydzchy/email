@@ -113,13 +113,14 @@ public class TaskServiceImpl implements ITaskService
 
         Task paramTask = new Task();
         paramTask.setCreateId(userId);
+        paramTask.setDelFlag("0");
         List<Task> taskList = taskMapper.selectTaskList(paramTask);
         if (taskList == null || taskList.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Long> taskIds = taskList.stream().map(Task::getId).collect(Collectors.toList());
-        Map<Long, Integer> idMailQuantityMap = taskEmailPullServiceImpl.getPullEmailQuantityByIds(taskIds, userId);
+        Map<Long, Integer> idMailQuantityMap = taskEmailPullServiceImpl.getPullEmailQuantityByIds(taskIds);
         if (idMailQuantityMap == null) {
             idMailQuantityMap = new HashMap<>();
         }
@@ -197,7 +198,6 @@ public class TaskServiceImpl implements ITaskService
         String outgoingServer = StringUtils.isNotBlank(task.getOutgoingServer()) ? task.getOutgoingServer() : host.getSmtpHost();
         Integer outgoingPort = task.getOutgoingPort() != null ? task.getOutgoingPort() : host.getSmtpPort();
         Boolean outgoingSslFlag = task.getOutgoingSslFlag() != null ? task.getOutgoingSslFlag() : Optional.ofNullable(host.getSmtpSsl()).orElse(false);
-
 
         task.setProtocolType(protocolType);
         task.setReceivingServer(mailConnCfg.getHost());

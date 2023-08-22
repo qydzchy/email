@@ -43,7 +43,7 @@ public class TaskController extends BaseController
     }
 
     /**
-     * 首页邮箱列表（收件）
+     * 收件箱列表
      */
     @PreAuthorize("@ss.hasPermi('email:task:pull:list')")
     @GetMapping("/pull/list")

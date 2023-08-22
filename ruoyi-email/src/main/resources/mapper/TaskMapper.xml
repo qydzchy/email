@@ -60,6 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="proxyUsername != null  and proxyUsername != ''"> and proxy_username like concat('%', #{proxyUsername}, '%')</if>
             <if test="proxyPassword != null  and proxyPassword != ''"> and proxy_password = #{proxyPassword}</if>
             <if test="synchronizeFolderFlag != null "> and synchronize_folder_flag = #{synchronizeFolderFlag}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="delFlag != null "> and del_flag = #{delFlag}</if>
         </where>
     </select>
     

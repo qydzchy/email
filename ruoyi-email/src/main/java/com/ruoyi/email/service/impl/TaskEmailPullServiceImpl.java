@@ -1,7 +1,9 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.email.service.ITaskEmailPullService;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailPullMapper;
 import com.ruoyi.email.domain.TaskEmailPull;
+
+import javax.annotation.Resource;
 
 /**
  * 拉取邮件Service业务层处理
@@ -19,7 +23,7 @@ import com.ruoyi.email.domain.TaskEmailPull;
 @Service
 public class TaskEmailPullServiceImpl implements ITaskEmailPullService
 {
-    @Autowired
+    @Resource
     private TaskEmailPullMapper taskEmailPullMapper;
 
     /**
@@ -99,11 +103,18 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
     /**
      * 获取邮箱拉取的邮件数量
      * @param ids
-     * @param userId
      * @return
      */
     @Override
-    public Map<Long, Integer> getPullEmailQuantityByIds(List<Long> ids, Long userId) {
-        return taskEmailPullMapper.getPullEmailQuantityByIds(ids, userId);
+    public Map<Long, Integer> getPullEmailQuantityByIds(List<Long> ids) {
+        List<Map<String, Object>> pullEmailQuantityByIds = taskEmailPullMapper.getPullEmailQuantityByIds(ids);
+        if (pullEmailQuantityByIds == null || pullEmailQuantityByIds.size() == 0) {
+            return new HashMap<>();
+        }
+
+        return pullEmailQuantityByIds.stream().collect(Collectors.toMap(
+                map -> Long.valueOf(map.get("taskId").toString()),
+                map -> Integer.valueOf(map.get("quantity").toString()))
+        );
     }
 }

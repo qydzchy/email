@@ -1,6 +1,8 @@
 package com.ruoyi.email.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.email.domain.TaskEmailSend;
 
 /**
@@ -58,4 +60,5 @@ public interface ITaskEmailSendService
      * @return 结果
      */
     public int deleteTaskEmailSendById(Long id);
+
 }

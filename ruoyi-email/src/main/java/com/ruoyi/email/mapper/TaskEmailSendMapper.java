@@ -1,7 +1,10 @@
 package com.ruoyi.email.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.email.domain.TaskEmailSend;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 发送邮件Mapper接口

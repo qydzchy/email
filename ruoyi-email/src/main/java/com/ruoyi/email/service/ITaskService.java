@@ -76,7 +76,7 @@ public interface ITaskService
     Boolean unbind(Long id);
 
     /**
-     * 首页邮箱列表（收件）
+     * 收件箱列表
      * @return
      */
     List<HomeListTaskVO> pullList();

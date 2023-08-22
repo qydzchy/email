@@ -61,13 +61,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getPullEmailQuantityByIds" resultType="java.util.Map">
-        select id, count(*) as quantity from mailbox_task_email_pull where id in
+        select task_id as taskId, count(*) as quantity from mailbox_task_email_pull where task_id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
-        and create_id = #{createId}
         and del_flag = '0'
-        group by id
+        group by task_id
     </select>
 
     <insert id="insertTaskEmailPull" parameterType="TaskEmailPull" useGeneratedKeys="true" keyProperty="id">

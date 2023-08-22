@@ -53,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTaskEmailSendVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertTaskEmailSend" parameterType="TaskEmailSend" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_send
         <trim prefix="(" suffix=")" suffixOverrides=",">

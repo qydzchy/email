@@ -1,12 +1,14 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.List;
+
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.email.service.ITaskEmailSendService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailSendMapper;
 import com.ruoyi.email.domain.TaskEmailSend;
+
+import javax.annotation.Resource;
 
 /**
  * 发送邮件Service业务层处理
@@ -17,7 +19,7 @@ import com.ruoyi.email.domain.TaskEmailSend;
 @Service
 public class TaskEmailSendServiceImpl implements ITaskEmailSendService
 {
-    @Autowired
+    @Resource
     private TaskEmailSendMapper taskEmailSendMapper;
 
     /**
@@ -93,4 +95,5 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
     {
         return taskEmailSendMapper.deleteTaskEmailSendById(id);
     }
+
 }

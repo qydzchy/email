@@ -65,8 +65,7 @@ public interface TaskEmailPullMapper
     /**
      * 获取拉取邮件数量
      * @param ids
-     * @param userId
      * @return
      */
-    Map<Long, Integer> getPullEmailQuantityByIds(@Param("ids") List<Long> ids, @Param("createId") Long userId);
+    List<Map<String, Object>> getPullEmailQuantityByIds(@Param("ids") List<Long> ids);
 }
