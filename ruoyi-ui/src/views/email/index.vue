@@ -47,10 +47,7 @@
                     </div>
                     <div class="mail-nav-normal-container">
                       <ul role="menubar" class="mm-menu mail-sidebar-menu">
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
-                            :class="{ 'mm-menu-item--active': activeMenuItem === 'INBOX' }"
-                            @click="setActive('INBOX')"
-                            role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
@@ -83,9 +80,9 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="task in taskList" :key="task.id" @click="fetchEmailList(task.id)" class="mm-menu-item mail-sidebar-menu-item"
+                            <li v-for="task in taskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'PULL_'+task.id }"
-                                @click="setActive('PULL_'+task.id)"
+                                @click="taskPullClick(task.id)"
                                 role="menuitem" tabindex="-1" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
@@ -180,10 +177,7 @@
                             <!---->
                           </div>
                         </li>
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
-                            :class="{ 'mm-menu-item--active': activeMenuItem === 'OUTBOX' }"
-                            @click="setActive('OUTBOX')"
-                            role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
@@ -213,7 +207,10 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="task in taskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                            <li v-for="task in taskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
+                                :class="{ 'mm-menu-item--active': activeMenuItem === 'SEND_'+task.id }"
+                                @click="taskSendClick(task.id)"
+                                role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
@@ -315,7 +312,10 @@
                           </div>
                           <FolderTree :folders="folders"></FolderTree>
                         </li>
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
+                            :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_MAIL' }"
+                            @click="setActive('LABEL_MAIL')"
+                            role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
@@ -330,7 +330,10 @@
                             </svg>
                           </div>
                           <ul role="menu" class="mm-menu mm-menu--inline">
-                            <li class="mm-submenu mail-sidebar-submenu" role="menuitem" aria-haspopup="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                            <li class="mm-submenu mail-sidebar-submenu"
+                                :class="{ 'mm-menu-item--active': activeMenuItem === 'DIALOG_LABEL' }"
+                                @click="setActive('DIALOG_LABEL')"
+                                role="menuitem" aria-haspopup="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                               <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
                                 <!---->
                                 <span class="mm-menu-title">
@@ -345,7 +348,10 @@
                                 </svg>
                               </div>
                               <ul role="menu" class="mm-menu mm-menu--inline" style="display: none;">
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PROMOTIONAL_LETTER' }"
+                                    @click="setActive('PROMOTIONAL_LETTER')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -357,7 +363,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PERSONAL_INQUIRY' }"
+                                    @click="setActive('PERSONAL_INQUIRY')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -369,7 +378,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PLATFORM_INQUIRY' }"
+                                    @click="setActive('PLATFORM_INQUIRY')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -381,7 +393,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'QUOTATION' }"
+                                    @click="setActive('QUOTATION')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -393,7 +408,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PO' }"
+                                    @click="setActive('PO')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -405,7 +423,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'SAMPLE_PI' }"
+                                    @click="setActive('SAMPLE_PI')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -417,7 +438,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PI' }"
+                                    @click="setActive('PI')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -429,7 +453,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'CI' }"
+                                    @click="setActive('CI')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -441,7 +468,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PL' }"
+                                    @click="setActive('PL')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -453,7 +483,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'MEMO' }"
+                                    @click="setActive('MEMO')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -465,7 +498,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'DISTRIBUTED_MAIL' }"
+                                    @click="setActive('DISTRIBUTED_MAIL')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -477,7 +513,10 @@
                                     <!---->
                                   </div>
                                 </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+                                <li class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'RECEIVE_AND_DISTRIBUTE_MAIL' }"
+                                    @click="setActive('RECEIVE_AND_DISTRIBUTE_MAIL')"
+                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
                                   <!---->
                                   <!---->
                                   <div class="mail-sidebar-menu-item">
@@ -491,7 +530,10 @@
                                 </li>
                               </ul>
                             </li>
-                            <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                            <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
+                                :class="{ 'mm-menu-item--active': activeMenuItem === 'CUSTOM_TAG' }"
+                                @click="setActive('CUSTOM_TAG')"
+                                role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
 <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
   <!---->
   <span class="mm-menu-title">
@@ -516,7 +558,10 @@
   </svg>
 </div>
 <ul role="menu" class="mm-menu mm-menu--inline">
-  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+  <li class="mm-menu-item mail-sidebar-menu-item"
+      :class="{ 'mm-menu-item--active': activeMenuItem === 'PRICE' }"
+      @click="setActive('PRICE')"
+      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
     <!---->
     <!---->
     <div class="mail-sidebar-menu-item">
@@ -538,7 +583,10 @@
 																							</span>
     </div>
   </li>
-  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
+  <li class="mm-menu-item mail-sidebar-menu-item"
+      :class="{ 'mm-menu-item--active': activeMenuItem === 'CUSTOMER' }"
+      @click="setActive('CUSTOMER')"
+      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
     <!---->
     <!---->
     <div class="mail-sidebar-menu-item">
@@ -579,7 +627,10 @@
   </svg>
 </div>
 <ul role="menu" class="mm-menu mm-menu--inline">
-  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+  <li class="mm-menu-item mail-sidebar-menu-item"
+      :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MESSAGE' }"
+      @click="setActive('DELETED_MESSAGE')"
+      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
     <!---->
     <!---->
     <div class="mail-sidebar-menu-item">
@@ -591,7 +642,10 @@
       <!---->
     </div>
   </li>
-  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+  <li class="mm-menu-item mail-sidebar-menu-item"
+      :class="{ 'mm-menu-item--active': activeMenuItem === 'SPAM' }"
+      @click="setActive('SPAM')"
+      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
     <!---->
     <!---->
     <div class="mail-sidebar-menu-item">
@@ -603,7 +657,10 @@
       <!---->
     </div>
   </li>
-  <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+  <li class="mm-menu-item mail-sidebar-menu-item"
+      :class="{ 'mm-menu-item--active': activeMenuItem === 'TRACK_INFORMATION' }"
+      @click="setActive('TRACK_INFORMATION')"
+      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
     <!---->
     <!---->
     <div class="mail-sidebar-menu-item">
@@ -694,7 +751,7 @@
 import emailContentLayout from './email_content.vue';
 import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
-import {listTask, listTaskPull} from "@/api/email/task";
+import {listTaskPull} from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
 import { listPullHeader } from "@/api/email/email";
 
@@ -745,7 +802,18 @@ export default {
     },
 
     setActive(item) {
+      console.log(item);
       this.activeMenuItem = item;
+    },
+
+    taskPullClick(taskId) {
+      this.fetchEmailList();
+      this.setActive('PULL_' + taskId);
+    },
+
+    taskSendClick(taskId) {
+      this.fetchEmailList();
+      this.setActive('SEND_' + taskId);
     },
   },
 
