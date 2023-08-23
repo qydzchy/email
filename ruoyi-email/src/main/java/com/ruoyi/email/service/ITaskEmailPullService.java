@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailPull;
+import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 
 /**
  * 拉取邮件Service接口
@@ -67,4 +68,10 @@ public interface ITaskEmailPullService
      * @return
      */
     Map<Long, Integer> getPullEmailQuantityByIds(List<Long> ids);
+
+    /**
+     * 获取拉取邮件数量
+     * @return
+     */
+    List<PullEmailInfoListVO> listPullHeader(Long taskId);
 }

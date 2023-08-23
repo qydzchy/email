@@ -1,12 +1,17 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailPullService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailPullMapper;
@@ -116,5 +121,29 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
                 map -> Long.valueOf(map.get("taskId").toString()),
                 map -> Integer.valueOf(map.get("quantity").toString()))
         );
+    }
+
+    @Override
+    public List<PullEmailInfoListVO> listPullHeader(Long taskId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        TaskEmailPull taskEmailPull = new TaskEmailPull();
+        taskEmailPull.setTaskId(taskId);
+        taskEmailPull.setCreateId(userId);
+        taskEmailPull.setDelFlag("0");
+        List<TaskEmailPull> taskEmailPullList = selectTaskEmailPullList(taskEmailPull);
+        if (taskEmailPullList == null || taskEmailPullList.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        List<PullEmailInfoListVO> pullEmailInfoListVOList = new ArrayList<>();
+        taskEmailPullList.stream().forEach(emailPull -> {
+            PullEmailInfoListVO pullEmailInfoListVO = new PullEmailInfoListVO();
+            BeanUtils.copyProperties(emailPull, pullEmailInfoListVO);
+            pullEmailInfoListVOList.add(pullEmailInfoListVO);
+        });
+
+        return pullEmailInfoListVOList;
     }
 }

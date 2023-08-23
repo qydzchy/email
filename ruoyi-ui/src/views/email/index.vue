@@ -47,7 +47,10 @@
                     </div>
                     <div class="mail-nav-normal-container">
                       <ul role="menubar" class="mm-menu mail-sidebar-menu">
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
+                            :class="{ 'mm-menu-item--active': activeMenuItem === 'INBOX' }"
+                            @click="setActive('INBOX')"
+                            role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
@@ -62,7 +65,10 @@
                             </svg>
                           </div>
                           <ul role="menu" class="mm-menu mm-menu--inline">
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                            <li class="mm-menu-item mail-sidebar-menu-item"
+                                :class="{ 'mm-menu-item--active': activeMenuItem === 'ALL_RECEIVED' }"
+                                @click="setActive('ALL_RECEIVED')"
+                                role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
@@ -77,16 +83,19 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="email in emails" :key="email.id" class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" style="padding-left: 35px; padding-right: 14px;">
+                            <li v-for="task in taskList" :key="task.id" @click="fetchEmailList(task.id)" class="mm-menu-item mail-sidebar-menu-item"
+                                :class="{ 'mm-menu-item--active': activeMenuItem === 'PULL_'+task.id }"
+                                @click="setActive('PULL_'+task.id)"
+                                role="menuitem" tabindex="-1" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
-                                <div v-if="email.connStatus === 1" class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <div v-if="task.connStatus === 1" class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <!-- 正常状态的内容 -->
                                   <div class="mailbox-item ellipsis">
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
-                                        <span class="ellipsis">{{email.account}}</span>
+                                        <span class="ellipsis">{{task.account}}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -105,7 +114,7 @@
                                       <div class="public-mail-tag-content">
                                         <span class="mm-tooltip mailbox-item-email-error-tip">
 																										<span class="mm-tooltip-trigger">
-																											<span class="ellipsis">{{email.account}}</span>
+																											<span class="ellipsis">{{task.account}}</span>
 																										</span>
 																									</span>
                                       </div>
@@ -115,51 +124,18 @@
                                 <!---->
                               </div>
                             </li>
-
-<!--                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              &lt;!&ndash;&ndash;&gt;
-                              &lt;!&ndash;&ndash;&gt;
-                              <div class="mail-sidebar-menu-item">
-                                &lt;!&ndash;&ndash;&gt;
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <div class="mailbox-item ellipsis">
-																							<span class="mm-tooltip mailbox-item-error-icon">
-																								<span class="mm-tooltip-trigger">
-																									<svg class="mm-icon mm-icon-info default-error-icon" viewBox="0 0 24 24" name="info" fill="#DD3C3C" style="height: 15px; width: 15px;">
-																										<path d="M12 .9C5.9.9.9 5.9.9 12s5 11.1 11.1 11.1 11.1-5 11.1-11.1S18.1.9 12 .9zm0 5.6c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4zm2.3 9.7c0 .2-.2.4-.5.4h-3.6c-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5.2 0 .4-.2.4-.4v-1.9c0-.2-.2-.5-.4-.5-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5h2.7c.3 0 .5.2.5.5v3.7c0 .2.2.4.4.4.3 0 .5.2.5.5v.9z"></path>
-																									</svg>
-																								</span>
-                                                &lt;!&ndash;&ndash;&gt;
-																							</span>
-                                    <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                      <div class="public-mail-tag-content">
-                                        &lt;!&ndash;&ndash;&gt;
-                                        <span class="mm-tooltip mailbox-item-email-error-tip">
-																										<span class="mm-tooltip-trigger">
-																											<span title="w0r1d_space@sohu.com" class="ellipsis">w0r1d_space@sohu.com</span>
-																										</span>
-                                          &lt;!&ndash;&ndash;&gt;
-																									</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <span class="mm-tooltip mail-menu-item-count">
-																						<span class="mm-tooltip-trigger">746</span>
-                                  &lt;!&ndash;&ndash;&gt;
-																					</span>
-                                &lt;!&ndash;&ndash;&gt;
-                              </div>
-                            </li>-->
                           </ul>
                         </li>
-                        <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+                        <li class="mm-menu-item mail-sidebar-menu-item"
+                            :class="{ 'mm-menu-item--active': activeMenuItem === 'PENDING_MAIL' }"
+                            @click="setActive('PENDING_MAIL')"
+                            role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
                           <div class="mail-sidebar-menu-item">
                             <!---->
                             <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                              <span class="flex items-center" title="待处理邮件">待处理邮件</span>
+                              <span class="flex items-center">待处理邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
 																				<span class="mm-tooltip-trigger">2</span>
@@ -168,7 +144,10 @@
                             <!---->
                           </div>
                         </li>
-                        <li class="mm-menu-item mm-menu-item--active mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+                        <li class="mm-menu-item mail-sidebar-menu-item"
+                            :class="{ 'mm-menu-item--active': activeMenuItem === 'AN_UNREAD_MAIL' }"
+                            @click="setActive('AN_UNREAD_MAIL')"
+                            role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
                           <div class="mail-sidebar-menu-item">
@@ -183,7 +162,10 @@
                             <!---->
                           </div>
                         </li>
-                        <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+                        <li class="mm-menu-item mail-sidebar-menu-item"
+                            :class="{ 'mm-menu-item--active': activeMenuItem === 'DRAFTS' }"
+                            @click="setActive('DRAFTS')"
+                            role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
                           <div class="mail-sidebar-menu-item">
@@ -198,7 +180,10 @@
                             <!---->
                           </div>
                         </li>
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
+                            :class="{ 'mm-menu-item--active': activeMenuItem === 'OUTBOX' }"
+                            @click="setActive('OUTBOX')"
+                            role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
@@ -213,7 +198,10 @@
                             </svg>
                           </div>
                           <ul role="menu" class="mm-menu mm-menu--inline">
-                            <li class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                            <li class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
+                                :class="{ 'mm-menu-item--active': activeMenuItem === 'COMPLETE_SHIPMENT' }"
+                                @click="setActive('COMPLETE_SHIPMENT')"
+                                role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
@@ -225,17 +213,17 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="email in emails" :key="email.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                            <li v-for="task in taskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
                                 <!---->
-                                <div v-if="email.connStatus === 1" class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <div v-if="task.connStatus === 1" class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <!-- 正常状态的内容 -->
                                   <div class="mailbox-item ellipsis">
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
-                                        <span class="ellipsis">{{email.account}}</span>
+                                        <span class="ellipsis">{{task.account}}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -254,7 +242,7 @@
                                       <div class="public-mail-tag-content">
                                         <span class="mm-tooltip mailbox-item-email-error-tip">
 																										<span class="mm-tooltip-trigger">
-																											<span class="ellipsis">{{email.account}}</span>
+																											<span class="ellipsis">{{task.account}}</span>
 																										</span>
 																									</span>
                                       </div>
@@ -708,12 +696,15 @@ import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
 import {listTask, listTaskPull} from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
+import { listPullHeader } from "@/api/email/email";
 
 export default {
   data() {
     return {
-      emails: [],
+      taskList: [],
+      emailList: [],
       folders: [],
+      activeMenuItem: null,
       currentLayout: 'email_content', //
       isLeftPaneVisible: true,
     };
@@ -741,15 +732,21 @@ export default {
 
     refreshPullEmailList() {
       listTaskPull().then((response) => {
-        this.emails = response.rows;
-        this.emails.forEach((email) => {
-          email.id = email.id;
-          email.account = email.account;
-          email.connStatus = email.connStatus;
-          email.mailQuantity = email.mailQuantity;
-        });
+        this.taskList = response.rows;
       });
-    }
+    },
+
+    fetchEmailList() {
+      listPullHeader().then(response => {
+        this.emailList = response.data;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
+    },
+
+    setActive(item) {
+      this.activeMenuItem = item;
+    },
   },
 
   mounted() {
