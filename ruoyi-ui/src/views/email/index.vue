@@ -325,123 +325,7 @@
                               <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                             </svg>
                           </div>
-                          <ul role="menu" class="mm-menu mm-menu--inline">
-                            <li class="mm-submenu mail-sidebar-submenu" role="menuitem" aria-haspopup="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
-                                <!---->
-                                <span class="mm-menu-title">
-																						<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																							<span class="flex items-center" title="其他文件夹">其他文件夹</span>
-																						</div>
-                                  <!---->
-																						<span>
-																							<div class="mm-dropdown mail-nav-item-dropdown">
-																								<div class="mm-dropdown-trigger">
-																									<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																											<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																										</svg>
-																									</span>
-																								</div>
-                                                <!---->
-																							</div>
-																						</span>
-																					</span>
-                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                                </svg>
-                              </div>
-                              <ul role="menu" class="mm-menu mm-menu--inline" style="display: none;">
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <!---->
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="QQ邮件订阅">QQ邮件订阅</span>
-                                    </div>
-                                    <!---->
-                                    <span>
-																								<div class="mm-dropdown mail-nav-item-dropdown">
-																									<div class="mm-dropdown-trigger">
-																										<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																												<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																											</svg>
-																										</span>
-																									</div>
-                                                  <!---->
-																								</div>
-																							</span>
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <!---->
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="邮件归档">邮件归档</span>
-                                    </div>
-                                    <!---->
-                                    <span>
-																								<div class="mm-dropdown mail-nav-item-dropdown">
-																									<div class="mm-dropdown-trigger">
-																										<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																												<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																											</svg>
-																										</span>
-																									</div>
-                                                  <!---->
-																								</div>
-																							</span>
-                                  </div>
-                                </li>
-                              </ul>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <span class="flex items-center" title="ces">ces</span>
-                                </div>
-                                <!---->
-                                <span>
-																						<div class="mm-dropdown mail-nav-item-dropdown">
-																							<div class="mm-dropdown-trigger">
-																								<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																										<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																									</svg>
-																								</span>
-																							</div>
-                                              <!---->
-																						</div>
-																					</span>
-                              </div>
-                            </li>
-                            <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                              <!---->
-                              <!---->
-                              <div class="mail-sidebar-menu-item">
-                                <!---->
-                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                  <span class="flex items-center" title="tjm">tjm</span>
-                                </div>
-                                <!---->
-                                <span>
-																						<div class="mm-dropdown mail-nav-item-dropdown">
-																							<div class="mm-dropdown-trigger">
-																								<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																										<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																									</svg>
-																								</span>
-																							</div>
-                                              <!---->
-																						</div>
-																					</span>
-                              </div>
-                            </li>
-                          </ul>
+                          <FolderTree :folders="folders"></FolderTree>
                         </li>
                         <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
@@ -517,7 +401,7 @@
                                     <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                       <span class="flex items-center" title="报价">报价</span>
                                     </div>
-                                    <!---->
+                                    <!---->-
                                     <!---->
                                   </div>
                                 </li>
@@ -821,12 +705,15 @@
 <script>
 import emailContentLayout from './email_content.vue';
 import setup from './setup.vue';
+import FolderTree from './folder_list_item.vue'
 import {listTask, listTaskPull} from "@/api/email/task";
+import { listFolder } from "@/api/email/folder";
 
 export default {
   data() {
     return {
       emails: [],
+      folders: [],
       currentLayout: 'email_content', //
       isLeftPaneVisible: true,
     };
@@ -834,7 +721,9 @@ export default {
   components: {
     'email_content': emailContentLayout,
     'setup': setup,
+    'FolderTree': FolderTree
   },
+
   methods: {
     switchLayout(layout) {
       this.currentLayout = layout; // 切换布局
@@ -842,6 +731,12 @@ export default {
 
     toggleLeftPane() {
       this.isLeftPaneVisible = !this.isLeftPaneVisible;
+    },
+
+    refreshFolderList() {
+      listFolder().then((response) => {
+        this.folders = response.data;
+      });
     },
 
     refreshPullEmailList() {
@@ -859,6 +754,7 @@ export default {
 
   mounted() {
     this.refreshPullEmailList();
+    this.refreshFolderList();
   },
 
 

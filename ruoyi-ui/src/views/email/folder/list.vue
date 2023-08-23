@@ -46,7 +46,7 @@
 <script>
 import FolderItem from './list_item.vue';
 import FolderInput from './list_input.vue';
-import { listTask } from "@/api/email/folder";
+import { listFolder } from "@/api/email/folder";
 
 export default {
   components: {
@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     refreshFolderList() {
-      listTask().then((response) => {
+      listFolder().then((response) => {
         this.folders = response.data;
       });
     },
