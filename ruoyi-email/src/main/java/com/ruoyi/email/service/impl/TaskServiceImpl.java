@@ -141,6 +141,12 @@ public class TaskServiceImpl implements ITaskService
         return homeListTaskVOList;
     }
 
+    @Override
+    public boolean existById(Long id, Long createId) {
+        int count = taskMapper.countById(id, createId);
+        return count > 0 ? true : false;
+    }
+
     /**
      * 新增邮箱任务
      * 

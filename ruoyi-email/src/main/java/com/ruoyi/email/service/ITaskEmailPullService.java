@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailPull;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
+import org.springframework.data.util.Pair;
 
 /**
  * 拉取邮件Service接口
@@ -70,8 +71,8 @@ public interface ITaskEmailPullService
     Map<Long, Integer> getPullEmailQuantityByIds(List<Long> ids);
 
     /**
-     * 获取拉取邮件数量
+     * 获取拉取邮件
      * @return
      */
-    List<PullEmailInfoListVO> listPullHeader(Long taskId);
+    Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Integer pageNum, Integer pageSize);
 }

@@ -793,8 +793,14 @@ export default {
       });
     },
 
-    fetchEmailList() {
-      listPullHeader().then(response => {
+    fetchEmailList(taskId) {
+      const query = {
+        taskId: taskId,
+        pageNum: 1,
+        pageSize: 30
+      }
+
+      listPullHeader(query).then(response => {
         this.emailList = response.data;
       }).catch(error => {
         console.error("Failed to fetch emails:", error);
@@ -807,12 +813,12 @@ export default {
     },
 
     taskPullClick(taskId) {
-      this.fetchEmailList();
+      this.fetchEmailList(taskId);
       this.setActive('PULL_' + taskId);
     },
 
     taskSendClick(taskId) {
-      this.fetchEmailList();
+      this.fetchEmailList(taskId);
       this.setActive('SEND_' + taskId);
     },
   },

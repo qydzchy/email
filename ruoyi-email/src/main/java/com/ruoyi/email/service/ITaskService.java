@@ -80,4 +80,9 @@ public interface ITaskService
      * @return
      */
     List<HomeListTaskVO> pullList();
+
+    /**
+     * 是否存在任务
+     */
+   boolean existById(Long id, Long createId);
 }

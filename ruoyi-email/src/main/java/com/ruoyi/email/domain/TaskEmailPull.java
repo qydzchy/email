@@ -56,6 +56,9 @@ public class TaskEmailPull extends BaseEntity
     @Excel(name = "邮件主题")
     private String title;
 
+    @Excel(name = "发送时间")
+    private Date sendDate;
+
     /** 原始邮件存储路径 */
     @Excel(name = "原始邮件存储路径")
     private String emlPath;
@@ -179,7 +182,15 @@ public class TaskEmailPull extends BaseEntity
         this.emlPath = emlPath;
     }
 
-    public String getEmlPath() 
+    public Date getSendDate() {
+        return sendDate;
+    }
+
+    public void setSendDate(Date sendDate) {
+        this.sendDate = sendDate;
+    }
+
+    public String getEmlPath()
     {
         return emlPath;
     }

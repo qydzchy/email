@@ -1,18 +1,22 @@
 package com.ruoyi.email.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailPullService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.email.service.ITaskService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailPullMapper;
 import com.ruoyi.email.domain.TaskEmailPull;
@@ -25,11 +29,14 @@ import javax.annotation.Resource;
  * @author tangJM
  * @date 2023-07-31
  */
+@Slf4j
 @Service
 public class TaskEmailPullServiceImpl implements ITaskEmailPullService
 {
     @Resource
     private TaskEmailPullMapper taskEmailPullMapper;
+    @Resource
+    private ITaskService taskService;
 
     /**
      * 查询拉取邮件
@@ -124,26 +131,78 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
     }
 
     @Override
-    public List<PullEmailInfoListVO> listPullHeader(Long taskId) {
+    public Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Integer pageNum, Integer pageSize) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        TaskEmailPull taskEmailPull = new TaskEmailPull();
-        taskEmailPull.setTaskId(taskId);
-        taskEmailPull.setCreateId(userId);
-        taskEmailPull.setDelFlag("0");
-        List<TaskEmailPull> taskEmailPullList = selectTaskEmailPullList(taskEmailPull);
-        if (taskEmailPullList == null || taskEmailPullList.size() == 0) {
-            return new ArrayList<>();
+        boolean exist = taskService.existById(taskId, userId);
+        if (!exist) {
+            log.info("任务不存在，taskId:{}", taskId);
+            throw new ServiceException("任务不存在");
         }
 
-        List<PullEmailInfoListVO> pullEmailInfoListVOList = new ArrayList<>();
-        taskEmailPullList.stream().forEach(emailPull -> {
-            PullEmailInfoListVO pullEmailInfoListVO = new PullEmailInfoListVO();
-            BeanUtils.copyProperties(emailPull, pullEmailInfoListVO);
-            pullEmailInfoListVOList.add(pullEmailInfoListVO);
+        int count = countTaskEmailPullTask(taskId);
+        if (count <= 0) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<PullEmailInfoListVO> pullEmailInfoListVOList = taskEmailPullMapper.selectTaskEmailPullByTaskIdPage(taskId, offset, limit);
+
+        Map<String, List<PullEmailInfoListVO>> data = new LinkedHashMap<>();
+        pullEmailInfoListVOList.stream().forEach(pullEmailInfoListVO -> {
+            Date sendDate = pullEmailInfoListVO.getSendDate();
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(sendDate.toInstant(), ZoneId.systemDefault());
+            String dynamicLabel = getDynamicLabel(localDateTime);
+
+            if (data.containsKey(dynamicLabel)) {
+                data.get(dynamicLabel).add(pullEmailInfoListVO);
+            } else {
+                data.put(dynamicLabel, new ArrayList<PullEmailInfoListVO>() {{
+                    add(pullEmailInfoListVO);
+                }});
+            }
         });
 
-        return pullEmailInfoListVOList;
+        List<Map<String, List<PullEmailInfoListVO>>> dataList = new ArrayList<>();
+        data.forEach((key, value) -> {
+            dataList.add(new HashMap<String, List<PullEmailInfoListVO>>() {{
+                put(key, value);
+            }});
+        });
+
+        return Pair.of(count, dataList);
     }
+
+    /**
+     * 获取任务下拉取的邮件数量
+     * @param taskId
+     * @return
+     */
+    private int countTaskEmailPullTask(Long taskId) {
+        return taskEmailPullMapper.countByTaskId(taskId);
+    }
+
+    private String getDynamicLabel(LocalDateTime mailDateTime) {
+        LocalDateTime now = LocalDateTime.now();
+
+        long daysBetween = ChronoUnit.DAYS.between(mailDateTime, now);
+        if (daysBetween == 0) {
+            return "今天";
+        } else if (daysBetween == 1) {
+            return "昨天";
+        } else if (daysBetween > 1 && daysBetween <= 7) {
+            DayOfWeek dayOfWeek = mailDateTime.getDayOfWeek();
+            return "上周" + dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.CHINESE);
+        } else if (mailDateTime.getYear() == now.getYear()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+            return mailDateTime.format(formatter);
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+            return mailDateTime.format(formatter);
+        }
+    }
+
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailPull;
+import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -68,4 +69,20 @@ public interface TaskEmailPullMapper
      * @return
      */
     List<Map<String, Object>> getPullEmailQuantityByIds(@Param("ids") List<Long> ids);
+
+    /**
+     *
+     * @param taskId
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<PullEmailInfoListVO> selectTaskEmailPullByTaskIdPage(@Param("taskId") Long taskId, @Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    /**
+     * 获取任务下拉取邮件数量
+     * @param taskId
+     * @return
+     */
+    int countByTaskId(@Param("taskId") Long taskId);
 }
