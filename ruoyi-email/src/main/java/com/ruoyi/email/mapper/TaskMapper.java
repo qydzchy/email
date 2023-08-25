@@ -98,4 +98,11 @@ public interface TaskMapper
      * @return
      */
     int countById(@Param("id") Long id, @Param("createId") Long createId);
+
+    /**
+     * 根据创建人查询任务id
+     * @param userId
+     * @return
+     */
+    List<Long> listIdByUserId(@Param("createId") Long userId);
 }

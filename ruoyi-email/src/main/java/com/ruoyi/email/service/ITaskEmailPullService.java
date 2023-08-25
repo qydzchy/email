@@ -74,5 +74,5 @@ public interface ITaskEmailPullService
      * 获取拉取邮件
      * @return
      */
-    Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Boolean readFlag, Boolean pendingFlag, Integer pageNum, Integer pageSize);
 }

@@ -27,11 +27,13 @@ public class EmailController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('email:task:pull:header:list')")
     @GetMapping("/list/pull/header")
-    public TableDataInfo listPullHeader(@NotNull(message = "任务ID不能为空") Long taskId,
+    public TableDataInfo listPullHeader(Long taskId,
+                                        Boolean readFlag,
+                                        Boolean pendingFlag,
                                         @NotNull(message = "页数不能为空") Integer pageNum,
                                         @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> pair = taskEmailPullService.listPullHeader(taskId, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> pair = taskEmailPullService.listPullHeader(taskId, readFlag, pendingFlag, pageNum, pageSize);
 
         TableDataInfo rspData = new TableDataInfo();
         rspData.setCode(HttpStatus.SUCCESS);

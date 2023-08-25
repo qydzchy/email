@@ -85,4 +85,11 @@ public interface ITaskService
      * 是否存在任务
      */
    boolean existById(Long id, Long createId);
+
+    /**
+     * 根据用户id查询任务id
+     * @param userId
+     * @return
+     */
+    List<Long> listIdByUserId(Long userId);
 }

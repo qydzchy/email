@@ -72,17 +72,17 @@ public interface TaskEmailPullMapper
 
     /**
      *
-     * @param taskId
+     * @param taskIdList
      * @param offset
      * @param limit
      * @return
      */
-    List<PullEmailInfoListVO> selectTaskEmailPullByTaskIdPage(@Param("taskId") Long taskId, @Param("offset") Integer offset, @Param("limit") Integer limit);
+    List<PullEmailInfoListVO> selectTaskEmailPullByTaskIdPage(@Param("taskIdList") List<Long> taskIdList, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     /**
      * 获取任务下拉取邮件数量
-     * @param taskId
+     * @param taskIdList
      * @return
      */
-    int countByTaskId(@Param("taskId") Long taskId);
+    int countByTaskId(@Param("taskIdList") List<Long> taskIdList, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag);
 }

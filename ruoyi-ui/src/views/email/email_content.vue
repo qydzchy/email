@@ -28,18 +28,18 @@
 																											<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">全部
                                                         <!---->
 																											</div>
-																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
-                                                        <!---->
+<!--																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
+                                                        &lt;!&ndash;&ndash;&gt;
 																											</div>
 																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
-                                                        <!---->
+                                                        &lt;!&ndash;&ndash;&gt;
 																											</div>
 																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
-                                                        <!---->
+                                                        &lt;!&ndash;&ndash;&gt;
 																											</div>
 																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">其他
-                                                        <!---->
-																											</div>
+                                                        &lt;!&ndash;&ndash;&gt;
+																											</div>-->
 																										</div>
 																									</div>
 																								</div>
@@ -69,13 +69,17 @@
 																					<!---->
 																					<div class="mail-list-scroll-container">
 																						<ul class="grouped-list-container bordered mail-grouped-list open">
-																							<li class="grouped-list-item yesterday">
+																							<li  v-for="monthData in localEmailList" :key="Object.keys(monthData)[0]" class="grouped-list-item yesterday">
 																								<h2 class="grouped-list-item-title">
-																									<span class="time-title">昨天</span>
-																									<span class="mail-count"> ( 2 封) </span>
+																									<span class="time-title">{{ Object.keys(monthData)[0] }}</span>
+																									<span class="mail-count"> ( {{monthData[Object.keys(monthData)[0]].length}} 封) </span>
 																								</h2>
 																								<ul class="plain-list-container bordered">
-																									<li class="plain-list-item active">
+																									<li
+                                                    v-for="email in monthData[Object.keys(monthData)[0]]"
+                                                    :key="email.id"
+                                                    :class="{'plain-list-item': true, 'active': email.id === activeEmailId}"
+                                                    @click="toggleActive(email.id)">
 																										<div class="right-click-menu-handler">
 																											<div class="mail-list-item-placeholder-wrapper">
 																												<div class="mail-item-container mail-list-item-wrapper open mail-list-item-wrapper-padding" draggable="true" mail-info-icon-map="[object Object]">
@@ -90,17 +94,17 @@
 																														<div class="addr-info-container" style="display: none;">
 																															<div class="mail-list-item-addr-contact-info">
 																																<span class="email-addr-box">
-																																	<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small mail-tag-avatar">
-																																		<span class="mm-tooltip-trigger">
-																																			<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
-																																		</span>
-                                                                    <!---->
-																																	</span>
+                                                                  <span class="mm-tooltip all-type-avatar-wrapper client-stranger small mail-tag-avatar">
+                                                                    <span class="mm-tooltip-trigger">
+                                                                      <i class="m-icon avatar-icon icon-new-customer-avatar">
+                                                                      </i>
+                                                                    </span>
+                                                                  </span>
                                                                   <!---->
                                                                   <!---->
-																																	<span title="小满客户管理 " class="email-nickname ellipsis">小满客户管理 </span>
+																																	<span class="email-nickname ellipsis">{{email.title}}</span>
 																																	<span class="seperator"></span>
-																																	<span title="noreply@k.xiaomanmail.com" class="customer-name ellipsis">noreply@k.xiaomanmail.com</span>
+																																	<span class="customer-name ellipsis">{{email.fromer}}</span>
 																																</span>
 																																<div class="mail-info-icons"></div>
 																															</div>
@@ -109,15 +113,15 @@
 																															<div class="addr-info-container open">
 																																<div class="mail-list-item-addr-contact-info open">
 																																	<span class="email-addr-box">
-																																		<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small mail-tag-avatar">
-																																			<span class="mm-tooltip-trigger">
-																																				<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
-																																			</span>
-                                                                      <!---->
-																																		</span>
+																																		<span class="mm-tooltip all-type-avatar-wrapper client-stranger small mail-tag-avatar">
+                                                                    <span class="mm-tooltip-trigger">
+                                                                      <i class="m-icon avatar-icon icon-new-customer-avatar">
+                                                                      </i>
+                                                                    </span>
+                                                                  </span>
                                                                     <!---->
                                                                     <!---->
-																																		<span title="小满客户管理 " class="email-nickname ellipsis">小满客户管理 </span>
+																																		<span class="email-nickname ellipsis">{{email.fromer}} </span>
                                                                     <!---->
 																																	</span>
 																																	<div class="mail-info-icons"></div>
@@ -141,16 +145,10 @@
 																															<div class="con-wrap">
 																																<!---->
 																																<span class="subject-summary-wrap">
-																																	<span title="小满账号异常登录提醒" class="subject ellipsis">小满账号异常登录提醒</span>
+																																	<span class="subject ellipsis">{{email.title}}</span>
 																																	<span class="summary summary-content ellipsis">
 																																		<span class="concat-line"> - </span>
-																																		<span title="Email Rox! 亲爱的小满用户 您好：
-                                                                      您的小满账号 sales17@allxchips.com 有异常登录行为
-                                                                      登录时间 登录IP 登录地址 操作系统 浏览器
-                                                                       2023-07-31 13:" class="ellipsis">Email Rox! 亲爱的小满用户 您好：
-																																			您的小满账号 sales17@allxchips.com 有异常登录行为
-																																			登录时间 登录IP 登录地址 操作系统 浏览器
-																																			2023-07-31 13:</span>
+																																		<span class="ellipsis">{{email.content}}</span>
 																																	</span>
 																																</span>
 																															</div>
@@ -158,120 +156,7 @@
 																														<div style="display: none;"></div>
 																														<div class="right-operations-container" style="display: none;">
 																															<div class="mail-list-item-list-right">
-																																<span class="time ellipsis">07-31 13:57</span>
-                                                                <!---->
-																																<div class="pending">
-																																	<div class="mm-popover">
-																																		<div>
-																																			<span class="okki-icon-wrap pending-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																																					<path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
-																																					<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
-																																				</svg>
-																																			</span>
-																																		</div>
-                                                                    <!---->
-																																	</div>
-																																</div>
-																																<div class="mail-pin-wrapper">
-																																	<span class="okki-icon-wrap mail-pin-icon" data-tips="固定">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																																			<path fill-rule="evenodd" clip-rule="evenodd" d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z"></path>
-																																		</svg>
-																																	</span>
-																																</div>
-																															</div>
-																														</div>
-																													</div>
-																													<div class="attachment-list-container" style="display: none;">
-																														<!---->
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																									</li>
-																									<li class="plain-list-item">
-																										<div class="right-click-menu-handler">
-																											<div class="mail-list-item-placeholder-wrapper">
-																												<div class="mail-item-container mail-list-item-wrapper open mail-list-item-wrapper-padding" draggable="true" mail-info-icon-map="[object Object]">
-																													<div class="mail-list-item-content">
-																														<div>
-																															<label class="mm-checkbox mail-list-item-checkbox" style="display: none;">
-																																<input true-value="true" type="checkbox">
-																																<span class="mm-checkbox-input"></span>
-                                                                <!---->
-																															</label>
-																														</div>
-																														<div class="addr-info-container" style="display: none;">
-																															<div class="mail-list-item-addr-contact-info unread">
-																																<span class="email-addr-box">
-																																	<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small mail-tag-avatar">
-																																		<span class="mm-tooltip-trigger">
-																																			<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
-																																		</span>
-                                                                    <!---->
-																																	</span>
-                                                                  <!---->
-                                                                  <!---->
-																																	<span title="小满客户管理 " class="email-nickname ellipsis">小满客户管理 </span>
-																																	<span class="seperator"></span>
-																																	<span title="noreply@k.xiaomanmail.com" class="customer-name ellipsis">noreply@k.xiaomanmail.com</span>
-																																</span>
-																																<div class="mail-info-icons"></div>
-																															</div>
-																														</div>
-																														<div class="addr-info-operations-wrapper" style="">
-																															<div class="addr-info-container open">
-																																<div class="mail-list-item-addr-contact-info unread open">
-																																	<span class="email-addr-box">
-																																		<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small mail-tag-avatar">
-																																			<span class="mm-tooltip-trigger">
-																																				<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
-																																			</span>
-                                                                      <!---->
-																																		</span>
-                                                                    <!---->
-                                                                    <!---->
-																																		<span title="小满客户管理 " class="email-nickname ellipsis">小满客户管理 </span>
-                                                                    <!---->
-																																	</span>
-																																	<div class="mail-info-icons"></div>
-																																</div>
-																															</div>
-																															<div class="right-operations-container open">
-																																<div class="mail-list-item-list-right open">
-																																	<span class="time ellipsis">07-31 08:56</span>
-                                                                  <!---->
-                                                                  <!---->
-																																	<div class="mail-pin-wrapper">
-																																		<span class="okki-icon-wrap mail-pin-icon" data-tips="固定">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																																				<path fill-rule="evenodd" clip-rule="evenodd" d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z"></path>
-																																			</svg>
-																																		</span>
-																																	</div>
-																																</div>
-																															</div>
-																														</div>
-																														<div class="mail-list-item-overview-content unread open">
-																															<div class="con-wrap">
-																																<!---->
-																																<span class="subject-summary-wrap">
-																																	<span title="小满账号异常登录提醒" class="subject ellipsis">小满账号异常登录提醒</span>
-																																	<span class="summary summary-content ellipsis">
-																																		<span class="concat-line"> - </span>
-																																		<span title="Email Rox! 亲爱的小满用户 您好：
-                                                                      您的小满账号 sales17@allxchips.com 有异常登录行为
-                                                                      登录时间 登录IP 登录地址 操作系统 浏览器
-                                                                       2023-07-31 08:" class="ellipsis">Email Rox! 亲爱的小满用户 您好：
-																																			您的小满账号 sales17@allxchips.com 有异常登录行为
-																																			登录时间 登录IP 登录地址 操作系统 浏览器
-																																			2023-07-31 08:</span>
-																																	</span>
-																																</span>
-																															</div>
-																														</div>
-																														<div style="display: none;"></div>
-																														<div class="right-operations-container" style="display: none;">
-																															<div class="mail-list-item-list-right">
-																																<span class="time ellipsis">07-31 08:56</span>
+																																<span class="time ellipsis">{{email.sendTime}}</span>
                                                                 <!---->
 																																<div class="pending">
 																																	<div class="mm-popover">
@@ -317,19 +202,24 @@
 																					</div>
 																				</div>
 																				<div class="mail-paging list-page-wrap">
-																					<span class="total-count ellipsis" title="共 759 封">共 759 封</span>
+																					<span class="total-count ellipsis" >共 {{total}} 封</span>
 																					<div class="quick-jumper">
-																						<input max="38" class="mail-paging-input" value="1">
+																						<input
+                                              :max="totalPages"
+                                              class="mail-paging-input"
+                                              v-model="currentPage"
+                                              @blur="handlePageInputBlur"
+                                              @input="handlePageInputChange">
 																						<span class="mail-paging-slash"> / </span>
-																						<span class="page-unit">38  页</span>
+																						<span class="page-unit">{{totalPages}}  页</span>
 																					</div>
-																					<div class="mail-paging-btn left-btn disabled">
+																					<div :class="['mail-paging-btn', 'left-btn', { 'disabled': currentPage === 1 }]" @click="prevPage">
 																						<span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																								<path fill-rule="evenodd" clip-rule="evenodd" d="M15.707 5.293a1 1 0 010 1.414L10.414 12l5.293 5.293a1 1 0 01-1.414 1.414l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 0z"></path>
 																							</svg>
 																						</span>
 																					</div>
-																					<div class="mail-paging-btn right-btn">
+																					<div :class="['mail-paging-btn', 'right-btn', { 'disabled': currentPage === totalPages }]" @click="nextPage">
 																						<span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																								<path fill-rule="evenodd" clip-rule="evenodd" d="M8.293 5.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L13.586 12 8.293 6.707a1 1 0 010-1.414z"></path>
 																							</svg>
@@ -1477,13 +1367,120 @@ td img {
 @import '../../static/scss/email/index/MailInformationExtension.679153d2.css';
 </style>
 <script>
+import { EventBus } from "@/api/email/event-bus";
+import {listPullHeader} from "@/api/email/email";
 
 export default {
-  props: {
-    emailList: {
-      type: Array,
-      default: () => []
+  data() {
+    return {
+      activeEmailId: null,
+      currentPage: 1,
+      pageSize: 30,
+      total: 0,
+      taskId: null,
+      localEmailList: []
     }
+  },
+  props: {
+    emailList: Array
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.total / this.pageSize);
+    }
+  },
+
+  // 在B组件中
+  created() {
+    EventBus.$on('task-selected', this.fetchEmailsForTask);
+    EventBus.$on('all-received-selected', this.fetchEmailData);
+    this.localEmailList = [...this.emailList];
+  },
+
+  watch: {
+    emailList(newList) {
+      this.localEmailList = [...newList];
+    }
+  },
+
+  beforeDestroy() {
+    EventBus.$off('task-selected', this.fetchEmailsForTask);
+    EventBus.$off('all-received-selected', this.fetchEmailData);
+  },
+  methods: {
+    fetchEmailsForTask(taskId) {
+      this.fetchEmailList(taskId, null, null);
+    },
+
+    fetchEmailList(taskId, readFlag, pendingFlag) {
+      this.taskId = taskId;
+      const query = {
+        taskId: this.taskId,
+        readFlag: readFlag,
+        pendingFlag: pendingFlag,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+
+      listPullHeader(query).then(response => {
+        this.localEmailList = response.rows;
+        this.total = response.total;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
+    },
+
+    toggleActive(emailId) {
+      if (this.activeEmailId === emailId) {
+        this.activeEmailId = null;
+      } else {
+        this.activeEmailId = emailId;
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage = Number(this.currentPage) + 1;
+        this.fetchEmailList(this.taskId, null, null);
+      }
+    },
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage = Number(this.currentPage) - 1;
+        this.fetchEmailList(this.taskId, null, null);
+      }
+    },
+
+    handlePageInputBlur() {
+      console.log(this.currentPage);
+      if (this.currentPage === undefined || this.currentPage === null || this.currentPage === '') {
+        this.currentPage = 1;
+      }
+
+      this.fetchEmailList(this.taskId, null, null);
+    },
+
+    handlePageInputChange(event) {
+      let inputValue = parseInt(event.target.value, 10);
+
+      // 检查输入值是否超出范围，并进行调整
+      if (inputValue > this.totalPages) {
+        this.currentPage = this.totalPages;
+      } else if (inputValue < 1) {
+        this.currentPage = 1;
+      }
+    },
+
+    fetchEmailData(selectedEmailType) {
+      if (selectedEmailType === 'ALL_RECEIVED') {
+        this.fetchEmailList(null, null, null);
+      } else if (selectedEmailType === 'PENDING_MAIL') {
+        this.fetchEmailList(null, null, true);
+      } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
+        this.fetchEmailList(null, false, null);
+      }
+    },
   }
 }
 </script>

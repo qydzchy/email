@@ -72,14 +72,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectTaskEmailPullByTaskIdPage"
             resultType="com.ruoyi.email.domain.vo.email.PullEmailInfoListVO">
-        select id, fromer, title, send_date as sendDate from mailbox_task_email_pull
-        where task_id = #{taskId} and del_flag = '0'
-        order by send_date desc
+        select mtep.id, mtep.fromer, mtep.title, mtep.send_date as sendDate, mtec.content from mailbox_task_email_pull mtep
+        left join mailbox_task_email_content mtec on mtep.id = mtec.email_id
+        where
+        <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
+            mtep.task_id = #{taskId}
+        </foreach>
+        <if test="readFlag != null "> and mtep.read_flag = #{readFlag}</if>
+        <if test="pendingFlag != null "> and mtep.pending_flag = #{pendingFlag}</if>
+        and mtep.del_flag = '0'
+        order by mtep.send_date desc
         LIMIT #{offset}, #{limit}
     </select>
 
     <select id="countByTaskId" resultType="java.lang.Integer">
-        select count(*) from mailbox_task_email_pull where task_id = #{taskId} and del_flag = '0'
+        select count(*) from mailbox_task_email_pull
+        where
+        <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
+            task_id = #{taskId}
+        </foreach>
+        <if test="readFlag != null "> and read_flag = #{readFlag}</if>
+        <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
+        and del_flag = '0'
     </select>
 
     <insert id="insertTaskEmailPull" parameterType="TaskEmailPull" useGeneratedKeys="true" keyProperty="id">

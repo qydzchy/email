@@ -147,6 +147,11 @@ public class TaskServiceImpl implements ITaskService
         return count > 0 ? true : false;
     }
 
+    @Override
+    public List<Long> listIdByUserId(Long userId) {
+        return taskMapper.listIdByUserId(userId);
+    }
+
     /**
      * 新增邮箱任务
      * 

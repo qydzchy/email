@@ -17,12 +17,12 @@
 																		</svg>
 																	</span>
                       </a>
-                      <a class="">
+<!--                      <a class="">
 																	<span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																			<path fill-rule="evenodd" clip-rule="evenodd" d="M9 7a3 3 0 116 0 3 3 0 01-6 0zm3-5a5 5 0 100 10 5 5 0 000-10zM8.296 13a6 6 0 00-6 6v2a1 1 0 001 1h17.408a1 1 0 001-1v-2a6 6 0 00-6-6H8.296zm-4 6a4 4 0 014-4h7.408a4 4 0 014 4v1H4.296v-1z"></path>
 																		</svg>
 																	</span>
-                      </a>
+                      </a>-->
                     </div>
                     <div class="main-nav-head-pro">
                       <div class="mm-dropdown">
@@ -64,7 +64,7 @@
                           <ul role="menu" class="mm-menu mm-menu--inline">
                             <li class="mm-menu-item mail-sidebar-menu-item"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'ALL_RECEIVED' }"
-                                @click="setActive('ALL_RECEIVED')"
+                                @click="allReceivedClick"
                                 role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
@@ -125,7 +125,7 @@
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item"
                             :class="{ 'mm-menu-item--active': activeMenuItem === 'PENDING_MAIL' }"
-                            @click="setActive('PENDING_MAIL')"
+                            @click="pendingMailClick"
                             role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
@@ -143,7 +143,7 @@
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item"
                             :class="{ 'mm-menu-item--active': activeMenuItem === 'AN_UNREAD_MAIL' }"
-                            @click="setActive('AN_UNREAD_MAIL')"
+                            @click="anUnreadMailClick"
                             role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
@@ -753,7 +753,7 @@ import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
 import {listTaskPull} from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
-import { listPullHeader } from "@/api/email/email";
+import { EventBus } from "@/api/email/event-bus";
 
 export default {
   data() {
@@ -764,6 +764,7 @@ export default {
       activeMenuItem: null,
       currentLayout: 'email_content', //
       isLeftPaneVisible: true,
+      selectedTaskId: null
     };
   },
   components: {
@@ -793,37 +794,56 @@ export default {
       });
     },
 
-    fetchEmailList(taskId) {
-      const query = {
-        taskId: taskId,
-        pageNum: 1,
-        pageSize: 30
-      }
-
-      listPullHeader(query).then(response => {
-        this.emailList = response.data;
-      }).catch(error => {
-        console.error("Failed to fetch emails:", error);
-      });
-    },
-
     setActive(item) {
-      console.log(item);
       this.activeMenuItem = item;
     },
 
     taskPullClick(taskId) {
-      this.fetchEmailList(taskId);
+      this.onTaskClick(taskId);
       this.setActive('PULL_' + taskId);
     },
 
     taskSendClick(taskId) {
-      this.fetchEmailList(taskId);
+      this.onTaskClick(taskId);
       this.setActive('SEND_' + taskId);
     },
+
+    allReceivedClick() {
+      this.setActive('ALL_RECEIVED');
+      this.triggerAllReceivedEvent();
+    },
+
+    pendingMailClick() {
+      this.setActive('PENDING_MAIL');
+      this.triggerPendingMailEvent();
+    },
+
+    anUnreadMailClick() {
+      this.setActive('AN_UNREAD_MAIL');
+      this.triggerAnUnreadMailEvent();
+    },
+
+    onTaskClick(taskId) {
+      EventBus.$emit('task-selected', taskId);
+    },
+
+    triggerAllReceivedEvent() {
+      EventBus.$emit('all-received-selected', 'ALL_RECEIVED');
+    },
+
+    triggerPendingMailEvent() {
+      EventBus.$emit('pending-mail-selected', 'PENDING_MAIL');
+    },
+
+    triggerAnUnreadMailEvent() {
+      EventBus.$emit('pending-mail-selected', 'AN_UNREAD_MAIL');
+    },
+
   },
 
   mounted() {
+    this.setActive('ALL_RECEIVED');
+    this.triggerAllReceivedEvent();  // 触发事件
     this.refreshPullEmailList();
     this.refreshFolderList();
   },
@@ -831,5 +851,3 @@ export default {
 
 };
 </script>
-
-

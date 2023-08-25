@@ -2,6 +2,7 @@ package com.ruoyi.email.domain.vo.email;
 
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -23,4 +24,18 @@ public class PullEmailInfoListVO {
      * 发送时间
      */
     private Date sendDate;
+
+    /**
+     * 邮件内容
+     */
+    private String content;
+
+    /**
+     *
+     * @return
+     */
+    public String getSendTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
+        return sdf.format(sendDate);
+    }
 }

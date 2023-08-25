@@ -131,24 +131,35 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
     }
 
     @Override
-    public Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Boolean readFlag, Boolean pendingFlag, Integer pageNum, Integer pageSize) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        boolean exist = taskService.existById(taskId, userId);
-        if (!exist) {
-            log.info("任务不存在，taskId:{}", taskId);
-            throw new ServiceException("任务不存在");
+        List<Long> taskIdList = new ArrayList<>();
+        if (taskId == null) {
+            taskIdList = taskService.listIdByUserId(userId);
+        } else {
+            boolean exist = taskService.existById(taskId, userId);
+            if (!exist) {
+                log.info("任务不存在，taskId:{}", taskId);
+                throw new ServiceException("任务不存在");
+            }
+
+            taskIdList.add(taskId);
         }
 
-        int count = countTaskEmailPullTask(taskId);
+        if (taskIdList.isEmpty()) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        int count = countTaskEmailPullTask(taskIdList, readFlag, pendingFlag);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<PullEmailInfoListVO> pullEmailInfoListVOList = taskEmailPullMapper.selectTaskEmailPullByTaskIdPage(taskId, offset, limit);
+        List<PullEmailInfoListVO> pullEmailInfoListVOList = taskEmailPullMapper.selectTaskEmailPullByTaskIdPage(taskIdList, readFlag, pendingFlag, offset, limit);
 
         Map<String, List<PullEmailInfoListVO>> data = new LinkedHashMap<>();
         pullEmailInfoListVOList.stream().forEach(pullEmailInfoListVO -> {
@@ -177,11 +188,11 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
 
     /**
      * 获取任务下拉取的邮件数量
-     * @param taskId
+     * @param taskIdList
      * @return
      */
-    private int countTaskEmailPullTask(Long taskId) {
-        return taskEmailPullMapper.countByTaskId(taskId);
+    private int countTaskEmailPullTask(List<Long> taskIdList, Boolean readFlag, Boolean pendingFlag) {
+        return taskEmailPullMapper.countByTaskId(taskIdList, readFlag, pendingFlag);
     }
 
     private String getDynamicLabel(LocalDateTime mailDateTime) {
