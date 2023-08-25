@@ -129,7 +129,7 @@
 																															</div>
 																															<div class="right-operations-container open">
 																																<div class="mail-list-item-list-right open">
-																																	<span class="time ellipsis">07-31 13:57</span>
+																																	<span class="time ellipsis">{{email.sendTime}}</span>
                                                                   <!---->
                                                                   <!---->
 																																	<div class="mail-pin-wrapper">
