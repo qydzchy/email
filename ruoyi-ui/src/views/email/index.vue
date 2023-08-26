@@ -745,6 +745,7 @@
 @import '../../static/scss/email/index/2577.9a58297c.css';
 @import '../../static/scss/email/index/5731.fedefcf6.css';
 @import '../../static/scss/email/index/MailInformationExtension.679153d2.css';
+@import '../../static/scss/email/index/43960.b19a070c.css';
 </style>
 
 <script>
