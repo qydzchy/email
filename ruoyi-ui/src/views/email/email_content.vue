@@ -79,7 +79,7 @@
                                                     v-for="email in monthData[Object.keys(monthData)[0]]"
                                                     :key="email.id"
                                                     :class="{'plain-list-item': true, 'active': email.id === activeEmailId}"
-                                                    @click="toggleActive(email.id)">
+                                                    @click="toggleActive(email)">
 																										<div class="right-click-menu-handler">
 																											<div class="mail-list-item-placeholder-wrapper">
 																												<div class="mail-item-container mail-list-item-wrapper open mail-list-item-wrapper-padding" draggable="true" mail-info-icon-map="[object Object]">
@@ -148,7 +148,7 @@
 																																	<span class="subject ellipsis">{{email.title}}</span>
 																																	<span class="summary summary-content ellipsis">
 																																		<span class="concat-line"> - </span>
-																																		<span class="ellipsis">{{email.content}}</span>
+																																		<span class="ellipsis">{{ extractTextWithoutImages(email.content) }}</span>
 																																	</span>
 																																</span>
 																															</div>
@@ -389,7 +389,7 @@
 																					</div>
                                           <!---->
 																					<div class="mail-detail-fixed-header mail-detail-header">
-																						<h1 class="mail-detail-fixed-header--title ellipsis">小满账号异常登录提醒</h1>
+																						<h1 class="mail-detail-fixed-header--title ellipsis">{{currentEmailDetail.title}}</h1>
 																						<div class="mail-detail-fixed-header--opts__left">
 																							<span class="okki-icon-wrap mail-detail-fixed-header--pin mail-detail-fixed-header--opts__left--item" title="固定">​<svg title="固定" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																									<path fill-rule="evenodd" clip-rule="evenodd" d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z"></path>
@@ -414,7 +414,7 @@
                                               <!---->
 																							<div class="mail-detail-operations">
 																								<div class="selected">
-																									<span class="ellipsis value time">2023-07-31 13:57:11</span>
+																									<span class="ellipsis value time">{{currentEmailDetail.sendDate}}</span>
 																									<div class="all-border detail-operations-btn">
 																										<i class="icon-reply-line m-icon"></i>
 																										<i class="icon-reply-all-line m-icon"></i>
@@ -449,7 +449,7 @@
 																										</span>
 																										<span style="margin: 0px 4px;">
 																											<span>
-																												<span style="color: #2a2a2a;">小满客户管理 </span>&lt;noreply@k.xiaomanmail.com&gt;
+																												<span style="color: #2a2a2a;">{{currentEmailDetail.fromName}} </span>&lt;{{currentEmailDetail.fromer}}&gt;
 																											</span> 发给
 																										</span>
 																									</div>
@@ -463,8 +463,8 @@
 																														</span>
                                                             <!---->
 																													</span>
-																													<span style="color: rgb(42, 42, 42);">Grace</span>
-																													<span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;sales17@allxchips.com&gt;;</span>
+																													<span style="color: rgb(42, 42, 42);">{{currentEmailDetail.receiverName}}</span>
+																													<span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{currentEmailDetail.receiverEmail}}&gt;</span>
 																												</div>
 																											</li>
 																										</ul>
@@ -539,218 +539,7 @@
                                               <!---->
 																							<div class="mail-content-body mail-detail--content">
 																								<!---->
-																								<iframe srcdoc="<!DOCTYPE html><html><head>
-          <meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;>
-
-<style>
-
-html,
-body {
-  margin: 0;
-  font-family: Verdana, Helvetica, 'Microsoft Yahei', arial, sans-serif;
-}
-html {
-  height: 100%;
-}
-.c-richText {
-  font-size: 14px;
-  word-wrap: break-word;
-  white-space: normal;
-}
-.c-richText::after {
-  content:'';
-  display:block;
-  clear: both;
-}
-a {
-  text-decoration: underline;
-  cursor: pointer;
-  outline: none;
-}
-pre {
-  word-wrap: break-word;
-  white-space: pre-wrap;
-}
-img {
-  border: 0;
-  cursor: pointer;
-  image-rendering:-moz-crisp-edges;
-  image-rendering:-o-crisp-edges;
-  image-rendering:-webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  -ms-interpolation-mode: nearest-neighbor;
-  -webkit-font-smooting:  antialiased;
-}
-address,
-cite,
-dfn,
-em,
-var {
-  font-style: italic;
-}
-blockquote {
-  padding-left: 8px;
-  margin: 16px 4px;
-}
-.MsoNormal {
-  margin: 0;
-}
-.okki-hide-quote-from-here ~ * {
-  display: none;
-}
-.okki-hide-quote-from-here .icon-arrow {
-  transform: rotate(180deg);
-}
-.okki-toggle-collapse-btn {
-  border: none;
-  background: transparent;
-  outline: none!important;
-  color: #0064ff;
-  cursor: pointer;
-  margin: 24px 0;
-}
-td img {
-    vertical-align: middle;
-}
-.xiaoman_kuai_mail_sign:after{
-  content: &quot;&quot;;
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-  }
-
-
-</style>
-
-
-<script data-savepage-type=&quot;&quot; type=&quot;text/plain&quot;></script>
-
-<style id=&quot;savepage-cssvariables&quot;>
-  :root {
-  }
-</style>
-                                                    </head>
-        <body>
-          <div class=&quot;c-richText&quot;>
-
-
-
-
-
-
-
-
-
-
-    <style>
-      * {
-        text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-        -moz-text-size-adjust: 100%;
-        -webkit-text-size-adjust: 100%;
-      }
-
-      html {
-        height: 100%;
-        width: 100%;
-      }
-
-      body {
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        mso-line-height-rule: exactly;
-      }
-
-      div[style*=&quot;margin: 16px 0&quot;] {
-        margin: 0 !important;
-      }
-
-      table,
-      td {
-        mso-table-lspace: 0pt;
-        mso-table-rspace: 0pt;
-      }
-
-      img {
-        border: 0;
-        height: auto;
-        line-height: 100%;
-        outline: none;
-        text-decoration: none;
-        -ms-interpolation-mode: bicubic;
-      }
-
-      .ReadMsgBody,
-      .ExternalClass {
-        width: 100%;
-      }
-
-      .ExternalClass,
-      .ExternalClass p,
-      .ExternalClass span,
-      .ExternalClass td,
-      .ExternalClass div {
-        line-height: 100%;
-      }
-    </style>
-
-
-
-
-
-
-    <table class=&quot;bodyTable&quot; width=&quot;100%&quot; align=&quot;left&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;width: 100%; margin: 0;;max-width:100%;&quot;>
-      <tbody><tr>
-        <td class=&quot;body__content&quot; align=&quot;left&quot; width=&quot;100%&quot; valign=&quot;top&quot; style=&quot;color: #000000; font-family: Helvetica,Arial,sans-serif; font-size: 16px; line-height: 20px;&quot;>
-          <div class=&quot;container&quot; style=&quot;border: 1px solid #CCCCCC; border-radius: 4px; box-sizing: border-box; height: 100%; max-width: 100%; padding: 30px 30px 15px; width: 100%; font-size: 14px; margin: 0;&quot;>  <table class=&quot;container__table&quot; border=&quot;0&quot; align=&quot;center&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;>
-                    <tbody><tr class=&quot;container__row&quot;>
-                      <td class=&quot;container__cell&quot; width=&quot;100%&quot; align=&quot;left&quot; valign=&quot;top&quot;>
-                        <p class=&quot;title text p&quot; style=&quot;display: block; font-family: Helvetica,Arial,sans-serif; line-height: 20px; padding: 8px 0; font-size: 14px; margin: 0; color: #2A2A2A;&quot;>亲爱的小满用户 您好：</p>
-                        <p class=&quot;reason text p&quot; style=&quot;display: block; font-family: Helvetica,Arial,sans-serif; line-height: 20px; font-weight: 700; font-size: 14px; margin: 0; color: #2A2A2A;&quot;>您的小满账号 sales17@allxchips.com 有异常登录行为</p>
-                        <table class=&quot;table&quot; style=&quot;font-weight: 700; background-color: #F6FAFD; border-collapse: separate; border-spacing: 0; margin: 30px 0; opacity: .73; width: 100%;;max-width:100%;&quot; width=&quot;100%&quot; bgcolor=&quot;#F6FAFD&quot; align=&quot;left&quot;>
-                          <tbody><tr class=&quot;tr&quot;>
-                            <td class=&quot;tableHead td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; color: #909090; font-family: PingFangSC-Regular; font-weight: 400; border-top: 1px solid #B6CEF1; border-left: 1px solid #B6CEF1; border-top-left-radius: 4px;&quot;>登录时间</td>
-                            <td class=&quot;tableHead td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; color: #909090; font-family: PingFangSC-Regular; font-weight: 400; border-top: 1px solid #B6CEF1;&quot;>登录IP</td>
-                            <td class=&quot;tableHead td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; color: #909090; font-family: PingFangSC-Regular; font-weight: 400; border-top: 1px solid #B6CEF1;&quot;>登录地址</td>
-                            <td class=&quot;tableHead td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; color: #909090; font-family: PingFangSC-Regular; font-weight: 400; border-top: 1px solid #B6CEF1;&quot;>操作系统</td>
-                            <td class=&quot;tableHead td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; color: #909090; font-family: PingFangSC-Regular; font-weight: 400; border-top: 1px solid #B6CEF1; border-right: 1px solid #B6CEF1; border-top-right-radius: 4px;&quot;>浏览器</td>
-                          </tr>
-                          <tr class=&quot;tr&quot;>
-                            <td class=&quot;td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; border-left: 1px solid #B6CEF1; border-bottom-left-radius: 4px;&quot;> 2023-07-31 13:57:11 </td>
-                            <td class=&quot;td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1;&quot;> 183.239.113.226 </td>
-                            <td class=&quot;td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1;&quot;> 中国 广东省 广州市 </td>
-                            <td class=&quot;td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1;&quot;> Win10 </td>
-                            <td class=&quot;td&quot; style=&quot;padding: 15px 25px; border-bottom: 1px solid #B6CEF1; border-right: 1px solid #B6CEF1; border-bottom-right-radius: 4px;&quot;> Chrome 0.0 </td>
-                          </tr>
-                        </tbody></table>
-                        <p class=&quot;tips text p&quot; style=&quot;display: block; font-family: Helvetica,Arial,sans-serif; line-height: 20px; font-size: 14px; margin: 0; color: #909090;&quot;>您需要尽快完成下列操作（双重保护账号安全)</p>
-                        <p class=&quot;operate text p&quot; style=&quot;display: block; font-family: Helvetica,Arial,sans-serif; line-height: 20px; font-size: 14px; margin: 0; color: #5D5D5D; margin-top: 15px;&quot;>进入账号中心 <a href=&quot;http://&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; class=&quot;modifyPwd a&quot; style=&quot;color: #2A2A2A; font-weight: 700; text-decoration: none;&quot;><span class=&quot;a__text&quot;> → 修改登录密码 → </span></a> 确保绑定手机并开启安全登录模式</p>
-                        <p class=&quot;jumpUrlWrapper text p&quot; style=&quot;display: block; font-family: Helvetica,Arial,sans-serif; line-height: 20px; font-size: 14px; color: #2A2A2A; margin: 30px 0;&quot;>
-                          <a href=&quot;https://crm.xiaoman.cn/account/information&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; class=&quot;jumpUrl a&quot; style=&quot;background-color: #0064FF; border-radius: 18px; color: #FFFFFF; display: inline-block; font-family: PingFangSC-Regular; padding: 7px 27px; text-decoration: none;&quot;><span class=&quot;a__text&quot;>进入账号中心</span></a>
-                        </p>
-                        <p class=&quot;tips fontSize text p&quot; style=&quot;display: block; font-family: Helvetica,Arial,sans-serif; line-height: 20px; margin: 0; font-size: 12px; color: #909090;&quot;>小满为了保护您账号和资金的安全，当系统检测到异常即会有相关提醒。请注意防范可疑邮件，信息变更切记多重确认，注意增强邮箱密码的复杂性并定期更换，谨慎操作避免损失。</p>
-                        <p class=&quot;hr text p&quot; style=&quot;font-family: Helvetica,Arial,sans-serif; line-height: 20px; font-size: 14px; color: #2A2A2A; opacity: .73; border-bottom: 1px solid #D9D9D9; display: block; margin: 20px 0;&quot;> </p>
-                        <ul class=&quot;text ul&quot; style=&quot;margin-left: 20px; margin-top: 16px; margin-bottom: 16px; padding: 0; list-style-type: disc; color: #000000; font-family: Helvetica,Arial,sans-serif; line-height: 20px; margin: 0; list-style: none; font-size: 12px;&quot;>
-                          <li class=&quot;text li&quot; style=&quot;color: #000000; font-family: Helvetica,Arial,sans-serif; line-height: 20px; list-style: none; font-size: 12px; padding: 4px 0;&quot;>如有任何疑问，请与我们联系：</li>
-                          <li class=&quot;text li&quot; style=&quot;color: #000000; font-family: Helvetica,Arial,sans-serif; line-height: 20px; list-style: none; font-size: 12px; padding: 4px 0;&quot;>客服热线：400-0666-517 或 联系在线客服</li>
-                          <li class=&quot;text li&quot; style=&quot;color: #000000; font-family: Helvetica,Arial,sans-serif; line-height: 20px; list-style: none; font-size: 12px; padding: 4px 0;&quot;>服务时间：周一至周五 9:00-19:00 周六 9:00-17:30</li>
-                        </ul>
-                      </td>
-                    </tr>
-                  </tbody></table>  </div>
-        </td>
-      </tr>
-    </tbody></table>
-    <div style=&quot;display:none; white-space:nowrap; font-size:15px; line-height:0;&quot;>                                                            </div>
-
-
-
-          </div>
-
-        </body></html>" data-savepage-sameorigin="" id="mail-content-iframe-1690875340592" style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
+																								<iframe :srcdoc="currentEmailDetail.content" data-savepage-sameorigin="" id="mail-content-iframe-1690875340592" style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
                                                 <!---->
 																							</div>
 																						</div>
@@ -1378,7 +1167,10 @@ export default {
       pageSize: 30,
       total: 0,
       taskId: null,
-      localEmailList: []
+      readFlag: null,
+      pendingFlag: null,
+      localEmailList: [],
+      currentEmailDetail: {},
     }
   },
   props: {
@@ -1394,6 +1186,8 @@ export default {
   created() {
     EventBus.$on('task-selected', this.fetchEmailsForTask);
     EventBus.$on('all-received-selected', this.fetchEmailData);
+    EventBus.$on('pending-mail-selected', this.fetchEmailData);
+    EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
     this.localEmailList = [...this.emailList];
   },
 
@@ -1406,18 +1200,23 @@ export default {
   beforeDestroy() {
     EventBus.$off('task-selected', this.fetchEmailsForTask);
     EventBus.$off('all-received-selected', this.fetchEmailData);
+    EventBus.$off('pending-mail-selected', this.fetchEmailData);
+    EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
   },
   methods: {
     fetchEmailsForTask(taskId) {
-      this.fetchEmailList(taskId, null, null);
+      this.currentPage = 1;
+      this.readFlag = null;
+      this.pendingFlag = null;
+      this.fetchEmailList(taskId);
     },
 
-    fetchEmailList(taskId, readFlag, pendingFlag) {
+    fetchEmailList(taskId) {
       this.taskId = taskId;
       const query = {
         taskId: this.taskId,
-        readFlag: readFlag,
-        pendingFlag: pendingFlag,
+        readFlag: this.readFlag,
+        pendingFlag: this.pendingFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -1430,35 +1229,36 @@ export default {
       });
     },
 
-    toggleActive(emailId) {
-      if (this.activeEmailId === emailId) {
+    toggleActive(email) {
+      this.activeEmailId = email.id;
+      /*if (this.activeEmailId === email.id) {
         this.activeEmailId = null;
       } else {
-        this.activeEmailId = emailId;
-      }
+
+      }*/
+      this.currentEmailDetail = email;
     },
 
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage = Number(this.currentPage) + 1;
-        this.fetchEmailList(this.taskId, null, null);
+        this.fetchEmailList(this.taskId);
       }
     },
 
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage = Number(this.currentPage) - 1;
-        this.fetchEmailList(this.taskId, null, null);
+        this.fetchEmailList(this.taskId);
       }
     },
 
     handlePageInputBlur() {
-      console.log(this.currentPage);
       if (this.currentPage === undefined || this.currentPage === null || this.currentPage === '') {
         this.currentPage = 1;
       }
 
-      this.fetchEmailList(this.taskId, null, null);
+      this.fetchEmailList(this.taskId);
     },
 
     handlePageInputChange(event) {
@@ -1474,13 +1274,29 @@ export default {
 
     fetchEmailData(selectedEmailType) {
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.fetchEmailList(null, null, null);
+        this.readFlag = null;
+        this.pendingFlag = null;
+        this.currentPage = 1;
+        this.fetchEmailList(null);
       } else if (selectedEmailType === 'PENDING_MAIL') {
-        this.fetchEmailList(null, null, true);
+        this.readFlag = null;
+        this.pendingFlag = true;
+        this.currentPage = 1;
+        this.fetchEmailList(null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
-        this.fetchEmailList(null, false, null);
+        this.readFlag = false;
+        this.pendingFlag = null;
+        this.currentPage = 1;
+        this.fetchEmailList(null);
       }
     },
+
+    extractTextWithoutImages(htmlContent) {
+      let div = document.createElement('div');
+      div.innerHTML = htmlContent;
+      div.querySelectorAll('img').forEach(img => img.remove());
+      return div.textContent || div.innerText || "";
+    }
   }
 }
 </script>

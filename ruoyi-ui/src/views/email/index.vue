@@ -836,7 +836,7 @@ export default {
     },
 
     triggerAnUnreadMailEvent() {
-      EventBus.$emit('pending-mail-selected', 'AN_UNREAD_MAIL');
+      EventBus.$emit('an-unread-mail-selected', 'AN_UNREAD_MAIL');
     },
 
   },
