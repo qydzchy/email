@@ -41,6 +41,10 @@ public class Pop3Service implements IMailService {
             for (int i = 0; i < messages.length; i++) {
                 try {
                     POP3Message message = (POP3Message)messages[i];
+                    if(!message.getFolder().isOpen()) {
+                        message.getFolder().open(Folder.READ_WRITE);
+                    }
+
                     mList.add(MailItem.builder().pop3Message(message).build());
                 } catch (Exception e) {
                     log.error("pop3 - 获取邮件异常，异常原因：" +

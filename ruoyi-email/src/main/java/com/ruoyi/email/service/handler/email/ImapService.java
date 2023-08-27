@@ -123,6 +123,10 @@ public class ImapService implements IMailService {
                     }
                     // Message message = messages[i];
                     IMAPMessage message = (IMAPMessage)messages[i];
+                    if(!message.getFolder().isOpen()) {
+                        message.getFolder().open(Folder.READ_WRITE);
+                    }
+
                     Date receivedDate = message.getSentDate();
                     if (receivedDate == null) return;
 

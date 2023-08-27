@@ -75,9 +75,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select mtep.id, mtep.task_id, mtep.uid, mtep.fromer, mtep.receiver, mtep.bcc, mtep.cc, mtep.folder, mtep.folder_id as folderId, mtep.title, mtep.send_date as sendDate, mtep.eml_path as emlPath, mtep.read_flag as readFlag,
         mtep.pending_flag as pendingFlag, mtep.pending_time as pendingTime, mtep.fixed_flag as fixedFlag, mtep.spam_flag as spamFlag, mtec.content from mailbox_task_email_pull mtep
         left join mailbox_task_email_content mtec on mtep.id = mtec.email_id
-        where
+        where task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
-            mtep.task_id = #{taskId}
+            #{taskId}
         </foreach>
         <if test="readFlag != null "> and mtep.read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and mtep.pending_flag = #{pendingFlag}</if>
@@ -88,9 +88,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="countByTaskId" resultType="java.lang.Integer">
         select count(*) from mailbox_task_email_pull
-        where
+        where task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
-            task_id = #{taskId}
+             #{taskId}
         </foreach>
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
