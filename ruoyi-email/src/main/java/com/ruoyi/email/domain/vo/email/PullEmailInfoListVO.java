@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PullEmailInfoListVO {
@@ -70,6 +73,11 @@ public class PullEmailInfoListVO {
     private String content;
 
     /**
+     * 附件
+     */
+    private List<AttachmentVO> attachmentList;
+
+    /**
      *
      * @return
      */
@@ -98,4 +106,10 @@ public class PullEmailInfoListVO {
         return jsonObject.getString("name");
     }
 
+    public String getExtractTextFromContent() {
+        if (this.content == null) return "";
+
+        Document doc = Jsoup.parse(this.content);
+        return doc.text();
+    }
 }

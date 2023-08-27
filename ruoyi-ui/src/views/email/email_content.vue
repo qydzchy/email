@@ -148,7 +148,7 @@
 																																	<span class="subject ellipsis">{{email.title}}</span>
 																																	<span class="summary summary-content ellipsis">
 																																		<span class="concat-line"> - </span>
-																																		<span class="ellipsis">{{ extractTextWithoutImages(email.content) }}</span>
+																																		<span class="ellipsis">{{ email.extractTextFromContent }}</span>
 																																	</span>
 																																</span>
 																															</div>
@@ -1172,10 +1172,20 @@ export default {
       pendingFlag: null,
       localEmailList: [],
       currentEmailDetail: {},
+      emailId: null,
     }
   },
   props: {
-    emailList: Array
+    emailList: Array,
+    emailData: Array,
+    selectedEmail: {
+      type: Object,
+      default: null
+    },
+    emailTotal: {
+      type: Number,
+      default: null
+    }
   },
   computed: {
     totalPages() {
@@ -1185,11 +1195,10 @@ export default {
 
   // 在B组件中
   created() {
-    EventBus.$on('task-selected', this.fetchEmailsForTask);
-    EventBus.$on('all-received-selected', this.fetchEmailData);
-    EventBus.$on('pending-mail-selected', this.fetchEmailData);
-    EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
-    this.localEmailList = [...this.emailList];
+    this.activeEmailId = this.selectedEmail.id;
+    this.currentEmailDetail = this.selectedEmail;
+    this.localEmailList = this.emailData;
+    this.total = this.emailTotal;
   },
 
   watch: {
@@ -1198,12 +1207,6 @@ export default {
     }
   },
 
-  beforeDestroy() {
-    EventBus.$off('task-selected', this.fetchEmailsForTask);
-    EventBus.$off('all-received-selected', this.fetchEmailData);
-    EventBus.$off('pending-mail-selected', this.fetchEmailData);
-    EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
-  },
   methods: {
     fetchEmailsForTask(taskId) {
       this.currentPage = 1;
@@ -1232,11 +1235,6 @@ export default {
 
     toggleActive(email) {
       this.activeEmailId = email.id;
-      /*if (this.activeEmailId === email.id) {
-        this.activeEmailId = null;
-      } else {
-
-      }*/
       this.currentEmailDetail = email;
     },
 
@@ -1292,12 +1290,6 @@ export default {
       }
     },
 
-    extractTextWithoutImages(htmlContent) {
-      let div = document.createElement('div');
-      div.innerHTML = htmlContent;
-      div.querySelectorAll('img').forEach(img => img.remove());
-      return div.textContent || div.innerText || "";
-    }
   }
 }
 </script>

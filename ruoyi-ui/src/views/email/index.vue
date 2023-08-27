@@ -707,7 +707,15 @@
 </div>
 
 <!-- 使用动态组件切换BC布局 -->
-<component :is="currentLayout" @switch="switchLayout"></component>
+            <component
+              :is="currentLayout"
+              :key="currentLayout"
+              :selectedEmail="selectedEmail"
+              :emailData="emailData"
+              :emailTotal="emailTotal"
+              @switch="switchLayout"
+            ></component>
+
 </div>
 </div>
 </div>
@@ -749,6 +757,7 @@
 </style>
 
 <script>
+import emailHeaderLayout from './email_header.vue';
 import emailContentLayout from './email_content.vue';
 import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
@@ -763,20 +772,34 @@ export default {
       emailList: [],
       folders: [],
       activeMenuItem: null,
-      currentLayout: 'email_content', //
+      currentLayout: 'email_header',
       isLeftPaneVisible: true,
-      selectedTaskId: null
+      selectedTaskId: null,
+      emailTotal: 0,
+      emailData: [],
+      selectedEmail: {}
     };
   },
   components: {
+    'email_header': emailHeaderLayout,
     'email_content': emailContentLayout,
     'setup': setup,
     'FolderTree': FolderTree
   },
 
+  watch: {
+    currentLayout(newLayout, oldLayout) {
+      if (newLayout === 'email_header' && oldLayout !== 'email_header') {
+        this.triggerAllReceivedEvent();
+      }
+    }
+  },
   methods: {
-    switchLayout(layout) {
-      this.currentLayout = layout; // 切换布局
+    switchLayout(layoutName, email, emailData, emailTotal) {
+      this.currentLayout = layoutName;
+      this.selectedEmail = email;
+      this.emailData = emailData;
+      this.emailTotal = emailTotal;
     },
 
     toggleLeftPane() {
@@ -800,26 +823,31 @@ export default {
     },
 
     taskPullClick(taskId) {
+      this.switchLayout('email_header');
       this.onTaskClick(taskId);
       this.setActive('PULL_' + taskId);
     },
 
     taskSendClick(taskId) {
+      this.switchLayout('email_header');
       this.onTaskClick(taskId);
       this.setActive('SEND_' + taskId);
     },
 
     allReceivedClick() {
+      this.switchLayout('email_header');
       this.setActive('ALL_RECEIVED');
       this.triggerAllReceivedEvent();
     },
 
     pendingMailClick() {
+      this.switchLayout('email_header');
       this.setActive('PENDING_MAIL');
       this.triggerPendingMailEvent();
     },
 
     anUnreadMailClick() {
+      this.currentLayout = 'email_header';
       this.setActive('AN_UNREAD_MAIL');
       this.triggerAnUnreadMailEvent();
     },
@@ -839,7 +867,6 @@ export default {
     triggerAnUnreadMailEvent() {
       EventBus.$emit('an-unread-mail-selected', 'AN_UNREAD_MAIL');
     },
-
   },
 
   mounted() {
