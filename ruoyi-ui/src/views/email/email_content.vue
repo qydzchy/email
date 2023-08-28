@@ -13,7 +13,7 @@
 															<div class="mail-list-container">
 																<div class="mm-split mail-three-mode-split">
 																	<div class="mm-split-horizontal">
-																		<div class="mm-split-pane mm-split-pane__left" style="right: 70%;">
+																		<div class="mm-split-pane mm-split-pane__left" style="right: 75%;">
 																			<div class="mail-list-scroll-container mail-list-wrap">
 																				<div class="header-wrapper" style="">
 																					<div class="mail-list-header-tool-wrapper">
@@ -28,18 +28,18 @@
 																											<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">全部
                                                         <!---->
 																											</div>
-<!--																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
-                                                        &lt;!&ndash;&ndash;&gt;
-																											</div>
-																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
-                                                        &lt;!&ndash;&ndash;&gt;
-																											</div>
-																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
-                                                        &lt;!&ndash;&ndash;&gt;
-																											</div>
-																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">其他
-                                                        &lt;!&ndash;&ndash;&gt;
-																											</div>-->
+                                                      <!--																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
+                                                                                                              &lt;!&ndash;&ndash;&gt;
+                                                                                                            </div>
+                                                                                                            <div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
+                                                                                                              &lt;!&ndash;&ndash;&gt;
+                                                                                                            </div>
+                                                                                                            <div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
+                                                                                                              &lt;!&ndash;&ndash;&gt;
+                                                                                                            </div>
+                                                                                                            <div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">其他
+                                                                                                              &lt;!&ndash;&ndash;&gt;
+                                                                                                            </div>-->
 																										</div>
 																									</div>
 																								</div>
@@ -228,7 +228,7 @@
 																				</div>
 																			</div>
 																		</div>
-																		<div class="mm-split-trigger-wrap" style="left: 30%;">
+																		<div class="mm-split-trigger-wrap" style="left: 25%;">
 																			<div class="mm-split-trigger mm-split-trigger-vertical">
 																				<div class="mm-split-trigger-bar-wrap">
 																					<i class="mm-split-trigger-bar"></i>
@@ -242,7 +242,7 @@
 																				</div>
 																			</div>
 																		</div>
-																		<div class="mm-split-pane mm-split-pane__right" style="left: 30%;">
+																		<div class="mm-split-pane mm-split-pane__right" style="left: 25%;">
 																			<div class="detail-with-tollbar">
 																				<div class="promotion-wrapper"></div>
 																				<div class="mail-toolbar-wrapper open-detail">
@@ -567,23 +567,23 @@
 																							<!---->
                                               <!---->
                                               <!---->
-<!--																							<div class="contact-actions-wrap" cur-active-mail-id="" time-show="">
-																								<div class="assistant-logo">
-																									<img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/assistant-logo.5597975b..png" src="data:image/webp;base64,UklGRo4IAABXRUJQVlA4WAoAAAAQAAAAqAAAIwAAQUxQSEcAAAABX0CQbRs6Qg2+iIhBvYBq2Laq00sigxAyySGEkA7CUdy/zUT0fwKC6yOJJ1lMbkiZTJfJBSmdaXymOpOQHtNCckPaAvKRBABWUDggIAgAAJAsAJ0BKqkAJAA+MRSIQqIhIRbKTawgAwSyAGr0D7038APxu6oDYzuz+M3wA7+IlPSP9C/Jz+3cAB+k/+A6gHmA/kH98/bvsAegB+mvoAewf+pPsAfsB6qf+t/a74Gf20/33+7+Af9Xfv/vy/5x+PPnX3p+53sb+Om+Bajvxb6ofVvyW/MDhTfxu+AL0f/YPx8/ND2n9l0AD8f/lH+G/sn7Vf4D0Df3f0A+mP9a/HT4Ofxr/N/mR75f2b+5eQTQA/lf9M/4X+F91H9s/5X+A/wf7I+0r8p/u3/H/xHwDfy3+lf67+5/vb/jPAp6Hn7CEH5lrgcqaKV3qYgfmx7AAFJsbZJ51onuoDngcjuoGTkB+zhBrOEjVU+kagefJs3ooMN/t1ZZIW7WVUNC8VDETZlE7ME4wYTzH+spUb1mu4TGQCP3PDwVtVIg2LNxn6m+ehQZzM36CU6zbjr9fxUMpbg0G9UM5znOc5wxChoAAP7/2+Fz4yHNwIaDu7t6qazr9TiirTXxA84UXcc/hKtrPFgxcwhp5k//37Hn/8nbyU3QtUSP/9eW6o3yzXHi8ZYJnc3sxLBkqOZ1bLOZVeyfEYdDFzmhFRsGLog37s0aSQTyx8weRbAosvFAzd6FcNYVGqtORfVf3+k6OnP18wSUtu8ci3q4+cs8OuZ6vcdvIu02jRg+LAc3qoEaBux1cf66dv9k1RMjfH0JsMvW+c6A+PTbRXqKoDmZVR1/nYB7xRNVZC95VX1ygYjGvpVYmvRPg+4BJYwG1QP/+TuX0PmCEKhXgSC6SNzIANm878FHfu+SXsMAUyYmv8KRH75pobEJVSona2+47ss9qNTyky0ixZIXI3WvY+fHv3LZY316UDKFCMXNQZAXyUZSNKwV4iW6Rr0YUNMtJWNtDCj7O3S1kSADeih0qXzzA2tNefnxCjGQS3Ea03FHTujcfEgy9iPo+jp7lr3DP/SbY6ai2zkBGu2Zo3Xl2JVGSCv+UXErbEJmjUlQL3hjWd8CUZj/I1+qf8xzTejD/8lNW/k9LGGJZSXs/H5qJJfx/DBtnlwChgxc/HFdc+D7q8Co3NRT9lF4j0UhPYHipnufM3lwmteORVs3MPT3RAYH+aQXa2h7KxlYJ1EZmBbO+3XPT8WKeuZIsNJQkfZebeeL1EjcMFVREPjG4CFSwlLAE9NcupN9y2eaKLgY/pVb0R4aj//zjE+NZt8BZaAY/3erAS3PBCZE9AOKBTD0AVniJ2T9HEje6v6Wl/3DdKuxpybsz62AW+pbRVn+qyc8r+mz+A1PlMIsz8pIhCaofx5I34XMNP64dJsJ8qIOfIVbYj0VE1B7mDmpMyqEzAOF6MKLw9xfvz/qqjjnumZlTUIf/xRnE8TiySf94URpky96bMgf2ezlgWP4snT9P8nleYZGyhXkpr18ApN5eMlr/7w9jGCvybjHwRjbMHegxm4wwT/LPxfoZzCPGvQYNZ+FdW7E7ggROUJgY65WmQN9ugiCjm0TUuii8+G2aTYHUy4BdgdmJWKcvgqcu0rld3r4yk9xse/NVzkqqm5TAeTmi096Hp3rWaQwS9AYoyCTa2wHfeatO5cHEOj0gqReMJ5xG9o4LmBciaPcfv+fYN/PUvVrhHbveRkUCiHoc0BZnhWyi9AaGklXG7Jo3V595z1ZOBcueoMKW4ZtIW9O81EaXHwdKwKAgsYKSCKkGPh0qqzSfrLlvn3IcMw+B7ThAo/qtdfBiUEypNK492iIJYdQoYeAPl3W3SLmk0CHGClrvf2exgS11/DW+ZNBJCwAXX+iCOGipI4kVOH6x2lVwh79q0/+WbhINtTChaKhbjlEXSVq05L8utpeMQyDG68PqeoKGKdcR6isuYR+t/6H0Vi3F6O7ih5MJUBsXaqx0JQcl+0Z4rBQAoveF//0349cVZw4BpFkqYZX1hRG6wz7Ats9oU/+JGlvCTEb7kCkZiCoyCEbvOUaNejKvqY6EFHLHRQjdG80lmxL0ad/ygtw6SjfAMp+43FBtmXGZ8Ju7FYHV3tRKkwWtMPk+pXeMFATN5WU0G9mwxMZ3Lhxv5+lNkeZenSIPczT5cR9pBJR4BbD/B9tSlG/5xE5NFw/rpIYTW/7kRxbBHsO7x4WfsRon/waDwx60Gv7lu+4TP63TdLA+FoROvGWgf+U377Mqxj8w3IyLerfak/X/3nZfuDiuPKcs7Ttxz6s0pDPizqwR+9pTtdG358kvvIv6oEIqEAYARG8+RLNczYDxgPr2ybJND/Qp+GK2QVmM3PXSSi6cqhh4OkG4P26Dh0oAmPIH0G5ZXKH9I+xfKiF7fyarqA3cOKr5Z8f80kDai7Th/YffI5Alj3iq2Bz+VoHCwDxk3W2oSFWyV8GWPisPur7J4stANkPzmPDrHxHsa+NEwxiU3aR8F4aHbiHK4bZlv/UiRAr8gscmYT57w79OdSH+NhVp/ziXrQzYPBL1axVx/rT2cHhOBmGK7fp/MYuFXEH7Ixr2zz5wtn2jQcsg/57YcxAFhv+DWOUEDPfC74aUmsOAFd64WjTS8xVa7wG/hZAmS3aIA4B2v7QNAJ2g3FT+jey/U6x4dP4el6Ro6p4JmjPH5qsuBBVa9dJcY4ecidKiXjJ9pQGCOAFG95bgGXvzOMAaqg5ARGU3wO2ggruf04vTmiQ1C4IT2FRc7YpPOKELzqFOSybsx6TCXy4hF0QE0k5e2DK8FbUc5r88G2Gh72JVqm29nR0v05SUNYKd7U0qS+UWLyAAwvvsmTAOLIAAAA=">
-																								</div>
-                                                &lt;!&ndash;&ndash;&gt;
-																								<div class="mm-dropdown">
-																									<div class="mm-dropdown-trigger">
-																										<span class="okki-icon-wrap actions-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																												<path d="M13 11h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H8a1 1 0 010-2h3V8a1 1 0 112 0v3z"></path>
-																												<path fill-rule="evenodd" clip-rule="evenodd" d="M5 2a3 3 0 00-3 3v14a3 3 0 003 3h14a3 3 0 003-3V5a3 3 0 00-3-3H5zm14 2H5a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1V5a1 1 0 00-1-1z"></path>
-																											</svg>
-																										</span>
-																									</div>
-                                                  &lt;!&ndash;&ndash;&gt;
-																								</div>
-                                                &lt;!&ndash;&ndash;&gt;
-																							</div>-->
+                                              <!--																							<div class="contact-actions-wrap" cur-active-mail-id="" time-show="">
+                                                                                              <div class="assistant-logo">
+                                                                                                <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/assistant-logo.5597975b..png" src="data:image/webp;base64,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">
+                                                                                              </div>
+                                                                                              &lt;!&ndash;&ndash;&gt;
+                                                                                              <div class="mm-dropdown">
+                                                                                                <div class="mm-dropdown-trigger">
+                                                                                                  <span class="okki-icon-wrap actions-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                                                                      <path d="M13 11h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H8a1 1 0 010-2h3V8a1 1 0 112 0v3z"></path>
+                                                                                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5 2a3 3 0 00-3 3v14a3 3 0 003 3h14a3 3 0 003-3V5a3 3 0 00-3-3H5zm14 2H5a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1V5a1 1 0 00-1-1z"></path>
+                                                                                                    </svg>
+                                                                                                  </span>
+                                                                                                </div>
+                                                                                                &lt;!&ndash;&ndash;&gt;
+                                                                                              </div>
+                                                                                              &lt;!&ndash;&ndash;&gt;
+                                                                                            </div>-->
 																							<div>
 																								<!---->
 																								<div class="contact-info-user">
@@ -1143,6 +1143,11 @@
   </div>
 </template>
 <style lang="scss">
+.components-container {
+  margin: 0;
+  position: static;
+}
+
 @import '../../static/scss/email/index/427.6511c6eb.css';
 @import '../../static/scss/email/index/9755.4df34767.css';
 @import '../../static/scss/email/index/224.72cc3cdf.css';
