@@ -76,9 +76,25 @@ export default {
     handleSave(newFolder) {
       this.folders.unshift(newFolder);
       this.addingFolder = false;
+      this.refreshList();
     },
     cancelAdd() {
       this.addingFolder = false;
+    },
+
+    async refreshList() {
+      // 这里你可以重新获取你的文件夹列表数据。
+      // 假设你有一个API方法getFolders来获取文件夹列表：
+      try {
+        const response = await listFolder(); // 假设这是你的API方法
+        if(response.code === 200) {
+          this.folders = response.data; // 假设folders是你存储文件夹数据的数组
+        } else {
+          console.error('Error fetching the folder list:', response.code);
+        }
+      } catch (error) {
+        console.error('Error fetching the folder list:', error);
+      }
     }
   },
   created() {

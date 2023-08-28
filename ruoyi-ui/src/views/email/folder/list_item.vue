@@ -87,7 +87,7 @@ import FolderItem from './list_item.vue';
 import FolderInput from './list_input.vue';
 import FolderEditInput from './list_edit_input.vue';
 
-import { deleteFolder } from "@/api/email/folder";
+import {deleteFolder, listFolder} from "@/api/email/folder";
 
 export default {
   data() {
@@ -137,13 +137,30 @@ export default {
         parentFolder.children.unshift(newSubfolder);
       }
       this.folderAddingSubfolder = null;
+      this.refreshList();
     },
 
     cancelAddSubfolder() {
       this.folderAddingSubfolder = null;
     },
 
+    async refreshList() {
+      // 这里你可以重新获取你的文件夹列表数据。
+      // 假设你有一个API方法getFolders来获取文件夹列表：
+      try {
+        const response = await listFolder(); // 假设这是你的API方法
+        if(response.code === 200) {
+          this.folders = response.data; // 假设folders是你存储文件夹数据的数组
+        } else {
+          console.error('Error fetching the folder list:', response.code);
+        }
+      } catch (error) {
+        console.error('Error fetching the folder list:', error);
+      }
+    },
+
     startEditing(folder) {
+      console.log('startEditing', folder);
       this.editingFolder = folder.id;
       this.editingName = folder.name;
 
@@ -177,6 +194,7 @@ export default {
     },
 
     handleDeleteFolder(folderId) {
+      console.log("folderId", folderId);
       this.$confirm('此操作将永久删除该文件夹, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
