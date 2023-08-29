@@ -28,7 +28,7 @@
                       <div class="mm-dropdown">
                         <div>
                           <div class="mm-button-group mm-dropdown-button-group">
-                            <button type="button" class="mm-button mm-button__primary">
+                            <button type="button" class="mm-button mm-button__primary" @click="switchWriteEmailPage">
                               <!---->
                               <!---->写信
                               <!---->
@@ -759,6 +759,7 @@
 <script>
 import emailHeaderLayout from './email_header.vue';
 import emailContentLayout from './email_content.vue';
+import writeEmailLayout from './write_email.vue';
 import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
 import {listTaskPull} from "@/api/email/task";
@@ -783,6 +784,7 @@ export default {
   components: {
     'email_header': emailHeaderLayout,
     'email_content': emailContentLayout,
+    'write_email': writeEmailLayout,
     'setup': setup,
     'FolderTree': FolderTree
   },
@@ -850,6 +852,10 @@ export default {
       this.currentLayout = 'email_header';
       this.setActive('AN_UNREAD_MAIL');
       this.triggerAnUnreadMailEvent();
+    },
+
+    switchWriteEmailPage() {
+      this.currentLayout = 'write_email';
     },
 
     onTaskClick(taskId) {

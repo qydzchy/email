@@ -48,7 +48,7 @@
                   </button>
                   <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="startEditing(folder)">
                     <!---->
-                    <!---->编辑
+                    <!---->编辑e
                     <!---->
                   </button>
                   <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="handleDeleteFolder(folder.id)">

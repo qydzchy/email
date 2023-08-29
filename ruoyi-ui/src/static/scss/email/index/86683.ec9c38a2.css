@@ -1,0 +1,647 @@
+.all-type-avatar-wrapper {
+  border-radius: 50%;
+  box-sizing: border-box;
+  transition: all .2s;
+  overflow: visible;
+  cursor: default
+}
+
+.all-type-avatar-wrapper .mm-tooltip-trigger {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box
+}
+
+.all-type-avatar-wrapper .avatar-icon {
+  font-size: inherit
+}
+
+.all-type-avatar-wrapper.small {
+  font-size: 14px;
+  width: 1em;
+  min-width: 1em;
+  height: 1em;
+  min-height: 1em;
+  max-height: 1em
+}
+
+.all-type-avatar-wrapper.small.client-colleague-customer {
+  color: #faa628
+}
+
+.all-type-avatar-wrapper.small.client-self {
+  color: #1e8def
+}
+
+.all-type-avatar-wrapper.small.client-contacts,
+.all-type-avatar-wrapper.small.client-stranger {
+  color: #b6b6b6
+}
+
+.all-type-avatar-wrapper.small.client-stranger-advice,
+.all-type-avatar-wrapper.small.client-xiaoman-system-avatar {
+  color: #0064ff
+}
+
+.all-type-avatar-wrapper.small.client-no-auth-pools,
+.all-type-avatar-wrapper.small.client-public {
+  color: #58657d
+}
+
+.all-type-avatar-wrapper.small.client-colleague,
+.all-type-avatar-wrapper.small.client-colleague .mm-tooltip-trigger {
+  border-radius: 4px
+}
+
+.all-type-avatar-wrapper.small.client-colleague,
+.all-type-avatar-wrapper.small.client-unknown {
+  background-color: #b6b6b6;
+  color: #fff
+}
+
+.all-type-avatar-wrapper.small.client-colleague .avatar-icon,
+.all-type-avatar-wrapper.small.client-unknown .avatar-icon {
+  transform: scale(.75)
+}
+
+.all-type-avatar-wrapper.large {
+  font-size: 34px;
+  width: 40px;
+  min-width: 40px;
+  height: 40px
+}
+
+.all-type-avatar-wrapper.large.client-colleague-customer,
+.all-type-avatar-wrapper.large.client-no-auth-pools,
+.all-type-avatar-wrapper.large.client-public,
+.all-type-avatar-wrapper.large.client-self,
+.all-type-avatar-wrapper.large.client-stranger {
+  padding-top: 15px;
+  overflow: hidden
+}
+
+.all-type-avatar-wrapper.large.client-colleague {
+  font-size: 30px
+}
+
+.all-type-avatar-wrapper.large.client-self {
+  background-color: #e6f4ff;
+  color: #1e8def
+}
+
+.all-type-avatar-wrapper.large.client-contacts .avatar-icon,
+.all-type-avatar-wrapper.large.client-stranger-advice .avatar-icon {
+  transform: scale(.75)
+}
+
+.all-type-avatar-wrapper.large.client-colleague-customer {
+  background: #fde9cb;
+  color: #faa628
+}
+
+.all-type-avatar-wrapper.large.client-stranger-advice,
+.all-type-avatar-wrapper.large.client-xiaoman-system-avatar {
+  background: #edf6ff;
+  color: #0064ff
+}
+
+.all-type-avatar-wrapper.large.client-no-auth-pools,
+.all-type-avatar-wrapper.large.client-public {
+  background: #58657d;
+  color: #fff
+}
+
+.all-type-avatar-wrapper.large.small.client-colleague-customer,
+.all-type-avatar-wrapper.large.small.client-no-auth-pools,
+.all-type-avatar-wrapper.large.small.client-public,
+.all-type-avatar-wrapper.large.small.client-self,
+.all-type-avatar-wrapper.large.small.client-stranger {
+  padding-top: 6px;
+  overflow: hidden
+}
+
+.all-type-avatar-wrapper.large.client-colleague,
+.all-type-avatar-wrapper.large.client-contacts,
+.all-type-avatar-wrapper.large.client-stranger,
+.all-type-avatar-wrapper.large.client-unknown {
+  color: #b6b6b6;
+  background-color: #e6e6e6
+}
+
+.all-type-avatar-wrapper.large.client-self:hover {
+  background-color: #1e8def;
+  color: #e6f4ff
+}
+
+.all-type-avatar-wrapper.large.client-colleague-customer:hover {
+  background: #faa628;
+  color: #fde9cb
+}
+
+.all-type-avatar-wrapper.large.client-stranger-advice:hover,
+.all-type-avatar-wrapper.large.client-xiaoman-system-avatar:hover {
+  background: #0064ff;
+  color: #edf6ff
+}
+
+.all-type-avatar-wrapper.large.client-no-auth-pools:hover,
+.all-type-avatar-wrapper.large.client-public:hover {
+  background: #333;
+  color: #e7e6e6
+}
+
+.all-type-avatar-wrapper.large.client-colleague:hover,
+.all-type-avatar-wrapper.large.client-contacts:hover,
+.all-type-avatar-wrapper.large.client-stranger:hover,
+.all-type-avatar-wrapper.large.client-unknown:hover {
+  color: #f2f2f2;
+  background-color: #adadad
+}
+
+.all-type-avatar-wrapper.middle {
+  font-size: 28px;
+  width: 34px;
+  min-width: 34px;
+  height: 34px
+}
+
+.all-type-avatar-wrapper.middle.client-colleague-customer,
+.all-type-avatar-wrapper.middle.client-no-auth-pools,
+.all-type-avatar-wrapper.middle.client-public,
+.all-type-avatar-wrapper.middle.client-self,
+.all-type-avatar-wrapper.middle.client-stranger {
+  padding-top: 13px;
+  overflow: hidden
+}
+
+.all-type-avatar-wrapper.middle.client-self {
+  background-color: #e6f4ff;
+  color: #1e8def
+}
+
+.all-type-avatar-wrapper.middle.client-contacts .avatar-icon,
+.all-type-avatar-wrapper.middle.client-stranger-advice .avatar-icon {
+  transform: scale(.75)
+}
+
+.all-type-avatar-wrapper.middle.client-colleague-customer {
+  background: #fde9cb;
+  color: #faa628
+}
+
+.all-type-avatar-wrapper.middle.client-stranger-advice,
+.all-type-avatar-wrapper.middle.client-xiaoman-system-avatar {
+  background: #edf6ff;
+  color: #0064ff
+}
+
+.all-type-avatar-wrapper.middle.client-no-auth-pools,
+.all-type-avatar-wrapper.middle.client-public {
+  background: #58657d;
+  color: #fff
+}
+
+.all-type-avatar-wrapper.middle.small.client-colleague-customer,
+.all-type-avatar-wrapper.middle.small.client-no-auth-pools,
+.all-type-avatar-wrapper.middle.small.client-public,
+.all-type-avatar-wrapper.middle.small.client-self,
+.all-type-avatar-wrapper.middle.small.client-stranger {
+  padding-top: 6px;
+  overflow: hidden
+}
+
+.all-type-avatar-wrapper.middle.client-colleague,
+.all-type-avatar-wrapper.middle.client-contacts,
+.all-type-avatar-wrapper.middle.client-stranger,
+.all-type-avatar-wrapper.middle.client-unknown {
+  color: #b6b6b6;
+  background-color: #e6e6e6
+}
+
+.all-type-avatar-wrapper.middle.client-self:hover {
+  background-color: #1e8def;
+  color: #e6f4ff
+}
+
+.all-type-avatar-wrapper.middle.client-colleague-customer:hover {
+  background: #faa628;
+  color: #fde9cb
+}
+
+.all-type-avatar-wrapper.middle.client-stranger-advice:hover,
+.all-type-avatar-wrapper.middle.client-xiaoman-system-avatar:hover {
+  background: #0064ff;
+  color: #edf6ff
+}
+
+.all-type-avatar-wrapper.middle.client-no-auth-pools:hover,
+.all-type-avatar-wrapper.middle.client-public:hover {
+  background: #333;
+  color: #e7e6e6
+}
+
+.all-type-avatar-wrapper.middle.client-colleague:hover,
+.all-type-avatar-wrapper.middle.client-contacts:hover,
+.all-type-avatar-wrapper.middle.client-stranger:hover,
+.all-type-avatar-wrapper.middle.client-unknown:hover {
+  color: #f2f2f2;
+  background-color: #adadad
+}
+
+.all-type-avatar-wrapper.have-background.client-self {
+  background-color: #e6f4ff;
+  color: #1e8def
+}
+
+.all-type-avatar-wrapper.have-background.client-contacts .avatar-icon,
+.all-type-avatar-wrapper.have-background.client-stranger-advice .avatar-icon {
+  transform: scale(.75)
+}
+
+.all-type-avatar-wrapper.have-background.client-colleague-customer {
+  background: #fde9cb;
+  color: #faa628
+}
+
+.all-type-avatar-wrapper.have-background.client-stranger-advice,
+.all-type-avatar-wrapper.have-background.client-xiaoman-system-avatar {
+  background: #edf6ff;
+  color: #0064ff
+}
+
+.all-type-avatar-wrapper.have-background.client-no-auth-pools,
+.all-type-avatar-wrapper.have-background.client-public {
+  background: #58657d;
+  color: #fff
+}
+
+.all-type-avatar-wrapper.have-background.small.client-colleague-customer,
+.all-type-avatar-wrapper.have-background.small.client-no-auth-pools,
+.all-type-avatar-wrapper.have-background.small.client-public,
+.all-type-avatar-wrapper.have-background.small.client-self,
+.all-type-avatar-wrapper.have-background.small.client-stranger {
+  padding-top: 6px;
+  overflow: hidden
+}
+
+.all-type-avatar-wrapper.have-background.client-colleague,
+.all-type-avatar-wrapper.have-background.client-contacts,
+.all-type-avatar-wrapper.have-background.client-stranger,
+.all-type-avatar-wrapper.have-background.client-unknown {
+  color: #b6b6b6;
+  background-color: #e6e6e6
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-self {
+  background-color: #e6f4ff;
+  color: #1e8def
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-contacts .avatar-icon,
+.all-type-avatar-wrapper.have-hover-status.client-stranger-advice .avatar-icon {
+  transform: scale(.75)
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-colleague-customer {
+  background: #fde9cb;
+  color: #faa628
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-stranger-advice,
+.all-type-avatar-wrapper.have-hover-status.client-xiaoman-system-avatar {
+  background: #edf6ff;
+  color: #0064ff
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-no-auth-pools,
+.all-type-avatar-wrapper.have-hover-status.client-public {
+  background: #58657d;
+  color: #fff
+}
+
+.all-type-avatar-wrapper.have-hover-status.small.client-colleague-customer,
+.all-type-avatar-wrapper.have-hover-status.small.client-no-auth-pools,
+.all-type-avatar-wrapper.have-hover-status.small.client-public,
+.all-type-avatar-wrapper.have-hover-status.small.client-self,
+.all-type-avatar-wrapper.have-hover-status.small.client-stranger {
+  padding-top: 6px;
+  overflow: hidden
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-colleague,
+.all-type-avatar-wrapper.have-hover-status.client-contacts,
+.all-type-avatar-wrapper.have-hover-status.client-stranger,
+.all-type-avatar-wrapper.have-hover-status.client-unknown {
+  color: #b6b6b6;
+  background-color: #e6e6e6
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-self:hover {
+  background-color: #1e8def;
+  color: #e6f4ff
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-colleague-customer:hover {
+  background: #faa628;
+  color: #fde9cb
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-stranger-advice:hover,
+.all-type-avatar-wrapper.have-hover-status.client-xiaoman-system-avatar:hover {
+  background: #0064ff;
+  color: #edf6ff
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-no-auth-pools:hover,
+.all-type-avatar-wrapper.have-hover-status.client-public:hover {
+  background: #333;
+  color: #e7e6e6
+}
+
+.all-type-avatar-wrapper.have-hover-status.client-colleague:hover,
+.all-type-avatar-wrapper.have-hover-status.client-contacts:hover,
+.all-type-avatar-wrapper.have-hover-status.client-stranger:hover,
+.all-type-avatar-wrapper.have-hover-status.client-unknown:hover {
+  color: #f2f2f2;
+  background-color: #adadad
+}
+
+.all-type-avatar-wrapper.client-private-lead {
+  background-color: #36b37e
+}
+
+.all-type-avatar-wrapper.client-public-lead {
+  background-color: #9b9b9b
+}
+
+.all-type-avatar-wrapper.client-private-lead,
+.all-type-avatar-wrapper.client-public-lead {
+  color: #fff
+}
+
+.all-type-avatar-wrapper.client-private-lead .avatar-icon,
+.all-type-avatar-wrapper.client-public-lead .avatar-icon {
+  transform: scale(.55)
+}
+
+.valar-customer-card {
+  background-color: #fff;
+  border-radius: 8px
+}
+
+.valar-customer-card .mm-spinner {
+  min-height: 300px;
+  width: 420px;
+  background-color: #fff
+}
+
+.component-email-input {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center
+}
+
+.component-email-input .email-wrap {
+  display: flex;
+  overflow: hidden;
+  align-items: center
+}
+
+.component-email-input .email-wrap.show-last-input {
+  flex-wrap: wrap;
+  flex: 1
+}
+
+.component-email-input .email-wrap .email-input {
+  position: relative;
+  height: 22px;
+  margin: 2px 0;
+  line-height: 22px
+}
+
+.component-email-input .email-wrap .email-input.last {
+  min-width: 80px;
+  margin-left: 8px;
+  flex: 1
+}
+
+.component-email-input .email-wrap .email-input.last input {
+  font-family: iconfont
+}
+
+.component-email-input .email-wrap .email-input.last input.forbidAdd {
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none
+}
+
+.component-email-input .email-wrap .email-input.last.hide {
+  display: none
+}
+
+.component-email-input .email-wrap .email-input input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border: none;
+  outline: none;
+  line-height: 22px;
+  background-color: #fafafa
+}
+
+.component-email-input .email-wrap .email-input input::-webkit-input-placeholder {
+  font-size: 12px;
+  color: #b6b6b6
+}
+
+.component-email-input .email-wrap .tips {
+  margin-left: 10px;
+  line-height: 22px;
+  font-size: 12px;
+  color: #c4c7cd
+}
+
+.component-email-input .email-item {
+  display: flex;
+  height: 20px;
+  margin: 2px 0;
+  white-space: nowrap
+}
+
+.component-email-input .email-item.total-email-info {
+  flex-shrink: 0;
+  margin: 0 8px
+}
+
+.component-email-input .email-item.dragging-email .email-info {
+  border: 1px solid #0064ff;
+  background-color: #eaf4ff
+}
+
+.component-email-input .email-item .email-info {
+  display: flex;
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 12px;
+  height: 20px;
+  padding: 0 8px;
+  background: #e9e9e9;
+  line-height: 20px;
+  align-items: center
+}
+
+.component-email-input .email-item .email-info .card-dialog {
+  top: 22px;
+  left: 0
+}
+
+.component-email-input .email-item .email-info .attribute {
+  height: 16px;
+  margin: 0 4px;
+  padding: 0 3px;
+  color: #77777b;
+  background: #fff;
+  font-size: 12px;
+  line-height: 16px
+}
+
+.component-email-input .email-item .email-info .name {
+  padding: 0 4px;
+  color: #263551;
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: move
+}
+
+.component-email-input .email-item .email-info .mm-tooltip-trigger>.icon-cross-thin {
+  padding: 0;
+  color: #9d9d9d;
+  font-size: 14px;
+  line-height: 14px;
+  cursor: pointer
+}
+
+.component-email-input .email-item .email-info.error {
+  background: #ffe1e1
+}
+
+.component-email-input .email-item .email-info.error .all-type-avatar-wrapper {
+  background-color: #f6797b
+}
+
+.component-email-input .email-item .email-info.conflict {
+  background: #ffe3d0
+}
+
+.component-email-input .email-item .email-info.conflict>.attribute {
+  color: #e55600;
+  background: #fff
+}
+
+.component-email-input .email-item .email-info.noPrivilege {
+  border: 1px solid #ff5050;
+  background: hsla(4, 100%, 94%, .4)
+}
+
+.component-email-input .email-item .email-info.noPrivilege .tips-icon {
+  margin-right: 5px
+}
+
+.component-email-input .email-item .email-info.invalid {
+  background: #fff3d9
+}
+
+.component-email-input .email-item .email-info.invalid .all-type-avatar-wrapper {
+  width: auto
+}
+
+.component-email-input .email-item .insert {
+  display: inline-block;
+  width: 8px
+}
+
+.component-email-input .email-item .email-input {
+  padding: 0 5px
+}
+
+.component-email-input .email-item .email-input input {
+  bottom: 0;
+  line-height: 22px
+}
+
+.component-email-input .email-list {
+  overflow: auto;
+  position: absolute;
+  z-index: 999;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  max-height: 400px;
+  background: #fff;
+  box-shadow: 1px 1px 3px 0 #ccc;
+  cursor: pointer
+}
+
+.component-email-input .email-list li {
+  display: flex;
+  height: 32px;
+  padding: 0 18px;
+  color: #404040;
+  align-items: center;
+  line-height: 32px
+}
+
+.component-email-input .email-list li em {
+  color: #949494
+}
+
+.component-email-input .email-list li b {
+  color: #188ae8;
+  font-weight: 400
+}
+
+.component-email-input .email-list li.active {
+  color: #fff;
+  background-color: #188ae8
+}
+
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-colleague-customer,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-colleague-customer:hover,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-contacts,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-contacts:hover,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-no-auth-pools,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-no-auth-pools:hover,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-public,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-public:hover,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-self,
+.component-email-input .email-list li.active .all-type-avatar-wrapper.client-self:hover,
+.component-email-input .email-list li.active .m-icon.blue,
+.component-email-input .email-list li.active b,
+.component-email-input .email-list li.active em {
+  color: #fff
+}
+
+.component-email-input .email-list li .remove-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  padding: 1px;
+  border: 1px solid;
+  border-radius: 50%;
+  color: inherit;
+  line-height: 10px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: content-box;
+  flex-shrink: 0
+}
+
+.mail-error-tooltip-popper {
+  z-index: 99
+}
