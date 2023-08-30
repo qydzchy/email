@@ -63,7 +63,7 @@ public class TaskServiceImpl implements ITaskService
     @Resource
     private ITaskEmailSendService taskEmailSendService;
 
-    @Value("${email.path}")
+    @Value("${email.pull.path}")
     private String emailPath;
 
     /**

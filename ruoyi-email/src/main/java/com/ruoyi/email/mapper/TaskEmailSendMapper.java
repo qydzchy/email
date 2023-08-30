@@ -61,4 +61,19 @@ public interface TaskEmailSendMapper
      * @return 结果
      */
     public int deleteTaskEmailSendByIds(Long[] ids);
+
+    /**
+     * 获取邮件信息-发送
+     * @param id
+     * @param userId
+     * @return
+     */
+    TaskEmailSend getTaskEmailSendById(@Param("id") Long id, @Param("createId") Long userId);
+
+    /**
+     * 根据id修改状态
+     * @param status
+     * @param id
+     */
+    void updateStatusById(@Param("status") int status, @Param("id") Long id);
 }

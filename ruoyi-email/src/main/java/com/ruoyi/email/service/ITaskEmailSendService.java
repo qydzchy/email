@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailSend;
+import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 发送邮件Service接口
@@ -61,4 +63,24 @@ public interface ITaskEmailSendService
      */
     public int deleteTaskEmailSendById(Long id);
 
+    /**
+     * 邮件保存-（写信）
+     * @param dto
+     * @return
+     */
+    Long save(EmailSendSaveDTO dto);
+
+    /**
+     * 邮件发送-（写信）
+     * @param id
+     * @return
+     */
+    boolean send(Long id);
+
+    /**
+     * 上传附件
+     * @param files
+     * @return
+     */
+    boolean uploadAttachments(MultipartFile[] files);
 }

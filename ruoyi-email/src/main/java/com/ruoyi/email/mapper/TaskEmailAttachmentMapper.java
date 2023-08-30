@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.TaskEmailAttachment;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 邮件附件Mapper接口
@@ -64,4 +65,17 @@ public interface TaskEmailAttachmentMapper
      * @param emailAttachments
      */
     void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments);
+
+    /**
+     * 根据id更新emailId
+     * @param attachmentIdList
+     */
+    void updateEmailIdByIds(@Param("emailId") Long emailId, @Param("attachmentIdList") List<Long> attachmentIdList);
+
+    /**
+     * 根据邮件ID获取附件
+     * @param emailId
+     * @return
+     */
+    List<TaskEmailAttachment> selectByEmailId(@Param("emailId") Long emailId);
 }

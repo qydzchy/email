@@ -20,14 +20,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="pendingTime"    column="pending_time"    />
         <result property="fixedFlag"    column="fixed_flag"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectTaskEmailSendVo">
-        select id, task_id, fromer, receiver, bcc, cc, title, status, delayed_tx_flag, recipient_time_zone, recipient_local_time, pending_flag, pending_time, fixed_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_task_email_send
+        select id, task_id, fromer, receiver, bcc, cc, title, status, delayed_tx_flag, recipient_time_zone, recipient_local_time, pending_flag, pending_time, fixed_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email_send
     </sql>
 
     <select id="selectTaskEmailSendList" parameterType="TaskEmailSend" resultMap="TaskEmailSendResult">
@@ -54,6 +56,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="getTaskEmailSendById" resultMap="TaskEmailSendResult">
+        <include refid="selectTaskEmailSendVo"/>
+        where id = #{id} and createId = #{createId}
+    </select>
+
     <insert id="insertTaskEmailSend" parameterType="TaskEmailSend" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_send
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -71,8 +78,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingTime != null">pending_time,</if>
             <if test="fixedFlag != null">fixed_flag,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
          </trim>
@@ -91,8 +100,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingTime != null">#{pendingTime},</if>
             <if test="fixedFlag != null">#{fixedFlag},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
@@ -115,12 +126,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingTime != null">pending_time = #{pendingTime},</if>
             <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="updateStatusById">
+        update mailbox_task_email_send status = #{status} where id = #{id}
     </update>
 
     <delete id="deleteTaskEmailSendById" parameterType="Long">

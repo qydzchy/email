@@ -30,6 +30,10 @@ public class TaskEmailAttachment extends BaseEntity
     @Excel(name = "附件名称")
     private String name;
 
+    /** 附件大小 */
+    @Excel(name = "附件大小")
+    private Integer size;
+
     /** 附件地址路径 */
     @Excel(name = "附件地址路径")
     private String path;

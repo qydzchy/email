@@ -131,6 +131,10 @@ xss:
   urlPatterns: /system/*,/monitor/*,/tool/*
 
 email:
-  path: D:\back\Desktop\mailbox\
-
+  pull:
+    path: D:\back\Desktop\mailbox\
+  send:
+    upload:
+      attachment:
+        path: D:\back\Desktop\upload
 

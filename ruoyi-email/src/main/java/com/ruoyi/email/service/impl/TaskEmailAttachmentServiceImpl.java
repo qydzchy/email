@@ -98,4 +98,14 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     public void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments) {
         taskEmailAttachmentMapper.batchInsertTaskEmailAttachment(emailAttachments);
     }
+
+    @Override
+    public void updateEmailIdByIds(Long emailId, List<Long> ids) {
+        taskEmailAttachmentMapper.updateEmailIdByIds(emailId, ids);
+    }
+
+    @Override
+    public List<TaskEmailAttachment> selectByEmailId(Long id) {
+        return taskEmailAttachmentMapper.selectByEmailId(id);
+    }
 }

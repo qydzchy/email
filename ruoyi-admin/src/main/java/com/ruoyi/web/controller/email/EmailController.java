@@ -1,16 +1,22 @@
 package com.ruoyi.web.controller.email;
 
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.email.domain.TaskEmailSend;
+import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailPullService;
+import com.ruoyi.email.service.ITaskEmailSendService;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -25,7 +31,19 @@ public class EmailController extends BaseController {
     @Resource
     private ITaskEmailPullService taskEmailPullService;
 
-    @PreAuthorize("@ss.hasPermi('email:task:pull:header:list')")
+    @Resource
+    private ITaskEmailSendService taskEmailSendService;
+
+    /**
+     * 获取邮件列表-（首页）
+     * @param taskId
+     * @param readFlag
+     * @param pendingFlag
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:pull:header:list')")
     @GetMapping("/list/pull/header")
     public TableDataInfo listPullHeader(Long taskId,
                                         Boolean readFlag,
@@ -43,6 +61,45 @@ public class EmailController extends BaseController {
         return rspData;
     }
 
+    /**
+     * 上传附件
+     */
+    @PreAuthorize("@ss.hasPermi('email:save')")
+    @Log(title = "邮件保存-写信", businessType = BusinessType.INSERT)
+    @PostMapping("/upload/attachments")
+    public AjaxResult uploadFile(@RequestParam("files") MultipartFile[] files) {
+        if (files.length == 0) {
+            throw new ServiceException("没有文件上传");
+        }
+
+        return toAjax(taskEmailSendService.uploadAttachments(files));
+    }
 
 
+    /**
+     * 邮件保存-（写信）
+     */
+    @PreAuthorize("@ss.hasPermi('email:save')")
+    @Log(title = "邮件保存-写信", businessType = BusinessType.INSERT)
+    @PostMapping("/save")
+    public AjaxResult save(@RequestBody EmailSendSaveDTO dto)
+    {
+        return AjaxResult.success(taskEmailSendService.save(dto));
+    }
+
+
+    /**
+     * 邮件发送-（写信）
+     */
+    @PreAuthorize("@ss.hasPermi('email:send')")
+    @Log(title = "邮件发送-写信", businessType = BusinessType.UPDATE)
+    @PostMapping("/send")
+    public AjaxResult send(@RequestBody TaskEmailSend taskEmailSend)
+    {
+        if (taskEmailSend.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        return toAjax(taskEmailSendService.send(taskEmailSend.getId()));
+    }
 }

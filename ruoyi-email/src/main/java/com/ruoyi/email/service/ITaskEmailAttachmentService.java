@@ -64,4 +64,18 @@ public interface ITaskEmailAttachmentService
      * @param emailAttachments
      */
     void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments);
+
+    /**
+     * 根据id去更新emailId
+     * @param emailId
+     * @param ids
+     */
+    void updateEmailIdByIds(Long emailId, List<Long> ids);
+
+    /**
+     * 根据邮件ID获取附件
+     * @param id
+     * @return
+     */
+    List<TaskEmailAttachment> selectByEmailId(Long id);
 }
