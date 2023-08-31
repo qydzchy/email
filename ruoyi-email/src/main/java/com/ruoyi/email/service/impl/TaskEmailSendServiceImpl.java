@@ -245,21 +245,39 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
 
     /**
      * 上传附件
+     * @param taskId
      * @param files
      * @return
      */
     @Override
     @Transactional
-    public boolean uploadAttachments(MultipartFile[] files) {
-        // todo
-        for (MultipartFile file : files) {
-            try {
+    public boolean uploadAttachments(Long taskId, MultipartFile[] files) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
+        try {
+            for (MultipartFile file : files) {
                 // 获取文件信息
                 String originalFilename = file.getOriginalFilename();
-                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
                 long fileSize = file.getSize();
+                String filePath = uploadAttachmentPath + File.separator + originalFilename;
 
-                // 查询
+                Date now = new Date();
+                TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
+                emailAttachment.setTaskId(taskId);
+                emailAttachment.setType(EmailTypeEnum.SEND.getType());
+                emailAttachment.setName(originalFilename);
+                emailAttachment.setSize(fileSize);
+                emailAttachment.setPath(filePath);
+                emailAttachment.setCreateId(userId);
+                emailAttachment.setCreateBy(username);
+                emailAttachment.setCreateTime(now);
+                emailAttachment.setUpdateId(userId);
+                emailAttachment.setUpdateBy(username);
+                emailAttachment.setUpdateTime(now);
+                taskEmailAttachmentList.add(emailAttachment);
 
                 // 创建上传目录（如果不存在）
                 File uploadDir = new File(uploadAttachmentPath);
@@ -267,15 +285,15 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
                     uploadDir.mkdir();
                 }
 
-                String filePath = uploadDir.getAbsolutePath() + File.separator + originalFilename;
-
                 // 保存文件到上传目录
                 File destFile = new File(filePath);
                 file.transferTo(destFile);
-
-            } catch (IOException e) {
-                log.error("upload attachment exception: {}", e);
             }
+
+            taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
+
+        } catch (Exception e) {
+            log.error("upload attachment exception: {}", e);
         }
 
         return true;

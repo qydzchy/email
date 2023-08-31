@@ -67,12 +67,12 @@ public class EmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('email:save')")
     @Log(title = "邮件保存-写信", businessType = BusinessType.INSERT)
     @PostMapping("/upload/attachments")
-    public AjaxResult uploadFile(@RequestParam("files") MultipartFile[] files) {
+    public AjaxResult uploadFile(Long taskId, @RequestParam("files") MultipartFile[] files) {
         if (files.length == 0) {
             throw new ServiceException("没有文件上传");
         }
 
-        return toAjax(taskEmailSendService.uploadAttachments(files));
+        return toAjax(taskEmailSendService.uploadAttachments(taskId, files));
     }
 
 

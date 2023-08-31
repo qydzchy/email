@@ -1,7 +1,6 @@
 package com.ruoyi.email.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailSend;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
@@ -79,8 +78,9 @@ public interface ITaskEmailSendService
 
     /**
      * 上传附件
+     * @param taskId
      * @param files
      * @return
      */
-    boolean uploadAttachments(MultipartFile[] files);
+    boolean uploadAttachments(Long taskId, MultipartFile[] files);
 }

@@ -18,6 +18,12 @@ public class TaskEmailAttachment extends BaseEntity
     /** 主键 */
     private Long id;
 
+    /**
+     * 邮箱ID
+     */
+    @Excel(name = "邮箱ID")
+    private Long taskId;
+
     /** 邮件ID */
     @Excel(name = "邮件ID")
     private Long emailId;
@@ -32,7 +38,7 @@ public class TaskEmailAttachment extends BaseEntity
 
     /** 附件大小 */
     @Excel(name = "附件大小")
-    private Integer size;
+    private Long size;
 
     /** 附件地址路径 */
     @Excel(name = "附件地址路径")
@@ -50,7 +56,24 @@ public class TaskEmailAttachment extends BaseEntity
     {
         return id;
     }
-    public void setEmailId(Long emailId) 
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public void setEmailId(Long emailId)
     {
         this.emailId = emailId;
     }
@@ -98,17 +121,15 @@ public class TaskEmailAttachment extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("emailId", getEmailId())
-            .append("type", getType())
-            .append("name", getName())
-            .append("path", getPath())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+        return "TaskEmailAttachment{" +
+                "id=" + id +
+                ", taskId=" + taskId +
+                ", emailId=" + emailId +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", size=" + size +
+                ", path='" + path + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                '}';
     }
 }
