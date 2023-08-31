@@ -44,16 +44,16 @@
 																</span>
             <!---->
 															</span>
-          <span class="mm-tooltip btn-item">
+<!--          <span class="mm-tooltip btn-item">
 																<span class="mm-tooltip-trigger">
 																	<button id="report-stat-edit-toolbar-approval" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
-																		<!---->
-                                    <!---->提交审批
-                                    <!---->
+																		&lt;!&ndash;&ndash;&gt;
+                                    &lt;!&ndash;&ndash;&gt;提交审批
+                                    &lt;!&ndash;&ndash;&gt;
 																	</button>
 																</span>
-            <!---->
-															</span>
+            &lt;!&ndash;&ndash;&gt;
+															</span>-->
           <span class="mm-tooltip btn-item">
 																<span class="mm-tooltip-trigger">
 																	<button id="report-stat-edit-toolbar-close" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
@@ -73,10 +73,10 @@
                                       <!---->
 																		</span>
                 <span class="mm__theme mm__theme-border__less mm-select sender-selector show-last-input editor-footer-sender">
-																			<div class="mm-selector--single mm-selector" tabindex="0">
+																			<div class="mm-selector--single mm-selector" tabindex="0" @click="toggleSenderDropdown">
 																				<!---->
 																				<div class="mm-selector-rendered">
-																					<div class="sender-selection" @click="toggleSenderDropdown">
+																					<div class="sender-selection">
 																						<div class="email-info" style="background: rgb(233, 233, 233); color: rgb(30, 33, 38);">
 																							<div class="mailbox-item ellipsis">
 																								<!---->
@@ -102,11 +102,11 @@
 																					</div>
 																				</div>
                                         <!---->
-																				<span class="mm-selector-suffix-icon">
+<!--																				<span class="mm-selector-suffix-icon">
 																					<svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
 																						<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
 																					</svg>
-																				</span>
+																				</span>-->
 																			</div>
 																		</span>
               </li>
@@ -132,16 +132,16 @@
                   <button type="button" @click="toggleBcc" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
                     {{ showBcc ? '取消密送' : '密送' }}
                   </button>
-                  <span class="mm-tooltip">
+<!--                  <span class="mm-tooltip">
 																				<span class="mm-tooltip-trigger">
 																					<button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn novice-tour-add-groupmail-button">
-																						<!---->
-                                            <!---->群发单显
-                                            <!---->
+																						&lt;!&ndash;&ndash;&gt;
+                                            &lt;!&ndash;&ndash;&gt;群发单显
+                                            &lt;!&ndash;&ndash;&gt;
 																					</button>
 																				</span>
-                    <!---->
-																			</span>
+                  &lt;!&ndash;&ndash;&gt;
+																			</span>-->
                 </div>
               </li>
               <!---->
@@ -213,9 +213,94 @@
                   <!---->
                 </ul>
               </li>
+
+              <li class="mail-editor-wrapper">
+                <Toolbar
+                  style="border-bottom: 1px solid #ccc"
+                  :editor="editor"
+                  :defaultConfig="toolbarConfig"
+                />
+                <!-- 编辑器 -->
+                <Editor
+                  style="height: 500px; overflow-y: hidden"
+                  :defaultConfig="editorConfig"
+                  v-model="html"
+                  @onChange="onChange"
+                  @onCreated="onCreated"
+                />
+                <div class="component-add-toolbar">
+                  <div class="mail-tool flex items-center">
+                    <!---->
+                    <span class="mm-tooltip tool-item flex items-center">
+																					<span class="mm-tooltip-trigger">
+																						<div class="tool-item flex items-center" title="">
+																							<img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
+																							<span>附件</span>
+																							<input id="attachInput" type="file" multiple="" value="">
+																						</div>
+																					</span>
+                      <!---->
+																				</span>
+                    <div class="tool-item flex items-center">
+                      <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/cloud.bd4a8ece.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 云文档</div>
+                    <div class="mm-dropdown hover:bg-gray-200 w-8 h-7 flex items-center justify-center mail-toolbar-dropdown">
+                      <div class="mm-dropdown-trigger">
+                        <div class="cursor-pointer flex items-center justify-center w-full h-full">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 15.5a1 1 0 00.707-.293l6-6a1 1 0 00-1.414-1.414L12 13.086 6.707 7.793a1 1 0 00-1.414 1.414l6 6A1 1 0 0012 15.5z"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <!---->
+                    </div>
+                    <div class="mm-divider-vertical solid"></div>
+                    <!---->
+                    <div class="tool-item novice-tour-groupmail-content-field flex items-center">
+                      <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/template.b98c6551.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 模板</div>
+                    <!---->
+                    <div class="tool-item flex items-center">
+                      <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/image.fb78e8ce.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
+                      <span>图片</span>
+                      <input title="未选择任何文件" type="file" multiple="" value="">
+                    </div>
+                    <div class="tool-item flex items-center">
+                      <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/fast-text.573b9be5.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 快速文本</div>
+                    <div class="mm-divider-vertical solid"></div>
+                    <div class="tool-item flex items-center">
+                      <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/product.db4fd779.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 产品</div>
+                    <div class="mm-dropdown hover:bg-gray-200 h-7 flex items-center justify-center mail-toolbar-dropdown">
+                      <div class="mm-dropdown-trigger">
+                        <div class="cursor-pointer text-xs text-black flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" spin="false" rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill="none" role="presentation" data-v-d394b89c="" style="vertical-align: middle;">
+                            <g data-v-d394b89c="">
+                              <path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" d="M10 6a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v38l-7-5-7 5-7-5-7 5V6Zm8 16h12m-12 8h12M18 14h12" data-follow-stroke="currentColor" data-v-d394b89c="" stroke="currentColor"></path>
+                            </g>
+                          </svg> 单据
+                        </div>
+                      </div>
+                      <!---->
+                    </div>
+                    <div class="mm-dropdown hover:bg-gray-200 h-7 flex items-center justify-center mail-toolbar-dropdown">
+                      <div class="mm-dropdown-trigger">
+                        <div class="cursor-pointer text-xs text-black paypal-tool flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" spin="false" rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill="none" role="presentation" data-v-64bcfa07="" style="vertical-align: middle;">
+                            <g data-v-64bcfa07="">
+                              <path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" d="M31 34h12m0-8V10a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v28a3 3 0 0 0 3 3h20.47" data-follow-stroke="currentColor" stroke="#2a2a2a" data-v-64bcfa07=""></path>
+                              <path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" d="m36 39-5-5 5-5M15 15l5 6 5-6M14 27h12m-12-6h12m-6 0v12" data-follow-stroke="currentColor" stroke="#2a2a2a" data-v-64bcfa07=""></path>
+                            </g>
+                          </svg> 收款
+                        </div>
+                      </div>
+                      <!---->
+                    </div>
+                  </div>
+                  <span class="mail-size">邮件大小：506 B</span>
+                </div>
+              </li>
             </ul>
             <!---->
             <div class="editor-footer">
+
               <div>
                 <span class="select-label">签名：</span>
                 <span class="mm-select mail-sign-selector novice-tour-set-signature-button" style="width: 178px;">
@@ -301,9 +386,14 @@
 @import '../../static/scss/email/index/48517.0d1db0ea.css';
 </style>
 
+<style src="@wangeditor/editor/dist/css/style.css"></style>
+
+
 <script>
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import {listTaskPull} from "@/api/email/task";
 export default {
+  components: { Editor, Toolbar },
   data() {
     return {
       taskList: [],
@@ -344,12 +434,43 @@ export default {
 
     toggleBcc() {
       this.showBcc = !this.showBcc;
-    }
+    },
+
+    onCreated(editor) {
+      this.editor = Object.seal(editor); // 【注意】一定要用 Object.seal() 否则会报错
+    },
+    onChange(editor) {
+      console.log("onChange", editor.getHtml()); // onChange 时获取编辑器最新内容
+    },
+    getEditorText() {
+      const editor = this.editor;
+      if (editor == null) return;
+
+      console.log(editor.getText()); // 执行 editor API
+    },
+    printEditorHtml() {
+      const editor = this.editor;
+      if (editor == null) return;
+
+      console.log(editor.getHtml()); // 执行 editor API
+    },
   },
   mounted() {
     this.fetchTaskList();
+    // 模拟 ajax 请求，异步渲染编辑器
+    setTimeout(() => {
+      this.html = "<p>Ajax 异步设置内容 HTML</p>";
+    }, 1500);
+  },
+
+  beforeDestroy() {
+    const editor = this.editor;
+    if (editor == null) return;
+    editor.destroy(); // 组件销毁时，及时销毁 editor ，重要！！！
   },
 
 };
 </script>
 
+<script>
+</script>
