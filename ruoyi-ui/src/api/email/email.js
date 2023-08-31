@@ -9,3 +9,12 @@ export function listPullHeader(query) {
   })
 }
 
+// 上传附件
+export function uploadAttachments(data) {
+  return request({
+    url: '/email/info/upload/attachments',
+    method: 'post',
+    data: data
+  })
+}
+

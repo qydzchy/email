@@ -1,7 +1,6 @@
 package com.ruoyi.email.service.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +20,7 @@ import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmailAttachment;
 import com.ruoyi.email.domain.TaskEmailContent;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
+import com.ruoyi.email.domain.vo.email.AttachmentUploadVO;
 import com.ruoyi.email.service.ITaskEmailAttachmentService;
 import com.ruoyi.email.service.ITaskEmailContentService;
 import com.ruoyi.email.service.ITaskEmailSendService;
@@ -251,11 +251,12 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
      */
     @Override
     @Transactional
-    public boolean uploadAttachments(Long taskId, MultipartFile[] files) {
+    public List<AttachmentUploadVO> uploadAttachments(Long taskId, MultipartFile[] files) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        List<AttachmentUploadVO> attachmentUploadVOList = new ArrayList<>();
         List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
         try {
             for (MultipartFile file : files) {
@@ -288,6 +289,8 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
                 // 保存文件到上传目录
                 File destFile = new File(filePath);
                 file.transferTo(destFile);
+
+                attachmentUploadVOList.add(AttachmentUploadVO.builder().name(originalFilename).size(fileSize).build());
             }
 
             taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
@@ -296,7 +299,7 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
             log.error("upload attachment exception: {}", e);
         }
 
-        return true;
+        return attachmentUploadVOList;
     }
 
     /**

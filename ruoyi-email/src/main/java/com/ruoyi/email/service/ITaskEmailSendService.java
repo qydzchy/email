@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.email.domain.TaskEmailSend;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
+import com.ruoyi.email.domain.vo.email.AttachmentUploadVO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -82,5 +83,5 @@ public interface ITaskEmailSendService
      * @param files
      * @return
      */
-    boolean uploadAttachments(Long taskId, MultipartFile[] files);
+    List<AttachmentUploadVO> uploadAttachments(Long taskId, MultipartFile[] files);
 }

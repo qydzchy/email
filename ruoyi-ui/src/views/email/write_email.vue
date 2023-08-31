@@ -208,9 +208,25 @@
                 </div>-->
               </li>
               <!---->
+              <!-- 展示附件 -->
               <li class="add-toolbar-attach">
                 <ul class="component-add-toolbar-attach">
-                  <!---->
+                  <li v-for="file in uploadedFiles" :key="file.name" class="">
+                    <span class="okki-icon-wrap attachment-icon" color="#263551">​
+                      <!-- SVG icon for attachment here -->
+                    </span>
+                    <p class="file-name">
+                      <span class="mm-tooltip name">
+                        <span class="mm-tooltip-trigger">{{ file.name }}</span>
+                      </span>
+                      <span :title="file.size" class="size ellipsis"> ({{ formatSize(file.size) }}) </span>
+                    </p>
+                    <div class="btns">
+                      <a>预览</a>
+                      <a>重命名</a>
+                      <a>删除</a>
+                    </div>
+                  </li>
                 </ul>
               </li>
 
@@ -223,7 +239,6 @@
                 <!-- 编辑器 -->
                 <Editor
                   style="height: 500px; overflow-y: hidden"
-                  :defaultConfig="editorConfig"
                   v-model="html"
                   @onChange="onChange"
                   @onCreated="onCreated"
@@ -232,15 +247,14 @@
                   <div class="mail-tool flex items-center">
                     <!---->
                     <span class="mm-tooltip tool-item flex items-center">
-																					<span class="mm-tooltip-trigger">
-																						<div class="tool-item flex items-center" title="">
-																							<img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
-																							<span>附件</span>
-																							<input id="attachInput" type="file" multiple="" value="">
-																						</div>
-																					</span>
-                      <!---->
-																				</span>
+                        <span class="mm-tooltip-trigger">
+                            <div class="tool-item flex items-center" title="">
+                                <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
+                                <span @click="triggerFileInput">附件</span>
+                                <input id="attachInput" type="file" multiple @change="handleFileUpload" ref="fileInput" style="display:none;">
+                            </div>
+                        </span>
+                    </span>
                     <div class="tool-item flex items-center">
                       <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/cloud.bd4a8ece.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 云文档</div>
                     <div class="mm-dropdown hover:bg-gray-200 w-8 h-7 flex items-center justify-center mail-toolbar-dropdown">
@@ -391,6 +405,7 @@
 
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import {uploadAttachments} from "@/api/email/email";
 import {listTaskPull} from "@/api/email/task";
 export default {
   components: { Editor, Toolbar },
@@ -400,10 +415,17 @@ export default {
       isDropdownVisible: false,
       selectedEmail: '',
       showCc: true,
-      showBcc: true
+      showBcc: true,
+      selectedFiles: [],
+      uploadedFiles: [],
+      taskId: null,
     };
   },
   methods: {
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+
     async toggleSenderDropdown() {
       this.isDropdownVisible = !this.isDropdownVisible;
     },
@@ -442,18 +464,55 @@ export default {
     onChange(editor) {
       console.log("onChange", editor.getHtml()); // onChange 时获取编辑器最新内容
     },
-    getEditorText() {
-      const editor = this.editor;
-      if (editor == null) return;
 
-      console.log(editor.getText()); // 执行 editor API
-    },
-    printEditorHtml() {
-      const editor = this.editor;
-      if (editor == null) return;
+    async handleFileUpload(event) {
+      const selectedFiles = [...event.target.files];
+      const formData = new FormData();
 
-      console.log(editor.getHtml()); // 执行 editor API
+      selectedFiles.forEach(file => {
+        formData.append('files', file);
+      });
+      formData.append('taskId', this.taskId);  // 将taskId添加到formData中
+
+      try {
+        // 假设你的API地址是/api/upload
+        const response = await this.uploadAttachments(formData);
+
+        if (response.data.success) {
+          this.uploadedFiles.push(...response.data.files);
+          this.$refs.fileInput.value = null; // 清除选择的文件
+        } else {
+          console.error('上传失败');
+        }
+      } catch (error) {
+        console.error('上传过程中出现错误:', error);
+      }
     },
+
+    formatSize(size) {
+      return size + ' B'; // Here you can add more sophisticated size formatting
+    },
+    async uploadFiles() {
+      const formData = new FormData();
+
+      this.selectedFiles.forEach(file => {
+        formData.append('files', file);
+      });
+
+      try {
+        // 假设你的API地址是/api/upload
+        const response = await uploadAttachments();
+        console.log("response = " + response);
+        if (response.data.success) {
+          this.uploadedFiles.push(...response.data.files);
+          this.$refs.fileInput.value = null; // 清除选择的文件
+        } else {
+          console.error('上传失败');
+        }
+      } catch (error) {
+        console.error('上传过程中出现错误:', error);
+      }
+    }
   },
   mounted() {
     this.fetchTaskList();
@@ -472,5 +531,3 @@ export default {
 };
 </script>
 
-<script>
-</script>
