@@ -9,12 +9,21 @@ export function listPullHeader(query) {
   })
 }
 
-// 上传附件
-export function uploadAttachments(data) {
+// 保存发送邮件
+export function saveSendEmail(data) {
   return request({
-    url: '/email/info/upload/attachments',
+    url: '/email/info/save',
     method: 'post',
     data: data
   })
 }
 
+
+// 发送邮件
+export function sendEmail(data) {
+  return request({
+    url: '/email/info/send',
+    method: 'post',
+    data: data
+  })
+}

@@ -58,4 +58,11 @@ public interface ITaskEmailContentService
      * @return 结果
      */
     public int deleteTaskEmailContentById(Long id);
+
+    /**
+     * 根据emailId查询邮件内容
+     * @param emailId
+     * @return
+     */
+    TaskEmailContent selectTaskEmailContentByEmailId(Long emailId);
 }

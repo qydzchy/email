@@ -98,7 +98,7 @@ public class EmailSender {
 
     public static void main(String[] args) {
         try {
-            sendEmailWithAttachmentsAndProxy("smtp.tom.com", "25", false,"w0r1d_space@tom.com", "6yhn7UJM",
+            sendEmailWithAttachmentsAndProxy("mail.sohu.com", "465", false,"w0r1d_space@sohu.com", "QI14ATMVBC",
                     "w0r1d_space@sina.com", "13076506601@163.com", "278882047@qq.com",
                     "Test Subject", "Test Message", null, null, new String[] {"D:\\back\\Desktop\\5\\1.txt"});
             System.out.println("Email sent successfully!");

@@ -1,7 +1,5 @@
 package com.ruoyi.email.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -17,12 +15,6 @@ public class TaskEmailAttachment extends BaseEntity
 
     /** 主键 */
     private Long id;
-
-    /**
-     * 邮箱ID
-     */
-    @Excel(name = "邮箱ID")
-    private Long taskId;
 
     /** 邮件ID */
     @Excel(name = "邮件ID")
@@ -55,14 +47,6 @@ public class TaskEmailAttachment extends BaseEntity
     public Long getId() 
     {
         return id;
-    }
-
-    public Long getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
     }
 
     public Long getSize() {
@@ -123,7 +107,6 @@ public class TaskEmailAttachment extends BaseEntity
     public String toString() {
         return "TaskEmailAttachment{" +
                 "id=" + id +
-                ", taskId=" + taskId +
                 ", emailId=" + emailId +
                 ", type=" + type +
                 ", name='" + name + '\'' +

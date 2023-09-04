@@ -76,12 +76,4 @@ public interface ITaskEmailSendService
      * @return
      */
     boolean send(Long id);
-
-    /**
-     * 上传附件
-     * @param taskId
-     * @param files
-     * @return
-     */
-    List<AttachmentUploadVO> uploadAttachments(Long taskId, MultipartFile[] files);
 }

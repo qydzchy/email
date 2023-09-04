@@ -42,9 +42,13 @@ public class EmailSendSaveDTO {
      */
     private List<Long> attachmentIdList;
 
+    /**
+     * 是否追踪
+     */
+    private Boolean traceFlag;
+
     /** 定时发送: 0.否 1.是 */
-    @NotNull(message = "定时发送不能为空")
-    private Integer delayedTxFlag;
+    private Boolean delayedTxFlag;
 
     /** 收件人所在时区 */
     private String recipientTimeZone;
@@ -54,8 +58,8 @@ public class EmailSendSaveDTO {
     private Date recipientLocalTime;
 
     /** 是否待处理: 0.否 1.是 */
-    @NotNull(message = "是否待处理不能为空")
-    private Integer pendingFlag;
+    /*@NotNull(message = "是否待处理不能为空")*/
+    private Boolean pendingFlag;
 
     /** 待处理时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -1,6 +1,4 @@
 package com.ruoyi.email.service.impl;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,18 +18,14 @@ import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmailAttachment;
 import com.ruoyi.email.domain.TaskEmailContent;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
-import com.ruoyi.email.domain.vo.email.AttachmentUploadVO;
 import com.ruoyi.email.service.ITaskEmailAttachmentService;
 import com.ruoyi.email.service.ITaskEmailContentService;
 import com.ruoyi.email.service.ITaskEmailSendService;
 import com.ruoyi.email.service.ITaskService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailSendMapper;
 import com.ruoyi.email.domain.TaskEmailSend;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -63,9 +57,6 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
 
     @Resource
     private ITaskService taskService;
-
-    @Value("${email.send.upload.attachment.path}")
-    private String uploadAttachmentPath;
 
     /**
      * 查询发送邮件
@@ -180,7 +171,9 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
 
         // 更新邮件附件的emailId
         List<Long> attachmentIdList = dto.getAttachmentIdList();
-        taskEmailAttachmentService.updateEmailIdByIds(emailSendId, attachmentIdList);
+        if (attachmentIdList != null && !attachmentIdList.isEmpty()) {
+            taskEmailAttachmentService.updateEmailIdByIds(emailSendId, attachmentIdList);
+        }
         return emailSendId;
     }
 
@@ -197,7 +190,7 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
         TaskEmailSend taskEmailSend = taskEmailSendMapper.getTaskEmailSendById(id, userId);
 
         // 查询邮件内容
-        TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentById(id);
+        TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentByEmailId(id);
         // 查询附件
         List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.selectByEmailId(id);
 
@@ -241,65 +234,6 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
         // 更新邮件发送状态
         updateStatusById(status, id);
         return true;
-    }
-
-    /**
-     * 上传附件
-     * @param taskId
-     * @param files
-     * @return
-     */
-    @Override
-    @Transactional
-    public List<AttachmentUploadVO> uploadAttachments(Long taskId, MultipartFile[] files) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        String username = loginUser.getUsername();
-
-        List<AttachmentUploadVO> attachmentUploadVOList = new ArrayList<>();
-        List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
-        try {
-            for (MultipartFile file : files) {
-                // 获取文件信息
-                String originalFilename = file.getOriginalFilename();
-                long fileSize = file.getSize();
-                String filePath = uploadAttachmentPath + File.separator + originalFilename;
-
-                Date now = new Date();
-                TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
-                emailAttachment.setTaskId(taskId);
-                emailAttachment.setType(EmailTypeEnum.SEND.getType());
-                emailAttachment.setName(originalFilename);
-                emailAttachment.setSize(fileSize);
-                emailAttachment.setPath(filePath);
-                emailAttachment.setCreateId(userId);
-                emailAttachment.setCreateBy(username);
-                emailAttachment.setCreateTime(now);
-                emailAttachment.setUpdateId(userId);
-                emailAttachment.setUpdateBy(username);
-                emailAttachment.setUpdateTime(now);
-                taskEmailAttachmentList.add(emailAttachment);
-
-                // 创建上传目录（如果不存在）
-                File uploadDir = new File(uploadAttachmentPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
-                }
-
-                // 保存文件到上传目录
-                File destFile = new File(filePath);
-                file.transferTo(destFile);
-
-                attachmentUploadVOList.add(AttachmentUploadVO.builder().name(originalFilename).size(fileSize).build());
-            }
-
-            taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
-
-        } catch (Exception e) {
-            log.error("upload attachment exception: {}", e);
-        }
-
-        return attachmentUploadVOList;
     }
 
     /**

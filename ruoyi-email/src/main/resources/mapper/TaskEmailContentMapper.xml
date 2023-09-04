@@ -35,7 +35,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTaskEmailContentVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectTaskEmailContentByEmailId" resultMap="TaskEmailContentResult">
+        <include refid="selectTaskEmailContentVo"/>
+        where email_id = #{emailId}
+    </select>
+
     <insert id="insertTaskEmailContent" parameterType="TaskEmailContent" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_content
         <trim prefix="(" suffix=")" suffixOverrides=",">

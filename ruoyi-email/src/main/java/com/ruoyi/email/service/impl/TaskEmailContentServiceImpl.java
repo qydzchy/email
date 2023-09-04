@@ -93,4 +93,14 @@ public class TaskEmailContentServiceImpl implements ITaskEmailContentService
     {
         return taskEmailContentMapper.deleteTaskEmailContentById(id);
     }
+
+    /**
+     * 根据emailId查询邮件内容
+     * @param emailId
+     * @return
+     */
+    @Override
+    public TaskEmailContent selectTaskEmailContentByEmailId(Long emailId) {
+        return taskEmailContentMapper.selectTaskEmailContentByEmailId(emailId);
+    }
 }

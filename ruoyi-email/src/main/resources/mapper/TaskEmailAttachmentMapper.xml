@@ -43,6 +43,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where email_id = #{emailId}
     </select>
 
+    <select id="getByTaskIdAndEmailId" resultMap="TaskEmailAttachmentResult">
+        select id, name, size from mailbox_task_email_attachment
+        and email_id = #{emailId} and create_id = #{createId} and del_flag = 0
+    </select>
+
     <insert id="insertTaskEmailAttachment" parameterType="TaskEmailAttachment" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_attachment
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -73,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <insert id="batchInsertTaskEmailAttachment" >
+    <insert id="batchInsertTaskEmailAttachment" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into mailbox_task_email_attachment (email_id, type, name, path, del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="emailAttachments" item="item" index="index" separator=",">
@@ -104,10 +109,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="attachmentIdList" open="(" separator="," close=")">
             #{id}
         </foreach>
+        and del_flag = 0
+    </update>
+
+    <update id="updateNameById">
+        update mailbox_task_email_attachment set name = #{name} where id = #{id} and create_id = #{createId} and del_flag = 0
     </update>
 
     <delete id="deleteTaskEmailAttachmentById" parameterType="Long">
-        delete from mailbox_task_email_attachment where id = #{id}
+        delete from mailbox_task_email_attachment where id = #{id} and del_flag = 0
     </delete>
 
     <delete id="deleteTaskEmailAttachmentByIds" parameterType="String">
@@ -115,5 +125,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+        and del_flag = 0
     </delete>
+
+    <update id="deleteById">
+        update mailbox_task_email_attachment set del_flag = 2 where id = #{id} and create_id = #{createId} and del_flag = 0
+    </update>
 </mapper>

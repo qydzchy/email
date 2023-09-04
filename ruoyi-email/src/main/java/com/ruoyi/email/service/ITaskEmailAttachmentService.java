@@ -2,6 +2,8 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.TaskEmailAttachment;
+import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 邮件附件Service接口
@@ -78,4 +80,32 @@ public interface ITaskEmailAttachmentService
      * @return
      */
     List<TaskEmailAttachment> selectByEmailId(Long id);
+
+    /**
+     * @param files
+     * @return
+     */
+    List<AttachmentListVO> uploadAttachments(MultipartFile[] files);
+
+    /**
+     * 重命名
+     * @param id
+     * @param name
+     * @return
+     */
+    boolean rename(Long id, String name);
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    boolean delete(Long id);
+
+    /**
+     * 查询任务上传附件
+     * @param emailId
+     * @return
+     */
+    List<AttachmentListVO> list(Long emailId);
 }

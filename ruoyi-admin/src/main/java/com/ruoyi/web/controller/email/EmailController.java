@@ -16,7 +16,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -59,20 +58,6 @@ public class EmailController extends BaseController {
         rspData.setRows(pair.getSecond());
         rspData.setTotal(pair.getFirst());
         return rspData;
-    }
-
-    /**
-     * 上传附件
-     */
-    @PreAuthorize("@ss.hasPermi('email:upload')")
-    @Log(title = "邮件保存-写信", businessType = BusinessType.INSERT)
-    @PostMapping("/upload/attachments")
-    public AjaxResult uploadFile(Long taskId, @RequestParam("files") MultipartFile[] files) {
-        if (files.length == 0) {
-            throw new ServiceException("没有文件上传");
-        }
-
-        return AjaxResult.success(taskEmailSendService.uploadAttachments(taskId, files));
     }
 
 

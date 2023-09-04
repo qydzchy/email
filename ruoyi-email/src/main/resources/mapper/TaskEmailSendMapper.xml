@@ -58,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getTaskEmailSendById" resultMap="TaskEmailSendResult">
         <include refid="selectTaskEmailSendVo"/>
-        where id = #{id} and createId = #{createId}
+        where id = #{id} and create_id = #{createId}
     </select>
 
     <insert id="insertTaskEmailSend" parameterType="TaskEmailSend" useGeneratedKeys="true" keyProperty="id">
