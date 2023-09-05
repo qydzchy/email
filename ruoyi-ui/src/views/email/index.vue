@@ -760,6 +760,7 @@
 import emailHeaderLayout from './email_header.vue';
 import emailContentLayout from './email_content.vue';
 import writeEmailLayout from './write_email.vue';
+import sendSuccessLayout from './send_success.vue';
 import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
 import {listTaskPull} from "@/api/email/task";
@@ -785,6 +786,7 @@ export default {
     'email_header': emailHeaderLayout,
     'email_content': emailContentLayout,
     'write_email': writeEmailLayout,
+    'send_success': sendSuccessLayout,
     'setup': setup,
     'FolderTree': FolderTree
   },
@@ -824,30 +826,35 @@ export default {
       this.activeMenuItem = item;
     },
 
+    // 任务收件箱
     taskPullClick(taskId) {
       this.switchLayout('email_header');
       this.onTaskClick(taskId);
       this.setActive('PULL_' + taskId);
     },
 
+    // 任务发件箱
     taskSendClick(taskId) {
       this.switchLayout('email_header');
       this.onTaskClick(taskId);
       this.setActive('SEND_' + taskId);
     },
 
+    // 全部收件
     allReceivedClick() {
       this.switchLayout('email_header');
       this.setActive('ALL_RECEIVED');
       this.triggerAllReceivedEvent();
     },
 
+    // 待处理邮件
     pendingMailClick() {
       this.switchLayout('email_header');
       this.setActive('PENDING_MAIL');
       this.triggerPendingMailEvent();
     },
 
+    // 未读邮件
     anUnreadMailClick() {
       this.currentLayout = 'email_header';
       this.setActive('AN_UNREAD_MAIL');
@@ -880,8 +887,19 @@ export default {
     this.triggerAllReceivedEvent();  // 触发事件
     this.refreshPullEmailList();
     this.refreshFolderList();
+
+    EventBus.$on('switch-send-success', () => {
+      this.currentLayout = 'send_success';
+    });
+    EventBus.$on('switch-index', () => {
+      this.allReceivedClick();
+    });
   },
 
+  beforeDestroy() {
+    EventBus.$off('switch-send-success');
+    EventBus.$off('switch-index');
+  }
 
 };
 </script>

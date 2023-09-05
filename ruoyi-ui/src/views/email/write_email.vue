@@ -27,7 +27,7 @@
                                 </span>
             <span class="mm-tooltip btn-item">
                                   <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-draft" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
+                                    <button id="report-stat-edit-toolbar-draft" type="button" @click="saveAsDraft" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
                                       <!---->
                                       <!---->存草稿
                                       <!---->
@@ -57,7 +57,7 @@
                                 </span>-->
             <span class="mm-tooltip btn-item">
                                   <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-close" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
+                                    <button id="report-stat-edit-toolbar-close" @click="showCancelPopup = true" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
                                       <!---->
                                       <!---->取消
                                       <!---->
@@ -404,6 +404,51 @@
           </div>
         </div>
       </form>
+      <template>
+        <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1000;" v-portal="" v-portal-fixed="" v-if="showCancelPopup">
+          <div class="mm-modal-mask"></div>
+          <div class="mm-modal-wrapper" style="padding-top: 15vh;">
+            <div class="mm-modal-content" style="width: 424px; border-color: transparent;">
+              <svg class="mm-icon mm-icon-close mm-modal-close" @click="showCancelPopup = false" viewBox="0 0 24 24" name="close" fill="currentColor" style="height: 14px; width: 14px;">
+                <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"></path>
+              </svg>
+              <div class="mm-modal-header">
+                <div class="mm-modal-title">
+                  <span>离开确认</span>
+                </div>
+              </div>
+              <div class="mm-modal-body">
+                <h3 class="close-confirm-title">将此邮件保存为草稿吗？</h3>
+                <div class="content">
+                  <p>如果不保存为草稿，编辑的内容将会丢失</p>
+                </div>
+              </div>
+              <div class="mm-modal-footer">
+                <div class="footer">
+                  <button type="button" @click="showCancelPopup = false" class="mm-button">
+                    <!---->
+                    <!---->
+                    <span>取消</span>
+                    <!---->
+                  </button>
+                  <button type="button" @click="noSavePopup" class="mm-button">
+                    <!---->
+                    <!---->
+                    <span>不保存</span>
+                    <!---->
+                  </button>
+                  <button type="button" @click="saveAsDraftPopup" class="mm-button mm-button__primary">
+                    <!---->
+                    <!---->
+                    <span>存草稿</span>
+                    <!---->
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </el-form>
 </template>
@@ -429,6 +474,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import {uploadAttachments, listAttachment, renameAttachment, deleteAttachment} from "@/api/email/attachment";
 import {listTaskPull} from "@/api/email/task";
 import {saveSendEmail, sendEmail} from "@/api/email/email";
+import { EventBus } from '@/api/email/event-bus.js'; // 根据你的文件结构调整路径
 export default {
   components: { Editor, Toolbar },
   data() {
@@ -437,12 +483,15 @@ export default {
       taskList: [],
       isDropdownVisible: false,
       selectedEmail: '',
-      showCc: true,
-      showBcc: true,
+      showCc: false,
+      showBcc: false,
       selectedFiles: [],
       uploadedFiles: [],
       taskId: null,
-      attachmentIds: []
+      attachmentIds: [],
+      editor: null,
+      "toolbarConfig": {},
+      showCancelPopup: false //显示取消弹窗
     };
   },
   methods: {
@@ -547,7 +596,7 @@ export default {
         "content": this.formData.content,
         "attachmentIdList": this.attachmentIds,
         "delayedTxFlag": this.formData.delayedTxFlag,
-        "traceFlag": this.formData.traceFlag
+        "traceFlag": this.formData.traceFlag,
       }
 
       try {
@@ -564,6 +613,20 @@ export default {
     },
 
     async sendEmail() {
+      // 校验发件人、收件人、主题和内容是否为空
+      if (!this.formData.receiver) {
+        this.$message.error("收件人不能为空");
+        return;
+      }
+      if (!this.formData.title) {
+        this.$message.error("主题不能为空");
+        return;
+      }
+      if (!this.formData.content || this.formData.content.trim() === "") {
+        this.$message.error("邮件内容不能为空");
+        return;
+      }
+
       try {
         const response = await this.saveSendEmail();
         if (response.code === 200) {
@@ -573,12 +636,13 @@ export default {
            const data = {
              "id": id
            };
-           const sendResponse = sendEmail(data);
+           const sendResponse = await sendEmail(data);
           if (sendResponse.code === 200) {
-            return response; // 返回整个响应对象
+            EventBus.$emit('switch-send-success');  // 发出事件
+            return response;
           } else {
             console.error('发送失败');
-            throw new Error('发送失败');
+            this.$message.success('发送失败');
           }
         }
       } catch (error) {
@@ -595,8 +659,30 @@ export default {
           name: e
         };
       });
-    }
+    },
 
+    // 存草稿
+    async saveAsDraft() {
+      const response = await this.saveSendEmail();
+      if (response.code === 200) {
+         this.$message.success("邮件保存成功");
+      }
+    },
+
+    // 弹窗-存草稿
+    async saveAsDraftPopup() {
+      const response = await this.saveSendEmail();
+      if (response.code === 200) {
+        EventBus.$emit('switch-index');  // 发出事件
+      } else {
+        this.$message.error("执行失败");
+      }
+    },
+
+    // 弹窗-不保存
+    noSavePopup() {
+      EventBus.$emit('switch-index');  // 发出事件
+    }
   },
   mounted() {
     this.fetchTaskList();
@@ -605,7 +691,7 @@ export default {
   beforeDestroy() {
     const editor = this.editor;
     if (editor == null) return;
-    editor.destroy(); // 组件销毁时，及时销毁 editor ，重要！！！
+    editor.destroy();
   },
 
 };
