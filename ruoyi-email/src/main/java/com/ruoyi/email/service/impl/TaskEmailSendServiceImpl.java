@@ -1,8 +1,10 @@
 package com.ruoyi.email.service.impl;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -18,11 +20,13 @@ import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmailAttachment;
 import com.ruoyi.email.domain.TaskEmailContent;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
+import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailAttachmentService;
 import com.ruoyi.email.service.ITaskEmailContentService;
 import com.ruoyi.email.service.ITaskEmailSendService;
 import com.ruoyi.email.service.ITaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailSendMapper;
 import com.ruoyi.email.domain.TaskEmailSend;
@@ -236,6 +240,65 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
         return true;
     }
 
+    @Override
+    public Pair<Integer, List<Map<String, List<SendEmailInfoListVO>>>> listSendHeader(Long taskId, Boolean delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        List<Long> taskIdList = new ArrayList<>();
+        if (taskId == null) {
+            taskIdList = taskService.listIdByUserId(userId);
+        } else {
+            boolean exist = taskService.existById(taskId, userId);
+            if (!exist) {
+                log.info("任务不存在，taskId:{}", taskId);
+                throw new ServiceException("任务不存在");
+            }
+
+            taskIdList.add(taskId);
+        }
+
+        if (taskIdList.isEmpty()) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        String del = Optional.ofNullable(delFlag).orElse(false) ? "2" : "0";
+        Integer status = Optional.ofNullable(draftsFlag).orElse(false) ? 1 : null;
+
+        int count = taskEmailSendMapper.countByTaskId(taskIdList, del, status);
+        if (count <= 0) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<SendEmailInfoListVO> sendEmailInfoListVOList = taskEmailSendMapper.selectTaskEmailSendByTaskIdPage(taskIdList, del, status, offset, limit);
+
+        Map<String, List<SendEmailInfoListVO>> data = new LinkedHashMap<>();
+        sendEmailInfoListVOList.stream().forEach(emailInfoListVO -> {
+            Date createTime = emailInfoListVO.getCreateTime();
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(createTime.toInstant(), ZoneId.systemDefault());
+            String dynamicLabel = getDynamicLabel(localDateTime);
+
+            if (data.containsKey(dynamicLabel)) {
+                data.get(dynamicLabel).add(emailInfoListVO);
+            } else {
+                data.put(dynamicLabel, new ArrayList<SendEmailInfoListVO>() {{
+                    add(emailInfoListVO);
+                }});
+            }
+        });
+
+        List<Map<String, List<SendEmailInfoListVO>>> dataList = new ArrayList<>();
+        data.forEach((key, value) -> {
+            dataList.add(new HashMap<String, List<SendEmailInfoListVO>>() {{
+                put(key, value);
+            }});
+        });
+
+        return Pair.of(count, dataList);
+    }
+
     /**
      * 更新邮件发送状态
      * @param status
@@ -375,6 +438,26 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
             transport.close();
         } else {
             Transport.send(msg);
+        }
+    }
+
+    private String getDynamicLabel(LocalDateTime mailDateTime) {
+        LocalDateTime now = LocalDateTime.now();
+
+        long daysBetween = ChronoUnit.DAYS.between(mailDateTime, now);
+        if (daysBetween == 0) {
+            return "今天";
+        } else if (daysBetween == 1) {
+            return "昨天";
+        } else if (daysBetween > 1 && daysBetween <= 7) {
+            DayOfWeek dayOfWeek = mailDateTime.getDayOfWeek();
+            return "上周" + dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.CHINESE);
+        } else if (mailDateTime.getYear() == now.getYear()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+            return mailDateTime.format(formatter);
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+            return mailDateTime.format(formatter);
         }
     }
 

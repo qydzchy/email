@@ -10,17 +10,15 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.TaskEmailSend;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
+import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailPullService;
 import com.ruoyi.email.service.ITaskEmailSendService;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.util.Pair;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +35,7 @@ public class EmailController extends BaseController {
     private ITaskEmailSendService taskEmailSendService;
 
     /**
-     * 获取邮件列表-（首页）
+     * 获取收件列表-（首页）
      * @param taskId
      * @param readFlag
      * @param pendingFlag
@@ -54,6 +52,33 @@ public class EmailController extends BaseController {
                                         @NotNull(message = "页大小不能为空") Integer pageSize)
     {
         Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> pair = taskEmailPullService.listPullHeader(taskId, readFlag, pendingFlag, pageNum, pageSize);
+
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(pair.getSecond());
+        rspData.setTotal(pair.getFirst());
+        return rspData;
+    }
+
+    /**
+     * 获取发件列表-（首页）
+     * @param taskId
+     * @param delFlag 已删除邮件
+     * @param draftsFlag 草稿箱邮件
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:send:header:list')")
+    @GetMapping("/list/send/header")
+    public TableDataInfo listSendHeader(Long taskId,
+                                        Boolean delFlag,
+                                        Boolean draftsFlag,
+                                        @NotNull(message = "页数不能为空") Integer pageNum,
+                                        @NotNull(message = "页大小不能为空") Integer pageSize)
+    {
+        Pair<Integer, List<Map<String, List<SendEmailInfoListVO>>>> pair = taskEmailSendService.listSendHeader(taskId, delFlag, draftsFlag, pageNum, pageSize);
 
         TableDataInfo rspData = new TableDataInfo();
         rspData.setCode(HttpStatus.SUCCESS);

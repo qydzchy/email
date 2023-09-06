@@ -61,6 +61,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id} and create_id = #{createId}
     </select>
 
+    <select id="countByTaskId" resultType="java.lang.Integer">
+        select count(*) from mailbox_task_email_send
+        where task_id in
+        <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        <if test="status != null "> and status = #{status}</if>
+        and del_flag = #{delFlag}
+    </select>
+
+    <select id="selectTaskEmailSendByTaskIdPage"
+            resultType="com.ruoyi.email.domain.vo.email.SendEmailInfoListVO">
+        SELECT
+        mtes.id,
+        mtes.task_id,
+        mtes.fromer,
+        mtes.receiver,
+        mtes.bcc,
+        mtes.cc,
+        mtes.title,
+        mtes.status,
+        mtes.trace_flag AS traceFlag,
+        mtes.delayed_tx_flag AS delayedTxFlag,
+        mtes.recipient_time_zone AS recipientTimeZone,
+        mtes.recipient_local_time AS recipientLocalTime,
+        mtes.pending_flag AS pendingFlag,
+        mtes.pending_time AS pendingTime,
+        mtes.fixed_flag AS fixedFlag,
+        mtes.create_time AS createTime,
+        mtec.content
+        FROM
+        mailbox_task_email_send mtes
+        LEFT JOIN mailbox_task_email_content mtec ON mtes.id = mtec.email_id
+        WHERE mtes.task_id IN
+        <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        <if test="status != null "> AND mtes.status = #{status}</if>
+        AND mtes.del_flag = #{delFlag}
+        ORDER BY
+        mtes.create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
     <insert id="insertTaskEmailSend" parameterType="TaskEmailSend" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_send
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -1,10 +1,14 @@
 package com.ruoyi.email.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailSend;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.AttachmentUploadVO;
+import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
+import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -76,4 +80,15 @@ public interface ITaskEmailSendService
      * @return
      */
     boolean send(Long id);
+
+    /**
+     * 获取发件列表
+     * @param taskId
+     * @param delFlag
+     * @param draftsFlag
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Pair<Integer, List<Map<String, List<SendEmailInfoListVO>>>> listSendHeader(Long taskId, Boolean delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
 }

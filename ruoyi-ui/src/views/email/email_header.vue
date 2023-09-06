@@ -428,7 +428,7 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
-import {listPullHeader} from "@/api/email/email";
+import {listPullHeader, listSendHeader} from "@/api/email/email";
 import emailContentLayout from "@/views/email/email_content.vue";
 
 export default {
@@ -441,6 +441,8 @@ export default {
       taskId: null,
       readFlag: null,
       pendingFlag: null,
+      delFlag: null,
+      draftsFlag: null,
       localEmailList: [],
       currentEmailDetail: {},
     }
@@ -460,6 +462,8 @@ export default {
     EventBus.$on('all-received-selected', this.fetchEmailData);
     EventBus.$on('pending-mail-selected', this.fetchEmailData);
     EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
+    EventBus.$on('deleted-mail-selected', this.fetchEmailData);
+    EventBus.$on('drafts-selected', this.fetchEmailData);
     if (this.emailList === undefined || this.emailList === null || this.emailList.length === 0) {
       this.localEmailList = [];
     } else {
@@ -478,6 +482,8 @@ export default {
     EventBus.$off('all-received-selected', this.fetchEmailData);
     EventBus.$off('pending-mail-selected', this.fetchEmailData);
     EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
+    EventBus.$off('deleted-mail-selected', this.fetchEmailData);
+    EventBus.$off('drafts-selected', this.fetchEmailData);
   },
   methods: {
     fetchEmailsForTask(taskId) {
@@ -498,6 +504,24 @@ export default {
       }
 
       listPullHeader(query).then(response => {
+        this.localEmailList = response.rows;
+        this.total = response.total;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
+    },
+
+    fetchSendEmailList(taskId) {
+      this.taskId = taskId;
+      const query = {
+        taskId: this.taskId,
+        delFlag: this.delFlag,
+        draftsFlag: this.draftsFlag,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+
+      listSendHeader(query).then(response => {
         this.localEmailList = response.rows;
         this.total = response.total;
       }).catch(error => {
@@ -560,6 +584,16 @@ export default {
         this.pendingFlag = null;
         this.currentPage = 1;
         this.fetchEmailList(null);
+      } else if (selectedEmailType === 'DELETED_MAIL') {
+        this.delFlag = true;
+        this.draftsFlag = null;
+        this.currentPage = 1;
+        this.fetchSendEmailList(null);
+      } else if (selectedEmailType === 'DRAFTS') {
+        this.delFlag = null;
+        this.draftsFlag = true;
+        this.currentPage = 1;
+        this.fetchSendEmailList(null);
       }
     },
   }

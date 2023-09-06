@@ -9,6 +9,14 @@ export function listPullHeader(query) {
   })
 }
 
+export function listSendHeader(query) {
+  return request({
+    url: '/email/info/list/send/header',
+    method: 'get',
+    params: query
+  })
+}
+
 // 保存发送邮件
 export function saveSendEmail(data) {
   return request({

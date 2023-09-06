@@ -161,7 +161,7 @@
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item"
                             :class="{ 'mm-menu-item--active': activeMenuItem === 'DRAFTS' }"
-                            @click="setActive('DRAFTS')"
+                            @click="draftsClick"
                             role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
@@ -628,8 +628,8 @@
 </div>
 <ul role="menu" class="mm-menu mm-menu--inline">
   <li class="mm-menu-item mail-sidebar-menu-item"
-      :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MESSAGE' }"
-      @click="setActive('DELETED_MESSAGE')"
+      :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MAIL' }"
+      @click="deletedMailClick"
       role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
     <!---->
     <!---->
@@ -861,6 +861,20 @@ export default {
       this.triggerAnUnreadMailEvent();
     },
 
+    // 草稿箱
+    draftsClick() {
+      this.switchLayout('email_header');
+      this.setActive('DRAFTS');
+      this.triggerDraftsEvent();
+    },
+
+    // 已删除邮件
+    deletedMailClick() {
+      this.switchLayout('email_header');
+      this.setActive('DELETED_MAIL');
+      this.triggerDeletedMailEvent();
+    },
+
     switchWriteEmailPage() {
       this.currentLayout = 'write_email';
     },
@@ -879,6 +893,14 @@ export default {
 
     triggerAnUnreadMailEvent() {
       EventBus.$emit('an-unread-mail-selected', 'AN_UNREAD_MAIL');
+    },
+
+    triggerDeletedMailEvent() {
+      EventBus.$emit('deleted-mail-selected', 'DELETED_MAIL');
+    },
+
+    triggerDraftsEvent() {
+      EventBus.$emit('drafts-selected', 'DRAFTS');
     },
   },
 

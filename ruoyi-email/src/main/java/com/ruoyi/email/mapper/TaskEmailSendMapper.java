@@ -1,9 +1,9 @@
 package com.ruoyi.email.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailSend;
+import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -76,4 +76,24 @@ public interface TaskEmailSendMapper
      * @param id
      */
     void updateStatusById(@Param("status") int status, @Param("id") Long id);
+
+    /**
+     * 获取任务下发送到的邮件数量
+     * @param taskIdList
+     * @param delFlag
+     * @param status
+     * @return
+     */
+    int countByTaskId(@Param("taskIdList") List<Long> taskIdList, @Param("delFlag") String delFlag, @Param("status") Integer status);
+
+    /**
+     * 获取任务下发送到的邮件列表
+     * @param taskIdList
+     * @param delFlag
+     * @param status
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<SendEmailInfoListVO> selectTaskEmailSendByTaskIdPage(@Param("taskIdList") List<Long> taskIdList, @Param("delFlag") String delFlag, @Param("status") Integer status, @Param("offset") int offset, @Param("limit") int limit);
 }
