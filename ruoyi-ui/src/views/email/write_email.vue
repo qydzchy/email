@@ -1,5 +1,4 @@
 <template>
-  <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
     <div class="mm-split-pane mm-split-pane__right" style="left: 12.2835%;">
       <form class="mail-edit-container layout-extraSidebar-content" mail-type="" folder-id="">
         <div class="mm-spinner" style="display: none;">
@@ -45,16 +44,6 @@
                                   </span>
               <!---->
                                 </span>
-  <!--          <span class="mm-tooltip btn-item">
-                                  <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-approval" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
-                                      &lt;!&ndash;&ndash;&gt;
-                                      &lt;!&ndash;&ndash;&gt;提交审批
-                                      &lt;!&ndash;&ndash;&gt;
-                                    </button>
-                                  </span>
-              &lt;!&ndash;&ndash;&gt;
-                                </span>-->
             <span class="mm-tooltip btn-item">
                                   <span class="mm-tooltip-trigger">
                                     <button id="report-stat-edit-toolbar-close" @click="showCancelPopup = true" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
@@ -66,6 +55,7 @@
               <!---->
                                 </span>
           </div>
+          <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
           <div class="mail-edit-wrapper">
             <div class="mail-edit-content">
               <ul>
@@ -102,30 +92,13 @@
                                               <span>共 1 个</span>
                                             </div>
                                           </div>
-                                          <!---->
-  <!--																				<span class="mm-selector-suffix-icon">
-                                            <svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
-                                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                                            </svg>
-                                          </span>-->
                                         </div>
                                       </span>
                 </li>
                 <li class="receiver-row mail-edit-row novice-tour-groupmail-select-field">
                   <span class="receiver-row-name mail-edit-row-name active">收件人</span>
-                  <div class="value">
-                    <div class="component-email-input clearfix receiver">
-                      <div class="email-wrap show-last-input">
-                          <div class="email-input last">
-                          <input type="text" v-model="formData.receiver" placeholder="请选择收件人或输入收件人邮箱" class="" data-listener-added_3b8984f2="true" value="">
-                        </div>
-                      </div>
-                      <div class="email-item total-email-info" style="display: none;">
-                        <span class="email-info">共 0 个</span>
-                      </div>
-                      <!---->
-                    </div>
-                  </div>
+                  <ReceiverInput label="收件人" placeholder="请选择收件人或输入收件人邮箱" @update="updateEmailList"></ReceiverInput>
+
                   <div class="cc-bcc-mass-wrapper">
                     <button type="button" @click="toggleCc" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
                       {{ showCc ? '取消抄送' : '抄送' }}
@@ -133,85 +106,16 @@
                     <button type="button" @click="toggleBcc" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
                       {{ showBcc ? '取消密送' : '密送' }}
                     </button>
-  <!--                  <span class="mm-tooltip">
-                                          <span class="mm-tooltip-trigger">
-                                            <button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn novice-tour-add-groupmail-button">
-                                              &lt;!&ndash;&ndash;&gt;
-                                              &lt;!&ndash;&ndash;&gt;群发单显
-                                              &lt;!&ndash;&ndash;&gt;
-                                            </button>
-                                          </span>
-                    &lt;!&ndash;&ndash;&gt;
-                                        </span>-->
                   </div>
                 </li>
-                <!---->
                 <li class="cc-row mail-edit-row" v-if="showCc">
                   <span class="cc-row-name mail-edit-row-name active">抄送人</span>
-                  <div class="value">
-                    <div class="component-email-input clearfix copy">
-                      <div class="email-wrap show-last-input">
-<!--                        <div class="email-item email-item__draggable" data-draggable="true">
-                          <span class="mm-tooltip email-info">
-                            <span class="mm-tooltip-trigger">
-                              <div>
-                                &lt;!&ndash;&ndash;&gt;
-                                <span class="mm-tooltip all-type-avatar-wrapper client-stranger small">
-                                  <span class="mm-tooltip-trigger">
-                                    <i class="m-icon avatar-icon icon-new-customer-avatar"></i>
-                                  </span>
-                                  &lt;!&ndash;&ndash;&gt;
-                                </span>
-                                <span class="name">w0r1d_space@sina.com</span>
-                                &lt;!&ndash;&ndash;&gt;
-                                <span class="m-icon icon-cross-thin"></span>
-                              </div>
-                            </span>
-                            &lt;!&ndash;&ndash;&gt;
-                          </span>
-                        </div>-->
-                        <div class="email-input last">
-                          <input type="text" v-model="formData.cc"  placeholder="" class="" data-listener-added_3b8984f2="true" value="">
-                        </div>
-                      </div>
-                      <div class="email-item total-email-info" style="display: none;">
-                        <span class="email-info">共 0 个</span>
-                      </div>
-                      <!---->
-                    </div>
-                  </div>
-  <!--                <span class="okki-icon-wrap add-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16.001A8 8 0 0112 20z"></path>
-                                          <path d="M13 8a1 1 0 10-2 0v3H8a1 1 0 100 2h3v3a1 1 0 102 0v-3h3a1 1 0 100-2h-3V8z"></path>
-                                        </svg>
-                                      </span>-->
+                  <ReceiverInput label="抄送人" @update="updateEmailList"></ReceiverInput>
                 </li>
                 <li class="bcc-row mail-edit-row" v-if="showBcc">
                   <span class="bcc-row-name mail-edit-row-name active">密送</span>
-                  <div class="value">
-                    <div class="component-email-input clearfix secret">
-                      <div class="email-wrap show-last-input">
-                        <div class="email-input last">
-                          <input type="text" v-model="formData.bcc"  placeholder="" class="" value="">
-                        </div>
-                      </div>
-                      <div class="email-item total-email-info" style="display: none;">
-                        <span class="email-info">共 0 个</span>
-                      </div>
-                      <!---->
-                    </div>
-                  </div>
-  <!--                <span class="okki-icon-wrap add-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16.001A8 8 0 0112 20z"></path>
-                                          <path d="M13 8a1 1 0 10-2 0v3H8a1 1 0 100 2h3v3a1 1 0 102 0v-3h3a1 1 0 100-2h-3V8z"></path>
-                                        </svg>
-                                      </span>-->
+                  <ReceiverInput label="密送人" @update="updateEmailList"></ReceiverInput>
                 </li>
-                <!---->
-  <!--              <li class="receiver-number-row">
-                  <div class="tips" style="color: rgb(144, 144, 144);">0 /100 收件人、抄送人和密送的联系人总数不可超过100</div>
-                </li>-->
-                <!---->
                 <li data-expose-tour="1" class="subject-row mail-edit-row novice-tour-groupmail-title-field">
                                       <span class="subject-row-name mail-edit-row-name subject">主题
                                         <!---->
@@ -219,13 +123,6 @@
                   <div class="value">
                     <input name="subject" v-model="formData.title" autocomplete="on" class="subject" value="">
                   </div>
-  <!--                <div>
-                    <button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn meeting-mail-btn">
-                      &lt;!&ndash;&ndash;&gt;
-                      &lt;!&ndash;&ndash;&gt;会议邀约
-                      &lt;!&ndash;&ndash;&gt;
-                    </button>
-                  </div>-->
                 </li>
                 <!---->
                 <!-- 展示附件 -->
@@ -402,6 +299,7 @@
               </div>
             </div>
           </div>
+          </el-form>
         </div>
       </form>
       <template>
@@ -450,7 +348,6 @@
         </div>
       </template>
     </div>
-  </el-form>
 </template>
 <style lang="scss">
 .dropdown-email-list {
@@ -475,8 +372,9 @@ import {uploadAttachments, listAttachment, renameAttachment, deleteAttachment} f
 import {listTaskPull} from "@/api/email/task";
 import {saveSendEmail, sendEmail} from "@/api/email/email";
 import { EventBus } from '@/api/email/event-bus.js'; // 根据你的文件结构调整路径
+import ReceiverInput from './write_email_receiver_input.vue';
 export default {
-  components: { Editor, Toolbar },
+  components: { Editor, Toolbar, ReceiverInput },
   data() {
     return {
       formData: {},
@@ -491,7 +389,15 @@ export default {
       attachmentIds: [],
       editor: null,
       "toolbarConfig": {},
-      showCancelPopup: false //显示取消弹窗
+      showCancelPopup: false,
+      emailData: {
+        '收件人': [],
+        '抄送人': [],
+        '密送人': []
+      },
+      receiver: [],
+      cc: [],
+      bcc: []
     };
   },
   methods: {
@@ -536,7 +442,7 @@ export default {
       this.editor = Object.seal(editor); // 【注意】一定要用 Object.seal() 否则会报错
     },
     onChange(editor) {
-      console.log("onChange", editor.getHtml()); // onChange 时获取编辑器最新内容
+      //console.log("onChange", editor.getHtml()); // onChange 时获取编辑器最新内容
     },
 
     async handleFileUpload(event) {
@@ -573,14 +479,14 @@ export default {
       let receiver;
       let cc;
       let bcc;
-      if (this.formData.receiver != null && this.formData.receiver != undefined) {
-        receiver = JSON.stringify(this.formatEmails(this.formData.receiver));
+      if (this.receiver != null && this.receiver != undefined && this.receiver != '') {
+        receiver = JSON.stringify(this.formatEmails(this.receiver));
       }
-      if (this.formData.cc != null && this.formData.cc != undefined) {
-        cc = JSON.stringify(this.formatEmails(this.formData.cc));
+      if (this.cc != null && this.cc != undefined && this.cc != '') {
+        cc = JSON.stringify(this.formatEmails(this.cc));
       }
-      if (this.formData.bcc != null && this.formData.bcc != undefined) {
-        bcc = JSON.stringify(this.formatEmails(this.formData.bcc));
+      if (this.bcc != null && this.bcc != undefined && this.bcc != '') {
+        bcc = JSON.stringify(this.formatEmails(this.bcc));
       }
 
       this.formData.taskId = this.taskId;
@@ -614,7 +520,7 @@ export default {
 
     async sendEmail() {
       // 校验发件人、收件人、主题和内容是否为空
-      if (!this.formData.receiver) {
+      if (!this.receiver) {
         this.$message.error("收件人不能为空");
         return;
       }
@@ -652,7 +558,7 @@ export default {
 
     formatEmails(email) {
       if (!email) return [];
-      return email.split(',').map(e => {
+      return email.map(e => {
         e = e.trim();
         return {
           email: e,
@@ -682,6 +588,16 @@ export default {
     // 弹窗-不保存
     noSavePopup() {
       EventBus.$emit('switch-index');  // 发出事件
+    },
+
+    updateEmailList({ label, emails }) {
+      if (label === '收件人') {
+        this.receiver = emails;
+      } else if (label === '抄送人') {
+        this.cc = emails;
+      } else if (label === '密送人') {
+        this.bcc = emails;
+      }
     }
   },
   mounted() {

@@ -69,7 +69,7 @@ public class EmailSender {
 
         // 创建文本消息部分
         BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setText(message);
+        messageBodyPart.setContent("<html><body>" + message + "<img src='https://yourserver.com/path/to/tracker.png' alt='' width='1' height='1' border='0' /></body></html>", "text/html");
         multipart.addBodyPart(messageBodyPart);
 
         // 添加附件

@@ -12,12 +12,15 @@ import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailPullService;
 import com.ruoyi.email.service.ITaskEmailSendService;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.util.Pair;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
