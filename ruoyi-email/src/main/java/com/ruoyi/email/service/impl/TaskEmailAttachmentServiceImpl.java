@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
@@ -189,10 +190,17 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     public boolean rename(Long id, String name) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
+        TaskEmailAttachment taskEmailAttachment = taskEmailAttachmentMapper.getById(id, userId);
+        if (taskEmailAttachment == null) {
+            throw new ServiceException("不存在该附件");
+        }
+        String oldName = taskEmailAttachment.getName();
+        String suffix = oldName.substring(oldName.lastIndexOf("."));
+        name += suffix;
         int affectedRow = taskEmailAttachmentMapper.updateNameById(name, id, userId);
         return affectedRow > 0 ? true : false;
     }
-
+    
     @Override
     public boolean delete(Long id) {
         LoginUser loginUser = SecurityUtils.getLoginUser();

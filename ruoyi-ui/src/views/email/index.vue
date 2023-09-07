@@ -674,14 +674,6 @@
   </li>
 </ul>
 </li>
-<li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
-<!---->
-<!---->
-<div class="mail-sidebar-menu-item">
-  <a class="mail-download-app-menu" data-savepage-href="https://bestmail.xiaoman.cn" href="https://bestmail.xiaoman.cn/" target="_blank">App即刻处理邮件<span class="hot-logo">HOT</span>
-  </a>
-</div>
-</li>
 </ul>
 </div>
 </div>

@@ -30,7 +30,7 @@ export function renameAttachment(data) {
 // 删除附件
 export function deleteAttachment(data) {
   return request({
-    url: '/email/attachment/rename',
+    url: '/email/attachment/delete',
     method: 'post',
     data: data
   })

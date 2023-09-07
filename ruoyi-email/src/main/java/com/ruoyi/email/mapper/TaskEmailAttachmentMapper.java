@@ -103,4 +103,12 @@ public interface TaskEmailAttachmentMapper
      * @return
      */
     List<AttachmentListVO> getByTaskIdAndEmailId(@Param("emailId") Long emailId, @Param("createId") Long userId);
+
+    /**
+     * 根据id查询附件
+     * @param id
+     * @param userId
+     * @return
+     */
+    TaskEmailAttachment getById(@Param("id") Long id, @Param("createId") Long userId);
 }

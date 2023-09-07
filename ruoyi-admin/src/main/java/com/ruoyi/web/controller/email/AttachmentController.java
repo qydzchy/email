@@ -64,12 +64,14 @@ public class AttachmentController {
         if (taskEmailAttachment.getId() == null) {
             throw new ServiceException("id不能为空");
         }
-        if (StringUtils.isNotEmpty(taskEmailAttachment.getName())) {
+        if (StringUtils.isEmpty(taskEmailAttachment.getName())) {
             throw new ServiceException("名称不能为空");
         }
 
         return AjaxResult.success(taskEmailAttachmentService.rename(taskEmailAttachment.getId(), taskEmailAttachment.getName()));
     }
+
+
 
     /**
      * 删除

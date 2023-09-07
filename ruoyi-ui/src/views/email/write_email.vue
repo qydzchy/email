@@ -132,16 +132,30 @@
                       <span class="okki-icon-wrap attachment-icon" color="#263551">​
                         <!-- SVG icon for attachment here -->
                       </span>
-                      <p class="file-name">
+                      <p v-if="!file.isRenaming" class="file-name">
                         <span class="mm-tooltip name">
                           <span class="mm-tooltip-trigger">{{ file.name }}</span>
                         </span>
                         <span :title="file.size" class="size ellipsis"> ({{ formatSize(file.size) }}) </span>
                       </p>
-                      <div class="btns">
+
+                      <p v-if="file.isRenaming" class="file-name">
+                        <span class="mm__theme mm__theme-size__small mm-input file-name-input">
+                          <span class="mm-input-affix-wrapper">
+                            <input v-model="file.newName" type="text" class="mm-input-inner">
+                          </span>
+                        </span>
+                        <span>.{{ getFileExtension(file.name) }}</span>
+                      </p>
+
+                      <div class="btns" v-if="!file.isRenaming">
                         <a>预览</a>
-                        <a>重命名</a>
-                        <a>删除</a>
+                        <a @click="toggleRename(file)">重命名</a>
+                        <a @click="deleteFile(file)">删除</a>
+                      </div>
+                      <div class="btns" v-if="file.isRenaming">
+                        <a @click="saveRename(file)">保存</a>
+                        <a @click="cancelRename(file)">取消</a>
                       </div>
                     </li>
                   </ul>
@@ -163,16 +177,16 @@
                   <div class="component-add-toolbar">
                     <div class="mail-tool flex items-center">
                       <!---->
-                      <span class="mm-tooltip tool-item flex items-center">
+                      <span class="mm-tooltip tool-item flex items-center" @change="handleFileUpload">
                           <span class="mm-tooltip-trigger">
                               <div class="tool-item flex items-center" title="">
-                                  <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
+                                  <img src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg" style="width: 14px; height: 14px; margin-right: 4px;">
                                   <span @click="triggerFileInput">附件</span>
-                                  <input id="attachInput" type="file" multiple @change="handleFileUpload" ref="fileInput" style="display:none;">
+                                  <input id="attachInput" type="file" multiple ref="fileInput" style="display:none;">
                               </div>
                           </span>
                       </span>
-                      <div class="tool-item flex items-center">
+<!--                      <div class="tool-item flex items-center">
                         <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/cloud.bd4a8ece.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 云文档</div>
                       <div class="mm-dropdown hover:bg-gray-200 w-8 h-7 flex items-center justify-center mail-toolbar-dropdown">
                         <div class="mm-dropdown-trigger">
@@ -182,13 +196,13 @@
                             </svg>
                           </div>
                         </div>
-                        <!---->
+                        &lt;!&ndash;&ndash;&gt;
                       </div>
                       <div class="mm-divider-vertical solid"></div>
-                      <!---->
+                      &lt;!&ndash;&ndash;&gt;
                       <div class="tool-item novice-tour-groupmail-content-field flex items-center">
                         <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/template.b98c6551.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 模板</div>
-                      <!---->
+                      &lt;!&ndash;&ndash;&gt;
                       <div class="tool-item flex items-center">
                         <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/image.fb78e8ce.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
                         <span>图片</span>
@@ -209,7 +223,7 @@
                             </svg> 单据
                           </div>
                         </div>
-                        <!---->
+                        &lt;!&ndash;&ndash;&gt;
                       </div>
                       <div class="mm-dropdown hover:bg-gray-200 h-7 flex items-center justify-center mail-toolbar-dropdown">
                         <div class="mm-dropdown-trigger">
@@ -222,33 +236,33 @@
                             </svg> 收款
                           </div>
                         </div>
-                        <!---->
-                      </div>
+                        &lt;!&ndash;&ndash;&gt;
+                      </div>-->
                     </div>
-                    <span class="mail-size">邮件大小：506 B</span>
+<!--                    <span class="mail-size">邮件大小：506 B</span>-->
                   </div>
                 </li>
               </ul>
               <!---->
               <div class="editor-footer">
 
-                <div>
+<!--                <div>
                   <span class="select-label">签名：</span>
                   <span class="mm-select mail-sign-selector novice-tour-set-signature-button" style="width: 178px;">
-                                        <div class="mm-selector--single mm-selector" tabindex="0">
-                                          <!---->
+                                        <div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
+                                          &lt;!&ndash;&ndash;&gt;
                                           <div class="mm-selector-rendered">
                                             <span title="不使用" class="mm-selector-selected-value" style="opacity: 1;">不使用</span>
-                                            <!---->
+                                            &lt;!&ndash;&ndash;&gt;
                                           </div>
-                                          <!---->
+                                          &lt;!&ndash;&ndash;&gt;
                                           <span class="mm-selector-suffix-icon">
                                             <svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
                                               <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                                             </svg>
                                           </span>
                                         </div>
-                    <!---->
+                    &lt;!&ndash;&ndash;&gt;
                                       </span>
                 </div>
                 <div class="mx-4 divier"></div>
@@ -265,7 +279,7 @@
                     <span class="mm-checkbox-input"></span>
                     <span class="mm-checkbox-label">回执</span>
                   </label>
-                </div>
+                </div>-->
                 <div class="split"></div>
                 <div class="select">
                   <label class="mm-checkbox">
@@ -282,7 +296,7 @@
                   </label>
                 </div>
                 <div class="split"></div>
-                <div class="select-handle-time">
+                <div class="select-handle-time" @click="togglePendingPopover">
                   <div class="mm-popover">
                     <div>
                                           <span class="time">
@@ -295,6 +309,8 @@
                     </div>
                     <!---->
                   </div>
+                  <PendingTimePopover :isVisible="showPendingPopover"></PendingTimePopover>
+<!--                  <CustomTimePopover></CustomTimePopover>-->
                 </div>
               </div>
             </div>
@@ -355,6 +371,14 @@
   position: absolute;
 }
 
+.mm-outside.mail-pending-popover {
+  position: absolute;
+  will-change: top, left;
+  transform-origin: 100% bottom;
+  top: -225px;
+  left: 75px;
+}
+
 @import '../../static/scss/email/index/92270.59786a6e.css';
 @import '../../static/scss/email/index/43960.b19a070c.css';
 @import '../../static/scss/email/index/64147.480300b1.css';
@@ -373,8 +397,10 @@ import {listTaskPull} from "@/api/email/task";
 import {saveSendEmail, sendEmail} from "@/api/email/email";
 import { EventBus } from '@/api/email/event-bus.js'; // 根据你的文件结构调整路径
 import ReceiverInput from './write_email_receiver_input.vue';
+import PendingTimePopover from './pending_time.vue';
+import CustomTimePopover from './custom_time.vue';
 export default {
-  components: { Editor, Toolbar, ReceiverInput },
+  components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover },
   data() {
     return {
       formData: {},
@@ -388,7 +414,7 @@ export default {
       taskId: null,
       attachmentIds: [],
       editor: null,
-      "toolbarConfig": {},
+      toolbarConfig: {},
       showCancelPopup: false,
       emailData: {
         '收件人': [],
@@ -397,7 +423,8 @@ export default {
       },
       receiver: [],
       cc: [],
-      bcc: []
+      bcc: [],
+      showPendingPopover: false,
     };
   },
   methods: {
@@ -426,7 +453,7 @@ export default {
 
     selectEmail(task) {
       this.selectedEmail = task.account;
-      this.taskId = task.id;  // Set the taskId here.
+      this.taskId = task.id;
       this.isDropdownVisible = false;
     },
 
@@ -598,6 +625,72 @@ export default {
       } else if (label === '密送人') {
         this.bcc = emails;
       }
+    },
+
+    togglePendingPopover() {
+      this.showPendingPopover = !this.showPendingPopover;
+    },
+
+    toggleRename(file) {
+      this.$set(file, 'isRenaming', true);
+      this.$set(file, 'newName', this.getFileNameWithoutExtension(file.name));
+    },
+
+    async saveRename(file) {
+      console.log(file.newName);
+      if (!file.newName || file.newName.trim() === '') {
+        this.$message.error("附件名称不能为空");
+        return;
+      }
+
+      const data = {
+        "id": file.id,
+        "name": file.newName
+      };
+      try {
+        const response = await renameAttachment(data);
+        if (response.code !== 200) {
+          this.$message.error("执行失败");
+          return;
+        }
+      } catch (error) {
+        console.error('重命名过程中出现错误:', error);
+        throw error;
+      }
+
+      this.$set(file, 'name', `${file.newName}.${this.getFileExtension(file.name)}`);
+      this.$set(file, 'isRenaming', false);
+    },
+
+    async deleteFile(file) {
+      const index = this.uploadedFiles.indexOf(file);
+      if (index > -1) {
+        try {
+          const data = {
+            "id": file.id
+          };
+          const response = await deleteAttachment(data);
+          if (response.code !== 200) {
+            this.$message.error("执行失败");
+            return;
+          }
+        } catch (error) {
+          console.error('删除过程中出现错误:', error);
+          throw error;
+        }
+        this.uploadedFiles.splice(index, 1);
+      }
+    },
+
+    cancelRename(file) {
+      file.isRenaming = false;
+      file.newName = '';
+    },
+    getFileNameWithoutExtension(filename) {
+      return filename.replace(/\.[^/.]+$/, "");
+    },
+    getFileExtension(filename) {
+      return filename.split('.').pop();
     }
   },
   mounted() {

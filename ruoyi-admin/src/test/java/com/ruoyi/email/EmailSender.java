@@ -51,6 +51,9 @@ public class EmailSender {
 
         Message msg = new MimeMessage(session);
 
+        String customMessageId = "<" + java.util.UUID.randomUUID().toString() + "@example.com>";
+        msg.setHeader("Message-ID", customMessageId);
+
         msg.setFrom(new InternetAddress(mailFrom));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailTo));
 
