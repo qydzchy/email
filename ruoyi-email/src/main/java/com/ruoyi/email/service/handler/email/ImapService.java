@@ -95,7 +95,7 @@ public class ImapService implements IMailService {
                     message.getFolder().open(Folder.READ_WRITE);
                 }
 
-                mList.add(MailItem.builder().imapMessage((IMAPMessage) message).build());
+                mList.add(MailItem.builder().imapMessage((IMAPMessage) message).uid(uid).build());
 
             } catch (Exception e) {
                 log.error("imap - 获取邮件异常，异常原因：", e);

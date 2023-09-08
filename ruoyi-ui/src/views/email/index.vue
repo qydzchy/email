@@ -846,6 +846,7 @@ export default {
 
     // 待处理邮件
     pendingMailClick() {
+      this.selectedTaskId = null;
       this.switchLayout('email_header');
       this.setActive('PENDING_MAIL');
       this.triggerPendingMailEvent();
@@ -853,6 +854,7 @@ export default {
 
     // 未读邮件
     anUnreadMailClick() {
+      this.selectedTaskId = null;
       this.currentLayout = 'email_header';
       this.setActive('AN_UNREAD_MAIL');
       this.triggerAnUnreadMailEvent();

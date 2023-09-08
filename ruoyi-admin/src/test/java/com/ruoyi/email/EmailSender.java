@@ -30,7 +30,6 @@ public class EmailSender {
             properties.put("mail.smtp.port", port);
             properties.put("mail.smtp.auth", "true");
             properties.put("mail.smtp.ssl.enable", "true");
-            properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         }
 
         if (proxyHost != null && !proxyHost.isEmpty()) {
@@ -54,6 +53,7 @@ public class EmailSender {
         Message msg = new MimeMessage(session);
 
         String customMessageId = "<" + java.util.UUID.randomUUID().toString() + "@example.com>";
+        System.out.println(customMessageId);
         msg.setHeader("Message-ID", customMessageId);
 
         msg.setFrom(new InternetAddress(mailFrom));
@@ -104,7 +104,7 @@ public class EmailSender {
     public static void main(String[] args) {
         try {
             sendEmailWithAttachmentsAndProxy("mail.sohu.com", "465", true,"w0r1d_space@sohu.com", "QI14ATMVBC",
-                    "w0r1d_space@sina.com", "13076506601@163.com", "278882047@qq.com",
+                    "w0r1d_space@tom.com", "13076506601@163.com", "278882047@qq.com",
                     "Test Subject", "Test Message", null, null, new String[] {"D:\\back\\Desktop\\5\\1.txt"});
             System.out.println("Email sent successfully!");
         } catch (MessagingException e) {

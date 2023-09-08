@@ -557,8 +557,10 @@
                                           <!---->
 																				</div>
 																			</div>
-																			<div class="mail-side-card slide-fade expanding">
-																				<span class="mail-position-toogle">
+																			<div
+                                        class="mail-side-card slide-fade"
+                                        :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
+																				<span class="mail-position-toogle" @click="toggleRightPanel">
 																					<i class="m-icon icon-left-small"></i>
 																				</span>
 																				<div cur-active-mail-id="" style="height: 100%;">
@@ -1178,6 +1180,7 @@ export default {
       localEmailList: [],
       currentEmailDetail: {},
       emailId: null,
+      isRightPanelExpanded: true,
     }
   },
   props: {
@@ -1208,7 +1211,6 @@ export default {
     this.currentEmailDetail = this.selectedEmail;
     this.localEmailList = this.emailData;
     this.total = this.emailTotal;
-    console.log("content = " + this.selectedTaskId);
     this.taskId = this.selectedTaskId;
   },
 
@@ -1250,7 +1252,6 @@ export default {
     },
 
     nextPage() {
-      console.log("nextPage = " + this.taskId);
       if (this.currentPage < this.totalPages) {
         this.currentPage = Number(this.currentPage) + 1;
         this.fetchEmailList(this.taskId);
@@ -1258,7 +1259,6 @@ export default {
     },
 
     prevPage() {
-      console.log("prevPage = " + this.taskId);
       if (this.currentPage > 1) {
         this.currentPage = Number(this.currentPage) - 1;
         this.fetchEmailList(this.taskId);
@@ -1302,7 +1302,9 @@ export default {
         this.fetchEmailList(null);
       }
     },
-
+    toggleRightPanel() {
+      this.isRightPanelExpanded = !this.isRightPanelExpanded;
+    },
   }
 }
 </script>
