@@ -7,6 +7,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.email.domain.TaskEmailPull;
 import com.ruoyi.email.domain.TaskEmailSend;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
@@ -114,5 +115,24 @@ public class EmailController extends BaseController {
         }
 
         return toAjax(taskEmailSendService.send(taskEmailSend.getId()));
+    }
+
+    /**
+     * 邮件固定（收取）
+     */
+    @PreAuthorize("@ss.hasPermi('email:fixed')")
+    @Log(title = "邮件固定（收取）", businessType = BusinessType.UPDATE)
+    @PostMapping("/pull/fixed")
+    public AjaxResult pullFixed(@RequestBody TaskEmailPull taskEmailPull)
+    {
+        if (taskEmailPull.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        if (taskEmailPull.getFixedFlag() != null) {
+            throw new ServiceException("是否固定不能为空");
+        }
+
+        return toAjax(taskEmailPullService.pullFixed(taskEmailPull.getId(), taskEmailPull.getFixedFlag()));
     }
 }

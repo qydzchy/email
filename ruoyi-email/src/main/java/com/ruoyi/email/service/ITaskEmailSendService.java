@@ -91,4 +91,5 @@ public interface ITaskEmailSendService
      * @return
      */
     Pair<Integer, List<Map<String, List<SendEmailInfoListVO>>>> listSendHeader(Long taskId, Boolean delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
+
 }

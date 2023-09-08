@@ -75,4 +75,12 @@ public interface ITaskEmailPullService
      * @return
      */
     Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> listPullHeader(Long taskId, Boolean readFlag, Boolean pendingFlag, Integer pageNum, Integer pageSize);
+
+    /**
+     * 邮件固定（收取）
+     * @param id
+     * @param fixedFlag
+     * @return
+     */
+    boolean pullFixed(Long id, Boolean fixedFlag);
 }

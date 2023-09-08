@@ -1,11 +1,9 @@
 package com.ruoyi.web.controller.email;
 
-import java.util.List;
 import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
-import com.ruoyi.email.domain.vo.folder.FolderListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -14,7 +12,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.service.IFolderService;
-import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 文件夹Controller

@@ -186,6 +186,11 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
         return Pair.of(count, dataList);
     }
 
+    @Override
+    public boolean pullFixed(Long id, Boolean fixedFlag) {
+        return false;
+    }
+
     /**
      * 获取任务下拉取的邮件数量
      * @param taskIdList
