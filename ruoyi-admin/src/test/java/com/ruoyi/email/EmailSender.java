@@ -24,11 +24,13 @@ public class EmailSender {
             properties.put("mail.smtps.starttls.enable", "true");
             properties.put("mail.smtps.ssl.checkserveridentity", "true");
             properties.put("mail.smtps.ssl.trust", host);
+            properties.put("mail.smtps.ssl.protocols", "TLSv1.2");
         } else {
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.port", port);
             properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.ssl.enable", "true");
+            properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         }
 
         if (proxyHost != null && !proxyHost.isEmpty()) {
@@ -101,7 +103,7 @@ public class EmailSender {
 
     public static void main(String[] args) {
         try {
-            sendEmailWithAttachmentsAndProxy("mail.sohu.com", "465", false,"w0r1d_space@sohu.com", "QI14ATMVBC",
+            sendEmailWithAttachmentsAndProxy("mail.sohu.com", "465", true,"w0r1d_space@sohu.com", "QI14ATMVBC",
                     "w0r1d_space@sina.com", "13076506601@163.com", "278882047@qq.com",
                     "Test Subject", "Test Message", null, null, new String[] {"D:\\back\\Desktop\\5\\1.txt"});
             System.out.println("Email sent successfully!");

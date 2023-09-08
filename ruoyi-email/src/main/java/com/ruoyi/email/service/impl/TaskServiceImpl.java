@@ -274,7 +274,8 @@ public class TaskServiceImpl implements ITaskService
      * 拉去邮件
      * @param task
      */
-    private void pullEmail(Task task) {
+    @Override
+    public void pullEmail(Task task) {
         try {
             // 获取邮箱协议
             ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());

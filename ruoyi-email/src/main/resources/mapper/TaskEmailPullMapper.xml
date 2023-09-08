@@ -72,7 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectTaskEmailPullByTaskIdPage"
             resultType="com.ruoyi.email.domain.vo.email.PullEmailInfoListVO">
-        select mtep.id, mtep.task_id, mtep.uid, mtep.fromer, mtep.receiver, mtep.bcc, mtep.cc, mtep.folder, mtep.folder_id as folderId, mtep.title, mtep.send_date as sendDate, mtep.eml_path as emlPath, mtep.read_flag as readFlag,
+        select mtep.id, mtep.task_id as taskId, mtep.uid, mtep.fromer, mtep.receiver, mtep.bcc, mtep.cc, mtep.folder, mtep.folder_id as folderId, mtep.title, mtep.send_date as sendDate, mtep.eml_path as emlPath, mtep.read_flag as readFlag,
         mtep.pending_flag as pendingFlag, mtep.pending_time as pendingTime, mtep.fixed_flag as fixedFlag, mtep.spam_flag as spamFlag, mtec.content from mailbox_task_email_pull mtep
         left join mailbox_task_email_content mtec on mtep.id = mtec.email_id
         where task_id in

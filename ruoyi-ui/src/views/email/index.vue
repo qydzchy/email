@@ -705,6 +705,7 @@
               :selectedEmail="selectedEmail"
               :emailData="emailData"
               :emailTotal="emailTotal"
+              :selectedTaskId="selectedTaskId"
               @switch="switchLayout"
             ></component>
 
@@ -771,7 +772,7 @@ export default {
       selectedTaskId: null,
       emailTotal: 0,
       emailData: [],
-      selectedEmail: {}
+      selectedEmail: {},
     };
   },
   components: {
@@ -796,6 +797,8 @@ export default {
       this.selectedEmail = email;
       this.emailData = emailData;
       this.emailTotal = emailTotal;
+      console.log(this.selectedTaskId);
+      this.selectedTaskId = this.selectedTaskId;
     },
 
     toggleLeftPane() {
@@ -820,6 +823,7 @@ export default {
 
     // 任务收件箱
     taskPullClick(taskId) {
+      this.selectedTaskId = taskId;
       this.switchLayout('email_header');
       this.onTaskClick(taskId);
       this.setActive('PULL_' + taskId);
@@ -834,6 +838,7 @@ export default {
 
     // 全部收件
     allReceivedClick() {
+      this.selectedTaskId = null;
       this.switchLayout('email_header');
       this.setActive('ALL_RECEIVED');
       this.triggerAllReceivedEvent();

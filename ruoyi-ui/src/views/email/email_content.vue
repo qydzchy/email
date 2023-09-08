@@ -1190,6 +1190,10 @@ export default {
     emailTotal: {
       type: Number,
       default: null
+    },
+    selectedTaskId: {
+      type: Number,
+      default: null
     }
   },
   computed: {
@@ -1204,6 +1208,8 @@ export default {
     this.currentEmailDetail = this.selectedEmail;
     this.localEmailList = this.emailData;
     this.total = this.emailTotal;
+    console.log("content = " + this.selectedTaskId);
+    this.taskId = this.selectedTaskId;
   },
 
   watch: {
@@ -1244,6 +1250,7 @@ export default {
     },
 
     nextPage() {
+      console.log("nextPage = " + this.taskId);
       if (this.currentPage < this.totalPages) {
         this.currentPage = Number(this.currentPage) + 1;
         this.fetchEmailList(this.taskId);
@@ -1251,6 +1258,7 @@ export default {
     },
 
     prevPage() {
+      console.log("prevPage = " + this.taskId);
       if (this.currentPage > 1) {
         this.currentPage = Number(this.currentPage) - 1;
         this.fetchEmailList(this.taskId);

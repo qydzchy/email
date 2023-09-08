@@ -531,7 +531,6 @@ export default {
 
     toggleActive(email) {
       this.activeEmailId = email.id;
-      console.log(this.total);
       this.$emit('switch', 'email_content', email, this.localEmailList, this.total);
     },
 

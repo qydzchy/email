@@ -27,37 +27,68 @@ public class Pop3Service implements IMailService {
     }
 
     public List<MailItem> listAll(MailConn mailConn, String dateFormat, List<String> existUids) throws MailPlusException {
+        int numEmailsToFetch = 300;
         POP3Store pop3Store = mailConn.getPop3Store();
+        List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
+
         try {
-            POP3Folder folder = (POP3Folder)pop3Store.getFolder("INBOX");
-            folder.open(Folder.READ_WRITE);
-            FetchProfile profile = new FetchProfile();
-            profile.add(UIDFolder.FetchProfileItem.UID);
+            POP3Folder pop3Folder = (POP3Folder)pop3Store.getFolder("INBOX");
+            pop3Folder.open(Folder.READ_WRITE);
 
-            Message[] messages = folder.getMessages();
-            folder.fetch(messages, profile);
+            int totalMessages = pop3Folder.getMessageCount();
+            int end = totalMessages;
+            int fetched = 0;
 
-            List<MailItem> mList = Collections.synchronizedList(new ArrayList());
-            for (int i = 0; i < messages.length; i++) {
-                try {
-                    POP3Message message = (POP3Message)messages[i];
-                    if(!message.getFolder().isOpen()) {
-                        message.getFolder().open(Folder.READ_WRITE);
+            while (fetched < numEmailsToFetch && end > 0) {
+                int start = Math.max(end - numEmailsToFetch + fetched + 1, 1);
+                Message[] messages = pop3Folder.getMessages(start, end);
+
+                for (Message message : messages) {
+                    if (fetched >= numEmailsToFetch) break;
+
+                    try {
+                        String uid = pop3Folder.getUID(message);
+                        if (uid == null || uid.isEmpty()) {
+                            uid = getUniqueHash(message);
+                        }
+
+                        if (existUids != null && existUids.contains(uid)) {
+                            continue;  // 跳过已经存在的邮件
+                        }
+
+                        if (!message.getFolder().isOpen()) {
+                            message.getFolder().open(Folder.READ_WRITE);
+                        }
+
+                        mList.add(MailItem.builder().pop3Message((POP3Message) message).uid(uid).build());
+                        fetched++;
+
+                    } catch (Exception e) {
+                        log.error("pop3 - 获取邮件异常，异常原因：" + "\t" + e.getMessage());
+                        e.printStackTrace();
                     }
-
-                    mList.add(MailItem.builder().pop3Message(message).build());
-                } catch (Exception e) {
-                    log.error("pop3 - 获取邮件异常，异常原因：" +
-                            "\t" + e.getMessage());
-                    e.printStackTrace();
                 }
+                end = start - 1;  // 准备拉取更早的邮件
             }
+
             return mList;
         } catch (MessagingException var10) {
             var10.printStackTrace();
             throw new MailPlusException(String.format("【POP3服务】打开文件夹/获取邮件列表失败，错误信息【{}】"));
         }
     }
+
+    /**
+     * uid若是为空，则生成uid
+     * @param message
+     * @return
+     * @throws MessagingException
+     */
+    private String getUniqueHash(Message message) throws MessagingException {
+        String data = message.getSentDate().toString() + message.getFrom()[0].toString() + message.getSubject();
+        return String.valueOf(data.hashCode());
+    }
+
 
     public MailConn createConn(MailConnCfg mailConnCfg, boolean proxy) throws MailPlusException {
         Properties properties = new Properties();

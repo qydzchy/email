@@ -92,4 +92,10 @@ public interface ITaskService
      * @return
      */
     List<Long> listIdByUserId(Long userId);
+
+    /**
+     * 拉取邮件
+     * @param task
+     */
+    void pullEmail(Task task);
 }

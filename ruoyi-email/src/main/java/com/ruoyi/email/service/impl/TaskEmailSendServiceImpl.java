@@ -357,6 +357,7 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
             properties.put("mail.smtps.starttls.enable", "true");
             properties.put("mail.smtps.ssl.checkserveridentity", "true");
             properties.put("mail.smtps.ssl.trust", host);
+            properties.put("mail.smtps.ssl.protocols", "TLSv1.2");
         } else {
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.port", port);

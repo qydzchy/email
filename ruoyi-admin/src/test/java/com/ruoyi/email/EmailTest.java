@@ -10,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.*;
-import javax.mail.internet.MimeMultipart;
-import java.util.List;
 import java.util.Properties;
 
 @RunWith(SpringRunner.class)
@@ -24,7 +22,8 @@ public class EmailTest {
 
     @Test
     public void getEmailTest() {
-
+        Task task = taskService.selectTaskById(16L);
+        taskService.pullEmail(task);
     }
 
 

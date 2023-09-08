@@ -16,5 +16,7 @@ public class MailItem {
     private IMAPMessage imapMessage;
     private POP3Message pop3Message;
     private EmailMessage exchangeMessage;
+
+    private String uid;
 }
 
