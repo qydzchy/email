@@ -60,9 +60,6 @@ public class TaskServiceImpl implements ITaskService
     @Resource
     private ITaskEmailPullService taskEmailPullServiceImpl;
 
-    @Resource
-    private ITaskEmailSendService taskEmailSendService;
-
     @Value("${email.pull.path}")
     private String emailPath;
 
@@ -275,28 +272,32 @@ public class TaskServiceImpl implements ITaskService
      * @param task
      */
     @Override
-    public void pullEmail(Task task) {
+    public Pair<Integer, String> pullEmail(Task task) {
+        Integer connStatus = 2;
+        // 获取邮箱协议
+        ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
+        if (protocolTypeEnum == null) {
+            log.info("暂不支持该协议类型");
+            return Pair.of(connStatus, "暂不支持该协议类型");
+        }
+
+        // 邮箱连接
+        MailConnCfg mailConnCfg = getMailConnCfg(task);
+        MailConn mailConn = null;
         try {
-            // 获取邮箱协议
-            ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
-            if (protocolTypeEnum == null) {
-                log.info("暂不支持该协议类型");
-                return;
-            }
+            mailConn = mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
+        } catch (MailPlusException e) {
+            log.error("邮箱连接失败");
+            return Pair.of(connStatus, e.getMessage());
+        }
 
-            // 邮箱连接
-            MailConnCfg mailConnCfg = getMailConnCfg(task);
-            MailConn mailConn = null;
-            try {
-                mailConn = mailContext.createConn(protocolTypeEnum, mailConnCfg, Optional.ofNullable(task.getCustomProxyFlag()).orElse(false));
-            } catch (MailPlusException e) {
-                log.error("邮箱连接失败");
-                return;
-            }
+        try {
+            // 查询存在的uid
+            List<String> existUidList = taskEmailPullService.getUidsByTaskId(task.getId());
 
-            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, "", null);
+            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, existUidList);
             if (mailItems == null || mailItems.size() == 0) {
-                return;
+                return null;
             }
 
             for (MailItem mailItem : mailItems) {
@@ -307,9 +308,27 @@ public class TaskServiceImpl implements ITaskService
                 }
             }
 
-        } catch (MailPlusException e) {
+        } catch (Exception e) {
             log.error("邮件拉取失败，原始错误信息为【{}】", e);
         }
+
+        return null;
+    }
+
+    @Override
+    public void syncAllTaskEmail() {
+        List<Task> taskList = taskMapper.selectTaskList(new Task());
+        taskList.stream().forEach(task -> {
+            Pair<Integer, String> pair = pullEmail(task);
+            if (pair != null) {
+                Integer connStatus = pair.getFirst();
+                String connExceptionReason = pair.getSecond();
+                // 更新任务为异常
+                task.setConnStatus(connStatus);
+                task.setConnExceptionReason(connExceptionReason);
+                taskMapper.updateTask(task);
+            }
+        });
     }
 
     /**

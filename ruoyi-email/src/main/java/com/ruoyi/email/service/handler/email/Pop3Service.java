@@ -26,7 +26,7 @@ public class Pop3Service implements IMailService {
         return MailItemParser.parseMail(mailItem, localSavePath);
     }
 
-    public List<MailItem> listAll(MailConn mailConn, String dateFormat, List<String> existUids) throws MailPlusException {
+    public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
         int numEmailsToFetch = 300;
         POP3Store pop3Store = mailConn.getPop3Store();
         List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
@@ -52,7 +52,7 @@ public class Pop3Service implements IMailService {
                             uid = getUniqueHash(message);
                         }
 
-                        if (existUids != null && existUids.contains(uid)) {
+                        if (existUidList != null && existUidList.contains(uid)) {
                             continue;  // 跳过已经存在的邮件
                         }
 

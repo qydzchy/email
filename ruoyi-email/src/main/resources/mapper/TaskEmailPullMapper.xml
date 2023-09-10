@@ -97,6 +97,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and del_flag = '0'
     </select>
 
+    <select id="getUidsByTaskId" resultType="java.lang.String">
+        select uid from mailbox_task_email_pull where task_id=#{taskId}
+    </select>
+
     <insert id="insertTaskEmailPull" parameterType="TaskEmailPull" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_pull
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -179,6 +183,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
+    </update>
+    <update id="updateFixed">
+        update mailbox_task_email_pull set fixed_flag=#{fixedFlag} where id=#{id} and create_id=#{createId}
     </update>
 
     <delete id="deleteTaskEmailPullById" parameterType="Long">

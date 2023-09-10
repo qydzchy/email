@@ -34,12 +34,11 @@ public interface IMailService {
     /**
      * 获取邮件列表
      * @param mailConn
-     * @param var2
-     * @param var3
+     * @param existUidList
      * @return
      * @throws MailPlusException
      */
-    List<MailItem> listAll(MailConn mailConn, String var2, List<String> var3) throws MailPlusException;
+    List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException;
 
 
     ProtocolTypeEnum getProtocolTypeEnum();

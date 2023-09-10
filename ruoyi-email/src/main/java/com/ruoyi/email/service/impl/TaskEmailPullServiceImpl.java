@@ -188,7 +188,15 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
 
     @Override
     public boolean pullFixed(Long id, Boolean fixedFlag) {
-        return false;
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        return taskEmailPullMapper.updateFixed(id, fixedFlag, userId);
+    }
+
+    @Override
+    public List<String> getUidsByTaskId(Long taskId) {
+        return taskEmailPullMapper.getUidsByTaskId(taskId);
     }
 
     /**

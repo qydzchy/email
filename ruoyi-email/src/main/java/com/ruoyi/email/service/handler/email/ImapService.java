@@ -24,7 +24,7 @@ public class ImapService implements IMailService {
         return MailItemParser.parseMail(mailItem, localSavePath);
     }
 
-    public List<MailItem> listAll(MailConn mailConn, String dateFormat, List<String> existUids) throws MailPlusException {
+    public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
         int numEmailsToFetch = 300;
         IMAPStore imapStore = mailConn.getImapStore();
         List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
@@ -37,8 +37,8 @@ public class ImapService implements IMailService {
                 IMAPFolder imapFolder = (IMAPFolder) folder;
 
                 boolean flag = imapFolder.getName().equalsIgnoreCase("[gmail]") ?
-                        listGmailMessageFolder(mList, imapFolder, dateFormat, existUids, numEmailsToFetch) :
-                        listFolderMessage(mList, imapFolder, dateFormat, existUids, numEmailsToFetch);
+                        listGmailMessageFolder(mList, imapFolder, existUidList, numEmailsToFetch) :
+                        listFolderMessage(mList, imapFolder, existUidList, numEmailsToFetch);
 
                 if (flag) break;
             }
@@ -51,20 +51,20 @@ public class ImapService implements IMailService {
         }
     }
 
-    private boolean listGmailMessageFolder(List<MailItem> mList, IMAPFolder imapFolder, String dateFormat, List<String> existUids, int numEmailsToFetch) throws MessagingException {
+    private boolean listGmailMessageFolder(List<MailItem> mList, IMAPFolder imapFolder, List<String> existUids, int numEmailsToFetch) throws MessagingException {
         Folder[] list = imapFolder.list();
         boolean flag = false;
 
         for (Folder folder : list) {
             IMAPFolder subFolder = (IMAPFolder) folder;
-            flag = listFolderMessage(mList, subFolder, dateFormat, existUids, numEmailsToFetch);
+            flag = listFolderMessage(mList, subFolder, existUids, numEmailsToFetch);
             if (flag) break;
         }
 
         return flag;
     }
 
-    private boolean listFolderMessage(List<MailItem> mList, IMAPFolder imapFolder, String dateFormat, List<String> existUids, int numEmailsToFetch) throws MessagingException {
+    private boolean listFolderMessage(List<MailItem> mList, IMAPFolder imapFolder, List<String> existUidList, int numEmailsToFetch) throws MessagingException {
         boolean flag = false;
         imapFolder.open(Folder.READ_ONLY);
         FetchProfile profile = new FetchProfile();
@@ -87,7 +87,7 @@ public class ImapService implements IMailService {
                 }
 
                 // Skip already processed mails
-                if (existUids != null && existUids.contains(uid)) {
+                if (existUidList != null && existUidList.contains(uid)) {
                     continue;
                 }
 

@@ -415,7 +415,7 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
 
         // 创建文本消息部分
         BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setText(content);
+        messageBodyPart.setContent(content, "text/html");
         multipart.addBodyPart(messageBodyPart);
 
         // 添加附件

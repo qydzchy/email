@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -39,35 +38,18 @@ public class MyExchangeService implements IMailService {
         return MailItemParser.parseMail(mailItem, localSavePath);
     }
 
-    public List<MailItem> listAll(MailConn mailConn, String dateFormat, List<String> existUids) throws MailPlusException {
+    public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
         int numEmailsToFetch = 300;
         try {
             FindItemsResults items = getItems(mailConn, numEmailsToFetch);
             ArrayList<Item> itemList = items.getItems();
             List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Date date = sdf.parse(dateFormat);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 5);
-            Date time = calendar.getTime();
-            Integer fiveDaysBefore = Integer.parseInt(sdf.format(time));
-
             for (Item item : itemList) {
                 if (!(item instanceof EmailMessage)) continue;
 
                 EmailMessage message = (EmailMessage) item;
-                Date receivedDate = message.getDateTimeSent();
-                String receivedDateFormat = sdf.format(receivedDate);
-
-                if (fiveDaysBefore > Integer.parseInt(receivedDateFormat)) {
-                    break;
-                }
-
-                if (dateFormat.equals(receivedDateFormat)) {
-                    mList.add(MailItem.builder().exchangeMessage(message).build());
-                }
+                mList.add(MailItem.builder().exchangeMessage(message).build());
             }
 
             return mList;

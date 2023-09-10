@@ -40,8 +40,8 @@ public class MailContext {
     /**
      * 获取邮件列表
      */
-    public List<MailItem> listAll(ProtocolTypeEnum protocolTypeEnum, MailConn mailConn, String var2, List<String> var3) throws MailPlusException {
+    public List<MailItem> listAll(ProtocolTypeEnum protocolTypeEnum, MailConn mailConn, List<String> existUidList) throws MailPlusException {
         IMailService mailService = protocolTypeMap.get(protocolTypeEnum);
-        return mailService.listAll(mailConn, var2, var3);
+        return mailService.listAll(mailConn, existUidList);
     }
 }

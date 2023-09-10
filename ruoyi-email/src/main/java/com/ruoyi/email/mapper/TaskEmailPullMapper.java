@@ -85,4 +85,20 @@ public interface TaskEmailPullMapper
      * @return
      */
     int countByTaskId(@Param("taskIdList") List<Long> taskIdList, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag);
+
+    /**
+     * 查询拉取邮件的uid
+     * @param taskId
+     * @return
+     */
+    List<String> getUidsByTaskId(@Param("taskId") Long taskId);
+
+    /**
+     * 更新固定状态
+     * @param id
+     * @param fixedFlag
+     * @param createId
+     * @return
+     */
+    boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag, @Param("createId") Long createId);
 }

@@ -6,6 +6,7 @@ import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
 import com.ruoyi.email.domain.vo.task.ListTaskVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
+import org.springframework.data.util.Pair;
 
 /**
  * 邮箱任务Service接口
@@ -97,5 +98,10 @@ public interface ITaskService
      * 拉取邮件
      * @param task
      */
-    void pullEmail(Task task);
+    Pair<Integer, String> pullEmail(Task task);
+
+    /**
+     * 同步所有任务邮件
+     */
+    void syncAllTaskEmail();
 }
