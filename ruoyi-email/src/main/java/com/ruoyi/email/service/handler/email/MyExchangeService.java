@@ -46,6 +46,8 @@ public class MyExchangeService implements IMailService {
             List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
 
             for (Item item : itemList) {
+                if (mList.size() == numEmailsToFetch) break;
+
                 if (!(item instanceof EmailMessage)) continue;
 
                 EmailMessage message = (EmailMessage) item;

@@ -78,10 +78,11 @@ public class ImapService implements IMailService {
         imapFolder.fetch(messages, profile);
 
         for (Message message : messages) {
+            // 拉取的邮件数
+            if (mList.size() == numEmailsToFetch) break;
+
             try {
                 String uid = imapFolder.getFullName() + imapFolder.getUID((IMAPMessage) message);
-
-                // If UID retrieval fails, use the fallback mechanism
                 if (uid == null || uid.isEmpty()) {
                     uid = getUniqueHash(message);
                 }

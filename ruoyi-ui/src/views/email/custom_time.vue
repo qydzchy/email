@@ -1,6 +1,5 @@
 <template>
-  <div>
-  <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" style="position: absolute; top: 188px; left: 906px; will-change: top, left; transform-origin: 100% bottom;">
+  <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end">
     <!---->
     <div>
       <!---->
@@ -13,18 +12,18 @@
         <div class="pending-custom-item">
           <div>
             <label for="customDate">日期</label>
-<!--            <el-date-picker
-              @change="handleDateChange"
+            <el-date-picker
               v-model="date"
               type="date"
+              @input="$forceUpdate()"
               placeholder="选择日期">
-            </el-date-picker>-->
+            </el-date-picker>
           </div>
           <div>
             <label for="customTime">时间</label>
             <el-time-picker
-              @change="handleTimeChange"
               v-model="time"
+              @input="$forceUpdate()"
               placeholder="任意时间点">
             </el-time-picker>
           </div>
@@ -38,9 +37,8 @@
         </div>
       </div>
     </div>
+  </div>
     <!---->
-  </div>
-  </div>
 </template>
 <script>
 export default {
@@ -59,3 +57,4 @@ export default {
     }
   }
 }
+</script>

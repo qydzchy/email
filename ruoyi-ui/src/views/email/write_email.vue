@@ -289,16 +289,16 @@
                   </label>
                 </div>
                 <div class="select">
-                  <label class="mm-checkbox">
-                    <input true-value="true" v-model="formData.delayedTxFlag" type="checkbox">
-                    <span class="mm-checkbox-input"></span>
-                    <span class="mm-checkbox-label">定时发送</span>
-                  </label>
-                </div>
-                <div class="split"></div>
-                <div class="select-handle-time" @click="togglePendingPopover">
-                  <div class="mm-popover">
-                    <div>
+              <label class="mm-checkbox">
+                <input true-value="true" v-model="formData.delayedTxFlag" type="checkbox">
+                <span class="mm-checkbox-input"></span>
+                <span class="mm-checkbox-label">定时发送</span>
+              </label>
+            </div>
+              <div class="split"></div>
+              <div class="select-handle-time" @click="togglePendingTime">
+                <div class="mm-popover">
+                  <div>
                                           <span class="time">
                                             <span class="okki-icon-wrap time-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                                 <path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
@@ -306,13 +306,13 @@
                                               </svg>
                                             </span> 标记为待处理
                                           </span>
-                    </div>
-                    <!---->
                   </div>
-                  <PendingTimePopover :isVisible="showPendingPopover"></PendingTimePopover>
-<!--                  <CustomTimePopover></CustomTimePopover>-->
+                  <!---->
                 </div>
+                <PendingTimePopover v-if="showPendingTime" @showCustom="showCustomTimeComponent"></PendingTimePopover>
+                <CustomTimePopover v-if="showCustomTime"></CustomTimePopover>
               </div>
+            </div>
             </div>
           </div>
           </el-form>
@@ -395,7 +395,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import {uploadAttachments, listAttachment, renameAttachment, deleteAttachment} from "@/api/email/attachment";
 import {listTaskPull} from "@/api/email/task";
 import {saveSendEmail, sendEmail} from "@/api/email/email";
-import { EventBus } from '@/api/email/event-bus.js'; // 根据你的文件结构调整路径
+import { EventBus } from '@/api/email/event-bus.js';
 import ReceiverInput from './write_email_receiver_input.vue';
 import PendingTimePopover from './pending_time.vue';
 import CustomTimePopover from './custom_time.vue';
@@ -424,7 +424,8 @@ export default {
       receiver: [],
       cc: [],
       bcc: [],
-      showPendingPopover: false,
+      showCustomTime: true,
+      showPendingTime: false
     };
   },
   methods: {
@@ -627,10 +628,6 @@ export default {
       }
     },
 
-    togglePendingPopover() {
-      this.showPendingPopover = !this.showPendingPopover;
-    },
-
     toggleRename(file) {
       this.$set(file, 'isRenaming', true);
       this.$set(file, 'newName', this.getFileNameWithoutExtension(file.name));
@@ -691,6 +688,17 @@ export default {
     },
     getFileExtension(filename) {
       return filename.split('.').pop();
+    },
+
+    togglePendingTime() {
+      this.showPendingTime = !this.showPendingTime;
+      this.showCustomTime = false;
+    },
+    showCustomTimeComponent() {
+      this.showCustomTime = true;
+      this.showPendingTime = false;
+      console.log(this.showCustomTime);
+      console.log(this.showPendingTime);
     }
   },
   mounted() {

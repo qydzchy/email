@@ -55,6 +55,8 @@ public class EmailSender {
         String customMessageId = "<" + java.util.UUID.randomUUID().toString() + "@example.com>";
         System.out.println(customMessageId);
         msg.setHeader("Message-ID", customMessageId);
+        msg.setHeader("In-Reply-To", customMessageId);
+        msg.setHeader("References", customMessageId);
 
         msg.setFrom(new InternetAddress(mailFrom));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailTo));
@@ -105,7 +107,7 @@ public class EmailSender {
         try {
             sendEmailWithAttachmentsAndProxy("mail.sohu.com", "465", true,"w0r1d_space@sohu.com", "QI14ATMVBC",
                     "w0r1d_space@tom.com", "13076506601@163.com", "278882047@qq.com",
-                    "Test Subject", "Test Message", null, null, new String[] {"D:\\back\\Desktop\\5\\1.txt"});
+                    "Test Subject 03", "Test Message", null, null, null);
             System.out.println("Email sent successfully!");
         } catch (MessagingException e) {
             e.printStackTrace();

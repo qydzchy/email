@@ -35,40 +35,36 @@ public class Pop3Service implements IMailService {
             POP3Folder pop3Folder = (POP3Folder)pop3Store.getFolder("INBOX");
             pop3Folder.open(Folder.READ_WRITE);
 
-            int totalMessages = pop3Folder.getMessageCount();
-            int end = totalMessages;
-            int fetched = 0;
+            Message[] messages = pop3Folder.getMessages();
+            for (int index = messages.length - 1; index >= 0; index--) {
+                Message message = messages[index];
+                // 拉取的邮件数
+                if (mList.size() == numEmailsToFetch) break;
 
-            while (fetched < numEmailsToFetch && end > 0) {
-                int start = Math.max(end - numEmailsToFetch + fetched + 1, 1);
-                Message[] messages = pop3Folder.getMessages(start, end);
-
-                for (Message message : messages) {
-                    if (fetched >= numEmailsToFetch) break;
-
-                    try {
-                        String uid = pop3Folder.getUID(message);
-                        if (uid == null || uid.isEmpty()) {
-                            uid = getUniqueHash(message);
-                        }
-
-                        if (existUidList != null && existUidList.contains(uid)) {
-                            continue;  // 跳过已经存在的邮件
-                        }
-
-                        if (!message.getFolder().isOpen()) {
-                            message.getFolder().open(Folder.READ_WRITE);
-                        }
-
-                        mList.add(MailItem.builder().pop3Message((POP3Message) message).uid(uid).build());
-                        fetched++;
-
-                    } catch (Exception e) {
-                        log.error("pop3 - 获取邮件异常，异常原因：" + "\t" + e.getMessage());
-                        e.printStackTrace();
+                try {
+                    if (!message.getFolder().isOpen()) {
+                        message.getFolder().open(Folder.READ_WRITE);
                     }
+
+                    String uid = pop3Folder.getUID(message);
+                    if (uid == null || uid.isEmpty()) {
+                        uid = getUniqueHash(message);
+                    }
+
+                    if (existUidList != null && existUidList.contains(uid)) {
+                        continue;
+                    }
+
+                    String[] header = message.getHeader("In-Reply-To");
+                    String[] references = message.getHeader("References");
+                    String[] messageId = message.getHeader("Message-ID");
+
+                    mList.add(MailItem.builder().pop3Message((POP3Message) message).uid(uid).build());
+
+                } catch (Exception e) {
+                    log.error("pop3 - 获取邮件异常，异常原因：" + "\t" + e.getMessage());
+                    e.printStackTrace();
                 }
-                end = start - 1;  // 准备拉取更早的邮件
             }
 
             return mList;

@@ -1,5 +1,5 @@
 <template>
-  <div class="mm-outside mail-pending-popover mm-popover-popper" v-if="isVisible" x-placement="top-end">
+  <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end">
     <!---->
     <div>
       <!---->
@@ -30,7 +30,7 @@
               <span class="format-time">星期一 08:00</span>
             </li>
           </ul>
-          <div class="footer bold">自定义时间</div>
+          <div class="footer bold" @click="$emit('showCustom')">自定义时间</div>
         </div>
       </div>
     </div>
@@ -41,9 +41,8 @@
 export default {
   data() {
     return {
-      selectedDateTime: null,
+
     };
   },
-  props: ['isVisible']
 }
 </script>
