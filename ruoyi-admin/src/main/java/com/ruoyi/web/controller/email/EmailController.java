@@ -9,6 +9,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.TaskEmailPull;
 import com.ruoyi.email.domain.TaskEmailSend;
+import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
@@ -120,7 +121,7 @@ public class EmailController extends BaseController {
     /**
      * 邮件固定（收取）
      */
-    @PreAuthorize("@ss.hasPermi('email:fixed')")
+    @PreAuthorize("@ss.hasPermi('email:pull:fixed')")
     @Log(title = "邮件固定（收取）", businessType = BusinessType.UPDATE)
     @PostMapping("/pull/fixed")
     public AjaxResult pullFixed(@RequestBody TaskEmailPull taskEmailPull)
@@ -135,4 +136,36 @@ public class EmailController extends BaseController {
 
         return toAjax(taskEmailPullService.pullFixed(taskEmailPull.getId(), taskEmailPull.getFixedFlag()));
     }
+
+    /**
+     * 邮件固定（发送）
+     */
+    @PreAuthorize("@ss.hasPermi('email:send:fixed')")
+    @Log(title = "邮件固定（发送）", businessType = BusinessType.UPDATE)
+    @PostMapping("/send/fixed")
+    public AjaxResult sendFixed(@RequestBody TaskEmailSend taskEmailSend)
+    {
+        if (taskEmailSend.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        if (taskEmailSend.getFixedFlag() != null) {
+            throw new ServiceException("是否固定不能为空");
+        }
+
+        return toAjax(taskEmailSendService.sendFixed(taskEmailSend.getId(), taskEmailSend.getFixedFlag()));
+    }
+
+    /**
+     * 快速回复
+     */
+    @PreAuthorize("@ss.hasPermi('email:send:quick:reply')")
+    @Log(title = "快速回复", businessType = BusinessType.UPDATE)
+    @PostMapping("/quick/reply")
+    public AjaxResult quickReply(@RequestBody EmailQuickReplyDTO emailQuickReplyDTO)
+    {
+        TaskEmailPull taskEmailPull = taskEmailPullService.getById(emailQuickReplyDTO.getPullId());
+        return toAjax(taskEmailSendService.quickReply(taskEmailPull));
+    }
+
 }

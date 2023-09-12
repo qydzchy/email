@@ -104,4 +104,9 @@ public interface ITaskService
      * 同步所有任务邮件
      */
     void syncAllTaskEmail();
+
+    /**
+     * 发送邮件
+     */
+    void sendEmail();
 }

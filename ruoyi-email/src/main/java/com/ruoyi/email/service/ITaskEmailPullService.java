@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmailPull;
 import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.util.Pair;
 
 /**
@@ -91,4 +90,11 @@ public interface ITaskEmailPullService
      * @return
      */
     List<String> getUidsByTaskId(Long taskId);
+
+    /**
+     * 根据id查询获取拉取的邮件信息
+     * @param id
+     * @return
+     */
+    TaskEmailPull getById(Long id);
 }

@@ -199,6 +199,14 @@ public class TaskEmailPullServiceImpl implements ITaskEmailPullService
         return taskEmailPullMapper.getUidsByTaskId(taskId);
     }
 
+    @Override
+    public TaskEmailPull getById(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        return taskEmailPullMapper.getById(id, userId);
+    }
+
     /**
      * 获取任务下拉取的邮件数量
      * @param taskIdList

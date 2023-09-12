@@ -48,9 +48,15 @@ public class TaskEmailSend extends BaseEntity
     @Excel(name = "状态: 1.未发送(草稿箱) 2.发送中 3.发送成功 4.发送失败")
     private Integer status;
 
+    /**
+     * 是否追踪 0.否 1.是
+     */
+    @Excel(name = "是否追踪 0.否 1.是")
+    private Boolean traceFlag;
+
     /** 定时发送: 0.否 1.是 */
     @Excel(name = "定时发送: 0.否 1.是")
-    private Integer delayedTxFlag;
+    private Boolean delayedTxFlag;
 
     /** 收件人所在时区 */
     @Excel(name = "收件人所在时区")
@@ -72,7 +78,22 @@ public class TaskEmailSend extends BaseEntity
 
     /** 是否固定: 0.否 1.是 */
     @Excel(name = "是否固定: 0.否 1.是")
-    private Integer fixedFlag;
+    private Boolean fixedFlag;
+
+    /**
+     * 每封邮件都应该有一个唯一的 Message-ID
+     */
+    private String messageId;
+
+    /**
+     * 当你回复一封邮件时，你应该设置 In-Reply-To 头为原始邮件的 Message-ID
+     */
+    private String inReplyTo;
+
+    /**
+     * 邮件链的列表
+     */
+    private String references;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -149,16 +170,24 @@ public class TaskEmailSend extends BaseEntity
     {
         return status;
     }
-    public void setDelayedTxFlag(Integer delayedTxFlag) 
-    {
+
+    public Boolean getTraceFlag() {
+        return traceFlag;
+    }
+
+    public void setTraceFlag(Boolean traceFlag) {
+        this.traceFlag = traceFlag;
+    }
+
+    public Boolean getDelayedTxFlag() {
+        return delayedTxFlag;
+    }
+
+    public void setDelayedTxFlag(Boolean delayedTxFlag) {
         this.delayedTxFlag = delayedTxFlag;
     }
 
-    public Integer getDelayedTxFlag() 
-    {
-        return delayedTxFlag;
-    }
-    public void setRecipientTimeZone(String recipientTimeZone) 
+    public void setRecipientTimeZone(String recipientTimeZone)
     {
         this.recipientTimeZone = recipientTimeZone;
     }
@@ -194,16 +223,40 @@ public class TaskEmailSend extends BaseEntity
     {
         return pendingTime;
     }
-    public void setFixedFlag(Integer fixedFlag) 
-    {
+
+    public Boolean getFixedFlag() {
+        return fixedFlag;
+    }
+
+    public void setFixedFlag(Boolean fixedFlag) {
         this.fixedFlag = fixedFlag;
     }
 
-    public Integer getFixedFlag() 
-    {
-        return fixedFlag;
+    public String getMessageId() {
+        return messageId;
     }
-    public void setDelFlag(String delFlag) 
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    public String getInReplyTo() {
+        return inReplyTo;
+    }
+
+    public void setInReplyTo(String inReplyTo) {
+        this.inReplyTo = inReplyTo;
+    }
+
+    public String getReferences() {
+        return references;
+    }
+
+    public void setReferences(String references) {
+        this.references = references;
+    }
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }

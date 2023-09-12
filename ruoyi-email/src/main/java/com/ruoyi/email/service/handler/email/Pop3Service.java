@@ -55,10 +55,6 @@ public class Pop3Service implements IMailService {
                         continue;
                     }
 
-                    String[] header = message.getHeader("In-Reply-To");
-                    String[] references = message.getHeader("References");
-                    String[] messageId = message.getHeader("Message-ID");
-
                     mList.add(MailItem.builder().pop3Message((POP3Message) message).uid(uid).build());
 
                 } catch (Exception e) {

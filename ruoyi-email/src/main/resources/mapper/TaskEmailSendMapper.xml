@@ -13,12 +13,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="cc"    column="cc"    />
         <result property="title"    column="title"    />
         <result property="status"    column="status"    />
+        <result property="traceFlag"    column="trace_flag"    />
         <result property="delayedTxFlag"    column="delayed_tx_flag"    />
         <result property="recipientTimeZone"    column="recipient_time_zone"    />
         <result property="recipientLocalTime"    column="recipient_local_time"    />
         <result property="pendingFlag"    column="pending_flag"    />
         <result property="pendingTime"    column="pending_time"    />
         <result property="fixedFlag"    column="fixed_flag"    />
+        <result property="messageId"    column="message_id"    />
+        <result property="inReplyTo"    column="in_reply_to"    />
+        <result property="references"    column="references"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -29,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTaskEmailSendVo">
-        select id, task_id, fromer, receiver, bcc, cc, title, status, delayed_tx_flag, recipient_time_zone, recipient_local_time, pending_flag, pending_time, fixed_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email_send
+        select id, task_id, fromer, receiver, bcc, cc, title, status, trace_flag, delayed_tx_flag, recipient_time_zone, recipient_local_time, pending_flag, pending_time, fixed_flag, message_id, in_reply_to, references, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email_send
     </sql>
 
     <select id="selectTaskEmailSendList" parameterType="TaskEmailSend" resultMap="TaskEmailSendResult">
@@ -115,12 +119,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cc != null">cc,</if>
             <if test="title != null and title != ''">title,</if>
             <if test="status != null">status,</if>
+            <if test="traceFlag != null">trace_flag,</if>
             <if test="delayedTxFlag != null">delayed_tx_flag,</if>
             <if test="recipientTimeZone != null">recipient_time_zone,</if>
             <if test="recipientLocalTime != null">recipient_local_time,</if>
             <if test="pendingFlag != null">pending_flag,</if>
             <if test="pendingTime != null">pending_time,</if>
             <if test="fixedFlag != null">fixed_flag,</if>
+            <if test="messageId != null">message_id,</if>
+            <if test="inReplyTo != null">in_reply_to,</if>
+            <if test="references != null">references,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
@@ -137,12 +145,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cc != null">#{cc},</if>
             <if test="title != null and title != ''">#{title},</if>
             <if test="status != null">#{status},</if>
+            <if test="traceFlag != null">#{traceFlag},</if>
             <if test="delayedTxFlag != null">#{delayedTxFlag},</if>
             <if test="recipientTimeZone != null">#{recipientTimeZone},</if>
             <if test="recipientLocalTime != null">#{recipientLocalTime},</if>
             <if test="pendingFlag != null">#{pendingFlag},</if>
             <if test="pendingTime != null">#{pendingTime},</if>
             <if test="fixedFlag != null">#{fixedFlag},</if>
+            <if test="messageId != null">#{messageId},</if>
+            <if test="inReplyTo != null">#{inReplyTo},</if>
+            <if test="references != null">#{references},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -163,12 +175,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cc != null">cc = #{cc},</if>
             <if test="title != null and title != ''">title = #{title},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="traceFlag != null">trace_flag = #{traceFlag},</if>
             <if test="delayedTxFlag != null">delayed_tx_flag = #{delayedTxFlag},</if>
             <if test="recipientTimeZone != null">recipient_time_zone = #{recipientTimeZone},</if>
             <if test="recipientLocalTime != null">recipient_local_time = #{recipientLocalTime},</if>
             <if test="pendingFlag != null">pending_flag = #{pendingFlag},</if>
             <if test="pendingTime != null">pending_time = #{pendingTime},</if>
             <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
+            <if test="messageId != null">message_id = #{messageId},</if>
+            <if test="inReplyTo != null">in_reply_to = #{inReplyTo},</if>
+            <if test="references != null">references = #{traceFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
@@ -182,6 +198,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <update id="updateStatusById">
         update mailbox_task_email_send set status = #{status} where id = #{id}
+    </update>
+
+    <update id="updateFixed">
+        update mailbox_task_email_send set fixed_flag=#{fixedFlag} where id=#{id} and create_id=#{createId}
     </update>
 
     <delete id="deleteTaskEmailSendById" parameterType="Long">

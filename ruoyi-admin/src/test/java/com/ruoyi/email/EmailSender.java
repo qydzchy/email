@@ -58,6 +58,8 @@ public class EmailSender {
         msg.setHeader("In-Reply-To", customMessageId);
         msg.setHeader("References", customMessageId);
 
+        String[] header = msg.getHeader("Message-ID");
+
         msg.setFrom(new InternetAddress(mailFrom));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailTo));
 

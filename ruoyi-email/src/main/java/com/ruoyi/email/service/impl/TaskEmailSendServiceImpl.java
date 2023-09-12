@@ -16,9 +16,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
-import com.ruoyi.email.domain.Task;
-import com.ruoyi.email.domain.TaskEmailAttachment;
-import com.ruoyi.email.domain.TaskEmailContent;
+import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
 import com.ruoyi.email.service.ITaskEmailAttachmentService;
@@ -29,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailSendMapper;
-import com.ruoyi.email.domain.TaskEmailSend;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -190,53 +187,17 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
     public boolean send(Long id) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
 
         TaskEmailSend taskEmailSend = taskEmailSendMapper.getTaskEmailSendById(id, userId);
+        if (taskEmailSend == null) throw new ServiceException();
 
-        // 查询邮件内容
-        TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentByEmailId(id);
-        // 查询附件
-        List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.selectByEmailId(id);
+        taskEmailSend.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmailSend.setUpdateId(userId);
+        taskEmailSend.setUpdateBy(username);
+        taskEmailSend.setUpdateTime(new Date());
 
-        // 获取邮箱信息
-        Long taskId = taskEmailSend.getTaskId();
-        Task task = taskService.selectTaskById(taskId);
-        boolean isSuccess = false;
-        try {
-            String[] mailTos = getEmails(taskEmailSend.getReceiver());
-            String[] mailBccs = getEmails(taskEmailSend.getBcc());
-            String[] mailCcs = getEmails(taskEmailSend.getCc());
-
-            String title = taskEmailSend.getTitle();
-            String content = emailContent != null ? emailContent.getContent() : null;
-
-            String [] attachmentPaths = null;
-            if (taskEmailAttachmentList != null && !taskEmailAttachmentList.isEmpty()) {
-                List<String> filePathList =  new ArrayList<>();
-                taskEmailAttachmentList.stream().forEach(taskEmailAttachment -> {
-                    filePathList.add(taskEmailAttachment.getPath());
-                });
-                attachmentPaths = filePathList.toArray(new String[filePathList.size()]);
-            }
-
-            sendEmail(task.getOutgoingServer(), task.getOutgoingPort(), task.getOutgoingSslFlag(), task.getAccount(), task.getPassword(),
-                    mailTos, mailCcs, mailBccs, title, content,
-                    task.getProxyServer(), task.getProxyPort(),
-                    task.getProxyUsername(), task.getProxyPassword(), attachmentPaths);
-
-            isSuccess = true;
-        } catch (MessagingException e) {
-            log.error("messagingException e:{}", e);
-            throw new ServiceException("发送失败");
-        } catch (Exception e) {
-            log.error("发送失败，e:{}", e);
-            throw new ServiceException();
-        }
-
-        // 更新数据
-        int status = isSuccess ? TaskExecutionStatusEnum.SUCCESS.getStatus() : TaskExecutionStatusEnum.FAILURE.getStatus();
-        // 更新邮件发送状态
-        updateStatusById(status, id);
+        taskEmailSendMapper.updateTaskEmailSend(taskEmailSend);
         return true;
     }
 
@@ -299,6 +260,91 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
         return Pair.of(count, dataList);
     }
 
+    @Override
+    public boolean sendFixed(Long id, Boolean fixedFlag) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        return taskEmailSendMapper.updateFixed(id, fixedFlag, userId);
+    }
+
+    @Override
+    public boolean quickReply(TaskEmailPull taskEmailPull) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        Date now = new Date();
+
+        TaskEmailSend taskEmailSend = new TaskEmailSend();
+        taskEmailSend.setTaskId(taskEmailPull.getId());
+        taskEmailSend.setFromer(taskEmailPull.getFromer());
+        taskEmailSend.setReceiver(taskEmailPull.getReceiver());
+        taskEmailSend.setBcc(taskEmailPull.getBcc());
+        taskEmailSend.setCc(taskEmailPull.getCc());
+        taskEmailSend.setTitle(taskEmailPull.getTitle());
+        taskEmailSend.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmailSend.setCreateId(userId);
+        taskEmailSend.setCreateBy(username);
+        taskEmailSend.setCreateTime(now);
+        taskEmailSend.setUpdateId(userId);
+        taskEmailSend.setUpdateBy(username);
+        taskEmailSend.setUpdateTime(now);
+        taskEmailSend.setInReplyTo(taskEmailPull.getMessageId());
+
+        taskEmailSendMapper.insertTaskEmailSend(taskEmailSend);
+        return false;
+    }
+
+    @Override
+    public boolean sendEmail(TaskEmailSend taskEmailSend) {
+        Long id = taskEmailSend.getId();
+        // 查询邮件内容
+        TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentByEmailId(id);
+        // 查询附件
+        List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.selectByEmailId(id);
+
+        // 获取邮箱信息
+        Long taskId = taskEmailSend.getTaskId();
+        Task task = taskService.selectTaskById(taskId);
+        boolean isSuccess = false;
+        try {
+            String[] mailTos = getEmails(taskEmailSend.getReceiver());
+            String[] mailBccs = getEmails(taskEmailSend.getBcc());
+            String[] mailCcs = getEmails(taskEmailSend.getCc());
+
+            String title = taskEmailSend.getTitle();
+            String content = emailContent != null ? emailContent.getContent() : null;
+
+            String [] attachmentPaths = null;
+            if (taskEmailAttachmentList != null && !taskEmailAttachmentList.isEmpty()) {
+                List<String> filePathList =  new ArrayList<>();
+                taskEmailAttachmentList.stream().forEach(taskEmailAttachment -> {
+                    filePathList.add(taskEmailAttachment.getPath());
+                });
+                attachmentPaths = filePathList.toArray(new String[filePathList.size()]);
+            }
+
+            sendEmail(task.getOutgoingServer(), task.getOutgoingPort(), task.getOutgoingSslFlag(), task.getAccount(), task.getPassword(),
+                    mailTos, mailCcs, mailBccs, title, content, taskEmailSend.getInReplyTo(),
+                    task.getProxyServer(), task.getProxyPort(),
+                    task.getProxyUsername(), task.getProxyPassword(), attachmentPaths);
+
+            isSuccess = true;
+        } catch (MessagingException e) {
+            log.error("messagingException e:{}", e);
+            throw new ServiceException("发送失败");
+        } catch (Exception e) {
+            log.error("发送失败，e:{}", e);
+            throw new ServiceException();
+        }
+
+        // 更新数据
+        int status = isSuccess ? TaskExecutionStatusEnum.SUCCESS.getStatus() : TaskExecutionStatusEnum.FAILURE.getStatus();
+        // 更新邮件发送状态
+        updateStatusById(status, id);
+        return true;
+    }
+
     /**
      * 更新邮件发送状态
      * @param status
@@ -346,7 +392,7 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
      */
     public void sendEmail(String host, Integer port, boolean useSSL, String mailFrom, String password,
                                                         String[] mailTos, String[] mailCcs, String[] mailBccs,
-                                                        String title, String content, String proxyHost, Integer proxyPort,
+                                                        String title, String content, String inReplyTo, String proxyHost, Integer proxyPort,
                                                         String proxyUser, String proxyPassword, String[] attachmentPaths) throws MessagingException {
         Properties properties = new Properties();
 

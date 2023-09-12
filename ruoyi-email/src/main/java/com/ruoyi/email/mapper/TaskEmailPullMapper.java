@@ -101,4 +101,12 @@ public interface TaskEmailPullMapper
      * @return
      */
     boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag, @Param("createId") Long createId);
+
+    /**
+     * 根据id获取拉取的邮件信息
+     * @param id
+     * @param createId
+     * @return
+     */
+    TaskEmailPull getById(@Param("id") Long id, @Param("createId") Long createId);
 }

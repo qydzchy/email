@@ -22,6 +22,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="pendingTime"    column="pending_time"    />
         <result property="fixedFlag"    column="fixed_flag"    />
         <result property="spamFlag"    column="spam_flag"    />
+        <result property="messageId"    column="message_id"    />
+        <result property="inReplyTo"    column="in_reply_to"    />
+        <result property="references"    column="references"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -32,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTaskEmailPullVo">
-        select id, task_id, uid, fromer, receiver, bcc, cc, folder, folder_id, title, send_date, eml_path, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email_pull
+        select id, task_id, uid, fromer, receiver, bcc, cc, folder, folder_id, title, send_date, eml_path, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, message_id, in_reply_to, references, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email_pull
     </sql>
 
     <select id="selectTaskEmailPullList" parameterType="TaskEmailPull" resultMap="TaskEmailPullResult">
@@ -101,6 +104,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select uid from mailbox_task_email_pull where task_id=#{taskId}
     </select>
 
+    <select id="getById" resultMap="TaskEmailPullResult">
+        <include refid="selectTaskEmailPullVo"/>
+        where id = #{id} and create_id = #{createId} and del_flag = '0'
+    </select>
+
     <insert id="insertTaskEmailPull" parameterType="TaskEmailPull" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_pull
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -120,6 +128,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingTime != null">pending_time,</if>
             <if test="fixedFlag != null">fixed_flag,</if>
             <if test="spamFlag != null">spam_flag,</if>
+            <if test="messageId != null">message_id,</if>
+            <if test="inReplyTo != null">in_reply_to,</if>
+            <if test="references != null">references,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
@@ -145,6 +156,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingTime != null">#{pendingTime},</if>
             <if test="fixedFlag != null">#{fixedFlag},</if>
             <if test="spamFlag != null">#{spamFlag},</if>
+            <if test="messageId != null">#{messageId},</if>
+            <if test="inReplyTo != null">#{inReplyTo},</if>
+            <if test="references != null">#{references},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
@@ -174,6 +188,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingTime != null">pending_time = #{pendingTime},</if>
             <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
             <if test="spamFlag != null">spam_flag = #{spamFlag},</if>
+            <if test="messageId != null">message_id = #{messageId},</if>
+            <if test="inReplyTo != null">in_reply_to = #{inReplyTo},</if>
+            <if test="references != null">references = #{traceFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null and createId != ''">create_Id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>

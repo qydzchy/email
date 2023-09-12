@@ -84,6 +84,21 @@ public class TaskEmailPull extends BaseEntity
     @Excel(name = "垃圾邮件: 0.否 1.是")
     private Boolean spamFlag;
 
+    /**
+     * 每封邮件都应该有一个唯一的 Message-ID
+     */
+    private String messageId;
+
+    /**
+     * 当你回复一封邮件时，你应该设置 In-Reply-To 头为原始邮件的 Message-ID
+     */
+    private String inReplyTo;
+
+    /**
+     * 邮件链的列表
+     */
+    private String references;
+
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
@@ -243,6 +258,30 @@ public class TaskEmailPull extends BaseEntity
     public String getDelFlag() 
     {
         return delFlag;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    public String getInReplyTo() {
+        return inReplyTo;
+    }
+
+    public void setInReplyTo(String inReplyTo) {
+        this.inReplyTo = inReplyTo;
+    }
+
+    public String getReferences() {
+        return references;
+    }
+
+    public void setReferences(String references) {
+        this.references = references;
     }
 
     @Override

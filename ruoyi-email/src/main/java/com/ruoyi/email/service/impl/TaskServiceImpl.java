@@ -1,6 +1,7 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -8,6 +9,7 @@ import com.ruoyi.common.enums.ProxyTypeEnum;
 import com.ruoyi.common.enums.email.ConnStatusEnum;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
+import com.ruoyi.common.enums.email.TaskExecutionStatusEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.ruoyi.common.utils.DateUtils;
@@ -20,6 +22,8 @@ import com.ruoyi.email.domain.vo.task.ListTaskVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
+import com.ruoyi.email.util.ThreadPoolPullService;
+import com.ruoyi.email.util.ThreadPoolSendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +63,9 @@ public class TaskServiceImpl implements ITaskService
 
     @Resource
     private ITaskEmailPullService taskEmailPullServiceImpl;
+
+    @Resource
+    private ITaskEmailSendService taskEmailSendService;
 
     @Value("${email.pull.path}")
     private String emailPath;
@@ -318,17 +325,46 @@ public class TaskServiceImpl implements ITaskService
     @Override
     public void syncAllTaskEmail() {
         List<Task> taskList = taskMapper.selectTaskList(new Task());
+        ThreadPoolExecutor instance = ThreadPoolPullService.getInstance();
         taskList.stream().forEach(task -> {
-            Pair<Integer, String> pair = pullEmail(task);
-            if (pair != null) {
-                Integer connStatus = pair.getFirst();
-                String connExceptionReason = pair.getSecond();
-                // 更新任务为异常
-                task.setConnStatus(connStatus);
-                task.setConnExceptionReason(connExceptionReason);
-                taskMapper.updateTask(task);
-            }
+            instance.execute(() -> {
+                Pair<Integer, String> pair = pullEmail(task);
+                if (pair != null) {
+                    Integer connStatus = pair.getFirst();
+                    String connExceptionReason = pair.getSecond();
+                    // 更新任务为异常
+                    task.setConnStatus(connStatus);
+                    task.setConnExceptionReason(connExceptionReason);
+                    taskMapper.updateTask(task);
+                }
+            });
         });
+    }
+
+    @Override
+    public void sendEmail() {
+        List<Task> taskList = taskMapper.selectTaskList(new Task());
+        ThreadPoolExecutor instance = ThreadPoolSendService.getInstance();
+        taskList.stream().forEach(task -> {
+            sendEmail(task.getId());
+        });
+    }
+
+    /**
+     * 发送邮件
+     * @param id
+     */
+    private void sendEmail(Long id) {
+        TaskEmailSend taskEmailSendParam = new TaskEmailSend();
+        taskEmailSendParam.setTaskId(id);
+        taskEmailSendParam.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmailSendParam.setDelayedTxFlag(false);
+        List<TaskEmailSend> taskEmailSendList = taskEmailSendService.selectTaskEmailSendList(taskEmailSendParam);
+
+        taskEmailSendList.stream().forEach(taskEmailSend -> {
+            taskEmailSendService.sendEmail(taskEmailSend);
+        });
+        
     }
 
     /**

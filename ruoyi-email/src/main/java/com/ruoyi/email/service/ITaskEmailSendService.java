@@ -3,13 +3,11 @@ package com.ruoyi.email.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.email.domain.TaskEmailPull;
 import com.ruoyi.email.domain.TaskEmailSend;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
-import com.ruoyi.email.domain.vo.email.AttachmentUploadVO;
-import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
 import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
 import org.springframework.data.util.Pair;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 发送邮件Service接口
@@ -92,4 +90,25 @@ public interface ITaskEmailSendService
      */
     Pair<Integer, List<Map<String, List<SendEmailInfoListVO>>>> listSendHeader(Long taskId, Boolean delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
 
+    /**
+     * 邮件固定（发送）
+     * @param id
+     * @param fixedFlag
+     * @return
+     */
+    boolean sendFixed(Long id, Boolean fixedFlag);
+
+    /**
+     * 快速回复
+     * @param taskEmailPull
+     * @return
+     */
+    boolean quickReply(TaskEmailPull taskEmailPull);
+
+    /**
+     * 发送邮件
+     * @param taskEmailSend
+     * @return
+     */
+    boolean sendEmail(TaskEmailSend taskEmailSend);
 }

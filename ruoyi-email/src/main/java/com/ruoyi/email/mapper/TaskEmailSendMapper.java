@@ -96,4 +96,13 @@ public interface TaskEmailSendMapper
      * @return
      */
     List<SendEmailInfoListVO> selectTaskEmailSendByTaskIdPage(@Param("taskIdList") List<Long> taskIdList, @Param("delFlag") String delFlag, @Param("status") Integer status, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 更新固定状态
+     * @param id
+     * @param fixedFlag
+     * @param createId
+     * @return
+     */
+    boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag, @Param("createId") Long createId);
 }

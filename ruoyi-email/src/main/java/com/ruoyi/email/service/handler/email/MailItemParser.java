@@ -42,16 +42,19 @@ public class MailItemParser {
     public static UniversalMail parseMail(MailItem mailItem, String targetDir) throws MailPlusException {
         UniversalMail universalMail = null;
         String emlPath;
+
         if (mailItem.getPop3Message() != null) {
             POP3Message pop3Message = mailItem.getPop3Message();
             universalMail = parseMimeMessage(pop3Message);
             emlPath = saveMimiMessageAsLocalEml(pop3Message, targetDir);
             universalMail.setEmlPath(emlPath);
+            setMessageHeaderParam(pop3Message, universalMail);
         } else if (mailItem.getImapMessage() != null) {
             IMAPMessage imapMessage = mailItem.getImapMessage();
             universalMail = parseMimeMessage(imapMessage);
             emlPath = saveMimiMessageAsLocalEml(imapMessage, targetDir);
             universalMail.setEmlPath(emlPath);
+            setMessageHeaderParam(imapMessage, universalMail);
         } else if (mailItem.getExchangeMessage() != null) {
             universalMail = parseExchangeMail(mailItem.getExchangeMessage());
             emlPath = saveExchangeMailAsLocalEml(mailItem.getExchangeMessage(), targetDir);
@@ -63,6 +66,32 @@ public class MailItemParser {
         }
 
         return universalMail;
+    }
+
+    /**
+     * 设置message的header参数
+     * @param message
+     * @param universalMail
+     */
+    private static void setMessageHeaderParam(MimeMessage message, UniversalMail universalMail) {
+        String[] messageIdArray = new String[0];
+        String[] inReplyToArray = new String[0];
+        String[] referencesArray = new String[0];
+        try {
+            messageIdArray = message.getHeader("Message-ID");
+            inReplyToArray = message.getHeader("In-Reply-To");
+            referencesArray = message.getHeader("References");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        String messageId = messageIdArray != null ? com.ruoyi.common.utils.StringUtils.join(messageIdArray, ";") : null;
+        String inReplyTo = inReplyToArray != null ? com.ruoyi.common.utils.StringUtils.join(inReplyToArray, ";") : null;
+        String references = referencesArray != null ? com.ruoyi.common.utils.StringUtils.join(referencesArray, ";") : null;
+
+        universalMail.setMessageId(messageId);
+        universalMail.setInReplyTo(inReplyTo);
+        universalMail.setReferences(references);
     }
 
     public static Object isFileExits(String path, int index) {

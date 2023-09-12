@@ -27,4 +27,8 @@ public class UniversalMail {
     private String content;
     private String email;
     private List<UniversalAttachment> attachments;
+
+    private String messageId;
+    private String inReplyTo;
+    private String references;
 }
