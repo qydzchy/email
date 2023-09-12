@@ -1,17 +1,9 @@
 import request from '@/utils/request'
 
 // 查询邮箱任务列表
-export function listPullHeader(query) {
+export function list(query) {
   return request({
-    url: '/email/info/list/pull/header',
-    method: 'get',
-    params: query
-  })
-}
-
-export function listSendHeader(query) {
-  return request({
-    url: '/email/info/list/send/header',
+    url: '/email/info/list',
     method: 'get',
     params: query
   })

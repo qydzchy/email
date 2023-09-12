@@ -7,14 +7,12 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.email.domain.TaskEmailPull;
-import com.ruoyi.email.domain.TaskEmailSend;
+import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
-import com.ruoyi.email.domain.vo.email.PullEmailInfoListVO;
-import com.ruoyi.email.domain.vo.email.SendEmailInfoListVO;
-import com.ruoyi.email.service.ITaskEmailPullService;
-import com.ruoyi.email.service.ITaskEmailSendService;
+import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.service.ITaskEmailService;
+import com.ruoyi.email.service.ITaskService;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +30,13 @@ import java.util.Map;
 public class EmailController extends BaseController {
 
     @Resource
-    private ITaskEmailPullService taskEmailPullService;
+    private ITaskService taskService;
 
     @Resource
-    private ITaskEmailSendService taskEmailSendService;
+    private ITaskEmailService taskEmailService;
 
     /**
-     * 获取收件列表-（首页）
+     * 获取邮件列表-（首页）
      * @param taskId
      * @param readFlag
      * @param pendingFlag
@@ -45,51 +44,30 @@ public class EmailController extends BaseController {
      * @param pageSize
      * @return
      */
-    @PreAuthorize("@ss.hasPermi('email:pull:header:list')")
-    @GetMapping("/list/pull/header")
-    public TableDataInfo listPullHeader(Long taskId,
+    @PreAuthorize("@ss.hasPermi('email:list')")
+    @GetMapping("/list")
+    public TableDataInfo listHeader(Long taskId,
                                         Boolean readFlag,
                                         Boolean pendingFlag,
-                                        @NotNull(message = "页数不能为空") Integer pageNum,
-                                        @NotNull(message = "页大小不能为空") Integer pageSize)
-    {
-        Pair<Integer, List<Map<String, List<PullEmailInfoListVO>>>> pair = taskEmailPullService.listPullHeader(taskId, readFlag, pendingFlag, pageNum, pageSize);
-
-        TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(HttpStatus.SUCCESS);
-        rspData.setMsg("查询成功");
-        rspData.setRows(pair.getSecond());
-        rspData.setTotal(pair.getFirst());
-        return rspData;
-    }
-
-    /**
-     * 获取发件列表-（首页）
-     * @param taskId
-     * @param delFlag 已删除邮件
-     * @param draftsFlag 草稿箱邮件
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    @PreAuthorize("@ss.hasPermi('email:send:header:list')")
-    @GetMapping("/list/send/header")
-    public TableDataInfo listSendHeader(Long taskId,
                                         Boolean delFlag,
                                         Boolean draftsFlag,
+                                        @NotNull(message = "类型不能为空") Integer type,
                                         @NotNull(message = "页数不能为空") Integer pageNum,
                                         @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<Map<String, List<SendEmailInfoListVO>>>> pair = taskEmailSendService.listSendHeader(taskId, delFlag, draftsFlag, pageNum, pageSize);
+        List<Long> taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
+
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, delFlag, draftsFlag, pageNum, pageSize);
+        List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
+        long total = pair.getFirst();
 
         TableDataInfo rspData = new TableDataInfo();
         rspData.setCode(HttpStatus.SUCCESS);
         rspData.setMsg("查询成功");
-        rspData.setRows(pair.getSecond());
-        rspData.setTotal(pair.getFirst());
+        rspData.setRows(rows);
+        rspData.setTotal(total);
         return rspData;
     }
-
 
     /**
      * 邮件保存-（写信）
@@ -99,7 +77,7 @@ public class EmailController extends BaseController {
     @PostMapping("/save")
     public AjaxResult save(@RequestBody EmailSendSaveDTO dto)
     {
-        return AjaxResult.success(taskEmailSendService.save(dto));
+        return AjaxResult.success(taskEmailService.save(dto));
     }
 
 
@@ -109,51 +87,33 @@ public class EmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('email:send')")
     @Log(title = "邮件发送-写信", businessType = BusinessType.UPDATE)
     @PostMapping("/send")
-    public AjaxResult send(@RequestBody TaskEmailSend taskEmailSend)
+    public AjaxResult send(@RequestBody TaskEmail taskEmail)
     {
-        if (taskEmailSend.getId() == null) {
+        if (taskEmail.getId() == null) {
             throw new ServiceException("id不能为空");
         }
 
-        return toAjax(taskEmailSendService.send(taskEmailSend.getId()));
+        return toAjax(taskEmailService.send(taskEmail.getId()));
     }
 
+
     /**
-     * 邮件固定（收取）
+     * 邮件固定
      */
-    @PreAuthorize("@ss.hasPermi('email:pull:fixed')")
-    @Log(title = "邮件固定（收取）", businessType = BusinessType.UPDATE)
-    @PostMapping("/pull/fixed")
-    public AjaxResult pullFixed(@RequestBody TaskEmailPull taskEmailPull)
+    @PreAuthorize("@ss.hasPermi('email:fixed')")
+    @Log(title = "邮件固定", businessType = BusinessType.UPDATE)
+    @PostMapping("/fixed")
+    public AjaxResult fixed(@RequestBody TaskEmail taskEmail)
     {
-        if (taskEmailPull.getId() == null) {
+        if (taskEmail.getId() == null) {
             throw new ServiceException("id不能为空");
         }
 
-        if (taskEmailPull.getFixedFlag() != null) {
+        if (taskEmail.getFixedFlag() != null) {
             throw new ServiceException("是否固定不能为空");
         }
 
-        return toAjax(taskEmailPullService.pullFixed(taskEmailPull.getId(), taskEmailPull.getFixedFlag()));
-    }
-
-    /**
-     * 邮件固定（发送）
-     */
-    @PreAuthorize("@ss.hasPermi('email:send:fixed')")
-    @Log(title = "邮件固定（发送）", businessType = BusinessType.UPDATE)
-    @PostMapping("/send/fixed")
-    public AjaxResult sendFixed(@RequestBody TaskEmailSend taskEmailSend)
-    {
-        if (taskEmailSend.getId() == null) {
-            throw new ServiceException("id不能为空");
-        }
-
-        if (taskEmailSend.getFixedFlag() != null) {
-            throw new ServiceException("是否固定不能为空");
-        }
-
-        return toAjax(taskEmailSendService.sendFixed(taskEmailSend.getId(), taskEmailSend.getFixedFlag()));
+        return toAjax(taskEmailService.fixed(taskEmail.getId(), taskEmail.getFixedFlag()));
     }
 
     /**
@@ -164,8 +124,7 @@ public class EmailController extends BaseController {
     @PostMapping("/quick/reply")
     public AjaxResult quickReply(@RequestBody EmailQuickReplyDTO emailQuickReplyDTO)
     {
-        TaskEmailPull taskEmailPull = taskEmailPullService.getById(emailQuickReplyDTO.getPullId());
-        return toAjax(taskEmailSendService.quickReply(taskEmailPull));
+        return toAjax(taskEmailService.quickReply(emailQuickReplyDTO));
     }
 
 }

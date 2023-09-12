@@ -346,8 +346,17 @@ public class TaskServiceImpl implements ITaskService
         List<Task> taskList = taskMapper.selectTaskList(new Task());
         ThreadPoolExecutor instance = ThreadPoolSendService.getInstance();
         taskList.stream().forEach(task -> {
-            sendEmail(task.getId());
+            instance.execute(() -> {
+                sendEmail(task.getId());
+            });
         });
+    }
+
+    @Override
+    public List<Long> getTaskIdByUserId() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        return listIdByUserId(userId);
     }
 
     /**

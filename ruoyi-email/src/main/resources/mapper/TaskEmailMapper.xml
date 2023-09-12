@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskEmailMapper">
+
+    <resultMap type="TaskEmail" id="TaskEmailResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="type"    column="type"    />
+        <result property="uid"    column="uid"    />
+        <result property="fromer"    column="fromer"    />
+        <result property="receiver"    column="receiver"    />
+        <result property="bcc"    column="bcc"    />
+        <result property="cc"    column="cc"    />
+        <result property="folder"    column="folder"    />
+        <result property="folderId"    column="folder_id"    />
+        <result property="title"    column="title"    />
+        <result property="sendDate"    column="send_date"    />
+        <result property="emlPath"    column="eml_path"    />
+        <result property="status"    column="status"    />
+        <result property="traceFlag"    column="trace_flag"    />
+        <result property="delayedTxFlag"    column="delayed_tx_flag"    />
+        <result property="recipientTimeZone"    column="recipient_time_zone"    />
+        <result property="recipientLocalTime"    column="recipient_local_time"    />
+        <result property="readFlag"    column="read_flag"    />
+        <result property="pendingFlag"    column="pending_flag"    />
+        <result property="pendingTime"    column="pending_time"    />
+        <result property="fixedFlag"    column="fixed_flag"    />
+        <result property="spamFlag"    column="spam_flag"    />
+        <result property="messageId"    column="message_id"    />
+        <result property="inReplyTo"    column="in_reply_to"    />
+        <result property="references"    column="references"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTaskEmailVo">
+        select id, task_id, type, uid, fromer, receiver, bcc, cc, folder, folder_id, title, send_date, eml_path, status, trace_flag, delayed_tx_flag, recipient_time_zone, recipient_local_time, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, message_id, in_reply_to, references, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email
+    </sql>
+
+    <select id="selectTaskEmailList" parameterType="TaskEmail" resultMap="TaskEmailResult">
+        <include refid="selectTaskEmailVo"/>
+        <where>
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="uid != null  and uid != ''"> and uid = #{uid}</if>
+            <if test="fromer != null  and fromer != ''"> and fromer = #{fromer}</if>
+            <if test="receiver != null  and receiver != ''"> and receiver = #{receiver}</if>
+            <if test="bcc != null  and bcc != ''"> and bcc = #{bcc}</if>
+            <if test="cc != null  and cc != ''"> and cc = #{cc}</if>
+            <if test="folder != null  and folder != ''"> and folder = #{folder}</if>
+            <if test="folderId != null "> and folder_id = #{folderId}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="sendDate != null "> and send_date = #{sendDate}</if>
+            <if test="emlPath != null  and emlPath != ''"> and eml_path = #{emlPath}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
+            <if test="delayedTxFlag != null "> and delayed_tx_flag = #{delayedTxFlag}</if>
+            <if test="recipientTimeZone != null  and recipientTimeZone != ''"> and recipient_time_zone = #{recipientTimeZone}</if>
+            <if test="recipientLocalTime != null "> and recipient_local_time = #{recipientLocalTime}</if>
+            <if test="readFlag != null "> and read_flag = #{readFlag}</if>
+            <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
+            <if test="pendingTime != null "> and pending_time = #{pendingTime}</if>
+            <if test="fixedFlag != null "> and fixed_flag = #{fixedFlag}</if>
+            <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
+            <if test="messageId != null  and messageId != ''"> and message_id = #{messageId}</if>
+            <if test="inReplyTo != null  and inReplyTo != ''"> and in_reply_to = #{inReplyTo}</if>
+            <if test="references != null  and references != ''"> and references = #{references}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectTaskEmailById" parameterType="Long" resultMap="TaskEmailResult">
+        <include refid="selectTaskEmailVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from mailbox_task_email
+        where type = #{type} and task_id in
+        <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        <if test="readFlag != null "> and read_flag = #{readFlag}</if>
+        <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
+        <if test="status != null "> and status = #{status}</if>
+        and del_flag = #{delFlag}
+    </select>
+
+    <select id="selectTaskEmailPage" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
+        select mtep.id, mtep.task_id as taskId, mtep.uid, mtep.fromer, mtep.receiver, mtep.bcc, mtep.cc, mtep.folder, mtep.folder_id as folderId, mtep.title, mtep.send_date as sendDate, mtep.eml_path as emlPath, mtep.read_flag as readFlag,
+        mtep.pending_flag as pendingFlag, mtep.pending_time as pendingTime, mtep.fixed_flag as fixedFlag, mtep.spam_flag as spamFlag, mtec.content from mailbox_task_email_pull mtep
+        left join mailbox_task_email_content mtec on mtep.id = mtec.email_id
+        where type = #{type} and task_id in
+        <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        <if test="readFlag != null "> and read_flag = #{readFlag}</if>
+        <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
+        <if test="status != null "> and status = #{status}</if>
+        and del_flag = #{delFlag}
+    </select>
+    <select id="getTaskEmailById" resultMap="TaskEmailResult">
+        <include refid="selectTaskEmailVo"/>
+        where id = #{id} and create_id = #{createId} and del_flag = '0'
+    </select>
+
+    <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_email
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="type != null">type,</if>
+            <if test="uid != null and uid != ''">uid,</if>
+            <if test="fromer != null and fromer != ''">fromer,</if>
+            <if test="receiver != null">receiver,</if>
+            <if test="bcc != null">bcc,</if>
+            <if test="cc != null">cc,</if>
+            <if test="folder != null">folder,</if>
+            <if test="folderId != null">folder_id,</if>
+            <if test="title != null">title,</if>
+            <if test="sendDate != null">send_date,</if>
+            <if test="emlPath != null">eml_path,</if>
+            <if test="status != null">status,</if>
+            <if test="traceFlag != null">trace_flag,</if>
+            <if test="delayedTxFlag != null">delayed_tx_flag,</if>
+            <if test="recipientTimeZone != null">recipient_time_zone,</if>
+            <if test="recipientLocalTime != null">recipient_local_time,</if>
+            <if test="readFlag != null">read_flag,</if>
+            <if test="pendingFlag != null">pending_flag,</if>
+            <if test="pendingTime != null">pending_time,</if>
+            <if test="fixedFlag != null">fixed_flag,</if>
+            <if test="spamFlag != null">spam_flag,</if>
+            <if test="messageId != null">message_id,</if>
+            <if test="inReplyTo != null">in_reply_to,</if>
+            <if test="references != null">references,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="uid != null and uid != ''">#{uid},</if>
+            <if test="fromer != null and fromer != ''">#{fromer},</if>
+            <if test="receiver != null">#{receiver},</if>
+            <if test="bcc != null">#{bcc},</if>
+            <if test="cc != null">#{cc},</if>
+            <if test="folder != null">#{folder},</if>
+            <if test="folderId != null">#{folderId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="sendDate != null">#{sendDate},</if>
+            <if test="emlPath != null">#{emlPath},</if>
+            <if test="status != null">#{status},</if>
+            <if test="traceFlag != null">#{traceFlag},</if>
+            <if test="delayedTxFlag != null">#{delayedTxFlag},</if>
+            <if test="recipientTimeZone != null">#{recipientTimeZone},</if>
+            <if test="recipientLocalTime != null">#{recipientLocalTime},</if>
+            <if test="readFlag != null">#{readFlag},</if>
+            <if test="pendingFlag != null">#{pendingFlag},</if>
+            <if test="pendingTime != null">#{pendingTime},</if>
+            <if test="fixedFlag != null">#{fixedFlag},</if>
+            <if test="spamFlag != null">#{spamFlag},</if>
+            <if test="messageId != null">#{messageId},</if>
+            <if test="inReplyTo != null">#{inReplyTo},</if>
+            <if test="references != null">#{references},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTaskEmail" parameterType="TaskEmail">
+        update mailbox_task_email
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="uid != null and uid != ''">uid = #{uid},</if>
+            <if test="fromer != null and fromer != ''">fromer = #{fromer},</if>
+            <if test="receiver != null">receiver = #{receiver},</if>
+            <if test="bcc != null">bcc = #{bcc},</if>
+            <if test="cc != null">cc = #{cc},</if>
+            <if test="folder != null">folder = #{folder},</if>
+            <if test="folderId != null">folder_id = #{folderId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="sendDate != null">send_date = #{sendDate},</if>
+            <if test="emlPath != null">eml_path = #{emlPath},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="traceFlag != null">trace_flag = #{traceFlag},</if>
+            <if test="delayedTxFlag != null">delayed_tx_flag = #{delayedTxFlag},</if>
+            <if test="recipientTimeZone != null">recipient_time_zone = #{recipientTimeZone},</if>
+            <if test="recipientLocalTime != null">recipient_local_time = #{recipientLocalTime},</if>
+            <if test="readFlag != null">read_flag = #{readFlag},</if>
+            <if test="pendingFlag != null">pending_flag = #{pendingFlag},</if>
+            <if test="pendingTime != null">pending_time = #{pendingTime},</if>
+            <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
+            <if test="spamFlag != null">spam_flag = #{spamFlag},</if>
+            <if test="messageId != null">message_id = #{messageId},</if>
+            <if test="inReplyTo != null">in_reply_to = #{inReplyTo},</if>
+            <if test="references != null">references = #{references},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateFixed">
+        update mailbox_task_email set fixed_flag=#{fixedFlag} where id=#{id} and create_id=#{createId}
+    </update>
+
+    <delete id="deleteTaskEmailById" parameterType="Long">
+        delete from mailbox_task_email where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskEmailByIds" parameterType="String">
+        delete from mailbox_task_email where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

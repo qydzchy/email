@@ -109,4 +109,10 @@ public interface ITaskService
      * 发送邮件
      */
     void sendEmail();
+
+    /**
+     * 查询用户下的所有任务ID
+     * @return
+     */
+    List<Long> getTaskIdByUserId();
 }

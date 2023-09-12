@@ -428,7 +428,7 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
-import {listPullHeader, listSendHeader} from "@/api/email/email";
+import {list} from "@/api/email/email";
 import emailContentLayout from "@/views/email/email_content.vue";
 
 export default {
@@ -497,13 +497,15 @@ export default {
       this.taskId = taskId;
       const query = {
         taskId: this.taskId,
+        // 邮件类型 1.收取 2.发送
+        type: 1,
         readFlag: this.readFlag,
         pendingFlag: this.pendingFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
 
-      listPullHeader(query).then(response => {
+      list(query).then(response => {
         this.localEmailList = response.rows;
         this.total = response.total;
       }).catch(error => {
@@ -515,13 +517,15 @@ export default {
       this.taskId = taskId;
       const query = {
         taskId: this.taskId,
+        // 邮件类型 1.收取 2.发送
+        type: 2,
         delFlag: this.delFlag,
         draftsFlag: this.draftsFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
 
-      listSendHeader(query).then(response => {
+      list(query).then(response => {
         this.localEmailList = response.rows;
         this.total = response.total;
       }).catch(error => {

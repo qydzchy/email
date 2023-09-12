@@ -9,10 +9,10 @@ import javax.validation.constraints.NotNull;
 public class EmailQuickReplyDTO {
 
     /**
-     * 拉取邮件ID
+     * 邮件ID
      */
     @NotNull(message = "邮件ID不能为空")
-    private Long pullId;
+    private Long id;
 
     @NotBlank(message = "邮件内容不能为空")
     private String content;
