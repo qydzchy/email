@@ -95,21 +95,37 @@
     </select>
 
     <select id="selectTaskEmailPage" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
-        select mtep.id, mtep.task_id as taskId, mtep.uid, mtep.fromer, mtep.receiver, mtep.bcc, mtep.cc, mtep.folder, mtep.folder_id as folderId, mtep.title, mtep.send_date as sendDate, mtep.eml_path as emlPath, mtep.read_flag as readFlag,
-        mtep.pending_flag as pendingFlag, mtep.pending_time as pendingTime, mtep.fixed_flag as fixedFlag, mtep.spam_flag as spamFlag, mtec.content from mailbox_task_email_pull mtep
-        left join mailbox_task_email_content mtec on mtep.id = mtec.email_id
-        where type = #{type} and task_id in
+        select mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title, mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag,
+        mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content from mailbox_task_email mte
+        left join mailbox_task_email_content mtec on mte.id = mtec.email_id
+        where mte.type = #{type} and mte.task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}
         </foreach>
-        <if test="readFlag != null "> and read_flag = #{readFlag}</if>
-        <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
-        <if test="status != null "> and status = #{status}</if>
-        and del_flag = #{delFlag}
+        <if test="readFlag != null "> and mte.read_flag = #{readFlag}</if>
+        <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
+        <if test="status != null "> and mte.status = #{status}</if>
+        and mte.del_flag = #{delFlag}
+        order by mte.send_date desc
+        LIMIT #{offset}, #{limit}
     </select>
     <select id="getTaskEmailById" resultMap="TaskEmailResult">
         <include refid="selectTaskEmailVo"/>
         where id = #{id} and create_id = #{createId} and del_flag = '0'
+    </select>
+
+    <select id="getUidsByTaskId" resultType="java.lang.String">
+        select uid from mailbox_task_email_pull where task_id=#{taskId}
+    </select>
+
+    <select id="getEmailQuantityByIds" resultType="java.util.Map">
+        select task_id as taskId, count(*) as quantity from mailbox_task_email where task_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and type = #{type}
+        and del_flag = '0'
+        group by task_id
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">

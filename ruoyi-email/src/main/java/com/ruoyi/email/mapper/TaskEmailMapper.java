@@ -1,6 +1,8 @@
 package com.ruoyi.email.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
 import org.apache.ibatis.annotations.Param;
@@ -71,7 +73,7 @@ public interface TaskEmailMapper
      * @param status
      * @return
      */
-    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") Boolean delFlag, @Param("status") Integer status);
+    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") String delFlag, @Param("status") Integer status);
 
     /**
      * 查询邮件列表数据（首页）
@@ -85,7 +87,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") Boolean delFlag, @Param("status") Integer status, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") String delFlag, @Param("status") Integer status, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 根据id获取邮件信息
@@ -103,4 +105,19 @@ public interface TaskEmailMapper
      * @return
      */
     boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag, @Param("createId") Long createId);
+
+    /**
+     * 查询拉取邮件的uid
+     * @param taskId
+     * @return
+     */
+    List<String> getUidsByTaskId(@Param("taskId") Long taskId);
+
+    /**
+     * 获取拉取邮件数量
+     * @param ids
+     * @param type
+     * @return
+     */
+    List<Map<String, Object>> getEmailQuantityByIds(@Param("ids") List<Long> ids, @Param("type") Integer type);
 }

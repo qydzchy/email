@@ -88,4 +88,9 @@ public class EmailListVO {
 
     /** 邮件链的列表 */
     private String references;
+
+    /**
+     * 邮件内容
+     */
+    private String content;
 }

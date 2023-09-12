@@ -70,10 +70,19 @@ export function sendMail(data) {
   })
 }
 
-// 首页邮箱列表（拉取）
+// 首页邮箱列表（收件）
 export function listTaskPull(query) {
   return request({
     url: '/email/task/pull/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// 首页邮箱列表（发送）
+export function listTaskSend(query) {
+  return request({
+    url: '/email/task/send/list',
     method: 'get',
     params: query
   })

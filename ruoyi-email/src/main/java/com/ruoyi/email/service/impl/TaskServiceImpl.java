@@ -53,16 +53,13 @@ public class TaskServiceImpl implements ITaskService
     private IHostService hostService;
 
     @Resource
-    private ITaskEmailPullService taskEmailPullService;
+    private ITaskEmailService taskEmailService;
 
     @Resource
     private ITaskEmailContentService taskEmailContentService;
 
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
-
-    @Resource
-    private ITaskEmailPullService taskEmailPullServiceImpl;
 
     @Resource
     private ITaskEmailSendService taskEmailSendService;
@@ -112,6 +109,10 @@ public class TaskServiceImpl implements ITaskService
 
     @Override
     public List<HomeListTaskVO> pullList() {
+        return getHomeListTaskList(EmailTypeEnum.PULL.getType());
+    }
+
+    private List<HomeListTaskVO> getHomeListTaskList(Integer type) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
@@ -124,7 +125,7 @@ public class TaskServiceImpl implements ITaskService
         }
 
         List<Long> taskIds = taskList.stream().map(Task::getId).collect(Collectors.toList());
-        Map<Long, Integer> idMailQuantityMap = taskEmailPullServiceImpl.getPullEmailQuantityByIds(taskIds);
+        Map<Long, Integer> idMailQuantityMap = taskEmailService.getEmailQuantityByIds(taskIds, type);
         if (idMailQuantityMap == null) {
             idMailQuantityMap = new HashMap<>();
         }
@@ -300,7 +301,7 @@ public class TaskServiceImpl implements ITaskService
 
         try {
             // 查询存在的uid
-            List<String> existUidList = taskEmailPullService.getUidsByTaskId(task.getId());
+            List<String> existUidList = taskEmailService.getUidsByTaskId(task.getId());
 
             List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, existUidList);
             if (mailItems == null || mailItems.size() == 0) {
@@ -359,6 +360,11 @@ public class TaskServiceImpl implements ITaskService
         return listIdByUserId(userId);
     }
 
+    @Override
+    public List<HomeListTaskVO> sendList() {
+        return getHomeListTaskList(EmailTypeEnum.SEND.getType());
+    }
+
     /**
      * 发送邮件
      * @param id
@@ -382,14 +388,15 @@ public class TaskServiceImpl implements ITaskService
      * @param universalMail
      */
     private void saveEmailData(Long taskId, UniversalMail universalMail) {
-        TaskEmailPull taskEmailPull = new TaskEmailPull();
+        TaskEmail taskEmail = new TaskEmail();
 
         // 邮件
-        BeanUtils.copyProperties(universalMail, taskEmailPull);
-        taskEmailPull.setTaskId(taskId);
-        taskEmailPull.setCreateTime(DateUtils.getNowDate());
-        taskEmailPullService.insertTaskEmailPull(taskEmailPull);
-        Long emailId = taskEmailPull.getId();
+        BeanUtils.copyProperties(universalMail, taskEmail);
+        taskEmail.setTaskId(taskId);
+        taskEmail.setType(EmailTypeEnum.PULL.getType());
+        taskEmail.setCreateTime(DateUtils.getNowDate());
+        taskEmailService.insertTaskEmail(taskEmail);
+        Long emailId = taskEmail.getId();
 
         // 邮件内容
         TaskEmailContent emailContent = new TaskEmailContent();

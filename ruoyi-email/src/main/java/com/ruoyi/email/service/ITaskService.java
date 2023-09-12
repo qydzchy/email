@@ -115,4 +115,10 @@ public interface ITaskService
      * @return
      */
     List<Long> getTaskIdByUserId();
+
+    /**
+     * 发件箱列表
+     * @return
+     */
+    List<HomeListTaskVO> sendList();
 }

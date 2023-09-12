@@ -54,6 +54,17 @@ public class TaskController extends BaseController
     }
 
     /**
+     * 发件箱列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:task:send:list')")
+    @GetMapping("/send/list")
+    public TableDataInfo sendList()
+    {
+        List<HomeListTaskVO> list = taskService.sendList();
+        return getDataTable(list);
+    }
+
+    /**
      * 新增邮箱任务
      */
     @PreAuthorize("@ss.hasPermi('email:task:add')")

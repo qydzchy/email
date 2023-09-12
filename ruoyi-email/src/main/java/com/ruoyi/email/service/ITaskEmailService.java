@@ -77,7 +77,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, String delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
 
     /**
      * 保存发送邮件
@@ -107,4 +107,19 @@ public interface ITaskEmailService
      * @return
      */
     boolean quickReply(EmailQuickReplyDTO emailQuickReplyDTO);
+
+    /**
+     * 查询拉取邮件的uid
+     * @param taskId
+     * @return
+     */
+    List<String> getUidsByTaskId(Long taskId);
+
+    /**
+     * 获取拉取邮件数量
+     * @param ids
+     * @param type
+     * @return
+     */
+    Map<Long, Integer> getEmailQuantityByIds(List<Long> ids, Integer type);
 }

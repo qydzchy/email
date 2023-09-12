@@ -439,6 +439,7 @@ export default {
       pageSize: 30,
       total: 0,
       taskId: null,
+      type: null,
       readFlag: null,
       pendingFlag: null,
       delFlag: null,
@@ -486,19 +487,20 @@ export default {
     EventBus.$off('drafts-selected', this.fetchEmailData);
   },
   methods: {
-    fetchEmailsForTask(taskId) {
+    fetchEmailsForTask(taskId, type) {
       this.currentPage = 1;
       this.readFlag = null;
       this.pendingFlag = null;
-      this.fetchEmailList(taskId);
+      this.fetchEmailList(taskId, type);
     },
 
-    fetchEmailList(taskId) {
+    fetchEmailList(taskId, type) {
       this.taskId = taskId;
+      this.type = type;
       const query = {
         taskId: this.taskId,
         // 邮件类型 1.收取 2.发送
-        type: 1,
+        type: this.type,
         readFlag: this.readFlag,
         pendingFlag: this.pendingFlag,
         pageNum: this.currentPage,
@@ -541,14 +543,14 @@ export default {
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage = Number(this.currentPage) + 1;
-        this.fetchEmailList(this.taskId);
+        this.fetchEmailList(this.taskId, this.type);
       }
     },
 
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage = Number(this.currentPage) - 1;
-        this.fetchEmailList(this.taskId);
+        this.fetchEmailList(this.taskId, this.type);
       }
     },
 
@@ -557,7 +559,7 @@ export default {
         this.currentPage = 1;
       }
 
-      this.fetchEmailList(this.taskId);
+      this.fetchEmailList(this.taskId, this.type);
     },
 
     handlePageInputChange(event) {
@@ -576,7 +578,7 @@ export default {
         this.readFlag = null;
         this.pendingFlag = null;
         this.currentPage = 1;
-        this.fetchEmailList(null);
+        this.fetchEmailList(null, 1);
       } else if (selectedEmailType === 'PENDING_MAIL') {
         this.readFlag = null;
         this.pendingFlag = true;

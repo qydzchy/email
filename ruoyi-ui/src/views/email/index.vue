@@ -80,7 +80,7 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="task in taskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item"
+                            <li v-for="task in pullTaskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'PULL_'+task.id }"
                                 @click="taskPullClick(task.id)"
                                 role="menuitem" tabindex="-1" style="padding-left: 35px; padding-right: 14px;">
@@ -207,7 +207,7 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="task in taskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
+                            <li v-for="task in sendTaskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'SEND_'+task.id }"
                                 @click="taskSendClick(task.id)"
                                 role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
@@ -756,14 +756,15 @@ import writeEmailLayout from './write_email.vue';
 import sendSuccessLayout from './send_success.vue';
 import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
-import {listTaskPull} from "@/api/email/task";
+import {listTaskPull, listTaskSend} from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
 import { EventBus } from "@/api/email/event-bus";
 
 export default {
   data() {
     return {
-      taskList: [],
+      pullTaskList: [],
+      sendTaskList: [],
       emailList: [],
       folders: [],
       activeMenuItem: null,
@@ -813,7 +814,13 @@ export default {
 
     refreshPullEmailList() {
       listTaskPull().then((response) => {
-        this.taskList = response.rows;
+        this.pullTaskList = response.rows;
+      });
+    },
+
+    refreshSendEmailList() {
+      listTaskSend().then((response) => {
+        this.sendTaskList = response.rows;
       });
     },
 
@@ -825,14 +832,14 @@ export default {
     taskPullClick(taskId) {
       this.selectedTaskId = taskId;
       this.switchLayout('email_header');
-      this.onTaskClick(taskId);
+      this.onTaskClick(taskId, 1);
       this.setActive('PULL_' + taskId);
     },
 
     // 任务发件箱
     taskSendClick(taskId) {
       this.switchLayout('email_header');
-      this.onTaskClick(taskId);
+      this.onTaskClick(taskId, 2);
       this.setActive('SEND_' + taskId);
     },
 
@@ -878,8 +885,8 @@ export default {
       this.currentLayout = 'write_email';
     },
 
-    onTaskClick(taskId) {
-      EventBus.$emit('task-selected', taskId);
+    onTaskClick(taskId, type) {
+      EventBus.$emit('task-selected', taskId, type);
     },
 
     triggerAllReceivedEvent() {
@@ -907,6 +914,7 @@ export default {
     this.setActive('ALL_RECEIVED');
     this.triggerAllReceivedEvent();  // 触发事件
     this.refreshPullEmailList();
+    this.refreshSendEmailList();
     this.refreshFolderList();
 
     EventBus.$on('switch-send-success', () => {

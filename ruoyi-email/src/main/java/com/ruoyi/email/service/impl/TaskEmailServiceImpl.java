@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
@@ -81,7 +82,13 @@ public class TaskEmailServiceImpl implements ITaskEmailService
     public int insertTaskEmail(TaskEmail taskEmail)
     {
         taskEmail.setCreateTime(DateUtils.getNowDate());
-        return taskEmailMapper.insertTaskEmail(taskEmail);
+        try {
+            return taskEmailMapper.insertTaskEmail(taskEmail);
+        } catch (Exception e) {
+            log.error("{}", e);
+            log.error(taskEmail.getReferences());
+        }
+        return 0;
     }
 
     /**
@@ -134,7 +141,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, String delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize) {
         if (taskIdList.isEmpty()) {
             return Pair.of(0, new ArrayList<>());
         }
@@ -285,6 +292,24 @@ public class TaskEmailServiceImpl implements ITaskEmailService
 
         taskEmailMapper.insertTaskEmail(taskEmail);
         return true;
+    }
+
+    @Override
+    public List<String> getUidsByTaskId(Long taskId) {
+        return taskEmailMapper.getUidsByTaskId(taskId);
+    }
+
+    @Override
+    public Map<Long, Integer> getEmailQuantityByIds(List<Long> ids, Integer type) {
+        List<Map<String, Object>> emailQuantityByIds = taskEmailMapper.getEmailQuantityByIds(ids, type);
+        if (emailQuantityByIds == null || emailQuantityByIds.size() == 0) {
+            return new HashMap<>();
+        }
+
+        return emailQuantityByIds.stream().collect(Collectors.toMap(
+                map -> Long.valueOf(map.get("taskId").toString()),
+                map -> Integer.valueOf(map.get("quantity").toString()))
+        );
     }
 
     private String getDynamicLabel(LocalDateTime mailDateTime) {
