@@ -8,6 +8,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.TaskEmail;
+import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
@@ -47,12 +48,12 @@ public class EmailController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('email:list')")
     @GetMapping("/list")
-    public TableDataInfo listHeader(Long taskId,
+    public TableDataInfo list(Long taskId,
                                         Boolean readFlag,
                                         Boolean pendingFlag,
                                         Boolean delFlag,
                                         Boolean draftsFlag,
-                                        @NotNull(message = "类型不能为空") Integer type,
+                                        Integer type,
                                         @NotNull(message = "页数不能为空") Integer pageNum,
                                         @NotNull(message = "页大小不能为空") Integer pageSize)
     {
@@ -110,11 +111,23 @@ public class EmailController extends BaseController {
             throw new ServiceException("id不能为空");
         }
 
-        if (taskEmail.getFixedFlag() != null) {
+        if (taskEmail.getFixedFlag() == null) {
             throw new ServiceException("是否固定不能为空");
         }
 
         return toAjax(taskEmailService.fixed(taskEmail.getId(), taskEmail.getFixedFlag()));
+    }
+
+    /**
+     * 邮件删除
+     */
+    @PreAuthorize("@ss.hasPermi('email:delete')")
+    @Log(title = "邮件删除", businessType = BusinessType.DELETE)
+    @PostMapping("/delete")
+    public AjaxResult delete(@RequestBody BatchDeleteDTO batchDeleteDTO)
+    {
+
+        return toAjax(taskEmailService.delete(batchDeleteDTO.getIds()));
     }
 
     /**

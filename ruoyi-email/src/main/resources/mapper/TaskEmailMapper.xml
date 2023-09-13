@@ -84,13 +84,17 @@
 
     <select id="count" resultType="java.lang.Integer">
         select count(*) from mailbox_task_email
-        where type = #{type} and task_id in
+        where task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}
         </foreach>
+        and status in
+        <foreach collection="statusList" item="status" open="(" separator="," close=")">
+            #{status}
+        </foreach>
+        <if test="type != null">and type = #{type}</if>
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
-        <if test="status != null "> and status = #{status}</if>
         and del_flag = #{delFlag}
     </select>
 
@@ -98,13 +102,17 @@
         select mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title, mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag,
         mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content from mailbox_task_email mte
         left join mailbox_task_email_content mtec on mte.id = mtec.email_id
-        where mte.type = #{type} and mte.task_id in
+        where mte.task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}
         </foreach>
+        and mte.status in
+        <foreach collection="statusList" item="status" open="(" separator="," close=")">
+            #{status}
+        </foreach>
+        <if test="type != null">and mte.type = #{type}</if>
         <if test="readFlag != null "> and mte.read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
-        <if test="status != null "> and mte.status = #{status}</if>
         and mte.del_flag = #{delFlag}
         order by mte.send_date desc
         LIMIT #{offset}, #{limit}
@@ -240,7 +248,19 @@
     </update>
 
     <update id="updateFixed">
-        update mailbox_task_email set fixed_flag=#{fixedFlag} where id=#{id} and create_id=#{createId}
+        update mailbox_task_email set fixed_flag=#{fixedFlag} where id=#{id}
+    </update>
+
+    <update id="removeTaskEmailIds">
+        update mailbox_task_email set update_id = #{updateId}, update_by = #{updateBy}, update_time = #{updateTime}, del_flag = '2'
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="updateStatusById">
+        update mailbox_task_email set status = #{status} where id = #{id}
     </update>
 
     <delete id="deleteTaskEmailById" parameterType="Long">

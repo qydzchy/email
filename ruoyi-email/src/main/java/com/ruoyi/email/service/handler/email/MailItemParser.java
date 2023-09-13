@@ -2,9 +2,7 @@ package com.ruoyi.email.service.handler.email;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
-import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPMessage;
-import com.sun.mail.pop3.POP3Folder;
 import com.sun.mail.pop3.POP3Message;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;

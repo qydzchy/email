@@ -27,3 +27,12 @@ export function sendEmail(data) {
     data: data
   })
 }
+
+// 固定邮件
+export function fixedEmail(data) {
+  return request({
+    url: '/email/info/fixed',
+    method: 'post',
+    data: data
+  })
+}

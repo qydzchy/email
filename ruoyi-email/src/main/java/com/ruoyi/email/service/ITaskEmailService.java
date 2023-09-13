@@ -9,6 +9,7 @@ import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
 import org.springframework.data.util.Pair;
 
+
 /**
  * 邮件Service接口
  * 
@@ -122,4 +123,18 @@ public interface ITaskEmailService
      * @return
      */
     Map<Long, Integer> getEmailQuantityByIds(List<Long> ids, Integer type);
+
+    /**
+     * 邮件删除
+     * @param ids
+     * @return
+     */
+    boolean delete(List<Long> ids);
+
+    /**
+     * 发送邮件
+     * @param taskEmailSend
+     * @return
+     */
+    boolean sendEmail(TaskEmail taskEmail);
 }

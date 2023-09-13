@@ -1,5 +1,6 @@
 package com.ruoyi.email.mapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,10 +71,10 @@ public interface TaskEmailMapper
      * @param readFlag
      * @param pendingFlag
      * @param delFlag
-     * @param status
+     * @param statusList
      * @return
      */
-    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") String delFlag, @Param("status") Integer status);
+    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") String delFlag, @Param("statusList") List<Integer> statusList);
 
     /**
      * 查询邮件列表数据（首页）
@@ -82,12 +83,12 @@ public interface TaskEmailMapper
      * @param readFlag
      * @param pendingFlag
      * @param delFlag
-     * @param status
+     * @param statusList
      * @param offset
      * @param limit
      * @return
      */
-    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") String delFlag, @Param("status") Integer status, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("delFlag") String delFlag, @Param("statusList") List<Integer> statusList, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 根据id获取邮件信息
@@ -101,10 +102,9 @@ public interface TaskEmailMapper
      * 更新固定状态
      * @param id
      * @param fixedFlag
-     * @param createId
      * @return
      */
-    boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag, @Param("createId") Long createId);
+    boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag);
 
     /**
      * 查询拉取邮件的uid
@@ -120,4 +120,21 @@ public interface TaskEmailMapper
      * @return
      */
     List<Map<String, Object>> getEmailQuantityByIds(@Param("ids") List<Long> ids, @Param("type") Integer type);
+
+    /**
+     * 批量删除邮件（物理删除）
+     * @param ids
+     * @param updateId
+     * @param updateBy
+     * @param updateTime
+     * @return
+     */
+    void removeTaskEmailIds(@Param("ids") List<Long> ids, @Param("updateId") Long updateId, @Param("updateBy") String updateBy, @Param("updateTime") Date updateTime);
+
+    /**
+     * 根据邮件状态
+     * @param status
+     * @param id
+     */
+    void updateStatusById(@Param("status") int status, @Param("id") Long id);
 }

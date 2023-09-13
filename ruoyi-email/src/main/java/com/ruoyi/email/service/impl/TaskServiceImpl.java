@@ -325,10 +325,12 @@ public class TaskServiceImpl implements ITaskService
 
     @Override
     public void syncAllTaskEmail() {
-        List<Task> taskList = taskMapper.selectTaskList(new Task());
+        Task taskParam = new Task();
+        taskParam.setDelFlag("0");
+        List<Task> taskList = taskMapper.selectTaskList(taskParam);
         ThreadPoolExecutor instance = ThreadPoolPullService.getInstance();
         taskList.stream().forEach(task -> {
-            instance.execute(() -> {
+           // instance.execute(() -> {
                 Pair<Integer, String> pair = pullEmail(task);
                 if (pair != null) {
                     Integer connStatus = pair.getFirst();
@@ -338,7 +340,7 @@ public class TaskServiceImpl implements ITaskService
                     task.setConnExceptionReason(connExceptionReason);
                     taskMapper.updateTask(task);
                 }
-            });
+        //    });
         });
     }
 
@@ -370,14 +372,14 @@ public class TaskServiceImpl implements ITaskService
      * @param id
      */
     private void sendEmail(Long id) {
-        TaskEmailSend taskEmailSendParam = new TaskEmailSend();
-        taskEmailSendParam.setTaskId(id);
-        taskEmailSendParam.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
-        taskEmailSendParam.setDelayedTxFlag(false);
-        List<TaskEmailSend> taskEmailSendList = taskEmailSendService.selectTaskEmailSendList(taskEmailSendParam);
+        TaskEmail taskEmailParam = new TaskEmail();
+        taskEmailParam.setTaskId(id);
+        taskEmailParam.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmailParam.setDelayedTxFlag(false);
+        List<TaskEmail> taskEmailList = taskEmailService.selectTaskEmailList(taskEmailParam);
 
-        taskEmailSendList.stream().forEach(taskEmailSend -> {
-            taskEmailSendService.sendEmail(taskEmailSend);
+        taskEmailList.stream().forEach(taskEmail -> {
+            taskEmailService.sendEmail(taskEmail);
         });
         
     }
@@ -394,6 +396,7 @@ public class TaskServiceImpl implements ITaskService
         BeanUtils.copyProperties(universalMail, taskEmail);
         taskEmail.setTaskId(taskId);
         taskEmail.setType(EmailTypeEnum.PULL.getType());
+        taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
         taskEmail.setCreateTime(DateUtils.getNowDate());
         taskEmailService.insertTaskEmail(taskEmail);
         Long emailId = taskEmail.getId();

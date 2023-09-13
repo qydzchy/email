@@ -265,12 +265,19 @@
 																															<span class="time ellipsis">{{email.sendTime}}</span>
                                                               <!---->
                                                               <!---->
-																															<div class="mail-pin-wrapper">
-																																<span class="okki-icon-wrap mail-pin-icon" data-tips="固定">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																																		<path fill-rule="evenodd" clip-rule="evenodd" d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z"></path>
-																																	</svg>
-																																</span>
-																															</div>
+																															<div v-if="email.fixedFlag" class="mail-pin-wrapper">
+                                                                <span class="okki-icon-wrap mail-pin-icon" data-tips="取消固定" color="#0064ff" @click="toggleFixed(email,  $event)">​<svg data-tips="取消固定" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#0064ff">
+                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.382 2a.963.963 0 00-.97.956c0 1.33.582 2.526 1.506 3.353l-.606 3.865C6.325 11.39 5 13.564 5 16.044c0 .528.434.956.97.956H11v3.914c0 .6.448 1.086 1 1.086s1-.486 1-1.086V17h5.03c.536 0 .97-.428.97-.956 0-2.507-1.354-4.7-3.376-5.91l-.597-3.777a4.49 4.49 0 001.56-3.4.963.963 0 00-.969-.957H8.382z"></path>
+                                                                  </svg>
+                                                                </span>
+                                                              </div>
+
+																														<div v-else class="mail-pin-wrapper">
+																															<span class="okki-icon-wrap mail-pin-icon" data-tips="固定" @click="toggleFixed(email,  $event)">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																																	<path fill-rule="evenodd" clip-rule="evenodd" d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z"></path>
+																																</svg>
+																															</span>
+																														</div>
 																														</div>
 																													</div>
 																												</div>
@@ -303,8 +310,15 @@
                                                                 <!---->
 																															</div>
 																														</div>
-																														<div class="mail-pin-wrapper">
-																															<span class="okki-icon-wrap mail-pin-icon" data-tips="固定">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                            <div v-if="email.fixedFlag" class="mail-pin-wrapper">
+                                                                <span class="okki-icon-wrap mail-pin-icon" data-tips="取消固定" color="#0064ff" @click="toggleFixed(email, $event)">​<svg data-tips="取消固定" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#0064ff">
+                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.382 2a.963.963 0 00-.97.956c0 1.33.582 2.526 1.506 3.353l-.606 3.865C6.325 11.39 5 13.564 5 16.044c0 .528.434.956.97.956H11v3.914c0 .6.448 1.086 1 1.086s1-.486 1-1.086V17h5.03c.536 0 .97-.428.97-.956 0-2.507-1.354-4.7-3.376-5.91l-.597-3.777a4.49 4.49 0 001.56-3.4.963.963 0 00-.969-.957H8.382z"></path>
+                                                                  </svg>
+                                                                </span>
+                                                              </div>
+
+																														<div v-else class="mail-pin-wrapper">
+																															<span class="okki-icon-wrap mail-pin-icon" data-tips="固定" @click="toggleFixed(email, $event)">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																																	<path fill-rule="evenodd" clip-rule="evenodd" d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z"></path>
 																																</svg>
 																															</span>
@@ -312,35 +326,6 @@
 																													</div>
 																												</div>
 																											</div>
-<!--																											<div class="attachment-list-container" style="">
-																												<div class="mail-attachment-list-container">
-																													&lt;!&ndash;&ndash;&gt;
-																													<div class="list">
-																														<ul class="mail-item-attachment-list" style="left: 0%;">
-																															<li title="预览" class="mail-item-attachment-item">
-																																<svg class="mm-icon mm-icon-file-eml attachment-icon" viewBox="0 0 200 200" name="file_eml" xmlns="XMLNS" fill="currentColor" style="height: 24px; width: 24px;">
-																																	<g>
-																																		<path d="M31,7.2c-2.3,0-4.8,0.9-6.6,2.8c-1.9,1.7-2.8,4.2-2.8,6.6v168.8c0,2.3,0.9,4.8,2.8,6.6   c1.9,1.9,4.2,2.8,6.6,2.8h137.5c2.3,0,4.8-0.9,6.6-2.8c1.9-1.9,2.8-4.2,2.8-6.6v-125L124.8,7.2H31z" fill="#5FDDD7"></path>
-																																		<path d="M177.9,60.4h-43.8c-2.3,0-4.8-0.9-6.6-2.8c-1.9-1.7-2.8-4.2-2.8-6.6V7.2L177.9,60.4z" fill="#AEFFFD"></path>
-																																	</g>
-																																	<g>
-																																		<path d="M43,128.5V98.1c0-2.4,1.9-4.3,4.3-4.3h21.6c2.1,0,3.8,1.7,3.8,3.8c0,2.1-1.7,3.8-3.8,3.8H51.5v7.9h14.9   c2.1,0,3.8,1.7,3.8,3.8c0,2.1-1.7,3.8-3.8,3.8H51.5v8.2h17.7c2.1,0,3.8,1.7,3.8,3.8s-1.7,3.8-3.8,3.8H47.3   C44.9,132.8,43,130.9,43,128.5z" fill="#FFFFFF"></path>
-																																		<path d="M80.3,97.9c0-2.4,1.9-4.3,4.3-4.3h0.9c1.8,0,3.1,0.9,3.9,2.2l10.4,16.9l10.4-16.9c0.9-1.5,2.1-2.2,3.8-2.2h0.9   c2.4,0,4.3,1.9,4.3,4.3v31c0,2.4-1.9,4.3-4.3,4.3c-2.3,0-4.2-1.9-4.2-4.3v-19.4l-7.5,11.6c-0.9,1.3-2,2.2-3.6,2.2   c-1.6,0-2.7-0.8-3.6-2.2l-7.4-11.4V129c0,2.3-1.9,4.2-4.2,4.2c-2.3,0-4.2-1.8-4.2-4.2V97.9z" fill="#FFFFFF"></path>
-																																		<path d="M128.6,97.8c0-2.4,1.9-4.3,4.3-4.3c2.4,0,4.3,1.9,4.3,4.3V125h15.9c2.2,0,3.9,1.7,3.9,3.9   c0,2.2-1.7,3.9-3.9,3.9h-20.2c-2.4,0-4.3-1.9-4.3-4.3V97.8z" fill="#FFFFFF"></path>
-																																	</g>
-																																</svg>
-																																<div class="attachment-content">
-																																	<h4 title="Re: Re:测试.eml" class="attachment-name ellipsis">Re: Re:测试.eml</h4>
-																																	<h4 class="attachment-size">7 KB</h4>
-																																</div>
-                                                                &lt;!&ndash;&ndash;&gt;
-																															</li>
-																														</ul>
-																													</div>
-                                                          &lt;!&ndash;&ndash;&gt;
-                                                          &lt;!&ndash;&ndash;&gt;
-																												</div>
-																											</div>-->
 																										</div>
 																									</div>
 																								</li>
@@ -359,12 +344,6 @@
 																					</div>
 																				</div>
 																			</div>
-                                      <!---->
-<!--																			<div class="bottom-tips">
-																				<span>Copyright © 2013 - 2023 Xiaoman.All Rights Reserved.</span> 深圳市小满科技有限公司版权所有 <a href="https://www.xiaoman.cn/terms" target="_blank">  条款</a>
-																				<span>-</span>
-																				<a href="https://www.xiaoman.cn/terms#four" target="_blank">隐私权</a>
-																			</div>-->
 																		</div>
 																	</div>
 																	<div class="mm-split-trigger-wrap" style="left: 80.4305%;">
@@ -428,8 +407,9 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
-import {list} from "@/api/email/email";
+import {list, fixedEmail} from "@/api/email/email";
 import emailContentLayout from "@/views/email/email_content.vue";
+import {renameAttachment} from "@/api/email/attachment";
 
 export default {
   data() {
@@ -601,6 +581,26 @@ export default {
         this.fetchSendEmailList(null);
       }
     },
+
+    async toggleFixed(email, event) {
+      event.stopPropagation();
+      const data = {
+        "id": email.id,
+        "fixedFlag": !email.fixedFlag
+      };
+      try {
+        const response = await fixedEmail(data);
+        if (response.code !== 200) {
+          this.$message.error("执行失败");
+          return;
+        }
+
+        email.fixedFlag = !email.fixedFlag;
+      } catch (error) {
+        console.error('固定邮件出现错误:', error);
+        throw error;
+      }
+    }
   }
 }
 </script>

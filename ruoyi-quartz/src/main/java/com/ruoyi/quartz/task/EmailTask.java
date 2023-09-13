@@ -1,6 +1,7 @@
 package com.ruoyi.quartz.task;
 
 import com.ruoyi.email.service.ITaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import javax.annotation.Resource;
 /**
  * 邮件任务
  */
+@Slf4j
 @Component("emailTask")
 public class EmailTask {
 
