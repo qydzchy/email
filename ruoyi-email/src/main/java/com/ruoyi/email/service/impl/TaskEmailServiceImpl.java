@@ -27,6 +27,7 @@ import com.ruoyi.email.domain.vo.email.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailAttachmentService;
 import com.ruoyi.email.service.ITaskEmailContentService;
 import com.ruoyi.email.service.ITaskService;
+import com.ruoyi.email.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.util.Pair;
@@ -313,10 +314,80 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         TaskEmailContent taskEmailContent = new TaskEmailContent();
         taskEmailContent.setEmailId(taskEmail.getId());
+
+        String replyContent = emailQuickReplyDTO.getContent();
+        StringBuilder content = new StringBuilder();
+        content.append(replyContent);
+        content.append("<div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">\n" +
+                " ------------------&nbsp;Original&nbsp;------------------\n" +
+                "</div>");
+
+        String from = pullTaskEmail.getFromer();
+        List<String> toList = getReceiver(pullTaskEmail.getReceiver());
+        List<String> ccList = getReceiver((pullTaskEmail.getCc()));
+        String sendTime = DateUtil.formatSendTime(pullTaskEmail.getSendDate());
+        String subject = pullTaskEmail.getTitle();
+
+        content.append(formatHistoryEmail(from, sendTime, toList, ccList, subject));
         taskEmailContent.setContent(emailQuickReplyDTO.getContent());
         taskEmailContentService.insertTaskEmailContent(taskEmailContent);
 
         return true;
+    }
+
+    private List<String> getReceiver(String email) {
+        if (StringUtils.isNotBlank(email)) {
+            try {
+                JSONArray jsonA = JSONObject.parseArray(email);
+                List<String> emailList = new ArrayList<>();
+                jsonA.stream().forEach(object -> {
+                    JSONObject jsonO = (JSONObject) object;
+                    emailList.add(jsonO.getString("email"));
+                });
+
+                return emailList;
+            } catch (Exception e) {}
+        }
+
+        return new ArrayList<>();
+    }
+
+    /**
+     * 拼接历史内容
+     */
+    private String formatHistoryEmail(String from, String sendTime, List<String> toList, List<String> ccList, String subject) {
+        StringBuilder emailContent = new StringBuilder();
+
+        emailContent.append("<div style=\"font-size: 12px;background:#efefef;padding:8px;\">")
+                .append("<div><b>From: </b>&nbsp;<a href=\"mailto:").append(from).append("\" style=\"color: #1e7bf9; text-decoration: none;\" target=\"_blank\">").append(from).append("</a></div>")
+                .append("<div><b>Send time: </b>&nbsp;").append(sendTime).append("</div>")
+                .append("<div>").append(formatEmailRecipients("To", toList)).append("</div>");
+
+        if (!ccList.isEmpty()) {
+            emailContent.append("<div>").append(formatEmailRecipients("Cc", ccList)).append("</div>");
+        }
+
+        emailContent.append("<div><b>Subject: </b>&nbsp;").append(subject).append("</div>")
+                .append("</div>");
+
+        return emailContent.toString();
+    }
+
+    public static String formatEmailRecipients(String label, List<String> emails) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<b>").append(label).append(": </b>&nbsp;");
+
+        for (int i = 0; i < emails.size(); i++) {
+            sb.append("<a href=\"mailto:")
+                    .append(emails.get(i))
+                    .append("\" style=\"color: #1e7bf9; text-decoration: none;\" target=\"_blank\">")
+                    .append(emails.get(i))
+                    .append("</a>");
+            if (i < emails.size() - 1) {
+                sb.append(";");
+            }
+        }
+        return sb.toString();
     }
 
     @Override
@@ -488,6 +559,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Message msg = new MimeMessage(session);
         if (StringUtils.isNotBlank(inReplyTo)) {
             msg.setHeader("In-Reply-To", inReplyTo);
+            msg.setHeader("References", inReplyTo);
         }
 
         msg.setFrom(new InternetAddress(mailFrom));

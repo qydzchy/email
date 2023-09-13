@@ -1377,6 +1377,7 @@ export default {
 
         this.$message.success("发送成功");
         this.isSending = true;
+        this.replyContent = '';
       } catch (error) {
         console.error('快速回复出现错误:', error);
         throw error;

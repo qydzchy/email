@@ -25,7 +25,7 @@ public class ImapService implements IMailService {
     }
 
     public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
-        int numEmailsToFetch = 300;
+        int numEmailsToFetch = 100;
         IMAPStore imapStore = mailConn.getImapStore();
         List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
 

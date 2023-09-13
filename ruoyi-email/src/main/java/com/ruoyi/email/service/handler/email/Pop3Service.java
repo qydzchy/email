@@ -27,7 +27,7 @@ public class Pop3Service implements IMailService {
     }
 
     public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
-        int numEmailsToFetch = 300;
+        int numEmailsToFetch = 100;
         POP3Store pop3Store = mailConn.getPop3Store();
         List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
 

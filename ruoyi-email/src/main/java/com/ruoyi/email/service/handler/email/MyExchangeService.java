@@ -39,7 +39,7 @@ public class MyExchangeService implements IMailService {
     }
 
     public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
-        int numEmailsToFetch = 300;
+        int numEmailsToFetch = 100;
         try {
             FindItemsResults items = getItems(mailConn, numEmailsToFetch);
             ArrayList<Item> itemList = items.getItems();
