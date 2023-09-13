@@ -30,5 +30,5 @@ public class UniversalMail {
 
     private String messageId;
     private String inReplyTo;
-    private String references;
+    private String reference;
 }

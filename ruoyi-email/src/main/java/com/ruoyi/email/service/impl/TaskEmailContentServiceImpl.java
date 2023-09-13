@@ -54,7 +54,11 @@ public class TaskEmailContentServiceImpl implements ITaskEmailContentService
     public int insertTaskEmailContent(TaskEmailContent taskEmailContent)
     {
         taskEmailContent.setCreateTime(DateUtils.getNowDate());
-        return taskEmailContentMapper.insertTaskEmailContent(taskEmailContent);
+        try {
+            return taskEmailContentMapper.insertTaskEmailContent(taskEmailContent);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     /**

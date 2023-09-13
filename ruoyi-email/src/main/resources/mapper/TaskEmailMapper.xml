@@ -30,7 +30,7 @@
         <result property="spamFlag"    column="spam_flag"    />
         <result property="messageId"    column="message_id"    />
         <result property="inReplyTo"    column="in_reply_to"    />
-        <result property="references"    column="references"    />
+        <result property="reference"    column="reference"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -41,7 +41,7 @@
     </resultMap>
 
     <sql id="selectTaskEmailVo">
-        select id, task_id, type, uid, fromer, receiver, bcc, cc, folder, folder_id, title, send_date, eml_path, status, trace_flag, delayed_tx_flag, recipient_time_zone, recipient_local_time, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, message_id, in_reply_to, references, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email
+        select id, task_id, type, uid, fromer, receiver, bcc, cc, folder, folder_id, title, send_date, eml_path, status, trace_flag, delayed_tx_flag, recipient_time_zone, recipient_local_time, read_flag, pending_flag, pending_time, fixed_flag, spam_flag, message_id, in_reply_to, reference, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_email
     </sql>
 
     <select id="selectTaskEmailList" parameterType="TaskEmail" resultMap="TaskEmailResult">
@@ -71,7 +71,7 @@
             <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
             <if test="messageId != null  and messageId != ''"> and message_id = #{messageId}</if>
             <if test="inReplyTo != null  and inReplyTo != ''"> and in_reply_to = #{inReplyTo}</if>
-            <if test="references != null  and references != ''"> and references = #{references}</if>
+            <if test="reference != null  and reference != ''"> and reference = #{reference}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
@@ -115,7 +115,7 @@
     </select>
 
     <select id="getUidsByTaskId" resultType="java.lang.String">
-        select uid from mailbox_task_email_pull where task_id=#{taskId}
+        select uid from mailbox_task_email where task_id=#{taskId}
     </select>
 
     <select id="getEmailQuantityByIds" resultType="java.util.Map">
@@ -155,7 +155,7 @@
             <if test="spamFlag != null">spam_flag,</if>
             <if test="messageId != null">message_id,</if>
             <if test="inReplyTo != null">in_reply_to,</if>
-            <if test="references != null">references,</if>
+            <if test="reference != null">reference,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -189,7 +189,7 @@
             <if test="spamFlag != null">#{spamFlag},</if>
             <if test="messageId != null">#{messageId},</if>
             <if test="inReplyTo != null">#{inReplyTo},</if>
-            <if test="references != null">#{references},</if>
+            <if test="reference != null">#{reference},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -227,7 +227,7 @@
             <if test="spamFlag != null">spam_flag = #{spamFlag},</if>
             <if test="messageId != null">message_id = #{messageId},</if>
             <if test="inReplyTo != null">in_reply_to = #{inReplyTo},</if>
-            <if test="references != null">references = #{references},</if>
+            <if test="reference != null">reference = #{reference},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

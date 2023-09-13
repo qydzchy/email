@@ -145,7 +145,7 @@
 																															<div class="con-wrap">
 																																<!---->
 																																<span class="subject-summary-wrap">
-																																	<span class="subject ellipsis">{{email.title}}</span>
+																																	<span class="subject ellipsis">{{email.extractTextFromContent}}</span>
 																																	<span class="summary summary-content ellipsis">
 																																		<span class="concat-line"> - </span>
 																																		<span class="ellipsis">{{ email.extractTextFromContent }}</span>

@@ -121,7 +121,7 @@ public class TaskEmail extends BaseEntity
 
     /** 邮件链的列表 */
     @Excel(name = "邮件链的列表")
-    private String references;
+    private String reference;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -345,16 +345,16 @@ public class TaskEmail extends BaseEntity
     {
         return inReplyTo;
     }
-    public void setReferences(String references) 
-    {
-        this.references = references;
+
+    public String getReference() {
+        return reference;
     }
 
-    public String getReferences() 
-    {
-        return references;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
-    public void setDelFlag(String delFlag) 
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
@@ -392,7 +392,7 @@ public class TaskEmail extends BaseEntity
             .append("spamFlag", getSpamFlag())
             .append("messageId", getMessageId())
             .append("inReplyTo", getInReplyTo())
-            .append("references", getReferences())
+            .append("reference", getReference())
             .append("delFlag", getDelFlag())
             .append("createId", getCreateId())
             .append("createBy", getCreateBy())

@@ -87,11 +87,11 @@ public class MailItemParser {
 
         String messageId = messageIdArray != null ? com.ruoyi.common.utils.StringUtils.join(messageIdArray, ";") : null;
         String inReplyTo = inReplyToArray != null ? com.ruoyi.common.utils.StringUtils.join(inReplyToArray, ";") : null;
-        String references = referencesArray != null ? com.ruoyi.common.utils.StringUtils.join(referencesArray, ";") : null;
+        String reference = referencesArray != null ? com.ruoyi.common.utils.StringUtils.join(referencesArray, ";") : null;
 
         universalMail.setMessageId(messageId);
         universalMail.setInReplyTo(inReplyTo);
-        universalMail.setReferences(references);
+        universalMail.setReference(reference);
     }
 
     public static Object isFileExits(String path, int index) {

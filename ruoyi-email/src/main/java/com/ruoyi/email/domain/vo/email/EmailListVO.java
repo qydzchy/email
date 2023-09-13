@@ -1,8 +1,13 @@
 package com.ruoyi.email.domain.vo.email;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -93,4 +98,40 @@ public class EmailListVO {
      * 邮件内容
      */
     private String content;
+
+    /**
+     *
+     * @return
+     */
+    public String getSendTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
+        return sdf.format(sendDate);
+    }
+
+    public String getFromName() {
+        ;return this.fromer.substring(0, this.fromer.indexOf("@"));
+    }
+
+    public String getReceiverEmail() {
+        JSONArray jsonArray = JSONArray.parseArray(this.receiver);
+        if (jsonArray == null || jsonArray.isEmpty()) return "";
+
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        return jsonObject.getString("email");
+    }
+
+    public String getReceiverName() {
+        JSONArray jsonArray = JSONArray.parseArray(this.receiver);
+        if (jsonArray == null || jsonArray.isEmpty()) return "";
+
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        return jsonObject.getString("name");
+    }
+
+    public String getExtractTextFromContent() {
+        if (this.content == null) return "";
+
+        Document doc = Jsoup.parse(this.content);
+        return doc.text();
+    }
 }

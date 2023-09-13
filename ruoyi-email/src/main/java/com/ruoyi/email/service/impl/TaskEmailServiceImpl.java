@@ -82,13 +82,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService
     public int insertTaskEmail(TaskEmail taskEmail)
     {
         taskEmail.setCreateTime(DateUtils.getNowDate());
-        try {
-            return taskEmailMapper.insertTaskEmail(taskEmail);
-        } catch (Exception e) {
-            log.error("{}", e);
-            log.error(taskEmail.getReferences());
-        }
-        return 0;
+        return taskEmailMapper.insertTaskEmail(taskEmail);
     }
 
     /**
@@ -193,11 +187,11 @@ public class TaskEmailServiceImpl implements ITaskEmailService
         String username = loginUser.getUsername();
         Date now = new Date();
 
-
         TaskEmail taskEmail = new TaskEmail();
         BeanUtils.copyProperties(dto, taskEmail);
         taskEmail.setUid(IdUtils.fastSimpleUUID());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
+        taskEmail.setSendDate(now);
         taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
         taskEmail.setCreateId(userId);
         taskEmail.setCreateBy(username);
