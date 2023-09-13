@@ -22,10 +22,6 @@ public class TaskEmailContent extends BaseEntity
     @Excel(name = "邮件ID")
     private Long emailId;
 
-    /** 邮件类型 1.拉取 2.发送 */
-    @Excel(name = "邮件类型 1.拉取 2.发送")
-    private Integer type;
-
     /** 邮件内容 */
     @Excel(name = "邮件内容")
     private String content;
@@ -51,15 +47,7 @@ public class TaskEmailContent extends BaseEntity
     {
         return emailId;
     }
-    public void setType(Integer type) 
-    {
-        this.type = type;
-    }
 
-    public Integer getType() 
-    {
-        return type;
-    }
     public void setContent(String content) 
     {
         this.content = content;
@@ -84,7 +72,6 @@ public class TaskEmailContent extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("emailId", getEmailId())
-            .append("type", getType())
             .append("content", getContent())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())

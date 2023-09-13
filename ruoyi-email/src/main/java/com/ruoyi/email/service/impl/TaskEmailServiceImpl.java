@@ -220,7 +220,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         TaskEmailContent emailContent = new TaskEmailContent();
         emailContent.setEmailId(emailSendId);
         emailContent.setContent(dto.getContent());
-        emailContent.setType(EmailTypeEnum.SEND.getType());
         emailContent.setCreateId(userId);
         emailContent.setCreateBy(username);
         emailContent.setCreateTime(now);
@@ -270,25 +269,36 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     @Override
+    @Transactional
     public boolean quickReply(EmailQuickReplyDTO emailQuickReplyDTO) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        Long id = emailQuickReplyDTO.getId();
-        TaskEmail pullTaskEmail = taskEmailMapper.getTaskEmailById(id, userId);
+        TaskEmail pullTaskEmail = taskEmailMapper.selectTaskEmailById(emailQuickReplyDTO.getId());
         if (pullTaskEmail == null) throw new ServiceException();
 
         String username = loginUser.getUsername();
         Date now = new Date();
 
+        Task task = taskService.selectTaskById(pullTaskEmail.getTaskId());
+        if (task == null) {
+            throw new ServiceException();
+        }
+
+        JSONArray jsonA = new JSONArray();
+        JSONObject jsonO = new JSONObject();
+        jsonO.put("name", pullTaskEmail.getFromer());
+        jsonO.put("email", pullTaskEmail.getFromer());
+        jsonA.add(jsonO);
+
+        String receiver = JSONObject.toJSONString(jsonA);
         TaskEmail taskEmail = new TaskEmail();
         taskEmail.setUid(IdUtils.fastSimpleUUID());
-        taskEmail.setTaskId(pullTaskEmail.getId());
-        taskEmail.setFromer(pullTaskEmail.getFromer());
-        taskEmail.setReceiver(pullTaskEmail.getReceiver());
-        taskEmail.setBcc(pullTaskEmail.getBcc());
-        taskEmail.setCc(pullTaskEmail.getCc());
-        taskEmail.setTitle(pullTaskEmail.getTitle());
+        taskEmail.setTaskId(pullTaskEmail.getTaskId());
+        taskEmail.setFromer(task.getAccount());
+        taskEmail.setReceiver(receiver);
+        taskEmail.setTitle("Re: " + pullTaskEmail.getTitle());
+        taskEmail.setSendDate(new Date());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
         taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
         taskEmail.setCreateId(userId);
@@ -300,6 +310,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setInReplyTo(pullTaskEmail.getMessageId());
 
         taskEmailMapper.insertTaskEmail(taskEmail);
+
+        TaskEmailContent taskEmailContent = new TaskEmailContent();
+        taskEmailContent.setEmailId(taskEmail.getId());
+        taskEmailContent.setContent(emailQuickReplyDTO.getContent());
+        taskEmailContentService.insertTaskEmailContent(taskEmailContent);
+
         return true;
     }
 
@@ -470,6 +486,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Session session = Session.getInstance(properties, auth);
 
         Message msg = new MimeMessage(session);
+        if (StringUtils.isNotBlank(inReplyTo)) {
+            msg.setHeader("In-Reply-To", inReplyTo);
+        }
 
         msg.setFrom(new InternetAddress(mailFrom));
         // 设置收件人

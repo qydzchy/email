@@ -798,7 +798,6 @@ export default {
       this.selectedEmail = email;
       this.emailData = emailData;
       this.emailTotal = emailTotal;
-      console.log(this.selectedTaskId);
       this.selectedTaskId = this.selectedTaskId;
     },
 

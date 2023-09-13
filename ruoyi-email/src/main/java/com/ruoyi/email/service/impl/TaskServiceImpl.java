@@ -404,7 +404,6 @@ public class TaskServiceImpl implements ITaskService
         // 邮件内容
         TaskEmailContent emailContent = new TaskEmailContent();
         emailContent.setEmailId(emailId);
-        emailContent.setType(EmailTypeEnum.PULL.getType());
         emailContent.setContent(universalMail.getContent());
         emailContent.setCreateTime(DateUtils.getNowDate());
         taskEmailContentService.insertTaskEmailContent(emailContent);
@@ -417,7 +416,6 @@ public class TaskServiceImpl implements ITaskService
                 TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
                 BeanUtils.copyProperties(attachment, emailAttachment);
                 emailAttachment.setEmailId(emailId);
-                emailAttachment.setType(EmailTypeEnum.PULL.getType());
                 emailAttachment.setCreateTime(DateUtils.getNowDate());
                 emailAttachments.add(emailAttachment);
             }

@@ -20,10 +20,6 @@ public class TaskEmailAttachment extends BaseEntity
     @Excel(name = "邮件ID")
     private Long emailId;
 
-    /** 邮件类型 1.拉取 2.发送 */
-    @Excel(name = "邮件类型 1.拉取 2.发送")
-    private Integer type;
-
     /** 附件名称 */
     @Excel(name = "附件名称")
     private String name;
@@ -66,15 +62,7 @@ public class TaskEmailAttachment extends BaseEntity
     {
         return emailId;
     }
-    public void setType(Integer type) 
-    {
-        this.type = type;
-    }
 
-    public Integer getType() 
-    {
-        return type;
-    }
     public void setName(String name) 
     {
         this.name = name;
@@ -108,7 +96,6 @@ public class TaskEmailAttachment extends BaseEntity
         return "TaskEmailAttachment{" +
                 "id=" + id +
                 ", emailId=" + emailId +
-                ", type=" + type +
                 ", name='" + name + '\'' +
                 ", size=" + size +
                 ", path='" + path + '\'' +

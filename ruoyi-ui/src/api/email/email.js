@@ -36,3 +36,13 @@ export function fixedEmail(data) {
     data: data
   })
 }
+
+
+// 快速回复
+export function quickReply(data) {
+  return request({
+    url: '/email/info/quick/reply',
+    method: 'post',
+    data: data
+  })
+}

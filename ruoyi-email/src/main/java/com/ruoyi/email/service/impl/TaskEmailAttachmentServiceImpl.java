@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -150,7 +149,6 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
 
                 Date now = new Date();
                 TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
-                emailAttachment.setType(EmailTypeEnum.SEND.getType());
                 emailAttachment.setName(originalFilename);
                 emailAttachment.setSize(fileSize);
                 emailAttachment.setPath(filePath);

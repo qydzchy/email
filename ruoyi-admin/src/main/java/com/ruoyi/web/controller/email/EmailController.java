@@ -126,7 +126,6 @@ public class EmailController extends BaseController {
     @PostMapping("/delete")
     public AjaxResult delete(@RequestBody BatchDeleteDTO batchDeleteDTO)
     {
-
         return toAjax(taskEmailService.delete(batchDeleteDTO.getIds()));
     }
 

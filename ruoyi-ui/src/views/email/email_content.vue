@@ -564,9 +564,21 @@
 																					</div>
 																					<div class="quick-reply-container" contact-list="[object Object]">
 																						<!---->
-																						<div class="mail-detail-quick-reply">
+																						<div v-if="!isReplying" class="mail-detail-quick-reply" @click="toggleReplying">
 																							<div class="expand-trigger">快速回复</div>
 																						</div>
+
+                                            <div v-if="isReplying" class="mail-detail-quick-reply">
+                                              <span class="mm-textarea-wrap">
+                                                <textarea placeholder="快速回复" class="mm-textarea" v-model="replyContent" style="resize: none; height: 120px; min-height: 120px; max-height: 358px;"></textarea>
+                                              </span>
+                                              <button type="button" class="mm-button quick-reply-btn" @click="toggleReplying">
+                                                <span>取消</span>
+                                              </button>
+                                              <button id="report-stat-quick-reply-btn-confirm" :disabled="isSending" type="button" class="mm-button mm-button__primary quick-reply-btn" @click="quickReply">
+                                                <span>发送</span>
+                                              </button>
+                                            </div>
 																					</div>
                                           <!---->
 																				</div>
@@ -1179,7 +1191,7 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
-import {fixedEmail, list} from "@/api/email/email";
+import {fixedEmail, list, quickReply} from "@/api/email/email";
 
 export default {
   data() {
@@ -1195,6 +1207,9 @@ export default {
       currentEmailDetail: {},
       emailId: null,
       isRightPanelExpanded: true,
+      isReplying: false,
+      isSending: false,
+      replyContent: ''
     }
   },
   props: {
@@ -1338,6 +1353,32 @@ export default {
         email.fixedFlag = !email.fixedFlag;
       } catch (error) {
         console.error('固定邮件出现错误:', error);
+        throw error;
+      }
+    },
+
+    // 快速回复-富文本框
+    toggleReplying() {
+      this.isReplying = !this.isReplying;
+    },
+
+    // 快速回复
+    async quickReply(emailId) {
+      const data = {
+        "id": this.activeEmailId,
+        "content": this.replyContent
+      };
+      try {
+        const response = await quickReply(data);
+        if (response.code !== 200) {
+          this.$message.error("执行失败");
+          return;
+        }
+
+        this.$message.success("发送成功");
+        this.isSending = true;
+      } catch (error) {
+        console.error('快速回复出现错误:', error);
         throw error;
       }
     }

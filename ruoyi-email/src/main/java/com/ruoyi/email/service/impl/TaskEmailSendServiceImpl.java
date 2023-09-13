@@ -161,7 +161,6 @@ public class TaskEmailSendServiceImpl implements ITaskEmailSendService
         TaskEmailContent emailContent = new TaskEmailContent();
         emailContent.setEmailId(emailSendId);
         emailContent.setContent(dto.getContent());
-        emailContent.setType(EmailTypeEnum.SEND.getType());
         emailContent.setCreateId(userId);
         emailContent.setCreateBy(username);
         emailContent.setCreateTime(now);
