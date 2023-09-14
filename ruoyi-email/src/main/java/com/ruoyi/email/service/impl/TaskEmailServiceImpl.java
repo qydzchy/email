@@ -281,9 +281,17 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         String username = loginUser.getUsername();
         Date now = new Date();
 
+        // 查询邮箱信息
         Task task = taskService.selectTaskById(pullTaskEmail.getTaskId());
         if (task == null) {
             throw new ServiceException();
+        }
+
+        String historyContent = "";
+        // 查询邮件内容
+        TaskEmailContent historyTaskEmailContent = taskEmailContentService.selectTaskEmailContentByEmailId(pullTaskEmail.getId());
+        if (historyTaskEmailContent != null) {
+            historyContent = historyTaskEmailContent.getContent();
         }
 
         JSONArray jsonA = new JSONArray();
@@ -329,7 +337,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         String subject = pullTaskEmail.getTitle();
 
         content.append(formatHistoryEmail(from, sendTime, toList, ccList, subject));
-        taskEmailContent.setContent(emailQuickReplyDTO.getContent());
+        // 使用邮件内容
+        content.append(historyContent);
+        taskEmailContent.setContent(content.toString());
         taskEmailContentService.insertTaskEmailContent(taskEmailContent);
 
         return true;
