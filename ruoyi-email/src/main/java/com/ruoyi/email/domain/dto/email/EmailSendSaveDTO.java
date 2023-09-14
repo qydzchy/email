@@ -67,4 +67,9 @@ public class EmailSendSaveDTO {
 
     /** 是否固定: 0.否 1.是 */
     private Integer fixedFlag;
+
+    /**
+     * 每封邮件都应该有一个唯一的 Message-ID
+     */
+    private String messageId;
 }

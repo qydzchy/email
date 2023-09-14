@@ -208,6 +208,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setType(EmailTypeEnum.SEND.getType());
         taskEmail.setSendDate(now);
         taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
+        taskEmail.setInReplyTo(dto.getMessageId());
         taskEmail.setCreateId(userId);
         taskEmail.setCreateBy(username);
         taskEmail.setCreateTime(now);

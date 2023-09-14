@@ -100,7 +100,7 @@
 
     <select id="selectTaskEmailPage" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
         select mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title, mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag,
-        mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content from mailbox_task_email mte
+        mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mte.message_id as messageId, mte.in_reply_to as inReplyTo, mte.reference, mtec.content from mailbox_task_email mte
         left join mailbox_task_email_content mtec on mte.id = mtec.email_id
         where mte.task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
