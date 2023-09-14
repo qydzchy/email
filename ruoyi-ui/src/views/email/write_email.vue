@@ -75,7 +75,7 @@
                                                     <div class="public-mail-tag-content">
                                                       <el-dropdown @command="selectEmail" trigger="click">
                                                       <!---->
-                                                      <span class="ellipsis">{{selectedEmail}}</span>
+                                                      <span class="ellipsis">{{selectedAccount}}</span>
 
                                                        <el-dropdown-menu slot="dropdown">
                                                         <el-dropdown-item v-for="task in taskList" :key="task.id" :command="task">{{ task.account }}</el-dropdown-item>
@@ -97,7 +97,7 @@
                 </li>
                 <li class="receiver-row mail-edit-row novice-tour-groupmail-select-field">
                   <span class="receiver-row-name mail-edit-row-name active">收件人</span>
-                  <ReceiverInput label="收件人" placeholder="请选择收件人或输入收件人邮箱" @update="updateEmailList"></ReceiverInput>
+                  <ReceiverInput label="收件人" placeholder="请选择收件人或输入收件人邮箱" :initialEmails="receiver" @update="updateEmailList"></ReceiverInput>
 
                   <div class="cc-bcc-mass-wrapper">
                     <button type="button" @click="toggleCc" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
@@ -163,16 +163,19 @@
 
                 <li class="mail-editor-wrapper">
                   <Toolbar
+                    ref="editorInstance"
                     style="border-bottom: 1px solid #ccc"
                     :editor="editor"
                     :defaultConfig="toolbarConfig"
                   />
                   <!-- 编辑器 -->
                   <Editor
+                    ref="editorInstance"
                     style="height: 500px; overflow-y: hidden"
                     v-model="formData.content"
                     @onChange="onChange"
                     @onCreated="onCreated"
+                    mode="default"
                   />
                   <div class="component-add-toolbar">
                     <div class="mail-tool flex items-center">
@@ -363,6 +366,7 @@
           </div>
         </div>
       </template>
+
     </div>
 </template>
 <style lang="scss">
@@ -406,7 +410,7 @@ export default {
       formData: {},
       taskList: [],
       isDropdownVisible: false,
-      selectedEmail: '',
+      selectedAccount: '',
       showCc: false,
       showBcc: false,
       selectedFiles: [],
@@ -425,8 +429,16 @@ export default {
       cc: [],
       bcc: [],
       showCustomTime: true,
-      showPendingTime: false
+      showPendingTime: false,
+      messageId: null,
+      htmlText: '',
     };
+  },
+  props: {
+    selectedEmail: {
+      type: Object,
+      default: null
+    }
   },
   methods: {
     triggerFileInput() {
@@ -439,21 +451,22 @@ export default {
 
     async fetchTaskList() {
       try {
-        listTaskPull().then((response) => {
-          this.taskList = response.rows;
-          // 设置默认的邮件地址为taskList中的第一个邮件地址
-          if (!this.selectedEmail && this.taskList.length > 0) {
-            this.selectedEmail = this.taskList[0].account;
-            this.taskId = this.taskList[0].id;
-          }
-        });
+        const response = await listTaskPull();
+        this.taskList = response.rows;
+
+        // 设置默认的邮件地址为taskList中的第一个邮件地址
+        if (!this.selectedAccount && this.taskList.length > 0) {
+          this.selectedAccount = this.taskList[0].account;
+          this.taskId = this.taskList[0].id;
+        }
+        return response;
       } catch (error) {
         console.error('Failed to fetch emails:', error);
       }
     },
 
     selectEmail(task) {
-      this.selectedEmail = task.account;
+      this.selectedAccount = task.account;
       this.taskId = task.id;
       this.isDropdownVisible = false;
     },
@@ -468,7 +481,18 @@ export default {
 
     onCreated(editor) {
       this.editor = Object.seal(editor); // 【注意】一定要用 Object.seal() 否则会报错
+      setTimeout(() => {
+        this.editor.dangerouslyInsertHtml(this.htmlText);
+
+        // 设置光标到内容开头
+        const range = this.editor.selection.getRange();
+        range.setStart(this.editor.txt.$textElem[0], 0);
+        range.collapse(true);
+        this.editor.selection.restoreSelection();
+      }, 500);
     },
+
+
     onChange(editor) {
       //console.log("onChange", editor.getHtml()); // onChange 时获取编辑器最新内容
     },
@@ -518,11 +542,11 @@ export default {
       }
 
       this.formData.taskId = this.taskId;
-      this.formData.fromer = this.selectedEmail;
+      this.formData.fromer = this.selectedAccount;
 
       const data = {
         "taskId": this.taskId,
-        "fromer": this.selectedEmail,
+        "fromer": this.selectedAccount,
         "receiver": receiver,
         "cc": cc,
         "bcc": bcc,
@@ -531,6 +555,7 @@ export default {
         "attachmentIdList": this.attachmentIds,
         "delayedTxFlag": this.formData.delayedTxFlag,
         "traceFlag": this.formData.traceFlag,
+        "messageId": this.formData.messageId,
       }
 
       try {
@@ -697,12 +722,74 @@ export default {
     showCustomTimeComponent() {
       this.showCustomTime = true;
       this.showPendingTime = false;
-      console.log(this.showCustomTime);
-      console.log(this.showPendingTime);
+    },
+    formattedEmailContent() {
+      let emailContent = `
+      <div style="font-size: 12px;background:#efefef;padding:8px;">
+        <div><b>From: </b>&nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
+        <div><b>Send time: </b>&nbsp;${this.formatDate(this.selectedEmail.sendDate)}</div>
+        <div>${this.formatEmailRecipients('To', this.parseEmailString(this.selectedEmail.receiver))}</div>
+    `;
+
+      if (this.selectedEmail.cc.length) {
+        emailContent += `<div>${this.formatEmailRecipients('Cc', this.parseEmailString(this.selectedEmail.cc))}</div>`;
+      }
+
+      emailContent += `
+        <div><b>Subject: </b>&nbsp;${this.selectedEmail.title}</div>
+      </div>
+    `;
+
+      return emailContent;
+    },
+
+    formatEmailRecipients(label, emails) {
+      return emails.map(email => `
+      <b>${label}: </b>&nbsp;<a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>
+    `).join('; ');
+    },
+
+    parseEmailString(emailString) {
+      try {
+        const emailObjects = JSON.parse(emailString);
+        return emailObjects.map(obj => obj.email);
+      } catch (error) {
+        console.error("Error parsing email string:", error);
+        return [];
+      }
+    },
+    formatDate(dateString) {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+      const date = new Date(dateString);
+
+      const dayName = days[date.getDay()];
+      const monthName = months[date.getMonth()];
+      const dayOfMonth = date.getDate();
+      const year = date.getFullYear();
+
+      // Format time as 12-hour clock with AM/PM
+      let hours = date.getHours();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+
+      return `${dayName}, ${monthName} ${dayOfMonth}, ${year} ${hours}:${minutes} ${ampm}`;
     }
   },
   mounted() {
-    this.fetchTaskList();
+    this.fetchTaskList().then(() => {
+      // 在这里，fetchTaskList 已经完成
+      // 所以你可以对列表进行遍历和匹配
+      const foundTask = this.taskList.find(task => task.id === this.selectedEmail.taskId);
+      if (foundTask) {
+        this.selectedAccount = foundTask.account;
+      }
+    }).catch(error => {
+      console.error("Error while fetching task list:", error);
+    });
   },
 
   beforeDestroy() {
@@ -711,6 +798,13 @@ export default {
     editor.destroy();
   },
 
+  created() {
+    this.formData.title = "Re: " + this.selectedEmail.title;
+    this.formData.messageId = this.selectedEmail.messageId;
+    this.receiver.push(this.selectedEmail.fromer);
+    let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
+    this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+  }
 };
 </script>
 

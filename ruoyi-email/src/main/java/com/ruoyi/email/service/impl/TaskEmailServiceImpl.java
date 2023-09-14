@@ -263,9 +263,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
     @Override
     public boolean fixed(Long id, Boolean fixedFlag) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-
         return taskEmailMapper.updateFixed(id, fixedFlag);
     }
 

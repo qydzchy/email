@@ -430,7 +430,7 @@
 																								<div class="selected">
 																									<span class="ellipsis value time">{{currentEmailDetail.sendDate}}</span>
 																									<div class="all-border detail-operations-btn">
-																										<i class="icon-reply-line m-icon"></i>
+																										<i class="icon-reply-line m-icon" @click="toggleReply(currentEmailDetail)"></i>
 																										<i class="icon-reply-all-line m-icon"></i>
                                                     <!---->
                                                     <!---->
@@ -564,7 +564,7 @@
 																					</div>
 																					<div class="quick-reply-container" contact-list="[object Object]">
 																						<!---->
-																						<div v-if="!isReplying" class="mail-detail-quick-reply" @click="toggleReplying">
+																						<div v-if="!isReplying" class="mail-detail-quick-reply" @click="toggleQuickReply">
 																							<div class="expand-trigger">快速回复</div>
 																						</div>
 
@@ -572,7 +572,7 @@
                                               <span class="mm-textarea-wrap">
                                                 <textarea placeholder="快速回复" class="mm-textarea" v-model="replyContent" style="resize: none; height: 120px; min-height: 120px; max-height: 358px;"></textarea>
                                               </span>
-                                              <button type="button" class="mm-button quick-reply-btn" @click="toggleReplying">
+                                              <button type="button" class="mm-button quick-reply-btn" @click="toggleQuickReply">
                                                 <span>取消</span>
                                               </button>
                                               <button id="report-stat-quick-reply-btn-confirm" :disabled="isSending" type="button" class="mm-button mm-button__primary quick-reply-btn" @click="quickReply">
@@ -1191,7 +1191,12 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
+import writeEmailLayout from './write_email.vue';
 import {fixedEmail, list, quickReply} from "@/api/email/email";
+import emailHeaderLayout from "@/views/email/email_header.vue";
+import sendSuccessLayout from "@/views/email/send_success.vue";
+import setup from "@/views/email/setup.vue";
+import FolderTree from "@/views/email/folder_list_item.vue";
 
 export default {
   data() {
@@ -1211,6 +1216,9 @@ export default {
       isSending: false,
       replyContent: ''
     }
+  },
+  components: {
+    'write_email': writeEmailLayout
   },
   props: {
     emailList: Array,
@@ -1358,7 +1366,7 @@ export default {
     },
 
     // 快速回复-富文本框
-    toggleReplying() {
+    toggleQuickReply() {
       this.isReplying = !this.isReplying;
     },
 
@@ -1382,6 +1390,11 @@ export default {
         console.error('快速回复出现错误:', error);
         throw error;
       }
+    },
+
+    toggleReply(email) {
+      // 触发事件并传递参数
+      EventBus.$emit('switch-to-reply-email', email);
     }
   }
 }

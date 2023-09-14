@@ -52,12 +52,15 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    initialEmails: {
+      type: Array,
+      default: ''
     }
   },
   data() {
     return {
-      label: '',
-      emailList: [],
+      emailList: [...this.initialEmails],
       currentEmail: ''
     };
   },

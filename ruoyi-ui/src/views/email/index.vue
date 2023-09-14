@@ -773,7 +773,7 @@ export default {
       selectedTaskId: null,
       emailTotal: 0,
       emailData: [],
-      selectedEmail: {},
+      selectedEmail: {}
     };
   },
   components: {
@@ -922,11 +922,17 @@ export default {
     EventBus.$on('switch-index', () => {
       this.allReceivedClick();
     });
+
+    EventBus.$on('switch-to-reply-email', (replyEmail) => {
+      this.selectedEmail = replyEmail;
+      this.switchWriteEmailPage();
+    });
   },
 
   beforeDestroy() {
     EventBus.$off('switch-send-success');
     EventBus.$off('switch-index');
+    EventBus.$off('switch-to-reply-email');
   }
 
 };

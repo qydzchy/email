@@ -133,7 +133,7 @@ public interface ITaskEmailService
 
     /**
      * 发送邮件
-     * @param taskEmailSend
+     * @param taskEmail
      * @return
      */
     boolean sendEmail(TaskEmail taskEmail);
