@@ -309,11 +309,16 @@ public class TaskServiceImpl implements ITaskService
             }
 
             for (MailItem mailItem : mailItems) {
-                UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailPath);
-                // 保存邮件信息
-                if (universalMail.getSendDate() != null) {
-                    saveEmailData(task.getId(), universalMail);
+                try {
+                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailPath);
+                    // 保存邮件信息
+                    if (universalMail.getSendDate() != null) {
+                        saveEmailData(task.getId(), universalMail);
+                    }
+                } catch (MailPlusException e) {
+                    log.error("{}", e);
                 }
+
             }
 
         } catch (Exception e) {

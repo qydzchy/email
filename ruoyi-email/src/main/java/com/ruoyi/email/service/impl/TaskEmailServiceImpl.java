@@ -202,13 +202,27 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         String username = loginUser.getUsername();
         Date now = new Date();
 
+        String inReplyTo = null;
+        String reference = null;
+        if (dto.getPullEmailId() != null) {
+            TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(dto.getPullEmailId());
+            if (taskEmail == null) throw new ServiceException();
+            inReplyTo = taskEmail.getMessageId();
+            if (taskEmail.getReference() != null) {
+                reference = taskEmail.getReference() + " ";
+            }
+
+            reference += taskEmail.getMessageId();
+        }
+
         TaskEmail taskEmail = new TaskEmail();
         BeanUtils.copyProperties(dto, taskEmail);
         taskEmail.setUid(IdUtils.fastSimpleUUID());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
         taskEmail.setSendDate(now);
         taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
-        taskEmail.setInReplyTo(dto.getMessageId());
+        taskEmail.setInReplyTo(inReplyTo);
+        taskEmail.setReference(reference);
         taskEmail.setCreateId(userId);
         taskEmail.setCreateBy(username);
         taskEmail.setCreateTime(now);
@@ -315,6 +329,13 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setUpdateBy(username);
         taskEmail.setUpdateTime(now);
         taskEmail.setInReplyTo(pullTaskEmail.getMessageId());
+        String reference = null;
+        if (taskEmail.getReference() != null) {
+            reference = taskEmail.getReference() + " ";
+        }
+
+        reference += taskEmail.getMessageId();
+        taskEmail.setReference(reference);
 
         taskEmailMapper.insertTaskEmail(taskEmail);
 
@@ -438,6 +459,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Long taskId = taskEmail.getTaskId();
         Task task = taskService.selectTaskById(taskId);
         boolean isSuccess = false;
+        String messageId = null;
         try {
             String[] mailTos = getEmails(taskEmail.getReceiver());
             String[] mailBccs = getEmails(taskEmail.getBcc());
@@ -455,8 +477,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 attachmentPaths = filePathList.toArray(new String[filePathList.size()]);
             }
 
-            sendEmail(task.getOutgoingServer(), task.getOutgoingPort(), task.getOutgoingSslFlag(), task.getAccount(), task.getPassword(),
-                    mailTos, mailCcs, mailBccs, title, content, taskEmail.getInReplyTo(),
+            messageId = sendEmail(task.getOutgoingServer(), task.getOutgoingPort(), task.getOutgoingSslFlag(), task.getAccount(), task.getPassword(),
+                    mailTos, mailCcs, mailBccs, title, content, taskEmail.getInReplyTo(), taskEmail.getReference(),
                     task.getProxyServer(), task.getProxyPort(),
                     task.getProxyUsername(), task.getProxyPassword(), attachmentPaths);
 
@@ -472,17 +494,18 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         // 更新数据
         int status = isSuccess ? TaskExecutionStatusEnum.SUCCESS.getStatus() : TaskExecutionStatusEnum.FAILURE.getStatus();
         // 更新邮件发送状态
-        updateStatusById(status, id);
+        updateStatusById(status, messageId, id);
         return true;
     }
 
     /**
      * 更新邮件发送状态
      * @param status
+     * @param messageId
      * @param id
      */
-    private void updateStatusById(int status, Long id) {
-        taskEmailMapper.updateStatusById(status, id);
+    private void updateStatusById(int status, String messageId, Long id) {
+        taskEmailMapper.updateStatusById(status, messageId, id);
     }
 
     /**
@@ -519,11 +542,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @param proxyHost
      * @param proxyPort
      * @param attachmentPaths
+     * @return 返回邮件的唯一ID
      * @throws MessagingException
      */
-    public void sendEmail(String host, Integer port, boolean useSSL, String mailFrom, String password,
+    public String sendEmail(String host, Integer port, boolean useSSL, String mailFrom, String password,
                           String[] mailTos, String[] mailCcs, String[] mailBccs,
-                          String title, String content, String inReplyTo, String proxyHost, Integer proxyPort,
+                          String title, String content, String inReplyTo, String references, String proxyHost, Integer proxyPort,
                           String proxyUser, String proxyPassword, String[] attachmentPaths) throws MessagingException {
         Properties properties = new Properties();
 
@@ -567,7 +591,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Message msg = new MimeMessage(session);
         if (StringUtils.isNotBlank(inReplyTo)) {
             msg.setHeader("In-Reply-To", inReplyTo);
-            msg.setHeader("References", inReplyTo);
+        }
+        if (StringUtils.isNotBlank(references)) {
+            msg.setHeader("References", references);
         }
 
         msg.setFrom(new InternetAddress(mailFrom));
@@ -627,6 +653,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         } else {
             Transport.send(msg);
         }
+
+        String[] header = msg.getHeader("Message-ID");
+        return header != null && header.length > 0 ? header[0] : null;
     }
 
     private String getDynamicLabel(LocalDateTime mailDateTime) {

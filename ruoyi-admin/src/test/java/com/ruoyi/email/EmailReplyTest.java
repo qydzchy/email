@@ -17,7 +17,7 @@ public class EmailReplyTest {
 
     public static void main(String[] args) throws MessagingException {
         // 发送邮件
-      //  sendEmail("13076506601@163.com", "测试邮件10", "回复测试邮件");
+        // sendEmail("13076506601@163.com", "测试邮件10000", "回复测试邮件");
         Message[] messages = new Message[0];
         try {
             messages = receiveEmails();
@@ -25,9 +25,9 @@ public class EmailReplyTest {
             throw new RuntimeException(e);
         }
 
-      /*  for (Message message : messages) {
+        for (Message message : messages) {
             replyEmail(message, "163邮箱，代码回复测试。");
-        }*/
+        }
 
     }
 
@@ -53,7 +53,7 @@ public class EmailReplyTest {
             message.setText(content);
             Transport.send(message);
             String[] header = message.getHeader("Message-ID");
-            System.out.println(header);
+            System.out.println(header != null && header.length > 0 ? header[0] : null);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -152,7 +152,7 @@ public class EmailReplyTest {
             String[] messageId = message.getHeader("Message-ID");
             String[] inReplyTo = message.getHeader("In-Reply-To");
             String[] references = message.getHeader("References");
-
+            System.out.println("-------------------------------");
         }
         Message message = folder.getMessage(messageNumber);
      //   System.out.println(message.getContent() + message.getContentType());

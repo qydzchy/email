@@ -134,7 +134,8 @@ public interface TaskEmailMapper
     /**
      * 根据邮件状态
      * @param status
+     * @param messageId
      * @param id
      */
-    void updateStatusById(@Param("status") int status, @Param("id") Long id);
+    void updateStatusById(@Param("status") int status, @Param("messageId") String messageId, @Param("id") Long id);
 }

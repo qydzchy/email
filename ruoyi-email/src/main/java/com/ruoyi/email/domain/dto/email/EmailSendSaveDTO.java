@@ -69,7 +69,7 @@ public class EmailSendSaveDTO {
     private Integer fixedFlag;
 
     /**
-     * 每封邮件都应该有一个唯一的 Message-ID
+     * 拉取的邮件ID
      */
-    private String messageId;
+    private Long pullEmailId;
 }

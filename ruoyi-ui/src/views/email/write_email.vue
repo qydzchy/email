@@ -313,7 +313,7 @@
                   <!---->
                 </div>
                 <PendingTimePopover v-if="showPendingTime" @showCustom="showCustomTimeComponent"></PendingTimePopover>
-                <CustomTimePopover v-if="showCustomTime"></CustomTimePopover>
+<!--                <CustomTimePopover v-if="showCustomTime"></CustomTimePopover>-->
               </div>
             </div>
             </div>
