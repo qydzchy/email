@@ -555,7 +555,7 @@ export default {
         "attachmentIdList": this.attachmentIds,
         "delayedTxFlag": this.formData.delayedTxFlag,
         "traceFlag": this.formData.traceFlag,
-        "messageId": this.formData.messageId,
+        "pullEmailId": this.formData.id,
       }
 
       try {
@@ -800,7 +800,7 @@ export default {
 
   created() {
     this.formData.title = "Re: " + this.selectedEmail.title;
-    this.formData.messageId = this.selectedEmail.messageId;
+    this.formData.id = this.selectedEmail.id;
     this.receiver.push(this.selectedEmail.fromer);
     let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
     this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;

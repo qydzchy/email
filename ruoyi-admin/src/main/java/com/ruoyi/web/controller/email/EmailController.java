@@ -11,7 +11,10 @@ import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
+import com.ruoyi.email.domain.vo.email.EmailFolderMoveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.domain.vo.email.EmailReadFlagBatchUpdateDTO;
+import com.ruoyi.email.domain.vo.email.EmailSpamFlagBatchUpdateDTO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
 import org.springframework.data.util.Pair;
@@ -138,6 +141,39 @@ public class EmailController extends BaseController {
     public AjaxResult quickReply(@RequestBody EmailQuickReplyDTO emailQuickReplyDTO)
     {
         return toAjax(taskEmailService.quickReply(emailQuickReplyDTO));
+    }
+
+    /**
+     * 更新邮件是否为已读邮件
+     */
+    @PreAuthorize("@ss.hasPermi('email:read')")
+    @Log(title = "邮件是否为已读邮件", businessType = BusinessType.UPDATE)
+    @PostMapping("/read")
+    public AjaxResult read(@RequestBody EmailReadFlagBatchUpdateDTO emailReadFlagBatchUpdateDTO)
+    {
+        return toAjax(taskEmailService.read(emailReadFlagBatchUpdateDTO.getIds(), emailReadFlagBatchUpdateDTO.getReadFlag()));
+    }
+
+    /**
+     * 更新邮件是否为垃圾邮件
+     */
+    @PreAuthorize("@ss.hasPermi('email:spam')")
+    @Log(title = "邮件是否为垃圾邮件", businessType = BusinessType.UPDATE)
+    @PostMapping("/spam")
+    public AjaxResult spam(@RequestBody EmailSpamFlagBatchUpdateDTO emailSpamFlagBatchUpdateDTO)
+    {
+        return toAjax(taskEmailService.spam(emailSpamFlagBatchUpdateDTO.getIds(), emailSpamFlagBatchUpdateDTO.getSpamFlag()));
+    }
+
+    /**
+     * 移动文件夹
+     */
+    @PreAuthorize("@ss.hasPermi('email:move:folder')")
+    @Log(title = "移动文件夹", businessType = BusinessType.UPDATE)
+    @PostMapping("/moveFolder")
+    public AjaxResult moveFolder(@RequestBody EmailFolderMoveDTO emailFolderMoveDTO)
+    {
+        return toAjax(taskEmailService.moveFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
     }
 
 }

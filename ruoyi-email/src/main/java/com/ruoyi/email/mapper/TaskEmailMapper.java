@@ -104,7 +104,7 @@ public interface TaskEmailMapper
      * @param fixedFlag
      * @return
      */
-    boolean updateFixed(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag);
+    boolean updateFixedFlag(@Param("id") Long id, @Param("fixedFlag") Boolean fixedFlag);
 
     /**
      * 查询拉取邮件的uid
@@ -138,4 +138,42 @@ public interface TaskEmailMapper
      * @param id
      */
     void updateStatusById(@Param("status") int status, @Param("messageId") String messageId, @Param("id") Long id);
+
+    /**
+     * 获取最新的reference
+     * @param reference
+     * @return
+     */
+    String getLatestReference(@Param("reference") String reference);
+
+    /**
+     * 往来邮件
+     * @param latestReferenceList
+     * @return
+     */
+    List<EmailListVO> selectTaskEmailByMessageIdAndInReplyTo(@Param("latestReferenceList") List<String> latestReferenceList);
+
+    /**
+     * 批量更新邮件是否已读
+     * @param ids
+     * @param readFlag
+     * @return
+     */
+    boolean batchUpdateReadFlag(@Param("ids") List<Long> ids, @Param("readFlag") Boolean readFlag);
+
+    /**
+     * 批量更新邮件是否为垃圾邮件
+     * @param ids
+     * @param spamFlag
+     * @return
+     */
+    boolean batchUpdateSpamFlag(@Param("ids") List<Long> ids, @Param("spamFlag") Boolean spamFlag);
+
+    /**
+     * 批量更新邮件文件夹ID
+     * @param ids
+     * @param folderId
+     * @return
+     */
+    boolean batchUpdateFolderId(@Param("ids") List<Long> ids, @Param("folderId") Long folderId);
 }

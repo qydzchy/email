@@ -136,6 +136,28 @@
         group by task_id
     </select>
 
+    <select id="getLatestReference" resultType="java.lang.String">
+        select reference from mailbox_task_email where reference like '${reference}%' order by send_date desc limit 1;
+    </select>
+    <select id="selectTaskEmailByMessageIdAndInReplyTo"
+            resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
+        select mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title, mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag,
+        mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mte.message_id as messageId, mte.in_reply_to as inReplyTo, mte.reference, mtec.content from mailbox_task_email mte
+        left join mailbox_task_email_content mtec on mte.id = mtec.email_id
+        where
+            (
+                mte.message_id in
+                <foreach collection="latestReferenceList" item="messageId" open="(" separator="," close=")">
+                    #{messageId}
+                </foreach>
+            or mte.in_reply_to in
+                <foreach collection="latestReferenceList" item="inReplyTo" open="(" separator="," close=")">
+                    #{inReplyTo}
+                </foreach>
+            ) and mte.del_flag = '0'
+        order by mte.send_date desc
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -247,8 +269,8 @@
         where id = #{id}
     </update>
 
-    <update id="updateFixed">
-        update mailbox_task_email set fixed_flag=#{fixedFlag} where id=#{id}
+    <update id="updateFixedFlag">
+        update mailbox_task_email set fixed_flag=#{fixedFlag} where id=#{id} and del_flag = '0'
     </update>
 
     <update id="removeTaskEmailIds">
@@ -256,11 +278,32 @@
         where id in
         <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}
-        </foreach>
+        </foreach> and del_flag = '0'
     </update>
 
     <update id="updateStatusById">
-        update mailbox_task_email set status = #{status}, message_id = #{messageId} where id = #{id}
+        update mailbox_task_email set status = #{status}, message_id = #{messageId} where id = #{id} and del_flag = '0'
+    </update>
+
+    <update id="batchUpdateReadFlag">
+        update mailbox_task_email set read_flag=#{readFlag} where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach> and del_flag = '0'
+    </update>
+
+    <update id="batchUpdateSpamFlag">
+        update mailbox_task_email set spam_flag=#{spamFlag} where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach> and del_flag = '0'
+    </update>
+
+    <update id="batchUpdateFolderId">
+        update mailbox_task_email set folder_id=#{folderId} where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach> and del_flag = '0'
     </update>
 
     <delete id="deleteTaskEmailById" parameterType="Long">
@@ -271,6 +314,6 @@
         delete from mailbox_task_email where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
-        </foreach>
+        </foreach> and del_flag = '0'
     </delete>
 </mapper>

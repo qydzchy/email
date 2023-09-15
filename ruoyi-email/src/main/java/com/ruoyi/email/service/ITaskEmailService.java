@@ -137,4 +137,35 @@ public interface ITaskEmailService
      * @return
      */
     boolean sendEmail(TaskEmail taskEmail);
+
+    /**
+     * 往来邮件
+     * @param id
+     * @return
+     */
+    List<EmailListVO> correspondence(Long id);
+
+    /**
+     * 邮件是否已读
+     * @param ids
+     * @param readFlag
+     * @return
+     */
+    boolean read(List<Long> ids, Boolean readFlag);
+
+    /**
+     * 更新邮件是否为垃圾邮件
+     * @param ids
+     * @param spamFlag
+     * @return
+     */
+    boolean spam(List<Long> ids, Boolean spamFlag);
+
+    /**
+     * 移动邮件到文件夹
+     * @param ids
+     * @param folderId
+     * @return
+     */
+    boolean moveFolder(List<Long> ids, Long folderId);
 }

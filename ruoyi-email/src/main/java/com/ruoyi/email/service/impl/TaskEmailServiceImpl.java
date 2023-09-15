@@ -203,7 +203,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Date now = new Date();
 
         String inReplyTo = null;
-        String reference = null;
+        String reference = "";
         if (dto.getPullEmailId() != null) {
             TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(dto.getPullEmailId());
             if (taskEmail == null) throw new ServiceException();
@@ -278,7 +278,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
     @Override
     public boolean fixed(Long id, Boolean fixedFlag) {
-        return taskEmailMapper.updateFixed(id, fixedFlag);
+        return taskEmailMapper.updateFixedFlag(id, fixedFlag);
     }
 
     @Override
@@ -329,7 +329,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setUpdateBy(username);
         taskEmail.setUpdateTime(now);
         taskEmail.setInReplyTo(pullTaskEmail.getMessageId());
-        String reference = null;
+        String reference = "";
         if (taskEmail.getReference() != null) {
             reference = taskEmail.getReference() + " ";
         }
@@ -496,6 +496,53 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         // 更新邮件发送状态
         updateStatusById(status, messageId, id);
         return true;
+    }
+
+    @Override
+    public List<EmailListVO> correspondence(Long id) {
+        TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
+        if (taskEmail == null) {
+            throw new ServiceException();
+        }
+
+        // 这里获取的邮件链的列表可能不是最新的，所以需要去查出来最新的邮件链列表
+        String reference = taskEmail.getReference();
+        List<String> latestReferenceList = new ArrayList<>();
+        if (StringUtils.isNotBlank(reference)) {
+            String latestReference = getLatestReference(reference);
+            String[] latestReferenceArray = latestReference.split(" ");
+            latestReferenceList = Arrays.asList(latestReferenceArray);
+        }
+
+        if (latestReferenceList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return taskEmailMapper.selectTaskEmailByMessageIdAndInReplyTo(latestReferenceList);
+    }
+
+    @Override
+    public boolean read(List<Long> ids, Boolean readFlag) {
+        return taskEmailMapper.batchUpdateReadFlag(ids, readFlag);
+    }
+
+    @Override
+    public boolean spam(List<Long> ids, Boolean spamFlag) {
+        return taskEmailMapper.batchUpdateSpamFlag(ids, spamFlag);
+    }
+
+    @Override
+    public boolean moveFolder(List<Long> ids, Long folderId) {
+        return taskEmailMapper.batchUpdateFolderId(ids, folderId);
+    }
+
+    /**
+     * 获取最新Reference
+     * @param reference
+     * @return
+     */
+    private String getLatestReference(String reference) {
+        return taskEmailMapper.getLatestReference(reference);
     }
 
     /**
