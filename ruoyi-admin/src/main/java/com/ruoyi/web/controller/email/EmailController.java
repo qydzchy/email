@@ -170,7 +170,7 @@ public class EmailController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('email:move:folder')")
     @Log(title = "移动文件夹", businessType = BusinessType.UPDATE)
-    @PostMapping("/moveFolder")
+    @PostMapping("/move/folder")
     public AjaxResult moveFolder(@RequestBody EmailFolderMoveDTO emailFolderMoveDTO)
     {
         return toAjax(taskEmailService.moveFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
