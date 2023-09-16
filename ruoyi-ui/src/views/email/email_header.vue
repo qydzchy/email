@@ -41,16 +41,6 @@
 
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
                                   <span class="mm-tooltip-trigger">
-                                    <span>
-                                      <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M10 2a4 4 0 00-4 4v2a4 4 0 00-4 4v6a4 4 0 004 4h6a4 4 0 004-4h2a4 4 0 004-4V6a4 4 0 00-4-4h-8zm2 18a2 2 0 002-2h-2a1 1 0 110-2h6a2 2 0 002-2V6a2 2 0 00-2-2h-8a2 2 0 00-2 2v6a1 1 0 11-2 0v-2a2 2 0 00-2 2v6a2 2 0 002 2h6zm2.889-12l-8.146 7.331a1 1 0 101.338 1.487L16 9.69V11a1 1 0 102 0V7a1 1 0 00-1-1h-4a1 1 0 100 2h1.889z"></path>
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </span>
-                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
-                                  <span class="mm-tooltip-trigger">
                                     <div class="mm-popover">
                                       <div>
                                         <span>
@@ -64,7 +54,7 @@
                                     </div>
                                   </span>
                                 </span>
-                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
+                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="deleteEmails">
                                   <span class="mm-tooltip-trigger">
                                     <span>
                                       <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
@@ -187,7 +177,7 @@
                                       `DROPMENU_55587_ITEM_${index}`,
                                       { 'mail-drop-menu-item-active': hoveredItem === index }
                                     ]"
-                                    @click="selectItem(index)"
+                                    @click="readOrSpanEmails(index)"
                                     @mouseover="hoveredItem = index"
                                     @mouseleave="hoveredItem = null"
                                   >
@@ -289,7 +279,7 @@
 																											<div class="mail-list-item-content">
 																												<div>
 																													<label class="mm-checkbox mail-list-item-checkbox" style="" @click.stop>
-																														<input v-model="email.selected" true-value="true" type="checkbox">
+																														<input v-model="email.selected" @change="toggleEmailSelection(email)" true-value="true" type="checkbox">
 																														<span class="mm-checkbox-input"></span>
                                                             <!---->
 																													</label>
@@ -512,6 +502,7 @@ export default {
       pendingFlag: null,
       delFlag: null,
       draftsFlag: null,
+      spamFlag: null,
       localEmailList: [],
       currentEmailDetail: {},
       currentEmailType: '',
@@ -549,6 +540,7 @@ export default {
     EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
     EventBus.$on('deleted-mail-selected', this.fetchEmailData);
     EventBus.$on('drafts-selected', this.fetchEmailData);
+    EventBus.$on('spam-mail-selected', this.fetchEmailData);
     if (this.emailList === undefined || this.emailList === null || this.emailList.length === 0) {
       this.localEmailList = [];
     } else {
@@ -573,6 +565,7 @@ export default {
     EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
     EventBus.$off('deleted-mail-selected', this.fetchEmailData);
     EventBus.$off('drafts-selected', this.fetchEmailData);
+    EventBus.$off('spam-mail-selected', this.fetchEmailData);
   },
   methods: {
     fetchEmailsForTask(taskId, type) {
@@ -591,26 +584,9 @@ export default {
         type: this.type,
         readFlag: this.readFlag,
         pendingFlag: this.pendingFlag,
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
-      }
-
-      list(query).then(response => {
-        this.localEmailList = response.rows;
-        this.total = response.total;
-      }).catch(error => {
-        console.error("Failed to fetch emails:", error);
-      });
-    },
-
-    fetchSendEmailList(taskId) {
-      this.taskId = taskId;
-      const query = {
-        taskId: this.taskId,
-        // 邮件类型 1.收取 2.发送
-        type: 2,
         delFlag: this.delFlag,
         draftsFlag: this.draftsFlag,
+        spamFlag: this.spamFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -664,30 +640,29 @@ export default {
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.readFlag = null;
         this.pendingFlag = null;
         this.currentPage = 1;
         this.fetchEmailList(null, 1);
       } else if (selectedEmailType === 'PENDING_MAIL') {
-        this.readFlag = null;
         this.pendingFlag = true;
         this.currentPage = 1;
         this.fetchEmailList(null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
         this.readFlag = false;
-        this.pendingFlag = null;
         this.currentPage = 1;
         this.fetchEmailList(null);
       } else if (selectedEmailType === 'DELETED_MAIL') {
         this.delFlag = true;
-        this.draftsFlag = null;
         this.currentPage = 1;
-        this.fetchSendEmailList(null);
+        this.fetchEmailList(null);
       } else if (selectedEmailType === 'DRAFTS') {
-        this.delFlag = null;
         this.draftsFlag = true;
         this.currentPage = 1;
-        this.fetchSendEmailList(null);
+        this.fetchEmailList(null, 2);
+      } else if (selectedEmailType === 'SPAM') {
+        this.spamFlag = true;
+        this.currentPage = 1;
+        this.fetchEmailList(null);
       }
     },
 
@@ -726,8 +701,26 @@ export default {
       this.isIconsToggled = !this.isIconsToggled;
     },
 
+    // 存在选中的邮件
+    existSelectedEmail() {
+      let hasSelected = false; // 创建一个变量来跟踪是否存在选中的邮件
+
+      this.localEmailList.forEach(dateGroup => {
+        for (const date in dateGroup) {
+          if (dateGroup.hasOwnProperty(date)) {
+            dateGroup[date].forEach(email => {
+              if (email.selected) {
+                hasSelected = true;
+              }
+            });
+          }
+        }
+      });
+
+      return hasSelected; // 返回这个变量
+    },
+
     setSelected(newValue) {
-      console.log(newValue);
       this.localEmailList.forEach(dateGroup => {
         for (const date in dateGroup) {
           if (dateGroup.hasOwnProperty(date)) {
@@ -748,7 +741,7 @@ export default {
       this.isDropdownShown = !this.isDropdownShown;
     },
 
-    selectItem(index) {
+    readOrSpanEmails(index) {
       this.selectedItem = index;
 
       const selectedEmails = this.getSelectedEmailIds();
@@ -767,6 +760,8 @@ export default {
       this.selectAll = false;
       this.isDropdownShown = false;
       this.toggleAllEmails();
+      // 刷新邮件列表
+      this.fetchEmailData(this.currentEmailType);
     },
 
     getSelectedEmailIds() {
@@ -785,6 +780,7 @@ export default {
       return selectedIds;
     },
 
+    // 标记为已读文件
     async readEmails(emailIds) {
       const data = {
         "ids": emailIds,
@@ -803,10 +799,11 @@ export default {
       }
     },
 
+    // 标记为未读邮件
     async unReadEmails(emailIds) {
       const data = {
         "ids": emailIds,
-        "readFlag": true
+        "readFlag": false
       };
       try {
         const response = await readEmail(data);
@@ -821,6 +818,7 @@ export default {
       }
     },
 
+    // 标识为垃圾邮件
     async spamEmails(emailIds) {
       const data = {
         "ids": emailIds,
@@ -837,7 +835,39 @@ export default {
         console.error('垃圾邮件标记出现错误:', error);
         throw error;
       }
-    }
+    },
+
+    // 删除邮件
+    async deleteEmails() {
+      const emailIds = this.getSelectedEmailIds();
+      if (emailIds.length) {
+        const data = {
+          "ids": emailIds
+        };
+        try {
+          const response = await deleteEmail(data);
+          if (response.code === 200) {
+            this.$message.success("邮件删除成功");
+            this.closeSelected();
+            return;
+          }
+        } catch (error) {
+          console.error('邮件删除出现错误:', error);
+          throw error;
+        }
+      }
+    },
+
+    toggleEmailSelection() {
+      let existSelected = this.existSelectedEmail();
+      if (existSelected) {
+        this.selectAll = true;
+        this.isIconsToggled = false;
+      } else {
+        this.selectAll = false;
+        this.isIconsToggled = true;
+      }
+    },
   }
 }
 </script>

@@ -78,7 +78,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, String delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Integer pageNum, Integer pageSize);
 
     /**
      * 保存发送邮件

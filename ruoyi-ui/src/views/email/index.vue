@@ -47,8 +47,8 @@
                     </div>
                     <div class="mail-nav-normal-container">
                       <ul role="menubar" class="mm-menu mail-sidebar-menu">
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
+                        <li :class="['mm-submenu', isInboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleInbox">
                             <!---->
                             <span class="mm-menu-title">
 																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
@@ -61,7 +61,7 @@
                               <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                             </svg>
                           </div>
-                          <ul role="menu" class="mm-menu mm-menu--inline">
+                          <ul role="menu" class="mm-menu mm-menu--inline" v-show="isInboxOpen">
                             <li class="mm-menu-item mail-sidebar-menu-item"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'ALL_RECEIVED' }"
                                 @click="allReceivedClick"
@@ -177,8 +177,8 @@
                             <!---->
                           </div>
                         </li>
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
+                        <li :class="['mm-submenu', isOutboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleOutbox">
                             <!---->
                             <span class="mm-menu-title">
 																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
@@ -191,7 +191,7 @@
                               <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                             </svg>
                           </div>
-                          <ul role="menu" class="mm-menu mm-menu--inline">
+                          <ul role="menu" class="mm-menu mm-menu--inline" v-show="isOutboxOpen">
                             <li class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'COMPLETE_SHIPMENT' }"
                                 @click="setActive('COMPLETE_SHIPMENT')"
@@ -253,34 +253,11 @@
                           </ul>
                         </li>
 
-                        <li class="mm-menu-item mail-sidebar-menu-item" role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
-                          <!---->
-                          <!---->
-                          <div class="mail-sidebar-menu-item">
-                            <!---->
-                            <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																				<span class="flex items-center" title="群发箱">群发箱<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" spin="false" rtl="false" viewBox="0 0 25 14" preserveAspectRatio="xMidYMid meet" fill="none" role="presentation" class="ml-2" data-v-09a549a1="">
-																						<g data-v-09a549a1="">
-																							<path d="M22.893 0H2.025C.881 0 0 .88 0 2.025v9.95C0 13.12.88 14 2.025 14h20.868c1.145 0 2.025-.88 2.025-2.025v-9.95C24.918.881 24.038 0 22.893 0ZM7.22 10.302H5.811L3.081 4.93v5.37h-.88V3.875h1.233l2.818 5.547h.088V3.874h.88v6.428Zm2.201-3.698h3.434v.88H9.421v.176c0 1.145.353 1.673 1.057 1.673h2.465v.88h-2.465c-.528 0-.969-.175-1.32-.616-.353-.44-.53-1.144-.53-1.937V6.164c0-1.497.97-2.114 1.938-2.29h2.377v.88h-2.289c-.352.089-1.145.353-1.145 1.41-.088.176-.088.264-.088.44Zm11.447 3.698h-1.233l-1.233-5.107-1.408 5.107h-1.321l-1.85-6.428h.97l1.584 5.283h.088l1.41-5.283h1.056l1.409 5.547 1.673-5.547h.88l-2.025 6.428Z" fill="url(#bb155__a)" data-v-09a549a1=""></path>
-																							<defs data-v-09a549a1="">
-																								<linearGradient id="bb155__a" x1="-.035" y1="7.026" x2="24.901" y2="7.026" gradientUnits="userSpaceOnUse" data-v-09a549a1="">
-																									<stop stop-color="#FE945F" data-v-09a549a1=""></stop>
-																									<stop offset="1" stop-color="#F9B75C" data-v-09a549a1=""></stop>
-																								</linearGradient>
-																							</defs>
-																						</g>
-																					</svg>
-																				</span>
-                            </div>
-                            <!---->
-                            <!---->
-                          </div>
-                        </li>
                         <li class="mm-submenu mm-submenu--opened top-divided for-folder-tour mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
-																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
+																				<div class="right-click-menu-handler mail-menu-item-title ellipsis" @click="toggleFolder">
 																					<span class="flex items-center" title="文件夹">文件夹</span>
 																					<div>
 																						<div class="menu-item-operation-search">
@@ -310,310 +287,11 @@
                               <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                             </svg>
                           </div>
-                          <FolderTree :folders="folders"></FolderTree>
+                          <FolderTree :folders="folders" v-show="isFolderOpen"></FolderTree>
                         </li>
-                        <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
-                            :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_MAIL' }"
-                            @click="setActive('LABEL_MAIL')"
-                            role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
-                            <!---->
-                            <span class="mm-menu-title">
-																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																					<span class="flex items-center" title="标签邮件">标签邮件</span>
-																				</div>
-                              <!---->
-                              <!---->
-																			</span>
-                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                            </svg>
-                          </div>
-                          <ul role="menu" class="mm-menu mm-menu--inline">
-                            <li class="mm-submenu mail-sidebar-submenu"
-                                :class="{ 'mm-menu-item--active': activeMenuItem === 'DIALOG_LABEL' }"
-                                @click="setActive('DIALOG_LABEL')"
-                                role="menuitem" aria-haspopup="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
-                                <!---->
-                                <span class="mm-menu-title">
-																						<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																							<span class="flex items-center" title="系统标签">系统标签</span>
-																						</div>
-                                  <!---->
-                                  <!---->
-																					</span>
-                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                                </svg>
-                              </div>
-                              <ul role="menu" class="mm-menu mm-menu--inline" style="display: none;">
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PROMOTIONAL_LETTER' }"
-                                    @click="setActive('PROMOTIONAL_LETTER')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="开发信">开发信</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PERSONAL_INQUIRY' }"
-                                    @click="setActive('PERSONAL_INQUIRY')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="个人询盘">个人询盘</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PLATFORM_INQUIRY' }"
-                                    @click="setActive('PLATFORM_INQUIRY')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="平台询盘">平台询盘</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'QUOTATION' }"
-                                    @click="setActive('QUOTATION')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="报价">报价</span>
-                                    </div>
-                                    <!---->-
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PO' }"
-                                    @click="setActive('PO')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="PO">PO</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'SAMPLE_PI' }"
-                                    @click="setActive('SAMPLE_PI')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="样品PI">样品PI</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PI' }"
-                                    @click="setActive('PI')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="PI">PI</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'CI' }"
-                                    @click="setActive('CI')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="CI">CI</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'PL' }"
-                                    @click="setActive('PL')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="PL">PL</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'MEMO' }"
-                                    @click="setActive('MEMO')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="水单">水单</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'DISTRIBUTED_MAIL' }"
-                                    @click="setActive('DISTRIBUTED_MAIL')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="已分发邮件">已分发邮件</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                                <li class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'RECEIVE_AND_DISTRIBUTE_MAIL' }"
-                                    @click="setActive('RECEIVE_AND_DISTRIBUTE_MAIL')"
-                                    role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-                                  <!---->
-                                  <!---->
-                                  <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" style="background-color: rgb(141, 141, 141);"></span>
-                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                      <span class="flex items-center" title="接收分发邮件">接收分发邮件</span>
-                                    </div>
-                                    <!---->
-                                    <!---->
-                                  </div>
-                                </li>
-                              </ul>
-                            </li>
-                            <li class="mm-submenu mm-submenu--opened mail-sidebar-submenu"
-                                :class="{ 'mm-menu-item--active': activeMenuItem === 'CUSTOM_TAG' }"
-                                @click="setActive('CUSTOM_TAG')"
-                                role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-<div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;">
-  <!---->
-  <span class="mm-menu-title">
-																						<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																							<span class="flex items-center" title="自定义标签">自定义标签</span>
-																						</div>
-    <!---->
-																						<span>
-																							<div class="mm-dropdown mail-nav-item-dropdown">
-																								<div class="mm-dropdown-trigger">
-																									<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																											<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																										</svg>
-																									</span>
-																								</div>
-                                                <!---->
-																							</div>
-																						</span>
-																					</span>
-  <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-    <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-  </svg>
-</div>
-<ul role="menu" class="mm-menu mm-menu--inline">
-  <li class="mm-menu-item mail-sidebar-menu-item"
-      :class="{ 'mm-menu-item--active': activeMenuItem === 'PRICE' }"
-      @click="setActive('PRICE')"
-      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-    <!---->
-    <!---->
-    <div class="mail-sidebar-menu-item">
-      <span class="mail-menu-item-tag-color" style="background-color: rgb(97, 188, 129);"></span>
-      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-        <span class="flex items-center" title="价格">价格</span>
-      </div>
-      <!---->
-      <span>
-																								<div class="mm-dropdown mail-nav-item-dropdown">
-																									<div class="mm-dropdown-trigger">
-																										<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																												<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																											</svg>
-																										</span>
-																									</div>
-                                                  <!---->
-																								</div>
-																							</span>
-    </div>
-  </li>
-  <li class="mm-menu-item mail-sidebar-menu-item"
-      :class="{ 'mm-menu-item--active': activeMenuItem === 'CUSTOMER' }"
-      @click="setActive('CUSTOMER')"
-      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 56px; padding-right: 14px;">
-    <!---->
-    <!---->
-    <div class="mail-sidebar-menu-item">
-      <span class="mail-menu-item-tag-color" style="background-color: rgb(97, 188, 129);"></span>
-      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-        <span class="flex items-center" title="客户">客户</span>
-      </div>
-      <!---->
-      <span>
-																								<div class="mm-dropdown mail-nav-item-dropdown">
-																									<div class="mm-dropdown-trigger">
-																										<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																												<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																											</svg>
-																										</span>
-																									</div>
-                                                  <!---->
-																								</div>
-																							</span>
-    </div>
-  </li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-<div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
+
+<li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+<div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleShowMore">
   <!---->
   <span class="mm-menu-title">
 																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
@@ -626,7 +304,7 @@
     <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
   </svg>
 </div>
-<ul role="menu" class="mm-menu mm-menu--inline">
+<ul role="menu" class="mm-menu mm-menu--inline" v-show="isShowMoreOpen">
   <li class="mm-menu-item mail-sidebar-menu-item"
       :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MAIL' }"
       @click="deletedMailClick"
@@ -644,7 +322,7 @@
   </li>
   <li class="mm-menu-item mail-sidebar-menu-item"
       :class="{ 'mm-menu-item--active': activeMenuItem === 'SPAM' }"
-      @click="setActive('SPAM')"
+      @click="spamMailClick"
       role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
     <!---->
     <!---->
@@ -773,7 +451,11 @@ export default {
       selectedTaskId: null,
       emailTotal: 0,
       emailData: [],
-      selectedEmail: {}
+      selectedEmail: {},
+      isInboxOpen: true,
+      isOutboxOpen: true,
+      isShowMoreOpen: true,
+      isFolderOpen: true,
     };
   },
   components: {
@@ -880,6 +562,13 @@ export default {
       this.triggerDeletedMailEvent();
     },
 
+    // 垃圾邮件
+    spamMailClick() {
+      this.switchLayout('email_header');
+      this.setActive('SPAM');
+      this.triggerSpamMailEvent();
+    },
+
     switchWriteEmailPage() {
       this.currentLayout = 'write_email';
     },
@@ -904,9 +593,29 @@ export default {
       EventBus.$emit('deleted-mail-selected', 'DELETED_MAIL');
     },
 
+    triggerSpamMailEvent() {
+      EventBus.$emit('spam-mail-selected', 'SPAM_MAIL');
+    },
+
     triggerDraftsEvent() {
       EventBus.$emit('drafts-selected', 'DRAFTS');
     },
+
+    toggleInbox() {
+      this.isInboxOpen = !this.isInboxOpen;
+    },
+
+    toggleOutbox() {
+      this.isOutboxOpen = !this.isOutboxOpen;
+    },
+
+    toggleShowMore() {
+      this.isShowMoreOpen = !this.isShowMoreOpen;
+    },
+
+    toggleFolder() {
+      this.isFolderOpen = !this.isFolderOpen;
+    }
   },
 
   mounted() {

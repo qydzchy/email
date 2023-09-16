@@ -95,6 +95,7 @@
         <if test="type != null">and type = #{type}</if>
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
+        <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
         and del_flag = #{delFlag}
     </select>
 
@@ -113,6 +114,7 @@
         <if test="type != null">and mte.type = #{type}</if>
         <if test="readFlag != null "> and mte.read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
+        <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
         and mte.del_flag = #{delFlag}
         order by mte.send_date desc
         LIMIT #{offset}, #{limit}

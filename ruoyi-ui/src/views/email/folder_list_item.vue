@@ -1,9 +1,12 @@
 <template>
-  <ul role="menu" class="mm-menu mm-menu--inline" style="" data-old-padding-top="" data-old-padding-bottom="" data-old-overflow="">
-    <li v-for="folder in folders" :key="folder.id" class="mm-submenu mm-submenu--opened mail-sidebar-submenu" role="menuitem" aria-haspopup="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}" aria-expanded="true">
+  <ul role="menu" class="mm-menu mm-menu--inline" data-old-padding-top="" data-old-padding-bottom="" data-old-overflow="">
+    <li v-for="folder in folders" :key="folder.id"
+        :class="computedClass(folder)"
+        role="menuitem"
+    >
       <!---->
       <!---->
-      <div class="mm-submenu-title" :style="{ 'padding-left': paddingLeft, 'padding-right': '14px' }">
+      <div class="mm-submenu-title" :style="{ 'padding-left': paddingLeft, 'padding-right': '14px' }" @click.stop="toggleFolder(folder)">
         <!---->
         <span class="mm-menu-title">
 					<div class="right-click-menu-handler mail-menu-item-title ellipsis">
@@ -27,12 +30,13 @@
         </svg>
       </div>
 
-      <FolderTree v-if="folder.children && folder.children.length > 0" :folders="folder.children" :depth="depth+1"></FolderTree>
+      <FolderTree v-show="folder.children && folder.children.length > 0 && folder.isOpen" :folders="folder.children" :depth="depth+1" ></FolderTree>
 
     </li>
   </ul>
 </template>
 <script>
+import Vue from 'vue';
 import FolderTree from './folder_list_item.vue'
 
 export default {
@@ -53,6 +57,40 @@ export default {
   computed: {
     paddingLeft() {
       return 35 + this.depth * 21 + 'px';
+    }
+  },
+  methods: {
+    toggleFolder(folder) {
+      Vue.set(folder, 'isOpen', !folder.isOpen);
+      Vue.nextTick(() => {
+        console.log("id = " + folder.id + " name = " + folder.name + " isOpen = " + folder.isOpen);
+      });
+    },
+    computedClass(folder) {
+      return [
+        'mm-submenu',
+        folder.isOpen ? 'mm-submenu--opened' : '',
+        'mail-sidebar-submenu'
+      ];
+    },
+    initializeOpenState(folders) {
+      folders.forEach(folder => {
+        Vue.set(folder, 'isOpen', true);
+        console.log(folder.name); // 这应该现在会打印所有文件夹的名字
+        if (folder.children && folder.children.length) {
+          this.initializeOpenState(folder.children);
+        }
+      });
+    },
+  },
+  watch: {
+    folders: {
+      immediate: true,  // 立即触发处理函数
+      handler(newVal) {
+        if (newVal && newVal.length) {
+          this.initializeOpenState(newVal);
+        }
+      }
     }
   }
 }
