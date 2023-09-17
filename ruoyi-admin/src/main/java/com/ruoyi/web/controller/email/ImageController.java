@@ -1,26 +1,24 @@
 package com.ruoyi.web.controller.email;
 
 import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.email.service.ITaskEmailSendService;
+import com.ruoyi.email.service.ITaskEmailTraceService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/image")
 public class ImageController {
-
     @javax.annotation.Resource
-    private ITaskEmailSendService taskEmailSendService;
+    private ITaskEmailTraceService taskEmailTraceService;
 
     @GetMapping("/path/to/tracker.png")
-    public ResponseEntity<Resource> pathTo(@RequestParam("id") String id, HttpServletRequest request) {
+    public ResponseEntity<Resource> pathTo(@RequestParam("id") Long id) {
         if (id != null) {
             String ipAddr = IpUtils.getIpAddr();
-            // todo
+            taskEmailTraceService.getLocationToSave(id, ipAddr);
         }
 
         // 返回图片

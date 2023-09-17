@@ -276,17 +276,6 @@
 																						</span>
 																						<span class="mm-tooltip mail-toolbar-btn-item">
 																							<span class="mm-tooltip-trigger">
-																								<span>
-																									<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																											<path fill-rule="evenodd" clip-rule="evenodd" d="M10 2a4 4 0 00-4 4v2a4 4 0 00-4 4v6a4 4 0 004 4h6a4 4 0 004-4h2a4 4 0 004-4V6a4 4 0 00-4-4h-8zm2 18a2 2 0 002-2h-2a1 1 0 110-2h6a2 2 0 002-2V6a2 2 0 00-2-2h-8a2 2 0 00-2 2v6a1 1 0 11-2 0v-2a2 2 0 00-2 2v6a2 2 0 002 2h6zm2.889-12l-8.146 7.331a1 1 0 101.338 1.487L16 9.69V11a1 1 0 102 0V7a1 1 0 00-1-1h-4a1 1 0 100 2h1.889z"></path>
-																										</svg>
-																									</span>
-																								</span>
-																							</span>
-                                              <!---->
-																						</span>
-																						<span class="mm-tooltip mail-toolbar-btn-item">
-																							<span class="mm-tooltip-trigger">
 																								<div class="mm-popover">
 																									<div>
 																										<span class="">
@@ -302,7 +291,7 @@
 																							</span>
                                               <!---->
 																						</span>
-																						<span class="mm-tooltip mail-toolbar-btn-item">
+																						<span class="mm-tooltip mail-toolbar-btn-item" @click="deleteEmails">
 																							<span class="mm-tooltip-trigger">
 																								<span>
 																									<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -336,7 +325,7 @@
 																							</span>
                                               <!---->
 																						</span>
-																						<span class="mm-tooltip mail-toolbar-btn-item">
+																						<span class="mm-tooltip mail-toolbar-btn-item" @click="toggleDropdown">
 																							<span class="mm-tooltip-trigger">
 																								<span>
 																									<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -381,13 +370,30 @@
                                             <!---->
                                             <!---->
 																					</div>
-																					<div class="mail-drop-menu-wrapper" style="width: 220px; top: 0px; left: 0px; display: none;">
-																						<ul class="mail-drop-menu">
-																							<!---->
-																						</ul>
-                                            <!---->
-                                            <!---->
-																					</div>
+                                          <div class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 205px;" :style="dropdownStyle">
+                                            <ul class="mail-drop-menu" style="height: 160px;">
+                                              <li
+                                                v-for="(item, index) in menuItems"
+                                                :key="index"
+                                                :class="[
+                                                  'mail-drop-menu-item',
+                                                  `DROPMENU_55587_ITEM_${index}`,
+                                                  { 'mail-drop-menu-item-active': hoveredItem === index }
+                                                ]"
+                                                @click="moreClick(index)"
+                                                @mouseover="hoveredItem = index"
+                                                @mouseleave="hoveredItem = null"
+                                              >
+                                                <span class="mail-drop-menu-text ellipsis">
+                                                    <!---->
+                                                    <span class="">{{item}}</span>
+                                                  </span>
+                                                  <span>
+                                                    <!---->
+                                                  </span>
+                                              </li>
+                                            </ul>
+                                          </div>
 																				</div>
 																				<div class="mail-detail-component">
 																					<div class="mm-spinner" style="display: none;">
@@ -816,7 +822,7 @@
 <script>
 import { EventBus } from "@/api/email/event-bus";
 import writeEmailLayout from './write_email.vue';
-import {fixedEmail, list, quickReply} from "@/api/email/email";
+import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail} from "@/api/email/email";
 import emailHeaderLayout from "@/views/email/email_header.vue";
 import sendSuccessLayout from "@/views/email/send_success.vue";
 import setup from "@/views/email/setup.vue";
@@ -838,7 +844,16 @@ export default {
       isRightPanelExpanded: true,
       isReplying: false,
       isSending: false,
-      replyContent: ''
+      replyContent: '',
+      isDropdownShown: false,
+      hoveredItem: null,
+      menuItems: [
+        '标为未读',
+        '作为附件转发',
+        '导出邮件',
+        '新建日程',
+        '标为垃圾邮件'
+      ]
     }
   },
   components: {
@@ -863,6 +878,9 @@ export default {
   computed: {
     totalPages() {
       return Math.ceil(this.total / this.pageSize);
+    },
+    dropdownStyle() {
+      return this.isDropdownShown ? '' : 'display: none;';
     }
   },
 
@@ -887,26 +905,6 @@ export default {
       this.readFlag = null;
       this.pendingFlag = null;
       this.fetchEmailList(taskId);
-    },
-
-    fetchEmailList(taskId) {
-      this.taskId = taskId;
-      const query = {
-        taskId: this.taskId,
-        // 邮件类型 1.收取 2.发送
-        type: 1,
-        readFlag: this.readFlag,
-        pendingFlag: this.pendingFlag,
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
-      }
-
-      list(query).then(response => {
-        this.localEmailList = response.rows;
-        this.total = response.total;
-      }).catch(error => {
-        console.error("Failed to fetch emails:", error);
-      });
     },
 
     toggleActive(email) {
@@ -947,24 +945,6 @@ export default {
       }
     },
 
-    fetchEmailData(selectedEmailType) {
-      if (selectedEmailType === 'ALL_RECEIVED') {
-        this.readFlag = null;
-        this.pendingFlag = null;
-        this.currentPage = 1;
-        this.fetchEmailList(null);
-      } else if (selectedEmailType === 'PENDING_MAIL') {
-        this.readFlag = null;
-        this.pendingFlag = true;
-        this.currentPage = 1;
-        this.fetchEmailList(null);
-      } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
-        this.readFlag = false;
-        this.pendingFlag = null;
-        this.currentPage = 1;
-        this.fetchEmailList(null);
-      }
-    },
     toggleRightPanel() {
       this.isRightPanelExpanded = !this.isRightPanelExpanded;
     },
@@ -1019,7 +999,116 @@ export default {
     toggleReply(email) {
       // 触发事件并传递参数
       EventBus.$emit('switch-to-reply-email', email);
-    }
+    },
+
+    // 删除邮件
+    async deleteEmails() {
+      const emailIds = [];
+      emailIds.push(this.activeEmailId);
+      if (emailIds.length) {
+        const data = {
+          "ids": emailIds
+        };
+        try {
+          const response = await deleteEmail(data);
+          if (response.code === 200) {
+            let found = false;
+            for (const monthGroup of this.localEmailList) {
+              for (const month in monthGroup) {
+                const emails = monthGroup[month];
+                const index = emails.findIndex(email => email.id === this.activeEmailId);
+                if (index > -1) {
+                  emails.splice(index, 1);
+                  this.total -= 1;
+
+                  if (emails[index]) {
+                    // 如果下一个邮件存在
+                    this.currentEmailDetail = emails[index];
+                  } else if (emails[index - 1]) {
+                    // 如果下一个邮件不存在，但上一个邮件存在
+                    this.currentEmailDetail = emails[index - 1];
+                  } else {
+                    // 如果没有其他邮件
+                    this.currentEmailDetail = {};
+                  }
+
+                  this.activeEmailId = this.currentEmailDetail.id || null;
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
+            }
+          } else {
+            this.$message.error('删除失败');
+          }
+        } catch (error) {
+          console.error('邮件删除出现错误:', error);
+          throw error;
+        }
+      }
+    },
+    toggleDropdown() {
+      this.isDropdownShown = !this.isDropdownShown;
+    },
+
+    // 标记为未读邮件
+    async unReadEmails(emailIds) {
+      const data = {
+        "ids": emailIds,
+        "readFlag": false
+      };
+      try {
+        const response = await readEmail(data);
+        if (response.code === 200) {
+          this.$message.success("成功标记为未读");
+          this.isDropdownShown = false;
+          return;
+        }
+      } catch (error) {
+        console.error('标记为未读出现错误:', error);
+        throw error;
+      }
+    },
+
+    // 标识为垃圾邮件
+    async spamEmails(emailIds) {
+      const data = {
+        "ids": emailIds,
+        "spamFlag": true
+      };
+      try {
+        const response = await spamEmail(data);
+        if (response.code === 200) {
+          this.$message.success("垃圾邮件标记成功");
+          this.isDropdownShown = false;
+          return;
+        }
+      } catch (error) {
+        console.error('垃圾邮件标记出现错误:', error);
+        throw error;
+      }
+    },
+
+    moreClick(index) {
+      this.selectedItem = index;
+      const ids = [];
+      ids.push(this.activeEmailId);
+
+      if (ids.length) {
+        if (this.menuItems[index] === '标为未读') {
+          this.unReadEmails(ids);
+        } else if (this.menuItems[index] === '作为附件转发') {
+
+        } else if (this.menuItems[index] === '导出邮件') {
+
+        } else if (this.menuItems[index] === '新建日程') {
+
+        } else if (this.menuItems[index] === '标为垃圾邮件') {
+          this.spamEmails(ids);
+        }
+      }
+    },
   }
 }
 </script>

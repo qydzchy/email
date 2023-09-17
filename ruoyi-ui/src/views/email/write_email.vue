@@ -299,10 +299,10 @@
               </label>
             </div>
               <div class="split"></div>
-              <div class="select-handle-time" @click="togglePendingTime">
+              <div class="select-handle-time">
                 <div class="mm-popover">
                   <div>
-                                          <span class="time">
+                                          <span class="time" @click.stop="showPending">
                                             <span class="okki-icon-wrap time-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                                 <path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
@@ -312,8 +312,24 @@
                   </div>
                   <!---->
                 </div>
-                <PendingTimePopover v-if="showPendingTime" @showCustom="showCustomTimeComponent"></PendingTimePopover>
-<!--                <CustomTimePopover v-if="showCustomTime"></CustomTimePopover>-->
+                <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: -200px; left: 95px; will-change: top, left; transform-origin: 100% bottom;">
+                  <!---->
+                  <div>
+                    <!---->
+                    <div class="mail-pending-handler">
+                      <div class="title" v-if="showPendingTime">
+                        <span>请选择稍后处理时间: </span>
+                      </div>
+                      <div class="title" v-if="showCustomTime">
+                        <span class="bold back-block">
+                          <i class="m-icon icon-left-thin"></i> 自定义时间
+                        </span>
+                      </div>
+                      <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime"></PendingTimePopover>
+                      <CustomTimePopover v-if="showCustomTime"></CustomTimePopover>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             </div>
@@ -428,10 +444,10 @@ export default {
       receiver: [],
       cc: [],
       bcc: [],
-      showCustomTime: true,
-      showPendingTime: false,
       messageId: null,
       htmlText: '',
+      showPendingTime: false,
+      showCustomTime: false,
     };
   },
   props: {
@@ -714,31 +730,24 @@ export default {
     getFileExtension(filename) {
       return filename.split('.').pop();
     },
-
-    togglePendingTime() {
-      this.showPendingTime = !this.showPendingTime;
-      this.showCustomTime = false;
-    },
-    showCustomTimeComponent() {
-      this.showCustomTime = true;
-      this.showPendingTime = false;
-    },
     formattedEmailContent() {
       let emailContent = `
       <div style="font-size: 12px;background:#efefef;padding:8px;">
         <div><b>From: </b>&nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
         <div><b>Send time: </b>&nbsp;${this.formatDate(this.selectedEmail.sendDate)}</div>
-        <div>${this.formatEmailRecipients('To', this.parseEmailString(this.selectedEmail.receiver))}</div>
     `;
 
-      if (this.selectedEmail.cc.length) {
+      if (this.selectedEmail.receiver) {
+        emailContent += `<div>${this.formatEmailRecipients('To', this.parseEmailString(this.selectedEmail.receiver))}</div>`;
+      }
+
+      if (this.selectedEmail.cc) {
         emailContent += `<div>${this.formatEmailRecipients('Cc', this.parseEmailString(this.selectedEmail.cc))}</div>`;
       }
 
-      emailContent += `
-        <div><b>Subject: </b>&nbsp;${this.selectedEmail.title}</div>
-      </div>
-    `;
+      if (this.selectedEmail.title) {
+        emailContent += `<div><b>Subject: </b>&nbsp;${this.selectedEmail.title}</div>`;
+      }
 
       return emailContent;
     },
@@ -777,6 +786,21 @@ export default {
       const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
 
       return `${dayName}, ${monthName} ${dayOfMonth}, ${year} ${hours}:${minutes} ${ampm}`;
+    },
+
+    showPending() {
+      if (this.showPendingTime || this.showCustomTime) {
+        this.showPendingTime = false;
+      } else {
+        this.showPendingTime = true;
+      }
+
+      this.showCustomTime = false;
+    },
+
+    handleCustomTime() {
+      this.showPendingTime = false;
+      this.showCustomTime = true;
     }
   },
   mounted() {
@@ -799,11 +823,22 @@ export default {
   },
 
   created() {
-    this.formData.title = "Re: " + this.selectedEmail.title;
-    this.formData.id = this.selectedEmail.id;
-    this.receiver.push(this.selectedEmail.fromer);
-    let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
-    this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+    if (this.selectedEmail.title) {
+      this.formData.title = "Re: " + this.selectedEmail.title;
+    }
+
+    if (this.selectedEmail.id) {
+      this.formData.id = this.selectedEmail.id;
+    }
+
+    if (this.selectedEmail.fromer) {
+      this.receiver.push(this.selectedEmail.fromer);
+    }
+
+    if (this.selectedEmail.content) {
+      let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
+      this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+    }
   }
 };
 </script>

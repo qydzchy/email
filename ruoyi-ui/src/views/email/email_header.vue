@@ -167,7 +167,7 @@
 															</div>
 
 
-															<div class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 250px;" :style="dropdownStyle">
+															<div class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 215px;" :style="dropdownStyle">
 																<ul class="mail-drop-menu" style="height: 96px;">
                                   <li
                                     v-for="(item, index) in menuItems"
@@ -527,7 +527,6 @@ export default {
       return Math.ceil(this.total / this.pageSize);
     },
     dropdownStyle() {
-      // 如果isDropdownShown为true，则返回空字符串，否则返回"display: none"
       return this.isDropdownShown ? '' : 'display: none;';
     }
   },
@@ -822,7 +821,6 @@ export default {
         const response = await readEmail(data);
         if (response.code === 200) {
           this.$message.success("成功标记为未读");
-          this.closeSelected();
           return;
         }
       } catch (error) {

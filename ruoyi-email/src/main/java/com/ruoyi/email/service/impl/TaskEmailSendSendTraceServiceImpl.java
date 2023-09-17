@@ -15,7 +15,7 @@ import com.ruoyi.email.domain.TaskEmailSendTrace;
  * @date 2023-07-31
  */
 @Service
-public class TaskEmailSendTraceServiceImpl implements ITaskEmailSendTraceService
+public class TaskEmailSendSendTraceServiceImpl implements ITaskEmailSendTraceService
 {
     @Autowired
     private TaskEmailSendTraceMapper taskEmailSendTraceMapper;

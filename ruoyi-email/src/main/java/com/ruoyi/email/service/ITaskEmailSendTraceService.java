@@ -9,7 +9,7 @@ import com.ruoyi.email.domain.TaskEmailSendTrace;
  * @author tangJM
  * @date 2023-07-31
  */
-public interface ITaskEmailSendTraceService 
+public interface ITaskEmailSendTraceService
 {
     /**
      * 查询邮件追踪

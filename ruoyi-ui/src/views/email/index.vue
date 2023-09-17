@@ -456,6 +456,7 @@ export default {
       isOutboxOpen: true,
       isShowMoreOpen: true,
       isFolderOpen: true,
+      isDropdownShown: false,
     };
   },
   components: {
@@ -676,7 +677,6 @@ export default {
     EventBus.$off('switch-send-success');
     EventBus.$off('switch-index');
     EventBus.$off('switch-to-reply-email');
-  }
-
+  },
 };
 </script>

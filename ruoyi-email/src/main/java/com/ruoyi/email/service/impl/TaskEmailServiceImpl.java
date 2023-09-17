@@ -29,6 +29,7 @@ import com.ruoyi.email.service.ITaskEmailContentService;
 import com.ruoyi.email.service.ITaskService;
 import com.ruoyi.email.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,9 @@ import javax.mail.internet.*;
 @Service
 public class TaskEmailServiceImpl implements ITaskEmailService {
 
+    // 邮件追踪
+    private static final String HTML_IMG_TRACE = "<img src='%s/image/path/to/tracker.png?id=%s' style='display:none'>";
+
     @Resource
     private TaskEmailMapper taskEmailMapper;
     @Resource
@@ -62,6 +66,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     @Lazy
     @Resource
     private ITaskService taskService;
+
+    @Value("${email.trace.server}")
+    private String traceServer;
 
     /**
      * 查询邮件
@@ -479,8 +486,14 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 attachmentPaths = filePathList.toArray(new String[filePathList.size()]);
             }
 
+            // 是否追踪邮件
+            Long traceEmailId = null;
+            if (Optional.ofNullable(taskEmail.getTraceFlag()).orElse(false)) {
+                traceEmailId = taskEmail.getId();
+            }
+
             messageId = sendEmail(task.getOutgoingServer(), task.getOutgoingPort(), task.getOutgoingSslFlag(), task.getAccount(), task.getPassword(),
-                    mailTos, mailCcs, mailBccs, title, content, taskEmail.getInReplyTo(), taskEmail.getReference(),
+                    mailTos, mailCcs, mailBccs, title, content, taskEmail.getInReplyTo(), taskEmail.getReference(), traceEmailId,
                     task.getProxyServer(), task.getProxyPort(),
                     task.getProxyUsername(), task.getProxyPassword(), attachmentPaths);
 
@@ -596,7 +609,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      */
     public String sendEmail(String host, Integer port, boolean useSSL, String mailFrom, String password,
                           String[] mailTos, String[] mailCcs, String[] mailBccs,
-                          String title, String content, String inReplyTo, String references, String proxyHost, Integer proxyPort,
+                          String title, String content, String inReplyTo, String references, Long traceEmailId, String proxyHost, Integer proxyPort,
                           String proxyUser, String proxyPassword, String[] attachmentPaths) throws MessagingException {
         Properties properties = new Properties();
 
@@ -671,7 +684,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         // 创建文本消息部分
         BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(content, "text/html;charset=UTF-8");
+        if (traceEmailId == null) {
+            messageBodyPart.setContent(content, "text/html;charset=UTF-8");
+        } else {
+            messageBodyPart.setContent(content + String.format(HTML_IMG_TRACE, traceServer, traceEmailId), "text/html;charset=UTF-8");
+        }
+
         multipart.addBodyPart(messageBodyPart);
 
         // 添加附件

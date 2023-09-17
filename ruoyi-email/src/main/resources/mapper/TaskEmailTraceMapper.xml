@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskEmailTraceMapper">
+
+    <resultMap type="TaskEmailTrace" id="TaskEmailTraceResult">
+        <result property="id"    column="id"    />
+        <result property="emailId"    column="email_id"    />
+        <result property="beijingTime"    column="beijing_time"    />
+        <result property="localTime"    column="local_time"    />
+        <result property="ip"    column="ip"    />
+        <result property="location"    column="location"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectTaskEmailTraceVo">
+        select id, email_id, beijing_time, local_time, ip, location, del_flag from mailbox_task_email_trace
+    </sql>
+
+    <select id="selectTaskEmailTraceList" parameterType="TaskEmailTrace" resultMap="TaskEmailTraceResult">
+        <include refid="selectTaskEmailTraceVo"/>
+        <where>
+            <if test="emailId != null "> and email_id = #{emailId}</if>
+            <if test="beijingTime != null "> and beijing_time = #{beijingTime}</if>
+            <if test="localTime != null "> and local_time = #{localTime}</if>
+            <if test="ip != null  and ip != ''"> and ip = #{ip}</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+        </where>
+    </select>
+
+    <select id="selectTaskEmailTraceById" parameterType="Long" resultMap="TaskEmailTraceResult">
+        <include refid="selectTaskEmailTraceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTaskEmailTrace" parameterType="TaskEmailTrace" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_email_trace
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="emailId != null">email_id,</if>
+            <if test="beijingTime != null">beijing_time,</if>
+            <if test="localTime != null">local_time,</if>
+            <if test="ip != null and ip != ''">ip,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="emailId != null">#{emailId},</if>
+            <if test="beijingTime != null">#{beijingTime},</if>
+            <if test="localTime != null">#{localTime},</if>
+            <if test="ip != null and ip != ''">#{ip},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTaskEmailTrace" parameterType="TaskEmailTrace">
+        update mailbox_task_email_trace
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="emailId != null">email_id = #{emailId},</if>
+            <if test="beijingTime != null">beijing_time = #{beijingTime},</if>
+            <if test="localTime != null">local_time = #{localTime},</if>
+            <if test="ip != null and ip != ''">ip = #{ip},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTaskEmailTraceById" parameterType="Long">
+        delete from mailbox_task_email_trace where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskEmailTraceByIds" parameterType="String">
+        delete from mailbox_task_email_trace where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
