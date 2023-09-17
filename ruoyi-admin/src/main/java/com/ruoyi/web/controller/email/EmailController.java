@@ -57,13 +57,15 @@ public class EmailController extends BaseController {
                                         Boolean delFlag,
                                         Boolean draftsFlag,
                                         Boolean spamFlag,
+                                        Boolean traceFlag,
+                                        Long folderId,
                                         Integer type,
                                         @NotNull(message = "页数不能为空") Integer pageNum,
                                         @NotNull(message = "页大小不能为空") Integer pageSize)
     {
         List<Long> taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
 
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, folderId, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 

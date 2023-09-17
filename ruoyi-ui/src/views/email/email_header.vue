@@ -535,12 +535,15 @@ export default {
   // 在B组件中
   created() {
     EventBus.$on('task-selected', this.fetchEmailsForTask);
+    EventBus.$on('folder-selected', this.fetchFolderTask);
     EventBus.$on('all-received-selected', this.fetchEmailData);
     EventBus.$on('pending-mail-selected', this.fetchEmailData);
     EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
     EventBus.$on('deleted-mail-selected', this.fetchEmailData);
     EventBus.$on('drafts-selected', this.fetchEmailData);
     EventBus.$on('spam-mail-selected', this.fetchEmailData);
+    EventBus.$on('trace-information-selected', this.fetchEmailData);
+    EventBus.$on('complete-shipment-selected', this.fetchEmailData);
     if (this.emailList === undefined || this.emailList === null || this.emailList.length === 0) {
       this.localEmailList = [];
     } else {
@@ -560,12 +563,15 @@ export default {
 
   beforeDestroy() {
     EventBus.$off('task-selected', this.fetchEmailsForTask);
+    EventBus.$off('folder-selected', this.fetchFolderTask);
     EventBus.$off('all-received-selected', this.fetchEmailData);
     EventBus.$off('pending-mail-selected', this.fetchEmailData);
     EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
     EventBus.$off('deleted-mail-selected', this.fetchEmailData);
     EventBus.$off('drafts-selected', this.fetchEmailData);
     EventBus.$off('spam-mail-selected', this.fetchEmailData);
+    EventBus.$off('trace-information-selected', this.fetchEmailData);
+    EventBus.$off('complete-shipment-selected', this.fetchEmailData);
   },
   methods: {
     fetchEmailsForTask(taskId, type) {
@@ -575,18 +581,25 @@ export default {
       this.fetchEmailList(taskId, type);
     },
 
-    fetchEmailList(taskId, type) {
+    fetchFolderTask(folderId) {
+      this.currentPage = 1;
+      this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
+    },
+
+    fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
       this.taskId = taskId;
       this.type = type;
       const query = {
         taskId: this.taskId,
         // 邮件类型 1.收取 2.发送
         type: this.type,
-        readFlag: this.readFlag,
-        pendingFlag: this.pendingFlag,
-        delFlag: this.delFlag,
-        draftsFlag: this.draftsFlag,
-        spamFlag: this.spamFlag,
+        readFlag: readFlag,
+        pendingFlag: pendingFlag,
+        delFlag: delFlag,
+        draftsFlag: draftsFlag,
+        spamFlag: spamFlag,
+        traceFlag: traceFlag,
+        folderId: folderId,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -640,29 +653,29 @@ export default {
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.pendingFlag = null;
         this.currentPage = 1;
-        this.fetchEmailList(null, 1);
+        this.fetchEmailList(null, 1, null, null, null, null, null, null);
+      } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
+        this.currentPage = 1;
+        this.fetchEmailList(null, 2, null, null, null, null, null, null);
       } else if (selectedEmailType === 'PENDING_MAIL') {
-        this.pendingFlag = true;
         this.currentPage = 1;
-        this.fetchEmailList(null);
+        this.fetchEmailList(null, null, null, true, null, null, null, null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
-        this.readFlag = false;
         this.currentPage = 1;
-        this.fetchEmailList(null);
+        this.fetchEmailList(null, 1, false, null, null, null, null, null);
       } else if (selectedEmailType === 'DELETED_MAIL') {
-        this.delFlag = true;
         this.currentPage = 1;
-        this.fetchEmailList(null);
+        this.fetchEmailList(null, null, null, null, true, null, null, null);
       } else if (selectedEmailType === 'DRAFTS') {
-        this.draftsFlag = true;
         this.currentPage = 1;
-        this.fetchEmailList(null, 2);
-      } else if (selectedEmailType === 'SPAM') {
-        this.spamFlag = true;
+        this.fetchEmailList(null, 2, null, null, null,true, null, null);
+      } else if (selectedEmailType === 'SPAM_MAIL') {
         this.currentPage = 1;
-        this.fetchEmailList(null);
+        this.fetchEmailList(null, null, null, null, null, null, true, null);
+      } else if (selectedEmailType === 'TRACE_INFORMATION') {
+        this.currentPage = 1;
+        this.fetchEmailList(null, null, null, null, null, null, null, true);
       }
     },
 

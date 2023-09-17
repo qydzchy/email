@@ -194,7 +194,7 @@
                           <ul role="menu" class="mm-menu mm-menu--inline" v-show="isOutboxOpen">
                             <li class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'COMPLETE_SHIPMENT' }"
-                                @click="setActive('COMPLETE_SHIPMENT')"
+                                @click="completeShipmentClick"
                                 role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
@@ -287,7 +287,7 @@
                               <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                             </svg>
                           </div>
-                          <FolderTree :folders="folders" v-show="isFolderOpen"></FolderTree>
+                          <FolderTree :folders="folders" v-show="isFolderOpen" @folder-selected="folderClick"></FolderTree>
                         </li>
 
 <li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
@@ -337,7 +337,7 @@
   </li>
   <li class="mm-menu-item mail-sidebar-menu-item"
       :class="{ 'mm-menu-item--active': activeMenuItem === 'TRACK_INFORMATION' }"
-      @click="setActive('TRACK_INFORMATION')"
+      @click="traceInformationClick"
       role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
     <!---->
     <!---->
@@ -524,12 +524,27 @@ export default {
       this.setActive('SEND_' + taskId);
     },
 
+    // 文件夹
+    folderClick(folderId) {
+      console.log("folderId = " + folderId);
+      this.switchLayout('email_header');
+      this.onFolderClick(folderId);
+    },
+
     // 全部收件
     allReceivedClick() {
       this.selectedTaskId = null;
       this.switchLayout('email_header');
       this.setActive('ALL_RECEIVED');
       this.triggerAllReceivedEvent();
+    },
+
+    // 全部发件
+    completeShipmentClick() {
+      this.selectedTaskId = null;
+      this.switchLayout('email_header');
+      this.setActive('COMPLETE_SHIPMENT');
+      this.triggerCompleteShipmentEvent();
     },
 
     // 待处理邮件
@@ -569,6 +584,13 @@ export default {
       this.triggerSpamMailEvent();
     },
 
+    // 追踪邮件
+    traceInformationClick() {
+      this.switchLayout('email_header');
+      this.setActive('TRACK_INFORMATION');
+      this.triggerTraceInformationEvent();
+    },
+
     switchWriteEmailPage() {
       this.currentLayout = 'write_email';
     },
@@ -577,8 +599,16 @@ export default {
       EventBus.$emit('task-selected', taskId, type);
     },
 
+    onFolderClick(folderId) {
+      EventBus.$emit('folder-selected', folderId);
+    },
+
     triggerAllReceivedEvent() {
       EventBus.$emit('all-received-selected', 'ALL_RECEIVED');
+    },
+
+    triggerCompleteShipmentEvent() {
+      EventBus.$emit('complete-shipment-selected', 'COMPLETE_SHIPMENT');
     },
 
     triggerPendingMailEvent() {
@@ -595,6 +625,10 @@ export default {
 
     triggerSpamMailEvent() {
       EventBus.$emit('spam-mail-selected', 'SPAM_MAIL');
+    },
+
+    triggerTraceInformationEvent() {
+      EventBus.$emit('trace-information-selected', 'TRACK_INFORMATION');
     },
 
     triggerDraftsEvent() {

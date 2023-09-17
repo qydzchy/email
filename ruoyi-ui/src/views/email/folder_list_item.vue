@@ -30,7 +30,7 @@
         </svg>
       </div>
 
-      <FolderTree v-show="folder.children && folder.children.length > 0 && folder.isOpen" :folders="folder.children" :depth="depth+1" ></FolderTree>
+      <FolderTree v-show="folder.children && folder.children.length > 0 && folder.isOpen" :folders="folder.children" :depth="depth+1" @folder-selected="propagateFolderSelected" @folder-clicked="handleFolderClicked"></FolderTree>
 
     </li>
   </ul>
@@ -61,6 +61,12 @@ export default {
   },
   methods: {
     toggleFolder(folder) {
+      this.clearAllFolderSelection(this.$props.folders, folder.id);
+      Vue.set(folder, 'isSelect', true);
+      this.$emit('folder-selected', folder.id);
+      this.$emit('folder-clicked', folder);
+
+
       Vue.set(folder, 'isOpen', !folder.isOpen);
       Vue.nextTick(() => {
         console.log("id = " + folder.id + " name = " + folder.name + " isOpen = " + folder.isOpen);
@@ -70,18 +76,40 @@ export default {
       return [
         'mm-submenu',
         folder.isOpen ? 'mm-submenu--opened' : '',
-        'mail-sidebar-submenu'
+        folder.isSelect ? 'mm-submenu--self-active' : '',
+        'mail-sidebar-submenu',
       ];
     },
     initializeOpenState(folders) {
       folders.forEach(folder => {
         Vue.set(folder, 'isOpen', true);
-        console.log(folder.name); // 这应该现在会打印所有文件夹的名字
+        Vue.set(folder, 'isSelect', false);
         if (folder.children && folder.children.length) {
           this.initializeOpenState(folder.children);
         }
       });
     },
+
+    clearAllFolderSelection(folders, exceptId) {
+      folders.forEach(f => {
+        if (f.id !== exceptId) {
+            Vue.set(f, 'isSelect', false);
+        }
+        if (f.children && f.children.length) {
+          this.clearAllFolderSelection(f.children, exceptId);
+        }
+      });
+    },
+
+    propagateFolderSelected(folderId) {
+      this.$emit('folder-selected', folderId);
+    },
+
+    handleFolderClicked(clickedFolder) {
+      this.clearAllFolderSelection(this.folders);
+      Vue.set(clickedFolder, 'isSelect', true);
+    }
+
   },
   watch: {
     folders: {

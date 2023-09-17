@@ -96,6 +96,8 @@
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
         <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
+        <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
+        <if test="folderId != null "> and folder_id = #{folderId}</if>
         and del_flag = #{delFlag}
     </select>
 
@@ -107,14 +109,16 @@
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}
         </foreach>
-        and mte.status in
+        and status in
         <foreach collection="statusList" item="status" open="(" separator="," close=")">
             #{status}
         </foreach>
         <if test="type != null">and mte.type = #{type}</if>
         <if test="readFlag != null "> and mte.read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
-        <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
+        <if test="spamFlag != null "> and mte.spam_flag = #{spamFlag}</if>
+        <if test="traceFlag != null "> and mte.trace_flag = #{traceFlag}</if>
+        <if test="folderId != null "> and mte.folder_id = #{folderId}</if>
         and mte.del_flag = #{delFlag}
         order by mte.send_date desc
         LIMIT #{offset}, #{limit}
