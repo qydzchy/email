@@ -168,4 +168,11 @@ public interface ITaskEmailService
      * @return
      */
     boolean moveFolder(List<Long> ids, Long folderId);
+
+    /**
+     * 根据id获取邮件文件
+     * @param id
+     * @return
+     */
+    String getEmailPath(Long id);
 }

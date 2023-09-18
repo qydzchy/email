@@ -214,4 +214,9 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
         List<AttachmentListVO> attachmentListVOList = taskEmailAttachmentMapper.getByTaskIdAndEmailId(emailId, userId);
         return attachmentListVOList;
     }
+
+    @Override
+    public List<TaskEmailAttachment> listByEmailIds(List<Long> emailIds) {
+        return taskEmailAttachmentMapper.selectByEmailIds(emailIds);
+    }
 }

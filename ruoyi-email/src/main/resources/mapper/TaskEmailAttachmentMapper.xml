@@ -51,6 +51,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id} and create_id = #{createId} and del_flag = 0
     </select>
 
+    <select id="selectByEmailIds" resultMap="TaskEmailAttachmentResult">
+        <include refid="selectTaskEmailAttachmentVo"/>
+        where email_id in
+        <foreach item="emailId" collection="emailIds" open="(" separator="," close=")">
+            #{emailId}
+        </foreach>
+        and del_flag = 0
+    </select>
+
     <insert id="insertTaskEmailAttachment" parameterType="TaskEmailAttachment" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email_attachment
         <trim prefix="(" suffix=")" suffixOverrides=",">

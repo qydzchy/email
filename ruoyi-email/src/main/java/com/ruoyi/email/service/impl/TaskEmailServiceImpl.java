@@ -173,6 +173,22 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         int limit = pageSize;
         List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, folderId, statusList, offset, limit);
 
+        List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
+        List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.listByEmailIds(ids);
+        if (taskEmailAttachmentList == null) taskEmailAttachmentList = Collections.emptyList();
+        Map<Long, List<TaskEmailAttachment>> attachmentGroupMap = taskEmailAttachmentList.stream().collect(Collectors.groupingBy(taskEmailAttachment -> taskEmailAttachment.getEmailId()));
+
+        emailListVOList.stream().forEach(emailListVO -> {
+            Long id = emailListVO.getId();
+            if (attachmentGroupMap.containsKey(id)) {
+                List<TaskEmailAttachment> taskEmailAttachmentGroupList = attachmentGroupMap.get(id);
+                emailListVO.setTaskEmailAttachmentList(taskEmailAttachmentGroupList);
+            } else {
+                emailListVO.setTaskEmailAttachmentList(Collections.emptyList());
+            }
+        });
+
+
         Map<String, List<EmailListVO>> data = new LinkedHashMap<>();
         emailListVOList.stream().forEach(emailListVO -> {
             Date sendDate = emailListVO.getSendDate();
@@ -549,6 +565,22 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     @Override
     public boolean moveFolder(List<Long> ids, Long folderId) {
         return taskEmailMapper.batchUpdateFolderId(ids, folderId);
+    }
+
+    @Override
+    public String getEmailPath(Long id) {
+        TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
+        if (taskEmail == null) {
+            log.info("不存在id为 {} 的邮件", id);
+            throw new ServiceException();
+        }
+
+        if (StringUtils.isBlank(taskEmail.getEmlPath())) {
+            log.info("不存在id为 {} 的邮件文件路径", id);
+            throw new ServiceException();
+        }
+
+        return taskEmail.getEmlPath();
     }
 
     /**

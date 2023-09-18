@@ -17,13 +17,21 @@ import com.ruoyi.email.domain.vo.email.EmailReadFlagBatchUpdateDTO;
 import com.ruoyi.email.domain.vo.email.EmailSpamFlagBatchUpdateDTO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.util.Pair;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -178,5 +186,40 @@ public class EmailController extends BaseController {
     {
         return toAjax(taskEmailService.moveFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
     }
+
+        /**
+         * 邮件导出
+         */
+        @PreAuthorize("@ss.hasPermi('email:export')")
+        @GetMapping("/export/{id}")
+        public ResponseEntity<org.springframework.core.io.Resource> export(@PathVariable Long id) {
+            // 获取邮件路径
+            String emailPath = taskEmailService.getEmailPath(id);
+            Path filePath = Paths.get(emailPath).normalize();
+            org.springframework.core.io.Resource resource = null;
+            try {
+                resource = new UrlResource(filePath.toUri());
+            } catch (MalformedURLException e) {
+                logger.error("获取资源异常：{}", e);
+                throw new ServiceException();
+            }
+
+            if (!resource.exists()) {
+                throw new ServiceException("文件不存在");
+            }
+
+            String encodedFilename = null;
+            try {
+                encodedFilename = URLEncoder.encode(resource.getFilename(), "UTF-8").replaceAll("\\+", "%20");
+            } catch (UnsupportedEncodingException e) {
+                throw new ServiceException();
+            }
+
+            String contentDisposition = "attachment; filename*=UTF-8''" + encodedFilename;
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                    .body(resource);
+        }
 
 }

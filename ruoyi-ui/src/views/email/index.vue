@@ -384,6 +384,7 @@
               :emailData="emailData"
               :emailTotal="emailTotal"
               :selectedTaskId="selectedTaskId"
+              :emailType="currentEmailType"
               @switch="switchLayout"
             ></component>
 
@@ -449,6 +450,7 @@ export default {
       currentLayout: 'email_header',
       isLeftPaneVisible: true,
       selectedTaskId: null,
+      currentEmailType: '',
       emailTotal: 0,
       emailData: [],
       selectedEmail: {},
@@ -476,12 +478,13 @@ export default {
     }
   },
   methods: {
-    switchLayout(layoutName, email, emailData, emailTotal) {
+    switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
       this.currentLayout = layoutName;
       this.selectedEmail = email;
       this.emailData = emailData;
       this.emailTotal = emailTotal;
-      this.selectedTaskId = this.selectedTaskId;
+      this.selectedTaskId = email.id;
+      this.currentEmailType = currentEmailType;
     },
 
     toggleLeftPane() {

@@ -613,20 +613,20 @@ export default {
 
     toggleActive(email) {
       this.activeEmailId = email.id;
-      this.$emit('switch', 'email_content', email, this.localEmailList, this.total);
+      this.$emit('switch', 'email_content', email, this.localEmailList, this.total, this.currentEmailType);
     },
 
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage = Number(this.currentPage) + 1;
-        this.fetchEmailList(this.taskId, this.type);
+        this.fetchEmailData(this.currentEmailType);
       }
     },
 
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage = Number(this.currentPage) - 1;
-        this.fetchEmailList(this.taskId, this.type);
+        this.fetchEmailData(this.currentEmailType);
       }
     },
 
@@ -652,28 +652,20 @@ export default {
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.currentPage = 1;
         this.fetchEmailList(null, 1, null, null, null, null, null, null);
       } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
-        this.currentPage = 1;
         this.fetchEmailList(null, 2, null, null, null, null, null, null);
       } else if (selectedEmailType === 'PENDING_MAIL') {
-        this.currentPage = 1;
         this.fetchEmailList(null, null, null, true, null, null, null, null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
-        this.currentPage = 1;
         this.fetchEmailList(null, 1, false, null, null, null, null, null);
       } else if (selectedEmailType === 'DELETED_MAIL') {
-        this.currentPage = 1;
         this.fetchEmailList(null, null, null, null, true, null, null, null);
       } else if (selectedEmailType === 'DRAFTS') {
-        this.currentPage = 1;
         this.fetchEmailList(null, 2, null, null, null,true, null, null);
       } else if (selectedEmailType === 'SPAM_MAIL') {
-        this.currentPage = 1;
         this.fetchEmailList(null, null, null, null, null, null, true, null);
       } else if (selectedEmailType === 'TRACE_INFORMATION') {
-        this.currentPage = 1;
         this.fetchEmailList(null, null, null, null, null, null, null, true);
       }
     },
@@ -746,6 +738,7 @@ export default {
 
     refresh() {
       this.$message.info("正在加载");
+      this.currentPage = 1;
       this.fetchEmailData(this.currentEmailType);
     },
 
@@ -773,6 +766,7 @@ export default {
       this.isDropdownShown = false;
       this.toggleAllEmails();
       // 刷新邮件列表
+      this.currentPage = 1;
       this.fetchEmailData(this.currentEmailType);
     },
 

@@ -380,7 +380,7 @@
                                                   `DROPMENU_55587_ITEM_${index}`,
                                                   { 'mail-drop-menu-item-active': hoveredItem === index }
                                                 ]"
-                                                @click="moreClick(index)"
+                                                @click="moreItemClick(index)"
                                                 @mouseover="hoveredItem = index"
                                                 @mouseleave="hoveredItem = null"
                                               >
@@ -448,7 +448,7 @@
                                                     <!---->
                                                     <!---->
 																									</div>
-																									<div class="mm-popover">
+																									<div class="mm-popover" @click="toggleEmailDropdown">
 																										<div>
 																											<span class="icon-caret-down m-icon"></span>
 																										</div>
@@ -457,6 +457,284 @@
 																								</div>
 																							</div>
 																						</div>
+
+                                            <div class="mm-outside mail-detail-tool-popover mm-popover-popper" x-placement="bottom-end" style="position: absolute; will-change: top, left; transform-origin: 100% top; top: 100px; left: 600px;" :style="dropdownEmailStyle">
+                                              <!---->
+                                              <div>
+                                                <!---->
+                                                <div class="mail-drop-menu-wrapper" style="width: 220px; top: 0px; left: 0px;">
+                                                  <ul class="mail-drop-menu">
+                                                    <!---->
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_0`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '回复' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '回复'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleReply(currentEmailDetail)"
+                                                    >
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="回复" class="">回复</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_1`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '回复全部' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '回复全部'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="回复全部" class="">回复全部</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_2`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '带附件回复' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '带附件回复'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="带附件回复" class="">带附件回复</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_3`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '带附件回复全部' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '带附件回复全部'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="带附件回复全部" class="">带附件回复全部</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_4`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '转发' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '转发'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="转发" class="">转发</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_5`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '作为附件转发' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '作为附件转发'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="作为附件转发" class="">作为附件转发</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_6">
+                                                      &lt;!&ndash;&ndash;&gt;
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <span title="分发" class="">分发</span>
+                                                      </span>
+                                                      <span>
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                      </span>
+                                                    </li>-->
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_7`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '待处理' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '待处理'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <span class="mail-drop-menu-divider"></span>
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="待处理" class="">待处理</span>
+                                                      </span>
+                                                      <span>
+                                                        <i class="m-icon icon-right-thin"></i>
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_8`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '标为未读' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '标为未读'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="handleUnReadEmail"
+                                                    >
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="标为未读" class="">标为未读</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_9">
+                                                      &lt;!&ndash;&ndash;&gt;
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <span title="标记为" class="">标记为</span>
+                                                      </span>
+                                                      <span>
+                                                        <i class="m-icon icon-right-thin"></i>
+                                                      </span>
+                                                    </li>-->
+<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_10">
+                                                      <span class="mail-drop-menu-divider"></span>
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <span title="新建收发件规则" class="">新建收发件规则</span>
+                                                      </span>
+                                                      <span>
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                      </span>
+                                                    </li>-->
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_11`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '移动到' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '移动到'"
+                                                      @mouseleave="emailHoveredItem = null">
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="移动到" class="">移动到</span>
+                                                      </span>
+                                                      <span>
+                                                        <i class="m-icon icon-right-thin"></i>
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_12`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '导出邮件' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '导出邮件'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="handleExportEmail"
+                                                    >
+                                                      <span class="mail-drop-menu-divider"></span>
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="导出邮件" class="">导出邮件</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_13">
+                                                      &lt;!&ndash;&ndash;&gt;
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <span title="建为客户跟进" class="">建为客户跟进</span>
+                                                      </span>
+                                                      <span>
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                      </span>
+                                                    </li>
+                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_14">
+                                                      &lt;!&ndash;&ndash;&gt;
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <span title="新建日程" class="">新建日程</span>
+                                                      </span>
+                                                      <span>
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                      </span>
+                                                    </li>-->
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_15`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '标为垃圾邮件' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '标为垃圾邮件'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="handleSpamEmail"
+                                                    >
+                                                      <span class="mail-drop-menu-divider"></span>
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="标为垃圾邮件" class="">标为垃圾邮件</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_16`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '删除' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '删除'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="deleteEmails"
+                                                    >
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="删除" class="">删除</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                  </ul>
+                                                </div>
+                                              </div>
+                                                                                          <!---->
+                                            </div>
+
 																					</div>
 																					<div id="mailDetailScrollContainer" class="scroll-container">
 																						<div class="components-container">
@@ -502,66 +780,6 @@
                                                     <!---->
 																									</button>
 																								</div>
-<!--																								<div class="mail-detail-status-bars">
-																									&lt;!&ndash;&ndash;&gt;
-																									<div class="mail-timezone mail-detail-status-bar-item">&lt;noreply@k.xiaomanmail.com&gt; <span>暂未查询到该客户的当地时间</span>
-                                                    &lt;!&ndash;&ndash;&gt;
-																									</div>
-                                                  &lt;!&ndash;&ndash;&gt;
-                                                  &lt;!&ndash;&ndash;&gt;
-																									<div class="mail-detail&#45;&#45;sent-status-bar" update-list="function () { [native code] }">
-																										&lt;!&ndash;&ndash;&gt;
-                                                    &lt;!&ndash;&ndash;&gt;
-                                                    &lt;!&ndash;&ndash;&gt;
-																									</div>
-																									<div class="mail-detail-status-bar-wrapper">
-																										&lt;!&ndash;&ndash;&gt;
-                                                    &lt;!&ndash;&ndash;&gt;
-																									</div>
-                                                  &lt;!&ndash;&ndash;&gt;
-																								</div>
-																								<div class="mail-detail-translate">
-																									<div class="translate-content">
-																										<span class="mm__theme mm__theme-size__small mm__theme-border__less mm-select">
-																											<div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
-																												&lt;!&ndash;&ndash;&gt;
-																												<div class="mm-selector-rendered">
-																													<span title="英文" class="mm-selector-selected-value" style="opacity: 1;">英文</span>
-                                                          &lt;!&ndash;&ndash;&gt;
-																												</div>
-                                                        &lt;!&ndash;&ndash;&gt;
-																												<span class="mm-selector-suffix-icon">
-																													<svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
-																														<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																													</svg>
-																												</span>
-																											</div>
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</span>
-																										<span style="color: rgb(144, 144, 144); margin: 0px 12px;">&gt;</span>
-																										<span class="mm__theme mm__theme-size__small mm__theme-border__less mm-select">
-																											<div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
-																												&lt;!&ndash;&ndash;&gt;
-																												<div class="mm-selector-rendered">
-																													<span title="俄语" class="mm-selector-selected-value" style="opacity: 1;">俄语</span>
-                                                          &lt;!&ndash;&ndash;&gt;
-																												</div>
-                                                        &lt;!&ndash;&ndash;&gt;
-																												<span class="mm-selector-suffix-icon">
-																													<svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
-																														<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																													</svg>
-																												</span>
-																											</div>
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</span>
-																									</div>
-																									<button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small translate-btn">
-																										&lt;!&ndash;&ndash;&gt;
-                                                    &lt;!&ndash;&ndash;&gt;翻译邮件
-                                                    &lt;!&ndash;&ndash;&gt;
-																									</button>
-																								</div>-->
 																							</div>
                                               <!---->
 																							<div class="mail-content-body mail-detail--content">
@@ -608,23 +826,6 @@
 																							<!---->
                                               <!---->
                                               <!---->
-                                              <!--																							<div class="contact-actions-wrap" cur-active-mail-id="" time-show="">
-                                                                                              <div class="assistant-logo">
-                                                                                                <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/assistant-logo.5597975b..png" src="data:image/webp;base64,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">
-                                                                                              </div>
-                                                                                              &lt;!&ndash;&ndash;&gt;
-                                                                                              <div class="mm-dropdown">
-                                                                                                <div class="mm-dropdown-trigger">
-                                                                                                  <span class="okki-icon-wrap actions-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-                                                                                                      <path d="M13 11h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H8a1 1 0 010-2h3V8a1 1 0 112 0v3z"></path>
-                                                                                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5 2a3 3 0 00-3 3v14a3 3 0 003 3h14a3 3 0 003-3V5a3 3 0 00-3-3H5zm14 2H5a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1V5a1 1 0 00-1-1z"></path>
-                                                                                                    </svg>
-                                                                                                  </span>
-                                                                                                </div>
-                                                                                                &lt;!&ndash;&ndash;&gt;
-                                                                                              </div>
-                                                                                              &lt;!&ndash;&ndash;&gt;
-                                                                                            </div>-->
 																							<div>
 																								<!---->
 																								<div class="contact-info-user">
@@ -822,7 +1023,7 @@
 <script>
 import { EventBus } from "@/api/email/event-bus";
 import writeEmailLayout from './write_email.vue';
-import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail} from "@/api/email/email";
+import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
 import emailHeaderLayout from "@/views/email/email_header.vue";
 import sendSuccessLayout from "@/views/email/send_success.vue";
 import setup from "@/views/email/setup.vue";
@@ -846,7 +1047,10 @@ export default {
       isSending: false,
       replyContent: '',
       isDropdownShown: false,
+      isDropdownEmailShown: false,
       hoveredItem: null,
+      emailHoveredItem: null,
+      currentEmailType: '',
       menuItems: [
         '标为未读',
         '作为附件转发',
@@ -857,6 +1061,7 @@ export default {
     }
   },
   components: {
+    'email_header': emailHeaderLayout,
     'write_email': writeEmailLayout
   },
   props: {
@@ -873,6 +1078,10 @@ export default {
     selectedTaskId: {
       type: Number,
       default: null
+    },
+    emailType: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -881,6 +1090,9 @@ export default {
     },
     dropdownStyle() {
       return this.isDropdownShown ? '' : 'display: none;';
+    },
+    dropdownEmailStyle() {
+      return this.isDropdownEmailShown ? '' : 'display: none;';
     }
   },
 
@@ -891,6 +1103,7 @@ export default {
     this.localEmailList = this.emailData;
     this.total = this.emailTotal;
     this.taskId = this.selectedTaskId;
+    this.currentEmailType = this.emailType;
   },
 
   watch: {
@@ -915,15 +1128,62 @@ export default {
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage = Number(this.currentPage) + 1;
-        this.fetchEmailList(this.taskId);
+        this.fetchEmailData(this.currentEmailType);
       }
     },
 
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage = Number(this.currentPage) - 1;
-        this.fetchEmailList(this.taskId);
+        this.fetchEmailData(this.currentEmailType);
       }
+    },
+
+    fetchEmailData(selectedEmailType) {
+      this.currentEmailType = selectedEmailType;
+      if (selectedEmailType === 'ALL_RECEIVED') {
+        this.fetchEmailList(null, 1, null, null, null, null, null, null);
+      } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
+        this.fetchEmailList(null, 2, null, null, null, null, null, null);
+      } else if (selectedEmailType === 'PENDING_MAIL') {
+        this.fetchEmailList(null, null, null, true, null, null, null, null);
+      } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
+        this.fetchEmailList(null, 1, false, null, null, null, null, null);
+      } else if (selectedEmailType === 'DELETED_MAIL') {
+        this.fetchEmailList(null, null, null, null, true, null, null, null);
+      } else if (selectedEmailType === 'DRAFTS') {
+        this.fetchEmailList(null, 2, null, null, null,true, null, null);
+      } else if (selectedEmailType === 'SPAM_MAIL') {
+        this.fetchEmailList(null, null, null, null, null, null, true, null);
+      } else if (selectedEmailType === 'TRACE_INFORMATION') {
+        this.fetchEmailList(null, null, null, null, null, null, null, true);
+      }
+    },
+
+    fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
+      this.taskId = taskId;
+      this.type = type;
+      const query = {
+        taskId: this.taskId,
+        // 邮件类型 1.收取 2.发送
+        type: this.type,
+        readFlag: readFlag,
+        pendingFlag: pendingFlag,
+        delFlag: delFlag,
+        draftsFlag: draftsFlag,
+        spamFlag: spamFlag,
+        traceFlag: traceFlag,
+        folderId: folderId,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+
+      list(query).then(response => {
+        this.localEmailList = response.rows;
+        this.total = response.total;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
     },
 
     handlePageInputBlur() {
@@ -1013,7 +1273,8 @@ export default {
           const response = await deleteEmail(data);
           if (response.code === 200) {
             let found = false;
-            for (const monthGroup of this.localEmailList) {
+            for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+              const monthGroup = this.localEmailList[groupIndex];
               for (const month in monthGroup) {
                 const emails = monthGroup[month];
                 const index = emails.findIndex(email => email.id === this.activeEmailId);
@@ -1021,14 +1282,21 @@ export default {
                   emails.splice(index, 1);
                   this.total -= 1;
 
-                  if (emails[index]) {
-                    // 如果下一个邮件存在
+                  if (emails.length === 0) {
+                    // 如果该monthGroup没有邮件了，从localEmailList中移除
+                    this.localEmailList.splice(groupIndex, 1);
+
+                    // 尝试从下一个monthGroup获取最新邮件
+                    if (this.localEmailList[groupIndex]) {
+                      this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                    } else {
+                      this.currentEmailDetail = {};
+                    }
+                  } else if (emails[index]) {
                     this.currentEmailDetail = emails[index];
                   } else if (emails[index - 1]) {
-                    // 如果下一个邮件不存在，但上一个邮件存在
                     this.currentEmailDetail = emails[index - 1];
                   } else {
-                    // 如果没有其他邮件
                     this.currentEmailDetail = {};
                   }
 
@@ -1039,6 +1307,8 @@ export default {
               }
               if (found) break;
             }
+
+            this.isDropdownEmailShown = false;
           } else {
             this.$message.error('删除失败');
           }
@@ -1048,8 +1318,13 @@ export default {
         }
       }
     },
+
     toggleDropdown() {
       this.isDropdownShown = !this.isDropdownShown;
+    },
+
+    toggleEmailDropdown() {
+      this.isDropdownEmailShown = !this.isDropdownEmailShown;
     },
 
     // 标记为未读邮件
@@ -1063,6 +1338,7 @@ export default {
         if (response.code === 200) {
           this.$message.success("成功标记为未读");
           this.isDropdownShown = false;
+          this.isDropdownEmailShown = false;
           return;
         }
       } catch (error) {
@@ -1082,6 +1358,7 @@ export default {
         if (response.code === 200) {
           this.$message.success("垃圾邮件标记成功");
           this.isDropdownShown = false;
+          this.isDropdownEmailShown = false;
           return;
         }
       } catch (error) {
@@ -1090,22 +1367,67 @@ export default {
       }
     },
 
-    moreClick(index) {
+    handleExportEmail() {
+      exportEmail(this.activeEmailId).then((response) => {
+        // 处理文件下载逻辑，比如使用 blob 来下载
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        let filename = 'email.eml';
+        if (this.currentEmailDetail.title) {
+          filename = this.currentEmailDetail.title + '.eml';
+        }
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+
+        this.isDropdownShown = false;
+        this.isDropdownEmailShown = false;
+      });
+    },
+
+    // 标为未读邮件
+    handleUnReadEmail() {
+      const ids = [];
+      ids.push(this.activeEmailId);
+      if (ids.length) {
+        this.unReadEmails(ids);
+      }
+    },
+
+    // 标为垃圾邮件
+    handleSpamEmail() {
+      const ids = [];
+      ids.push(this.activeEmailId);
+      if (ids.length) {
+        this.spamEmails(ids);
+      }
+    },
+
+    moreItemClick(index) {
       this.selectedItem = index;
       const ids = [];
       ids.push(this.activeEmailId);
 
       if (ids.length) {
-        if (this.menuItems[index] === '标为未读') {
-          this.unReadEmails(ids);
-        } else if (this.menuItems[index] === '作为附件转发') {
+        switch(this.menuItems[index.trim()]) {
+          case '标为未读':
+            this.unReadEmails(ids);
+            break;
+          case '作为附件转发':
+            // 逻辑代码
+            break;
+          case '导出邮件':
+            this.handleExportEmail();
+            break;
+          case '新建日程':
 
-        } else if (this.menuItems[index] === '导出邮件') {
-
-        } else if (this.menuItems[index] === '新建日程') {
-
-        } else if (this.menuItems[index] === '标为垃圾邮件') {
-          this.spamEmails(ids);
+            break;
+          case '标为垃圾邮件':
+            this.spamEmails(ids);
+            break;
+          default:
+            console.warn("Unknown menu item");
         }
       }
     },

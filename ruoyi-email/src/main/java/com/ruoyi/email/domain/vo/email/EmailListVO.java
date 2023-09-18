@@ -3,12 +3,14 @@ package com.ruoyi.email.domain.vo.email;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.email.domain.TaskEmailAttachment;
 import lombok.Data;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class EmailListVO {
@@ -98,6 +100,11 @@ public class EmailListVO {
      * 邮件内容
      */
     private String content;
+
+    /**
+     * 附件
+     */
+    private List<TaskEmailAttachment> taskEmailAttachmentList;
 
     /**
      *

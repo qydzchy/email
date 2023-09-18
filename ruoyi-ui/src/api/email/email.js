@@ -82,3 +82,12 @@ export function deleteEmail(data) {
     data: data
   })
 }
+
+// 导出邮件
+export function exportEmail(data) {
+  return request({
+    url: '/email/info/export/'+ data,
+    method: 'get',
+    responseType: 'blob'
+  })
+}

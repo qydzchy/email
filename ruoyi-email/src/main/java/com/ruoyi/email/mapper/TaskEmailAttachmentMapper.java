@@ -111,4 +111,11 @@ public interface TaskEmailAttachmentMapper
      * @return
      */
     TaskEmailAttachment getById(@Param("id") Long id, @Param("createId") Long userId);
+
+    /**
+     * 根据邮件id查询附件
+     * @param emailIds
+     * @return
+     */
+    List<TaskEmailAttachment> selectByEmailIds(@Param("emailIds") List<Long> emailIds);
 }

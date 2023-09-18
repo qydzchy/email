@@ -108,4 +108,11 @@ public interface ITaskEmailAttachmentService
      * @return
      */
     List<AttachmentListVO> list(Long emailId);
+
+    /**
+     * 根据邮件ID查询附件
+     * @param emailIds
+     * @return
+     */
+    List<TaskEmailAttachment> listByEmailIds(List<Long> emailIds);
 }
