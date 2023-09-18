@@ -485,7 +485,7 @@ export default {
       this.selectedEmail = email;
       this.emailData = emailData;
       this.emailTotal = emailTotal;
-      this.selectedTaskId = email.id;
+      this.selectedTaskId = this.selectedTaskId;
       this.currentEmailType = currentEmailType;
     },
 

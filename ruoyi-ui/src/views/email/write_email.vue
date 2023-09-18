@@ -837,20 +837,77 @@ export default {
         this.formData.id = this.selectedEmail.id;
       }
 
-      if (this.selectedEmail.fromer) {
+      if (this.selectedEmail.receiver) {
         this.receiver.push(this.selectedEmail.fromer);
+        this.receiverEmails = JSON.parse(this.selectedEmail.receiver);
+        this.receiverEmails.forEach(receiver => {
+          const email = receiver.email;
+          // 有问题 this.selectedAccount获取不到。
+          if (email !== this.selectedAccount) {
+            this.receiver.push(email);
+          }
+        });
       }
 
       if (this.selectedEmail.cc) {
-        this.emails = JSON.parse(this.selectedEmail.cc);
-
+        this.ccEmails = JSON.parse(this.selectedEmail.cc);
+        this.ccEmails.forEach(receiver => {
+          const email = receiver.email;
+          if (email !== this.selectedAccount) {
+            this.cc.push(email);
+          }
+        });
       }
 
       if (this.selectedEmail.content) {
         let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
         this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
       }
+    },
+
+    // 带附件回复
+    handleReplyWithAttachments() {
+      this.handleReply();
+      this.uploadedFiles = this.selectedEmail.taskEmailAttachmentList;
+    },
+
+    // 带附件回复全部
+    handleReplyAllWithAttachments() {
+      this.handleReplyAll();
+      this.uploadedFiles = this.selectedEmail.taskEmailAttachmentList;
+    },
+
+    // 转发
+    handleForward() {
+      if (this.selectedEmail.title) {
+        this.formData.title = "Re: " + this.selectedEmail.title;
+      }
+
+      if (this.selectedEmail.id) {
+        this.formData.id = this.selectedEmail.id;
+      }
+
+      if (this.selectedEmail.content) {
+        let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
+        this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+      }
+
+      this.uploadedFiles = this.selectedEmail.taskEmailAttachmentList;
+    },
+
+    handleForwardAsAttachment() {
+      if (this.selectedEmail.title) {
+        this.formData.title = "Re: " + this.selectedEmail.title;
+      }
+
+      if (this.selectedEmail.id) {
+        this.formData.id = this.selectedEmail.id;
+      }
+
+      // 上传eml为附件，要实现。
+      this.uploadedFiles = [];
     }
+
   },
   mounted() {
     this.fetchTaskList().then(() => {
@@ -878,6 +935,18 @@ export default {
       // 回复全部
     } else if (this.writeEmailType === 'reply_all') {
       this.handleReplyAll();
+      // 带附件回复
+    } else if (this.writeEmailType === 'reply_with_attachments') {
+      this.handleReplyWithAttachments();
+      // 带附件回复全部
+    } else if (this.writeEmailType === 'reply_all_with_attachments') {
+      this.handleReplyAllWithAttachments();
+      // 转发
+    } else if (this.writeEmailType === 'forward') {
+      this.handleForward();
+      // 作为附件转发
+    } else if (this.writeEmailType === 'forward_as_attachment') {
+      this.handleForwardAsAttachment();
     }
   }
 };

@@ -444,7 +444,7 @@
 																									<span class="ellipsis value time">{{currentEmailDetail.sendDate}}</span>
 																									<div class="all-border detail-operations-btn">
 																										<i class="icon-reply-line m-icon" @click="toggleWriteEmail(currentEmailDetail, 'reply')"></i>
-																										<i class="icon-reply-all-line m-icon"></i>
+																										<i class="icon-reply-all-line m-icon" @click="toggleWriteEmail(currentEmailDetail, 'reply_all')"></i>
                                                     <!---->
                                                     <!---->
 																									</div>
@@ -491,7 +491,9 @@
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '回复全部' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '回复全部'"
-                                                      @mouseleave="emailHoveredItem = null">
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'reply_all')"
+                                                    >
                                                       <!---->
                                                       <span class="mail-drop-menu-text ellipsis">
                                                         <!---->
@@ -508,7 +510,9 @@
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '带附件回复' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '带附件回复'"
-                                                      @mouseleave="emailHoveredItem = null">
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'reply_with_attachments')"
+                                                    >
                                                       <!---->
                                                       <span class="mail-drop-menu-text ellipsis">
                                                         <!---->
@@ -525,7 +529,9 @@
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '带附件回复全部' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '带附件回复全部'"
-                                                      @mouseleave="emailHoveredItem = null">
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'reply_all_with_attachments')"
+                                                    >
                                                       <!---->
                                                       <span class="mail-drop-menu-text ellipsis">
                                                         <!---->
@@ -542,7 +548,9 @@
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '转发' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '转发'"
-                                                      @mouseleave="emailHoveredItem = null">
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'forward')"
+                                                    >
                                                       <!---->
                                                       <span class="mail-drop-menu-text ellipsis">
                                                         <!---->
@@ -559,7 +567,9 @@
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '作为附件转发' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '作为附件转发'"
-                                                      @mouseleave="emailHoveredItem = null">
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'forward_as_attachment')"
+                                                    >
                                                       <!---->
                                                       <span class="mail-drop-menu-text ellipsis">
                                                         <!---->
@@ -1416,7 +1426,7 @@ export default {
             this.unReadEmails(ids);
             break;
           case '作为附件转发':
-            // 逻辑代码
+            this.toggleWriteEmail(this.currentEmailDetail, 'forward_as_attachment');
             break;
           case '导出邮件':
             this.handleExportEmail();

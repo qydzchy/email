@@ -111,7 +111,7 @@ public class EmailSender {
         try {
             sendEmailWithAttachmentsAndProxy("mail.sohu.com", "465", true,"w0r1d_space@sohu.com", "QI14ATMVBC",
                     "w0r1d_space@tom.com", "13076506601@163.com", "278882047@qq.com",
-                    "Test Subject 03", "Test Message", null, null, null);
+                    "Test Subject 04", "Test Message", null, null, new String[] {"D:\\back\\Desktop\\upload\\1.txt", "D:\\back\\Desktop\\upload\\2.txt", "D:\\back\\Desktop\\upload\\sql.txt", "D:\\back\\Desktop\\upload\\tracker.png"});
             System.out.println("Email sent successfully!");
         } catch (MessagingException e) {
             e.printStackTrace();

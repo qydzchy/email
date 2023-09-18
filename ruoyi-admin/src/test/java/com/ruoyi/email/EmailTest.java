@@ -22,7 +22,7 @@ public class EmailTest {
 
     @Test
     public void getEmailTest() {
-        Task task = taskService.selectTaskById(16L);
+        Task task = taskService.selectTaskById(18L);
         taskService.pullEmail(task);
     }
 
