@@ -61,7 +61,9 @@ public class EmailSender {
         String[] header = msg.getHeader("Message-ID");
 
         msg.setFrom(new InternetAddress(mailFrom));
-        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailTo));
+        InternetAddress[] toAddresses = InternetAddress.parse("w0r1d_space@tom.com,1640878597@qq.com");
+        msg.setRecipients(Message.RecipientType.TO, toAddresses);
+        //msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailTo));
 
         if (mailCc != null && !mailCc.isEmpty()) {
             msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(mailCc));

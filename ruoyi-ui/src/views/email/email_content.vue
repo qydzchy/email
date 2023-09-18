@@ -443,7 +443,7 @@
 																								<div class="selected">
 																									<span class="ellipsis value time">{{currentEmailDetail.sendDate}}</span>
 																									<div class="all-border detail-operations-btn">
-																										<i class="icon-reply-line m-icon" @click="toggleReply(currentEmailDetail)"></i>
+																										<i class="icon-reply-line m-icon" @click="toggleWriteEmail(currentEmailDetail, 'reply')"></i>
 																										<i class="icon-reply-all-line m-icon"></i>
                                                     <!---->
                                                     <!---->
@@ -473,7 +473,7 @@
                                                         ]"
                                                       @mouseover="emailHoveredItem = '回复'"
                                                       @mouseleave="emailHoveredItem = null"
-                                                      @click="toggleReply(currentEmailDetail)"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'reply')"
                                                     >
                                                       <!---->
                                                       <span class="mail-drop-menu-text ellipsis">
@@ -1256,9 +1256,10 @@ export default {
       }
     },
 
-    toggleReply(email) {
+    // 跳转到写信页面
+    toggleWriteEmail(email, writeEmailType) {
       // 触发事件并传递参数
-      EventBus.$emit('switch-to-reply-email', email);
+      EventBus.$emit('switch-write-email', email, writeEmailType);
     },
 
     // 删除邮件

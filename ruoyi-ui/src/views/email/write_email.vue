@@ -454,7 +454,11 @@ export default {
     selectedEmail: {
       type: Object,
       default: null
-    }
+    },
+    writeEmailType: {
+      type: String,
+      default: null
+    },
   },
   methods: {
     triggerFileInput() {
@@ -801,6 +805,51 @@ export default {
     handleCustomTime() {
       this.showPendingTime = false;
       this.showCustomTime = true;
+    },
+
+    // 回复，回显数据处理
+    handleReply() {
+      if (this.selectedEmail.title) {
+        this.formData.title = "Re: " + this.selectedEmail.title;
+      }
+
+      if (this.selectedEmail.id) {
+        this.formData.id = this.selectedEmail.id;
+      }
+
+      if (this.selectedEmail.fromer) {
+        this.receiver.push(this.selectedEmail.fromer);
+      }
+
+      if (this.selectedEmail.content) {
+        let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
+        this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+      }
+    },
+
+    // 回复全部
+    handleReplyAll() {
+      if (this.selectedEmail.title) {
+        this.formData.title = "Re: " + this.selectedEmail.title;
+      }
+
+      if (this.selectedEmail.id) {
+        this.formData.id = this.selectedEmail.id;
+      }
+
+      if (this.selectedEmail.fromer) {
+        this.receiver.push(this.selectedEmail.fromer);
+      }
+
+      if (this.selectedEmail.cc) {
+        this.emails = JSON.parse(this.selectedEmail.cc);
+
+      }
+
+      if (this.selectedEmail.content) {
+        let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
+        this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+      }
     }
   },
   mounted() {
@@ -823,21 +872,12 @@ export default {
   },
 
   created() {
-    if (this.selectedEmail.title) {
-      this.formData.title = "Re: " + this.selectedEmail.title;
-    }
-
-    if (this.selectedEmail.id) {
-      this.formData.id = this.selectedEmail.id;
-    }
-
-    if (this.selectedEmail.fromer) {
-      this.receiver.push(this.selectedEmail.fromer);
-    }
-
-    if (this.selectedEmail.content) {
-      let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
-      this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+    // 回复
+    if (this.writeEmailType === 'reply') {
+      this.handleReply();
+      // 回复全部
+    } else if (this.writeEmailType === 'reply_all') {
+      this.handleReplyAll();
     }
   }
 };

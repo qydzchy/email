@@ -385,6 +385,7 @@
               :emailTotal="emailTotal"
               :selectedTaskId="selectedTaskId"
               :emailType="currentEmailType"
+              :writeEmailType="writeEmailType"
               @switch="switchLayout"
             ></component>
 
@@ -454,6 +455,7 @@ export default {
       emailTotal: 0,
       emailData: [],
       selectedEmail: {},
+      writeEmailType: '',
       isInboxOpen: true,
       isOutboxOpen: true,
       isShowMoreOpen: true,
@@ -670,8 +672,9 @@ export default {
       this.allReceivedClick();
     });
 
-    EventBus.$on('switch-to-reply-email', (replyEmail) => {
+    EventBus.$on('switch-write-email', (replyEmail, type) => {
       this.selectedEmail = replyEmail;
+      this.writeEmailType = type;
       this.switchWriteEmailPage();
     });
   },
@@ -679,7 +682,7 @@ export default {
   beforeDestroy() {
     EventBus.$off('switch-send-success');
     EventBus.$off('switch-index');
-    EventBus.$off('switch-to-reply-email');
+    EventBus.$off('switch-write-email');
   },
 };
 </script>
