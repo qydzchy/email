@@ -43,7 +43,7 @@ public class AttachmentController {
      * 上传附件
      */
     @PreAuthorize("@ss.hasPermi('email:attachment:upload')")
-    @Log(title = "邮件保存-写信", businessType = BusinessType.INSERT)
+    @Log(title = "上传附件", businessType = BusinessType.INSERT)
     @PostMapping("/upload")
     public AjaxResult uploadFile(@RequestParam("files") MultipartFile[] files) {
         if (files.length == 0) {

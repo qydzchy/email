@@ -414,7 +414,7 @@
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import {uploadAttachments, listAttachment, renameAttachment, deleteAttachment} from "@/api/email/attachment";
 import {listTaskPull} from "@/api/email/task";
-import {saveSendEmail, sendEmail} from "@/api/email/email";
+import {saveSendEmail, sendEmail, uploadAttachment} from "@/api/email/email";
 import { EventBus } from '@/api/email/event-bus.js';
 import ReceiverInput from './write_email_receiver_input.vue';
 import PendingTimePopover from './pending_time.vue';
@@ -500,7 +500,7 @@ export default {
     },
 
     onCreated(editor) {
-      this.editor = Object.seal(editor); // 【注意】一定要用 Object.seal() 否则会报错
+      this.editor = Object.seal(editor);
       setTimeout(() => {
         this.editor.dangerouslyInsertHtml(this.htmlText);
 
@@ -737,8 +737,8 @@ export default {
     formattedEmailContent() {
       let emailContent = `
       <div style="font-size: 12px;background:#efefef;padding:8px;">
-        <div><b>From: </b>&nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
-        <div><b>Send time: </b>&nbsp;${this.formatDate(this.selectedEmail.sendDate)}</div>
+        <div>From: &nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
+        <div>Send time: ${this.formatDate(this.selectedEmail.sendDate)}</div>
     `;
 
       if (this.selectedEmail.receiver) {
@@ -750,9 +750,10 @@ export default {
       }
 
       if (this.selectedEmail.title) {
-        emailContent += `<div><b>Subject: </b>&nbsp;${this.selectedEmail.title}</div>`;
+        emailContent += `<div>Subject: &nbsp;${this.selectedEmail.title}</div>`;
       }
 
+      emailContent += '</div>';
       return emailContent;
     },
 
@@ -904,8 +905,32 @@ export default {
         this.formData.id = this.selectedEmail.id;
       }
 
-      // 上传eml为附件，要实现。
-      this.uploadedFiles = [];
+      if (this.selectedEmail.id) {
+        // 上传邮件eml附件
+        this.uploadAttachment(this.selectedEmail.id);
+      }
+    },
+
+    // 上传邮件eml附件
+    async uploadAttachment(id) {
+      const data = {
+        "id": id
+      };
+      try {
+        const response = await uploadAttachment(data);
+        if (response.code === 200) {
+          this.uploadedFiles.push(...response.data);
+
+          const ids = response.data.map(file => file.id);
+          this.attachmentIds.push(...ids);
+
+          this.$refs.fileInput.value = null;
+        } else {
+          console.error('上传失败');
+        }
+      } catch (error) {
+        console.error('上传过程中出现错误:', error);
+      }
     }
 
   },

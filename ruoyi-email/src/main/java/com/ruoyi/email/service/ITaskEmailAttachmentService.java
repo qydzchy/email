@@ -1,5 +1,6 @@
 package com.ruoyi.email.service;
 
+import java.nio.file.Path;
 import java.util.List;
 import com.ruoyi.email.domain.TaskEmailAttachment;
 import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
@@ -115,4 +116,11 @@ public interface ITaskEmailAttachmentService
      * @return
      */
     List<TaskEmailAttachment> listByEmailIds(List<Long> emailIds);
+
+    /**
+     * 文件上传
+     * @param sourceFile
+     * @return
+     */
+    List<TaskEmailAttachment> uploadAttachment(Path sourceFile);
 }

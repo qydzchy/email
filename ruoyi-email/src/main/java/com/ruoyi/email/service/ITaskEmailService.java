@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmail;
+import com.ruoyi.email.domain.TaskEmailAttachment;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
@@ -175,4 +176,11 @@ public interface ITaskEmailService
      * @return
      */
     String getEmailPath(Long id);
+
+    /**
+     * 上传附件
+     * @param id
+     * @return
+     */
+    List<TaskEmailAttachment> uploadAttachment(Long id);
 }

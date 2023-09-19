@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -187,39 +188,49 @@ public class EmailController extends BaseController {
         return toAjax(taskEmailService.moveFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
     }
 
-        /**
-         * 邮件导出
-         */
-        @PreAuthorize("@ss.hasPermi('email:export')")
-        @GetMapping("/export/{id}")
-        public ResponseEntity<org.springframework.core.io.Resource> export(@PathVariable Long id) {
-            // 获取邮件路径
-            String emailPath = taskEmailService.getEmailPath(id);
-            Path filePath = Paths.get(emailPath).normalize();
-            org.springframework.core.io.Resource resource = null;
-            try {
-                resource = new UrlResource(filePath.toUri());
-            } catch (MalformedURLException e) {
-                logger.error("获取资源异常：{}", e);
-                throw new ServiceException();
-            }
-
-            if (!resource.exists()) {
-                throw new ServiceException("文件不存在");
-            }
-
-            String encodedFilename = null;
-            try {
-                encodedFilename = URLEncoder.encode(resource.getFilename(), "UTF-8").replaceAll("\\+", "%20");
-            } catch (UnsupportedEncodingException e) {
-                throw new ServiceException();
-            }
-
-            String contentDisposition = "attachment; filename*=UTF-8''" + encodedFilename;
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                    .body(resource);
+    /**
+     * 邮件导出
+     */
+    @PreAuthorize("@ss.hasPermi('email:export')")
+    @GetMapping("/export/{id}")
+    public ResponseEntity<org.springframework.core.io.Resource> export(@PathVariable Long id) {
+        // 获取邮件路径
+        String emailPath = taskEmailService.getEmailPath(id);
+        Path filePath = Paths.get(emailPath).normalize();
+        org.springframework.core.io.Resource resource = null;
+        try {
+            resource = new UrlResource(filePath.toUri());
+        } catch (MalformedURLException e) {
+            logger.error("获取资源异常：{}", e);
+            throw new ServiceException();
         }
 
+        if (!resource.exists()) {
+            throw new ServiceException("文件不存在");
+        }
+
+        String encodedFilename = null;
+        try {
+            encodedFilename = URLEncoder.encode(resource.getFilename(), "UTF-8").replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new ServiceException();
+        }
+
+        String contentDisposition = "attachment; filename*=UTF-8''" + encodedFilename;
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(resource);
+    }
+
+    @PreAuthorize("@ss.hasPermi('email:attachment:upload')")
+    @Log(title = "上传邮件文件附件", businessType = BusinessType.INSERT)
+    @PostMapping("/upload/attachment")
+    public AjaxResult uploadAttachment(@RequestBody TaskEmail taskEmail) {
+        if (taskEmail.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        return AjaxResult.success(taskEmailService.uploadAttachment(taskEmail.getId()));
+    }
 }

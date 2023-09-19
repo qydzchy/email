@@ -1,6 +1,8 @@
 package com.ruoyi.email.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -581,6 +583,28 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         }
 
         return taskEmail.getEmlPath();
+    }
+
+    @Override
+    @Transactional
+    public List<TaskEmailAttachment> uploadAttachment(Long id) {
+        TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
+        if (taskEmail == null) {
+            log.info("不存在id为{}的邮件数据", id);
+            throw new ServiceException();
+        }
+
+        if (StringUtils.isBlank(taskEmail.getEmlPath())) {
+            throw new ServiceException("不存在邮件文件路径");
+        }
+
+        // 读取邮件文件，再写入到上传文件夹
+        Path sourceFile = Paths.get(taskEmail.getEmlPath());
+        if (sourceFile == null) {
+            throw new ServiceException("读取不到文件");
+        }
+
+        return taskEmailAttachmentService.uploadAttachment(sourceFile);
     }
 
     /**

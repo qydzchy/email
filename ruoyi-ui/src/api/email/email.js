@@ -91,3 +91,12 @@ export function exportEmail(data) {
     responseType: 'blob'
   })
 }
+
+// 上传邮件文件附件
+export function uploadAttachment(data) {
+  return request({
+    url: '/email/info/upload/attachment',
+    method: 'post',
+    data: data
+  })
+}

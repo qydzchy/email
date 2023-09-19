@@ -1,7 +1,12 @@
 package com.ruoyi.email.service.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -218,5 +223,52 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     @Override
     public List<TaskEmailAttachment> listByEmailIds(List<Long> emailIds) {
         return taskEmailAttachmentMapper.selectByEmailIds(emailIds);
+    }
+
+    @Override
+    public List<TaskEmailAttachment> uploadAttachment(Path sourceFile) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        long fileSize = -1L;
+        try {
+            fileSize = Files.size(sourceFile);
+        } catch (IOException e) {
+            log.error("获取文件大小失败：{}", e);
+        }
+        String fileName = sourceFile.getFileName().toString();
+        String filePath = uploadAttachmentPath + File.separator + fileName;
+
+        Date now = new Date();
+        TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
+        emailAttachment.setName(fileName);
+        emailAttachment.setSize(fileSize);
+        emailAttachment.setPath(filePath);
+        emailAttachment.setCreateId(userId);
+        emailAttachment.setCreateBy(username);
+        emailAttachment.setCreateTime(now);
+        emailAttachment.setUpdateId(userId);
+        emailAttachment.setUpdateBy(username);
+        emailAttachment.setUpdateTime(now);
+        taskEmailAttachmentMapper.insertTaskEmailAttachment(emailAttachment);
+
+        Path targetDir = Paths.get(uploadAttachmentPath);
+        // 确保目标文件夹存在
+        if (!Files.exists(targetDir)) {
+            try {
+                Files.createDirectories(targetDir);
+            } catch (IOException e) {
+                log.error("创建文件夹失败：{}", e);
+            }
+        }
+
+        Path targetFile = targetDir.resolve(sourceFile.getFileName());
+        try {
+            Files.copy(sourceFile, targetFile);  // 从源文件复制到目标文件夹
+        } catch (IOException e) {
+            log.error("从源文件复制到目标文件夹失败：{}", e);
+        }
+        return Arrays.asList(emailAttachment);
     }
 }
