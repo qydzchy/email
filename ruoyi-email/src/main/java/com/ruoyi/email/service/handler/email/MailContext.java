@@ -32,9 +32,9 @@ public class MailContext {
     /**
      * 解析文件
      */
-    public UniversalMail parseEmail(ProtocolTypeEnum protocolTypeEnum, MailItem mailItem, String localSavePath) throws MailPlusException {
+    public UniversalMail parseEmail(ProtocolTypeEnum protocolTypeEnum, MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
         IMailService mailService = protocolTypeMap.get(protocolTypeEnum);
-        return mailService.parseEmail(mailItem, localSavePath);
+        return mailService.parseEmail(mailItem, localSavePath, attachmentPath);
     }
 
     /**

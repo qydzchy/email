@@ -34,8 +34,8 @@ public class MyExchangeService implements IMailService {
     }
 
     @Override
-    public UniversalMail parseEmail(MailItem mailItem, String localSavePath) throws MailPlusException {
-        return MailItemParser.parseMail(mailItem, localSavePath);
+    public UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
+        return MailItemParser.parseMail(mailItem, localSavePath, attachmentPath);
     }
 
     public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {

@@ -22,8 +22,8 @@ public class Pop3Service implements IMailService {
     public Pop3Service() {
     }
 
-    public UniversalMail parseEmail(MailItem mailItem, String localSavePath) throws MailPlusException {
-        return MailItemParser.parseMail(mailItem, localSavePath);
+    public UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
+        return MailItemParser.parseMail(mailItem, localSavePath, attachmentPath);
     }
 
     public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
@@ -32,34 +32,45 @@ public class Pop3Service implements IMailService {
         List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
 
         try {
-            POP3Folder pop3Folder = (POP3Folder)pop3Store.getFolder("INBOX");
-            pop3Folder.open(Folder.READ_WRITE);
+            Folder defaultFolder = pop3Store.getDefaultFolder();
+            Folder[] list = defaultFolder.list();
 
-            Message[] messages = pop3Folder.getMessages();
-            for (int index = messages.length - 1; index >= 0; index--) {
-                Message message = messages[index];
-                // 拉取的邮件数
-                if (mList.size() == numEmailsToFetch) break;
+            for (Folder folder : list) {
+                POP3Folder pop3Folder = (POP3Folder) folder;
+                if (!pop3Folder.isOpen()) {
+                    pop3Folder.open(Folder.READ_WRITE);
+                }
 
-                try {
-                    if (!message.getFolder().isOpen()) {
-                        message.getFolder().open(Folder.READ_WRITE);
+                Message[] messages = pop3Folder.getMessages();
+                for (int index = messages.length - 1; index >= 0; index--) {
+                    Message message = messages[index];
+                    if (!pop3Folder.isOpen()) {
+                        pop3Folder.open(Folder.READ_WRITE);
                     }
 
-                    String uid = pop3Folder.getUID(message);
-                    if (uid == null || uid.isEmpty()) {
-                        uid = getUniqueHash(message);
+                    // 拉取的邮件数
+                    if (mList.size() == numEmailsToFetch) break;
+
+                    try {
+                        if (!message.getFolder().isOpen()) {
+                            message.getFolder().open(Folder.READ_WRITE);
+                        }
+
+                        String uid = pop3Folder.getUID(message);
+                        if (uid == null || uid.isEmpty()) {
+                            uid = getUniqueHash(message);
+                        }
+
+                        if (existUidList != null && existUidList.contains(uid)) {
+                            continue;
+                        }
+
+                        mList.add(MailItem.builder().pop3Message((POP3Message) message).uid(uid).build());
+
+                    } catch (Exception e) {
+                        log.error("pop3 - 获取邮件异常，异常原因：" + "\t" + e.getMessage());
+                        e.printStackTrace();
                     }
-
-                    if (existUidList != null && existUidList.contains(uid)) {
-                        continue;
-                    }
-
-                    mList.add(MailItem.builder().pop3Message((POP3Message) message).uid(uid).build());
-
-                } catch (Exception e) {
-                    log.error("pop3 - 获取邮件异常，异常原因：" + "\t" + e.getMessage());
-                    e.printStackTrace();
                 }
             }
 

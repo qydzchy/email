@@ -25,11 +25,12 @@ public interface IMailService {
     /**
      * 解析邮件
      * @param mailItem
-     * @param localSavePath
+     * @param localSavePath 邮件路径
+     * @param attachmentPath 附件路径
      * @return 获取邮件内容
      * @throws MailPlusException
      */
-    UniversalMail parseEmail(MailItem mailItem, String localSavePath) throws MailPlusException;
+    UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException;
 
     /**
      * 获取邮件列表

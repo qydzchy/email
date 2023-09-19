@@ -92,6 +92,7 @@
         <foreach collection="statusList" item="status" open="(" separator="," close=")">
             #{status}
         </foreach>
+        and folder = 'INBOX'
         <if test="type != null">and type = #{type}</if>
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
@@ -109,10 +110,11 @@
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}
         </foreach>
-        and status in
+        and mte.status in
         <foreach collection="statusList" item="status" open="(" separator="," close=")">
             #{status}
         </foreach>
+        and mte.folder = 'INBOX'
         <if test="type != null">and mte.type = #{type}</if>
         <if test="readFlag != null "> and mte.read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
@@ -129,7 +131,7 @@
     </select>
 
     <select id="getUidsByTaskId" resultType="java.lang.String">
-        select uid from mailbox_task_email where task_id=#{taskId}
+        select uid from mailbox_task_email where task_id=#{taskId} and type = 1 and del_flag = '0'
     </select>
 
     <select id="getEmailQuantityByIds" resultType="java.util.Map">

@@ -911,11 +911,11 @@ export default {
   },
   mounted() {
     this.fetchTaskList().then(() => {
-      // 在这里，fetchTaskList 已经完成
-      // 所以你可以对列表进行遍历和匹配
-      const foundTask = this.taskList.find(task => task.id === this.selectedEmail.taskId);
-      if (foundTask) {
-        this.selectedAccount = foundTask.account;
+      if (this.selectedEmail && this.selectedEmail.taskId !== undefined) {
+        const foundTask = this.taskList.find(task => task.id === this.selectedEmail.taskId);
+        if (foundTask) {
+          this.selectedAccount = foundTask.account;
+        }
       }
     }).catch(error => {
       console.error("Error while fetching task list:", error);

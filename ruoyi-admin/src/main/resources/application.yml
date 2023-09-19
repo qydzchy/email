@@ -134,11 +134,13 @@ email:
   # 拉取邮件.eml
   pull:
     path: D:\back\Desktop\mailbox\
+    attachment:
+      path: D:\back\Desktop\attachment\pull
   # 邮件上传附件
   send:
     upload:
       attachment:
-        path: D:\back\Desktop\upload
+        path: D:\back\Desktop\attachment\send
   trace:
     # 邮件回调服务地址
     server: http://47.244.55.212:8080

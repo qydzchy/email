@@ -66,6 +66,8 @@ public class TaskServiceImpl implements ITaskService
 
     @Value("${email.pull.path}")
     private String emailPath;
+    @Value("${email.pull.attachment.path}")
+    private String attachmentPath;
 
     /**
      * 查询邮箱任务
@@ -174,15 +176,8 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱账号已存在");
         }
 
-        // 没有选择协议类型，则获取服务器信息
-        String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
-        Host host = hostService.selectHostByDomain(domain);
-        if (host == null) {
-            throw new ServiceException("暂不支持该邮箱类型");
-        }
-
         // 获取协议连接配置信息
-        List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = getProtocolConnCfg(task, host);
+        List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = getProtocolConnCfg(task);
 
         boolean flag = false;
         MailConnCfg mailConnCfg = getMailConnCfg(task);
@@ -211,17 +206,10 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("邮箱连接失败");
         }
 
-        String outgoingServer = StringUtils.isNotBlank(task.getOutgoingServer()) ? task.getOutgoingServer() : host.getSmtpHost();
-        Integer outgoingPort = task.getOutgoingPort() != null ? task.getOutgoingPort() : host.getSmtpPort();
-        Boolean outgoingSslFlag = task.getOutgoingSslFlag() != null ? task.getOutgoingSslFlag() : Optional.ofNullable(host.getSmtpSsl()).orElse(false);
-
         task.setProtocolType(protocolType);
         task.setReceivingServer(mailConnCfg.getHost());
         task.setReceivingPort(mailConnCfg.getPort());
         task.setReceivingSslFlag(mailConnCfg.isSsl());
-        task.setOutgoingServer(outgoingServer);
-        task.setOutgoingPort(outgoingPort);
-        task.setOutgoingSslFlag(outgoingSslFlag);
         task.setCreateId(loginUser.getUserId());
         task.setCreateBy(loginUser.getUsername());
         task.setCreateTime(DateUtils.getNowDate());
@@ -244,7 +232,7 @@ public class TaskServiceImpl implements ITaskService
      * 获取协议连接配置信息
      * @return
      */
-    private List<Pair<ProtocolTypeEnum, MailConnCfg>> getProtocolConnCfg(Task task, Host host) {
+    private List<Pair<ProtocolTypeEnum, MailConnCfg>> getProtocolConnCfg(Task task) {
         List<Pair<ProtocolTypeEnum, MailConnCfg>> protocolConnCfgPairList = new ArrayList<>();
         if (task.getProtocolType() != null) {
             ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
@@ -252,10 +240,21 @@ public class TaskServiceImpl implements ITaskService
                 throw new ServiceException("暂不支持该协议类型");
             }
 
+            task.setOutgoingSslFlag(Optional.ofNullable(task.getOutgoingSslFlag()).orElse(false));
+
             MailConnCfg mailConnCfg = MailConnCfg.builder().host(task.getReceivingServer()).port(task.getReceivingPort()).ssl(Optional.ofNullable(task.getReceivingSslFlag()).orElse(false)).build();
             protocolConnCfgPairList.add(Pair.of(protocolTypeEnum, mailConnCfg));
         } else {
+            // 没有选择协议类型，则获取服务器信息
+            String domain = task.getAccount().substring(task.getAccount().indexOf("@") + 1);
+            Host host = hostService.selectHostByDomain(domain);
+            if (host == null) {
+                throw new ServiceException("暂不支持该邮箱类型");
+            }
 
+            task.setOutgoingServer(host.getSmtpHost());
+            task.setOutgoingPort(host.getSmtpPort());
+            task.setOutgoingSslFlag(Optional.ofNullable(host.getSmtpSsl()).orElse(false));
 
             if (StringUtils.isNotBlank(host.getImapHost()) && host.getImapPort() != null) {
                 MailConnCfg imapMailConnCfg = MailConnCfg.builder().host(host.getImapHost()).port(host.getImapPort()).ssl(Optional.ofNullable(host.getImapSsl()).orElse(false)).build();
@@ -310,7 +309,7 @@ public class TaskServiceImpl implements ITaskService
 
             for (MailItem mailItem : mailItems) {
                 try {
-                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailPath);
+                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailPath, attachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
                         saveEmailData(task.getId(), universalMail);
@@ -335,7 +334,7 @@ public class TaskServiceImpl implements ITaskService
         List<Task> taskList = taskMapper.selectTaskList(taskParam);
         ThreadPoolExecutor instance = ThreadPoolPullService.getInstance();
         taskList.stream().forEach(task -> {
-           // instance.execute(() -> {
+            instance.execute(() -> {
                 Pair<Integer, String> pair = pullEmail(task);
                 if (pair != null) {
                     Integer connStatus = pair.getFirst();
@@ -345,7 +344,7 @@ public class TaskServiceImpl implements ITaskService
                     task.setConnExceptionReason(connExceptionReason);
                     taskMapper.updateTask(task);
                 }
-        //    });
+            });
         });
     }
 

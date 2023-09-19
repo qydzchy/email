@@ -37,7 +37,7 @@ public class MailItemParser {
     public MailItemParser() {
     }
 
-    public static UniversalMail parseMail(MailItem mailItem, String targetDir) throws MailPlusException {
+    public static UniversalMail parseMail(MailItem mailItem, String targetDir, String attachmentPath) throws MailPlusException {
         UniversalMail universalMail = null;
         String emlPath;
 
@@ -45,12 +45,16 @@ public class MailItemParser {
             POP3Message pop3Message = mailItem.getPop3Message();
             universalMail = parseMimeMessage(pop3Message);
             emlPath = saveMimiMessageAsLocalEml(pop3Message, targetDir);
+            List<UniversalAttachment> universalAttachments = parseAttachment(pop3Message, attachmentPath);
+            universalMail.setAttachments(universalAttachments);
             universalMail.setEmlPath(emlPath);
             setMessageHeaderParam(pop3Message, universalMail);
         } else if (mailItem.getImapMessage() != null) {
             IMAPMessage imapMessage = mailItem.getImapMessage();
             universalMail = parseMimeMessage(imapMessage);
             emlPath = saveMimiMessageAsLocalEml(imapMessage, targetDir);
+            List<UniversalAttachment> universalAttachments = parseAttachment(imapMessage, attachmentPath);
+            universalMail.setAttachments(universalAttachments);
             universalMail.setEmlPath(emlPath);
             setMessageHeaderParam(imapMessage, universalMail);
         } else if (mailItem.getExchangeMessage() != null) {

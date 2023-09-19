@@ -20,8 +20,8 @@ public class ImapService implements IMailService {
     public ImapService() {
     }
 
-    public UniversalMail parseEmail(MailItem mailItem, String localSavePath) throws MailPlusException {
-        return MailItemParser.parseMail(mailItem, localSavePath);
+    public UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
+        return MailItemParser.parseMail(mailItem, localSavePath, attachmentPath);
     }
 
     public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
@@ -35,6 +35,9 @@ public class ImapService implements IMailService {
 
             for (Folder folder : list) {
                 IMAPFolder imapFolder = (IMAPFolder) folder;
+                if (!imapFolder.isOpen()) {
+                    imapFolder.open(Folder.READ_WRITE);
+                }
 
                 boolean flag = imapFolder.getName().equalsIgnoreCase("[gmail]") ?
                         listGmailMessageFolder(mList, imapFolder, existUidList, numEmailsToFetch) :
@@ -66,7 +69,10 @@ public class ImapService implements IMailService {
 
     private boolean listFolderMessage(List<MailItem> mList, IMAPFolder imapFolder, List<String> existUidList, int numEmailsToFetch) throws MessagingException {
         boolean flag = false;
-        imapFolder.open(Folder.READ_ONLY);
+        if (!imapFolder.isOpen()) {
+            imapFolder.open(Folder.READ_WRITE);
+        }
+
         FetchProfile profile = new FetchProfile();
         profile.add(UIDFolder.FetchProfileItem.UID);
 
