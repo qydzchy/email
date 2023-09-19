@@ -61,9 +61,6 @@ public class TaskServiceImpl implements ITaskService
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
 
-    @Resource
-    private ITaskEmailSendService taskEmailSendService;
-
     @Value("${email.pull.path}")
     private String emailPath;
     @Value("${email.pull.attachment.path}")
