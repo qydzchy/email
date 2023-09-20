@@ -519,22 +519,25 @@ export default {
     taskPullClick(taskId) {
       this.selectedTaskId = taskId;
       this.switchLayout('email_header');
-      this.onTaskClick(taskId, 1);
-      this.setActive('PULL_' + taskId);
+      const active = 'PULL_' + taskId;
+      this.onTaskClick(active);
+      this.setActive(active);
     },
 
     // 任务发件箱
     taskSendClick(taskId) {
       this.switchLayout('email_header');
-      this.onTaskClick(taskId, 2);
-      this.setActive('SEND_' + taskId);
+      const active = 'SEND_' + taskId;
+      this.onTaskClick(active);
+      this.setActive(active);
     },
 
     // 文件夹
     folderClick(folderId) {
-      console.log("folderId = " + folderId);
       this.switchLayout('email_header');
-      this.onFolderClick(folderId);
+      const active = 'FOLDER_' + folderId;
+      this.onFolderClick(active);
+      this.setActive(active);
     },
 
     // 全部收件
@@ -601,12 +604,12 @@ export default {
       this.currentLayout = 'write_email';
     },
 
-    onTaskClick(taskId, type) {
-      EventBus.$emit('task-selected', taskId, type);
+    onTaskClick(emailType) {
+      EventBus.$emit('task-selected', emailType);
     },
 
-    onFolderClick(folderId) {
-      EventBus.$emit('folder-selected', folderId);
+    onFolderClick(emailType) {
+      EventBus.$emit('folder-selected', emailType);
     },
 
     triggerAllReceivedEvent() {

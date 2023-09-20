@@ -98,6 +98,7 @@
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
         <if test="spamFlag != null "> and spam_flag = #{spamFlag}</if>
         <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
+        <if test="fixedFlag != null and fixedFlag == true"> and fixed_flag = true</if>
         <if test="folderId != null "> and folder_id = #{folderId}</if>
         and del_flag = #{delFlag}
     </select>
@@ -120,6 +121,7 @@
         <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
         <if test="spamFlag != null "> and mte.spam_flag = #{spamFlag}</if>
         <if test="traceFlag != null "> and mte.trace_flag = #{traceFlag}</if>
+        <if test="fixedFlag != null and fixedFlag == true"> and fixed_flag = true</if>
         <if test="folderId != null "> and mte.folder_id = #{folderId}</if>
         and mte.del_flag = #{delFlag}
         order by mte.send_date desc

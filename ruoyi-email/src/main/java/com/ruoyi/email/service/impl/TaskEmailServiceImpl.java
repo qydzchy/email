@@ -154,7 +154,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Long folderId, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Long folderId, Integer pageNum, Integer pageSize) {
         if (taskIdList.isEmpty()) {
             return Pair.of(0, new ArrayList<>());
         }
@@ -166,14 +166,14 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             statusList = Arrays.asList(TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
         }
 
-        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, folderId, statusList);
+        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, folderId, statusList);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, folderId, statusList, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, folderId, statusList, offset, limit);
 
         List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
         List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.listByEmailIds(ids);
@@ -246,6 +246,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         BeanUtils.copyProperties(dto, taskEmail);
         taskEmail.setUid(IdUtils.fastSimpleUUID());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
+        taskEmail.setFolder("INBOX");
         taskEmail.setSendDate(now);
         taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
         taskEmail.setInReplyTo(inReplyTo);
@@ -782,7 +783,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     private String getDynamicLabel(LocalDateTime mailDateTime) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        mailDateTime = mailDateTime.truncatedTo(ChronoUnit.DAYS); // 修正的部分
 
         long daysBetween = ChronoUnit.DAYS.between(mailDateTime, now);
         if (daysBetween == 0) {
@@ -793,10 +795,10 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             DayOfWeek dayOfWeek = mailDateTime.getDayOfWeek();
             return "上周" + dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.CHINESE);
         } else if (mailDateTime.getYear() == now.getYear()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM月dd日");
             return mailDateTime.format(formatter);
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
             return mailDateTime.format(formatter);
         }
     }

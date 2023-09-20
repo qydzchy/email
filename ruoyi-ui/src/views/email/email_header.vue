@@ -153,16 +153,20 @@
 																	</span>
                                   <!---->
 																</span>
-																<div class="show main-toolbar-search-pin mail-toolbar-btn-item">
-																	<div class="main-toolbar-search-pin-bg">
-																		<a class="main-toolbar-search-pin-handle">
-																			<span class="okki-icon-wrap pin-icon" color="#ffffff">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#ffffff">
-																					<path fill-rule="evenodd" clip-rule="evenodd" d="M8.382 2a.963.963 0 00-.97.956c0 1.33.582 2.526 1.506 3.353l-.606 3.865C6.325 11.39 5 13.564 5 16.044c0 .528.434.956.97.956H11v3.914c0 .6.448 1.086 1 1.086s1-.486 1-1.086V17h5.03c.536 0 .97-.428.97-.956 0-2.507-1.354-4.7-3.376-5.91l-.597-3.777a4.49 4.49 0 001.56-3.4.963.963 0 00-.969-.957H8.382z"></path>
-																				</svg>
-																			</span>
-																		</a>
-																	</div>
-																</div>
+                                <div
+                                  :class="['show', 'main-toolbar-search-pin', 'mail-toolbar-btn-item', { 'active': fixedFlag }]"
+                                  @click="switchFixed"
+                                >
+                                  <div class="main-toolbar-search-pin-bg">
+                                    <a class="main-toolbar-search-pin-handle">
+                                      <span :class="['okki-icon-wrap', 'pin-icon', { 'pin-icon-active': fixedFlag }]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#ffffff">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M8.382 2a.963.963 0 00-.97.956c0 1.33.582 2.526 1.506 3.353l-.606 3.865C6.325 11.39 5 13.564 5 16.044c0 .528.434.956.97.956H11v3.914c0 .6.448 1.086 1 1.086s1-.486 1-1.086V17h5.03c.536 0 .97-.428.97-.956 0-2.507-1.354-4.7-3.376-5.91l-.597-3.777a4.49 4.49 0 001.56-3.4.963.963 0 00-.969-.957H8.382z"></path>
+                                        </svg>
+                                      </span>
+                                    </a>
+                                  </div>
+                                </div>
                                 <!---->
 															</div>
 
@@ -516,7 +520,8 @@ export default {
         '标为已读',
         '标为未读',
         '标为垃圾邮件',
-      ]
+      ],
+      fixedFlag: false
     }
   },
   props: {
@@ -533,8 +538,8 @@ export default {
 
   // 在B组件中
   created() {
-    EventBus.$on('task-selected', this.fetchEmailsForTask);
-    EventBus.$on('folder-selected', this.fetchFolderTask);
+    EventBus.$on('task-selected', this.fetchEmailData);
+    EventBus.$on('folder-selected', this.fetchEmailData);
     EventBus.$on('all-received-selected', this.fetchEmailData);
     EventBus.$on('pending-mail-selected', this.fetchEmailData);
     EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
@@ -561,8 +566,8 @@ export default {
   },
 
   beforeDestroy() {
-    EventBus.$off('task-selected', this.fetchEmailsForTask);
-    EventBus.$off('folder-selected', this.fetchFolderTask);
+    EventBus.$off('task-selected', this.fetchEmailData);
+    EventBus.$off('folder-selected', this.fetchEmailData);
     EventBus.$off('all-received-selected', this.fetchEmailData);
     EventBus.$off('pending-mail-selected', this.fetchEmailData);
     EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
@@ -573,18 +578,6 @@ export default {
     EventBus.$off('complete-shipment-selected', this.fetchEmailData);
   },
   methods: {
-    fetchEmailsForTask(taskId, type) {
-      this.currentPage = 1;
-      this.readFlag = null;
-      this.pendingFlag = null;
-      this.fetchEmailList(taskId, type);
-    },
-
-    fetchFolderTask(folderId) {
-      this.currentPage = 1;
-      this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
-    },
-
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
       this.taskId = taskId;
       this.type = type;
@@ -599,6 +592,7 @@ export default {
         spamFlag: spamFlag,
         traceFlag: traceFlag,
         folderId: folderId,
+        fixedFlag: this.fixedFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -667,6 +661,15 @@ export default {
         this.fetchEmailList(null, null, null, null, null, null, true, null);
       } else if (selectedEmailType === 'TRACE_INFORMATION') {
         this.fetchEmailList(null, null, null, null, null, null, null, true);
+      } else if (/^PULL_(.+)$/.test(selectedEmailType)) {
+        const taskId = RegExp.$1;
+        this.fetchEmailList(taskId, 1, null, null, null, null, null, null);
+      } else if (/^SEND_(.+)$/.test(selectedEmailType)) {
+        const taskId = RegExp.$1;
+        this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
+      } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
+        const folderId = RegExp.$1;
+        this.fetchEmailList(null, null, null, null, null, null, null, folderId);
       }
     },
 
@@ -873,6 +876,13 @@ export default {
         this.isIconsToggled = true;
       }
     },
+
+    // 固定总开关
+    switchFixed() {
+      this.fixedFlag = !this.fixedFlag;
+      this.currentPage = 1;
+      this.fetchEmailData(this.currentEmailType);
+    }
   }
 }
 </script>
