@@ -1167,6 +1167,15 @@ export default {
         this.fetchEmailList(null, null, null, null, null, null, true, null);
       } else if (selectedEmailType === 'TRACE_INFORMATION') {
         this.fetchEmailList(null, null, null, null, null, null, null, true);
+      } else if (/^PULL_(.+)$/.test(selectedEmailType)) {
+        const taskId = RegExp.$1;
+        this.fetchEmailList(taskId, 1, null, null, null, null, null, null);
+      } else if (/^SEND_(.+)$/.test(selectedEmailType)) {
+        const taskId = RegExp.$1;
+        this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
+      } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
+        const folderId = RegExp.$1;
+        this.fetchEmailList(null, null, null, null, null, null, null, folderId);
       }
     },
 
