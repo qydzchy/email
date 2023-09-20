@@ -9,15 +9,6 @@ export function uploadAttachments(data) {
   })
 }
 
-// 附件列表
-export function listAttachment(query) {
-  return request({
-    url: '/email/attachment/list',
-    method: 'get',
-    params: query
-  })
-}
-
 // 重命名附件名称
 export function renameAttachment(data) {
   return request({

@@ -3,7 +3,8 @@ package com.ruoyi.email.domain.vo.email;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.email.domain.TaskEmailAttachment;
+import com.ruoyi.email.domain.TaskAttachment;
+import com.ruoyi.email.domain.bo.EmailAttachmentBO;
 import lombok.Data;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -104,7 +105,7 @@ public class EmailListVO {
     /**
      * 附件
      */
-    private List<TaskEmailAttachment> taskEmailAttachmentList;
+    private List<EmailAttachmentBO> emailAttachmentList;
 
     /**
      *

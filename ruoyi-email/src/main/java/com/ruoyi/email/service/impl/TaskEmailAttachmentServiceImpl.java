@@ -1,52 +1,29 @@
 package com.ruoyi.email.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
-import com.ruoyi.email.service.ITaskEmailAttachmentService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailAttachmentMapper;
 import com.ruoyi.email.domain.TaskEmailAttachment;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
+import com.ruoyi.email.service.ITaskEmailAttachmentService;
 
 /**
- * 邮件附件Service业务层处理
+ * 附件Service业务层处理
  * 
- * @author tangJM
- * @date 2023-07-31
+ * @author tangJM.
+ * @date 2023-09-20
  */
-@Slf4j
 @Service
-public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentService
+public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentService 
 {
-    @Resource
+    @Autowired
     private TaskEmailAttachmentMapper taskEmailAttachmentMapper;
 
-    @Value("${email.send.upload.attachment.path}")
-    private String uploadAttachmentPath;
-
     /**
-     * 查询邮件附件
+     * 查询附件
      * 
-     * @param id 邮件附件主键
-     * @return 邮件附件
+     * @param id 附件主键
+     * @return 附件
      */
     @Override
     public TaskEmailAttachment selectTaskEmailAttachmentById(Long id)
@@ -55,10 +32,10 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     }
 
     /**
-     * 查询邮件附件列表
+     * 查询附件列表
      * 
-     * @param taskEmailAttachment 邮件附件
-     * @return 邮件附件
+     * @param taskEmailAttachment 附件
+     * @return 附件
      */
     @Override
     public List<TaskEmailAttachment> selectTaskEmailAttachmentList(TaskEmailAttachment taskEmailAttachment)
@@ -67,35 +44,33 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     }
 
     /**
-     * 新增邮件附件
+     * 新增附件
      * 
-     * @param taskEmailAttachment 邮件附件
+     * @param taskEmailAttachment 附件
      * @return 结果
      */
     @Override
     public int insertTaskEmailAttachment(TaskEmailAttachment taskEmailAttachment)
     {
-        taskEmailAttachment.setCreateTime(DateUtils.getNowDate());
         return taskEmailAttachmentMapper.insertTaskEmailAttachment(taskEmailAttachment);
     }
 
     /**
-     * 修改邮件附件
+     * 修改附件
      * 
-     * @param taskEmailAttachment 邮件附件
+     * @param taskEmailAttachment 附件
      * @return 结果
      */
     @Override
     public int updateTaskEmailAttachment(TaskEmailAttachment taskEmailAttachment)
     {
-        taskEmailAttachment.setUpdateTime(DateUtils.getNowDate());
         return taskEmailAttachmentMapper.updateTaskEmailAttachment(taskEmailAttachment);
     }
 
     /**
-     * 批量删除邮件附件
+     * 批量删除附件
      * 
-     * @param ids 需要删除的邮件附件主键
+     * @param ids 需要删除的附件主键
      * @return 结果
      */
     @Override
@@ -105,9 +80,9 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     }
 
     /**
-     * 删除邮件附件信息
+     * 删除附件信息
      * 
-     * @param id 邮件附件主键
+     * @param id 附件主键
      * @return 结果
      */
     @Override
@@ -116,159 +91,12 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
         return taskEmailAttachmentMapper.deleteTaskEmailAttachmentById(id);
     }
 
-    @Override
-    public void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> emailAttachments) {
-        taskEmailAttachmentMapper.batchInsertTaskEmailAttachment(emailAttachments);
-    }
-
-    @Override
-    public void updateEmailIdByIds(Long emailId, List<Long> ids) {
-        taskEmailAttachmentMapper.updateEmailIdByIds(emailId, ids);
-    }
-
-    @Override
-    public List<TaskEmailAttachment> selectByEmailId(Long id) {
-        return taskEmailAttachmentMapper.selectByEmailId(id);
-    }
-
     /**
-     * 上传附件
-     * @param files
-     * @return
+     * 批量插入邮件附件数据
+     * @param taskEmailAttachmentList
      */
     @Override
-    @Transactional
-    public List<AttachmentListVO> uploadAttachments(MultipartFile[] files) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        String username = loginUser.getUsername();
-
-        List<AttachmentListVO> attachmentList = new ArrayList<>();
-        List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
-        try {
-            for (MultipartFile file : files) {
-                // 获取文件信息
-                String originalFilename = file.getOriginalFilename();
-                long fileSize = file.getSize();
-                String filePath = uploadAttachmentPath + File.separator + originalFilename;
-
-                Date now = new Date();
-                TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
-                emailAttachment.setName(originalFilename);
-                emailAttachment.setSize(fileSize);
-                emailAttachment.setPath(filePath);
-                emailAttachment.setCreateId(userId);
-                emailAttachment.setCreateBy(username);
-                emailAttachment.setCreateTime(now);
-                emailAttachment.setUpdateId(userId);
-                emailAttachment.setUpdateBy(username);
-                emailAttachment.setUpdateTime(now);
-                taskEmailAttachmentList.add(emailAttachment);
-
-                // 创建上传目录（如果不存在）
-                File uploadDir = new File(uploadAttachmentPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
-                }
-
-                // 保存文件到上传目录
-                File destFile = new File(filePath);
-                file.transferTo(destFile);
-            }
-
-            batchInsertTaskEmailAttachment(taskEmailAttachmentList);
-
-            taskEmailAttachmentList.stream().forEach(taskEmailAttachment -> {
-                attachmentList.add(AttachmentListVO.builder().id(taskEmailAttachment.getId()).name(taskEmailAttachment.getName()).size(taskEmailAttachment.getSize()).build());
-            });
-
-        } catch (Exception e) {
-            log.error("upload attachment exception: {}", e);
-        }
-
-        return attachmentList;
-    }
-
-    @Override
-    public boolean rename(Long id, String name) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        TaskEmailAttachment taskEmailAttachment = taskEmailAttachmentMapper.getById(id, userId);
-        if (taskEmailAttachment == null) {
-            throw new ServiceException("不存在该附件");
-        }
-        String oldName = taskEmailAttachment.getName();
-        String suffix = oldName.substring(oldName.lastIndexOf("."));
-        name += suffix;
-        int affectedRow = taskEmailAttachmentMapper.updateNameById(name, id, userId);
-        return affectedRow > 0 ? true : false;
-    }
-    
-    @Override
-    public boolean delete(Long id) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        int affectedRow = taskEmailAttachmentMapper.deleteById(id, userId);
-        return affectedRow > 0 ? true : false;
-    }
-
-    @Override
-    public List<AttachmentListVO> list(Long emailId) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        List<AttachmentListVO> attachmentListVOList = taskEmailAttachmentMapper.getByTaskIdAndEmailId(emailId, userId);
-        return attachmentListVOList;
-    }
-
-    @Override
-    public List<TaskEmailAttachment> listByEmailIds(List<Long> emailIds) {
-        return taskEmailAttachmentMapper.selectByEmailIds(emailIds);
-    }
-
-    @Override
-    public List<TaskEmailAttachment> uploadAttachment(Path sourceFile) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        String username = loginUser.getUsername();
-
-        long fileSize = -1L;
-        try {
-            fileSize = Files.size(sourceFile);
-        } catch (IOException e) {
-            log.error("获取文件大小失败：{}", e);
-        }
-        String fileName = sourceFile.getFileName().toString();
-        String filePath = uploadAttachmentPath + File.separator + fileName;
-
-        Date now = new Date();
-        TaskEmailAttachment emailAttachment = new TaskEmailAttachment();
-        emailAttachment.setName(fileName);
-        emailAttachment.setSize(fileSize);
-        emailAttachment.setPath(filePath);
-        emailAttachment.setCreateId(userId);
-        emailAttachment.setCreateBy(username);
-        emailAttachment.setCreateTime(now);
-        emailAttachment.setUpdateId(userId);
-        emailAttachment.setUpdateBy(username);
-        emailAttachment.setUpdateTime(now);
-        taskEmailAttachmentMapper.insertTaskEmailAttachment(emailAttachment);
-
-        Path targetDir = Paths.get(uploadAttachmentPath);
-        // 确保目标文件夹存在
-        if (!Files.exists(targetDir)) {
-            try {
-                Files.createDirectories(targetDir);
-            } catch (IOException e) {
-                log.error("创建文件夹失败：{}", e);
-            }
-        }
-
-        Path targetFile = targetDir.resolve(sourceFile.getFileName());
-        try {
-            Files.copy(sourceFile, targetFile);  // 从源文件复制到目标文件夹
-        } catch (IOException e) {
-            log.error("从源文件复制到目标文件夹失败：{}", e);
-        }
-        return Arrays.asList(emailAttachment);
+    public void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> taskEmailAttachmentList) {
+        taskEmailAttachmentMapper.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
     }
 }

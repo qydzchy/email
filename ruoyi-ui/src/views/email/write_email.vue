@@ -412,7 +412,7 @@
 
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import {uploadAttachments, listAttachment, renameAttachment, deleteAttachment} from "@/api/email/attachment";
+import {uploadAttachments, renameAttachment, deleteAttachment} from "@/api/email/attachment";
 import {listTaskPull} from "@/api/email/task";
 import {saveSendEmail, sendEmail, uploadAttachment} from "@/api/email/email";
 import { EventBus } from '@/api/email/event-bus.js';

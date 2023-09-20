@@ -23,12 +23,11 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.email.domain.*;
+import com.ruoyi.email.domain.bo.EmailAttachmentBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
-import com.ruoyi.email.service.ITaskEmailAttachmentService;
-import com.ruoyi.email.service.ITaskEmailContentService;
-import com.ruoyi.email.service.ITaskService;
+import com.ruoyi.email.service.*;
 import com.ruoyi.email.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +35,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskEmailMapper;
-import com.ruoyi.email.service.ITaskEmailService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
@@ -64,6 +62,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private ITaskEmailContentService taskEmailContentService;
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
+    @Resource
+    private ITaskAttachmentService taskAttachmentService;
 
     @Lazy
     @Resource
@@ -176,20 +176,19 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, folderId, statusList, offset, limit);
 
         List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
-        List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.listByEmailIds(ids);
-        if (taskEmailAttachmentList == null) taskEmailAttachmentList = Collections.emptyList();
-        Map<Long, List<TaskEmailAttachment>> attachmentGroupMap = taskEmailAttachmentList.stream().collect(Collectors.groupingBy(taskEmailAttachment -> taskEmailAttachment.getEmailId()));
+        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+        if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
 
         emailListVOList.stream().forEach(emailListVO -> {
             Long id = emailListVO.getId();
             if (attachmentGroupMap.containsKey(id)) {
-                List<TaskEmailAttachment> taskEmailAttachmentGroupList = attachmentGroupMap.get(id);
-                emailListVO.setTaskEmailAttachmentList(taskEmailAttachmentGroupList);
+                List<EmailAttachmentBO> emailAttachmentGroupList = attachmentGroupMap.get(id);
+                emailListVO.setEmailAttachmentList(emailAttachmentGroupList);
             } else {
-                emailListVO.setTaskEmailAttachmentList(Collections.emptyList());
+                emailListVO.setEmailAttachmentList(Collections.emptyList());
             }
         });
-
 
         Map<String, List<EmailListVO>> data = new LinkedHashMap<>();
         emailListVOList.stream().forEach(emailListVO -> {
@@ -259,10 +258,10 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setUpdateTime(now);
         taskEmailMapper.insertTaskEmail(taskEmail);
 
-        Long emailSendId = taskEmail.getId();
+        Long emailId = taskEmail.getId();
         // 保存邮件内容
         TaskEmailContent emailContent = new TaskEmailContent();
-        emailContent.setEmailId(emailSendId);
+        emailContent.setEmailId(emailId);
         emailContent.setContent(dto.getContent());
         emailContent.setCreateId(userId);
         emailContent.setCreateBy(username);
@@ -274,10 +273,18 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         // 更新邮件附件的emailId
         List<Long> attachmentIdList = dto.getAttachmentIdList();
-        if (attachmentIdList != null && !attachmentIdList.isEmpty()) {
-            taskEmailAttachmentService.updateEmailIdByIds(emailSendId, attachmentIdList);
+        List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
+        if (attachmentIdList != null) {
+            attachmentIdList.stream().forEach(attachmentId -> {
+                taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(attachmentId).build());
+            });
         }
-        return emailSendId;
+
+        if (!taskEmailAttachmentList.isEmpty()) {
+            taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
+        }
+
+        return emailId;
     }
 
     /**
@@ -481,7 +488,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         // 查询邮件内容
         TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentByEmailId(id);
         // 查询附件
-        List<TaskEmailAttachment> taskEmailAttachmentList = taskEmailAttachmentService.selectByEmailId(id);
+        List<TaskAttachment> taskAttachmentList = taskAttachmentService.selectByEmailId(id);
 
         // 获取邮箱信息
         Long taskId = taskEmail.getTaskId();
@@ -497,9 +504,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             String content = emailContent != null ? emailContent.getContent() : null;
 
             String [] attachmentPaths = null;
-            if (taskEmailAttachmentList != null && !taskEmailAttachmentList.isEmpty()) {
+            if (taskAttachmentList != null && !taskAttachmentList.isEmpty()) {
                 List<String> filePathList =  new ArrayList<>();
-                taskEmailAttachmentList.stream().forEach(taskEmailAttachment -> {
+                taskAttachmentList.stream().forEach(taskEmailAttachment -> {
                     filePathList.add(taskEmailAttachment.getPath());
                 });
                 attachmentPaths = filePathList.toArray(new String[filePathList.size()]);
@@ -588,7 +595,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
     @Override
     @Transactional
-    public List<TaskEmailAttachment> uploadAttachment(Long id) {
+    public List<TaskAttachment> uploadAttachment(Long id) {
         TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
         if (taskEmail == null) {
             log.info("不存在id为{}的邮件数据", id);
@@ -605,7 +612,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             throw new ServiceException("读取不到文件");
         }
 
-        return taskEmailAttachmentService.uploadAttachment(sourceFile);
+        return taskAttachmentService.uploadAttachment(sourceFile);
     }
 
     /**
