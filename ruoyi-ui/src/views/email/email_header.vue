@@ -289,7 +289,9 @@
 																													</label>
 																												</div>
 																												<div class="addr-info-container" style="">
-																													<div class="mail-list-item-addr-contact-info">
+																													<div
+                                                            :class="{'unread': !email.readFlag}"
+                                                            class="mail-list-item-addr-contact-info">
 																														<span class="email-addr-box">
 																															<span class="mm-tooltip all-type-avatar-wrapper client-stranger small mail-tag-avatar">
 																																<span class="mm-tooltip-trigger">
@@ -317,7 +319,9 @@
 																												</div>
 																												<div class="addr-info-operations-wrapper" style="display: none;">
 																													<div class="addr-info-container open">
-																														<div class="mail-list-item-addr-contact-info open">
+																														<div
+                                                              :class="{'unread': !email.readFlag}"
+                                                              class="mail-list-item-addr-contact-info open">
 																															<span class="email-addr-box">
 																																<span class="mm-tooltip all-type-avatar-wrapper client-stranger small mail-tag-avatar">
 																																	<span class="mm-tooltip-trigger">
@@ -363,7 +367,9 @@
 																														</div>
 																													</div>
 																												</div>
-																												<div class="mail-list-item-overview-content">
+																												<div
+                                                          :class="{'unread': !email.readFlag}"
+                                                          class="mail-list-item-overview-content">
 																													<div class="con-wrap">
 																														<!---->
 																														<span class="subject-summary-wrap">
@@ -538,16 +544,14 @@ export default {
 
   // 在B组件中
   created() {
-    EventBus.$on('task-selected', this.fetchEmailData);
-    EventBus.$on('folder-selected', this.fetchEmailData);
-    EventBus.$on('all-received-selected', this.fetchEmailData);
-    EventBus.$on('pending-mail-selected', this.fetchEmailData);
-    EventBus.$on('an-unread-mail-selected', this.fetchEmailData);
-    EventBus.$on('deleted-mail-selected', this.fetchEmailData);
-    EventBus.$on('drafts-selected', this.fetchEmailData);
-    EventBus.$on('spam-mail-selected', this.fetchEmailData);
-    EventBus.$on('trace-information-selected', this.fetchEmailData);
-    EventBus.$on('complete-shipment-selected', this.fetchEmailData);
+    EventBus.$on('email-header', (emailType, currentPage) => {
+      if (currentPage !== undefined) {
+        this.currentPage = currentPage;
+      }
+      this.fetchEmailData(emailType);
+    });
+
+
     if (this.emailList === undefined || this.emailList === null || this.emailList.length === 0) {
       this.localEmailList = [];
     } else {
@@ -566,16 +570,7 @@ export default {
   },
 
   beforeDestroy() {
-    EventBus.$off('task-selected', this.fetchEmailData);
-    EventBus.$off('folder-selected', this.fetchEmailData);
-    EventBus.$off('all-received-selected', this.fetchEmailData);
-    EventBus.$off('pending-mail-selected', this.fetchEmailData);
-    EventBus.$off('an-unread-mail-selected', this.fetchEmailData);
-    EventBus.$off('deleted-mail-selected', this.fetchEmailData);
-    EventBus.$off('drafts-selected', this.fetchEmailData);
-    EventBus.$off('spam-mail-selected', this.fetchEmailData);
-    EventBus.$off('trace-information-selected', this.fetchEmailData);
-    EventBus.$off('complete-shipment-selected', this.fetchEmailData);
+    EventBus.$off('email-header');
   },
   methods: {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
@@ -606,6 +601,9 @@ export default {
     },
 
     toggleActive(email) {
+      // 将状态改成已读
+      this.readEmail(email);
+
       this.activeEmailId = email.id;
       this.$emit('switch', 'email_content', email, this.localEmailList, this.total, this.currentEmailType);
     },
@@ -800,6 +798,26 @@ export default {
         if (response.code === 200) {
           this.$message.success("成功标记为已读");
           this.closeSelected();
+          return;
+        }
+      } catch (error) {
+        console.error('标记为已读出现错误:', error);
+        throw error;
+      }
+    },
+
+    // 标记为已读文件
+    async readEmail(email) {
+      const emailIds = [];
+      emailIds.push(email.id);
+      const data = {
+        "ids": emailIds,
+        "readFlag": true
+      };
+      try {
+        const response = await readEmail(data);
+        if (response.code === 200) {
+          this.$set(email, 'readFlag', true);
           return;
         }
       } catch (error) {

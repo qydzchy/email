@@ -92,7 +92,9 @@
 																															</label>
 																														</div>
 																														<div class="addr-info-container" style="display: none;">
-																															<div class="mail-list-item-addr-contact-info">
+																															<div
+                                                                :class="{'unread': !email.readFlag}"
+                                                                class="mail-list-item-addr-contact-info">
 																																<span class="email-addr-box">
                                                                   <span class="mm-tooltip all-type-avatar-wrapper client-stranger small mail-tag-avatar">
                                                                     <span class="mm-tooltip-trigger">
@@ -111,7 +113,9 @@
 																														</div>
 																														<div class="addr-info-operations-wrapper" style="">
 																															<div class="addr-info-container open">
-																																<div class="mail-list-item-addr-contact-info open">
+																																<div
+                                                                  :class="{'unread': !email.readFlag}"
+                                                                  class="mail-list-item-addr-contact-info open">
 																																	<span class="email-addr-box">
 																																		<span class="mm-tooltip all-type-avatar-wrapper client-stranger small mail-tag-avatar">
                                                                     <span class="mm-tooltip-trigger">
@@ -148,7 +152,9 @@
 																																</div>
 																															</div>
 																														</div>
-																														<div class="mail-list-item-overview-content open">
+																														<div
+                                                              :class="{'unread': !email.readFlag}"
+                                                              class="mail-list-item-overview-content">
 																															<div class="con-wrap">
 																																<!---->
 																																<span class="subject-summary-wrap">
@@ -262,10 +268,10 @@
 																				<div class="mail-toolbar-wrapper open-detail">
 																					<div class="mail-toolbar-left">
 																						<!---->
-																						<span class="mm-tooltip mail-toolbar-btn-item">
+																						<span class="mm-tooltip mail-toolbar-btn-item" @click="toggleEmailHeader">
 																							<span class="mm-tooltip-trigger">
 																								<span>
-																									<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																									<span  class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																											<path fill-rule="evenodd" clip-rule="evenodd" d="M9.707 5.293a1 1 0 010 1.414L4.414 12l5.293 5.293a1 1 0 01-1.414 1.414l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 0z"></path>
 																											<path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 12a1 1 0 011-1H21a1 1 0 110 2H4.5a1 1 0 01-1-1z"></path>
 																										</svg>
@@ -1033,11 +1039,9 @@
 <script>
 import { EventBus } from "@/api/email/event-bus";
 import writeEmailLayout from './write_email.vue';
+
 import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
 import emailHeaderLayout from "@/views/email/email_header.vue";
-import sendSuccessLayout from "@/views/email/send_success.vue";
-import setup from "@/views/email/setup.vue";
-import FolderTree from "@/views/email/folder_list_item.vue";
 
 export default {
   data() {
@@ -1123,16 +1127,11 @@ export default {
   },
 
   methods: {
-    fetchEmailsForTask(taskId) {
-      this.currentPage = 1;
-      this.readFlag = null;
-      this.pendingFlag = null;
-      this.fetchEmailList(taskId);
-    },
-
     toggleActive(email) {
       this.activeEmailId = email.id;
       this.currentEmailDetail = email;
+      // 将状态改成已读
+      this.readEmail(email);
     },
 
     nextPage() {
@@ -1281,6 +1280,11 @@ export default {
       EventBus.$emit('switch-write-email', email, writeEmailType);
     },
 
+    // 跳转到header页面
+    toggleEmailHeader() {
+      EventBus.$emit('switch-email-header', this.currentEmailType, this.currentPage);
+    },
+
     // 删除邮件
     async deleteEmails() {
       const emailIds = [];
@@ -1345,6 +1349,26 @@ export default {
 
     toggleEmailDropdown() {
       this.isDropdownEmailShown = !this.isDropdownEmailShown;
+    },
+
+    // 标记为已读文件
+    async readEmail(email) {
+      const emailIds = [];
+      emailIds.push(email.id);
+      const data = {
+        "ids": emailIds,
+        "readFlag": true
+      };
+      try {
+        const response = await readEmail(data);
+        if (response.code === 200) {
+          this.$set(email, 'readFlag', true);
+          return;
+        }
+      } catch (error) {
+        console.error('标记为已读出现错误:', error);
+        throw error;
+      }
     },
 
     // 标记为未读邮件

@@ -64,7 +64,7 @@
                           <ul role="menu" class="mm-menu mm-menu--inline" v-show="isInboxOpen">
                             <li class="mm-menu-item mail-sidebar-menu-item"
                                 :class="{ 'mm-menu-item--active': activeMenuItem === 'ALL_RECEIVED' }"
-                                @click="allReceivedClick"
+                                @click.prevent="allReceivedClick"
                                 role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
@@ -74,7 +74,7 @@
                                   <span class="flex items-center" title="全部收件">全部收件</span>
                                 </div>
                                 <span class="mm-tooltip mail-menu-item-count">
-																						<span class="mm-tooltip-trigger">758</span>
+																						<span class="mm-tooltip-trigger"></span>
                                   <!---->
 																					</span>
                                 <!---->
@@ -135,7 +135,7 @@
                               <span class="flex items-center">待处理邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger">2</span>
+																				<span class="mm-tooltip-trigger"></span>
                               <!---->
 																			</span>
                             <!---->
@@ -153,7 +153,7 @@
                               <span class="flex items-center" title="未读邮件">未读邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger">758</span>
+																				<span class="mm-tooltip-trigger"></span>
                               <!---->
 																			</span>
                             <!---->
@@ -171,7 +171,7 @@
                               <span class="flex items-center" title="草稿箱">草稿箱</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger">61</span>
+																				<span class="mm-tooltip-trigger"></span>
                               <!---->
 																			</span>
                             <!---->
@@ -472,13 +472,6 @@ export default {
     'FolderTree': FolderTree
   },
 
-  watch: {
-    currentLayout(newLayout, oldLayout) {
-      if (newLayout === 'email_header' && oldLayout !== 'email_header') {
-        this.triggerAllReceivedEvent();
-      }
-    }
-  },
   methods: {
     switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
       this.currentLayout = layoutName;
@@ -517,131 +510,72 @@ export default {
 
     // 任务收件箱
     taskPullClick(taskId) {
-      this.selectedTaskId = taskId;
-      this.switchLayout('email_header');
       const active = 'PULL_' + taskId;
-      this.onTaskClick(active);
-      this.setActive(active);
+      this.triggerEmailHeaderEvent(active);
     },
 
     // 任务发件箱
     taskSendClick(taskId) {
-      this.switchLayout('email_header');
       const active = 'SEND_' + taskId;
-      this.onTaskClick(active);
-      this.setActive(active);
+      this.triggerEmailHeaderEvent(active);
     },
 
     // 文件夹
     folderClick(folderId) {
-      this.switchLayout('email_header');
       const active = 'FOLDER_' + folderId;
-      this.onFolderClick(active);
-      this.setActive(active);
+      this.triggerEmailHeaderEvent(active);
     },
 
     // 全部收件
     allReceivedClick() {
-      this.selectedTaskId = null;
-      this.switchLayout('email_header');
-      this.setActive('ALL_RECEIVED');
-      this.triggerAllReceivedEvent();
+      this.triggerEmailHeaderEvent('ALL_RECEIVED');
     },
 
     // 全部发件
     completeShipmentClick() {
-      this.selectedTaskId = null;
-      this.switchLayout('email_header');
-      this.setActive('COMPLETE_SHIPMENT');
-      this.triggerCompleteShipmentEvent();
+      this.triggerEmailHeaderEvent('COMPLETE_SHIPMENT');
     },
 
     // 待处理邮件
     pendingMailClick() {
-      this.selectedTaskId = null;
-      this.switchLayout('email_header');
-      this.setActive('PENDING_MAIL');
-      this.triggerPendingMailEvent();
+      this.triggerEmailHeaderEvent('PENDING_MAIL');
     },
 
     // 未读邮件
     anUnreadMailClick() {
-      this.selectedTaskId = null;
-      this.currentLayout = 'email_header';
-      this.setActive('AN_UNREAD_MAIL');
-      this.triggerAnUnreadMailEvent();
+      this.triggerEmailHeaderEvent('AN_UNREAD_MAIL');
     },
 
     // 草稿箱
     draftsClick() {
-      this.switchLayout('email_header');
-      this.setActive('DRAFTS');
-      this.triggerDraftsEvent();
+      this.triggerEmailHeaderEvent('DRAFTS');
     },
 
     // 已删除邮件
     deletedMailClick() {
-      this.switchLayout('email_header');
-      this.setActive('DELETED_MAIL');
-      this.triggerDeletedMailEvent();
+      this.triggerEmailHeaderEvent('DELETED_MAIL');
     },
 
     // 垃圾邮件
     spamMailClick() {
-      this.switchLayout('email_header');
-      this.setActive('SPAM');
-      this.triggerSpamMailEvent();
+      this.triggerEmailHeaderEvent('SPAM');
     },
 
     // 追踪邮件
     traceInformationClick() {
-      this.switchLayout('email_header');
-      this.setActive('TRACK_INFORMATION');
-      this.triggerTraceInformationEvent();
+      this.triggerEmailHeaderEvent('TRACK_INFORMATION');
     },
 
     switchWriteEmailPage() {
       this.currentLayout = 'write_email';
     },
 
-    onTaskClick(emailType) {
-      EventBus.$emit('task-selected', emailType);
-    },
-
-    onFolderClick(emailType) {
-      EventBus.$emit('folder-selected', emailType);
-    },
-
-    triggerAllReceivedEvent() {
-      EventBus.$emit('all-received-selected', 'ALL_RECEIVED');
-    },
-
-    triggerCompleteShipmentEvent() {
-      EventBus.$emit('complete-shipment-selected', 'COMPLETE_SHIPMENT');
-    },
-
-    triggerPendingMailEvent() {
-      EventBus.$emit('pending-mail-selected', 'PENDING_MAIL');
-    },
-
-    triggerAnUnreadMailEvent() {
-      EventBus.$emit('an-unread-mail-selected', 'AN_UNREAD_MAIL');
-    },
-
-    triggerDeletedMailEvent() {
-      EventBus.$emit('deleted-mail-selected', 'DELETED_MAIL');
-    },
-
-    triggerSpamMailEvent() {
-      EventBus.$emit('spam-mail-selected', 'SPAM_MAIL');
-    },
-
-    triggerTraceInformationEvent() {
-      EventBus.$emit('trace-information-selected', 'TRACK_INFORMATION');
-    },
-
-    triggerDraftsEvent() {
-      EventBus.$emit('drafts-selected', 'DRAFTS');
+    triggerEmailHeaderEvent(emailType, currentPage) {
+      this.setActive(emailType);
+      this.switchLayout('email_header');
+      this.$nextTick(()=>{
+        EventBus.$emit('email-header', emailType, currentPage);
+      })
     },
 
     toggleInbox() {
@@ -662,8 +596,7 @@ export default {
   },
 
   mounted() {
-    this.setActive('ALL_RECEIVED');
-    this.triggerAllReceivedEvent();  // 触发事件
+    this.allReceivedClick();  // 触发事件
     this.refreshPullEmailList();
     this.refreshSendEmailList();
     this.refreshFolderList();
@@ -680,12 +613,17 @@ export default {
       this.writeEmailType = type;
       this.switchWriteEmailPage();
     });
+
+    EventBus.$on('switch-email-header', (emailType, currentPage) => {
+      this.triggerEmailHeaderEvent(emailType,currentPage)
+    });
   },
 
   beforeDestroy() {
     EventBus.$off('switch-send-success');
     EventBus.$off('switch-index');
     EventBus.$off('switch-write-email');
+    EventBus.$off('switch-email-header');
   },
 };
 </script>
