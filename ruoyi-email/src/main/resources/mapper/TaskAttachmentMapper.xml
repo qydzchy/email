@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskAttachmentMapper">
+    
+    <resultMap type="TaskAttachment" id="TaskAttachmentResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="path"    column="path"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEmailAttachmentVo">
+        select id, name, size, path, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_attachment
+    </sql>
+
+    <select id="selectTaskEmailAttachmentList" parameterType="TaskAttachment" resultMap="TaskAttachmentResult">
+        <include refid="selectEmailAttachmentVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="path != null  and path != ''"> and path = #{path}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskEmailAttachmentById" parameterType="Long" resultMap="TaskAttachmentResult">
+        <include refid="selectEmailAttachmentVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectByEmailId" resultMap="TaskAttachmentResult">
+        <include refid="selectEmailAttachmentVo"/>
+        where email_id = #{emailId}
+    </select>
+
+    <select id="getById" resultMap="TaskAttachmentResult">
+        <include refid="selectEmailAttachmentVo"/>
+        where id = #{id} and create_id = #{createId} and del_flag = 0
+    </select>
+
+    <select id="selectByEmailIds" resultType="com.ruoyi.email.domain.bo.EmailAttachmentBO">
+        select a.id, ea.email_id as emailId, a.name, a.size, a.path from mailbox_task_email_attachment ea
+        left join mailbox_task_attachment a on ea.attachment_id = a.id
+        where ea.email_id in
+        <foreach item="emailId" collection="emailIds" open="(" separator="," close=")">
+            #{emailId}
+        </foreach>
+        and a.del_flag = '0'
+    </select>
+
+    <insert id="insertEmailAttachment" parameterType="TaskAttachment" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="path != null and path != ''">path,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="path != null and path != ''">#{path},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="batchInsertTaskAttachment" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into mailbox_task_attachment (name, path, create_Id, create_by, create_time, update_id, update_by, update_time)
+        values
+        <foreach collection="taskAttachmentList" item="item" index="index" separator=",">
+            (#{item.name}, #{item.path}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <update id="updateTaskAttachment" parameterType="TaskAttachment">
+        update mailbox_task_attachment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="path != null and path != ''">path = #{path},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateNameById">
+        update mailbox_task_attachment set name = #{name} where id = #{id} and create_id = #{createId} and del_flag = 0
+    </update>
+
+    <delete id="deleteTaskEmailAttachmentById" parameterType="Long">
+        delete from mailbox_task_attachment where id = #{id} and del_flag = 0
+    </delete>
+
+    <delete id="deleteTaskAttachmentByIds" parameterType="String">
+        delete from mailbox_task_attachment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and del_flag = 0
+    </delete>
+
+    <update id="deleteById">
+        update mailbox_task_attachment set del_flag = 2 where id = #{id} and create_id = #{createId} and del_flag = 0
+    </update>
+</mapper>
