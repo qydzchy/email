@@ -2,8 +2,10 @@ package com.ruoyi.email.service.impl;
 
 import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
 import com.ruoyi.common.enums.email.ConnStatusEnum;
@@ -27,6 +29,7 @@ import com.ruoyi.email.util.ThreadPoolSendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskMapper;
@@ -57,6 +60,8 @@ public class TaskServiceImpl implements ITaskService
     private ITaskAttachmentService taskAttachmentService;
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Value("${email.pull.path}")
     private String emailPath;
@@ -292,6 +297,15 @@ public class TaskServiceImpl implements ITaskService
             return Pair.of(connStatus, e.getMessage());
         }
 
+        // 使用redis加个锁，防止拉取到重复的邮件
+        Long id = task.getId();
+        String lockKey = CacheConstants.EMAIL_PULL_KEY + id;
+        Boolean setIfAbsent = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, "", 10, TimeUnit.MINUTES);
+        if (!setIfAbsent) {
+            log.info("存在任务id为【{}】在拉取邮件，请稍后...", id);
+            return null;
+        }
+
         try {
             // 查询存在的uid
             List<String> existUidList = taskEmailService.getUidsByTaskId(task.getId());
@@ -316,6 +330,8 @@ public class TaskServiceImpl implements ITaskService
 
         } catch (Exception e) {
             log.error("邮件拉取失败，原始错误信息为【{}】", e);
+        } finally {
+            stringRedisTemplate.delete(lockKey);
         }
 
         return null;

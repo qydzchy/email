@@ -48,7 +48,7 @@
                   </button>
                   <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="startEditing(folder)">
                     <!---->
-                    <!---->编辑e
+                    <!---->编辑
                     <!---->
                   </button>
                   <button type="button" class="mm-button mm-button__text btn-list-item" @click.stop="handleDeleteFolder(folder.id)">
@@ -88,6 +88,7 @@ import FolderInput from './list_input.vue';
 import FolderEditInput from './list_edit_input.vue';
 
 import {deleteFolder, listFolder} from "@/api/email/folder";
+import {EventBus} from "@/api/email/event-bus";
 
 export default {
   data() {
@@ -160,7 +161,6 @@ export default {
     },
 
     startEditing(folder) {
-      console.log('startEditing', folder);
       this.editingFolder = folder.id;
       this.editingName = folder.name;
 
@@ -211,6 +211,7 @@ export default {
               message: '删除成功!'
             });
             this.$emit('delete-success', folderId);
+            EventBus.$emit('refresh-index-folder-list');
             this.removeFolderFromList(folderId, this.folders);
           });
 

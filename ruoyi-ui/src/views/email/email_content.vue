@@ -1117,7 +1117,7 @@ export default {
         this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
       } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
         const folderId = RegExp.$1;
-        this.fetchEmailList(null, null, null, null, null, null, null, folderId);
+        this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
       }
     },
 

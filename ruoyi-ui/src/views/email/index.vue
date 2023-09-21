@@ -604,6 +604,7 @@ export default {
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';
     });
+
     EventBus.$on('switch-index', () => {
       this.allReceivedClick();
     });
@@ -617,6 +618,15 @@ export default {
     EventBus.$on('switch-email-header', (emailType, currentPage) => {
       this.triggerEmailHeaderEvent(emailType,currentPage)
     });
+
+    EventBus.$on('refresh-index-task-list', () => {
+      this.refreshPullEmailList();
+      this.refreshSendEmailList();
+    });
+
+    EventBus.$on('refresh-index-folder-list', () => {
+      this.refreshFolderList();
+    });
   },
 
   beforeDestroy() {
@@ -624,6 +634,8 @@ export default {
     EventBus.$off('switch-index');
     EventBus.$off('switch-write-email');
     EventBus.$off('switch-email-header');
+    EventBus.$off('refresh-index-task-list');
+    EventBus.$off('refresh-index-folder-list');
   },
 };
 </script>

@@ -294,6 +294,7 @@ export default {
       unbindTask(data).then((response) => {
         this.$message.success("解绑成功");
         this.refreshEmailList();
+        EventBus.$emit('refresh-index-task-list');
       })
     },
     refreshEmailList() {
@@ -329,6 +330,7 @@ export default {
 
       // Step 3: After all emails have been checked, refresh the list
       this.refreshEmailList();
+      EventBus.$emit('refresh-index-task-list');
     }
   },
 

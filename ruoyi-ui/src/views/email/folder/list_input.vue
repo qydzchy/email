@@ -25,6 +25,7 @@
 
 <script>
 import { addFolder } from "@/api/email/folder";
+import {EventBus} from "@/api/email/event-bus";
 export default {
   data() {
     return {
@@ -48,6 +49,7 @@ export default {
           const response = await addFolder(data);  // 使用await等待请求完成
           if (response.code === 200) {  // 检查响应状态
             this.$emit('save', { name: this.newFolderName, children: [] });
+            EventBus.$emit('refresh-index-folder-list');
             this.newFolderName = '';
           } else {
             console.error('Failed to add folder:', response.code);

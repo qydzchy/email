@@ -25,6 +25,7 @@
 
 <script>
 import {updateFolder} from "@/api/email/folder";
+import { EventBus } from "@/api/email/event-bus";
 
 export default {
   data() {
@@ -45,8 +46,6 @@ export default {
       this.$emit('input', event.target.value);
     },
     async handleBlur() {
-      console.log("id = " + this.id);
-      console.log("folderName = " + this.folderName);
       if (this.folderName.trim()) {
         const data = {
           "id": this.id,
@@ -59,6 +58,7 @@ export default {
             this.$emit('input', this.folderName);
             this.$emit('edit-success');
             this.folderName = '';
+            EventBus.$emit('refresh-index-folder-list');
           } else {
             console.error('Failed to add folder:', response.code);
           }

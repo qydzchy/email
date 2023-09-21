@@ -425,6 +425,7 @@ label {
 </style>
 <script>
 import {editTask} from "@/api/email/task";
+import { EventBus } from "@/api/email/event-bus";
 
 export default {
   components: {},
@@ -490,6 +491,7 @@ export default {
         editTask(this.formData).then((response) => {
           this.$message.success("修改成功");
           this.editEmailPage = false;
+          EventBus.$emit('refresh-index-task-list');
         });
       }
 

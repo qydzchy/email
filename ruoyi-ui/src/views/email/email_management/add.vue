@@ -490,7 +490,6 @@ label {
 <script>
 import { EventBus } from "@/api/email/event-bus";
 import {addTask} from "@/api/email/task";
-import {updateFolder} from "@/api/email/folder";
 
 export default {
   components: {},
@@ -581,6 +580,7 @@ export default {
             this.errors = {}; // 清除错误信息
 
             EventBus.$emit('emailAdded');
+            EventBus.$emit('refresh-index-task-list');
           } else {
             this.$message.error("新增失败");
           }

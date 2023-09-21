@@ -259,6 +259,7 @@
 </style>
 <script>
 import {testTask} from "@/api/email/task";
+import { EventBus } from "@/api/email/event-bus";
 
 export default {
   components: {},
@@ -297,6 +298,8 @@ export default {
         } else {
           this.connExceptionReason = '';  // 清除之前的错误消息
         }
+        EventBus.$emit('refresh-index-task-list');
+
       } catch (error) {
         this.connStatus = false;
       }
