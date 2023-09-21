@@ -5,25 +5,35 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.file.FileStreamUtil;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.service.ITaskAttachmentService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * 附件
  */
+@Slf4j
 @RestController
 @RequestMapping("/email/attachment")
 @Validated
 public class AttachmentController {
 
     @Resource
-    private ITaskAttachmentService taskEmailAttachmentService;
+    private ITaskAttachmentService taskAttachmentService;
 
     /**
      * 上传附件
@@ -36,7 +46,7 @@ public class AttachmentController {
             throw new ServiceException("没有文件上传");
         }
 
-        return AjaxResult.success(taskEmailAttachmentService.uploadAttachments(files));
+        return AjaxResult.success(taskAttachmentService.uploadAttachments(files));
     }
 
     /**
@@ -54,7 +64,7 @@ public class AttachmentController {
             throw new ServiceException("名称不能为空");
         }
 
-        return AjaxResult.success(taskEmailAttachmentService.rename(taskAttachment.getId(), taskAttachment.getName()));
+        return AjaxResult.success(taskAttachmentService.rename(taskAttachment.getId(), taskAttachment.getName()));
     }
 
 
@@ -71,6 +81,49 @@ public class AttachmentController {
             throw new ServiceException("id不能为空");
         }
 
-        return AjaxResult.success(taskEmailAttachmentService.delete(taskAttachment.getId()));
+        return AjaxResult.success(taskAttachmentService.delete(taskAttachment.getId()));
     }
+
+
+    /**
+     * 附件下载
+     */
+    @PreAuthorize("@ss.hasPermi('email:attachment:download')")
+    @Log(title = "删除", businessType = BusinessType.EXPORT)
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> attachmentDownload(@PathVariable("id") Long id) {
+        if (id == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        TaskAttachment taskAttachment =  taskAttachmentService.selectTaskAttachmentById(id);
+        if (taskAttachment == null) {
+            throw new ServiceException("不存在附件");
+        }
+
+        String path = taskAttachment.getPath();
+        if (StringUtils.isBlank(path)) {
+            throw new ServiceException("不存在附件路径");
+        }
+
+        File file = new File(path);
+        if (file.exists()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            try {
+                headers.setContentDispositionFormData("attachment", URLEncoder.encode(file.getName(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new ServiceException("附件下载失败");
+            }
+
+            byte[] fileContent = FileStreamUtil.file2byte(file);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(fileContent);
+        } else {
+            // 处理文件不存在的逻辑
+            throw new ServiceException();
+        }
+    }
+
 }
