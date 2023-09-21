@@ -21,7 +21,7 @@ public interface ITaskAttachmentService
      * @param id 邮件附件主键
      * @return 邮件附件
      */
-    public TaskAttachment selectTaskEmailAttachmentById(Long id);
+    public TaskAttachment selectTaskAttachmentById(Long id);
 
     /**
      * 查询邮件附件列表
@@ -29,7 +29,7 @@ public interface ITaskAttachmentService
      * @param taskAttachment 邮件附件
      * @return 邮件附件集合
      */
-    public List<TaskAttachment> selectTaskEmailAttachmentList(TaskAttachment taskAttachment);
+    public List<TaskAttachment> selectTaskAttachmentList(TaskAttachment taskAttachment);
 
     /**
      * 新增邮件附件
@@ -37,7 +37,7 @@ public interface ITaskAttachmentService
      * @param taskAttachment 邮件附件
      * @return 结果
      */
-    public int insertTaskEmailAttachment(TaskAttachment taskAttachment);
+    public int insertTaskAttachment(TaskAttachment taskAttachment);
 
     /**
      * 修改邮件附件
@@ -45,7 +45,7 @@ public interface ITaskAttachmentService
      * @param taskAttachment 邮件附件
      * @return 结果
      */
-    public int updateTaskEmailAttachment(TaskAttachment taskAttachment);
+    public int updateTaskAttachment(TaskAttachment taskAttachment);
 
     /**
      * 批量删除邮件附件
@@ -53,7 +53,7 @@ public interface ITaskAttachmentService
      * @param ids 需要删除的邮件附件主键集合
      * @return 结果
      */
-    public int deleteTaskEmailAttachmentByIds(Long[] ids);
+    public int deleteTaskAttachmentByIds(Long[] ids);
 
     /**
      * 删除邮件附件信息
@@ -61,20 +61,13 @@ public interface ITaskAttachmentService
      * @param id 邮件附件主键
      * @return 结果
      */
-    public int deleteTaskEmailAttachmentById(Long id);
+    public int deleteTaskAttachmentById(Long id);
 
     /**
      * 批量新增
      * @param emailAttachments
      */
     void batchInsertTaskAttachment(List<TaskAttachment> emailAttachments);
-
-    /**
-     * 根据邮件ID获取附件
-     * @param id
-     * @return
-     */
-    List<TaskAttachment> selectByEmailId(Long id);
 
     /**
      * @param files

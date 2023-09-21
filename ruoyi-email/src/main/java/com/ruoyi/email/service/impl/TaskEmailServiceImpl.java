@@ -222,6 +222,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
+    @Transactional
     public Long save(EmailSendSaveDTO dto) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
@@ -270,6 +271,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         emailContent.setUpdateBy(username);
         emailContent.setUpdateTime(now);
         taskEmailContentService.insertTaskEmailContent(emailContent);
+
+        // 删除邮件附件关联关系
+        taskEmailAttachmentService.deleteByEmailId(emailId);
 
         // 更新邮件附件的emailId
         List<Long> attachmentIdList = dto.getAttachmentIdList();
@@ -488,7 +492,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         // 查询邮件内容
         TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentByEmailId(id);
         // 查询附件
-        List<TaskAttachment> taskAttachmentList = taskAttachmentService.selectByEmailId(id);
+        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(Arrays.asList(id));
 
         // 获取邮箱信息
         Long taskId = taskEmail.getTaskId();
@@ -504,10 +508,10 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             String content = emailContent != null ? emailContent.getContent() : null;
 
             String [] attachmentPaths = null;
-            if (taskAttachmentList != null && !taskAttachmentList.isEmpty()) {
+            if (emailAttachmentBOList != null && !emailAttachmentBOList.isEmpty()) {
                 List<String> filePathList =  new ArrayList<>();
-                taskAttachmentList.stream().forEach(taskEmailAttachment -> {
-                    filePathList.add(taskEmailAttachment.getPath());
+                emailAttachmentBOList.stream().forEach(emailAttachmentBO -> {
+                    filePathList.add(emailAttachmentBO.getPath());
                 });
                 attachmentPaths = filePathList.toArray(new String[filePathList.size()]);
             }

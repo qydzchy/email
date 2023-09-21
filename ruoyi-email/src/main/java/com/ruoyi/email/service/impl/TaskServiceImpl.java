@@ -60,7 +60,7 @@ public class TaskServiceImpl implements ITaskService
 
     @Value("${email.pull.path}")
     private String emailPath;
-    @Value("${email.pull.attachment.path}")
+    @Value("${email.attachment.path}")
     private String attachmentPath;
 
     /**
@@ -324,6 +324,7 @@ public class TaskServiceImpl implements ITaskService
     @Override
     public void syncAllTaskEmail() {
         Task taskParam = new Task();
+        taskParam.setConnStatus(ConnStatusEnum.NORMAL.getType());
         taskParam.setDelFlag("0");
         List<Task> taskList = taskMapper.selectTaskList(taskParam);
         ThreadPoolExecutor instance = ThreadPoolPullService.getInstance();
@@ -374,6 +375,7 @@ public class TaskServiceImpl implements ITaskService
         taskEmailParam.setTaskId(id);
         taskEmailParam.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
         taskEmailParam.setDelayedTxFlag(false);
+        taskEmailParam.setDelFlag("0");
         List<TaskEmail> taskEmailList = taskEmailService.selectTaskEmailList(taskEmailParam);
 
         taskEmailList.stream().forEach(taskEmail -> {
@@ -417,15 +419,17 @@ public class TaskServiceImpl implements ITaskService
                 taskAttachmentList.add(taskAttachment);
             }
 
-            taskAttachmentService.batchInsertTaskAttachment(taskAttachmentList);
+            if (!taskAttachmentList.isEmpty()) {
+                taskAttachmentService.batchInsertTaskAttachment(taskAttachmentList);
 
-            // 批量保存邮件附件关联数据
-            List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
-            taskAttachmentList.stream().forEach(taskAttachment -> {
-                taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(taskAttachment.getId()).build());
-            });
+                // 批量保存邮件附件关联数据
+                List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
+                taskAttachmentList.stream().forEach(taskAttachment -> {
+                    taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(taskAttachment.getId()).build());
+                });
 
-            taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
+                taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
+            }
         }
     }
 

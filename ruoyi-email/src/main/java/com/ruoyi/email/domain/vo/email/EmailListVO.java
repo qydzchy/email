@@ -3,6 +3,7 @@ package com.ruoyi.email.domain.vo.email;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
 import lombok.Data;
@@ -134,6 +135,30 @@ public class EmailListVO {
 
         JSONObject jsonObject = jsonArray.getJSONObject(0);
         return jsonObject.getString("name");
+    }
+
+    public String getToEmail() {
+        if (StringUtils.isNotEmpty(this.cc)) {
+            JSONArray jsonArray = JSONArray.parseArray(this.cc);
+            if (jsonArray == null || jsonArray.isEmpty()) return "";
+
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            return jsonObject.getString("email");
+        }
+
+        return "";
+    }
+
+    public String getToName() {
+        if (StringUtils.isNotEmpty(this.cc)) {
+            JSONArray jsonArray = JSONArray.parseArray(this.cc);
+            if (jsonArray == null || jsonArray.isEmpty()) return "";
+
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            return jsonObject.getString("name");
+        }
+
+        return "";
     }
 
     public String getExtractTextFromContent() {

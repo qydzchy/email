@@ -40,7 +40,7 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
     @Resource
     private TaskAttachmentMapper taskAttachmentMapper;
 
-    @Value("${email.send.upload.attachment.path}")
+    @Value("${email.attachment.path}")
     private String uploadAttachmentPath;
 
     /**
@@ -50,9 +50,9 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
      * @return 邮件附件
      */
     @Override
-    public TaskAttachment selectTaskEmailAttachmentById(Long id)
+    public TaskAttachment selectTaskAttachmentById(Long id)
     {
-        return taskAttachmentMapper.selectTaskEmailAttachmentById(id);
+        return taskAttachmentMapper.selectTaskAttachmentById(id);
     }
 
     /**
@@ -62,9 +62,9 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
      * @return 邮件附件
      */
     @Override
-    public List<TaskAttachment> selectTaskEmailAttachmentList(TaskAttachment taskAttachment)
+    public List<TaskAttachment> selectTaskAttachmentList(TaskAttachment taskAttachment)
     {
-        return taskAttachmentMapper.selectTaskEmailAttachmentList(taskAttachment);
+        return taskAttachmentMapper.selectTaskAttachmentList(taskAttachment);
     }
 
     /**
@@ -74,10 +74,10 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
      * @return 结果
      */
     @Override
-    public int insertTaskEmailAttachment(TaskAttachment taskAttachment)
+    public int insertTaskAttachment(TaskAttachment taskAttachment)
     {
         taskAttachment.setCreateTime(DateUtils.getNowDate());
-        return taskAttachmentMapper.insertTaskEmailAttachment(taskAttachment);
+        return taskAttachmentMapper.insertTaskAttachment(taskAttachment);
     }
 
     /**
@@ -87,10 +87,10 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
      * @return 结果
      */
     @Override
-    public int updateTaskEmailAttachment(TaskAttachment taskAttachment)
+    public int updateTaskAttachment(TaskAttachment taskAttachment)
     {
         taskAttachment.setUpdateTime(DateUtils.getNowDate());
-        return taskAttachmentMapper.updateTaskEmailAttachment(taskAttachment);
+        return taskAttachmentMapper.updateTaskAttachment(taskAttachment);
     }
 
     /**
@@ -100,9 +100,9 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
      * @return 结果
      */
     @Override
-    public int deleteTaskEmailAttachmentByIds(Long[] ids)
+    public int deleteTaskAttachmentByIds(Long[] ids)
     {
-        return taskAttachmentMapper.deleteTaskEmailAttachmentByIds(ids);
+        return taskAttachmentMapper.deleteTaskAttachmentByIds(ids);
     }
 
     /**
@@ -112,19 +112,14 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
      * @return 结果
      */
     @Override
-    public int deleteTaskEmailAttachmentById(Long id)
+    public int deleteTaskAttachmentById(Long id)
     {
-        return taskAttachmentMapper.deleteTaskEmailAttachmentById(id);
+        return taskAttachmentMapper.deleteTaskAttachmentById(id);
     }
 
     @Override
     public void batchInsertTaskAttachment(List<TaskAttachment> attachments) {
         taskAttachmentMapper.batchInsertTaskAttachment(attachments);
-    }
-
-    @Override
-    public List<TaskAttachment> selectByEmailId(Long id) {
-        return taskAttachmentMapper.selectByEmailId(id);
     }
 
     /**
@@ -172,11 +167,13 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
                 file.transferTo(destFile);
             }
 
-            batchInsertTaskAttachment(taskAttachmentList);
+            if (!taskAttachmentList.isEmpty()) {
+                batchInsertTaskAttachment(taskAttachmentList);
 
-            taskAttachmentList.stream().forEach(taskEmailAttachment -> {
-                attachmentList.add(AttachmentListVO.builder().id(taskEmailAttachment.getId()).name(taskEmailAttachment.getName()).size(taskEmailAttachment.getSize()).build());
-            });
+                taskAttachmentList.stream().forEach(taskEmailAttachment -> {
+                    attachmentList.add(AttachmentListVO.builder().id(taskEmailAttachment.getId()).name(taskEmailAttachment.getName()).size(taskEmailAttachment.getSize()).build());
+                });
+            }
 
         } catch (Exception e) {
             log.error("upload attachment exception: {}", e);
@@ -239,7 +236,7 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
         emailAttachment.setUpdateId(userId);
         emailAttachment.setUpdateBy(username);
         emailAttachment.setUpdateTime(now);
-        taskAttachmentMapper.insertTaskEmailAttachment(emailAttachment);
+        taskAttachmentMapper.insertTaskAttachment(emailAttachment);
 
         Path targetDir = Paths.get(uploadAttachmentPath);
         // 确保目标文件夹存在

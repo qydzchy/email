@@ -1,5 +1,6 @@
 package com.ruoyi.email.domain.bo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -27,4 +28,14 @@ public class EmailAttachmentBO {
      * 附件大小
      */
     private Integer size;
+
+    /**
+     * 附件路径
+     */
+    @JsonIgnore
+    private String path;
+
+    public Integer getSize() {
+        return size != null ? size : 0;
+    }
 }

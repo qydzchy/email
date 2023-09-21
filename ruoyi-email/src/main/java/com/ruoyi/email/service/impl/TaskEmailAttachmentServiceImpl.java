@@ -99,4 +99,13 @@ public class TaskEmailAttachmentServiceImpl implements ITaskEmailAttachmentServi
     public void batchInsertTaskEmailAttachment(List<TaskEmailAttachment> taskEmailAttachmentList) {
         taskEmailAttachmentMapper.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
     }
+
+    /**
+     * 删除邮件关联的附件
+     * @param emailId
+     */
+    @Override
+    public void deleteByEmailId(Long emailId) {
+        taskEmailAttachmentMapper.deleteByEmailId(emailId);
+    }
 }

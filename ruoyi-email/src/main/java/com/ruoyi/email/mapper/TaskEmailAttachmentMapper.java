@@ -65,4 +65,10 @@ public interface TaskEmailAttachmentMapper
      * @param taskEmailAttachmentList
      */
     void batchInsertTaskEmailAttachment(@Param("taskEmailAttachmentList") List<TaskEmailAttachment> taskEmailAttachmentList);
+
+    /**
+     * 删除邮件的附件关联
+     * @param emailId
+     */
+    void deleteByEmailId(@Param("emailId") Long emailId);
 }

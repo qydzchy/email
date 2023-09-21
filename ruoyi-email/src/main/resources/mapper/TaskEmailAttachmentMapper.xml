@@ -68,4 +68,8 @@
             #{id}
         </foreach>
     </delete>
+
+    <delete id="deleteByEmailId">
+        delete from mailbox_task_email_attachment where email_id = #{emailId}
+    </delete>
 </mapper>

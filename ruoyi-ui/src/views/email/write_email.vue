@@ -189,100 +189,12 @@
                               </div>
                           </span>
                       </span>
-<!--                      <div class="tool-item flex items-center">
-                        <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/cloud.bd4a8ece.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 云文档</div>
-                      <div class="mm-dropdown hover:bg-gray-200 w-8 h-7 flex items-center justify-center mail-toolbar-dropdown">
-                        <div class="mm-dropdown-trigger">
-                          <div class="cursor-pointer flex items-center justify-center w-full h-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-                              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 15.5a1 1 0 00.707-.293l6-6a1 1 0 00-1.414-1.414L12 13.086 6.707 7.793a1 1 0 00-1.414 1.414l6 6A1 1 0 0012 15.5z"></path>
-                            </svg>
-                          </div>
-                        </div>
-                        &lt;!&ndash;&ndash;&gt;
-                      </div>
-                      <div class="mm-divider-vertical solid"></div>
-                      &lt;!&ndash;&ndash;&gt;
-                      <div class="tool-item novice-tour-groupmail-content-field flex items-center">
-                        <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/template.b98c6551.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 模板</div>
-                      &lt;!&ndash;&ndash;&gt;
-                      <div class="tool-item flex items-center">
-                        <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/image.fb78e8ce.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;">
-                        <span>图片</span>
-                        <input title="未选择任何文件" type="file" multiple="" value="">
-                      </div>
-                      <div class="tool-item flex items-center">
-                        <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/fast-text.573b9be5.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 快速文本</div>
-                      <div class="mm-divider-vertical solid"></div>
-                      <div class="tool-item flex items-center">
-                        <img data-savepage-src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/product.db4fd779.svg" src="" style="width: 14px; height: 14px; margin-right: 4px;"> 产品</div>
-                      <div class="mm-dropdown hover:bg-gray-200 h-7 flex items-center justify-center mail-toolbar-dropdown">
-                        <div class="mm-dropdown-trigger">
-                          <div class="cursor-pointer text-xs text-black flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" spin="false" rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill="none" role="presentation" data-v-d394b89c="" style="vertical-align: middle;">
-                              <g data-v-d394b89c="">
-                                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" d="M10 6a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v38l-7-5-7 5-7-5-7 5V6Zm8 16h12m-12 8h12M18 14h12" data-follow-stroke="currentColor" data-v-d394b89c="" stroke="currentColor"></path>
-                              </g>
-                            </svg> 单据
-                          </div>
-                        </div>
-                        &lt;!&ndash;&ndash;&gt;
-                      </div>
-                      <div class="mm-dropdown hover:bg-gray-200 h-7 flex items-center justify-center mail-toolbar-dropdown">
-                        <div class="mm-dropdown-trigger">
-                          <div class="cursor-pointer text-xs text-black paypal-tool flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" spin="false" rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill="none" role="presentation" data-v-64bcfa07="" style="vertical-align: middle;">
-                              <g data-v-64bcfa07="">
-                                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" d="M31 34h12m0-8V10a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v28a3 3 0 0 0 3 3h20.47" data-follow-stroke="currentColor" stroke="#2a2a2a" data-v-64bcfa07=""></path>
-                                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" d="m36 39-5-5 5-5M15 15l5 6 5-6M14 27h12m-12-6h12m-6 0v12" data-follow-stroke="currentColor" stroke="#2a2a2a" data-v-64bcfa07=""></path>
-                              </g>
-                            </svg> 收款
-                          </div>
-                        </div>
-                        &lt;!&ndash;&ndash;&gt;
-                      </div>-->
                     </div>
-<!--                    <span class="mail-size">邮件大小：506 B</span>-->
                   </div>
                 </li>
               </ul>
               <!---->
               <div class="editor-footer">
-
-<!--                <div>
-                  <span class="select-label">签名：</span>
-                  <span class="mm-select mail-sign-selector novice-tour-set-signature-button" style="width: 178px;">
-                                        <div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
-                                          &lt;!&ndash;&ndash;&gt;
-                                          <div class="mm-selector-rendered">
-                                            <span title="不使用" class="mm-selector-selected-value" style="opacity: 1;">不使用</span>
-                                            &lt;!&ndash;&ndash;&gt;
-                                          </div>
-                                          &lt;!&ndash;&ndash;&gt;
-                                          <span class="mm-selector-suffix-icon">
-                                            <svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px; outline: none;">
-                                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                                            </svg>
-                                          </span>
-                                        </div>
-                    &lt;!&ndash;&ndash;&gt;
-                                      </span>
-                </div>
-                <div class="mx-4 divier"></div>
-                <div class="select">
-                  <label class="mm-checkbox">
-                    <input true-value="true" type="checkbox">
-                    <span class="mm-checkbox-input"></span>
-                    <span class="mm-checkbox-label">紧急</span>
-                  </label>
-                </div>
-                <div class="select">
-                  <label class="mm-checkbox">
-                    <input true-value="true" type="checkbox">
-                    <span class="mm-checkbox-input"></span>
-                    <span class="mm-checkbox-label">回执</span>
-                  </label>
-                </div>-->
                 <div class="split"></div>
                 <div class="select">
                   <label class="mm-checkbox">
@@ -474,11 +386,20 @@ export default {
         const response = await listTaskPull();
         this.taskList = response.rows;
 
-        // 设置默认的邮件地址为taskList中的第一个邮件地址
+        // 如果taskId已经存在，则尝试找到对应的任务
+        if (this.taskId) {
+          const task = this.taskList.find(task => task.id === this.taskId);
+          if (task) {
+            this.selectedAccount = task.account;
+          }
+        }
+
+        // 如果selectedAccount不存在（意味着上面没有找到对应的任务，或者taskId本来就为空），则使用第一个任务的信息
         if (!this.selectedAccount && this.taskList.length > 0) {
           this.selectedAccount = this.taskList[0].account;
           this.taskId = this.taskList[0].id;
         }
+
         return response;
       } catch (error) {
         console.error('Failed to fetch emails:', error);
@@ -505,10 +426,10 @@ export default {
         this.editor.dangerouslyInsertHtml(this.htmlText);
 
         // 设置光标到内容开头
-        const range = this.editor.selection.getRange();
+        /*const range = this.editor.selection.getRange();
         range.setStart(this.editor.txt.$textElem[0], 0);
         range.collapse(true);
-        this.editor.selection.restoreSelection();
+        this.editor.selection.restoreSelection();*/
       }, 500);
     },
 
@@ -564,8 +485,12 @@ export default {
       this.formData.taskId = this.taskId;
       this.formData.fromer = this.selectedAccount;
 
+      this.uploadedFiles.forEach(uploadedFile => {
+        this.attachmentIds.push(uploadedFile.id);
+      });
+
       const data = {
-        "taskId": this.taskId,
+        "taskId": this.formData.taskId,
         "fromer": this.selectedAccount,
         "receiver": receiver,
         "cc": cc,
@@ -816,6 +741,7 @@ export default {
 
       if (this.selectedEmail.id) {
         this.formData.id = this.selectedEmail.id;
+        this.taskId = this.selectedEmail.taskId;
       }
 
       if (this.selectedEmail.fromer) {
@@ -836,6 +762,7 @@ export default {
 
       if (this.selectedEmail.id) {
         this.formData.id = this.selectedEmail.id;
+        this.taskId = this.selectedEmail.taskId;
       }
 
       if (this.selectedEmail.receiver) {
@@ -869,13 +796,13 @@ export default {
     // 带附件回复
     handleReplyWithAttachments() {
       this.handleReply();
-      this.uploadedFiles = this.selectedEmail.taskEmailAttachmentList;
+      this.uploadedFiles = this.selectedEmail.emailAttachmentList;
     },
 
     // 带附件回复全部
     handleReplyAllWithAttachments() {
       this.handleReplyAll();
-      this.uploadedFiles = this.selectedEmail.taskEmailAttachmentList;
+      this.uploadedFiles = this.selectedEmail.emailAttachmentList;
     },
 
     // 转发
@@ -886,6 +813,7 @@ export default {
 
       if (this.selectedEmail.id) {
         this.formData.id = this.selectedEmail.id;
+        this.taskId = this.selectedEmail.taskId;
       }
 
       if (this.selectedEmail.content) {
@@ -893,7 +821,7 @@ export default {
         this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
       }
 
-      this.uploadedFiles = this.selectedEmail.taskEmailAttachmentList;
+      this.uploadedFiles = this.selectedEmail.emailAttachmentList;
     },
 
     handleForwardAsAttachment() {
@@ -903,6 +831,7 @@ export default {
 
       if (this.selectedEmail.id) {
         this.formData.id = this.selectedEmail.id;
+        this.taskId = this.selectedEmail.taskId;
       }
 
       if (this.selectedEmail.id) {
@@ -932,7 +861,6 @@ export default {
         console.error('上传过程中出现错误:', error);
       }
     }
-
   },
   mounted() {
     this.fetchTaskList().then(() => {
@@ -945,6 +873,7 @@ export default {
     }).catch(error => {
       console.error("Error while fetching task list:", error);
     });
+
   },
 
   beforeDestroy() {

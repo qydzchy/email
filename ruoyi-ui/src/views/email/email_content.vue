@@ -427,19 +427,6 @@
                                                                       </svg>
                                                                     </span>
 
-<!--																							<a v-else class="mail-detail-fixed-header&#45;&#45;opts__left&#45;&#45;item" data-savepage-href="/pro/mail/detail?name=mailProUnread&mail_id=9442921655850&from_ui_type=1&skipViewPrivilege=0" href="https://crm.xiaoman.cn/pro/mail/detail?name=mailProUnread&mail_id=9442921655850&from_ui_type=1&skipViewPrivilege=0" target="_blank">
-																								<span class="mm-tooltip">
-																									<span class="mm-tooltip-trigger">
-																										<span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																												<path d="M6 4a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-3.4a1 1 0 112 0V18a4 4 0 01-4 4H6a4 4 0 01-4-4V6a4 4 0 014-4h4.3a1 1 0 110 2H6z"></path>
-																												<path d="M20.97 2.243a1 1 0 011 1v6.485a1 1 0 11-2 0V5.639l-7.273 7.078a1 1 0 11-1.394-1.434l7.235-7.04h-4.053a1 1 0 110-2h6.486z"></path>
-																											</svg>
-																										</span>
-																									</span>
-                                                  &lt;!&ndash;&ndash;&gt;
-																								</span>
-																							</a>-->
-                                              <!---->
 																						</div>
 
 																						<div class="mail-detail-fixed-header--opts__right">
@@ -585,16 +572,6 @@
                                                         <!---->
                                                       </span>
                                                     </li>
-<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_6">
-                                                      &lt;!&ndash;&ndash;&gt;
-                                                      <span class="mail-drop-menu-text ellipsis">
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                        <span title="分发" class="">分发</span>
-                                                      </span>
-                                                      <span>
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                      </span>
-                                                    </li>-->
                                                     <li
                                                       :class="[
                                                           'mail-drop-menu-item',
@@ -631,26 +608,6 @@
                                                         <!---->
                                                       </span>
                                                     </li>
-<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_9">
-                                                      &lt;!&ndash;&ndash;&gt;
-                                                      <span class="mail-drop-menu-text ellipsis">
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                        <span title="标记为" class="">标记为</span>
-                                                      </span>
-                                                      <span>
-                                                        <i class="m-icon icon-right-thin"></i>
-                                                      </span>
-                                                    </li>-->
-<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_10">
-                                                      <span class="mail-drop-menu-divider"></span>
-                                                      <span class="mail-drop-menu-text ellipsis">
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                        <span title="新建收发件规则" class="">新建收发件规则</span>
-                                                      </span>
-                                                      <span>
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                      </span>
-                                                    </li>-->
                                                     <li
                                                       :class="[
                                                           'mail-drop-menu-item',
@@ -687,26 +644,6 @@
                                                         <!---->
                                                       </span>
                                                     </li>
-<!--                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_13">
-                                                      &lt;!&ndash;&ndash;&gt;
-                                                      <span class="mail-drop-menu-text ellipsis">
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                        <span title="建为客户跟进" class="">建为客户跟进</span>
-                                                      </span>
-                                                      <span>
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                      </span>
-                                                    </li>
-                                                    <li class="mail-drop-menu-item DROPMENU_90471_ITEM_14">
-                                                      &lt;!&ndash;&ndash;&gt;
-                                                      <span class="mail-drop-menu-text ellipsis">
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                        <span title="新建日程" class="">新建日程</span>
-                                                      </span>
-                                                      <span>
-                                                        &lt;!&ndash;&ndash;&gt;
-                                                      </span>
-                                                    </li>-->
                                                     <li
                                                       :class="[
                                                           'mail-drop-menu-item',
@@ -752,21 +689,21 @@
                                             </div>
 
 																					</div>
-																					<div id="mailDetailScrollContainer" class="scroll-container">
+<!--																					<div id="mailDetailScrollContainer" class="scroll-container">
 																						<div class="components-container">
 																							<div class="mail-detail-info-wrapper">
 																								<div class="state-row">
-																									<div class="state-row--icon__wrapper"></div>
-                                                  <!---->
-																									<div class="mail-plus-tag-list state-row--tag" style="display: none;"></div>
+																									<div class="state-row&#45;&#45;icon__wrapper"></div>
+                                                  &lt;!&ndash;&ndash;&gt;
+																									<div class="mail-plus-tag-list state-row&#45;&#45;tag" style="display: none;"></div>
 																								</div>
-																								<div class="mail-detail--info">
-																									<div class="mail-info--sender">
+																								<div class="mail-detail&#45;&#45;info">
+																									<div class="mail-info&#45;&#45;sender">
 																										<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small">
 																											<span class="mm-tooltip-trigger">
 																												<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
 																											</span>
-                                                      <!---->
+                                                      &lt;!&ndash;&ndash;&gt;
 																										</span>
 																										<span style="margin: 0px 4px;">
 																											<span>
@@ -782,7 +719,7 @@
 																														<span class="mm-tooltip-trigger">
 																															<i class="m-icon avatar-icon icon-f-colleague"></i>
 																														</span>
-                                                            <!---->
+                                                            &lt;!&ndash;&ndash;&gt;
 																													</span>
 																													<span style="color: rgb(42, 42, 42);">{{currentEmailDetail.receiverName}}</span>
 																													<span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{currentEmailDetail.receiverEmail}}&gt;</span>
@@ -790,21 +727,25 @@
 																											</li>
 																										</ul>
 																									</div>
-																									<button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small mail-contact-info--toggler">
-																										<!---->
-                                                    <!---->详细信息 <i class="m-icon icon-packUp mail-contact-info--toggler--icon" style="font-size: 12px; color: rgb(0, 100, 255);"></i>
-                                                    <!---->
+																									<button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small mail-contact-info&#45;&#45;toggler">
+																										&lt;!&ndash;&ndash;&gt;
+                                                    &lt;!&ndash;&ndash;&gt;详细信息 <i class="m-icon icon-packUp mail-contact-info&#45;&#45;toggler&#45;&#45;icon" style="font-size: 12px; color: rgb(0, 100, 255);"></i>
+                                                    &lt;!&ndash;&ndash;&gt;
 																									</button>
 																								</div>
 																							</div>
-                                              <!---->
-																							<div class="mail-content-body mail-detail--content">
-																								<!---->
+                                              &lt;!&ndash;&ndash;&gt;
+																							<div class="mail-content-body mail-detail&#45;&#45;content">
+																								&lt;!&ndash;&ndash;&gt;
 																								<iframe :srcdoc="currentEmailDetail.content" data-savepage-sameorigin="" id="mail-content-iframe-1690875340592" style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
-                                                <!---->
+                                                &lt;!&ndash;&ndash;&gt;
 																							</div>
 																						</div>
-																					</div>
+																					</div>-->
+
+                                          <email_content_detail_info :currentEmailDetail="currentEmailDetail"></email_content_detail_info>
+
+
 																					<div class="go-top-or-bottom">
 																						<i class="m-icon icon-top go-top" style=""></i>
 																						<i class="m-icon icon-top go-bottom" style="display: none;"></i>
@@ -1039,9 +980,10 @@
 <script>
 import { EventBus } from "@/api/email/event-bus";
 import writeEmailLayout from './write_email.vue';
+import emailHeaderLayout from "./email_header.vue";
+import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
 import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
-import emailHeaderLayout from "@/views/email/email_header.vue";
 
 export default {
   data() {
@@ -1076,7 +1018,8 @@ export default {
   },
   components: {
     'email_header': emailHeaderLayout,
-    'write_email': writeEmailLayout
+    'write_email': writeEmailLayout,
+    'email_content_detail_info': emailContentDetailInfoLayout
   },
   props: {
     emailList: Array,
