@@ -9,12 +9,12 @@
         </div>
         <div class="mail-detail--info" v-if="!showDetailInfo">
           <div class="mail-info--sender">
-																										<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small">
-																											<span class="mm-tooltip-trigger">
-																												<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
-																											</span>
-                                                      <!---->
-																										</span>
+																										<span class="mm-tooltip all-type-avatar-wrapper client-stranger small">
+                                                      <span class="mm-tooltip-trigger">
+                                                        <i class="m-icon avatar-icon icon-new-customer-avatar"></i>
+                                                      </span>
+                                                                                                  <!---->
+                                                    </span>
             <span style="margin: 0px 4px;">
 																											<span>
 																												<span style="color: #2a2a2a;">{{currentEmailDetail.fromName}} </span>&lt;{{currentEmailDetail.fromer}}&gt;
@@ -25,12 +25,12 @@
             <ul style="display: inline-flex; flex-wrap: unset; overflow: hidden; max-width: 100%;">
               <li>
                 <div>
-																													<span class="mm-tooltip all-type-avatar-wrapper client-colleague small" style="margin-right: 4px;">
-																														<span class="mm-tooltip-trigger">
-																															<i class="m-icon avatar-icon icon-f-colleague"></i>
-																														</span>
-                                                            <!---->
-																													</span>
+																													<span class="mm-tooltip all-type-avatar-wrapper client-stranger small">
+                                                            <span class="mm-tooltip-trigger">
+                                                              <i class="m-icon avatar-icon icon-new-customer-avatar"></i>
+                                                            </span>
+                                                                                                              <!---->
+                                                          </span>
                   <span style="color: rgb(42, 42, 42);">{{currentEmailDetail.receiverName}}</span>
                   <span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{currentEmailDetail.receiverEmail}}&gt;</span>
                 </div>
@@ -79,7 +79,7 @@
                 </ul>
               </div>
             </div>
-            <div class="mail-info--row">
+            <div class="mail-info--row" v-if="currentEmailDetail.ccName && currentEmailDetail.ccName !== '' && currentEmailDetail.ccEmail && currentEmailDetail.ccEmail !== ''">
               <span class="mail-info--label">抄送人：</span>
               <div style="width: auto; flex: 1 1 0%; margin-right: 20px;">
                 <ul style="display: inline-flex; flex-wrap: wrap; overflow: hidden; max-width: 100%;">
@@ -98,7 +98,7 @@
                 </ul>
               </div>
             </div>
-            <div class="mail-info--row">
+            <div class="mail-info--row" v-if="currentEmailDetail.emailAttachmentList && currentEmailDetail.emailAttachmentList.length > 0">
               <span class="mail-info--label">附件：</span>
               <span class="mail-info--value">{{ currentEmailDetail.emailAttachmentList.length }} 个 <span style="margin-left: 8px; white-space: initial;">(
                 <button v-for="(attachment, index) in currentEmailDetail.emailAttachmentList" :key="index" type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small ellipsis" style="min-width: unset; padding: 0px;">
