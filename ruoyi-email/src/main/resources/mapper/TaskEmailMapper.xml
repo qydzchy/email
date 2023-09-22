@@ -83,7 +83,7 @@
     </select>
 
     <select id="count" resultType="java.lang.Integer">
-        select count(*) from mailbox_task_email
+        select count(*) from mailbox_task_email mte
         where task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}

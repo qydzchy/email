@@ -135,7 +135,8 @@
 																</span>
 																<span class="mm-tooltip mail-toolbar-btn-item">
 																	<span class="mm-tooltip-trigger">
-																		<span class="okki-icon-wrap active switch-attach-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																		<span :class="['okki-icon-wrap', 'switch-attach-icon', { 'active': !attachmentFlag }]"
+                                          @click="switchAttachment" >​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																				<path fill-rule="evenodd" clip-rule="evenodd" d="M4.493 11.392a6.25 6.25 0 108.959 8.718l6.8-6.988a1 1 0 10-1.434-1.395l-6.8 6.988a4.25 4.25 0 11-6.091-5.928l6.8-6.988 1.046-1.075a2.5 2.5 0 113.583 3.487l-5.928 6.092-.872.896a.75.75 0 11-1.075-1.046l5.056-5.196a1 1 0 10-1.433-1.395l-5.056 5.196a2.75 2.75 0 103.941 3.836l5.057-5.196.001-.002 1.742-1.79a4.5 4.5 0 10-6.45-6.277l-1.046 1.075-4.184 4.3-2.616 2.688z"></path>
 																			</svg>
 																		</span>
@@ -426,7 +427,7 @@
                                                               <ul class="mail-item-attachment-list" :style="{ left: getLeftSlideStatus(email.id) + '%' }">
                                                                 <li
                                                                   v-for="attachment in email.emailAttachmentList"
-                                                                  :key="attachment.name"
+                                                                  :key="attachment.id"
                                                                   title="预览"
                                                                   class="mail-item-attachment-item">
                                                                   <svg class="mm-icon mm-icon-file-txt attachment-icon" viewBox="0 0 200 200" name="file_txt" fill="currentColor" style="height: 24px; width: 24px;">
@@ -571,6 +572,7 @@ export default {
         '标为垃圾邮件',
       ],
       fixedFlag: false,
+      attachmentFlag: false,
       emailSlideStatus: {},
     }
   },
@@ -639,6 +641,7 @@ export default {
         spamFlag: spamFlag,
         traceFlag: traceFlag,
         folderId: folderId,
+        attachmentFlag: this.attachmentFlag,
         fixedFlag: this.fixedFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
@@ -950,6 +953,13 @@ export default {
     // 固定总开关
     switchFixed() {
       this.fixedFlag = !this.fixedFlag;
+      this.currentPage = 1;
+      this.fetchEmailData(this.currentEmailType);
+    },
+
+    // 附件总开关
+    switchAttachment() {
+      this.attachmentFlag = !this.attachmentFlag;
       this.currentPage = 1;
       this.fetchEmailData(this.currentEmailType);
     },

@@ -424,12 +424,6 @@ export default {
       this.editor = Object.seal(editor);
       setTimeout(() => {
         this.editor.dangerouslyInsertHtml(this.htmlText);
-
-        // 设置光标到内容开头
-        /*const range = this.editor.selection.getRange();
-        range.setStart(this.editor.txt.$textElem[0], 0);
-        range.collapse(true);
-        this.editor.selection.restoreSelection();*/
       }, 500);
     },
 

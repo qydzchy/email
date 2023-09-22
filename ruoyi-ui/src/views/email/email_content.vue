@@ -1343,7 +1343,7 @@ export default {
       ids.push(this.activeEmailId);
 
       if (ids.length) {
-        switch(this.menuItems[index.trim()]) {
+        switch(this.menuItems[index]) {
           case '标为未读':
             this.unReadEmails(ids);
             break;
