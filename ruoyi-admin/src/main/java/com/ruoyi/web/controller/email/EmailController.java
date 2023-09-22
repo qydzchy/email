@@ -7,6 +7,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.file.FileStreamUtil;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
@@ -17,27 +18,29 @@ import com.ruoyi.email.domain.vo.email.EmailReadFlagBatchUpdateDTO;
 import com.ruoyi.email.domain.vo.email.EmailSpamFlagBatchUpdateDTO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+@Slf4j
 @RestController
 @RequestMapping("/email/info")
 @Validated
@@ -233,5 +236,55 @@ public class EmailController extends BaseController {
         }
 
         return AjaxResult.success(taskEmailService.uploadAttachment(taskEmail.getId()));
+    }
+
+    @PreAuthorize("@ss.hasPermi('email:attachment:download')")
+    @Log(title = "附件下载", businessType = BusinessType.EXPORT)
+    @GetMapping("/attachment/download/{id}")
+    public ResponseEntity<byte[]> attachmentDownload(@PathVariable("id") Long id) throws IOException {
+        if (id == null) {
+            throw new ServiceException("邮件ID不能为空");
+        }
+
+        TaskEmail taskEmail = taskEmailService.selectTaskEmailById(id);
+        String zipFileName = taskEmail.getTitle() + ".zip";
+        File zipFile = new File(System.getProperty("java.io.tmpdir"), zipFileName);
+
+        Set<String> addedFiles = new HashSet<>();  // 用于防止重复添加文件
+
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            List<String> filePathList = taskEmailService.getAttachmentByEmailId(id);
+            for (String filePath : filePathList) {
+                File file = new File(filePath);
+                if (file.exists() && !addedFiles.contains(file.getName())) {
+                    addedFiles.add(file.getName());  // 记录已添加的文件
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        ZipEntry zipEntry = new ZipEntry(file.getName());
+                        zos.putNextEntry(zipEntry);
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = fis.read(buffer)) >= 0) {
+                            zos.write(buffer, 0, length);
+                        }
+                        zos.closeEntry();
+                    }
+                } else if (!file.exists()) {
+                    log.warn("文件不存在，路径: " + filePath);
+                } else {
+                    log.warn("重复的文件名，未添加到ZIP: " + file.getName());
+                }
+            }
+        } catch (IOException e) {
+            log.error("创建ZIP文件失败", e);
+            throw new ServiceException("创建ZIP文件失败");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", URLEncoder.encode(zipFileName, "UTF-8"));
+
+        byte[] zipContent = Files.readAllBytes(zipFile.toPath());  // 使用Files工具类读取文件内容
+
+        return ResponseEntity.ok().headers(headers).body(zipContent);
     }
 }

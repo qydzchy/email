@@ -689,62 +689,8 @@
                                             </div>
 
 																					</div>
-<!--																					<div id="mailDetailScrollContainer" class="scroll-container">
-																						<div class="components-container">
-																							<div class="mail-detail-info-wrapper">
-																								<div class="state-row">
-																									<div class="state-row&#45;&#45;icon__wrapper"></div>
-                                                  &lt;!&ndash;&ndash;&gt;
-																									<div class="mail-plus-tag-list state-row&#45;&#45;tag" style="display: none;"></div>
-																								</div>
-																								<div class="mail-detail&#45;&#45;info">
-																									<div class="mail-info&#45;&#45;sender">
-																										<span class="mm-tooltip all-type-avatar-wrapper client-xiaoman-system-avatar small">
-																											<span class="mm-tooltip-trigger">
-																												<i class="m-icon avatar-icon icon-xiaoman-avatar"></i>
-																											</span>
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</span>
-																										<span style="margin: 0px 4px;">
-																											<span>
-																												<span style="color: #2a2a2a;">{{currentEmailDetail.fromName}} </span>&lt;{{currentEmailDetail.fromer}}&gt;
-																											</span> 发给
-																										</span>
-																									</div>
-																									<div style="width: 0px; flex: 1 1 0%; margin-right: 20px;">
-																										<ul style="display: inline-flex; flex-wrap: unset; overflow: hidden; max-width: 100%;">
-																											<li>
-																												<div>
-																													<span class="mm-tooltip all-type-avatar-wrapper client-colleague small" style="margin-right: 4px;">
-																														<span class="mm-tooltip-trigger">
-																															<i class="m-icon avatar-icon icon-f-colleague"></i>
-																														</span>
-                                                            &lt;!&ndash;&ndash;&gt;
-																													</span>
-																													<span style="color: rgb(42, 42, 42);">{{currentEmailDetail.receiverName}}</span>
-																													<span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{currentEmailDetail.receiverEmail}}&gt;</span>
-																												</div>
-																											</li>
-																										</ul>
-																									</div>
-																									<button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small mail-contact-info&#45;&#45;toggler">
-																										&lt;!&ndash;&ndash;&gt;
-                                                    &lt;!&ndash;&ndash;&gt;详细信息 <i class="m-icon icon-packUp mail-contact-info&#45;&#45;toggler&#45;&#45;icon" style="font-size: 12px; color: rgb(0, 100, 255);"></i>
-                                                    &lt;!&ndash;&ndash;&gt;
-																									</button>
-																								</div>
-																							</div>
-                                              &lt;!&ndash;&ndash;&gt;
-																							<div class="mail-content-body mail-detail&#45;&#45;content">
-																								&lt;!&ndash;&ndash;&gt;
-																								<iframe :srcdoc="currentEmailDetail.content" data-savepage-sameorigin="" id="mail-content-iframe-1690875340592" style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
-                                                &lt;!&ndash;&ndash;&gt;
-																							</div>
-																						</div>
-																					</div>-->
 
                                           <email_content_detail_info :currentEmailDetail="currentEmailDetail"></email_content_detail_info>
-
 
 																					<div class="go-top-or-bottom">
 																						<i class="m-icon icon-top go-top" style=""></i>
@@ -1357,7 +1303,7 @@ export default {
     handleExportEmail() {
       exportEmail(this.activeEmailId).then((response) => {
         // 处理文件下载逻辑，比如使用 blob 来下载
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const url = window.URL.createObjectURL(new Blob([response]));
         const link = document.createElement('a');
         link.href = url;
         let filename = 'email.eml';

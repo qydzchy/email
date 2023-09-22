@@ -26,3 +26,12 @@ export function deleteAttachment(data) {
     data: data
   })
 }
+
+// 下载单个附件
+export function downloadAttachment(data) {
+  return request({
+    url: '/email/attachment/download/'+ data,
+    method: 'get',
+    responseType: 'blob'
+  })
+}

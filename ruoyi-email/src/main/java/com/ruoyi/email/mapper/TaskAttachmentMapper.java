@@ -98,4 +98,11 @@ public interface TaskAttachmentMapper
      * @return
      */
     List<EmailAttachmentBO> selectByEmailIds(@Param("emailIds") List<Long> emailIds);
+
+    /**
+     * 查询邮件的附件路径
+     * @param emailId
+     * @return
+     */
+    List<String> getPathByEmailId(@Param("emailId") Long emailId);
 }

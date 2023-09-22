@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, name, size, path, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_attachment
     </sql>
 
-    <select id="selectTaskEmailAttachmentList" parameterType="TaskAttachment" resultMap="TaskAttachmentResult">
+    <select id="selectTaskAttachmentList" parameterType="TaskAttachment" resultMap="TaskAttachmentResult">
         <include refid="selectEmailAttachmentVo"/>
         <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectTaskEmailAttachmentById" parameterType="Long" resultMap="TaskAttachmentResult">
+    <select id="selectTaskAttachmentById" parameterType="Long" resultMap="TaskAttachmentResult">
         <include refid="selectEmailAttachmentVo"/>
         where id = #{id}
     </select>
@@ -47,6 +47,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{emailId}
         </foreach>
         and a.del_flag = '0'
+    </select>
+
+    <select id="getPathByEmailId" resultType="java.lang.String">
+        select a.path from mailbox_task_email_attachment ea
+        left join mailbox_task_attachment a on ea.attachment_id = a.id
+        where ea.email_id = #{emailId} and a.del_flag = '0'
     </select>
 
     <insert id="insertTaskAttachment" parameterType="TaskAttachment" useGeneratedKeys="true" keyProperty="id">

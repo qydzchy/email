@@ -10,7 +10,6 @@ import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.service.ITaskAttachmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
+
 
 /**
  * 附件
@@ -89,7 +88,7 @@ public class AttachmentController {
      * 附件下载
      */
     @PreAuthorize("@ss.hasPermi('email:attachment:download')")
-    @Log(title = "删除", businessType = BusinessType.EXPORT)
+    @Log(title = "附件下载", businessType = BusinessType.EXPORT)
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> attachmentDownload(@PathVariable("id") Long id) {
         if (id == null) {
@@ -125,5 +124,4 @@ public class AttachmentController {
             throw new ServiceException();
         }
     }
-
 }

@@ -122,6 +122,13 @@
           </button>
         </div>
       </div>
+
+      <email_content_detail_attachment :emailId="currentEmailDetail.id"
+                                       :emailTitle = "currentEmailDetail.title"
+                                       :emailAttachmentList="this.currentEmailDetail.emailAttachmentList"
+                                       v-if="currentEmailDetail.emailAttachmentList && currentEmailDetail.emailAttachmentList.length > 0">
+      </email_content_detail_attachment>
+
       <!---->
       <div class="mail-content-body mail-detail--content">
         <!---->
@@ -132,11 +139,16 @@
   </div>
 </template>
 <script>
+import emailContentDetailAttachmentLayout from './email_content_detail_attachment.vue';
 export default {
   data() {
     return {
       showDetailInfo: false,
     };
+  },
+
+  components: {
+    'email_content_detail_attachment': emailContentDetailAttachmentLayout
   },
 
   props: ['currentEmailDetail'],
@@ -145,7 +157,7 @@ export default {
     toggleDetailInfo() {
       this.showDetailInfo = !this.showDetailInfo;
     },
-  }
+  },
 }
 
 </script>

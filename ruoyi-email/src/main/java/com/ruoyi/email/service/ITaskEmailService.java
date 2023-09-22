@@ -183,4 +183,11 @@ public interface ITaskEmailService
      * @return
      */
     List<TaskAttachment> uploadAttachment(Long id);
+
+    /**
+     * 查询邮件的附件路径
+     * @param emailId
+     * @return
+     */
+    List<String> getAttachmentByEmailId(Long emailId);
 }

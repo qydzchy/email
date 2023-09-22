@@ -256,4 +256,9 @@ public class TaskAttachmentServiceImpl implements ITaskAttachmentService
         }
         return Arrays.asList(emailAttachment);
     }
+
+    @Override
+    public List<String> getPathByEmailId(Long emailId) {
+        return taskAttachmentMapper.getPathByEmailId(emailId);
+    }
 }

@@ -100,3 +100,13 @@ export function uploadAttachment(data) {
     data: data
   })
 }
+
+// 下载邮件附件
+export function downloadEmailAttachment(data) {
+  return request({
+    url: '/email/info/attachment/download/'+ data,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+

@@ -414,6 +414,49 @@
 																													</div>
 																												</div>
 																											</div>
+
+                                                      <div class="attachment-list-container" v-if="email.emailAttachmentList && email.emailAttachmentList.length > 0">
+                                                          <div class="mail-attachment-list-container">
+                                                            <button class="slide-page-btn left"
+                                                                    @click.stop="toggleSlide(email.id, 'left')"
+                                                                    :disabled="getLeftSlideStatus(email.id) === 0">
+                                                              <i class="m-icon icon-left-thin"></i>
+                                                            </button>
+                                                            <div class="list">
+                                                              <ul class="mail-item-attachment-list" :style="{ left: getLeftSlideStatus(email.id) + '%' }">
+                                                                <li
+                                                                  v-for="attachment in email.emailAttachmentList"
+                                                                  :key="attachment.name"
+                                                                  title="预览"
+                                                                  class="mail-item-attachment-item">
+                                                                  <svg class="mm-icon mm-icon-file-txt attachment-icon" viewBox="0 0 200 200" name="file_txt" fill="currentColor" style="height: 24px; width: 24px;">
+                                                                    <g>
+                                                                      <path d="M29,7.2c-2.3,0-4.8,0.9-6.6,2.8c-1.9,1.7-2.8,4.2-2.8,6.6v168.8c0,2.3,0.9,4.8,2.8,6.6   c1.9,1.9,4.2,2.8,6.6,2.8h137.5c2.3,0,4.8-0.9,6.6-2.8c1.9-1.9,2.8-4.2,2.8-6.6v-125L122.8,7.2H29z" fill="#659BFC"></path>
+                                                                      <path d="M175.9,60.4h-43.8c-2.3,0-4.8-0.9-6.6-2.8c-1.9-1.7-2.8-4.2-2.8-6.6V7.2L175.9,60.4z" fill="#ABD1FF"></path>
+                                                                    </g>
+                                                                    <g>
+                                                                      <path d="M52.1,99.6h-8.9c-2.3,0-4.3-1.9-4.3-4.3c0-2.3,1.9-4.3,4.3-4.3h27c2.3,0,4.3,1.9,4.3,4.3   c0,2.3-1.9,4.3-4.3,4.3h-8.9v29.2c0,2.6-2,4.6-4.6,4.6s-4.6-2-4.6-4.6V99.6z" fill="#FFFFFF"></path>
+                                                                      <path d="M80.3,125.7l11.3-13.9L81,98.7c-0.7-0.9-1.4-2.1-1.4-3.4c0-2.6,1.9-4.6,4.6-4.6c2,0,3.1,0.8,4.3,2.3l9.2,12.2   l9.1-12c1.3-1.6,2.5-2.5,4.5-2.5c2,0,4.2,1.6,4.2,4.3c0,1.3-0.5,2.4-1.4,3.5l-10.7,13.1l11.3,13.9c0.7,0.9,1.4,2.1,1.4,3.4   c0,2.6-1.9,4.6-4.6,4.6c-2,0-3.1-0.8-4.3-2.3l-9.8-12.9l-9.7,12.7c-1.3,1.6-2.5,2.5-4.5,2.5c-2,0-4.2-1.6-4.2-4.3   C79,127.9,79.4,126.8,80.3,125.7z" fill="#FFFFFF"></path>
+                                                                      <path d="M133.6,99.6h-8.9c-2.3,0-4.3-1.9-4.3-4.3c0-2.3,1.9-4.3,4.3-4.3h27c2.3,0,4.3,1.9,4.3,4.3   c0,2.3-1.9,4.3-4.3,4.3h-8.9v29.2c0,2.6-2,4.6-4.6,4.6s-4.6-2-4.6-4.6V99.6z" fill="#FFFFFF"></path>
+                                                                    </g>
+                                                                  </svg>
+                                                                  <div class="attachment-content">
+                                                                    <h4 :title="attachment.name" class="attachment-name ellipsis">{{ attachment.name }}</h4>
+                                                                    <h4 class="attachment-size">{{ attachment.size }}</h4>
+                                                                  </div>
+                                                                </li>
+                                                              </ul>
+                                                            </div>
+
+                                                            <button class="slide-page-btn right"
+                                                                    @click.stop="toggleSlide(email.id, 'right')"
+                                                                    :disabled="getLeftSlideStatus(email.id) === -100">
+                                                              <i class="m-icon icon-right-thin"></i>
+                                                            </button>
+                                                            <span class="total-count">共 {{ email.emailAttachmentList.length }} 个附件</span>
+                                                          </div>
+                                                        </div>
+
 																										</div>
 																									</div>
 																								</li>
@@ -527,7 +570,8 @@ export default {
         '标为未读',
         '标为垃圾邮件',
       ],
-      fixedFlag: false
+      fixedFlag: false,
+      emailSlideStatus: {},
     }
   },
   props: {
@@ -539,6 +583,14 @@ export default {
     },
     dropdownStyle() {
       return this.isDropdownShown ? '' : 'display: none;';
+    },
+    getLeftSlideStatus() {
+      return (id) => {
+        if (this.emailSlideStatus[id] && this.emailSlideStatus[id].left !== undefined) {
+          return this.emailSlideStatus[id].left;
+        }
+        return 0;
+      }
     }
   },
 
@@ -900,6 +952,20 @@ export default {
       this.fixedFlag = !this.fixedFlag;
       this.currentPage = 1;
       this.fetchEmailData(this.currentEmailType);
+    },
+
+    toggleSlide(emailId, direction) {
+      if (!this.emailSlideStatus[emailId]) {
+        this.$set(this.emailSlideStatus, emailId, {
+          left: 0
+        });
+      }
+
+      if (direction === 'right') {
+        this.emailSlideStatus[emailId].left = -100;
+      } else {
+        this.emailSlideStatus[emailId].left = 0;
+      }
     }
   }
 }

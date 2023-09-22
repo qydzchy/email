@@ -619,6 +619,11 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         return taskAttachmentService.uploadAttachment(sourceFile);
     }
 
+    @Override
+    public List<String> getAttachmentByEmailId(Long emailId) {
+        return taskAttachmentService.getPathByEmailId(emailId);
+    }
+
     /**
      * 获取最新Reference
      * @param reference
