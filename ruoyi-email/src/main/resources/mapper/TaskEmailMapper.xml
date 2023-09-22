@@ -93,6 +93,13 @@
             #{status}
         </foreach>
         and folder = 'INBOX'
+        <if test="attachmentFlag != null and attachmentFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_attachment mtea
+            WHERE mte.id = mtea.email_id
+            )
+        </if>
         <if test="type != null">and type = #{type}</if>
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
@@ -104,27 +111,38 @@
     </select>
 
     <select id="selectTaskEmailPage" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
-        select mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title, mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag,
-        mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mte.message_id as messageId, mte.in_reply_to as inReplyTo, mte.reference, mtec.content from mailbox_task_email mte
-        left join mailbox_task_email_content mtec on mte.id = mtec.email_id
-        where mte.task_id in
+        SELECT
+        mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title,
+        mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag, mte.pending_flag as pendingFlag, mte.pending_time as pendingTime,
+        mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mte.message_id as messageId, mte.in_reply_to as inReplyTo, mte.reference, mtec.content
+        FROM mailbox_task_email mte
+        LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        WHERE
+        mte.task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
             #{taskId}
         </foreach>
-        and mte.status in
+        AND mte.status in
         <foreach collection="statusList" item="status" open="(" separator="," close=")">
             #{status}
         </foreach>
-        and mte.folder = 'INBOX'
-        <if test="type != null">and mte.type = #{type}</if>
-        <if test="readFlag != null "> and mte.read_flag = #{readFlag}</if>
-        <if test="pendingFlag != null "> and mte.pending_flag = #{pendingFlag}</if>
-        <if test="spamFlag != null "> and mte.spam_flag = #{spamFlag}</if>
-        <if test="traceFlag != null "> and mte.trace_flag = #{traceFlag}</if>
-        <if test="fixedFlag != null and fixedFlag == true"> and fixed_flag = true</if>
-        <if test="folderId != null "> and mte.folder_id = #{folderId}</if>
-        and mte.del_flag = #{delFlag}
-        order by mte.send_date desc
+        AND mte.folder = 'INBOX'
+        <if test="attachmentFlag != null and attachmentFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_attachment mtea
+            WHERE mte.id = mtea.email_id
+            )
+        </if>
+        <if test="type != null">AND mte.type = #{type}</if>
+        <if test="readFlag != null"> AND mte.read_flag = #{readFlag}</if>
+        <if test="pendingFlag != null"> AND mte.pending_flag = #{pendingFlag}</if>
+        <if test="spamFlag != null"> AND mte.spam_flag = #{spamFlag}</if>
+        <if test="traceFlag != null"> AND mte.trace_flag = #{traceFlag}</if>
+        <if test="fixedFlag != null and fixedFlag == true"> AND fixed_flag = true</if>
+        <if test="folderId != null"> AND mte.folder_id = #{folderId}</if>
+        AND mte.del_flag = #{delFlag}
+        ORDER BY mte.send_date DESC
         LIMIT #{offset}, #{limit}
     </select>
     <select id="getTaskEmailById" resultMap="TaskEmailResult">

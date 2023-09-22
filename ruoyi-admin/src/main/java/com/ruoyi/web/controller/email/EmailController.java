@@ -7,7 +7,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.file.FileStreamUtil;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
@@ -71,6 +70,7 @@ public class EmailController extends BaseController {
                                         Boolean spamFlag,
                                         Boolean traceFlag,
                                         Boolean fixedFlag,
+                                        Boolean attachmentFlag,
                                         Long folderId,
                                         Integer type,
                                         @NotNull(message = "页数不能为空") Integer pageNum,
@@ -78,7 +78,7 @@ public class EmailController extends BaseController {
     {
         List<Long> taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
 
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, folderId, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, attachmentFlag, folderId, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 
