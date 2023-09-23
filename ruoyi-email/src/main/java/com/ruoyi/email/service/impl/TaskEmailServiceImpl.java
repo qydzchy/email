@@ -174,6 +174,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
         List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, folderId, statusList, offset, limit);
+        if (emailListVOList == null || emailListVOList.isEmpty()) {
+            return Pair.of(count, new ArrayList<>());
+        }
 
         List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
         List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);

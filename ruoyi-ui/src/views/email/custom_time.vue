@@ -18,7 +18,7 @@
       </el-time-picker>
     </div>
     <div class="submit">
-      <button type="button" class="mm-button mm-button__primary sure">
+      <button type="button" class="mm-button mm-button__primary sure" @click="handleConfirm" :disabled="!canConfirm">
         <!---->
         <!---->确定
         <!---->
@@ -35,6 +35,36 @@ export default {
     };
   },
   methods: {
+    handleConfirm() {
+      if (this.date && this.time) {
+        const finalDate = new Date(this.date);  // 从this.date获取年月日
+
+        // 从this.time获取时分秒
+        finalDate.setHours(this.time.getHours());
+        finalDate.setMinutes(this.time.getMinutes());
+        finalDate.setSeconds(this.time.getSeconds());
+
+        // 格式化为所需的格式
+        const formattedDate = this.formatDate(finalDate);
+        this.$emit('time-selected', formattedDate);
+      }
+    },
+    formatDate(dateTime) {
+      const yyyy = dateTime.getFullYear();
+      const MM = String(dateTime.getMonth() + 1).padStart(2, '0');  // 因为月份是从0开始的
+      const dd = String(dateTime.getDate()).padStart(2, '0');
+      const HH = String(dateTime.getHours()).padStart(2, '0');
+      const mm = String(dateTime.getMinutes()).padStart(2, '0');
+
+      return `${yyyy}-${MM}-${dd} ${HH}:${mm}:00`;
+    }
+
+  },
+  computed: {
+    canConfirm() {
+      return this.date && this.time;
+    }
   }
+
 }
 </script>

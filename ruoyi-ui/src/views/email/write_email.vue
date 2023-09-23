@@ -214,17 +214,29 @@
               <div class="select-handle-time">
                 <div class="mm-popover">
                   <div>
-                                          <span class="time" @click.stop="showPending">
-                                            <span class="okki-icon-wrap time-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                    <span class="time" @click.stop="showPending">
+                      <span class="okki-icon-wrap time-icon" color="#0064ff" v-if="pendingTime">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#0064ff">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                          <path d="M12 7a1 1 0 011 1v4.423l2.964 1.711a1 1 0 01-1 1.732l-3.447-1.99a1.01 1.01 0 01-.384-.377.992.992 0 01-.133-.518V8a1 1 0 011-1z" fill="#fff"></path>
+                        </svg>
+                        <span>{{ pendingTime }}</span>
+                      </span>
+                      <span class="okki-icon-wrap time-icon" v-else>
+                        <!-- 如果ependingTime存在，显示选中的时间 -->
+                        <!-- 否则，显示SVG图标 -->
+                        <span>
+                          ​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                                 <path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
                                               </svg>
                                             </span> 标记为待处理
-                                          </span>
+                      </span>
+                    </span>
                   </div>
                   <!---->
                 </div>
-                <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: -200px; left: 95px; will-change: top, left; transform-origin: 100% bottom;">
+                <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: -220px; left: 95px; will-change: top, left; transform-origin: 100% bottom;">
                   <!---->
                   <div>
                     <!---->
@@ -234,11 +246,11 @@
                       </div>
                       <div class="title" v-if="showCustomTime">
                         <span class="bold back-block">
-                          <i class="m-icon icon-left-thin"></i> 自定义时间
+                          <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
                         </span>
                       </div>
-                      <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime"></PendingTimePopover>
-                      <CustomTimePopover v-if="showCustomTime"></CustomTimePopover>
+                      <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime" @time-selected="handleSelectedTime"></PendingTimePopover>
+                      <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
                     </div>
                   </div>
                 </div>
@@ -360,6 +372,8 @@ export default {
       htmlText: '',
       showPendingTime: false,
       showCustomTime: false,
+      pendingTime: null,
+      pendingFlag: false,
     };
   },
   props: {
@@ -495,6 +509,8 @@ export default {
         "delayedTxFlag": this.formData.delayedTxFlag,
         "traceFlag": this.formData.traceFlag,
         "pullEmailId": this.formData.id,
+        "pendingFlag": this.pendingFlag,
+        "pendingTime": this.pendingTime,
       }
 
       try {
@@ -727,6 +743,11 @@ export default {
       this.showCustomTime = true;
     },
 
+    handlePendingTime() {
+      this.showPendingTime = true;
+      this.showCustomTime = false;
+    },
+
     // 回复，回显数据处理
     handleReply() {
       if (this.selectedEmail.title) {
@@ -854,6 +875,13 @@ export default {
       } catch (error) {
         console.error('上传过程中出现错误:', error);
       }
+    },
+
+    handleSelectedTime(time) {
+      this.showPendingTime = false;
+      this.showCustomTime = false;
+      this.pendingTime = time;
+      this.pendingFlag = true;
     }
   },
   mounted() {
@@ -867,7 +895,6 @@ export default {
     }).catch(error => {
       console.error("Error while fetching task list:", error);
     });
-
   },
 
   beforeDestroy() {
