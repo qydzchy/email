@@ -285,18 +285,18 @@
 																								<div class="mm-popover">
 																									<div>
 																										<span class="">
-																											<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																											<span class="okki-icon-wrap tool-bar-icon-item" @click="handlePendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																													<path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
 																													<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
 																												</svg>
 																											</span>
 																										</span>
 																									</div>
-                                                  <!---->
 																								</div>
 																							</span>
                                               <!---->
 																						</span>
+                                            <!---->
 																						<span class="mm-tooltip mail-toolbar-btn-item" @click="deleteEmails">
 																							<span class="mm-tooltip-trigger">
 																								<span>
@@ -902,6 +902,26 @@
 														</div>
 													</span>
     </div>
+
+    <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: 40px; left: 425px; will-change: top, left; transform-origin: 100% bottom;">
+      <!---->
+      <div>
+        <!---->
+        <div class="mail-pending-handler">
+          <div class="title" v-if="showPendingTime">
+            <span>请选择稍后处理时间: </span>
+          </div>
+          <div class="title" v-if="showCustomTime">
+                        <span class="bold back-block">
+                          <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
+                        </span>
+          </div>
+          <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime" @time-selected="handleSelectedTime"></PendingTimePopover>
+          <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 <style lang="scss">
@@ -930,6 +950,8 @@ import emailHeaderLayout from "./email_header.vue";
 import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
 import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
+import CustomTimePopover from "@/views/email/custom_time.vue";
+import PendingTimePopover from "@/views/email/pending_time.vue";
 
 export default {
   data() {
@@ -953,6 +975,8 @@ export default {
       hoveredItem: null,
       emailHoveredItem: null,
       currentEmailType: '',
+      showPendingTime: false,
+      showCustomTime: false,
       menuItems: [
         '标为未读',
         '作为附件转发',
@@ -963,6 +987,7 @@ export default {
     }
   },
   components: {
+    PendingTimePopover, CustomTimePopover,
     'email_header': emailHeaderLayout,
     'write_email': writeEmailLayout,
     'email_content_detail_info': emailContentDetailInfoLayout
@@ -1172,6 +1197,23 @@ export default {
     // 跳转到header页面
     toggleEmailHeader() {
       EventBus.$emit('switch-email-header', this.currentEmailType, this.currentPage);
+    },
+
+    handleCustomTime() {
+      this.showPendingTime = false;
+      this.showCustomTime = true;
+    },
+
+    handlePendingTime() {
+      this.showPendingTime = true;
+      this.showCustomTime = false;
+    },
+
+    handleSelectedTime(time) {
+      this.showPendingTime = false;
+      this.showCustomTime = false;
+      this.pendingTime = time;
+      this.pendingFlag = true;
     },
 
     // 删除邮件

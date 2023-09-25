@@ -198,7 +198,7 @@
                 <div class="split"></div>
                 <div class="select">
                   <label class="mm-checkbox">
-                    <input true-value="true" v-model="formData.traceFlag" type="checkbox" checked="">
+                    <input true-value="true" v-model="formData.traceFlag" @click="handleDelayedTxShow" type="checkbox" checked="">
                     <span class="mm-checkbox-input"></span>
                     <span class="mm-checkbox-label">追踪邮件</span>
                   </label>
@@ -209,6 +209,8 @@
                 <span class="mm-checkbox-input"></span>
                 <span class="mm-checkbox-label">定时发送</span>
               </label>
+
+              <DelayedTxlLayout v-if="delayedTxShow"></DelayedTxlLayout>
             </div>
               <div class="split"></div>
               <div class="select-handle-time">
@@ -343,8 +345,9 @@ import { EventBus } from '@/api/email/event-bus.js';
 import ReceiverInput from './write_email_receiver_input.vue';
 import PendingTimePopover from './pending_time.vue';
 import CustomTimePopover from './custom_time.vue';
+import DelayedTxlLayout from './write_email_delayed_tx.vue';
 export default {
-  components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover },
+  components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover, DelayedTxlLayout },
   data() {
     return {
       formData: {},
@@ -374,6 +377,7 @@ export default {
       showCustomTime: false,
       pendingTime: null,
       pendingFlag: false,
+      delayedTxShow: false,
     };
   },
   props: {
@@ -746,6 +750,11 @@ export default {
     handlePendingTime() {
       this.showPendingTime = true;
       this.showCustomTime = false;
+    },
+
+    handleDelayedTxShow() {
+      this.delayedTxShow = !this.delayedTxShow;
+      console.log(this.delayedTxShow);
     },
 
     // 回复，回显数据处理
