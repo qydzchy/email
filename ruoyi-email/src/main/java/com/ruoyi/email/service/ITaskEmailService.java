@@ -190,4 +190,11 @@ public interface ITaskEmailService
      * @return
      */
     List<String> getAttachmentByEmailId(Long emailId);
+
+    /**
+     * 标记待处理
+     * @param taskEmail
+     * @return
+     */
+    boolean pending(TaskEmail taskEmail);
 }

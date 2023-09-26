@@ -628,6 +628,31 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     /**
+     * 标记为预处理
+     * @param taskEmail
+     * @return
+     */
+    @Override
+    public boolean pending(TaskEmail taskEmail) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        TaskEmail dbTaskEmail = taskEmailMapper.selectTaskEmailById(taskEmail.getId());
+        if (dbTaskEmail == null) {
+            log.info("不存在id为{}的邮件记录", taskEmail.getId());
+            throw new ServiceException();
+        }
+
+        dbTaskEmail.setPendingFlag(taskEmail.getPendingFlag());
+        dbTaskEmail.setPendingTime(taskEmail.getPendingTime());
+        dbTaskEmail.setUpdateId(userId);
+        dbTaskEmail.setUpdateBy(username);
+        taskEmailMapper.updateTaskEmail(dbTaskEmail);
+        return true;
+    }
+
+    /**
      * 获取最新Reference
      * @param reference
      * @return

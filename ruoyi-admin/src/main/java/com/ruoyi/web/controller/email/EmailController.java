@@ -193,6 +193,27 @@ public class EmailController extends BaseController {
     }
 
     /**
+     * 标记待处理
+     */
+    @PreAuthorize("@ss.hasPermi('email:pending')")
+    @Log(title = "标记待处理", businessType = BusinessType.UPDATE)
+    @PostMapping("/pending")
+    public AjaxResult pending(@RequestBody TaskEmail taskEmail)
+    {
+        if (taskEmail.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+        if (taskEmail.getPendingFlag() == null) {
+            throw new ServiceException("预处理状态不能为空");
+        }
+        if (taskEmail.getPendingTime() == null) {
+            throw new ServiceException("预处理时间不能为空");
+        }
+
+        return toAjax(taskEmailService.pending(taskEmail));
+    }
+
+    /**
      * 邮件导出
      */
     @PreAuthorize("@ss.hasPermi('email:export')")

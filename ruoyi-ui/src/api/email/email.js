@@ -65,6 +65,15 @@ export function spamEmail(data) {
   })
 }
 
+// 标记邮件为待处理
+export function pendingEmail(data) {
+  return request({
+    url: '/email/info/pending',
+    method: 'post',
+    data: data
+  })
+}
+
 // 移动文件夹
 export function moveFolder(data) {
   return request({

@@ -430,6 +430,31 @@
 																						</div>
 
 																						<div class="mail-detail-fixed-header--opts__right">
+
+                                              <div class="pending-tool" v-if="currentEmailDetail.pendingFlag">
+                                                <span>待处理邮件</span>
+                                                <span>
+                                                  <span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                      <path fill-rule="evenodd" clip-rule="evenodd" d="M21.205 6.29a1 1 0 01.004 1.415l-10.928 11a1 1 0 01-1.419 0l-6.071-6.111a1 1 0 011.418-1.41l5.362 5.397 10.22-10.286a1 1 0 011.414-.004z"></path>
+                                                    </svg>
+                                                  </span>
+                                                  <span>
+                                                    <div class="mm-popover" @click="handlePendingTime">
+                                                      <div>
+                                                        <span class="okki-icon-wrap pending-chooser-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                                                            <path d="M12 7a1 1 0 011 1v4.423l2.964 1.711a1 1 0 01-1 1.732l-3.447-1.99a1.01 1.01 0 01-.384-.377.992.992 0 01-.133-.518V8a1 1 0 011-1z" fill="#fff"></path>
+                                                          </svg>
+                                                        </span>
+                                                      </div>
+                                                      <!---->
+                                                    </div>
+                                                  </span>
+                                                  <span class="time">{{currentEmailDetail.pendingTime}}</span>
+                                                </span>
+                                              </div>
+
+
 																							<!---->
                                               <!---->
 																							<div class="mail-detail-operations">
@@ -450,6 +475,9 @@
 																								</div>
 																							</div>
 																						</div>
+
+                                            <FolderComponent></FolderComponent>
+
 
                                             <div class="mm-outside mail-detail-tool-popover mm-popover-popper" x-placement="bottom-end" style="position: absolute; will-change: top, left; transform-origin: 100% top; top: 100px; left: 600px;" :style="dropdownEmailStyle">
                                               <!---->
@@ -949,9 +977,10 @@ import writeEmailLayout from './write_email.vue';
 import emailHeaderLayout from "./email_header.vue";
 import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
-import {fixedEmail, list, quickReply, readEmail, spamEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
+import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
+import FolderComponent from "@/views/email/email_content_folder_tree.vue";
 
 export default {
   data() {
@@ -977,6 +1006,7 @@ export default {
       currentEmailType: '',
       showPendingTime: false,
       showCustomTime: false,
+      pendingTime: null,
       menuItems: [
         '标为未读',
         '作为附件转发',
@@ -987,7 +1017,7 @@ export default {
     }
   },
   components: {
-    PendingTimePopover, CustomTimePopover,
+    PendingTimePopover, CustomTimePopover, FolderComponent,
     'email_header': emailHeaderLayout,
     'write_email': writeEmailLayout,
     'email_content_detail_info': emailContentDetailInfoLayout
@@ -1210,10 +1240,7 @@ export default {
     },
 
     handleSelectedTime(time) {
-      this.showPendingTime = false;
-      this.showCustomTime = false;
-      this.pendingTime = time;
-      this.pendingFlag = true;
+      this.pendingEmail(this.currentEmailDetail, true, time);
     },
 
     // 删除邮件
@@ -1280,6 +1307,28 @@ export default {
 
     toggleEmailDropdown() {
       this.isDropdownEmailShown = !this.isDropdownEmailShown;
+    },
+
+    // 标记待处理
+    async pendingEmail(email, pendingFlag, pendingTime) {
+      const data = {
+        "id": email.id,
+        "pendingFlag": pendingFlag,
+        "pendingTime": pendingTime
+      };
+      try {
+        const response = await pendingEmail(data);
+        if (response.code === 200) {
+          this.showPendingTime = false;
+          this.showCustomTime = false;
+          this.$set(email, 'pendingFlag', pendingFlag);
+          this.$set(email, 'pendingTime', pendingTime);
+          return;
+        }
+      } catch (error) {
+        console.error('标记为待处理出现错误:', error);
+        throw error;
+      }
     },
 
     // 标记为已读文件
