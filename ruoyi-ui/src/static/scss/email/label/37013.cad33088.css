@@ -1,0 +1,162 @@
+.color-picker-dropdown-wrap .color-picker-display {
+  display: flex;
+  width: 50px;
+  padding: 6px 3px;
+  border-radius: 2px;
+  background: #efefef;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center
+}
+.color-picker-dropdown-wrap .color-picker-display .color-block {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px
+}
+.color-picker-dropdown-wrap .color-picker-display i {
+  margin-right: 5px;
+  font-size: 12px;
+  vertical-align: text-bottom
+}
+.color-picker-dropdown-wrap .color-picker {
+  display: inline-block;
+  position: relative
+}
+.color-picker-dropdown-wrap .color-picker.disable .color-picker-display {
+  cursor: not-allowed
+}
+.color-picker-dropdown-list-wrapper {
+  display: flex;
+  width: 144px;
+  padding: 12px;
+  background: #fff;
+  flex-wrap: wrap
+}
+.color-picker-dropdown-list-wrapper li {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin: 0 4px 4px 0;
+  border-radius: 2px;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer
+}
+.color-picker-dropdown-list-wrapper .picked {
+  border: 1px solid rgba(0,0,0,.18)
+}
+.color-picker-dropdown-list-wrapper .picked i {
+  color: #fff;
+  font-size: 14px
+}
+.create-tag-dialog .tag-wrapper {
+  margin-top: 8px
+}
+.create-tag-dialog .tag-field {
+  display: flex;
+  position: relative;
+  width: 384px;
+  margin: auto;
+  align-items: center;
+  margin-bottom: 15px
+}
+.create-tag-dialog .tag-field .tag-name-wrapper {
+  width: 250px;
+  margin: 0 14px
+}
+.create-tag-dialog .error-tip {
+  position: absolute;
+  color: red;
+  font-size: 12px
+}
+.mail-plus-tag {
+  overflow-y: auto;
+  height: 100%
+}
+.mail-plus-tag .mail-tag-list-body-wrapper {
+  max-height: calc(100vh - 215px);
+  overflow-y: auto
+}
+.mail-plus-tag .mail-tag-list {
+  margin-top: 14px;
+  line-height: 38px
+}
+.mail-plus-tag .mail-tag-list .sortable-drag {
+  border: 1px solid #d9d9d9
+}
+.mail-plus-tag .mail-tag-list .sortable-chosen {
+  box-shadow: -1px 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 3px rgba(0,0,0,.12)
+}
+.mail-plus-tag .mail-tag-list .sortable-ghost {
+  opacity: 0
+}
+.mail-plus-tag .mail-tag-list .e-move {
+  margin: 0 12px;
+  cursor: move;
+  flex-shrink: 0
+}
+.mail-plus-tag .mail-tag-list .e-move-disabled {
+  cursor: not-allowed
+}
+.mail-plus-tag .mail-tag-list .color-picker .color-picker-display {
+  display: flex;
+  box-sizing: border-box;
+  width: 28px;
+  margin-right: 6px;
+  padding: 0;
+  border: 1px solid #b6b6b6;
+  background: #fdfdfd;
+  line-height: 20px;
+  align-items: center;
+  justify-content: space-around
+}
+.mail-plus-tag .mail-tag-list .color-picker .color-picker-display .color-block {
+  width: 10px;
+  height: 10px
+}
+.mail-plus-tag .mail-tag-list .color-picker .color-list-wrapper {
+  left: 0
+}
+.mail-plus-tag .mail-tag-list .text-name {
+  padding-left: 33px
+}
+.mail-plus-tag .mail-tag-list .mail-tag-header {
+  background-color: #f1f1f1
+}
+.mail-plus-tag .mail-tag-list .text-content {
+  width: 100px;
+  text-align: center
+}
+.mail-plus-tag .mail-tag-list .text-left-content {
+  display: flex;
+  align-items: center
+}
+.mail-plus-tag .mail-tag-list .text-left-content .tag-text-input {
+  width: 240px;
+  margin-left: 10px
+}
+.mail-plus-tag .mail-tag-list .text-left-content .tag-name {
+  width: auto;
+  max-width: 300px;
+  margin-left: 10px;
+  padding: 0 4px;
+  border-radius: 1px;
+  line-height: 28px;
+  text-align: center;
+  text-indent: 0
+}
+.mail-plus-tag .mail-tag-list .text-left-content .system-tag-text {
+  color: #5d5d5d!important;
+  background-color: #f1f1f1!important
+}
+.mail-plus-tag .mail-tag-list .mail-tag-list-item {
+  display: flex;
+  padding-right: 13px;
+  border-bottom: 1px solid #d9d9d9;
+  justify-content: space-between;
+  align-items: center
+}
+.mail-plus-tag .mail-tag-list .mail-tag-list-item p {
+  text-indent: 7px
+}

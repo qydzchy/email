@@ -476,9 +476,6 @@
 																							</div>
 																						</div>
 
-                                            <FolderComponent></FolderComponent>
-
-
                                             <div class="mm-outside mail-detail-tool-popover mm-popover-popper" x-placement="bottom-end" style="position: absolute; will-change: top, left; transform-origin: 100% top; top: 100px; left: 600px;" :style="dropdownEmailStyle">
                                               <!---->
                                               <div>

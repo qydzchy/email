@@ -1,18 +1,19 @@
 <template>
   <div class="mail-drop-menu-wrapper">
-    <ul class="mail-drop-menu">
-      <li>
-        <h4 title="移动至" class="mail-drop-title">移动至</h4>
-      </li>
-      <li v-for="folder in folders" :key="folder.id" class="mail-drop-menu-item">
-        <span class="mail-drop-menu-text ellipsis">
-          <span>{{ folder.name }}</span>
-        </span>
-        <div v-if="folder.children && folder.children.length" class="mail-drop-menu-wrapper children-menu">
-          <FolderComponent :folders="folder.children"/>
-        </div>
-      </li>
-    </ul>
+  <ul class="mail-drop-menu" v-if="folders && folders.length">
+    <li>
+      <h4 title="移动至" class="mail-drop-title">移动至</h4>
+    </li>
+    <li v-for="folder in folders" :key="folder.name" class="mail-drop-menu-item">
+      <!-- 有子文件夹则显示icon -->
+      <span v-if="folder.children && folder.children.length" @click="toggleChildren(folder)">
+        <i class="m-icon" :class="folder.showChildren ? 'icon-down-thin' : 'icon-right-thin'"></i>
+      </span>
+      <span v-html="folder.name" class="mail-drop-menu-text ellipsis"></span>
+      <!-- 递归渲染子文件夹 -->
+      <FolderComponent :folders="folder.children"/>
+    </li>
+  </ul>
   </div>
 </template>
 <script>
@@ -34,6 +35,10 @@ export default {
       listFolder().then((response) => {
         this.folders = response.data;
       });
+    },
+
+    toggleChildren(folder) {
+      folder.showChildren = !folder.showChildren;
     }
   },
 

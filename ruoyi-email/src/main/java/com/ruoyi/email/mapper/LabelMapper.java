@@ -1,7 +1,10 @@
 package com.ruoyi.email.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.Label;
+import com.ruoyi.email.domain.vo.label.LabelListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 标签Mapper接口
@@ -58,4 +61,37 @@ public interface LabelMapper
      * @return 结果
      */
     public int deleteLabelByIds(Long[] ids);
+
+    /**
+     * 查询标签列表
+     * @param userId
+     * @return
+     */
+    List<LabelListVO> getByCreateId(@Param("createId") Long userId);
+
+    /**
+     * 修改标签颜色
+     * @param id
+     * @param color
+     * @param userId
+     * @param nowDate
+     * @return
+     */
+    void updateColor(@Param("id") Long id, @Param("color") String color, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
+
+    /**
+     * 修改标签名称
+     * @param id
+     * @param name
+     * @param userId
+     * @param nowDate
+     */
+    void updateName(@Param("id") Long id, @Param("name") String name, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
+
+    /**
+     * 删除标签
+     * @param id
+     * @param userId
+     */
+    void deleteById(@Param("id") Long id, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
 }

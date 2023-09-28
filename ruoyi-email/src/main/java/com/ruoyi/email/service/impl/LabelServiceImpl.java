@@ -1,12 +1,18 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.label.LabelListVO;
 import com.ruoyi.email.service.ILabelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.LabelMapper;
 import com.ruoyi.email.domain.Label;
+
+import javax.annotation.Resource;
 
 /**
  * 标签Service业务层处理
@@ -17,7 +23,7 @@ import com.ruoyi.email.domain.Label;
 @Service
 public class LabelServiceImpl implements ILabelService
 {
-    @Autowired
+    @Resource
     private LabelMapper labelMapper;
 
     /**
@@ -53,6 +59,11 @@ public class LabelServiceImpl implements ILabelService
     @Override
     public int insertLabel(Label label)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        label.setCreateId(userId);
+        label.setCreateBy(username);
         label.setCreateTime(DateUtils.getNowDate());
         return labelMapper.insertLabel(label);
     }
@@ -92,5 +103,37 @@ public class LabelServiceImpl implements ILabelService
     public int deleteLabelById(Long id)
     {
         return labelMapper.deleteLabelById(id);
+    }
+
+    @Override
+    public List<LabelListVO> list() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        List<LabelListVO> labelListVOList = labelMapper.getByCreateId(userId);
+        return labelListVOList;
+    }
+
+    @Override
+    public boolean editColor(Long id, String color) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        labelMapper.updateColor(id, color, userId, DateUtils.getNowDate());
+        return true;
+    }
+
+    @Override
+    public boolean editName(Long id, String name) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        labelMapper.updateName(id, name, userId, DateUtils.getNowDate());
+        return false;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        labelMapper.deleteById(id, userId, DateUtils.getNowDate());
+        return false;
     }
 }

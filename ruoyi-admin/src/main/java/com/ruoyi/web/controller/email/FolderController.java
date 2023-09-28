@@ -40,7 +40,7 @@ public class FolderController extends BaseController
      * 新增文件夹
      */
     @PreAuthorize("@ss.hasPermi('email:folder:add')")
-    @Log(title = "文件夹", businessType = BusinessType.INSERT)
+    @Log(title = "新增文件夹", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult add(@RequestBody FolderSaveOrUpdateDTO dto)
     {
@@ -51,7 +51,7 @@ public class FolderController extends BaseController
      * 修改文件夹
      */
     @PreAuthorize("@ss.hasPermi('email:folder:edit')")
-    @Log(title = "文件夹", businessType = BusinessType.UPDATE)
+    @Log(title = "修改文件夹", businessType = BusinessType.UPDATE)
     @PostMapping("edit")
     public AjaxResult edit(@RequestBody FolderSaveOrUpdateDTO dto)
     {
@@ -66,7 +66,7 @@ public class FolderController extends BaseController
      * 删除文件夹
      */
     @PreAuthorize("@ss.hasPermi('email:folder:delete')")
-    @Log(title = "文件夹", businessType = BusinessType.DELETE)
+    @Log(title = "删除文件夹", businessType = BusinessType.DELETE)
     @PostMapping("/delete")
     public AjaxResult delete(@RequestBody Folder folder)
     {

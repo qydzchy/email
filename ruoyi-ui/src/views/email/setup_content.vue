@@ -1,7 +1,8 @@
 <template>
   <div>
-    <div v-if="selectedTab === '常规'">常规内容</div>
-    <div v-else-if="selectedTab === '模板'">模板内容</div>
+    <div v-if="selectedTab === '常规'"></div>
+    <div v-else-if="selectedTab === '模板'"></div>
+    <div v-else-if="selectedTab === '标签'"></div>
     <component :is="dynamicComponent"></component>
     <!-- 其他条件... -->
   </div>
@@ -10,6 +11,7 @@
 <script>
 import EmailManagementComponent from './email_management/list.vue';
 import FolderComponent from './folder/list.vue';
+import LabelComponent from './label/list.vue';
 
 export default {
   data() {
@@ -24,6 +26,8 @@ export default {
         return EmailManagementComponent;
       } else if (this.selectedTab === '文件夹') {
         return FolderComponent;
+      } else if (this.selectedTab === '标签') {
+        return LabelComponent;
       }
       // ... 可以为其他选项项返回其他组件
       return null;

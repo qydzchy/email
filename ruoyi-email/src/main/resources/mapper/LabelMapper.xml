@@ -11,14 +11,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="type"    column="type"    />
         <result property="order"    column="order"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectLabelVo">
-        select id, name, color, type, order, del_flag, create_by, create_time, update_by, update_time from mailbox_label
+        select id, name, color, type, order, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_label
     </sql>
 
     <select id="selectLabelList" parameterType="Label" resultMap="LabelResult">
@@ -35,7 +37,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLabelVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.label.LabelListVO">
+        select id, name, color, type from mailbox_label where create_id = #{createId} order by type asc, create_time desc
+    </select>
+
     <insert id="insertLabel" parameterType="Label" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_label
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -78,6 +84,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateColor">
+        update mailbox_label set color = #{color}, update_time = {updateTime} where id = {id} and create_id = {createId} and type = 2
+    </update>
+
+    <update id="updateName">
+        update mailbox_label set name = #{name}, update_time = {updateTime} where id = {id} and create_id = {createId} and type = 2
+    </update>
+
     <delete id="deleteLabelById" parameterType="Long">
         delete from mailbox_label where id = #{id}
     </delete>
@@ -88,4 +102,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <update id="deleteById">
+        update mailbox_label set del_flag = '2', update_time = {updateTime} where id = {id} and create_id = {createId} and type = 2
+    </update>
 </mapper>

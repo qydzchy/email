@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Label;
+import com.ruoyi.email.domain.vo.label.LabelListVO;
 
 /**
  * 标签Service接口
@@ -58,4 +59,33 @@ public interface ILabelService
      * @return 结果
      */
     public int deleteLabelById(Long id);
+
+    /**
+     * 标签列表
+     * @return
+     */
+    List<LabelListVO> list();
+
+    /**
+     * 修改标签颜色
+     * @param id
+     * @param color
+     * @return
+     */
+    boolean editColor(Long id, String color);
+
+    /**
+     * 修改标签名称
+     * @param id
+     * @param name
+     * @return
+     */
+    boolean editName(Long id, String name);
+
+    /**
+     * 删除标签
+     * @param id
+     * @return
+     */
+    boolean delete(Long id);
 }
