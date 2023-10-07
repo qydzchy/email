@@ -139,7 +139,7 @@ email:
 
   trace:
     # 邮件回调服务地址
-    server: http://47.244.55.212:8080
+    server: http://127.0.0.1:8080
     # 获取定位经纬度
     latitude-server: http://111.230.185.137:8421/ip/getIP?ip=
 
