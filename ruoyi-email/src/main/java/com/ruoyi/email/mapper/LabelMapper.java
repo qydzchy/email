@@ -73,25 +73,25 @@ public interface LabelMapper
      * 修改标签颜色
      * @param id
      * @param color
-     * @param userId
+     * @param createId
      * @param nowDate
      * @return
      */
-    void updateColor(@Param("id") Long id, @Param("color") String color, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
+    void updateColor(@Param("id") Long id, @Param("color") String color, @Param("createId") Long createId, @Param("updateTime") Date nowDate);
 
     /**
      * 修改标签名称
      * @param id
      * @param name
-     * @param userId
+     * @param createId
      * @param nowDate
      */
-    void updateName(@Param("id") Long id, @Param("name") String name, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
+    void updateName(@Param("id") Long id, @Param("name") String name, @Param("createId") Long createId, @Param("updateTime") Date nowDate);
 
     /**
      * 删除标签
      * @param id
-     * @param userId
+     * @param createId
      */
-    void deleteById(@Param("id") Long id, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
+    void deleteById(@Param("id") Long id, @Param("createId") Long createId, @Param("updateTime") Date nowDate);
 }

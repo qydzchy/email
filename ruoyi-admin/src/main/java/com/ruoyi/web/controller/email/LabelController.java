@@ -89,7 +89,7 @@ public class LabelController extends BaseController {
     }
 
     /**
-     * 修改标签名称
+     * 删除标签
      */
     @PreAuthorize("@ss.hasPermi('email:label:delete')")
     @Log(title = "删除标签", businessType = BusinessType.UPDATE)

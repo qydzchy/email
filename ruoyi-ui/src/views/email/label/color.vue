@@ -1,78 +1,61 @@
 <template>
-  <div v-if="labelColorPage">
+  <div>
     <ul class="color-picker-dropdown-list-wrapper">
-      <li class="" style="background: rgb(0, 0, 0);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(188, 89, 89);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(216, 117, 56);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(32, 152, 144);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(75, 103, 157);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(89, 93, 190);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(51, 51, 51);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(228, 62, 62);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(235, 153, 85);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(97, 188, 129);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(93, 137, 233);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(141, 84, 189);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(123, 130, 145);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(238, 123, 123);">
-        <!---->
-      </li>
-      <li class="picked" style="background: rgb(226, 173, 40);">
-        <i class="m-icon icon-check-thin"></i>
-      </li>
-      <li class="" style="background: rgb(128, 196, 99);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(74, 168, 235);">
-        <!---->
-      </li>
-      <li class="" style="background: rgb(172, 172, 172);">
-        <!---->
+      <li
+        v-for="color in colors"
+        :key="color"
+        :class="{ 'picked': selectedColor === color }"
+        :style="{ background: color }"
+        @click="selectColor(color)"
+      >
+        <i class="m-icon icon-check-thin" v-if="selectedColor === color"></i>
       </li>
     </ul>
   </div>
 </template>
+
 <script>
 export default {
   data() {
     return {
-      labelColorPage: false
+      labelColorPage: false,
+      selectedColor: null, // 初始化为空
+      colors: [  // 保存所有颜色值
+        'rgb(0, 0, 0)',
+        'rgb(188, 89, 89)',
+        'rgb(216, 117, 56)',
+        'rgb(32, 152, 144)',
+        'rgb(75, 103, 157)',
+        'rgb(89, 93, 190)',
+        'rgb(51, 51, 51)',
+        'rgb(228, 62, 62)',
+        'rgb(235, 153, 85)',
+        'rgb(97, 188, 129)',
+        'rgb(93, 137, 233)',
+        'rgb(141, 84, 189)',
+        'rgb(123, 130, 145)',
+        'rgb(238, 123, 123)',
+        'rgb(226, 173, 40)',
+        'rgb(128, 196, 99)',
+        'rgb(74, 168, 235)',
+        'rgb(172, 172, 172)'
+      ]
     }
   },
-  methods: {
-    open() {
-      this.labelColorPage = true;
-    },
 
-    close() {
-      this.labelColorPage = false;
-    },
+  methods: {
+    selectColor(color) {
+      this.selectedColor = color;
+      this.$emit('color-selected', this.selectedColor);
+    }
+  },
+
+  props: {
+    initialColor: String
+  },
+
+  created() {
+    this.selectedColor = this.initialColor;
   }
 };
 </script>

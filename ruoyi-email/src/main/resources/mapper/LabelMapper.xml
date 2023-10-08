@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.label.LabelListVO">
-        select id, name, color, type from mailbox_label where create_id = #{createId} order by type asc, create_time desc
+        select id, name, color, type from mailbox_label where create_id = #{createId} and del_flag = '0' order by type asc, create_time desc
     </select>
 
     <insert id="insertLabel" parameterType="Label" useGeneratedKeys="true" keyProperty="id">
@@ -50,8 +50,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="type != null">type,</if>
             <if test="order != null">order,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
          </trim>
@@ -61,8 +63,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="type != null">#{type},</if>
             <if test="order != null">#{order},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
@@ -76,8 +80,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="type != null">type = #{type},</if>
             <if test="order != null">order = #{order},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -85,11 +91,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="updateColor">
-        update mailbox_label set color = #{color}, update_time = {updateTime} where id = {id} and create_id = {createId} and type = 2
+        update mailbox_label set color = #{color}, update_time = #{updateTime} where id = #{id} and create_id = #{createId} and type = 2
     </update>
 
     <update id="updateName">
-        update mailbox_label set name = #{name}, update_time = {updateTime} where id = {id} and create_id = {createId} and type = 2
+        update mailbox_label set name = #{name}, update_time = #{updateTime} where id = #{id} and create_id = #{createId} and type = 2
     </update>
 
     <delete id="deleteLabelById" parameterType="Long">
@@ -104,6 +110,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <update id="deleteById">
-        update mailbox_label set del_flag = '2', update_time = {updateTime} where id = {id} and create_id = {createId} and type = 2
+        update mailbox_label set del_flag = '2', update_time = #{updateTime} where id = #{id} and create_id = #{createId} and type = 2
     </update>
 </mapper>

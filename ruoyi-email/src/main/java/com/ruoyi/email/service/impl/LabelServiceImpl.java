@@ -3,11 +3,11 @@ package com.ruoyi.email.service.impl;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.email.LabelTypeEnum;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.vo.label.LabelListVO;
 import com.ruoyi.email.service.ILabelService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.LabelMapper;
 import com.ruoyi.email.domain.Label;
@@ -62,9 +62,13 @@ public class LabelServiceImpl implements ILabelService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
+        label.setType(LabelTypeEnum.CUSTOM.getType());
         label.setCreateId(userId);
         label.setCreateBy(username);
         label.setCreateTime(DateUtils.getNowDate());
+        label.setUpdateId(userId);
+        label.setUpdateBy(username);
+        label.setUpdateTime(DateUtils.getNowDate());
         return labelMapper.insertLabel(label);
     }
 
@@ -126,7 +130,7 @@ public class LabelServiceImpl implements ILabelService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         labelMapper.updateName(id, name, userId, DateUtils.getNowDate());
-        return false;
+        return true;
     }
 
     @Override
@@ -134,6 +138,6 @@ public class LabelServiceImpl implements ILabelService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         labelMapper.deleteById(id, userId, DateUtils.getNowDate());
-        return false;
+        return true;
     }
 }
