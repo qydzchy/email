@@ -627,7 +627,7 @@ export default {
     EventBus.$off('email-header');
   },
   methods: {
-    fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
+    fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId, labelId) {
       this.taskId = taskId;
       this.type = type;
       const query = {
@@ -641,6 +641,7 @@ export default {
         spamFlag: spamFlag,
         traceFlag: traceFlag,
         folderId: folderId,
+        labelId: labelId,
         attachmentFlag: this.attachmentFlag,
         fixedFlag: this.fixedFlag,
         pageNum: this.currentPage,
@@ -722,7 +723,10 @@ export default {
         this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
       } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
         const folderId = RegExp.$1;
-        this.fetchEmailList(null, null, null, null, null, null, null, folderId);
+        this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
+      } else if (/^LABEL_(.+)$/.test(selectedEmailType)) {
+        const labelId = RegExp.$1;
+        this.fetchEmailList(null, null, null, null, null, null, null, null, null, labelId);
       }
     },
 

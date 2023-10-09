@@ -290,70 +290,139 @@
                           <FolderTree :folders="folders" v-show="isFolderOpen" @folder-selected="folderClick"></FolderTree>
                         </li>
 
-<li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-<div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleShowMore">
-  <!---->
-  <span class="mm-menu-title">
-																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																					<span class="flex items-center" title="显示更多">显示更多</span>
-																				</div>
-    <!---->
-    <!---->
-																			</span>
-  <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-    <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-  </svg>
-</div>
-<ul role="menu" class="mm-menu mm-menu--inline" v-show="isShowMoreOpen">
-  <li class="mm-menu-item mail-sidebar-menu-item"
-      :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MAIL' }"
-      @click="deletedMailClick"
-      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-    <!---->
-    <!---->
-    <div class="mail-sidebar-menu-item">
-      <!---->
-      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-        <span class="flex items-center" title="已删除邮件">已删除邮件</span>
-      </div>
-      <!---->
-      <!---->
-    </div>
-  </li>
-  <li class="mm-menu-item mail-sidebar-menu-item"
-      :class="{ 'mm-menu-item--active': activeMenuItem === 'SPAM' }"
-      @click="spamMailClick"
-      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-    <!---->
-    <!---->
-    <div class="mail-sidebar-menu-item">
-      <!---->
-      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-        <span class="flex items-center" title="垃圾邮件">垃圾邮件</span>
-      </div>
-      <!---->
-      <!---->
-    </div>
-  </li>
-  <li class="mm-menu-item mail-sidebar-menu-item"
-      :class="{ 'mm-menu-item--active': activeMenuItem === 'TRACK_INFORMATION' }"
-      @click="traceInformationClick"
-      role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-    <!---->
-    <!---->
-    <div class="mail-sidebar-menu-item">
-      <!---->
-      <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-        <span class="flex items-center" title="追踪信息">追踪信息</span>
-      </div>
-      <!---->
-      <!---->
-    </div>
-  </li>
-</ul>
-</li>
-</ul>
-</div>
+
+                        <li :class="['mm-submenu', isLabelOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"  role="menuitem" aria-haspopup="true" aria-expanded="true">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleLabel">
+                            <span class="mm-menu-title">
+                              <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <span class="flex items-center" title="标签邮件">标签邮件</span>
+                              </div>
+                            </span>
+                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" style="height: 12px; width: 12px;">
+                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                            </svg>
+                          </div>
+                          <ul role="menu" class="mm-menu mm-menu--inline" v-show="isLabelOpen">
+                            <!-- 系统标签 Section -->
+                            <li :class="['mm-submenu', isLabelSystemOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem">
+                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;" @click="toggleLabelSystem">
+                                <span class="mm-menu-title">
+                                  <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                    <span class="flex items-center" title="系统标签">系统标签</span>
+                                  </div>
+                                </span>
+                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" style="height: 12px; width: 12px;">
+                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                                </svg>
+                              </div>
+                              <ul role="menu" class="mm-menu mm-menu--inline" v-show="isLabelSystemOpen">
+                                <li v-for="label in systemLabels" :key="label.id" class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_'+label.id }"
+                                    @click="labelClick(label.id)"
+                                >
+                                  <div class="mail-sidebar-menu-item">
+                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': label.color }"></span>
+                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                      <span class="flex items-center" :title="label.name">{{ label.name }}</span>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </li>
+
+                            <!-- 自定义标签 Section -->
+                            <li :class="['mm-submenu', isLabelCustomOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem">
+                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;" @click="toggleLabelCustom">
+                                <span class="mm-menu-title">
+                                  <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                    <span class="flex items-center" title="自定义标签">自定义标签</span>
+                                  </div>
+                                </span>
+                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" style="height: 12px; width: 12px;">
+                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                                </svg>
+                              </div>
+                              <ul role="menu" class="mm-menu mm-menu--inline" v-show="isLabelCustomOpen">
+                                <li v-for="label in customLabels" :key="label.id" class="mm-menu-item mail-sidebar-menu-item"
+                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_'+label.id }"
+                                    @click="labelClick(label.id)">
+                                  <div class="mail-sidebar-menu-item">
+                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': label.color }"></span>
+                                    <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                      <span class="flex items-center" :title="label.name">{{ label.name }}</span>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+
+
+                    <li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                    <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleShowMore">
+                      <!---->
+                      <span class="mm-menu-title">
+                                                            <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                                              <span class="flex items-center" title="显示更多">显示更多</span>
+                                                            </div>
+                        <!---->
+                        <!---->
+                                                          </span>
+                      <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                        <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                      </svg>
+                    </div>
+                    <ul role="menu" class="mm-menu mm-menu--inline" v-show="isShowMoreOpen">
+                      <li class="mm-menu-item mail-sidebar-menu-item"
+                          :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MAIL' }"
+                          @click="deletedMailClick"
+                          role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                        <!---->
+                        <!---->
+                        <div class="mail-sidebar-menu-item">
+                          <!---->
+                          <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                            <span class="flex items-center" title="已删除邮件">已删除邮件</span>
+                          </div>
+                          <!---->
+                          <!---->
+                        </div>
+                      </li>
+                      <li class="mm-menu-item mail-sidebar-menu-item"
+                          :class="{ 'mm-menu-item--active': activeMenuItem === 'SPAM' }"
+                          @click="spamMailClick"
+                          role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                        <!---->
+                        <!---->
+                        <div class="mail-sidebar-menu-item">
+                          <!---->
+                          <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                            <span class="flex items-center" title="垃圾邮件">垃圾邮件</span>
+                          </div>
+                          <!---->
+                          <!---->
+                        </div>
+                      </li>
+                      <li class="mm-menu-item mail-sidebar-menu-item"
+                          :class="{ 'mm-menu-item--active': activeMenuItem === 'TRACK_INFORMATION' }"
+                          @click="traceInformationClick"
+                          role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                        <!---->
+                        <!---->
+                        <div class="mail-sidebar-menu-item">
+                          <!---->
+                          <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                            <span class="flex items-center" title="追踪信息">追踪信息</span>
+                          </div>
+                          <!---->
+                          <!---->
+                        </div>
+                      </li>
+                    </ul>
+                    </li>
+                  </ul>
+            </div>
 </div>
 </nav>
 <span :class="['position-toogle', isLeftPaneVisible ? 'expanding' : 'collapsing']" @click="toggleLeftPane">
@@ -438,6 +507,7 @@ import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
 import {listTaskPull, listTaskSend} from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
+import { listLabel } from "@/api/email/label";
 import { EventBus } from "@/api/email/event-bus";
 
 export default {
@@ -447,6 +517,7 @@ export default {
       sendTaskList: [],
       emailList: [],
       folders: [],
+      labels: [],
       activeMenuItem: null,
       currentLayout: 'email_header',
       isLeftPaneVisible: true,
@@ -460,6 +531,9 @@ export default {
       isOutboxOpen: true,
       isShowMoreOpen: true,
       isFolderOpen: true,
+      isLabelOpen: true,
+      isLabelSystemOpen: true,
+      isLabelCustomOpen: true,
       isDropdownShown: false,
     };
   },
@@ -489,6 +563,12 @@ export default {
     refreshFolderList() {
       listFolder().then((response) => {
         this.folders = response.data;
+      });
+    },
+
+    refreshLabelList() {
+      listLabel().then((response) => {
+        this.labels = response.data;
       });
     },
 
@@ -523,6 +603,12 @@ export default {
     // 文件夹
     folderClick(folderId) {
       const active = 'FOLDER_' + folderId;
+      this.triggerEmailHeaderEvent(active);
+    },
+
+    // 任务发件箱
+    labelClick(labelId) {
+      const active = 'LABEL_' + labelId;
       this.triggerEmailHeaderEvent(active);
     },
 
@@ -586,6 +672,18 @@ export default {
       this.isOutboxOpen = !this.isOutboxOpen;
     },
 
+    toggleLabel() {
+      this.isLabelOpen = !this.isLabelOpen;
+    },
+
+    toggleLabelSystem() {
+      this.isLabelSystemOpen = !this.isLabelSystemOpen;
+    },
+
+    toggleLabelCustom() {
+      this.isLabelCustomOpen = !this.isLabelCustomOpen;
+    },
+
     toggleShowMore() {
       this.isShowMoreOpen = !this.isShowMoreOpen;
     },
@@ -595,11 +693,21 @@ export default {
     }
   },
 
+  computed: {
+    systemLabels() {
+      return this.labels.filter(label => label.type === 1);
+    },
+    customLabels() {
+      return this.labels.filter(label => label.type === 2);
+    }
+  },
+
   mounted() {
     this.allReceivedClick();  // 触发事件
     this.refreshPullEmailList();
     this.refreshSendEmailList();
     this.refreshFolderList();
+    this.refreshLabelList();
 
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';

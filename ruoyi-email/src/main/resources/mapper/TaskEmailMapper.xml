@@ -100,6 +100,13 @@
             WHERE mte.id = mtea.email_id
             )
         </if>
+        <if test="labelId != null">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_label mtel
+            WHERE mte.id = mtel.email_id
+            )
+        </if>
         <if test="type != null">and type = #{type}</if>
         <if test="readFlag != null "> and read_flag = #{readFlag}</if>
         <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
@@ -132,6 +139,13 @@
             SELECT 1
             FROM mailbox_task_email_attachment mtea
             WHERE mte.id = mtea.email_id
+            )
+        </if>
+        <if test="labelId != null">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_label mtel
+            WHERE mte.id = mtel.email_id
             )
         </if>
         <if test="type != null">AND mte.type = #{type}</if>
