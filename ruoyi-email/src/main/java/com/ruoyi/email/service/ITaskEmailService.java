@@ -168,7 +168,7 @@ public interface ITaskEmailService
      * @param folderId
      * @return
      */
-    boolean moveFolder(List<Long> ids, Long folderId);
+    boolean moveEmailToFolder(List<Long> ids, Long folderId);
 
     /**
      * 根据id获取邮件文件
@@ -197,4 +197,12 @@ public interface ITaskEmailService
      * @return
      */
     boolean pending(TaskEmail taskEmail);
+
+    /**
+     * 移动邮件到标签
+     * @param id
+     * @param labelId
+     * @return
+     */
+    boolean moveEmailToLabel(Long id, Long labelId);
 }

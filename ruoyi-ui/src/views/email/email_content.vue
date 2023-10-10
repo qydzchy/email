@@ -974,7 +974,7 @@ import writeEmailLayout from './write_email.vue';
 import emailHeaderLayout from "./email_header.vue";
 import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
-import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveFolder, deleteEmail, exportEmail} from "@/api/email/email";
+import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, deleteEmail, exportEmail} from "@/api/email/email";
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";

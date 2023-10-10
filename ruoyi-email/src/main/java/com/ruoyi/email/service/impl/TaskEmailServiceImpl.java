@@ -64,6 +64,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private ITaskEmailAttachmentService taskEmailAttachmentService;
     @Resource
     private ITaskAttachmentService taskAttachmentService;
+    @Resource
+    private ITaskEmailLabelService taskEmailLabelService;
 
     @Lazy
     @Resource
@@ -580,7 +582,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     @Override
-    public boolean moveFolder(List<Long> ids, Long folderId) {
+    public boolean moveEmailToFolder(List<Long> ids, Long folderId) {
         return taskEmailMapper.batchUpdateFolderId(ids, folderId);
     }
 
@@ -649,6 +651,29 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         dbTaskEmail.setUpdateId(userId);
         dbTaskEmail.setUpdateBy(username);
         taskEmailMapper.updateTaskEmail(dbTaskEmail);
+        return true;
+    }
+
+    @Override
+    public boolean moveEmailToLabel(Long id, Long labelId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        // 删除该记录
+        taskEmailLabelService.deleteByEmailIdAndLabelId(id, labelId, userId);
+
+        Date now = new Date();
+        TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
+        taskEmailLabel.setEmailId(id);
+        taskEmailLabel.setLabelId(labelId);
+        taskEmailLabel.setCreateId(userId);
+        taskEmailLabel.setCreateBy(username);
+        taskEmailLabel.setCreateTime(now);
+        taskEmailLabel.setUpdateId(userId);
+        taskEmailLabel.setUpdateBy(username);
+        taskEmailLabel.setUpdateTime(now);
+        taskEmailLabelService.insertTaskEmailLabel(taskEmailLabel);
         return true;
     }
 

@@ -74,10 +74,19 @@ export function pendingEmail(data) {
   })
 }
 
-// 移动文件夹
-export function moveFolder(data) {
+// 移动邮件到文件夹
+export function moveEmailToFolder(data) {
   return request({
-    url: '/email/info/move/folder',
+    url: '/email/info/move/email/to/folder',
+    method: 'post',
+    data: data
+  })
+}
+
+// 移动邮件到标签
+export function moveEmailToLabel(data) {
+  return request({
+    url: '/email/info/move/email/to/label',
     method: 'post',
     data: data
   })

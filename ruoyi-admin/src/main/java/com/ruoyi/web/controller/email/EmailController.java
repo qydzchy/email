@@ -8,13 +8,8 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.TaskEmail;
-import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
-import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
-import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
-import com.ruoyi.email.domain.vo.email.EmailFolderMoveDTO;
+import com.ruoyi.email.domain.dto.email.*;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
-import com.ruoyi.email.domain.vo.email.EmailReadFlagBatchUpdateDTO;
-import com.ruoyi.email.domain.vo.email.EmailSpamFlagBatchUpdateDTO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -183,14 +178,25 @@ public class EmailController extends BaseController {
     }
 
     /**
-     * 移动文件夹
+     * 移动邮件到文件夹
      */
     @PreAuthorize("@ss.hasPermi('email:move:folder')")
-    @Log(title = "移动文件夹", businessType = BusinessType.UPDATE)
-    @PostMapping("/move/folder")
-    public AjaxResult moveFolder(@RequestBody EmailFolderMoveDTO emailFolderMoveDTO)
+    @Log(title = "移动邮件到文件夹", businessType = BusinessType.UPDATE)
+    @PostMapping("/move/email/to/folder")
+    public AjaxResult moveEmailToFolder(@RequestBody EmailFolderMoveDTO emailFolderMoveDTO)
     {
-        return toAjax(taskEmailService.moveFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
+        return toAjax(taskEmailService.moveEmailToFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
+    }
+
+    /**
+     * 移动邮件到标签
+     */
+    @PreAuthorize("@ss.hasPermi('email:move:folder')")
+    @Log(title = "移动邮件到标签", businessType = BusinessType.UPDATE)
+    @PostMapping("/move/email/to/label")
+    public AjaxResult moveEmailToLabel(@RequestBody EmailLabelMoveDTO emailLabelMoveDTO)
+    {
+        return toAjax(taskEmailService.moveEmailToLabel(emailLabelMoveDTO.getId(), emailLabelMoveDTO.getLabelId()));
     }
 
     /**

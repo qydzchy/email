@@ -1,4 +1,4 @@
-package com.ruoyi.email.domain.vo.email;
+package com.ruoyi.email.domain.dto.email;
 
 import lombok.Data;
 

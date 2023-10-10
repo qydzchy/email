@@ -64,7 +64,7 @@
                                     </span>
                                   </span>
                                 </span>
-                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
+                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="removeEmailToLabel">
                                   <span class="mm-tooltip-trigger">
                                     <span>
                                       <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
@@ -510,6 +510,11 @@
 													</div>
 												</span>
     </div>
+
+    <div class="mail-drop-menu-wrapper" style="width: 220px; top: 26px; left: 158px;">
+      <emailHeaderLabelLayout></emailHeaderLabelLayout>
+    </div>
+
   </div>
 </template>
 <style lang="scss">
@@ -539,9 +544,16 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
-import {list, fixedEmail, readEmail, spamEmail, moveFolder, deleteEmail} from "@/api/email/email";
-import emailContentLayout from "@/views/email/email_content.vue";
-import {renameAttachment} from "@/api/email/attachment";
+import {
+  list,
+  fixedEmail,
+  readEmail,
+  spamEmail,
+  moveEmailToFolder,
+  moveEmailToLabel,
+  deleteEmail,
+} from "@/api/email/email";
+import emailHeaderLabelLayout from './email_header_label.vue';
 
 export default {
   data() {
@@ -575,6 +587,9 @@ export default {
       attachmentFlag: false,
       emailSlideStatus: {},
     }
+  },
+  components: {
+    emailHeaderLabelLayout
   },
   props: {
     emailList: Array
@@ -941,6 +956,11 @@ export default {
           throw error;
         }
       }
+    },
+
+    // 移动邮件到标签
+    async removeEmailToLabel() {
+
     },
 
     toggleEmailSelection() {
