@@ -308,7 +308,7 @@
 																							</span>
                                               <!---->
 																						</span>
-																						<span class="mm-tooltip mail-toolbar-btn-item">
+																						<span class="mm-tooltip mail-toolbar-btn-item" @click="handleLabel">
 																							<span class="mm-tooltip-trigger">
 																								<span>
 																									<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -947,6 +947,9 @@
       </div>
     </div>
 
+    <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 26px; left: 158px;">
+      <emailHeaderLabelLayout @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
+    </div>
   </div>
 </template>
 <style lang="scss">
@@ -974,10 +977,11 @@ import writeEmailLayout from './write_email.vue';
 import emailHeaderLayout from "./email_header.vue";
 import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
-import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, deleteEmail, exportEmail} from "@/api/email/email";
+import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail} from "@/api/email/email";
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";
+import emailHeaderLabelLayout from './email_header_label.vue';
 
 export default {
   data() {
@@ -1003,6 +1007,7 @@ export default {
       currentEmailType: '',
       showPendingTime: false,
       showCustomTime: false,
+      showLabel: false,
       pendingTime: null,
       menuItems: [
         '标为未读',
@@ -1014,7 +1019,7 @@ export default {
     }
   },
   components: {
-    PendingTimePopover, CustomTimePopover, FolderComponent,
+    PendingTimePopover, CustomTimePopover, FolderComponent, emailHeaderLabelLayout,
     'email_header': emailHeaderLayout,
     'write_email': writeEmailLayout,
     'email_content_detail_info': emailContentDetailInfoLayout
@@ -1236,8 +1241,16 @@ export default {
       this.showCustomTime = false;
     },
 
+    handleLabel() {
+      this.showLabel = !this.showLabel;
+    },
+
     handleSelectedTime(time) {
       this.pendingEmail(this.currentEmailDetail, true, time);
+    },
+
+    handleSelectedLabel(labelId) {
+      this.moveEmailToLabel(this.currentEmailDetail, labelId);
     },
 
     // 删除邮件
@@ -1344,6 +1357,24 @@ export default {
         }
       } catch (error) {
         console.error('标记为已读出现错误:', error);
+        throw error;
+      }
+    },
+
+    // 移动邮件到标签
+    async moveEmailToLabel(email, labelId) {
+      const data = {
+        "id": email.id,
+        "labelId": labelId
+      };
+      try {
+        const response = await moveEmailToLabel(data);
+        if (response.code === 200) {
+          this.showLabel = false;
+          return;
+        }
+      } catch (error) {
+        console.error('操作失败:', error);
         throw error;
       }
     },

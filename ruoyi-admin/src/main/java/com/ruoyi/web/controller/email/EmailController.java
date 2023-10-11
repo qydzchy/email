@@ -191,7 +191,7 @@ public class EmailController extends BaseController {
     /**
      * 移动邮件到标签
      */
-    @PreAuthorize("@ss.hasPermi('email:move:folder')")
+    @PreAuthorize("@ss.hasPermi('email:move:label')")
     @Log(title = "移动邮件到标签", businessType = BusinessType.UPDATE)
     @PostMapping("/move/email/to/label")
     public AjaxResult moveEmailToLabel(@RequestBody EmailLabelMoveDTO emailLabelMoveDTO)
@@ -224,6 +224,7 @@ public class EmailController extends BaseController {
      * 邮件导出
      */
     @PreAuthorize("@ss.hasPermi('email:export')")
+    @Log(title = "邮件导出", businessType = BusinessType.EXPORT)
     @GetMapping("/export/{id}")
     public ResponseEntity<org.springframework.core.io.Resource> export(@PathVariable Long id) {
         // 获取邮件路径
@@ -255,8 +256,13 @@ public class EmailController extends BaseController {
                 .body(resource);
     }
 
+    /**
+     * 上传邮件附件
+     * @param taskEmail
+     * @return
+     */
     @PreAuthorize("@ss.hasPermi('email:attachment:upload')")
-    @Log(title = "上传邮件文件附件", businessType = BusinessType.INSERT)
+    @Log(title = "上传邮件附件", businessType = BusinessType.INSERT)
     @PostMapping("/upload/attachment")
     public AjaxResult uploadAttachment(@RequestBody TaskEmail taskEmail) {
         if (taskEmail.getId() == null) {
@@ -266,8 +272,14 @@ public class EmailController extends BaseController {
         return AjaxResult.success(taskEmailService.uploadAttachment(taskEmail.getId()));
     }
 
+    /**
+     * 下载邮件附件
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @PreAuthorize("@ss.hasPermi('email:attachment:download')")
-    @Log(title = "附件下载", businessType = BusinessType.EXPORT)
+    @Log(title = "下载邮件附件", businessType = BusinessType.EXPORT)
     @GetMapping("/attachment/download/{id}")
     public ResponseEntity<byte[]> attachmentDownload(@PathVariable("id") Long id) throws IOException {
         if (id == null) {

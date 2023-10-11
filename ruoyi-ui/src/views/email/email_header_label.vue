@@ -21,7 +21,7 @@
 					</span>
         </div>
         <div aria-expanded="true" class="mm-tree-node-children" role="group">
-          <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="0">
+          <div v-for="label in systemLabels" :key="label.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="0">
             <div class="mm-tree-node-content" style="padding-left: 18px;">
 							<span class="mm-tree-node-expand-icon-wrapper">
 								<span class="is-leaf mm-tree-node-caret-right"></span>
@@ -31,7 +31,7 @@
               <span class="mm-tree-node-label-wrap">
 								<span class="tree-menu-item">
 									<!---->
-									<span class="ellipsis">开发信</span>
+									<span class="ellipsis">{{ label.name }}</span>
 								</span>
 							</span>
             </div>
@@ -56,7 +56,7 @@
 					</span>
         </div>
         <div aria-expanded="true" class="mm-tree-node-children" role="group">
-          <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+          <div v-for="label in customLabels" :key="label.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
             <div class="mm-tree-node-content" style="padding-left: 18px;">
 							<span class="mm-tree-node-expand-icon-wrapper">
 								<span class="is-leaf mm-tree-node-caret-right"></span>
@@ -67,7 +67,7 @@
 								<span class="tree-menu-item">
 									<!---->
 									<span class="ellipsis">
-										<i class="mail-drop-menu-left-icon" style="background-color: #ACACAC"></i>价格
+										<i class="mail-drop-menu-left-icon" :style="{ 'background-color': label.color }"></i>{{ label.name }}
 									</span>
 								</span>
 							</span>
@@ -82,4 +82,32 @@
   </div>
 </template>
 <script>
+import {listLabel} from "@/api/email/label";
+
+export default {
+  data() {
+    return {
+      labels: []
+    }
+  },
+  methods: {
+    refreshLabelList() {
+      listLabel().then((response) => {
+        this.labels = response.data;
+      });
+    },
+  },
+  computed: {
+    systemLabels() {
+      return this.labels.filter(label => label.type === 1);
+    },
+    customLabels() {
+      return this.labels.filter(label => label.type === 2);
+    }
+  },
+
+  created() {
+    this.refreshLabelList();
+  }
+}
 </script>

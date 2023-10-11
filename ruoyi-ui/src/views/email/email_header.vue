@@ -510,11 +510,6 @@
 													</div>
 												</span>
     </div>
-
-    <div class="mail-drop-menu-wrapper" style="width: 220px; top: 26px; left: 158px;">
-      <emailHeaderLabelLayout></emailHeaderLabelLayout>
-    </div>
-
   </div>
 </template>
 <style lang="scss">
@@ -549,11 +544,8 @@ import {
   fixedEmail,
   readEmail,
   spamEmail,
-  moveEmailToFolder,
-  moveEmailToLabel,
   deleteEmail,
 } from "@/api/email/email";
-import emailHeaderLabelLayout from './email_header_label.vue';
 
 export default {
   data() {
@@ -587,9 +579,6 @@ export default {
       attachmentFlag: false,
       emailSlideStatus: {},
     }
-  },
-  components: {
-    emailHeaderLabelLayout
   },
   props: {
     emailList: Array
