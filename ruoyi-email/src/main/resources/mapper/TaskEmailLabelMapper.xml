@@ -43,6 +43,7 @@
             <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
         </trim>
@@ -50,8 +51,10 @@
             <if test="emailId != null">#{emailId},</if>
             <if test="labelId != null">#{labelId},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
         </trim>
@@ -85,6 +88,6 @@
     </delete>
 
     <update id="deleteByEmailIdAndLabelId">
-        update mailbox_task_email_label set del_flag = 1 where email_id = #{emailId} and label_id = #{labelId} and create_id = #{createId}
+        update mailbox_task_email_label set del_flag = '2' where email_id = #{emailId} and label_id = #{labelId} and create_id = #{createId}
     </update>
 </mapper>

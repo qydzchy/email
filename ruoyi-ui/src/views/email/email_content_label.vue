@@ -22,7 +22,7 @@
         </div>
         <div aria-expanded="true" class="mm-tree-node-children" role="group">
           <div v-for="label in systemLabels" :key="label.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="0">
-            <div class="mm-tree-node-content" style="padding-left: 18px;">
+            <div class="mm-tree-node-content" style="padding-left: 18px;" @click="emitLabelId(label)">
 							<span class="mm-tree-node-expand-icon-wrapper">
 								<span class="is-leaf mm-tree-node-caret-right"></span>
 							</span>
@@ -57,7 +57,7 @@
         </div>
         <div aria-expanded="true" class="mm-tree-node-children" role="group">
           <div v-for="label in customLabels" :key="label.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-            <div class="mm-tree-node-content" style="padding-left: 18px;">
+            <div class="mm-tree-node-content" style="padding-left: 18px;" @click="emitLabelId(label)">
 							<span class="mm-tree-node-expand-icon-wrapper">
 								<span class="is-leaf mm-tree-node-caret-right"></span>
 							</span>
@@ -67,7 +67,7 @@
 								<span class="tree-menu-item">
 									<!---->
 									<span class="ellipsis">
-										<i class="mail-drop-menu-left-icon" :style="{ 'background-color': label.color }"></i>{{ label.name }}
+										<i class="mail-drop-menu-left-icon" :style="{ 'background-color': `rgb(${label.color})` }"></i>{{ label.name }}
 									</span>
 								</span>
 							</span>
@@ -82,20 +82,18 @@
   </div>
 </template>
 <script>
-import {listLabel} from "@/api/email/label";
 
 export default {
-  data() {
-    return {
-      labels: []
+  props: {
+    labels: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
-    refreshLabelList() {
-      listLabel().then((response) => {
-        this.labels = response.data;
-      });
-    },
+    emitLabelId(label) {
+      this.$emit('label-selected', label);
+    }
   },
   computed: {
     systemLabels() {
@@ -104,10 +102,6 @@ export default {
     customLabels() {
       return this.labels.filter(label => label.type === 2);
     }
-  },
-
-  created() {
-    this.refreshLabelList();
   }
 }
 </script>

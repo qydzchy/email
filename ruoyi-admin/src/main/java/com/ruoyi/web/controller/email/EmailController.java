@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -183,7 +184,7 @@ public class EmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('email:move:folder')")
     @Log(title = "移动邮件到文件夹", businessType = BusinessType.UPDATE)
     @PostMapping("/move/email/to/folder")
-    public AjaxResult moveEmailToFolder(@RequestBody EmailFolderMoveDTO emailFolderMoveDTO)
+    public AjaxResult moveEmailToFolder(@RequestBody @Valid EmailFolderMoveDTO emailFolderMoveDTO)
     {
         return toAjax(taskEmailService.moveEmailToFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
     }
@@ -194,7 +195,7 @@ public class EmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('email:move:label')")
     @Log(title = "移动邮件到标签", businessType = BusinessType.UPDATE)
     @PostMapping("/move/email/to/label")
-    public AjaxResult moveEmailToLabel(@RequestBody EmailLabelMoveDTO emailLabelMoveDTO)
+    public AjaxResult moveEmailToLabel(@RequestBody @Valid EmailLabelMoveDTO emailLabelMoveDTO)
     {
         return toAjax(taskEmailService.moveEmailToLabel(emailLabelMoveDTO.getId(), emailLabelMoveDTO.getLabelId()));
     }
@@ -326,5 +327,17 @@ public class EmailController extends BaseController {
         byte[] zipContent = Files.readAllBytes(zipFile.toPath());  // 使用Files工具类读取文件内容
 
         return ResponseEntity.ok().headers(headers).body(zipContent);
+    }
+
+    /**
+     * 删除邮件标签
+     * @param dto
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:delete:label')")
+    @Log(title = "删除邮件标签", businessType = BusinessType.DELETE)
+    @PostMapping("/delete/label")
+    public AjaxResult deleteLabel(@RequestBody @Valid EmailLabelDeleteDTO dto) {
+        return AjaxResult.success(taskEmailService.deleteLabel(dto.getEmailId(), dto.getLabelId()));
     }
 }

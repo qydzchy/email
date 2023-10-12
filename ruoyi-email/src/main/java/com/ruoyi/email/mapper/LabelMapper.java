@@ -3,6 +3,7 @@ package com.ruoyi.email.mapper;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.Label;
+import com.ruoyi.email.domain.bo.EmailLabelBO;
 import com.ruoyi.email.domain.vo.label.LabelListVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -94,4 +95,11 @@ public interface LabelMapper
      * @param createId
      */
     void deleteById(@Param("id") Long id, @Param("createId") Long createId, @Param("updateTime") Date nowDate);
+
+    /**
+     * 查询标签
+     * @param emailIds
+     * @return
+     */
+    List<EmailLabelBO> listByEmailIds(@Param("emailIds") List<Long> emailIds);
 }

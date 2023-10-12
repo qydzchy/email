@@ -199,6 +199,17 @@
 																															</div>
 																														</div>
 																													</div>
+                                                          <ul class="mail-list-item-tag-wrapper open">
+                                                            <li v-for="label in email.emailLabelList" :key="label.id" class="tag-wrapper system-tag" :style="{background: `rgba(${label.color},0.2)`, color: `rgb(${label.color})`}">
+                                                              <a href="/pro/mail/tag?tag_id=19" class="ellipsis">
+                                                                <span class="ai-stamp-container">
+                                                                  <!---->
+                                                                  <span class="ellipsis tag-name-text">{{ label.name }}</span>
+                                                                </span>
+                                                              </a>
+                                                              <!---->
+                                                            </li>
+                                                          </ul>
 																													<div class="attachment-list-container" style="display: none;">
 																														<!---->
 																													</div>
@@ -947,8 +958,8 @@
       </div>
     </div>
 
-    <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 26px; left: 158px;">
-      <emailHeaderLabelLayout @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
+    <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 500px;">
+      <emailHeaderLabelLayout :labels="labels" @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
     </div>
   </div>
 </template>
@@ -981,7 +992,8 @@ import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEm
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";
-import emailHeaderLabelLayout from './email_header_label.vue';
+import emailHeaderLabelLayout from './email_content_label.vue';
+import {listLabel} from "@/api/email/label";
 
 export default {
   data() {
@@ -1042,6 +1054,10 @@ export default {
     emailType: {
       type: String,
       default: ''
+    },
+    labels: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -1064,6 +1080,7 @@ export default {
     this.total = this.emailTotal;
     this.taskId = this.selectedTaskId;
     this.currentEmailType = this.emailType;
+    this.refreshLabelList();
   },
 
   watch: {
@@ -1249,8 +1266,13 @@ export default {
       this.pendingEmail(this.currentEmailDetail, true, time);
     },
 
-    handleSelectedLabel(labelId) {
-      this.moveEmailToLabel(this.currentEmailDetail, labelId);
+    handleSelectedLabel(label) {
+      const isLabelAlreadyPresent = this.currentEmailDetail.emailLabelList.some(existingLabel => existingLabel.id === label.id);
+      if (!isLabelAlreadyPresent) {
+        this.moveEmailToLabel(this.currentEmailDetail, label);
+      } else {
+        this.showLabel = false;
+      }
     },
 
     // 删除邮件
@@ -1362,16 +1384,18 @@ export default {
     },
 
     // 移动邮件到标签
-    async moveEmailToLabel(email, labelId) {
+    async moveEmailToLabel(email, label) {
       const data = {
         "id": email.id,
-        "labelId": labelId
+        "labelId": label.id
       };
       try {
         const response = await moveEmailToLabel(data);
         if (response.code === 200) {
           this.showLabel = false;
-          return;
+          if (this.currentEmailDetail && this.currentEmailDetail.id === email.id) {
+             this.currentEmailDetail.emailLabelList.push(label);
+          }
         }
       } catch (error) {
         console.error('操作失败:', error);
@@ -1482,6 +1506,12 @@ export default {
             console.warn("Unknown menu item");
         }
       }
+    },
+
+    refreshLabelList() {
+      listLabel().then((response) => {
+        this.labels = response.data;
+      });
     },
   }
 }

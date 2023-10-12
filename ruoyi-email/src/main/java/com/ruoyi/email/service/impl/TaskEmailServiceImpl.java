@@ -24,6 +24,7 @@ import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
+import com.ruoyi.email.domain.bo.EmailLabelBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
@@ -66,6 +67,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private ITaskAttachmentService taskAttachmentService;
     @Resource
     private ITaskEmailLabelService taskEmailLabelService;
+    @Resource
+    private ILabelService labelService;
 
     @Lazy
     @Resource
@@ -181,9 +184,16 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         }
 
         List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
+        // 查询邮件附件信息
         List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
         if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
         Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+
+        // 查询邮件标签信息
+        List<EmailLabelBO> emailLabelBOList = labelService.listByEmailIds(ids);
+        if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
+        Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
+
 
         emailListVOList.stream().forEach(emailListVO -> {
             Long id = emailListVO.getId();
@@ -192,6 +202,13 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 emailListVO.setEmailAttachmentList(emailAttachmentGroupList);
             } else {
                 emailListVO.setEmailAttachmentList(Collections.emptyList());
+            }
+
+            if (labelGroupMap.containsKey(id)) {
+                List<EmailLabelBO> emailLabelGroupList = labelGroupMap.get(id);
+                emailListVO.setEmailLabelList(emailLabelGroupList);
+            } else {
+                emailListVO.setEmailLabelList(Collections.emptyList());
             }
         });
 
@@ -674,6 +691,15 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmailLabel.setUpdateBy(username);
         taskEmailLabel.setUpdateTime(now);
         taskEmailLabelService.insertTaskEmailLabel(taskEmailLabel);
+        return true;
+    }
+
+    @Override
+    public boolean deleteLabel(Long emailId, Long labelId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        taskEmailLabelService.deleteByEmailIdAndLabelId(emailId, labelId, userId);
         return true;
     }
 

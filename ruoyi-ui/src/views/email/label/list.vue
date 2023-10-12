@@ -38,10 +38,10 @@
                 <a class="e-move">
                   <span class="m-icon icon-move-btn"></span>
                 </a>
-                <div class="mm-dropdown color-picker-dropdown-wrap" @click="labelColorBtn(index)">
+                <div class="mm-dropdown color-picker-dropdown-wrap" @click="labelColorBtn(index, label.color)">
                   <div class="mm-dropdown-trigger">
                     <div class="color-picker-display">
-                      <i class="color-block" :style="{background: label.color}"></i>
+                      <i class="color-block" :style="{background: `rgb(${label.color})`}"></i>
                       <svg class="mm-icon mm-icon-switch" viewBox="0 0 24 24" name="switch" fill="currentColor" style="height: 12px; width: 12px;">
                         <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.3.8-.3 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                       </svg>
@@ -49,7 +49,7 @@
                   </div>
                   <!---->
                 </div>
-                <span v-if="editingLabelId !== label.id" title="label.name" class="tag-name ellipsis" :style="{background: `${label.color}20`, color: label.color}">
+                <span v-if="editingLabelId !== label.id" title="label.name" class="tag-name ellipsis" :style="{background: `rgba(${label.color},0.2)`, color: `rgb(${label.color})`}">
                   {{ label.name }}
                 </span>
 
@@ -89,7 +89,7 @@
       x-placement="bottom-start"
       :style="computeStyle(selectedLabelIndex)"
     >
-      <labelColorTemplate @color-selected="updateColor"></labelColorTemplate>
+      <labelColorTemplate :initialColor="initialColor" @color-selected="updateColor"></labelColorTemplate>
     </div>
   </div>
 </template>
@@ -113,7 +113,8 @@ export default {
       editingLabelId: null,
       name: '',
       labelColorPage: false,
-      selectedLabelIndex: 0
+      selectedLabelIndex: 0,
+      initialColor: '97, 188, 129',
     };
   },
   methods: {
@@ -157,6 +158,7 @@ export default {
           this.$message.success("编辑成功");
           label.name = this.name;
           this.editingLabelId = null;
+          EventBus.$emit('refresh-index-label-list');
         } else {
           this.$message.error("编辑失败");
         }
@@ -178,6 +180,7 @@ export default {
         if (response.code === 200) {
           this.$message.success("删除成功");
           this.refreshLabelList();
+          EventBus.$emit('refresh-index-label-list');
         } else {
           this.$message.error("删除失败");
         }
@@ -206,6 +209,7 @@ export default {
         this.labelColorPage = false;
         return;
       }
+
       const data = {
         'id': label.id,
         "color": color
@@ -216,6 +220,7 @@ export default {
         if (response.code === 200) {
           this.$message.success("编辑成功");
           this.refreshLabelList();
+          EventBus.$emit('refresh-index-label-list');
         } else {
           this.$message.error("编辑失败");
         }
@@ -224,8 +229,9 @@ export default {
       }
     },
 
-    labelColorBtn(index) {
-      this.selectedLabelIndex = index;  // 存储当前标签的索引
+    labelColorBtn(index, labelColor) {
+      this.initialColor = labelColor;
+      this.selectedLabelIndex = index;
       this.labelColorPage = !this.labelColorPage;
     },
   },

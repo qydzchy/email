@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Label;
+import com.ruoyi.email.domain.bo.EmailLabelBO;
 import com.ruoyi.email.domain.vo.label.LabelListVO;
 
 /**
@@ -88,4 +89,11 @@ public interface ILabelService
      * @return
      */
     boolean delete(Long id);
+
+    /**
+     * 根据邮件id查询标签
+     * @param emailIds
+     * @return
+     */
+    List<EmailLabelBO> listByEmailIds(List<Long> emailIds);
 }

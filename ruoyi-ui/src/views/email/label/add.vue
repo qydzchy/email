@@ -20,7 +20,7 @@
                     <div class="mm-dropdown color-picker-dropdown-wrap">
                       <div class="mm-dropdown-trigger" @click="labelColorBtn">
                         <div class="color-picker-display">
-                          <i class="color-block" :style="{ background: selectedColor || 'rgb(97, 188, 129)' }"></i>
+                          <i class="color-block" :style="{ background: `rgb(${selectedColor})` || 'rgb(97, 188, 129)' }"></i>
                           <svg class="mm-icon mm-icon-switch" viewBox="0 0 24 24" name="switch" style="height: 12px; width: 12px;">
                             <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.3.8-.3 1.1 0l1 1c.2.3.2.7 0 1z"></path>
                           </svg>
@@ -81,7 +81,7 @@ export default {
     return {
       addLabelPage: false,
       labelColorPage: false,
-      selectedColor: 'rgb(97, 188, 129)',
+      selectedColor: '97, 188, 129',
       name: ''
     }
   },
@@ -94,7 +94,7 @@ export default {
     close() {
       this.addLabelPage = false;
       this.labelColorPage = false;
-      this.selectedColor = 'rgb(97, 188, 129)';
+      this.selectedColor = '97, 188, 129';
       this.name = '';
     },
 
@@ -131,6 +131,7 @@ export default {
           this.close();
           // 刷新列表
           EventBus.$emit('refresh-label-list');
+          EventBus.$emit('refresh-index-label-list');
         } else {
           this.$message.error("新增失败");
         }

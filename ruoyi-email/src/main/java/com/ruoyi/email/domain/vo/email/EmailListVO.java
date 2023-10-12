@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
+import com.ruoyi.email.domain.bo.EmailLabelBO;
 import lombok.Data;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -107,6 +108,11 @@ public class EmailListVO {
      * 附件
      */
     private List<EmailAttachmentBO> emailAttachmentList;
+
+    /**
+     * 标签
+     */
+    private List<EmailLabelBO> emailLabelList;
 
     /**
      *

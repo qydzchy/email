@@ -416,6 +416,19 @@
 																												</div>
 																											</div>
 
+                                                      <!--标签-->
+                                                      <ul class="mail-list-item-tag-wrapper">
+                                                          <li v-for="label in email.emailLabelList" :key="label.id" class="tag-wrapper system-tag" :style="{background: `rgba(${label.color},0.2)`, color: `rgb(${label.color})`}">
+                                                            <a class="ellipsis">
+                                                              <span class="ai-stamp-container">
+                                                                <!---->
+                                                                <span class="ellipsis tag-name-text">{{ label.name }}</span>
+                                                              </span>
+                                                            </a>
+                                                            <!---->
+                                                          </li>
+                                                      </ul>
+
                                                       <div class="attachment-list-container" v-if="email.emailAttachmentList && email.emailAttachmentList.length > 0">
                                                           <div class="mail-attachment-list-container">
                                                             <button class="slide-page-btn left"
@@ -581,7 +594,7 @@ export default {
     }
   },
   props: {
-    emailList: Array
+    emailList: Array,
   },
   computed: {
     totalPages() {

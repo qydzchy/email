@@ -2,11 +2,25 @@
   <div id="mailDetailScrollContainer" class="scroll-container" data-v-155e8e5c="">
     <div class="components-container">
       <div class="mail-detail-info-wrapper">
-        <div class="state-row">
-          <div class="state-row--icon__wrapper"></div>
+
+        <div class="state-row" data-v-155e8e5c="">
+          <div class="state-row--icon__wrapper" data-v-155e8e5c=""></div>
           <!---->
-          <div class="mail-plus-tag-list state-row--tag" style="display: none;"></div>
+          <div class="mail-plus-tag-list state-row--tag" data-v-155e8e5c="">
+            <span v-for="label in currentEmailDetail.emailLabelList" :key="label.id" class="tag-wrapper" :style="{background: `rgba(${label.color},0.2)`, color: `rgb(${label.color})`}">
+              <span class="ai-stamp-container">
+                <!---->
+                <a class="ellipsis">{{ label.name }}</a>
+                <span class="okki-icon-wrap delete-tag-icon">​
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor" @click="deleteEmailLabel(label)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.626 5.201c-.346-.345-.31-.942.081-1.332.39-.391.987-.427 1.333-.082l6.96 6.96 6.96-6.96c.346-.345.942-.309 1.333.082.39.39.427.987.082 1.332l-6.96 6.96 6.637 6.638c.346.346.31.942-.081 1.333-.391.39-.988.427-1.333.082L12 13.576l-6.638 6.638c-.345.345-.942.309-1.333-.082-.39-.39-.427-.987-.081-1.333l6.638-6.637-6.96-6.96z"></path>
+                  </svg>
+                </span>
+              </span>
+            </span>
+          </div>
         </div>
+
         <div class="mail-detail--info" v-if="!showDetailInfo">
           <div class="mail-info--sender">
 																										<span class="mm-tooltip all-type-avatar-wrapper client-stranger small">
@@ -140,6 +154,7 @@
 </template>
 <script>
 import emailContentDetailAttachmentLayout from './email_content_detail_attachment.vue';
+import {deleteEmailLabel} from "@/api/email/email";
 export default {
   data() {
     return {
@@ -151,12 +166,33 @@ export default {
     'email_content_detail_attachment': emailContentDetailAttachmentLayout
   },
 
-  props: ['currentEmailDetail'],
+  props: {
+    currentEmailDetail: {
+      type: Object,
+      default: () => {}
+    },
+  },
 
   methods: {
     toggleDetailInfo() {
       this.showDetailInfo = !this.showDetailInfo;
     },
+
+    deleteEmailLabel(label) {
+      const params = {
+        emailId: this.currentEmailDetail.id,
+        labelId: label.id,
+      };
+      deleteEmailLabel(params).then(res => {
+        if (res.code === 200) {
+          // 删除标签后在currentEmailDetail移除该标签
+          const index = this.currentEmailDetail.emailLabelList.findIndex(item => item.id === label.id);
+          this.currentEmailDetail.emailLabelList.splice(index, 1);
+        } else {
+          this.$message.error(res.message);
+        }
+      });
+    }
   },
 }
 

@@ -321,7 +321,7 @@
                                     @click="labelClick(label.id)"
                                 >
                                   <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': label.color }"></span>
+                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': `rgb(${label.color})` }"></span>
                                     <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                       <span class="flex items-center" :title="label.name">{{ label.name }}</span>
                                     </div>
@@ -347,7 +347,7 @@
                                     :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_'+label.id }"
                                     @click="labelClick(label.id)">
                                   <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': label.color }"></span>
+                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': `rgb(${label.color})` }"></span>
                                     <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                       <span class="flex items-center" :title="label.name">{{ label.name }}</span>
                                     </div>
@@ -357,7 +357,6 @@
                             </li>
                           </ul>
                         </li>
-
 
                     <li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                     <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleShowMore">
@@ -660,7 +659,7 @@ export default {
       this.setActive(emailType);
       this.switchLayout('email_header');
       this.$nextTick(()=>{
-        EventBus.$emit('email-header', emailType, currentPage);
+        EventBus.$emit('email-header', emailType, currentPage, this.labels);
       })
     },
 
@@ -730,6 +729,10 @@ export default {
     EventBus.$on('refresh-index-task-list', () => {
       this.refreshPullEmailList();
       this.refreshSendEmailList();
+    });
+
+    EventBus.$on('refresh-index-label-list', () => {
+      this.refreshLabelList();
     });
 
     EventBus.$on('refresh-index-folder-list', () => {

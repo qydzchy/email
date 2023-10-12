@@ -205,4 +205,12 @@ public interface ITaskEmailService
      * @return
      */
     boolean moveEmailToLabel(Long id, Long labelId);
+
+    /**
+     * 删除邮件标签
+     * @param emailId
+     * @param labelId
+     * @return
+     */
+    boolean deleteLabel(Long emailId, Long labelId);
 }

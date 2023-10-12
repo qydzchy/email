@@ -42,6 +42,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, name, color, type from mailbox_label where create_id = #{createId} and del_flag = '0' order by type asc, create_time desc
     </select>
 
+    <select id="listByEmailIds" resultType="com.ruoyi.email.domain.bo.EmailLabelBO">
+        select ml.id, mtel.email_id as emailId, ml.name, ml.color from mailbox_label ml
+        left join mailbox_task_email_label mtel on mtel.label_id = ml.id
+        where mtel.email_id in
+        <foreach item="emailId" collection="emailIds" open="(" separator="," close=")">
+            #{emailId}
+        </foreach>
+        and ml.del_flag = '0'
+        group by ml.id, mtel.email_id, ml.name, ml.color
+    </select>
+
     <insert id="insertLabel" parameterType="Label" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_label
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -92,6 +92,15 @@ export function moveEmailToLabel(data) {
   })
 }
 
+// 删除邮件标签
+export function deleteEmailLabel(data) {
+  return request({
+    url: '/email/info/delete/label',
+    method: 'post',
+    data: data
+  })
+}
+
 // 删除邮件
 export function deleteEmail(data) {
   return request({
