@@ -681,11 +681,11 @@ export default {
     `;
 
       if (this.selectedEmail.receiver) {
-        emailContent += `<div>${this.formatEmailRecipients('To', this.parseEmailString(this.selectedEmail.receiver))}</div>`;
+        emailContent += `<div><b>To: </b>&nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.receiver))}</div>`;
       }
 
       if (this.selectedEmail.cc) {
-        emailContent += `<div>${this.formatEmailRecipients('Cc', this.parseEmailString(this.selectedEmail.cc))}</div>`;
+        emailContent += `<div><b>Cc: </b>&nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.cc))}</div>`;
       }
 
       if (this.selectedEmail.title) {
@@ -696,9 +696,9 @@ export default {
       return emailContent;
     },
 
-    formatEmailRecipients(label, emails) {
+    formatEmailRecipients(emails) {
       return emails.map(email => `
-      <b>${label}: </b>&nbsp;<a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>
+      <a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>
     `).join('; ');
     },
 
