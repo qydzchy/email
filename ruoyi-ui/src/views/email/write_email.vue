@@ -698,7 +698,6 @@ export default {
 
     formatEmailRecipients(emails) {
       return emails.map(email => `<a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>`).join('; ');
-
     },
 
     parseEmailString(emailString) {
