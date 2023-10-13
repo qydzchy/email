@@ -676,8 +676,8 @@ export default {
     formattedEmailContent() {
       let emailContent = `
       <div style="font-size: 12px;background:#efefef;padding:8px;">
-        <div>From: &nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
-        <div>Send time: ${this.formatDate(this.selectedEmail.sendDate)}</div>
+        <div><b>From: </b>&nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
+        <div><b>Send time: </b>${this.formatDate(this.selectedEmail.sendDate)}</div>
     `;
 
       if (this.selectedEmail.receiver) {
@@ -689,7 +689,7 @@ export default {
       }
 
       if (this.selectedEmail.title) {
-        emailContent += `<div>Subject: &nbsp;${this.selectedEmail.title}</div>`;
+        emailContent += `<div><b>Subject: </b>&nbsp;${this.selectedEmail.title}</div>`;
       }
 
       emailContent += '</div>';
@@ -697,9 +697,8 @@ export default {
     },
 
     formatEmailRecipients(emails) {
-      return emails.map(email => `
-      <a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>
-    `).join('; ');
+      return emails.map(email => `<a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>`).join('; ');
+
     },
 
     parseEmailString(emailString) {

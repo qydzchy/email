@@ -209,6 +209,7 @@
             LEFT JOIN mailbox_task_email te ON t.id = te.task_id
         WHERE
             te.read_flag = 0
+          AND te.type = 1
           AND te.del_flag = '0'
           AND t.create_id = #{createId}
           AND t.del_flag = '0'
@@ -236,7 +237,8 @@
             mailbox_task t
             LEFT JOIN mailbox_task_email te ON t.id = te.task_id
         WHERE
-            te.status = 1  -- 草稿箱
+            te.status in (1, 2, 4)  -- 草稿箱
+          AND te.type = 2
           AND te.del_flag = '0'  -- 未被删除的邮件
           AND t.create_id = #{createId}
           AND t.del_flag = '0'
