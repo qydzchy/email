@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.domain.vo.email.MenuInboxTaskCountVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -176,4 +177,25 @@ public interface TaskEmailMapper
      * @return
      */
     boolean batchUpdateFolderId(@Param("ids") List<Long> ids, @Param("folderId") Long folderId);
+
+    /**
+     * 统计未读邮件数量
+     * @param userId
+     * @return
+     */
+    List<MenuInboxTaskCountVO> countUnReadEmailNum(@Param("createId") Long userId);
+
+    /**
+     * 统计待办邮件数量
+     * @param userId
+     * @return
+     */
+    Integer countPendingMailNum(@Param("createId") Long userId);
+
+    /**
+     * 统计草稿数量
+     * @param userId
+     * @return
+     */
+    Integer countDraftsNum(@Param("createId") Long userId);
 }

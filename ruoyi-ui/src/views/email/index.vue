@@ -74,7 +74,7 @@
                                   <span class="flex items-center" title="全部收件">全部收件</span>
                                 </div>
                                 <span class="mm-tooltip mail-menu-item-count">
-																						<span class="mm-tooltip-trigger"></span>
+																						<span class="mm-tooltip-trigger">{{menuCount.allReceivedCount}}</span>
                                   <!---->
 																					</span>
                                 <!---->
@@ -118,6 +118,7 @@
                                     </div>
                                   </div>
                                 </div>
+                                <span class="mm-tooltip mail-menu-item-count"><span class="mm-tooltip-trigger">{{ getTaskCount(task.id) }}</span></span>
                                 <!---->
                               </div>
                             </li>
@@ -135,7 +136,7 @@
                               <span class="flex items-center">待处理邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger"></span>
+																				<span class="mm-tooltip-trigger">{{menuCount.pendingMailCount}}</span>
                               <!---->
 																			</span>
                             <!---->
@@ -153,7 +154,7 @@
                               <span class="flex items-center" title="未读邮件">未读邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger"></span>
+																				<span class="mm-tooltip-trigger">{{menuCount.anUnreadMailCount}}</span>
                               <!---->
 																			</span>
                             <!---->
@@ -171,7 +172,7 @@
                               <span class="flex items-center" title="草稿箱">草稿箱</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger"></span>
+																				<span class="mm-tooltip-trigger">{{menuCount.draftsCount}}</span>
                               <!---->
 																			</span>
                             <!---->
@@ -507,6 +508,7 @@ import FolderTree from './folder_list_item.vue'
 import {listTaskPull, listTaskSend} from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
 import { listLabel } from "@/api/email/label";
+import { countMenu } from "@/api/email/email";
 import { EventBus } from "@/api/email/event-bus";
 
 export default {
@@ -534,6 +536,7 @@ export default {
       isLabelSystemOpen: true,
       isLabelCustomOpen: true,
       isDropdownShown: false,
+      menuCount: {}
     };
   },
   components: {
@@ -568,6 +571,12 @@ export default {
     refreshLabelList() {
       listLabel().then((response) => {
         this.labels = response.data;
+      });
+    },
+
+    refreshMenuCount() {
+      countMenu().then((response) => {
+        this.menuCount = response.data;
       });
     },
 
@@ -689,6 +698,11 @@ export default {
 
     toggleFolder() {
       this.isFolderOpen = !this.isFolderOpen;
+    },
+
+    getTaskCount(taskId) {
+      const task = this.menuCount.menuInboxTaskCountList.find(t => t.taskId === taskId);
+      return task ? task.count : '';
     }
   },
 
@@ -707,6 +721,7 @@ export default {
     this.refreshSendEmailList();
     this.refreshFolderList();
     this.refreshLabelList();
+    this.refreshMenuCount();
 
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';

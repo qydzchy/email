@@ -340,4 +340,15 @@ public class EmailController extends BaseController {
     public AjaxResult deleteLabel(@RequestBody @Valid EmailLabelDeleteDTO dto) {
         return AjaxResult.success(taskEmailService.deleteLabel(dto.getEmailId(), dto.getLabelId()));
     }
+
+    /**
+     * 统计菜单邮件数量
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:count:menu')")
+    @Log(title = "统计菜单邮件数量", businessType = BusinessType.OTHER)
+    @GetMapping("/count/menu")
+    public AjaxResult countMenu() {
+        return AjaxResult.success(taskEmailService.countMenu());
+    }
 }

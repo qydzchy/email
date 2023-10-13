@@ -137,3 +137,11 @@ export function downloadEmailAttachment(data) {
   })
 }
 
+// 统计菜单邮件数量
+export function countMenu(query) {
+  return request({
+    url: '/email/info/count/menu',
+    method: 'get',
+    params: query
+  })
+}

@@ -104,7 +104,7 @@
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_label mtel
-            WHERE mte.id = mtel.email_id
+            WHERE mte.id = mtel.email_id AND mtel.label_id = #{labelId}
             )
         </if>
         <if test="type != null">and type = #{type}</if>
@@ -145,7 +145,7 @@
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_label mtel
-            WHERE mte.id = mtel.email_id
+            WHERE mte.id = mtel.email_id AND mtel.label_id = #{labelId}
             )
         </if>
         <if test="type != null">AND mte.type = #{type}</if>
@@ -198,6 +198,48 @@
                 </foreach>
             ) and mte.del_flag = '0'
         order by mte.send_date desc
+    </select>
+
+    <select id="countUnReadEmailNum" resultType="com.ruoyi.email.domain.vo.email.MenuInboxTaskCountVO">
+        SELECT
+            te.task_id AS taskId,
+            COUNT( te.id ) AS count
+        FROM
+            mailbox_task t
+            LEFT JOIN mailbox_task_email te ON t.id = te.task_id
+        WHERE
+            te.read_flag = 0
+          AND te.del_flag = '0'
+          AND t.create_id = #{createId}
+          AND t.del_flag = '0'
+        GROUP BY
+            te.task_id;
+    </select>
+
+    <select id="countPendingMailNum" resultType="java.lang.Integer">
+        SELECT
+            COUNT(te.id)
+        FROM
+            mailbox_task t
+            LEFT JOIN mailbox_task_email te ON t.id = te.task_id
+        WHERE
+            te.pending_flag = 1
+          AND te.del_flag = '0'
+          AND t.create_id = #{createId}
+          AND t.del_flag = '0'
+    </select>
+
+    <select id="countDraftsNum" resultType="java.lang.Integer">
+        SELECT
+            COUNT(te.id)
+        FROM
+            mailbox_task t
+            LEFT JOIN mailbox_task_email te ON t.id = te.task_id
+        WHERE
+            te.status = 1  -- 草稿箱
+          AND te.del_flag = '0'  -- 未被删除的邮件
+          AND t.create_id = #{createId}
+          AND t.del_flag = '0'
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">

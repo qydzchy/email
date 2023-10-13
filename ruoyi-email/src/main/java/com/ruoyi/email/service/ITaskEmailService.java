@@ -8,6 +8,7 @@ import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.domain.vo.email.MenuCountVO;
 import org.springframework.data.util.Pair;
 
 
@@ -213,4 +214,10 @@ public interface ITaskEmailService
      * @return
      */
     boolean deleteLabel(Long emailId, Long labelId);
+
+    /**
+     * 统计菜单邮件数量
+     * @return
+     */
+    MenuCountVO countMenu();
 }

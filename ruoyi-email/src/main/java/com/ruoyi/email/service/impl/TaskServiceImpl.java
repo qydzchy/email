@@ -407,11 +407,14 @@ public class TaskServiceImpl implements ITaskService
      */
     private void saveEmailData(Long taskId, UniversalMail universalMail) {
         TaskEmail taskEmail = new TaskEmail();
-
         // 邮件
         BeanUtils.copyProperties(universalMail, taskEmail);
         taskEmail.setTaskId(taskId);
-        taskEmail.setType(EmailTypeEnum.PULL.getType());
+        if (taskEmail.getFolder().equals("已发送")) {
+            taskEmail.setType(EmailTypeEnum.SEND.getType());
+        } else {
+            taskEmail.setType(EmailTypeEnum.PULL.getType());
+        }
         taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
         taskEmail.setCreateTime(DateUtils.getNowDate());
         taskEmailService.insertTaskEmail(taskEmail);

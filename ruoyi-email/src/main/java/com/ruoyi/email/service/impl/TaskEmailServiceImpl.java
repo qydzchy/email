@@ -9,6 +9,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
@@ -28,6 +32,8 @@ import com.ruoyi.email.domain.bo.EmailLabelBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.domain.vo.email.MenuCountVO;
+import com.ruoyi.email.domain.vo.email.MenuInboxTaskCountVO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +49,7 @@ import javax.activation.FileDataSource;
 import javax.annotation.Resource;
 import javax.mail.*;
 import javax.mail.internet.*;
+
 
 /**
  * 邮件Service业务层处理
@@ -701,6 +708,61 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         taskEmailLabelService.deleteByEmailIdAndLabelId(emailId, labelId, userId);
         return true;
+    }
+
+    @Override
+    public MenuCountVO countMenu() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        try {
+
+            // 收件箱
+            Future<List<MenuInboxTaskCountVO>> allReceivedCountFuture = executorService.submit(() -> countMenuInboxTaskCount(userId));
+            // 待办
+            Future<Integer> pendingMailCountFuture = executorService.submit(() -> pendingMailCount(userId));
+            // 草稿箱
+            Future<Integer> draftsCountFuture = executorService.submit(() -> draftsCount(userId));
+
+            List<MenuInboxTaskCountVO> menuInboxTaskCountList = allReceivedCountFuture.get();
+            int allReceivedCount = 0;
+            for (MenuInboxTaskCountVO menuInboxTaskCountVO : menuInboxTaskCountList) {
+                allReceivedCount += menuInboxTaskCountVO.getCount();
+            }
+
+            MenuCountVO menuCountVO = new MenuCountVO();
+            menuCountVO.setAllReceivedCount(allReceivedCount);
+            menuCountVO.setMenuInboxTaskCountList(menuInboxTaskCountList);
+            menuCountVO.setAnUnreadMailCount(allReceivedCount);
+            menuCountVO.setPendingMailCount(pendingMailCountFuture.get());
+            menuCountVO.setDraftsCount(draftsCountFuture.get());
+
+            return menuCountVO;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Integer draftsCount(Long userId) {
+        return taskEmailMapper.countDraftsNum(userId);
+    }
+
+    /**
+     * 统计预处理邮件数量
+     * @param userId
+     */
+    private Integer pendingMailCount(Long userId) {
+        return taskEmailMapper.countPendingMailNum(userId);
+    }
+
+    /**
+     * 统计收件箱未读邮件数量
+     * @param userId
+     */
+    private List<MenuInboxTaskCountVO> countMenuInboxTaskCount(Long userId) {
+        return taskEmailMapper.countUnReadEmailNum(userId);
     }
 
     /**
