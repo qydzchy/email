@@ -26,57 +26,61 @@ public class QuickText extends BaseEntity
     @Excel(name = "内容")
     private String content;
 
+    /** html */
+    @Excel(name = "html")
+    private String html;
+
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
-    public void setId(Long id) 
-    {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
-        return id;
+    public String getTitle() {
+        return title;
     }
-    public void setTitle(String title) 
-    {
+
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getTitle() 
-    {
-        return title;
+    public String getContent() {
+        return content;
     }
-    public void setContent(String content) 
-    {
+
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public String getContent() 
-    {
-        return content;
-    }
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
+    public String getHtml() {
+        return html;
     }
 
-    public String getDelFlag() 
-    {
+    public void setHtml(String html) {
+        this.html = html;
+    }
+
+    public String getDelFlag() {
         return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("title", getTitle())
-            .append("content", getContent())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+        return "QuickText{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", html='" + html + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                '}';
     }
 }

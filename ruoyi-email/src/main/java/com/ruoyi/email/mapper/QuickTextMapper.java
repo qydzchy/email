@@ -1,7 +1,10 @@
 package com.ruoyi.email.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.QuickText;
+import com.ruoyi.email.domain.vo.quicktext.QuickTextListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 快速文本Mapper接口
@@ -58,4 +61,19 @@ public interface QuickTextMapper
      * @return 结果
      */
     public int deleteQuickTextByIds(Long[] ids);
+
+    /**
+     * 根据创建人id查询快速文本列表
+     * @param userId
+     * @return
+     */
+    List<QuickTextListVO> getByCreateId(@Param("createId") Long userId);
+
+    /**
+     * 根据id删除快速文本
+     * @param id
+     * @param userId
+     * @param nowDate
+     */
+    void deleteById(@Param("id") Long id, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
 }

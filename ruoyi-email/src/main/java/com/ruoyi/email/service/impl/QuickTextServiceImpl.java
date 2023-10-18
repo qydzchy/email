@@ -1,12 +1,17 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.quicktext.QuickTextListVO;
 import com.ruoyi.email.service.IQuickTextService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.QuickTextMapper;
 import com.ruoyi.email.domain.QuickText;
+
+import javax.annotation.Resource;
 
 /**
  * 快速文本Service业务层处理
@@ -17,7 +22,7 @@ import com.ruoyi.email.domain.QuickText;
 @Service
 public class QuickTextServiceImpl implements IQuickTextService
 {
-    @Autowired
+    @Resource
     private QuickTextMapper quickTextMapper;
 
     /**
@@ -53,7 +58,15 @@ public class QuickTextServiceImpl implements IQuickTextService
     @Override
     public int insertQuickText(QuickText quickText)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        quickText.setCreateId(userId);
+        quickText.setCreateBy(username);
         quickText.setCreateTime(DateUtils.getNowDate());
+        quickText.setUpdateId(userId);
+        quickText.setUpdateBy(username);
+        quickText.setUpdateTime(DateUtils.getNowDate());
         return quickTextMapper.insertQuickText(quickText);
     }
 
@@ -66,6 +79,11 @@ public class QuickTextServiceImpl implements IQuickTextService
     @Override
     public int updateQuickText(QuickText quickText)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        quickText.setUpdateId(userId);
+        quickText.setUpdateBy(username);
         quickText.setUpdateTime(DateUtils.getNowDate());
         return quickTextMapper.updateQuickText(quickText);
     }
@@ -92,5 +110,21 @@ public class QuickTextServiceImpl implements IQuickTextService
     public int deleteQuickTextById(Long id)
     {
         return quickTextMapper.deleteQuickTextById(id);
+    }
+
+    @Override
+    public List<QuickTextListVO> list() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        List<QuickTextListVO> quickTextListVOList = quickTextMapper.getByCreateId(userId);
+        return quickTextListVOList;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        quickTextMapper.deleteById(id, userId, DateUtils.getNowDate());
+        return true;
     }
 }

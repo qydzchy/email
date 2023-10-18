@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.QuickText;
+import com.ruoyi.email.domain.vo.quicktext.QuickTextListVO;
 
 /**
  * 快速文本Service接口
@@ -58,4 +59,13 @@ public interface IQuickTextService
      * @return 结果
      */
     public int deleteQuickTextById(Long id);
+
+    public List<QuickTextListVO> list();
+
+    /**
+     * 删除快速文本
+     * @param id
+     * @return
+     */
+    public boolean delete(Long id);
 }

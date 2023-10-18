@@ -8,15 +8,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="title"    column="title"    />
         <result property="content"    column="content"    />
+        <result property="html"    column="html"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectQuickTextVo">
-        select id, title, content, del_flag, create_by, create_time, update_by, update_time from mailbox_quick_text
+        select id, title, content, html, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_quick_text
     </sql>
 
     <select id="selectQuickTextList" parameterType="QuickText" resultMap="QuickTextResult">
@@ -31,24 +34,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectQuickTextVo"/>
         where id = #{id}
     </select>
-        
+    <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.quicktext.QuickTextListVO">
+        select id, title, content, html from mailbox_quick_text
+        where create_id = #{createId} and del_flag = '0'
+    </select>
+
     <insert id="insertQuickText" parameterType="QuickText" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_quick_text
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null and title != ''">title,</if>
             <if test="content != null and content != ''">content,</if>
+            <if test="html != null and html != ''">html,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null and createId != ''">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null and updateId != ''">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="title != null and title != ''">#{title},</if>
             <if test="content != null and content != ''">#{content},</if>
+            <if test="html != null and html != ''">#{html},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null and updateId != ''">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
@@ -59,9 +72,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>
             <if test="content != null and content != ''">content = #{content},</if>
+            <if test="html != null and html != ''">html = #{html},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null and createId != ''">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null and updateId != ''">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -78,4 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <update id="deleteById">
+        update mailbox_quick_text set del_flag = '2', update_time = #{updateTime} where id = #{id} and create_id = #{createId}
+    </update>
 </mapper>
