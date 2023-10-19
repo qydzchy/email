@@ -1,12 +1,17 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.template.TemplateTypeListVO;
 import com.ruoyi.email.service.ITemplateTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TemplateTypeMapper;
 import com.ruoyi.email.domain.TemplateType;
+
+import javax.annotation.Resource;
 
 /**
  * 模板类型Service业务层处理
@@ -17,7 +22,7 @@ import com.ruoyi.email.domain.TemplateType;
 @Service
 public class TemplateTypeServiceImpl implements ITemplateTypeService
 {
-    @Autowired
+    @Resource
     private TemplateTypeMapper templateTypeMapper;
 
     /**
@@ -53,7 +58,15 @@ public class TemplateTypeServiceImpl implements ITemplateTypeService
     @Override
     public int insertTemplateType(TemplateType templateType)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        templateType.setCreateId(userId);
+        templateType.setCreateBy(username);
         templateType.setCreateTime(DateUtils.getNowDate());
+        templateType.setUpdateId(userId);
+        templateType.setUpdateBy(username);
+        templateType.setUpdateTime(DateUtils.getNowDate());
         return templateTypeMapper.insertTemplateType(templateType);
     }
 
@@ -66,6 +79,11 @@ public class TemplateTypeServiceImpl implements ITemplateTypeService
     @Override
     public int updateTemplateType(TemplateType templateType)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        templateType.setUpdateId(userId);
+        templateType.setUpdateBy(username);
         templateType.setUpdateTime(DateUtils.getNowDate());
         return templateTypeMapper.updateTemplateType(templateType);
     }
@@ -92,5 +110,24 @@ public class TemplateTypeServiceImpl implements ITemplateTypeService
     public int deleteTemplateTypeById(Long id)
     {
         return templateTypeMapper.deleteTemplateTypeById(id);
+    }
+
+    /**
+     * 模板类型列表
+     * @return
+     */
+    @Override
+    public List<TemplateTypeListVO> list() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        return templateTypeMapper.getByCreateId(userId);
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        templateTypeMapper.deleteById(id, userId, DateUtils.getNowDate());
+        return true;
     }
 }

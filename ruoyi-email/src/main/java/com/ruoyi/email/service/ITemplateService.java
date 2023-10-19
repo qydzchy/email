@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Template;
+import com.ruoyi.email.domain.vo.template.TemplateListVO;
 
 /**
  * 模板Service接口
@@ -58,4 +59,17 @@ public interface ITemplateService
      * @return 结果
      */
     public int deleteTemplateById(Long id);
+
+    /**
+     * 模板列表
+     * @return
+     */
+    public List<TemplateListVO> list();
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public boolean delete(Long id);
 }

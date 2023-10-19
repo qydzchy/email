@@ -173,7 +173,7 @@ export default {
       const data = {
         id: this.id,
         title: this.title,
-        content: this.content,
+        content: this.editor.getText(),
         html: this.html
       };
 

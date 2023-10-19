@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import TemplateComponent from './template/list.vue';
 import EmailManagementComponent from './email_management/list.vue';
 import FolderComponent from './folder/list.vue';
 import LabelComponent from './label/list.vue';
@@ -23,7 +24,9 @@ export default {
   props: ['selectedTab'],
   computed: {
     dynamicComponent() {
-      if (this.selectedTab === '邮箱管理') {
+      if (this.selectedTab === '模板') {
+        return TemplateComponent;
+      } else if (this.selectedTab === '邮箱管理') {
         return EmailManagementComponent;
       } else if (this.selectedTab === '文件夹') {
         return FolderComponent;
