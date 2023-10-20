@@ -73,7 +73,7 @@
         <div class="tpl-content" v-show="!addTemplatePage">
           <div class="tpl-list">
             <div v-for="template in templates" :key="template.id" class="tpl-list-item rounded-8">
-              <div class="icon-cross-p">
+              <div class="icon-cross-p" @click="deleteTemplateBtn(template)">
 																					<span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																							<path fill-rule="evenodd" clip-rule="evenodd" d="M3.626 5.201c-.346-.345-.31-.942.081-1.332.39-.391.987-.427 1.333-.082l6.96 6.96 6.96-6.96c.346-.345.942-.309 1.333.082.39.39.427.987.082 1.332l-6.96 6.96 6.637 6.638c.346.346.31.942-.081 1.333-.391.39-.988.427-1.333.082L12 13.576l-6.638 6.638c-.345.345-.942.309-1.333-.082-.39-.39-.427-.987-.081-1.333l6.638-6.637-6.96-6.96z"></path>
 																						</svg>
@@ -81,7 +81,7 @@
               </div>
               <p>
               </p>
-              <div class="icon-edit-p">
+              <div class="icon-edit-p" @click="editTemplateBtn(template)">
 																					<span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																							<path fill-rule="evenodd" clip-rule="evenodd" d="M13.586 3a2 2 0 012.828 0l2.118 2.118a2 2 0 010 2.829l-9.03 9.03a1 1 0 01-.707.293H5.262a1 1 0 01-1-1v-3.532a1 1 0 01.293-.707L13.585 3zm3.532 3.533L15 4.414l-8.738 8.738v2.118H8.38l8.738-8.737z"></path>
 																							<path d="M2.5 20a1 1 0 011-1h17a1 1 0 110 2h-17a1 1 0 01-1-1z"></path>
@@ -114,7 +114,7 @@
                                       <!---->
                                       <span class="mm-input-affix-wrapper">
                                         <!---->
-                                        <input type="text" class="mm-input-inner">
+                                        <input v-model="name" type="text" class="mm-input-inner">
                                         <!---->
                                       </span>
               <!---->
@@ -145,7 +145,7 @@
                                       <!---->
                                       <span class="mm-input-affix-wrapper">
                                         <!---->
-                                        <input type="text" class="mm-input-inner">
+                                        <input v-model="title" type="text" class="mm-input-inner">
                                         <!---->
                                       </span>
               <!---->
@@ -170,7 +170,7 @@
               <Editor
                 ref="editorInstance"
                 style="height: 350px; overflow-y: hidden"
-                v-model="html"
+                v-model="content"
                 @onChange="onChange"
                 @onCreated="onCreated"
                 mode="default"
@@ -231,12 +231,12 @@
             </div>
           </div>
           <div class="edit-field edit-btns">
-            <button type="button" class="mm-button">
+            <button @click="cancelTemplateBtn" type="button" class="mm-button">
               <!---->
               <!---->取消
               <!---->
             </button>
-            <button type="button" class="mm-button mm-button__primary">
+            <button @click="saveTemplate" type="button" class="mm-button mm-button__primary">
               <!---->
               <!---->
               <span>保存</span>
@@ -259,7 +259,7 @@
 <style src="@wangeditor/editor/dist/css/style.css"></style>
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import {listTemplate} from "@/api/email/template";
+import {listTemplate, addTemplate, editTemplate, deleteTemplate} from "@/api/email/template";
 import {listTemplateType} from "@/api/email/templateType";
 import {EventBus} from "@/api/email/event-bus";
 import templateTypeTemplate from './templateType.vue';
@@ -269,11 +269,15 @@ export default {
     return {
       templates: [], // 模板列表数据
       addTemplatePage: false, // 添加模板页面
-      html: null,
       editor: null,
       toolbarConfig: {},
-      templateTypeId: null, //模板类型id
       templateTypes: [], //模板类型列表
+      id: null,
+      name: null, // 模板名称
+      templateTypeId: null, //模板类型id
+      title: null, //模板标题
+      content: null, //模板内容
+      htmlText: null,
     };
   },
 
@@ -292,12 +296,162 @@ export default {
       });
     },
 
+    /**
+     * 新建模板
+     */
     addTemplateBtn() {
       this.addTemplatePage = true;
     },
 
+    /**
+     * 编辑模板
+     */
+    editTemplateBtn(template) {
+      this.addTemplatePage = true;
+      this.id = template.id;
+      this.name = template.name;
+      this.templateTypeId = template.templateTypeId;
+      this.title = template.title;
+      this.content = template.content;
+    },
+
+    /**
+     * 删除模板
+     * @param template
+     */
+    deleteTemplateBtn(template) {
+      this.$confirm('你确定要删除' + template.name + '吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        try {
+          const data = {"id": template.id};
+          const response = await deleteTemplate(data);
+          if (response.code === 200) {
+            this.$message.success("删除成功");
+            this.refreshTemplateList();
+          } else {
+            this.$message.error("删除失败");
+          }
+        } catch (error) {
+          console.error('Error deleting the template:', error);
+        }
+      }).catch(() => {
+        this.$message.info("已取消删除");
+      });
+    },
+
+    /**
+     * 取消模板编辑
+     */
+    cancelTemplateBtn() {
+      this.addTemplatePage = false;
+      this.id = null;
+      this.name = null;
+      this.templateTypeId = null;
+      this.title = null;
+    },
+
     addTemplateTypeBtn() {
       this.$refs.templateType.open();
+    },
+
+    /**
+     * 保存模板
+     */
+    updateColor(color) {
+      this.selectedColor = color;
+    },
+
+    /**
+     * 保存模板
+     * @returns {Promise<void>}
+     */
+    async saveTemplate() {
+      if (this.id) {
+        this.edit();
+      } else {
+        this.add();
+      }
+    },
+
+    /**
+     * 新增
+     * @returns {Promise<void>}
+     */
+    async add() {
+      if (!this.name) {
+        this.$message.error("模板名称不能为空");
+        return;
+      }
+
+      if (!this.content) {
+        this.$message.error("模板内容不能为空");
+        return;
+      }
+
+      const data = {
+        "name": this.name,
+        "templateTypeId": this.templateTypeId,
+        "title": this.title,
+        "content": this.content
+      };
+
+      try {
+        const response = await addTemplate(data);
+        if (response.code === 200) {
+          this.$message.success("新增成功");
+          this.addTemplatePage = false;
+          this.refreshTemplateList();
+        } else {
+          this.$message.error("新增失败");
+        }
+      } catch (error) {
+        console.error('Error saving the template:', error);
+      }
+    },
+
+    /**
+     * 编辑
+     * @returns {Promise<void>}
+     */
+    async edit() {
+      if (!this.id) {
+        this.$message.error("模板id不能为空");
+        return;
+      }
+
+      if (!this.name) {
+        this.$message.error("模板名称不能为空");
+        return;
+      }
+
+      if (!this.content) {
+        this.$message.error("模板内容不能为空");
+        return;
+      }
+
+      const data = {
+        "id": this.id,
+        "name": this.name,
+        "templateTypeId": this.templateTypeId,
+        "title": this.title,
+        "content": this.content
+      };
+
+      try {
+        const response = await editTemplate(data);
+        if (response.code === 200) {
+          this.$message.success("编辑成功");
+          this.addTemplatePage = false;
+          this.refreshTemplateList();
+        } else {
+          this.$message.error("编辑失败");
+        }
+      } catch (error) {
+        console.error('Error edit the template:', error);
+      }
     },
 
     onCreated(editor) {
@@ -313,6 +467,7 @@ export default {
 
   mounted() {
     EventBus.$on('refresh-template-list', this.refreshTemplateList);
+    EventBus.$on('refresh-template-type-list', this.refreshTemplateTypeList);
   },
 
   beforeDestroy() {
@@ -321,6 +476,7 @@ export default {
     editor.destroy();
 
     EventBus.$off('refresh-template-list', this.refreshTemplateList);
+    EventBus.$off('refresh-template-type-list', this.refreshTemplateTypeList);
   },
 
   created() {

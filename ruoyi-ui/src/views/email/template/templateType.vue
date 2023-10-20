@@ -104,6 +104,7 @@
 
 <script>
 import {listTemplateType, addTemplateType, editTemplateType, deleteTemplateType} from "@/api/email/templateType";
+import {EventBus} from "@/api/email/event-bus";
 
 export default {
   data() {
@@ -129,6 +130,7 @@ export default {
 
     close() {
       this.templateTypePage = false;
+      EventBus.$emit('refresh-template-type-list');
     },
 
     addTemplateType() {
