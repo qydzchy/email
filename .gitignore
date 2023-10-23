@@ -45,3 +45,6 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+# 忽略提交配置文件
+ruoyi-admin/src/main/resources/application-druid.yml
