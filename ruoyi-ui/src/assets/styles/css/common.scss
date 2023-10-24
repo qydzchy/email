@@ -1,0 +1,111 @@
+@import "./mixin.scss";
+@import "./variables.scss";
+
+.bold {
+    font-weight: bold;
+}
+
+@each $var in $fontSize {
+    .fs-#{$var} {
+        font-size: #{$var}px;
+    }
+
+    .icon-#{$var} {
+        width: #{$var}px;
+        height: #{$var}px;
+    }
+}
+
+@for $size from 1 through 50 {
+
+    @each $t_d_key, $t_d_val in $spaceTypes_Dirs {
+        .#{$t_d_key}-#{$size} {
+            #{$t_d_val}: #{$size}px;
+        }
+    }
+
+    .mx-#{$size} {
+        margin-left: #{$size}px;
+        margin-right: #{$size}px;
+    }
+
+    .my-#{$size} {
+        margin-top: #{$size}px;
+        margin-bottom: #{$size}px;
+    }
+
+    .px-#{$size} {
+        padding-left: #{$size}px;
+        padding-right: #{$size}px;
+    }
+
+    .py-#{$size} {
+        padding-top: #{$size}px;
+        padding-bottom: #{$size}px;
+    }
+}
+
+.flex1 {
+    flex: 1;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+}
+
+.flex-middle {
+    display: flex;
+    align-items: center;
+}
+
+.middle-end {
+    display: flex;
+    align-items: flex-end;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.space-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.pointer {
+    cursor: pointer;
+}
+
+.borderBox{
+  box-sizing: border-box;
+}
+
+.white-text{
+	font-weight: 500;
+	color: #fff;
+}
+
+.black-text {
+	font-weight: 500;
+	color: #333333;
+}
+
+.gray-text {
+	font-weight: 400;
+	color: #999999;
+}

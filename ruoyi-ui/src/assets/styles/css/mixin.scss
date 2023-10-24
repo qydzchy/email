@@ -1,0 +1,44 @@
+// 多行隐藏
+@mixin textoverflow($clamp:1) {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: $clamp;
+    /*! autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+}
+
+//flex box
+@mixin flex($fd:row, $jc:space-between, $ai:center,$fw:nowrap) {
+    display: flex;
+    display: -webkit-flex;
+    justify-content: $jc;
+    -webkit-justify-content: $jc;
+    align-items: $ai;
+    -webkit-align-items: $ai;
+    flex-direction: $fd;
+    -webkit-flex-direction: $fd;
+    flex-wrap: $fw;
+    -webkit-flex-wrap: $fw;
+}
+// input placeholderColor
+@mixin placeholderColor($color) {
+  &::input-placeholder {
+    /*WebKit browsers*/
+    color: $color;
+  }
+  &::-webkit-input-placeholder {
+    /*WebKit browsers*/
+    color: $color;
+  }
+  &::-moz-input-placeholder {
+    /*Mozilla Firefox*/
+    color: $color;
+  }
+  &::-ms-input-placeholder {
+    /*Internet Explorer*/
+    color: $color;
+  }
+}
