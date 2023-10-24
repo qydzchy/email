@@ -37,6 +37,10 @@ import DictTag from '@/components/DictTag'
 import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
+// JSON表单
+import formCreate from '@form-create/element-ui'
+// 图片上传组件
+import UploadPicture from '@/components/UploadPicture'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -58,10 +62,14 @@ Vue.component('FileUpload', FileUpload)
 Vue.component('ImageUpload', ImageUpload)
 Vue.component('ImagePreview', ImagePreview)
 
+Vue.component('upload-picture', UploadPicture)
+
 Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
 DictData.install()
+// form-create
+Vue.use(formCreate)
 
 /**
  * If you don't want to use mock-server
