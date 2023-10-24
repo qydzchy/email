@@ -13,8 +13,8 @@
           <el-collapse-item v-for="(item,index) in menuList" :key="index" :name="item.name">
             <template v-slot:title>
               <div class="el-collapse-item__header">
-                <i class="header-icon el-icon-info"></i>
-                <span class="pl-6">{{ item.title }}</span>
+                <i class="icon-13" :class="item.icon"></i>
+                <span class="pl-6 bold">{{ item.title }}</span>
               </div>
 
             </template>
@@ -57,6 +57,7 @@ export default {
         {
           title: '销售管理',
           name: '1',
+          icon:'el-icon-info',
           subList: [
             {title: '客户设置', linkTo: 'customer-setting'},
             {title: '来源设置', linkTo: 'origin-setting'},
@@ -65,6 +66,7 @@ export default {
         {
           title: '沟通管理',
           name: '2',
+          icon:'',
           subList: [
             {title: '邮箱管理', linkTo: 'email-manage'},
           ],

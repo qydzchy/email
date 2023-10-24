@@ -18,12 +18,22 @@
 import group from './group.vue'
 import status from './status.vue'
 import poolRule from './poolRule.vue'
+import follow from './follow.vue'
+import blacklist from './blacklist.vue'
+import openSea from './openSea.vue'
+import search from './search.vue'
+import followText from './followText.vue'
 
 export default {
   components: {
     group,
     status,
-    poolRule
+    poolRule,
+    follow,
+    blacklist,
+    openSea,
+    search,
+    followText
   },
   data() {
     return {
@@ -59,7 +69,7 @@ export default {
         },
         {
           label: '写跟进测试',
-          name: 'follow-text',
+          name: 'followText',
         },
       ]
     }
