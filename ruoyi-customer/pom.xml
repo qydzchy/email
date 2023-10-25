@@ -9,39 +9,33 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ruoyi-quartz</artifactId>
+    <artifactId>ruoyi-customer</artifactId>
 
     <description>
-        quartz定时任务
+        customer客户模块
     </description>
 
     <dependencies>
-
-        <!-- 定时任务 -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.mchange</groupId>
-                    <artifactId>c3p0</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- 通用工具-->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-email</artifactId>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.47</version>
         </dependency>
+
+        <!-- Jsoup -->
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-customer</artifactId>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.14.3</version> <!-- Use the latest version -->
         </dependency>
+
 
     </dependencies>
 
