@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.PacketMapper">
+    
+    <resultMap type="Packet" id="PacketResult">
+        <result property="id"    column="id"    />
+        <result property="parenId"    column="paren_id"    />
+        <result property="name"    column="name"    />
+        <result property="availableMember"    column="available_member"    />
+        <result property="designatedMember"    column="designated_member"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPacketVo">
+        select id, paren_id, name, available_member, designated_member, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_packet
+    </sql>
+
+    <select id="selectPacketList" parameterType="Packet" resultMap="PacketResult">
+        <include refid="selectPacketVo"/>
+        <where>  
+            <if test="parenId != null "> and paren_id = #{parenId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="availableMember != null "> and available_member = #{availableMember}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPacketById" parameterType="Long" resultMap="PacketResult">
+        <include refid="selectPacketVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPacket" parameterType="Packet">
+        insert into customer_packet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="parenId != null">paren_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="availableMember != null">available_member,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="parenId != null">#{parenId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="availableMember != null">#{availableMember},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePacket" parameterType="Packet">
+        update customer_packet
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parenId != null">paren_id = #{parenId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="availableMember != null">available_member = #{availableMember},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deletePacketById" parameterType="Long">
+        update customer_packet set del_flag = '2' where id = #{id}
+    </update>
+
+    <delete id="deletePacketByIds" parameterType="String">
+        delete from customer_packet where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

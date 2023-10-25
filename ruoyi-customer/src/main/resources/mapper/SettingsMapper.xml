@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.SettingsMapper">
+    
+    <resultMap type="Settings" id="SettingsResult">
+        <result property="id"    column="id"    />
+        <result property="mandatorySubgroupFlag"    column="mandatory_subgroup_flag"    />
+        <result property="advanceFlag"    column="advance_flag"    />
+        <result property="advanceDays"    column="advance_days"    />
+        <result property="accountDisabledFlag"    column="account_disabled_flag"    />
+        <result property="claimLimitFlag"    column="claim_limit_flag"    />
+        <result property="claimLimitDays"    column="claim_limit_days"    />
+        <result property="opportunityViewRule"    column="opportunity_view_rule"    />
+        <result property="showPublicLeadsFlag"    column="show_public_leads_flag"    />
+        <result property="followupTime"    column="followup_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSettingsVo">
+        select id, mandatory_subgroup_flag, advance_flag, advance_days, account_disabled_flag, claim_limit_flag, claim_limit_days, opportunity_view_rule, show_public_leads_flag, followup_time, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_settings
+    </sql>
+
+    <select id="selectSettingsList" parameterType="Settings" resultMap="SettingsResult">
+        <include refid="selectSettingsVo"/>
+        <where>  
+            <if test="mandatorySubgroupFlag != null "> and mandatory_subgroup_flag = #{mandatorySubgroupFlag}</if>
+            <if test="advanceFlag != null "> and advance_flag = #{advanceFlag}</if>
+            <if test="advanceDays != null "> and advance_days = #{advanceDays}</if>
+            <if test="accountDisabledFlag != null "> and account_disabled_flag = #{accountDisabledFlag}</if>
+            <if test="claimLimitFlag != null "> and claim_limit_flag = #{claimLimitFlag}</if>
+            <if test="claimLimitDays != null "> and claim_limit_days = #{claimLimitDays}</if>
+            <if test="opportunityViewRule != null "> and opportunity_view_rule = #{opportunityViewRule}</if>
+            <if test="showPublicLeadsFlag != null "> and show_public_leads_flag = #{showPublicLeadsFlag}</if>
+            <if test="followupTime != null "> and followup_time = #{followupTime}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSettingsById" parameterType="Long" resultMap="SettingsResult">
+        <include refid="selectSettingsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSettings" parameterType="Settings">
+        insert into customer_settings
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="mandatorySubgroupFlag != null">mandatory_subgroup_flag,</if>
+            <if test="advanceFlag != null">advance_flag,</if>
+            <if test="advanceDays != null">advance_days,</if>
+            <if test="accountDisabledFlag != null">account_disabled_flag,</if>
+            <if test="claimLimitFlag != null">claim_limit_flag,</if>
+            <if test="claimLimitDays != null">claim_limit_days,</if>
+            <if test="opportunityViewRule != null">opportunity_view_rule,</if>
+            <if test="showPublicLeadsFlag != null">show_public_leads_flag,</if>
+            <if test="followupTime != null">followup_time,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="mandatorySubgroupFlag != null">#{mandatorySubgroupFlag},</if>
+            <if test="advanceFlag != null">#{advanceFlag},</if>
+            <if test="advanceDays != null">#{advanceDays},</if>
+            <if test="accountDisabledFlag != null">#{accountDisabledFlag},</if>
+            <if test="claimLimitFlag != null">#{claimLimitFlag},</if>
+            <if test="claimLimitDays != null">#{claimLimitDays},</if>
+            <if test="opportunityViewRule != null">#{opportunityViewRule},</if>
+            <if test="showPublicLeadsFlag != null">#{showPublicLeadsFlag},</if>
+            <if test="followupTime != null">#{followupTime},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSettings" parameterType="Settings">
+        update customer_settings
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mandatorySubgroupFlag != null">mandatory_subgroup_flag = #{mandatorySubgroupFlag},</if>
+            <if test="advanceFlag != null">advance_flag = #{advanceFlag},</if>
+            <if test="advanceDays != null">advance_days = #{advanceDays},</if>
+            <if test="accountDisabledFlag != null">account_disabled_flag = #{accountDisabledFlag},</if>
+            <if test="claimLimitFlag != null">claim_limit_flag = #{claimLimitFlag},</if>
+            <if test="claimLimitDays != null">claim_limit_days = #{claimLimitDays},</if>
+            <if test="opportunityViewRule != null">opportunity_view_rule = #{opportunityViewRule},</if>
+            <if test="showPublicLeadsFlag != null">show_public_leads_flag = #{showPublicLeadsFlag},</if>
+            <if test="followupTime != null">followup_time = #{followupTime},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSettingsById" parameterType="Long">
+        delete from customer_settings where id = #{id}
+    </delete>
+
+    <delete id="deleteSettingsByIds" parameterType="String">
+        delete from customer_settings where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.PublicleadsClaimLimitMapper">
+    
+    <resultMap type="PublicleadsClaimLimit" id="PublicleadsClaimLimitResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="claimLimit"    column="claim_limit"    />
+        <result property="claimPeriod"    column="claim_period"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPublicleadsClaimLimitVo">
+        select id, user_id, claim_limit, claim_period, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_claim_limit
+    </sql>
+
+    <select id="selectPublicleadsClaimLimitList" parameterType="PublicleadsClaimLimit" resultMap="PublicleadsClaimLimitResult">
+        <include refid="selectPublicleadsClaimLimitVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="claimLimit != null "> and claim_limit = #{claimLimit}</if>
+            <if test="claimPeriod != null "> and claim_period = #{claimPeriod}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPublicleadsClaimLimitById" parameterType="Long" resultMap="PublicleadsClaimLimitResult">
+        <include refid="selectPublicleadsClaimLimitVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPublicleadsClaimLimit" parameterType="PublicleadsClaimLimit">
+        insert into customer_publicleads_claim_limit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="claimLimit != null">claim_limit,</if>
+            <if test="claimPeriod != null">claim_period,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="claimLimit != null">#{claimLimit},</if>
+            <if test="claimPeriod != null">#{claimPeriod},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePublicleadsClaimLimit" parameterType="PublicleadsClaimLimit">
+        update customer_publicleads_claim_limit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="claimLimit != null">claim_limit = #{claimLimit},</if>
+            <if test="claimPeriod != null">claim_period = #{claimPeriod},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePublicleadsClaimLimitById" parameterType="Long">
+        delete from customer_publicleads_claim_limit where id = #{id}
+    </delete>
+
+    <delete id="deletePublicleadsClaimLimitByIds" parameterType="String">
+        delete from customer_publicleads_claim_limit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

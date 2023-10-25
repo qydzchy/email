@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.PacketDesignateMemberMapper">
+    
+    <resultMap type="PacketDesignateMember" id="PacketDesignateMemberResult">
+        <result property="id"    column="id"    />
+        <result property="packetId"    column="packet_id"    />
+        <result property="associationId"    column="association_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPacketDesignateMemberVo">
+        select id, packet_id, association_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_packet_designate_member
+    </sql>
+
+    <select id="selectPacketDesignateMemberList" parameterType="PacketDesignateMember" resultMap="PacketDesignateMemberResult">
+        <include refid="selectPacketDesignateMemberVo"/>
+        <where>  
+            <if test="packetId != null "> and packet_id = #{packetId}</if>
+            <if test="associationId != null "> and association_id = #{associationId}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPacketDesignateMemberById" parameterType="Long" resultMap="PacketDesignateMemberResult">
+        <include refid="selectPacketDesignateMemberVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPacketDesignateMember" parameterType="PacketDesignateMember">
+        insert into customer_packet_designate_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="packetId != null">packet_id,</if>
+            <if test="associationId != null">association_id,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="packetId != null">#{packetId},</if>
+            <if test="associationId != null">#{associationId},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePacketDesignateMember" parameterType="PacketDesignateMember">
+        update customer_packet_designate_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="packetId != null">packet_id = #{packetId},</if>
+            <if test="associationId != null">association_id = #{associationId},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePacketDesignateMemberById" parameterType="Long">
+        delete from customer_packet_designate_member where id = #{id}
+    </delete>
+
+    <delete id="deletePacketDesignateMemberByIds" parameterType="String">
+        delete from customer_packet_designate_member where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
