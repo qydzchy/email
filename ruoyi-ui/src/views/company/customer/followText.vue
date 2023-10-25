@@ -34,7 +34,7 @@
           <div class="wrap px-16 py-14 radius-4 flex-column">
             <div class="card-head flex-middle space-between">
               <div class="fs-14 bold">模板名称：模板名称测试</div>
-              <el-row gutter="2">
+              <el-row :gutter="2">
                 <el-button type="text">编辑</el-button>
                 <el-button type="text">删除</el-button>
               </el-row>
@@ -69,7 +69,7 @@
           <div class="px-16 py-14 radius-4 flex-column">
             <div class="card-head flex-middle space-between">
               <div class="fs-14 bold">模板名称：模板名称测试</div>
-              <el-row gutter="2">
+              <el-row :gutter="2">
                 <el-button type="text">编辑</el-button>
                 <el-button type="text">删除</el-button>
               </el-row>

@@ -91,11 +91,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page-company{
-  height: inherit;
+.page-company {
+  height: 100%;
 }
 
-::v-deep .el-tabs__content{
-  height: calc(100% - 100px);
+::v-deep .el-tabs__content {
+  overflow-y: auto;
+  height: 76vh;
+  padding-right: 30px;
 }
 </style>

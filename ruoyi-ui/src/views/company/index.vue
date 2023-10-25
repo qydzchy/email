@@ -1,45 +1,48 @@
 <template>
-  <div class="company pt-4">
-    <div class="left-wrap">
-      <div class="menu" :class="{'is-collapsed':collapsed}">
-        <div class="space-between pt-4 pl-10 pr-8 pb-8 borderBox">
-          <div class="fs-18 bold" style="color: #0c163d">企业管理</div>
-          <div class="arrow-left-icon pointer" @click="collapsed=true">
-            <i class="el-icon-d-arrow-left"></i>
+  <div class="company">
+    <div class="container pt-4">
+      <div class="left-wrap">
+        <div class="menu" :class="{'is-collapsed':collapsed}">
+          <div class="space-between pt-4 pl-10 pr-8 pb-8 borderBox">
+            <div class="fs-18 bold" style="color: #0c163d">企业管理</div>
+            <div class="arrow-left-icon pointer" @click="collapsed=true">
+              <i class="el-icon-d-arrow-left"></i>
+            </div>
+
           </div>
+          <el-collapse v-model="activeCollapsed" @change="handleCollapsed">
+            <el-collapse-item v-for="(item,index) in menuList" :key="index" :name="item.name">
+              <template v-slot:title>
+                <div class="el-collapse-item__header">
+                  <i class="icon-13" :class="item.icon"></i>
+                  <span class="pl-6 bold">{{ item.title }}</span>
+                </div>
 
+              </template>
+              <ul v-for="(subItem,idx) in item.subList" :key="idx">
+                <li class="pointer" :class="{'active':subItem.linkTo===isComponent}" @click="jumpTo(subItem.linkTo)">
+                  {{ subItem.title }}
+                </li>
+              </ul>
+            </el-collapse-item>
+          </el-collapse>
         </div>
-        <el-collapse v-model="activeCollapsed" @change="handleCollapsed">
-          <el-collapse-item v-for="(item,index) in menuList" :key="index" :name="item.name">
-            <template v-slot:title>
-              <div class="el-collapse-item__header">
-                <i class="icon-13" :class="item.icon"></i>
-                <span class="pl-6 bold">{{ item.title }}</span>
-              </div>
-
-            </template>
-            <ul v-for="(subItem,idx) in item.subList" :key="idx">
-              <li class="pointer" :class="{'active':subItem.linkTo===isComponent}" @click="jumpTo(subItem.linkTo)">
-                {{ subItem.title }}
-              </li>
-            </ul>
-          </el-collapse-item>
-        </el-collapse>
+        <div class="left-wrap-icon pointer" :class="{'arrow-right':collapsed}" @click="collapsed=false">
+          <i class="el-icon-d-arrow-right fs-14"></i>
+        </div>
       </div>
-      <div class="left-wrap-icon pointer" :class="{'arrow-right':collapsed}" @click="collapsed=false">
-        <i class="el-icon-d-arrow-right fs-14"></i>
-      </div>
-    </div>
 
-    <div class="right-wrap pt-16 px-32">
-      <keep-alive>
-        <Component :is="isComponent"/>
-      </keep-alive>
-      <div v-if="!isComponent">
-        暂无内容
+      <div class="right-wrap pt-16 px-32">
+        <keep-alive>
+          <Component :is="isComponent"/>
+        </keep-alive>
+        <div v-if="!isComponent">
+          暂无内容
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -91,7 +94,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.company {
+.company{
+  display: flex;
+}
+.container {
   width: 100%;
   display: flex;
   min-height: calc(100vh - 84px);
@@ -211,5 +217,6 @@ export default {
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
+  min-width: 1000px;
 }
 </style>
