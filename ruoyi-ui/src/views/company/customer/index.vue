@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-company">
     <div class="bold fs-30 pb-4">
       客户设置
     </div>
@@ -91,5 +91,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page-company{
+  height: inherit;
+}
 
+::v-deep .el-tabs__content{
+  height: calc(100% - 100px);
+}
 </style>
