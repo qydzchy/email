@@ -97,13 +97,13 @@ export const constantRoutes = [
       {
         path: 'customer-setting',
         component: () => import('@/views/company/index'),
-        name: 'Company',
+        name: 'Customer',
         meta: {title: '客户设置', is: 'customer-setting'}
       },
       {
         path: 'origin-setting',
         component: () => import('@/views/company/index'),
-        name: 'Company',
+        name: 'Origin',
         meta: {title: '来源设置', is: 'origin-setting'}
       },
     ]

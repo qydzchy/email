@@ -74,7 +74,6 @@ export default {
     // 添加黑名单
     addBlackList() {
       const h = this.$createElement;
-      // 强制转换为string类型
       const vNode = h('div', {class: 'flex-middle'}, [
         h('span', {class: 'pr-4'}, '设置建档黑名单'),
         h('el-tooltip', {
@@ -85,7 +84,7 @@ export default {
             content: '邮箱的标准格式为： 邮箱后缀的标准格式： @***.***'
           }
         }, [
-          h('i', {class: 'el-icon-warning'})
+          h('i', {class: 'el-icon-question'})
         ])
       ])
       this.$prompt(vNode, '建档黑名单', {

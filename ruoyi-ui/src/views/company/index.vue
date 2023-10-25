@@ -57,18 +57,10 @@ export default {
         {
           title: '销售管理',
           name: '1',
-          icon:'el-icon-info',
+          icon: 'el-icon-s-operation',
           subList: [
             {title: '客户设置', linkTo: 'customer-setting'},
             {title: '来源设置', linkTo: 'origin-setting'},
-          ],
-        },
-        {
-          title: '沟通管理',
-          name: '2',
-          icon:'',
-          subList: [
-            {title: '邮箱管理', linkTo: 'email-manage'},
           ],
         }
       ],
@@ -134,6 +126,7 @@ export default {
   }
 
   .is-collapsed {
+    width: 0;
     display: none;
   }
 
@@ -214,6 +207,8 @@ export default {
 }
 
 .right-wrap {
-  flex: 1;
+  width: 100%;
+  overflow: auto;
+  box-sizing: border-box;
 }
 </style>
