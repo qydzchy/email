@@ -277,18 +277,28 @@ export default {
           render: (_row, field) => EmptyStr(field),
         },
         {
-          slot:
-            <div class="flex-middle flex-center">
-              <span>上限周期</span>
-              <el-tooltip placement="top">
-                <div slot="content">
-                  <div class="pool-rule-tooltip fs-14 lineH-24">
-                    领取上限按周期计算。譬如：公海客户领取上限为10，周期为每周。即每周最多可从公海领取10个公海客户到私海中。
-                  </div>
-                </div>
-                <i class="el-icon-warning-outline ml-6"></i>
-              </el-tooltip>
-            </div>,
+          label: '上限周期',
+          'render-header': (h, {column}) => {
+            return h('div', [
+              h('span', column.label),
+              h(
+                'el-tooltip',
+                {
+                  props: {
+                    effect: 'dark',
+                    content: <div class="fs-12 lineH-24" style="width:210px">
+                      领取上限按周期计算。譬如：公海客户领取上限为10，周期为每周。即每周最多可从公海领取10个公海客户到私海中。
+                    </div>,
+                  },
+                },
+                [
+                  h('i', {
+                    class: 'el-icon-question ml-5',
+                  }),
+                ]
+              ),
+            ])
+          },
           field: 'startTime',
           width: '140',
           render: (_row, field) => EmptyStr(field),

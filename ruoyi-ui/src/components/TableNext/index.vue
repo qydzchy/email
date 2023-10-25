@@ -64,13 +64,13 @@ export default {
                   key={'table_' + item.label}
                   props={{...item}}
                   align={item.align || 'center'}>
-                  {item.slot ? <template slot="header">{item.slot}</template> : null}
                   {(value) => {
                     if (item?.render) {
                       const vNode = item.render(
                         value.row,
                         value.row[item.field],
                       );
+
                       return vNode;
                     }
                     return value.row[item.field];
