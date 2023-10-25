@@ -65,6 +65,12 @@
             <artifactId>ruoyi-email</artifactId>
         </dependency>
 
+        <!-- 客户模块-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-customer</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

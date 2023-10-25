@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.BlackListRecordsMapper">
+    
+    <resultMap type="BlackListRecords" id="BlackListRecordsResult">
+        <result property="id"    column="id"    />
+        <result property="domain"    column="domain"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBlackListRecordsVo">
+        select id, domain, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_black_list_records
+    </sql>
+
+    <select id="selectBlackListRecordsList" parameterType="BlackListRecords" resultMap="BlackListRecordsResult">
+        <include refid="selectBlackListRecordsVo"/>
+        <where>  
+            <if test="domain != null  and domain != ''"> and domain = #{domain}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectBlackListRecordsById" parameterType="Long" resultMap="BlackListRecordsResult">
+        <include refid="selectBlackListRecordsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBlackListRecords" parameterType="BlackListRecords">
+        insert into customer_black_list_records
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="domain != null and domain != ''">domain,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="domain != null and domain != ''">#{domain},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBlackListRecords" parameterType="BlackListRecords">
+        update customer_black_list_records
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="domain != null and domain != ''">domain = #{domain},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlackListRecordsById" parameterType="Long">
+        delete from customer_black_list_records where id = #{id}
+    </delete>
+
+    <delete id="deleteBlackListRecordsByIds" parameterType="String">
+        delete from customer_black_list_records where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
