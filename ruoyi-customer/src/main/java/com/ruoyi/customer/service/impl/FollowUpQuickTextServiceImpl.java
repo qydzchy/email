@@ -1,12 +1,19 @@
 package com.ruoyi.customer.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.vo.FollowUpQuickTextListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.FollowUpQuickTextMapper;
 import com.ruoyi.customer.domain.FollowUpQuickText;
 import com.ruoyi.customer.service.IFollowUpQuickTextService;
+
+import javax.annotation.Resource;
 
 /**
  * 写跟进快捷文本Service业务层处理
@@ -17,32 +24,8 @@ import com.ruoyi.customer.service.IFollowUpQuickTextService;
 @Service
 public class FollowUpQuickTextServiceImpl implements IFollowUpQuickTextService 
 {
-    @Autowired
+    @Resource
     private FollowUpQuickTextMapper followUpQuickTextMapper;
-
-    /**
-     * 查询写跟进快捷文本
-     * 
-     * @param id 写跟进快捷文本主键
-     * @return 写跟进快捷文本
-     */
-    @Override
-    public FollowUpQuickText selectFollowUpQuickTextById(Long id)
-    {
-        return followUpQuickTextMapper.selectFollowUpQuickTextById(id);
-    }
-
-    /**
-     * 查询写跟进快捷文本列表
-     * 
-     * @param followUpQuickText 写跟进快捷文本
-     * @return 写跟进快捷文本
-     */
-    @Override
-    public List<FollowUpQuickText> selectFollowUpQuickTextList(FollowUpQuickText followUpQuickText)
-    {
-        return followUpQuickTextMapper.selectFollowUpQuickTextList(followUpQuickText);
-    }
 
     /**
      * 新增写跟进快捷文本
@@ -53,7 +36,16 @@ public class FollowUpQuickTextServiceImpl implements IFollowUpQuickTextService
     @Override
     public int insertFollowUpQuickText(FollowUpQuickText followUpQuickText)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        followUpQuickText.setCreateId(userId);
+        followUpQuickText.setCreateBy(username);
         followUpQuickText.setCreateTime(DateUtils.getNowDate());
+        followUpQuickText.setUpdateId(userId);
+        followUpQuickText.setUpdateBy(username);
+        followUpQuickText.setUpdateTime(DateUtils.getNowDate());
         return followUpQuickTextMapper.insertFollowUpQuickText(followUpQuickText);
     }
 
@@ -66,20 +58,14 @@ public class FollowUpQuickTextServiceImpl implements IFollowUpQuickTextService
     @Override
     public int updateFollowUpQuickText(FollowUpQuickText followUpQuickText)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        followUpQuickText.setUpdateId(userId);
+        followUpQuickText.setUpdateBy(username);
         followUpQuickText.setUpdateTime(DateUtils.getNowDate());
         return followUpQuickTextMapper.updateFollowUpQuickText(followUpQuickText);
-    }
-
-    /**
-     * 批量删除写跟进快捷文本
-     * 
-     * @param ids 需要删除的写跟进快捷文本主键
-     * @return 结果
-     */
-    @Override
-    public int deleteFollowUpQuickTextByIds(Long[] ids)
-    {
-        return followUpQuickTextMapper.deleteFollowUpQuickTextByIds(ids);
     }
 
     /**
@@ -91,6 +77,25 @@ public class FollowUpQuickTextServiceImpl implements IFollowUpQuickTextService
     @Override
     public int deleteFollowUpQuickTextById(Long id)
     {
-        return followUpQuickTextMapper.deleteFollowUpQuickTextById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return followUpQuickTextMapper.deleteFollowUpQuickTextById(id, userId, username);
+    }
+
+    @Override
+    public List<FollowUpQuickTextListVO> list() {
+        List<FollowUpQuickText> followUpQuickTextList = followUpQuickTextMapper.selectFollowUpQuickTextList(new FollowUpQuickText());
+        List<FollowUpQuickTextListVO> followUpQuickTextVOList = new ArrayList<>();
+        for (FollowUpQuickText followUpQuickText : followUpQuickTextList) {
+            FollowUpQuickTextListVO followUpQuickTextVO = new FollowUpQuickTextListVO();
+            followUpQuickTextVO.setId(followUpQuickText.getId());
+            followUpQuickTextVO.setName(followUpQuickText.getName());
+            followUpQuickTextVO.setLabel(followUpQuickTextVO.getLabel());
+            followUpQuickTextVOList.add(followUpQuickTextVO);
+        }
+
+        return followUpQuickTextVOList;
     }
 }

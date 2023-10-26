@@ -2,6 +2,7 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.FollowUpQuickText;
+import com.ruoyi.customer.domain.vo.FollowUpQuickTextListVO;
 
 /**
  * 写跟进快捷文本Service接口
@@ -11,22 +12,6 @@ import com.ruoyi.customer.domain.FollowUpQuickText;
  */
 public interface IFollowUpQuickTextService 
 {
-    /**
-     * 查询写跟进快捷文本
-     * 
-     * @param id 写跟进快捷文本主键
-     * @return 写跟进快捷文本
-     */
-    public FollowUpQuickText selectFollowUpQuickTextById(Long id);
-
-    /**
-     * 查询写跟进快捷文本列表
-     * 
-     * @param followUpQuickText 写跟进快捷文本
-     * @return 写跟进快捷文本集合
-     */
-    public List<FollowUpQuickText> selectFollowUpQuickTextList(FollowUpQuickText followUpQuickText);
-
     /**
      * 新增写跟进快捷文本
      * 
@@ -44,18 +29,16 @@ public interface IFollowUpQuickTextService
     public int updateFollowUpQuickText(FollowUpQuickText followUpQuickText);
 
     /**
-     * 批量删除写跟进快捷文本
-     * 
-     * @param ids 需要删除的写跟进快捷文本主键集合
-     * @return 结果
-     */
-    public int deleteFollowUpQuickTextByIds(Long[] ids);
-
-    /**
      * 删除写跟进快捷文本信息
      * 
      * @param id 写跟进快捷文本主键
      * @return 结果
      */
     public int deleteFollowUpQuickTextById(Long id);
+
+    /**
+     * 跟进快捷文本列表
+     * @return
+     */
+    List<FollowUpQuickTextListVO> list();
 }

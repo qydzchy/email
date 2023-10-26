@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.FollowUpQuickText;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 写跟进快捷文本Mapper接口
@@ -49,7 +50,7 @@ public interface FollowUpQuickTextMapper
      * @param id 写跟进快捷文本主键
      * @return 结果
      */
-    public int deleteFollowUpQuickTextById(Long id);
+    public int deleteFollowUpQuickTextById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除写跟进快捷文本

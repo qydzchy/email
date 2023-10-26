@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.ruoyi.customer.domain.vo.BlackListRecordsListVO;
+import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -40,11 +41,11 @@ public class BlackListRecordsController extends BaseController
     /**
      * 删除建档黑名单
      */
-   /* @PreAuthorize("@ss.hasPermi('customer:black:list:records:delete')")
+    @PreAuthorize("@ss.hasPermi('customer:black:list:records:delete')")
     @Log(title = "建档黑名单", businessType = BusinessType.DELETE)
 	@PostMapping("/batch/delete")
     public AjaxResult delete(@RequestBody BatchDeleteDTO batchDeleteDTO)
     {
         return toAjax(blackListRecordsService.batchDeleteByIds(batchDeleteDTO.getIds()));
-    }*/
+    }
 }

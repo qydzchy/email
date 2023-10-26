@@ -1,8 +1,10 @@
-/*
 package com.ruoyi.web.controller.customer;
 
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.customer.domain.vo.FollowUpTemplatesListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,102 +21,86 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.customer.domain.FollowUpTemplates;
 import com.ruoyi.customer.service.IFollowUpTemplatesService;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
-*/
+import javax.annotation.Resource;
+
 /**
  * 写跟进模板Controller
  * 
  * @author tangJM.
  * @date 2023-10-25
- *//*
+ */
 
 @RestController
-@RequestMapping("/customer/customer")
+@RequestMapping("/customer/follow/up/templates")
 public class FollowUpTemplatesController extends BaseController
 {
-    @Autowired
+    @Resource
     private IFollowUpTemplatesService followUpTemplatesService;
 
-    */
-/**
+    /**
      * 查询写跟进模板列表
-     *//*
-
-    @PreAuthorize("@ss.hasPermi('customer:customer:list')")
+     */
+    @PreAuthorize("@ss.hasPermi('customer:follow:up:templates:list')")
     @GetMapping("/list")
-    public TableDataInfo list(FollowUpTemplates followUpTemplates)
+    public TableDataInfo list()
     {
-        startPage();
-        List<FollowUpTemplates> list = followUpTemplatesService.selectFollowUpTemplatesList(followUpTemplates);
+        List<FollowUpTemplatesListVO> list = followUpTemplatesService.list();
         return getDataTable(list);
     }
 
-    */
-/**
-     * 导出写跟进模板列表
-     *//*
-
-    @PreAuthorize("@ss.hasPermi('customer:customer:export')")
-    @Log(title = "写跟进模板", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, FollowUpTemplates followUpTemplates)
-    {
-        List<FollowUpTemplates> list = followUpTemplatesService.selectFollowUpTemplatesList(followUpTemplates);
-        ExcelUtil<FollowUpTemplates> util = new ExcelUtil<FollowUpTemplates>(FollowUpTemplates.class);
-        util.exportExcel(response, list, "写跟进模板数据");
-    }
-
-    */
-/**
-     * 获取写跟进模板详细信息
-     *//*
-
-    @PreAuthorize("@ss.hasPermi('customer:customer:query')")
-    @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
-        return success(followUpTemplatesService.selectFollowUpTemplatesById(id));
-    }
-
-    */
-/**
+    /**
      * 新增写跟进模板
-     *//*
-
-    @PreAuthorize("@ss.hasPermi('customer:customer:add')")
-    @Log(title = "写跟进模板", businessType = BusinessType.INSERT)
-    @PostMapping
+     */
+    @PreAuthorize("@ss.hasPermi('customer:follow:up:templates:add')")
+    @Log(title = "新增写跟进模板", businessType = BusinessType.INSERT)
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody FollowUpTemplates followUpTemplates)
     {
+        if (StringUtils.isBlank(followUpTemplates.getName())) {
+            throw new ServiceException("模板名称不能为空");
+        }
+        if (StringUtils.isBlank(followUpTemplates.getContent())) {
+            throw new ServiceException("模板内容不能为空");
+        }
+
         return toAjax(followUpTemplatesService.insertFollowUpTemplates(followUpTemplates));
     }
 
-    */
-/**
+    /**
      * 修改写跟进模板
-     *//*
-
-    @PreAuthorize("@ss.hasPermi('customer:customer:edit')")
-    @Log(title = "写跟进模板", businessType = BusinessType.UPDATE)
-    @PutMapping
+     */
+    @PreAuthorize("@ss.hasPermi('customer:follow:up:templates:edit')")
+    @Log(title = "修改写跟进模板", businessType = BusinessType.UPDATE)
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody FollowUpTemplates followUpTemplates)
     {
+        if (followUpTemplates.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (StringUtils.isBlank(followUpTemplates.getName())) {
+            throw new ServiceException("模板名称不能为空");
+        }
+        if (StringUtils.isBlank(followUpTemplates.getContent())) {
+            throw new ServiceException("模板内容不能为空");
+        }
+
         return toAjax(followUpTemplatesService.updateFollowUpTemplates(followUpTemplates));
     }
 
-    */
-/**
+    /**
      * 删除写跟进模板
-     *//*
-
-    @PreAuthorize("@ss.hasPermi('customer:customer:remove')")
-    @Log(title = "写跟进模板", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
+     */
+    @PreAuthorize("@ss.hasPermi('customer:follow:up:templates:delete')")
+    @Log(title = "删除写跟进模板", businessType = BusinessType.DELETE)
+	@PostMapping("/delete")
+    public AjaxResult delete(@RequestBody FollowUpTemplates followUpTemplates)
     {
-        return toAjax(followUpTemplatesService.deleteFollowUpTemplatesByIds(ids));
+        if (followUpTemplates.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return toAjax(followUpTemplatesService.deleteFollowUpTemplatesById(followUpTemplates.getId()));
     }
 }
-*/

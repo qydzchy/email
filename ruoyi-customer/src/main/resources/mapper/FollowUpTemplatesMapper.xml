@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null  and content != ''"> and content = #{content}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
+            and del_flag = '0'
         </where>
     </select>
     
@@ -80,9 +81,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteFollowUpTemplatesById" parameterType="Long">
-        delete from customer_follow_up_templates where id = #{id}
-    </delete>
+    <update id="deleteFollowUpTemplatesById">
+        update customer_follow_up_templates set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
 
     <delete id="deleteFollowUpTemplatesByIds" parameterType="String">
         delete from customer_follow_up_templates where id in 

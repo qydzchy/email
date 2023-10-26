@@ -2,6 +2,7 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.FollowUpTemplates;
+import com.ruoyi.customer.domain.vo.FollowUpTemplatesListVO;
 
 /**
  * 写跟进模板Service接口
@@ -11,22 +12,6 @@ import com.ruoyi.customer.domain.FollowUpTemplates;
  */
 public interface IFollowUpTemplatesService 
 {
-    /**
-     * 查询写跟进模板
-     * 
-     * @param id 写跟进模板主键
-     * @return 写跟进模板
-     */
-    public FollowUpTemplates selectFollowUpTemplatesById(Long id);
-
-    /**
-     * 查询写跟进模板列表
-     * 
-     * @param followUpTemplates 写跟进模板
-     * @return 写跟进模板集合
-     */
-    public List<FollowUpTemplates> selectFollowUpTemplatesList(FollowUpTemplates followUpTemplates);
-
     /**
      * 新增写跟进模板
      * 
@@ -44,18 +29,16 @@ public interface IFollowUpTemplatesService
     public int updateFollowUpTemplates(FollowUpTemplates followUpTemplates);
 
     /**
-     * 批量删除写跟进模板
-     * 
-     * @param ids 需要删除的写跟进模板主键集合
-     * @return 结果
-     */
-    public int deleteFollowUpTemplatesByIds(Long[] ids);
-
-    /**
      * 删除写跟进模板信息
      * 
      * @param id 写跟进模板主键
      * @return 结果
      */
     public int deleteFollowUpTemplatesById(Long id);
+
+    /**
+     * 跟进模板列表
+     * @return
+     */
+    List<FollowUpTemplatesListVO> list();
 }

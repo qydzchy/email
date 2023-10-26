@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.FollowUpTemplates;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 写跟进模板Mapper接口
@@ -49,7 +50,7 @@ public interface FollowUpTemplatesMapper
      * @param id 写跟进模板主键
      * @return 结果
      */
-    public int deleteFollowUpTemplatesById(Long id);
+    public int deleteFollowUpTemplatesById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除写跟进模板
