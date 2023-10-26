@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-company">
     <div class="bold fs-30 pb-4">
       客户设置
     </div>
@@ -91,5 +91,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page-company {
+  height: 100%;
+}
 
+::v-deep .el-tabs__content {
+  overflow-y: auto;
+  height: 76vh;
+  padding-right: 30px;
+}
 </style>

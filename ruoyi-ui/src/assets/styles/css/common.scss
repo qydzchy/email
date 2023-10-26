@@ -47,6 +47,15 @@
         padding-top: #{$size}px;
         padding-bottom: #{$size}px;
     }
+
+    .radius-#{$size}{
+      border-radius:#{$size}px;
+    }
+
+    .gap-#{$size}{
+      grid-gap: #{$size}px;
+      gap:#{$size}px;
+    }
 }
 
 .flex1 {
