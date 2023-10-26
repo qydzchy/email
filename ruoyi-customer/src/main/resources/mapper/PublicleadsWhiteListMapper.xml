@@ -60,6 +60,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="batchInsertPublicleadsWhiteList">
+        INSERT INTO customer_publicleads_white_list (user_id, create_id, create_by, create_time, update_id, update_by, update_time)
+        VALUES
+        <foreach collection="publicleadsWhiteListList" item="publicleadsWhiteList" separator=",">
+            (#{publicleadsWhiteList.userId}, #{publicleadsWhiteList.createId}, #{publicleadsWhiteList.createBy}, #{publicleadsWhiteList.createTime},
+             #{publicleadsWhiteList.updateId}, , #{publicleadsWhiteList.updateBy}, #{publicleadsWhiteList.updateTime})
+        </foreach>
+    </insert>
+
     <update id="updatePublicleadsWhiteList" parameterType="PublicleadsWhiteList">
         update customer_publicleads_white_list
         <trim prefix="SET" suffixOverrides=",">
@@ -75,9 +84,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePublicleadsWhiteListById" parameterType="Long">
-        delete from customer_publicleads_white_list where id = #{id}
-    </delete>
+    <update id="deletePublicleadsWhiteListById">
+        update customer_publicleads_white_list set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
 
     <delete id="deletePublicleadsWhiteListByIds" parameterType="String">
         delete from customer_publicleads_white_list where id in 

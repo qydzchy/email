@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Packet;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户分组Mapper接口
@@ -49,7 +50,7 @@ public interface PacketMapper
      * @param id 客户分组主键
      * @return 结果
      */
-    public int deletePacketById(Long id);
+    public int deletePacketById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除客户分组

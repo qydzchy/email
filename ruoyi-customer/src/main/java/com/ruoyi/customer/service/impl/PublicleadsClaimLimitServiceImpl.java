@@ -1,12 +1,22 @@
 package com.ruoyi.customer.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.customer.domain.dto.PublicleadsClaimLimitAddDTO;
+import com.ruoyi.customer.domain.vo.PublicleadsClaimLimitListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PublicleadsClaimLimitMapper;
 import com.ruoyi.customer.domain.PublicleadsClaimLimit;
 import com.ruoyi.customer.service.IPublicleadsClaimLimitService;
+
+import javax.annotation.Resource;
 
 /**
  * 领取上限Service业务层处理
@@ -17,69 +27,42 @@ import com.ruoyi.customer.service.IPublicleadsClaimLimitService;
 @Service
 public class PublicleadsClaimLimitServiceImpl implements IPublicleadsClaimLimitService 
 {
-    @Autowired
+    @Resource
     private PublicleadsClaimLimitMapper publicleadsClaimLimitMapper;
 
     /**
-     * 查询领取上限
-     * 
-     * @param id 领取上限主键
-     * @return 领取上限
-     */
-    @Override
-    public PublicleadsClaimLimit selectPublicleadsClaimLimitById(Long id)
-    {
-        return publicleadsClaimLimitMapper.selectPublicleadsClaimLimitById(id);
-    }
-
-    /**
-     * 查询领取上限列表
-     * 
-     * @param publicleadsClaimLimit 领取上限
-     * @return 领取上限
-     */
-    @Override
-    public List<PublicleadsClaimLimit> selectPublicleadsClaimLimitList(PublicleadsClaimLimit publicleadsClaimLimit)
-    {
-        return publicleadsClaimLimitMapper.selectPublicleadsClaimLimitList(publicleadsClaimLimit);
-    }
-
-    /**
      * 新增领取上限
-     * 
-     * @param publicleadsClaimLimit 领取上限
+     *
      * @return 结果
      */
     @Override
-    public int insertPublicleadsClaimLimit(PublicleadsClaimLimit publicleadsClaimLimit)
+    public int insertPublicleadsClaimLimit(PublicleadsClaimLimitAddDTO publicleadsClaimLimitAddDTO)
     {
-        publicleadsClaimLimit.setCreateTime(DateUtils.getNowDate());
-        return publicleadsClaimLimitMapper.insertPublicleadsClaimLimit(publicleadsClaimLimit);
-    }
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
 
-    /**
-     * 修改领取上限
-     * 
-     * @param publicleadsClaimLimit 领取上限
-     * @return 结果
-     */
-    @Override
-    public int updatePublicleadsClaimLimit(PublicleadsClaimLimit publicleadsClaimLimit)
-    {
-        publicleadsClaimLimit.setUpdateTime(DateUtils.getNowDate());
-        return publicleadsClaimLimitMapper.updatePublicleadsClaimLimit(publicleadsClaimLimit);
-    }
+        // 查询所有的白名单人员
+        List<PublicleadsClaimLimit> publicleadsClaimLimits = publicleadsClaimLimitMapper.selectPublicleadsClaimLimitList(new PublicleadsClaimLimit());
+        Set<Long> existUserIdSet = publicleadsClaimLimits.stream().map(PublicleadsClaimLimit::getUserId).collect(Collectors.toSet());
+        List<PublicleadsClaimLimit> publicleadsClaimLimitList = new ArrayList<>();
+        for (Long userIdParam : publicleadsClaimLimitAddDTO.getUserIdList()) {
+            if (!existUserIdSet.contains(userIdParam)) {
+                PublicleadsClaimLimit publicleadsClaimLimit = new PublicleadsClaimLimit();
+                publicleadsClaimLimit.setUserId(userIdParam);
+                publicleadsClaimLimit.setClaimLimit(publicleadsClaimLimitAddDTO.getClaimLimit());
+                publicleadsClaimLimit.setClaimPeriod(publicleadsClaimLimitAddDTO.getClaimPeriod());
+                publicleadsClaimLimit.setCreateId(userId);
+                publicleadsClaimLimit.setCreateBy(username);
+                publicleadsClaimLimit.setCreateTime(DateUtils.getNowDate());
+                publicleadsClaimLimit.setUpdateId(userId);
+                publicleadsClaimLimit.setUpdateBy(username);
+                publicleadsClaimLimit.setUpdateTime(DateUtils.getNowDate());
+                publicleadsClaimLimitList.add(publicleadsClaimLimit);
+            }
+        }
 
-    /**
-     * 批量删除领取上限
-     * 
-     * @param ids 需要删除的领取上限主键
-     * @return 结果
-     */
-    @Override
-    public int deletePublicleadsClaimLimitByIds(Long[] ids)
-    {
-        return publicleadsClaimLimitMapper.deletePublicleadsClaimLimitByIds(ids);
+        return publicleadsClaimLimitMapper.batchInsertPublicleadsClaimLimit(publicleadsClaimLimitList);
     }
 
     /**
@@ -91,6 +74,23 @@ public class PublicleadsClaimLimitServiceImpl implements IPublicleadsClaimLimitS
     @Override
     public int deletePublicleadsClaimLimitById(Long id)
     {
-        return publicleadsClaimLimitMapper.deletePublicleadsClaimLimitById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return publicleadsClaimLimitMapper.deletePublicleadsClaimLimitById(id, userId, username);
+    }
+
+    @Override
+    public List<PublicleadsClaimLimitListVO> list() {
+        List<PublicleadsClaimLimit> publicleadsClaimLimitList = publicleadsClaimLimitMapper.selectPublicleadsClaimLimitList(new PublicleadsClaimLimit());
+        List<PublicleadsClaimLimitListVO> publicleadsClaimLimitVOList = new ArrayList<>();
+        for (PublicleadsClaimLimit publicleadsClaimLimit : publicleadsClaimLimitList) {
+            PublicleadsClaimLimitListVO publicleadsClaimLimitVO = new PublicleadsClaimLimitListVO();
+            BeanUtils.copyProperties(publicleadsClaimLimitVO, publicleadsClaimLimit);
+            publicleadsClaimLimitVOList.add(publicleadsClaimLimitVO);
+        }
+
+        return publicleadsClaimLimitVOList;
     }
 }

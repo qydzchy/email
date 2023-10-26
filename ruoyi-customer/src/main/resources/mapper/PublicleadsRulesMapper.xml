@@ -95,9 +95,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePublicleadsRulesById" parameterType="Long">
-        delete from customer_publicleads_rules where id = #{id}
-    </delete>
+    <update id="deletePublicleadsRulesById">
+        update customer_publicleads_rules set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
 
     <delete id="deletePublicleadsRulesByIds" parameterType="String">
         delete from customer_publicleads_rules where id in 

@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsClaimLimit;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 领取上限Mapper接口
@@ -49,7 +50,7 @@ public interface PublicleadsClaimLimitMapper
      * @param id 领取上限主键
      * @return 结果
      */
-    public int deletePublicleadsClaimLimitById(Long id);
+    public int deletePublicleadsClaimLimitById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除领取上限
@@ -58,4 +59,11 @@ public interface PublicleadsClaimLimitMapper
      * @return 结果
      */
     public int deletePublicleadsClaimLimitByIds(Long[] ids);
+
+    /**
+     * 批量新增领取上限
+     * @param publicleadsClaimLimitList
+     * @return
+     */
+    int batchInsertPublicleadsClaimLimit(@Param("publicleadsClaimLimitList") List<PublicleadsClaimLimit> publicleadsClaimLimitList);
 }

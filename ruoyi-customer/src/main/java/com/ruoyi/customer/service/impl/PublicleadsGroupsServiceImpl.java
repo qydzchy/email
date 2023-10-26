@@ -1,12 +1,18 @@
 package com.ruoyi.customer.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PublicleadsGroupsMapper;
 import com.ruoyi.customer.domain.PublicleadsGroups;
 import com.ruoyi.customer.service.IPublicleadsGroupsService;
+
+import javax.annotation.Resource;
 
 /**
  * 公海分组Service业务层处理
@@ -17,32 +23,8 @@ import com.ruoyi.customer.service.IPublicleadsGroupsService;
 @Service
 public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService 
 {
-    @Autowired
+    @Resource
     private PublicleadsGroupsMapper publicleadsGroupsMapper;
-
-    /**
-     * 查询公海分组
-     * 
-     * @param id 公海分组主键
-     * @return 公海分组
-     */
-    @Override
-    public PublicleadsGroups selectPublicleadsGroupsById(Long id)
-    {
-        return publicleadsGroupsMapper.selectPublicleadsGroupsById(id);
-    }
-
-    /**
-     * 查询公海分组列表
-     * 
-     * @param publicleadsGroups 公海分组
-     * @return 公海分组
-     */
-    @Override
-    public List<PublicleadsGroups> selectPublicleadsGroupsList(PublicleadsGroups publicleadsGroups)
-    {
-        return publicleadsGroupsMapper.selectPublicleadsGroupsList(publicleadsGroups);
-    }
 
     /**
      * 新增公海分组
@@ -53,7 +35,17 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
     @Override
     public int insertPublicleadsGroups(PublicleadsGroups publicleadsGroups)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        publicleadsGroups.setDefaultGroupFlag(false);
+        publicleadsGroups.setCreateId(userId);
+        publicleadsGroups.setCreateBy(username);
         publicleadsGroups.setCreateTime(DateUtils.getNowDate());
+        publicleadsGroups.setUpdateId(userId);
+        publicleadsGroups.setUpdateBy(username);
+        publicleadsGroups.setUpdateTime(DateUtils.getNowDate());
         return publicleadsGroupsMapper.insertPublicleadsGroups(publicleadsGroups);
     }
 
@@ -66,20 +58,14 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
     @Override
     public int updatePublicleadsGroups(PublicleadsGroups publicleadsGroups)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        publicleadsGroups.setUpdateId(userId);
+        publicleadsGroups.setUpdateBy(username);
         publicleadsGroups.setUpdateTime(DateUtils.getNowDate());
         return publicleadsGroupsMapper.updatePublicleadsGroups(publicleadsGroups);
-    }
-
-    /**
-     * 批量删除公海分组
-     * 
-     * @param ids 需要删除的公海分组主键
-     * @return 结果
-     */
-    @Override
-    public int deletePublicleadsGroupsByIds(Long[] ids)
-    {
-        return publicleadsGroupsMapper.deletePublicleadsGroupsByIds(ids);
     }
 
     /**
@@ -91,6 +77,24 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
     @Override
     public int deletePublicleadsGroupsById(Long id)
     {
-        return publicleadsGroupsMapper.deletePublicleadsGroupsById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return publicleadsGroupsMapper.deletePublicleadsGroupsById(id, userId, username);
+    }
+
+    @Override
+    public List<PublicleadsGroupsListVO> list() {
+        List<PublicleadsGroups> publicleadsGroupsList = publicleadsGroupsMapper.selectPublicleadsGroupsList(new PublicleadsGroups());
+        List<PublicleadsGroupsListVO> publicleadsGroupsListVOList = new ArrayList<>();
+        for (PublicleadsGroups publicleadsGroups : publicleadsGroupsList) {
+            PublicleadsGroupsListVO publicleadsGroupsVO = new PublicleadsGroupsListVO();
+            publicleadsGroupsVO.setName(publicleadsGroups.getName());
+            publicleadsGroupsVO.setUserIds(publicleadsGroups.getUserIds());
+            publicleadsGroupsListVOList.add(publicleadsGroupsVO);
+        }
+
+        return publicleadsGroupsListVOList;
     }
 }

@@ -30,14 +30,6 @@ public interface IPacketService
     public int updatePacket(Packet packet);
 
     /**
-     * 批量删除客户分组
-     *
-     * @param ids 需要删除的客户分组主键集合
-     * @return 结果
-     */
-    public int deletePacketByIds(Long[] ids);
-
-    /**
      * 删除客户分组信息
      *
      * @param id 客户分组主键

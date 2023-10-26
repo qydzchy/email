@@ -1,12 +1,19 @@
 package com.ruoyi.customer.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.vo.StageListVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.StageMapper;
 import com.ruoyi.customer.domain.Stage;
 import com.ruoyi.customer.service.IStageService;
+
+import javax.annotation.Resource;
 
 /**
  * 客户阶段Service业务层处理
@@ -17,32 +24,8 @@ import com.ruoyi.customer.service.IStageService;
 @Service
 public class StageServiceImpl implements IStageService 
 {
-    @Autowired
+    @Resource
     private StageMapper stageMapper;
-
-    /**
-     * 查询客户阶段
-     * 
-     * @param id 客户阶段主键
-     * @return 客户阶段
-     */
-    @Override
-    public Stage selectStageById(Long id)
-    {
-        return stageMapper.selectStageById(id);
-    }
-
-    /**
-     * 查询客户阶段列表
-     * 
-     * @param stage 客户阶段
-     * @return 客户阶段
-     */
-    @Override
-    public List<Stage> selectStageList(Stage stage)
-    {
-        return stageMapper.selectStageList(stage);
-    }
 
     /**
      * 新增客户阶段
@@ -53,7 +36,16 @@ public class StageServiceImpl implements IStageService
     @Override
     public int insertStage(Stage stage)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        stage.setCreateId(userId);
+        stage.setCreateBy(username);
         stage.setCreateTime(DateUtils.getNowDate());
+        stage.setUpdateId(userId);
+        stage.setUpdateBy(username);
+        stage.setUpdateTime(DateUtils.getNowDate());
         return stageMapper.insertStage(stage);
     }
 
@@ -66,20 +58,14 @@ public class StageServiceImpl implements IStageService
     @Override
     public int updateStage(Stage stage)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        stage.setUpdateId(userId);
+        stage.setUpdateBy(username);
         stage.setUpdateTime(DateUtils.getNowDate());
         return stageMapper.updateStage(stage);
-    }
-
-    /**
-     * 批量删除客户阶段
-     * 
-     * @param ids 需要删除的客户阶段主键
-     * @return 结果
-     */
-    @Override
-    public int deleteStageByIds(Long[] ids)
-    {
-        return stageMapper.deleteStageByIds(ids);
     }
 
     /**
@@ -91,6 +77,24 @@ public class StageServiceImpl implements IStageService
     @Override
     public int deleteStageById(Long id)
     {
-        return stageMapper.deleteStageById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return stageMapper.deleteStageById(id, userId, username);
+    }
+
+    @Override
+    public List<StageListVO> list() {
+        List<Stage> stageList = stageMapper.selectStageList(new Stage());
+        List<StageListVO> stageListVOList = new ArrayList<>();
+
+        for (Stage stage : stageList) {
+            StageListVO stageListVO = new StageListVO();
+            BeanUtils.copyProperties(stage, stageListVO);
+            stageListVOList.add(stageListVO);
+        }
+
+        return stageListVOList;
     }
 }

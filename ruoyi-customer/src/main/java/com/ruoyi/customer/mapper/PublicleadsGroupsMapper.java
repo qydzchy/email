@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsGroups;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 公海分组Mapper接口
@@ -49,7 +50,7 @@ public interface PublicleadsGroupsMapper
      * @param id 公海分组主键
      * @return 结果
      */
-    public int deletePublicleadsGroupsById(Long id);
+    public int deletePublicleadsGroupsById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除公海分组

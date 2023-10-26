@@ -2,6 +2,7 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsGroups;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 
 /**
  * 公海分组Service接口
@@ -11,22 +12,6 @@ import com.ruoyi.customer.domain.PublicleadsGroups;
  */
 public interface IPublicleadsGroupsService 
 {
-    /**
-     * 查询公海分组
-     * 
-     * @param id 公海分组主键
-     * @return 公海分组
-     */
-    public PublicleadsGroups selectPublicleadsGroupsById(Long id);
-
-    /**
-     * 查询公海分组列表
-     * 
-     * @param publicleadsGroups 公海分组
-     * @return 公海分组集合
-     */
-    public List<PublicleadsGroups> selectPublicleadsGroupsList(PublicleadsGroups publicleadsGroups);
-
     /**
      * 新增公海分组
      * 
@@ -44,18 +29,16 @@ public interface IPublicleadsGroupsService
     public int updatePublicleadsGroups(PublicleadsGroups publicleadsGroups);
 
     /**
-     * 批量删除公海分组
-     * 
-     * @param ids 需要删除的公海分组主键集合
-     * @return 结果
-     */
-    public int deletePublicleadsGroupsByIds(Long[] ids);
-
-    /**
      * 删除公海分组信息
      * 
      * @param id 公海分组主键
      * @return 结果
      */
     public int deletePublicleadsGroupsById(Long id);
+
+    /**
+     * 公海分组列表
+     * @return
+     */
+    List<PublicleadsGroupsListVO> list();
 }

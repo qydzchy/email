@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Stage;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户阶段Mapper接口
@@ -49,7 +50,7 @@ public interface StageMapper
      * @param id 客户阶段主键
      * @return 结果
      */
-    public int deleteStageById(Long id);
+    public int deleteStageById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除客户阶段

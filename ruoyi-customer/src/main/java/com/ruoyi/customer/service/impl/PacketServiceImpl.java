@@ -2,7 +2,10 @@ package com.ruoyi.customer.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.PacketListVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -33,7 +36,16 @@ public class PacketServiceImpl implements IPacketService
     @Override
     public int insertPacket(Packet packet)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        packet.setCreateId(userId);
+        packet.setCreateBy(username);
         packet.setCreateTime(DateUtils.getNowDate());
+        packet.setUpdateId(userId);
+        packet.setUpdateBy(username);
+        packet.setUpdateTime(DateUtils.getNowDate());
         return packetMapper.insertPacket(packet);
     }
 
@@ -46,20 +58,14 @@ public class PacketServiceImpl implements IPacketService
     @Override
     public int updatePacket(Packet packet)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        packet.setUpdateId(userId);
+        packet.setUpdateBy(username);
         packet.setUpdateTime(DateUtils.getNowDate());
         return packetMapper.updatePacket(packet);
-    }
-
-    /**
-     * 批量删除客户分组
-     * 
-     * @param ids 需要删除的客户分组主键
-     * @return 结果
-     */
-    @Override
-    public int deletePacketByIds(Long[] ids)
-    {
-        return packetMapper.deletePacketByIds(ids);
     }
 
     /**
@@ -71,7 +77,11 @@ public class PacketServiceImpl implements IPacketService
     @Override
     public int deletePacketById(Long id)
     {
-        return packetMapper.deletePacketById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return packetMapper.deletePacketById(id, userId, username);
     }
 
     @Override

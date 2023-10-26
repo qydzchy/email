@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsRules;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 移入公海规则Mapper接口
@@ -49,7 +50,7 @@ public interface PublicleadsRulesMapper
      * @param id 移入公海规则主键
      * @return 结果
      */
-    public int deletePublicleadsRulesById(Long id);
+    public int deletePublicleadsRulesById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除移入公海规则

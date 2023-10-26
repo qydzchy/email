@@ -1,12 +1,18 @@
 package com.ruoyi.customer.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.vo.PublicleadsReasonListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PublicleadsReasonMapper;
 import com.ruoyi.customer.domain.PublicleadsReason;
 import com.ruoyi.customer.service.IPublicleadsReasonService;
+
+import javax.annotation.Resource;
 
 /**
  * 移入公海原因Service业务层处理
@@ -17,32 +23,8 @@ import com.ruoyi.customer.service.IPublicleadsReasonService;
 @Service
 public class PublicleadsReasonServiceImpl implements IPublicleadsReasonService 
 {
-    @Autowired
+    @Resource
     private PublicleadsReasonMapper publicleadsReasonMapper;
-
-    /**
-     * 查询移入公海原因
-     * 
-     * @param id 移入公海原因主键
-     * @return 移入公海原因
-     */
-    @Override
-    public PublicleadsReason selectPublicleadsReasonById(Long id)
-    {
-        return publicleadsReasonMapper.selectPublicleadsReasonById(id);
-    }
-
-    /**
-     * 查询移入公海原因列表
-     * 
-     * @param publicleadsReason 移入公海原因
-     * @return 移入公海原因
-     */
-    @Override
-    public List<PublicleadsReason> selectPublicleadsReasonList(PublicleadsReason publicleadsReason)
-    {
-        return publicleadsReasonMapper.selectPublicleadsReasonList(publicleadsReason);
-    }
 
     /**
      * 新增移入公海原因
@@ -53,7 +35,16 @@ public class PublicleadsReasonServiceImpl implements IPublicleadsReasonService
     @Override
     public int insertPublicleadsReason(PublicleadsReason publicleadsReason)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        publicleadsReason.setCreateId(userId);
+        publicleadsReason.setCreateBy(username);
         publicleadsReason.setCreateTime(DateUtils.getNowDate());
+        publicleadsReason.setUpdateId(userId);
+        publicleadsReason.setUpdateBy(username);
+        publicleadsReason.setUpdateTime(DateUtils.getNowDate());
         return publicleadsReasonMapper.insertPublicleadsReason(publicleadsReason);
     }
 
@@ -66,20 +57,14 @@ public class PublicleadsReasonServiceImpl implements IPublicleadsReasonService
     @Override
     public int updatePublicleadsReason(PublicleadsReason publicleadsReason)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        publicleadsReason.setUpdateId(userId);
+        publicleadsReason.setUpdateBy(username);
         publicleadsReason.setUpdateTime(DateUtils.getNowDate());
         return publicleadsReasonMapper.updatePublicleadsReason(publicleadsReason);
-    }
-
-    /**
-     * 批量删除移入公海原因
-     * 
-     * @param ids 需要删除的移入公海原因主键
-     * @return 结果
-     */
-    @Override
-    public int deletePublicleadsReasonByIds(Long[] ids)
-    {
-        return publicleadsReasonMapper.deletePublicleadsReasonByIds(ids);
     }
 
     /**
@@ -91,6 +76,28 @@ public class PublicleadsReasonServiceImpl implements IPublicleadsReasonService
     @Override
     public int deletePublicleadsReasonById(Long id)
     {
-        return publicleadsReasonMapper.deletePublicleadsReasonById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return publicleadsReasonMapper.deletePublicleadsReasonById(id, userId, username);
+    }
+
+    /**
+     * 查询移入公海原因列表
+     * @return
+     */
+    @Override
+    public List<PublicleadsReasonListVO> list() {
+        List<PublicleadsReason> publicleadsReasonList = publicleadsReasonMapper.selectPublicleadsReasonList(new PublicleadsReason());
+        List<PublicleadsReasonListVO> publicleadsReasonVOList = new ArrayList<>();
+        for (PublicleadsReason publicleadsReason : publicleadsReasonList) {
+            PublicleadsReasonListVO publicleadsReasonVO = new PublicleadsReasonListVO();
+            publicleadsReasonVO.setId(publicleadsReason.getId());
+            publicleadsReasonVO.setReason(publicleadsReason.getReason());
+            publicleadsReasonVOList.add(publicleadsReasonVO);
+        }
+
+        return publicleadsReasonVOList;
     }
 }

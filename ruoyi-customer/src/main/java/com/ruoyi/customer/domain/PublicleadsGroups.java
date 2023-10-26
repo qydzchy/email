@@ -23,8 +23,13 @@ public class PublicleadsGroups extends BaseEntity
     private String name;
 
     /** 分组成员ID（逗号拼接） */
-    @Excel(name = "分组成员ID", readConverterExp = "逗=号拼接")
+    @Excel(name = "分组成员ID", readConverterExp = "逗号拼接")
     private String userIds;
+
+    /**
+     * 默认分组 0.否 1.是
+     */
+    private Boolean defaultGroupFlag;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -64,7 +69,16 @@ public class PublicleadsGroups extends BaseEntity
     {
         return userIds;
     }
-    public void setDelFlag(String delFlag) 
+
+    public Boolean getDefaultGroupFlag() {
+        return defaultGroupFlag;
+    }
+
+    public void setDefaultGroupFlag(Boolean defaultGroupFlag) {
+        this.defaultGroupFlag = defaultGroupFlag;
+    }
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
@@ -91,6 +105,7 @@ public class PublicleadsGroups extends BaseEntity
     {
         return updateId;
     }
+
 
     @Override
     public String toString() {

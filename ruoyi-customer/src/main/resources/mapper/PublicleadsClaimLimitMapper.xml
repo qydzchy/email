@@ -68,6 +68,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="batchInsertPublicleadsClaimLimit">
+        INSERT INTO customer_publicleads_claim_limit (user_id, claimLimit, claimPeriod, create_id, create_by, create_time, update_id, update_by, update_time)
+        VALUES
+        <foreach collection="publicleadsClaimLimitList" item="publicleadsClaimLimit" separator=",">
+            (#{publicleadsClaimLimit.userId}, #{publicleadsClaimLimit.claimLimit}, #{publicleadsClaimLimit.claimPeriod},
+            #{publicleadsClaimLimit.createId}, #{publicleadsClaimLimit.createBy}, #{publicleadsClaimLimit.createTime},
+            #{publicleadsClaimLimit.updateId}, , #{publicleadsClaimLimit.updateBy}, #{publicleadsClaimLimit.updateTime})
+        </foreach>
+    </insert>
+
     <update id="updatePublicleadsClaimLimit" parameterType="PublicleadsClaimLimit">
         update customer_publicleads_claim_limit
         <trim prefix="SET" suffixOverrides=",">
@@ -85,9 +95,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePublicleadsClaimLimitById" parameterType="Long">
-        delete from customer_publicleads_claim_limit where id = #{id}
-    </delete>
+    <update id="deletePublicleadsClaimLimitById">
+        update customer_publicleads_claim_limit set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
 
     <delete id="deletePublicleadsClaimLimitByIds" parameterType="String">
         delete from customer_publicleads_claim_limit where id in 

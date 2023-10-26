@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsWhiteList;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 移入公海白名单Mapper接口
@@ -49,7 +50,7 @@ public interface PublicleadsWhiteListMapper
      * @param id 移入公海白名单主键
      * @return 结果
      */
-    public int deletePublicleadsWhiteListById(Long id);
+    public int deletePublicleadsWhiteListById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除移入公海白名单
@@ -58,4 +59,11 @@ public interface PublicleadsWhiteListMapper
      * @return 结果
      */
     public int deletePublicleadsWhiteListByIds(Long[] ids);
+
+    /**
+     * 批量新增移入公海白名单
+     * @param publicleadsWhiteListList
+     * @return
+     */
+    int batchInsertPublicleadsWhiteList(@Param("publicleadsWhiteListList") List<PublicleadsWhiteList> publicleadsWhiteListList);
 }

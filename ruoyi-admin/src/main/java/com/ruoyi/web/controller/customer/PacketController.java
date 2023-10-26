@@ -9,7 +9,6 @@ import com.ruoyi.customer.domain.vo.PacketListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +48,7 @@ public class PacketController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:packet:add')")
     @Log(title = "新增客户分组", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody Packet packet)
     {
         if (StringUtils.isBlank(packet.getName())) {
@@ -68,7 +67,7 @@ public class PacketController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:packet:edit')")
     @Log(title = "修改客户分组", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody Packet packet)
     {
         if (packet.getId() == null) {
@@ -91,7 +90,7 @@ public class PacketController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:packet:delete')")
     @Log(title = "删除客户分组", businessType = BusinessType.DELETE)
-    @PostMapping("/{id}")
+    @PostMapping("/delete")
     public AjaxResult delete(@RequestBody Packet packet)
     {
         if (packet.getId() == null) {
