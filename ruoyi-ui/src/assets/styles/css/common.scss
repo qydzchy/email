@@ -82,6 +82,12 @@
     align-items: flex-end;
 }
 
+.flex-start{
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
 .flex-end {
     display: flex;
     justify-content: flex-end;

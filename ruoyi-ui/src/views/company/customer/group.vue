@@ -17,12 +17,12 @@
       <el-button type="primary" round>新建分组</el-button>
     </div>
     <el-table
-        v-if="refreshTable"
-        v-loading="loading"
-        :data="menuList"
-        row-key="menuId"
-        :default-expand-all="isExpandAll"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      v-if="refreshTable"
+      v-loading="loading"
+      :data="menuList"
+      row-key="menuId"
+      :default-expand-all="isExpandAll"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column prop="menuName" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作" width="200" align="center" fixed="right" class-name="small-padding fixed-width">
@@ -33,15 +33,34 @@
           <el-button size="mini" type="text">
             编辑
           </el-button>
-          <el-button size="mini" type="text">
-            删除
-          </el-button>
+          <el-popover
+            class="ml-10"
+            width="260"
+            trigger="click"
+            placement="left-start"
+            :ref="'popover-'+scope.$index"
+          >
+            <div class="flex-column">
+              <div class="flex-middle">
+                <i class="el-icon-info" style="color: #E6A23C"></i>
+                <span class="pl-4">{{ `确定要删除分组【${scope.row.menuName}】吗？` }}</span>
+              </div>
+              <div class="flex-middle flex-end mt-16">
+                <el-button round size="small" @click="hidePopover(scope.$index)">取消</el-button>
+                <el-button type="danger" round size="small">删除</el-button>
+              </div>
+            </div>
+            <el-button size="mini" type="text" slot="reference">
+              删除
+            </el-button>
+          </el-popover>
+
         </template>
       </el-table-column>
     </el-table>
     <div class="flex-middle mt-10">
       <el-checkbox v-model="checkChildren">子分组必选</el-checkbox>
-      <el-tooltip placement="top" >
+      <el-tooltip placement="top">
         <div slot="content" class="group-tooltip">
           <p>勾选“子分组必选”后，则不允许只选择填入父级分组。</p>
           <p></p>
@@ -54,7 +73,7 @@
 </template>
 
 <script>
-import {delMenu, getMenu} from "@/api/system/menu";
+import {delMenu, getMenu, listMenu} from "@/api/system/menu";
 import TableNext from '@/components/TableNext'
 
 export default {
@@ -66,15 +85,20 @@ export default {
       menuList: [], // 菜单表格树数据
       isExpandAll: false, // 是否展开，默认全部折叠
       checkChildren: true, // 选择子分组
+      visible: false, // 选择删除提示
     }
   },
   mounted() {
-    console.log('into group')
+    this.getList()
   },
   methods: {
     /** 获取数据 **/
     getList() {
-
+      this.loading = true;
+      listMenu({}).then(response => {
+        this.menuList = this.handleTree(response.data, "menuId");
+        this.loading = false;
+      });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -107,6 +131,9 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {
       });
+    },
+    hidePopover(index){
+      this.$refs[`popover-${index}`].doClose();
     }
   }
 }
@@ -139,7 +166,8 @@ export default {
     margin-block-end: 0;
   }
 }
-.group-tooltip{
+
+.group-tooltip {
   width: 200px;
 }
 </style>

@@ -24,28 +24,45 @@
           </div>
         </div>
         <div class="flex-middle">
-          <el-button class="kind-button" size="medium" round>添加模板</el-button>
+          <el-button class="kind-button" size="medium" round @click="followTextDialog=true">添加模板</el-button>
         </div>
 
       </div>
       <div class="mt-16 flex-wrap gap-16">
-        <!--    TODO遍历数据    -->
-        <div class="follow-text-template radius-5" style="width:33.333%">
+        <div class="follow-text-template radius-5" style="width:33.333%" v-for="item in followTextList"
+             :key="item.id">
           <div class="wrap px-16 py-14 radius-4 flex-column">
             <div class="card-head flex-middle space-between">
-              <div class="fs-14 bold">模板名称：模板名称测试</div>
+              <div class="fs-14 bold">模板名称：{{ item.templateName }}</div>
               <el-row :gutter="2">
-                <el-button type="text">编辑</el-button>
-                <el-button type="text">删除</el-button>
+                <el-button type="text" @click="onEdit('followText',item)">编辑</el-button>
+                <DelPopover @onDelete="confirmDelTemplate"/>
               </el-row>
             </div>
             <div class="card-main fs-14 gray-text">
-              模板内容测试
+              {{ item.templateContent }}
             </div>
           </div>
         </div>
       </div>
     </el-card>
+    <!--  跟进模板表单  -->
+    <el-dialog title="添加快捷模板" width="500px" style="margin-top: 25vh" :visible.sync="followTextDialog"
+               destroy-on-close>
+      <el-form :model="followTextForm" ref="followTextRef" :rules="followTextRules">
+        <el-form-item label="模板名称" prop="templateName">
+          <el-input v-model="followTextForm.templateName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="模板内容" prop="templateContent">
+          <el-input type="textarea" v-model="followTextForm.templateContent" :rows="4" resize="none" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button round @click="onCancel('followText')">取 消</el-button>
+        <el-button type="primary" round @click="onConfirm('followText','followTextRef')">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 写跟进快捷文本 -->
     <el-card class="mb-20" shadow="hover">
       <div class="space-between">
@@ -59,38 +76,150 @@
           </div>
         </div>
         <div class="flex-middle">
-          <el-button class="kind-button" size="medium" round>添加文本分组</el-button>
+          <el-button class="kind-button" size="medium" round @click="fastTextDialog=true">添加文本分组</el-button>
         </div>
 
       </div>
       <div class="mt-16 flex-wrap gap-16">
-        <!--    TODO遍历数据    -->
-        <div class="follow-text-template radius-5 mb-20" v-for="item in 6" :key="item">
+        <div class="follow-text-template radius-5 mb-20" v-for="item in fastTextList" :key="item.id">
           <div class="px-16 py-14 radius-4 flex-column">
             <div class="card-head flex-middle space-between">
-              <div class="fs-14 bold">模板名称：模板名称测试</div>
+              <div class="fs-14 bold">模板名称：{{ item.groupName }}</div>
               <el-row :gutter="2">
-                <el-button type="text">编辑</el-button>
-                <el-button type="text">删除</el-button>
+                <el-button type="text" @click="onEdit('fastText',item)">编辑</el-button>
+                <DelPopover :id="item" @onDelete="confirmDelText"/>
               </el-row>
             </div>
             <div class="flex-middle gap-8">
-              <el-tag effect="plain">hello</el-tag>
-              <el-tag effect="plain">你好</el-tag>
+              <el-tag effect="plain" v-for="(tag,idx) in item.textTag" :key="idx">{{ tag }}</el-tag>
             </div>
           </div>
         </div>
       </div>
     </el-card>
+
+
+    <!--  快捷文本表单  -->
+    <el-dialog title="添加快捷文本" width="500px" style="margin-top: 25vh" :visible.sync="fastTextDialog"
+               destroy-on-close>
+      <el-form :model="fastTextForm" ref="fastTextRef" :rules="fastTextRules">
+        <el-form-item label="文本分组名称" prop="groupName">
+          <el-input v-model="fastTextForm.groupName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="文本标签" prop="groupName">
+          <el-select
+            style="width: 100%"
+            v-model="fastTextForm.textTag"
+            autocomplete="off"
+            multiple
+            filterable
+            allow-create
+            default-first-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button round @click="onCancel('fastText')">取 消</el-button>
+        <el-button type="primary" round @click="onConfirm('fastText','fastTextRef')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
   </div>
 </template>
 
 <script>
+import DelPopover from "./DelPopover.vue";
+
+const iniFollowTextForm = {
+  templateName: '',
+  templateContent: ''
+}
+
+const iniFastTextForm = {
+  groupName: '',
+  textTag: ''
+}
+
 export default {
+  components: {
+    DelPopover
+  },
   data() {
     return {
       // 写跟进时间
-      followTextRadio: 1
+      followTextRadio: 1,
+      followTextList: [
+        {id: 1, templateName: '模板名称测试', templateContent: '模板内容测试'}
+      ],
+      followTextDialog: false,
+      followTextForm: iniFollowTextForm,
+      followTextRules: {
+        templateName: [
+          {required: true, message: '请输入文本分组名称', trigger: 'blur'},
+        ],
+        templateContent: [
+          {required: true, message: '请输入文本标签', trigger: 'blur'},
+        ],
+      },
+      // 快捷文本
+      fastTextList: [
+        {id: 1, groupName: '模板名称测试', textTag: ['hello', '你好', 'test']}
+      ],
+      fastTextDialog: false,
+      fastTextForm: iniFastTextForm,
+      fastTextRules: {
+        groupName: [
+          {required: true, message: '请输入文本分组名称', trigger: 'blur'},
+        ],
+        textTag: [
+          {required: true, message: '请添加文本标签', trigger: 'change'},
+        ],
+      }
+    }
+  },
+  methods: {
+    confirmDelTemplate(id) {
+
+    },
+    confirmDelText(id) {
+      console.log(id)
+    },
+    // 编辑
+    onEdit(type, item) {
+      if (type === 'followText') {
+        this.followTextForm = {...item}
+        this.followTextDialog = true
+      } else if (type === 'fastText') {
+        this.fastTextForm = {...item}
+        this.fastTextDialog = true
+      }
+    },
+    // 确认
+    onConfirm(type, formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (type === 'followText') {
+            console.log(this.followTextForm)
+            // this.followTextDialog = false
+          } else if (type === 'fastText') {
+            console.log(this.fastTextForm)
+            // this.fastTextDialog = false
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    // 取消
+    onCancel(type) {
+      if (type === 'followText') {
+        this.followTextForm = iniFollowTextForm
+        this.followTextDialog = false
+      } else if (type === 'fastText') {
+        this.fastTextForm = iniFastTextForm
+        this.fastTextDialog = false
+      }
     }
   }
 }

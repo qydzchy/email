@@ -1,0 +1,59 @@
+<template>
+  <el-popover
+    class="ml-10"
+    width="200"
+    trigger="click"
+    :placement="placement"
+    v-model="visible"
+  >
+    <div class="flex-column">
+      <div class="flex-middle">
+        <i class="el-icon-info" style="color: #E6A23C"></i>
+        <span class="pl-4">{{ content }}</span>
+      </div>
+      <div class="flex-middle flex-end mt-16">
+        <el-button round size="small" @click="visible=false">取消</el-button>
+        <el-button type="danger" round size="small" @click="confirmDelete">删除</el-button>
+      </div>
+    </div>
+    <el-button size="mini" type="text" slot="reference">
+      删除
+    </el-button>
+  </el-popover>
+</template>
+
+<script>
+export default {
+  props: {
+    id: {
+      type: String | Number,
+      required: false,
+    },
+    placement: {
+      type: String | Number,
+      default: 'left-start',
+      required: false
+    },
+    content: {
+      type: String,
+      default: '确定要删除吗？',
+      required: false
+    }
+  },
+  data() {
+    return {
+      visible: false
+    }
+  },
+  methods: {
+    confirmDelete() {
+      this.visible = false
+      this.$emit('onDelete', this.id)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
