@@ -28,6 +28,11 @@ public class FollowUpRules extends BaseEntity
     @Excel(name = "类型")
     private Integer type;
 
+    /**
+     * 标志 0.未选 1.选中
+     */
+    private Boolean activeFlag;
+
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
@@ -66,7 +71,16 @@ public class FollowUpRules extends BaseEntity
     {
         return type;
     }
-    public void setDelFlag(String delFlag) 
+
+    public Boolean getActiveFlag() {
+        return activeFlag;
+    }
+
+    public void setActiveFlag(Boolean activeFlag) {
+        this.activeFlag = activeFlag;
+    }
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }

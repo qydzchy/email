@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.BlackListRecords;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 建档黑名单Mapper接口
@@ -58,4 +59,11 @@ public interface BlackListRecordsMapper
      * @return 结果
      */
     public int deleteBlackListRecordsByIds(Long[] ids);
+
+    /**
+     * 批量删除建档黑名单
+     * @param ids
+     * @return
+     */
+    int batchDeleteByIds(@Param("ids") List<Long> ids);
 }

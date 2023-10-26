@@ -75,6 +75,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="batchDeleteByIds">
+        update customer_black_list_records set del_flag = '2' where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
     <delete id="deleteBlackListRecordsById" parameterType="Long">
         delete from customer_black_list_records where id = #{id}
     </delete>

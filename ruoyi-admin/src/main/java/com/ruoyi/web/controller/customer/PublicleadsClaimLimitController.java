@@ -69,7 +69,7 @@ public class PublicleadsClaimLimitController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:claim:limit:delete')")
     @Log(title = "删除领取上限", businessType = BusinessType.DELETE)
 	@PostMapping("/delete")
-    public AjaxResult remove(@RequestBody PublicleadsClaimLimit publicleadsClaimLimit)
+    public AjaxResult delete(@RequestBody PublicleadsClaimLimit publicleadsClaimLimit)
     {
         if (publicleadsClaimLimit.getId() == null) {
             throw new ServiceException("ID不能为空");

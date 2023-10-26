@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.FollowUpRules;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户跟进规则Mapper接口
@@ -58,4 +59,11 @@ public interface FollowUpRulesMapper
      * @return 结果
      */
     public int deleteFollowUpRulesByIds(Long[] ids);
+
+    /**
+     * 更新标志状态
+     * @param id
+     * @return
+     */
+    int updateActiveFlag(@Param("id") Long id);
 }
