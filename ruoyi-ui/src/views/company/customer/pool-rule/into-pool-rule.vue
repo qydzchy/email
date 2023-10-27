@@ -32,8 +32,7 @@
       </el-form>
     </div>
     <div>
-      <TableNext :list="poolRuleList" :columns="poolRuleColumns" :extra-option="{height:'260'}"
-                 :customer-empty="customerEmpty"/>
+      <TableNext :list="poolRuleList" :columns="poolRuleColumns" :extra-option="{height:'260'}"/>
     </div>
     <el-dialog
       width="500px"
@@ -121,7 +120,6 @@ export default {
   },
   data() {
     return {
-      customerEmpty: <div>暂无数据</div>,
       // 移入公海规则
       poolRuleForm: {
         beforehand: true,
@@ -143,7 +141,6 @@ export default {
           label: '启用状态',
           field: 'status',
           render: (row, field) => {
-
             return <el-switch value={field} onChange={() => this.handleRowStatus(row)}></el-switch>
           },
         },
@@ -220,7 +217,7 @@ export default {
       },
     }
   },
-  methods:{
+  methods: {
     // table switch
     handleRowStatus(row) {
       this.poolRuleList.map((val) => {
@@ -251,9 +248,5 @@ export default {
 <style lang="scss">
 .pool-rule-tooltip {
   width: 210px;
-}
-.form-item {
-  width: 100%;
-  display: inline-block;
 }
 </style>

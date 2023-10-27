@@ -54,7 +54,13 @@ export default {
           props={{...this.extraOption}}
           on={{...this.extraEvent}}>
           // 自定义empty
-          {this.customerEmpty ? <template slot="empty">{this.customerEmpty}</template> : null}
+          {
+            this.customerEmpty ?
+              <template slot="empty">{this.customerEmpty}</template>
+              : <template slot="empty">
+                <el-empty imageSize={100}></el-empty>
+              </template>
+          }
           // 列渲染
           {this.columns?.map((item) => {
             return (

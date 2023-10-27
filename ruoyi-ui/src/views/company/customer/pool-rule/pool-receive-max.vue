@@ -11,8 +11,7 @@
       </div>
     </div>
     <div class="mt-10">
-      <TableNext :list="receiveMaxList" :columns="receiveMaxColumn" :extra-option="{height:'260'}"
-      />
+      <TableNext :list="receiveMaxList" :columns="receiveMaxColumn" :extra-option="{height:'260'}"/>
     </div>
   </div>
 </template>

@@ -49,4 +49,8 @@ export default {
   color: #0064ff;
   border-color: #0064ff;
 }
+.form-item {
+  width: 100%;
+  display: inline-block;
+}
 </style>

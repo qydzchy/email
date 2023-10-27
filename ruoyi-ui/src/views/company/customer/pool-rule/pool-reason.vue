@@ -9,42 +9,41 @@
       </div>
     </div>
     <div class="mt-10">
-      <TableNext :list="poolReasonList" :columns="poolReasonColumns" :extra-option="{height:'260'}"
-                 :customer-empty="customerEmpty"/>
+      <ElTableDraggable handle=".el-icon-s-grid">
+        <el-table row-key="customer-status" :data="poolReasonList">
+          <el-table-column width="40">
+            <i class="el-icon-s-grid" style="cursor: grab"/>
+          </el-table-column>
+          <el-table-column prop="reason" label="原因" align="left">
+
+          </el-table-column>
+          <el-table-column label="操作" width="200" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <DelPopover/>
+            </template>
+          </el-table-column>
+        </el-table>
+      </ElTableDraggable>
+
     </div>
   </div>
 </template>
 
 <script>
-import TableNext from "@/components/TableNext/index.vue";
+import ElTableDraggable from "el-table-draggable";
 import {EmptyStr} from "@/utils/tools";
+import DelPopover from "@/views/company/customer/DelPopover.vue";
+
 
 export default {
-  components: {TableNext},
-  data(){
+  components: {DelPopover, ElTableDraggable},
+  data() {
     return {
-      poolReasonList: [],
-      poolReasonColumns: [
-        {
-          label: '原因',
-          field: 'reason',
-          align: 'left',
-          render: (_row, field) => EmptyStr(field),
-        },
-        {
-          label: '操作',
-          field: 'operate',
-          width: '140',
-          render: (row) => {
-            return (
-              <el-row>
-                <el-button type='text'>
-                  查看
-                </el-button>
-              </el-row>
-            );
-          },
-        },
+      customerEmpty: <div>暂无数据</div>,
+      poolReasonList: [
+        {id: 1, reason: '123'},
+        {id: 2, reason: '12345'},
+        {id: 3, reason: '123456'},
       ],
     }
   }

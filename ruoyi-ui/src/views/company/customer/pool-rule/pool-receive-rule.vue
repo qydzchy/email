@@ -3,7 +3,6 @@
     <div class="space-between">
       <div class="flex-middle">
         <span class="fs-13 bold">公海领取规则</span>
-
         <span class="fs-13 ml-10 gray-text">把客户从公海移至私海需遵守的规则</span>
       </div>
     </div>
