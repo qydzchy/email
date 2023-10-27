@@ -31,7 +31,7 @@
               <DelPopover v-show="!scope.row.isEdit" :id="scope.row.id"/>
               <el-row v-show="scope.row.isEdit">
                 <el-button type="text" @click="onCancelInput(scope.row.id)">取消</el-button>
-                <el-button type="text" @click="onSaveInput(scope.row.reason)">保存</el-button>
+                <el-button type="text" @click="onSaveInput(scope.row)">保存</el-button>
               </el-row>
             </template>
           </el-table-column>
@@ -86,12 +86,13 @@ export default {
 
       this.editStatus = false
     },
-    onSaveInput(reason) {
+    onSaveInput(item) {
       this.tableLoading = true
       setTimeout(() => {
+        const tableIndex = this.poolReasonList.findIndex(val => val.id === item?.id)
+        this.$set(this.poolReasonList, tableIndex, {...item, isEdit: false})
         this.tableLoading = false
         this.editStatus = false
-        this.poolReasonList[this.poolReasonList.length - 1].isEdit = false
       }, 2000)
     }
   }

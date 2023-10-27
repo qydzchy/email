@@ -1,13 +1,19 @@
 <template>
   <div class="page-origin">
-    <div class="bold fs-30 pb-4">
+    <div class="bold fs-26 pb-4">
       来源设置
+    </div>
+    <div class="my-14 flex-middle space-between">
+      <div class="fs-14 gray-text">* 应用于：线索来源、客户来源、商机来源</div>
+      <el-button class="mr-20" type="primary" round size="medium" :disabled="editStatus" @click="addOrigin">添加来源
+      </el-button>
     </div>
     <div class="table-card">
       <TableNext
-        :list="originList"
-        :columns="originColumns"
-        :extra-option="{
+          v-loading="tableLoading"
+          :list="originList"
+          :columns="originColumns"
+          :extra-option="{
           height:'80vh',
           rowKey:'menuId',
           defaultExpandAll:isExpandAll,
@@ -23,22 +29,36 @@
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
+import DelPopover from "@/components/DevPopover/index.vue"
 import {EmptyStr} from "@/utils/tools";
 import {listMenu} from "@/api/system/menu";
+import {debounce} from "@/utils";
 
 export default {
   components: {
-    TableNext
+    TableNext,
+    DelPopover
   },
   data() {
     return {
       originList: [],
       originColumns: [
         {
-          label: '成员',
+          label: '来源名称',
           field: 'menuName',
           align: 'left',
-          render: (_row, field) => EmptyStr(field),
+          render: (row, field) => {
+
+            return <div style="width:100%">
+              <span style={{display: row?.isEdit ? 'none' : 'block'}}>{field}</span>
+              <el-input
+                  value={field}
+                  style={{display: row?.isEdit ? 'block' : 'none'}}
+                  onInput={(value) => this.handleOriginNameInput(row, value)}
+                  placeholder="请输入原因">
+              </el-input>
+            </div>
+          },
         },
         {
           label: '操作',
@@ -49,26 +69,33 @@ export default {
           render: (row) => {
             const visible = !(+row?.visible)
             return (
-              visible ?
-                <el-row>
-                  <el-button type='text'>
-                    编辑
-                  </el-button>
-                  <el-button type='text'>
-                    删除
-                  </el-button>
-                </el-row> :
-                <div>
-                  <el-tooltip placement="top" content="不可编辑和删除">
-                    <i class="el-icon-lock gray-text"></i>
-                  </el-tooltip>
-                </div>
+                visible ?
+                    <div>
+                      <el-row style={{display: row?.isEdit ? 'none' : 'block'}}>
+                        <el-button type='text' onClick={() => this.onEdit(row?.id)}>
+                          编辑
+                        </el-button>
+                        <DelPopover id={row?.id}/>
+                      </el-row>
+                      <el-row style={{display: row?.isEdit ? 'block' : 'none'}}>
+                        <el-button type="text" onClick={() => this.onCancelInput(row?.id)}>取消</el-button>
+                        <el-button type="text" onClick={() => this.onSaveInput(row)}>保存</el-button>
+                      </el-row>
+                    </div>
+                    :
+                    <div>
+                      <el-tooltip placement="top" content="不可编辑和删除">
+                        <i class="el-icon-lock gray-text"></i>
+                      </el-tooltip>
+                    </div>
             );
           },
         },
       ],
       // 是否展开，默认全部折叠
       isExpandAll: false,
+      editStatus: false,
+      tableLoading: false,
     }
   },
   mounted() {
@@ -77,11 +104,48 @@ export default {
   methods: {
     /** 获取数据 **/
     getList() {
-      this.loading = true;
+      this.tableLoading = true;
       listMenu({}).then(response => {
         this.originList = this.handleTree(response.data, "menuId");
-        this.loading = false;
+        console.log(this.originList)
+        this.tableLoading = false;
       });
+    },
+    addOrigin() {
+      this.originList.unshift({id: -1, menuName: '', isEdit: true})
+      this.editStatus = true
+    },
+    onEdit(id) {
+      const tableIndex = this.originList.findIndex(val => val.id === id)
+      this.$set(this.originList, tableIndex, {...this.originList[tableIndex], isEdit: true})
+      this.editStatus = true
+    },
+    onCancelInput(id) {
+      if (id === -1) {
+        this.originList.shift()
+      } else {
+        this.originList.map(val => {
+          if (val.id === id) {
+            val.isEdit = false
+          }
+          return val
+        })
+      }
+
+      this.editStatus = false
+    },
+    onSaveInput(item) {
+      this.tableLoading = true
+      setTimeout(() => {
+        const tableIndex = this.originList.findIndex(val => val.id === item?.id)
+        this.$set(this.originList, tableIndex, {...item, isEdit: false})
+        this.tableLoading = false
+        this.editStatus = false
+      }, 2000)
+    },
+    handleOriginNameInput(item, value) {
+      const tableIndex = this.originList.findIndex(val => val.id === item?.id)
+      this.$set(this.originList, tableIndex, {...item, menuName: value})
     },
   }
 }
@@ -89,6 +153,10 @@ export default {
 
 <style lang="scss" scoped>
 .page-origin {
+  ::v-deep .el-table__cell > .cell {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .table-card {
