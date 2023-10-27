@@ -25,25 +25,26 @@
       />
     </div>
     <el-dialog
-      :visible.sync="whiteListDialog"
-      width="400px"
-      style="margin-top: 25vh"
-      title="添加白名单"
-      destroy-on-close
+        :visible.sync="whiteListDialog"
+        width="400px"
+        style="margin-top: 25vh"
+        title="添加白名单"
+        destroy-on-close
     >
       <el-form>
-        <el-form-item label="选择人员">
+        <el-form-item label="选择人员" props="member">
           <div class="form-item">
-            <el-select style="width:100%" :popper-append-to-body="false" multiple class="select-tree">
+            <el-select class="select-tree" style="width:100%" v-model="whiteListForm.member"
+                       :popper-append-to-body="false" multiple>
               <el-option :value="emptyOption" style="height:auto">
                 <el-tree
-                  :data="data"
-                  show-checkbox
-                  node-key="id"
-                  ref="tree"
-                  highlight-current
-                  :default-expand-all="false"
-                  :props="defaultProps"></el-tree>
+                    :data="data"
+                    show-checkbox
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :default-expand-all="false"
+                    :props="defaultProps"></el-tree>
               </el-option>
 
             </el-select>
@@ -66,6 +67,9 @@ import DelPopover from "../DelPopover.vue";
 import {EmptyStr} from "@/utils/tools";
 import {treeList} from "@/mock";
 
+const initWhiteListForm = {
+  member: ''
+}
 export default {
   components: {TableNext},
   data() {
@@ -87,7 +91,7 @@ export default {
           width: '140',
           render: (row) => {
             return (
-              <DelPopover id={row?.id}/>
+                <DelPopover id={row?.id}/>
             );
           },
         },
@@ -95,6 +99,7 @@ export default {
       memberOption: [],
       chooseMember: [],
       whiteListDialog: false,
+      whiteListForm: initWhiteListForm,
       emptyOption: [],
       data: treeList,
       defaultProps: {

@@ -4,7 +4,7 @@
       <div class="flex-middle">
         <span class="fs-13 bold">公海分组</span>
         <span
-          class="fs-13 ml-10 gray-text">可以通过公海分组来隔离公司的客户资源；公海分组中的客户被移入公海后，仅对公海分组的成员可见</span>
+            class="fs-13 ml-10 gray-text">可以通过公海分组来隔离公司的客户资源；公海分组中的客户被移入公海后，仅对公海分组的成员可见</span>
       </div>
       <div class="mr-10">
         <el-button class="add-rule-btn" round size="mini" @click="poolGroupDialog = true">新增分组</el-button>
@@ -15,30 +15,36 @@
       />
     </div>
     <el-dialog
-      :visible.sync="poolGroupDialog"
-      width="400px"
-      style="margin-top: 25vh"
-      :title="poolGroupDialogTitle"
-      destroy-on-close
+        :visible.sync="poolGroupDialog"
+        width="400px"
+        style="margin-top: 25vh"
+        :title="poolGroupDialogTitle"
+        destroy-on-close
     >
       <el-form :model="poolGroupFrom">
-        <el-form-item label="分组名称">
+        <el-form-item label="分组名称" props="name">
           <el-input :disabled="poolGroupFrom.isView" v-model="poolGroupFrom.name"
                     placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item label="分组成员">
+        <el-form-item label="分组成员" props="member">
           <div class="form-item">
-            <el-select v-if="!poolGroupFrom.isView" style="width:100%" :popper-append-to-body="false" multiple
-                       class="select-tree">
+            <el-select
+                multiple
+                style="width:100%"
+                class="select-tree"
+                v-model="poolGroupFrom.memberList"
+                v-if="!poolGroupFrom.isView"
+                :popper-append-to-body="false"
+            >
               <el-option :value="emptyOption" style="height:auto">
                 <el-tree
-                  :data="data"
-                  show-checkbox
-                  node-key="id"
-                  ref="tree"
-                  highlight-current
-                  :default-expand-all="false"
-                  :props="defaultProps"></el-tree>
+                    :data="data"
+                    show-checkbox
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :default-expand-all="false"
+                    :props="defaultProps"></el-tree>
               </el-option>
 
             </el-select>
@@ -130,28 +136,28 @@ export default {
           width: '120',
           render: (row) => {
             return (
-              <div>
-                {
-                  row?.default ?
-                    <div class="flex-middle flex-center">
-                      <el-button type="text" onClick={() => this.onView(row)}>查看</el-button>
-                      <el-tooltip placement="top">
-                        <div slot="content">
-                          <div class="fs-14 lineH-24">
-                            默认公海分组不支持编辑
-                          </div>
+                <div>
+                  {
+                    row?.default ?
+                        <div class="flex-middle flex-center">
+                          <el-button type="text" onClick={() => this.onView(row)}>查看</el-button>
+                          <el-tooltip placement="top">
+                            <div slot="content">
+                              <div class="fs-14 lineH-24">
+                                默认公海分组不支持编辑
+                              </div>
+                            </div>
+                            <i class="el-icon-warning-outline ml-6"></i>
+                          </el-tooltip>
                         </div>
-                        <i class="el-icon-warning-outline ml-6"></i>
-                      </el-tooltip>
-                    </div>
-                    : <el-row v-else>
-                      <el-button type='text' onClick={() => this.onEdit(row)}>
-                        编辑
-                      </el-button>
-                      <DelPopover id={row?.id}/>
-                    </el-row>
-                }
-              </div>
+                        : <el-row v-else>
+                          <el-button type='text' onClick={() => this.onEdit(row)}>
+                            编辑
+                          </el-button>
+                          <DelPopover id={row?.id}/>
+                        </el-row>
+                  }
+                </div>
 
             );
           },

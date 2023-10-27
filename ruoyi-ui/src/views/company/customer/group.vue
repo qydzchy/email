@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pool-group">
     <div class="info-tip flex-middle">
       <div><i class="el-icon-warning mr-6" style="color: #1c76fd"></i></div>
       <div class="fs-12 wrap" style="color: #666666">
@@ -51,7 +51,7 @@
       </el-tooltip>
     </div>
     <!-- dialog -->
-    <el-dialog :title="groupDialogTitle" width="460px" style="margin-top: 25vh" :visible.sync="groupDialog"
+    <el-dialog :title="groupDialogTitle" width="460px" :visible.sync="groupDialog"
                destroy-on-close>
       <el-form :model="groupDialogForm" class="group-dialog-form">
         <el-form-item label="父级分组" prop="groupName">
@@ -76,17 +76,31 @@
                 <i class="el-icon-warning-outline ml-6"></i>
               </el-tooltip>
             </div>
-            <el-cascader
+            <el-radio-group class="flex-column gap-10" v-model="groupDialogForm.all">
+              <el-radio :label="1">全部成员</el-radio>
+              <el-radio :label="0">指定成员</el-radio>
+            </el-radio-group>
+            <el-select
+              multiple
+              style="width:100%"
               v-model="groupDialogForm.group_id"
-              :options="groupCanUseOption"
-              :props="{
-                multiple: true,
-                checkStrictly: true
-              }"
-              collapse-tags
-              filterable
-              clearable>
-            </el-cascader>
+              class="select-tree mt-10"
+              :popper-append-to-body="false"
+              :disabled="!!groupDialogForm.all"
+              filterable>
+              <el-option :value="emptyOption" style="height:auto">
+                <el-tree
+                  :data="data"
+                  show-checkbox
+                  node-key="id"
+                  ref="tree"
+                  highlight-current
+                  :default-expand-all="false"
+                  :props="defaultProps"></el-tree>
+              </el-option>
+
+            </el-select>
+
           </div>
 
         </el-form-item>
@@ -103,14 +117,15 @@
 import {delMenu, getMenu, listMenu} from "@/api/system/menu";
 import DelPopover from "./DelPopover.vue";
 import TableNext from '@/components/TableNext'
-import {cascaderList} from "@/mock/index";
+import {cascaderList, treeList} from "@/mock/index";
 
 const initGroupForm = {
   echoName: '',
   name: '',
   parent_id: -1,
   group_id: '',
-  owner_ids: []
+  owner_ids: [],
+  all: 1
 }
 
 export default {
@@ -130,7 +145,13 @@ export default {
       groupDialog: false, //
       groupDialogTitle: '新建客户分组',
       groupDialogForm: initGroupForm,
-      groupCanUseOption: []
+      groupCanUseOption: [],
+      emptyOption: [],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      data: treeList
     }
   },
   mounted() {
@@ -245,4 +266,14 @@ export default {
 ::v-deep .el-dialog__header {
   border-bottom: 1px solid #dadada;
 }
+
+.pool-group {
+  .select-tree {
+    .el-select-dropdown__item {
+      padding: 0 !important;
+      overflow-y: auto;
+    }
+  }
+}
+
 </style>
