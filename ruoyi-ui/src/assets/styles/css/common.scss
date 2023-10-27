@@ -18,6 +18,10 @@
     .lineH-#{$var}{
         line-height: #{$var}px;
     }
+
+    .tooltip-W-#{$var}{
+        width: #{$var}px;
+    }
 }
 
 @for $size from 1 through 50 {

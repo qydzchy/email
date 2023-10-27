@@ -16,7 +16,7 @@
           <span class="fs-13 ml-10 gray-text">客户自动移入公海客户的规则</span>
         </div>
         <div class="mr-10">
-          <el-button class="add-rule-btn" round size="mini">添加规则</el-button>
+          <el-button class="add-rule-btn" round size="mini" @click="poolRuleDialog = true">添加规则</el-button>
         </div>
       </div>
       <div class="flex-middle mt-10">
@@ -37,6 +37,68 @@
         <TableNext :list="poolRuleList" :columns="poolRuleColumns" :extra-option="{height:'260'}"
                    :customer-empty="customerEmpty"/>
       </div>
+      <el-dialog
+        width="500px"
+        destroy-on-close
+        :title="poolRuleDialogTitle"
+        :visible.sync="poolRuleDialog"
+      >
+        <el-form v-model="poolRuleFormSecond">
+          <el-form-item label="规则名称">
+            <el-input v-model="poolRuleFormSecond.ruleName" placeholder="请输入规则名称"/>
+          </el-form-item>
+          <el-form-item label="生效客群">
+            <div class="form-item">
+              <el-cascader
+                style="width: 100%"
+                v-model="poolRuleFormSecond.effectGroup"
+                :options="[]"
+                :props="{ multiple: true }"
+                collapse-tags
+                clearable filterable/>
+            </div>
+          </el-form-item>
+          <el-form-item label="客户状态" required>
+            <div class="form-item flex-middle">
+              <el-input-number style="width: 40%" v-model="poolRuleFormSecond.intoConditionDay"
+                               controls-position="right"/>
+              <span class="px-6">天内</span>
+              <el-select style="width: 40%" v-model="poolRuleFormSecond.intoConditionType">
+                <el-option
+                  v-for="item in intoTypeOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+              <el-tooltip>
+                <div slot="content" class="fs-12 lineH-24 tooltip-W-200">
+                  上次联系时间读取的是客户「最近联系时间」字段信息，详情可见“客户设置-客户跟进规则
+                </div>
+                <i class="el-icon-question pl-10"></i>
+              </el-tooltip>
+            </div>
+          </el-form-item>
+          <el-form-item label="开始时间">
+            <div class="form-item">
+              <el-date-picker
+                type="date"
+                style="width: 100%"
+                placeholder="选择日期时间"
+                clearable
+                :picker-options="pickerOptions"
+                v-model="poolRuleFormSecond.startTime"
+              >
+              </el-date-picker>
+            </div>
+          </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button round @click="onCancelPoolRule">取 消</el-button>
+          <el-button type="primary" round>确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- 移入公海白名单 -->
     <div class="mb-20">
@@ -130,7 +192,7 @@
       <div class="mt-10">
         <span class="fs-13 gray-text">是否显示公海联系人 （注：隐藏公海联系人后公海客户将不允许被编辑）</span>
       </div>
-      <div class="mt-10">
+      <div class="my-40">
         <el-radio-group v-model="showSettingRadio">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
@@ -175,11 +237,22 @@
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
+import DelPopover from "./DelPopover.vue"
 import {EmptyStr} from "@/utils/tools";
 
+const initPoolRuleForm2 = {
+  status: false,
+  ruleName: '',
+  intoCondition: '',
+  effectGroup: '',
+  startTime: '',
+  intoConditionDay: '',
+  intoConditionType: 0
+}
 export default {
   components: {
-    TableNext
+    TableNext,
+    DelPopover
   },
   data() {
     return {
@@ -189,12 +262,25 @@ export default {
         beforehand: true,
         beforehandDay: 7
       },
-      poolRuleList: [],
+      poolRuleList: [
+        {
+          id: 1,
+          status: true,
+          ruleName: 'tjm公海管理',
+          effectGroup: ['未分组', '未分组2', '未分组3', '未分组4', '未分组5', '未分6'],
+          startTime: '2023-10-17',
+          intoConditionDay: 10,
+          intoConditionType: 0,
+        }
+      ],
       poolRuleColumns: [
         {
           label: '启用状态',
           field: 'status',
-          render: (_row, field) => EmptyStr(field),
+          render: (row, field) => {
+
+            return <el-switch value={field} onChange={() => this.handleRowStatus(row)}></el-switch>
+          },
         },
         {
           label: '规则名称',
@@ -203,13 +289,25 @@ export default {
         },
         {
           label: '移入条件',
-          field: 'into',
-          render: (_row, field) => EmptyStr(field),
+          field: 'intoCondition',
+          render: (row, _field) => {
+            const {intoConditionDay, intoConditionType} = row
+            const type = this.intoTypeOptionMap[intoConditionType]
+            return <div>
+              {intoConditionDay}天{type}
+            </div>
+
+          },
         },
         {
           label: '生效客群',
-          field: 'group',
-          render: (_row, field) => EmptyStr(field),
+          field: 'effectGroup',
+          showOverflowTooltip: true,
+          render: (_row, field) => {
+            return field.length ?
+              <div>{field.join(',')}</div>
+              : '---'
+          },
         },
         {
           label: '开始时间',
@@ -220,19 +318,41 @@ export default {
           label: '操作',
           field: 'operate',
           render: (row) => {
+            const disabled = row?.status
             return (
-              <el-row>
-                <el-button type='text'>
-                  编辑
-                </el-button>
-                <el-button type='text'>
-                  删除
-                </el-button>
-              </el-row>
+              <el-tooltip disabled={!disabled} content="公海规则开启后，不允许编辑和删除">
+                <el-row>
+                  <el-button type='text' disabled={disabled} onClick={() => this.onModifyPoolRule(row)}>
+                    编辑
+                  </el-button>
+                  <DelPopover id={row.id} btnDisabled={disabled}/>
+
+                </el-row>
+              </el-tooltip>
+
             );
           },
         },
       ],
+      poolRuleDialog: false,
+      poolRuleDialogTitle: '新建移入公海规则',
+      poolRuleFormSecond: initPoolRuleForm2,
+      intoTypeOption: [
+        {
+          value: 0,
+          label: '未联系'
+        }, {
+          value: 1,
+          label: '未成交'
+        },
+      ],
+      intoTypeOptionMap: {
+        0: '未联系',
+        1: '未成交',
+      },
+      pickerOptions: {
+        disabledDate: this.disabledDate
+      },
       // 移入公海白名单
       whitelist: [],
       whiteListColumn: [
@@ -395,6 +515,30 @@ export default {
   },
   mounted() {
 
+  },
+  methods: {
+    // table switch
+    handleRowStatus(row) {
+      this.poolRuleList.map((val) => {
+        if (val.id === row.id) {
+          val.status = !row.status
+        }
+        return val
+      })
+    },
+    // 禁用之前的时间
+    disabledDate(time) {
+      return time.getTime() < Date.now()
+    },
+    onModifyPoolRule(row) {
+      this.poolRuleDialogTitle = '编辑移入公海规则'
+      this.poolRuleFormSecond = row
+      this.poolRuleDialog = true
+    },
+    onCancelPoolRule() {
+      this.poolRuleDialogTitle = '新建移入公海规则'
+      this.poolRuleFormSecond = initPoolRuleForm2
+    }
   }
 }
 </script>
@@ -407,5 +551,10 @@ export default {
 .add-rule-btn {
   color: #0064ff;
   border-color: #0064ff;
+}
+
+.form-item {
+  width: 100%;
+  display: inline-block;
 }
 </style>

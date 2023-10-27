@@ -47,10 +47,12 @@
 
 <script>
 import CustomerSetting from './customer/index.vue'
+import OriginSetting from './origin/index.vue'
 
 export default {
   components: {
-    CustomerSetting
+    CustomerSetting,
+    OriginSetting
   },
   data() {
     return {
@@ -82,7 +84,7 @@ export default {
     },
     compareRoute(componentName) {
       // 路由匹配动态选择组件
-      const companyRouteList = ['customer-setting']
+      const companyRouteList = ['customer-setting','origin-setting']
       if (companyRouteList.includes(componentName)) {
         this.isComponent = componentName
       } else {

@@ -51,10 +51,11 @@
                destroy-on-close>
       <el-form :model="followTextForm" ref="followTextRef" :rules="followTextRules">
         <el-form-item label="模板名称" prop="templateName">
-          <el-input v-model="followTextForm.templateName" autocomplete="off"></el-input>
+          <el-input v-model="followTextForm.templateName" autocomplete="off" placeholder="请输入模板名称"></el-input>
         </el-form-item>
         <el-form-item label="模板内容" prop="templateContent">
-          <el-input type="textarea" v-model="followTextForm.templateContent" :rows="4" resize="none" autocomplete="off"></el-input>
+          <el-input type="textarea" v-model="followTextForm.templateContent" :rows="4" resize="none"
+                    autocomplete="off" placeholder="请输入模板内容"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -104,17 +105,19 @@
                destroy-on-close>
       <el-form :model="fastTextForm" ref="fastTextRef" :rules="fastTextRules">
         <el-form-item label="文本分组名称" prop="groupName">
-          <el-input v-model="fastTextForm.groupName" autocomplete="off"></el-input>
+          <el-input v-model="fastTextForm.groupName" autocomplete="off" placeholder="请输入文本分组名称"></el-input>
         </el-form-item>
         <el-form-item label="文本标签" prop="groupName">
           <el-select
             style="width: 100%"
-            v-model="fastTextForm.textTag"
             autocomplete="off"
             multiple
+            clearable
             filterable
             allow-create
-            default-first-option>
+            default-first-option
+            v-model="fastTextForm.textTag"
+            placeholder="请输入文本标签">
           </el-select>
         </el-form-item>
       </el-form>

@@ -1,13 +1,13 @@
 <template>
   <el-popover
     class="ml-10"
-    width="200"
+    :width="width"
     trigger="click"
     :placement="placement"
     v-model="visible"
   >
     <div class="flex-column">
-      <div class="flex-middle">
+      <div>
         <i class="el-icon-info" style="color: #E6A23C"></i>
         <span class="pl-4">{{ content }}</span>
       </div>
@@ -16,7 +16,7 @@
         <el-button type="danger" round size="small" @click="confirmDelete">删除</el-button>
       </div>
     </div>
-    <el-button size="mini" type="text" slot="reference">
+    <el-button size="mini" type="text" slot="reference" :disabled="btnDisabled">
       删除
     </el-button>
   </el-popover>
@@ -34,10 +34,20 @@ export default {
       default: 'left-start',
       required: false
     },
+    width: {
+      type: String | Number,
+      default: '200',
+      required: false
+    },
     content: {
       type: String,
       default: '确定要删除吗？',
       required: false
+    },
+    btnDisabled:{
+      type:Boolean,
+      default:false,
+      required:false,
     }
   },
   data() {

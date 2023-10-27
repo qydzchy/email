@@ -29,9 +29,7 @@
             <el-button size="mini" type="text" @click="onEdit(scope.row)">
               编辑
             </el-button>
-            <el-button size="mini" type="text">
-              删除
-            </el-button>
+            <DelPopover/>
           </template>
         </el-table-column>
       </el-table>
@@ -69,6 +67,7 @@
 
 <script>
 import ElTableDraggable from "el-table-draggable";
+import DelPopover from "./DelPopover.vue";
 
 const initStageForm = {
   stageName: '',
@@ -77,6 +76,7 @@ const initStageForm = {
 export default {
   components: {
     ElTableDraggable,
+    DelPopover
   },
   data() {
     return {
