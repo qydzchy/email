@@ -150,7 +150,7 @@ export default {
                             <i class="el-icon-warning-outline ml-6"></i>
                           </el-tooltip>
                         </div>
-                        : <el-row v-else>
+                        : <el-row>
                           <el-button type='text' onClick={() => this.onEdit(row)}>
                             编辑
                           </el-button>
