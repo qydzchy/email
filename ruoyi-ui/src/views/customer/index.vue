@@ -4,7 +4,7 @@
       <div class="left-wrap">
         <div class="menu" :class="{'is-collapsed':collapsed}">
           <div class="space-between pt-4 pl-10 pr-8 pb-8 borderBox">
-            <div class="fs-18 bold" style="color: #0c163d">企业管理</div>
+            <div class="fs-18 bold" style="color: #0c163d">客户</div>
             <div class="arrow-left-icon pointer" @click="collapsed=true">
               <i class="el-icon-d-arrow-left"></i>
             </div>
@@ -39,27 +39,30 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
+
 export default {
+  components: {},
   data() {
     return {
       collapsed: false,
       activeCollapsed: ['1', '2'],
       menuList: [
         {
-          title: '销售管理',
+          title: '菜单',
           name: '1',
           icon: 'el-icon-s-operation',
           subList: [
-            {title: '客户设置', linkTo: 'customer-setting'},
-            {title: '来源设置', linkTo: 'origin-setting'},
+            {title: '客户列表', linkTo: 'list'},
+            {title: '公海客户', linkTo: 'public'},
+            {title: '客户查重', linkTo: 'query'},
+            {title: '客户设置', linkTo: 'config'},
           ],
         }
       ],
-      isComponent: ''
+      isComponent: '',
     }
   },
   mounted() {
@@ -69,7 +72,7 @@ export default {
     handleCollapsed() {
     },
     jumpTo(path) {
-      this.$router.push('/company/' + path)
+      this.$router.push('/customer/' + path)
     },
   }
 }
