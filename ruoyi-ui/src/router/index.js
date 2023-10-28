@@ -30,158 +30,214 @@ import Layout from '@/layout'
 
 // 公共路由
 export const constantRoutes = [
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect')
-      }
-    ]
-  },
-  {
-    path: '/login',
-    component: () => import('@/views/login'),
-    hidden: true
-  },
-  {
-    path: '/register',
-    component: () => import('@/views/register'),
-    hidden: true
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/error/404'),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/error/401'),
-    hidden: true
-  },
-  {
-    path: '',
-    component: Layout,
-    redirect: 'index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/index'),
-        name: 'Index',
-        meta: {title: '首页', icon: 'dashboard', affix: true}
-      }
-    ]
-  },
-  {
-    path: '/user',
-    component: Layout,
-    hidden: true,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'profile',
-        component: () => import('@/views/system/user/profile/index'),
-        name: 'Profile',
-        meta: {title: '个人中心', icon: 'user'}
-      }
-    ]
-  },
-  {
-    path: '/company',
-    component: Layout,
-    hidden: true,
-    redirect: '/company/customer-setting',
-    children: [
-      {
-        path: 'customer-setting',
-        component: () => import('@/views/company/index'),
+    {
+        path: '/redirect',
+        component: Layout,
+        hidden: true,
+        children: [
+            {
+                path: '/redirect/:path(.*)',
+                component: () => import('@/views/redirect')
+            }
+        ]
+    },
+    {
+        path: '/login',
+        component: () => import('@/views/login'),
+        hidden: true
+    },
+    {
+        path: '/register',
+        component: () => import('@/views/register'),
+        hidden: true
+    },
+    {
+        path: '/404',
+        component: () => import('@/views/error/404'),
+        hidden: true
+    },
+    {
+        path: '/401',
+        component: () => import('@/views/error/401'),
+        hidden: true
+    },
+    {
+        path: '',
+        component: Layout,
+        redirect: 'index',
+        children: [
+            {
+                path: 'index',
+                component: () => import('@/views/index'),
+                name: 'Index',
+                meta: {title: '首页', icon: 'dashboard', affix: true}
+            }
+        ]
+    },
+    {
+        path: '/user',
+        component: Layout,
+        hidden: true,
+        redirect: 'noredirect',
+        children: [
+            {
+                path: 'profile',
+                component: () => import('@/views/system/user/profile/index'),
+                name: 'Profile',
+                meta: {title: '个人中心', icon: 'user'}
+            }
+        ]
+    },
+    {
+        path: '/company',
+        component: Layout,
+        hidden: true,
+        children: [
+            {
+                path: "",
+                component: () => import('@/views/company/index'),
+                redirect: '/company/customer-setting',
+                name: 'Company',
+                meta: {title: '企业管理'},
+                children: [
+                    {
+                        path: 'customer-setting',
+                        component: () => import('@/views/company/customer/index.vue'),
+                        name: 'CustomerSetting',
+                        meta: {title: '客户设置', is: 'customer-setting', dontAnimate: true,},
+                    },
+                    {
+                        path: 'origin-setting',
+                        component: () => import('@/views/company/origin/index.vue'),
+                        name: 'OriginSetting',
+                        meta: {title: '来源设置', is: 'origin-setting', dontAnimate: true,}
+                    },
+                ]
+            },
+        ]
+    },
+    {
+        path: '/customer',
+        component: Layout,
         name: 'Customer',
-        meta: {title: '客户设置', is: 'customer-setting'}
-      },
-      {
-        path: 'origin-setting',
-        component: () => import('@/views/company/index'),
-        name: 'Origin',
-        meta: {title: '来源设置', is: 'origin-setting'}
-      },
-    ]
-  }
+        hidden: true,
+        children: [
+            {
+                path: '',
+                component: () => import('@/views/customer/index'),
+                redirect: '/customer/list',
+                name: 'Customer',
+                meta: {title: '客户'},
+                children: [
+                    {
+                        path: 'list',
+                        name: 'CustomerList',
+                        meta: {title: '客户列表', is: 'list', dontAnimate: true,},
+                        component: () => import('@/views/customer/list/index.vue'),
+                    },
+                    {
+                        path: 'personal/:id',
+                        name: 'CustomerPersonal',
+                        meta: { is: 'list', dontAnimate: true},
+                        component: () => import('@/views/customer/personal/index.vue'),
+                    },
+                    {
+                        path: 'public',
+                        name: 'CustomerPublic',
+                        meta: {title: '公海客户', is: 'public', dontAnimate: true,},
+                        component: () => import('@/views/customer/public/index.vue'),
+                    },
+                    {
+                        path: 'query',
+                        name: 'CustomerQuery',
+                        meta: {title: '客户查重', is: 'query', dontAnimate: true,},
+                        component: () => import('@/views/customer/query/index.vue'),
+                    },
+                    {
+                        path: 'config',
+                        name: 'CustomerConfig',
+                        meta: {title: '客户设置', is: 'config', dontAnimate: true,},
+                        component: () => import('@/views/customer/config/index.vue'),
+                    },
+                ]
+            },
+
+        ]
+    },
 ]
 
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes = [
-  {
-    path: '/system/user-auth',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:user:edit'],
-    children: [
-      {
-        path: 'role/:userId(\\d+)',
-        component: () => import('@/views/system/user/authRole'),
-        name: 'AuthRole',
-        meta: {title: '分配角色', activeMenu: '/system/user'}
-      }
-    ]
-  },
-  {
-    path: '/system/role-auth',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:role:edit'],
-    children: [
-      {
-        path: 'user/:roleId(\\d+)',
-        component: () => import('@/views/system/role/authUser'),
-        name: 'AuthUser',
-        meta: {title: '分配用户', activeMenu: '/system/role'}
-      }
-    ]
-  },
-  {
-    path: '/system/dict-data',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:dict:list'],
-    children: [
-      {
-        path: 'index/:dictId(\\d+)',
-        component: () => import('@/views/system/dict/data'),
-        name: 'Data',
-        meta: {title: '字典数据', activeMenu: '/system/dict'}
-      }
-    ]
-  },
-  {
-    path: '/monitor/job-log',
-    component: Layout,
-    hidden: true,
-    permissions: ['monitor:job:list'],
-    children: [
-      {
-        path: 'index/:jobId(\\d+)',
-        component: () => import('@/views/monitor/job/log'),
-        name: 'JobLog',
-        meta: {title: '调度日志', activeMenu: '/monitor/job'}
-      }
-    ]
-  },
-  {
-    path: '/tool/gen-edit',
-    component: Layout,
-    hidden: true,
-    permissions: ['tool:gen:edit'],
-    children: [
-      {
-        path: 'index/:tableId(\\d+)',
-        component: () => import('@/views/tool/gen/editTable'),
-        name: 'GenEdit',
-        meta: {title: '修改生成配置', activeMenu: '/tool/gen'}
-      }
-    ]
-  }
+    {
+        path: '/system/user-auth',
+        component: Layout,
+        hidden: true,
+        permissions: ['system:user:edit'],
+        children: [
+            {
+                path: 'role/:userId(\\d+)',
+                component: () => import('@/views/system/user/authRole'),
+                name: 'AuthRole',
+                meta: {title: '分配角色', activeMenu: '/system/user'}
+            }
+        ]
+    },
+    {
+        path: '/system/role-auth',
+        component: Layout,
+        hidden: true,
+        permissions: ['system:role:edit'],
+        children: [
+            {
+                path: 'user/:roleId(\\d+)',
+                component: () => import('@/views/system/role/authUser'),
+                name: 'AuthUser',
+                meta: {title: '分配用户', activeMenu: '/system/role'}
+            }
+        ]
+    },
+    {
+        path: '/system/dict-data',
+        component: Layout,
+        hidden: true,
+        permissions: ['system:dict:list'],
+        children: [
+            {
+                path: 'index/:dictId(\\d+)',
+                component: () => import('@/views/system/dict/data'),
+                name: 'Data',
+                meta: {title: '字典数据', activeMenu: '/system/dict'}
+            }
+        ]
+    },
+    {
+        path: '/monitor/job-log',
+        component: Layout,
+        hidden: true,
+        permissions: ['monitor:job:list'],
+        children: [
+            {
+                path: 'index/:jobId(\\d+)',
+                component: () => import('@/views/monitor/job/log'),
+                name: 'JobLog',
+                meta: {title: '调度日志', activeMenu: '/monitor/job'}
+            }
+        ]
+    },
+    {
+        path: '/tool/gen-edit',
+        component: Layout,
+        hidden: true,
+        permissions: ['tool:gen:edit'],
+        children: [
+            {
+                path: 'index/:tableId(\\d+)',
+                component: () => import('@/views/tool/gen/editTable'),
+                name: 'GenEdit',
+                meta: {title: '修改生成配置', activeMenu: '/tool/gen'}
+            }
+        ]
+    }
 ]
 
 // 防止连续点击多次路由报错
@@ -189,15 +245,15 @@ let routerPush = Router.prototype.push;
 let routerReplace = Router.prototype.replace;
 // push
 Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(err => err)
+    return routerPush.call(this, location).catch(err => err)
 }
 // replace
 Router.prototype.replace = function push(location) {
-  return routerReplace.call(this, location).catch(err => err)
+    return routerReplace.call(this, location).catch(err => err)
 }
 
 export default new Router({
-  mode: 'history', // 去掉url中的#
-  scrollBehavior: () => ({y: 0}),
-  routes: constantRoutes
+    mode: 'history', // 去掉url中的#
+    scrollBehavior: () => ({y: 0}),
+    routes: constantRoutes
 })
