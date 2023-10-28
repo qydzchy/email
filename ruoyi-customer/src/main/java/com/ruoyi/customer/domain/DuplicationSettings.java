@@ -22,9 +22,9 @@ public class DuplicationSettings extends BaseEntity
     @Excel(name = "字段名称")
     private String name;
 
-    /** 显示或隐藏 0.隐藏 1.显示 */
-    @Excel(name = "显示或隐藏 0.隐藏 1.显示")
-    private Integer displayFlag;
+    /** 标志 0.未选 1.选中 */
+    @Excel(name = "标志 0.未选 1.选中")
+    private Integer activeFlag;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -55,16 +55,16 @@ public class DuplicationSettings extends BaseEntity
     {
         return name;
     }
-    public void setDisplayFlag(Integer displayFlag) 
-    {
-        this.displayFlag = displayFlag;
+
+    public Integer getActiveFlag() {
+        return activeFlag;
     }
 
-    public Integer getDisplayFlag() 
-    {
-        return displayFlag;
+    public void setActiveFlag(Integer activeFlag) {
+        this.activeFlag = activeFlag;
     }
-    public void setDelFlag(String delFlag) 
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
@@ -94,17 +94,13 @@ public class DuplicationSettings extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("name", getName())
-            .append("displayFlag", getDisplayFlag())
-            .append("delFlag", getDelFlag())
-            .append("createId", getCreateId())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateId", getUpdateId())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+        return "DuplicationSettings{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", activeFlag=" + activeFlag +
+                ", delFlag='" + delFlag + '\'' +
+                ", createId=" + createId +
+                ", updateId=" + updateId +
+                '}';
     }
 }

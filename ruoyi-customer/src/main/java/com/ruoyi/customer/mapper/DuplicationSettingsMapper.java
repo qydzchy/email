@@ -2,6 +2,8 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.DuplicationSettings;
+import com.ruoyi.customer.domain.vo.DuplicationSettingsListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户查重设置Mapper接口
@@ -58,4 +60,17 @@ public interface DuplicationSettingsMapper
      * @return 结果
      */
     public int deleteDuplicationSettingsByIds(Long[] ids);
+
+    /**
+     * 查询客户查重设置列表
+     * @return
+     */
+    List<DuplicationSettingsListVO> list();
+
+    /**
+     * 更新标志
+     * @param id
+     * @return
+     */
+    int updateActiveFlag(@Param("id") Long id);
 }

@@ -1,12 +1,14 @@
 package com.ruoyi.customer.service.impl;
 
-import java.util.List;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.SettingsMapper;
 import com.ruoyi.customer.domain.Settings;
 import com.ruoyi.customer.service.ISettingsService;
+
+import javax.annotation.Resource;
 
 /**
  * 客户设置Service业务层处理
@@ -17,44 +19,12 @@ import com.ruoyi.customer.service.ISettingsService;
 @Service
 public class SettingsServiceImpl implements ISettingsService 
 {
-    @Autowired
+    @Resource
     private SettingsMapper settingsMapper;
 
-    /**
-     * 查询客户设置
-     * 
-     * @param id 客户设置主键
-     * @return 客户设置
-     */
     @Override
-    public Settings selectSettingsById(Long id)
-    {
-        return settingsMapper.selectSettingsById(id);
-    }
-
-    /**
-     * 查询客户设置列表
-     * 
-     * @param settings 客户设置
-     * @return 客户设置
-     */
-    @Override
-    public List<Settings> selectSettingsList(Settings settings)
-    {
-        return settingsMapper.selectSettingsList(settings);
-    }
-
-    /**
-     * 新增客户设置
-     * 
-     * @param settings 客户设置
-     * @return 结果
-     */
-    @Override
-    public int insertSettings(Settings settings)
-    {
-        settings.setCreateTime(DateUtils.getNowDate());
-        return settingsMapper.insertSettings(settings);
+    public Settings selectSettings() {
+        return settingsMapper.selectSettings();
     }
 
     /**
@@ -64,33 +34,27 @@ public class SettingsServiceImpl implements ISettingsService
      * @return 结果
      */
     @Override
-    public int updateSettings(Settings settings)
+    public boolean updateSettings(Settings settings)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        settings.setUpdateId(userId);
+        settings.setUpdateBy(username);
         settings.setUpdateTime(DateUtils.getNowDate());
-        return settingsMapper.updateSettings(settings);
+
+        if (settings.getId() == null) {
+            settings.setCreateId(userId);
+            settings.setCreateBy(username);
+            settings.setCreateTime(DateUtils.getNowDate());
+
+            settingsMapper.insertSettings(settings);
+        } else {
+            settingsMapper.updateSettings(settings);
+        }
+
+        return true;
     }
 
-    /**
-     * 批量删除客户设置
-     * 
-     * @param ids 需要删除的客户设置主键
-     * @return 结果
-     */
-    @Override
-    public int deleteSettingsByIds(Long[] ids)
-    {
-        return settingsMapper.deleteSettingsByIds(ids);
-    }
-
-    /**
-     * 删除客户设置信息
-     * 
-     * @param id 客户设置主键
-     * @return 结果
-     */
-    @Override
-    public int deleteSettingsById(Long id)
-    {
-        return settingsMapper.deleteSettingsById(id);
-    }
 }

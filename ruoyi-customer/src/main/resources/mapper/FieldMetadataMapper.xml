@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.customer.mapper.LimitsMapper">
-    
-    <resultMap type="Limits" id="LimitsResult">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.FieldMetadataMapper">
+
+    <resultMap type="FieldMetadata" id="FieldMetadataResult">
         <result property="id"    column="id"    />
-        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="alias"    column="alias"    />
         <result property="type"    column="type"    />
-        <result property="limits"    column="limits"    />
+        <result property="orderIndex"    column="order_index"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -18,41 +19,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectLimitsVo">
-        select id, user_id, type, limits, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_limits
+    <sql id="selectFieldMetadataVo">
+        select id, name, alias, type, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_field_metadata
     </sql>
 
-    <select id="selectLimitsList" parameterType="Limits" resultMap="LimitsResult">
-        <include refid="selectLimitsVo"/>
-        <where>  
-            <if test="userId != null "> and user_id = #{userId}</if>
+    <select id="selectFieldMetadataList" parameterType="FieldMetadata" resultMap="FieldMetadataResult">
+        <include refid="selectFieldMetadataVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="alias != null  and alias != ''"> and alias = #{alias}</if>
             <if test="type != null "> and type = #{type}</if>
-            <if test="limits != null "> and limits = #{limits}</if>
+            <if test="orderIndex != null "> and order_index = #{orderIndex}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
-            and del_flag = '0'
         </where>
     </select>
-    
-    <select id="selectLimitsById" parameterType="Long" resultMap="LimitsResult">
-        <include refid="selectLimitsVo"/>
+
+    <select id="selectFieldMetadataById" parameterType="Long" resultMap="FieldMetadataResult">
+        <include refid="selectFieldMetadataVo"/>
         where id = #{id}
     </select>
 
-    <select id="list" resultType="com.ruoyi.customer.domain.LimitsListVO">
-        select u.user_id as userId, u.nick_name as nickName, d.dept_id as deptId, d.dept_name as deptName, l.id as id, l.type, l.limits from sys_user u
-        left join sys_dept d on u.dept_id = d.dept_id
-        left join customer_limits l on l.user_id = u.user_id
-        where u.del_flag = '0' and d.del_flag = '0'
-    </select>
-
-    <insert id="insertLimits" parameterType="Limits">
-        insert into customer_limits
+    <insert id="insertFieldMetadata" parameterType="FieldMetadata">
+        insert into customer_field_metadata
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
-            <if test="userId != null">user_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="alias != null and alias != ''">alias,</if>
             <if test="type != null">type,</if>
-            <if test="limits != null">limits,</if>
+            <if test="orderIndex != null">order_index,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -60,12 +55,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateId != null">update_id,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
-            <if test="userId != null">#{userId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="alias != null and alias != ''">#{alias},</if>
             <if test="type != null">#{type},</if>
-            <if test="limits != null">#{limits},</if>
+            <if test="orderIndex != null">#{orderIndex},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -73,15 +69,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateId != null">#{updateId},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
-    <update id="updateLimits" parameterType="Limits">
-        update customer_limits
+    <update id="updateFieldMetadata" parameterType="FieldMetadata">
+        update customer_field_metadata
         <trim prefix="SET" suffixOverrides=",">
-            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="alias != null and alias != ''">alias = #{alias},</if>
             <if test="type != null">type = #{type},</if>
-            <if test="limits != null">limits = #{limits},</if>
+            <if test="orderIndex != null">order_index = #{orderIndex},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -93,12 +90,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteLimitsById" parameterType="Long">
-        delete from customer_limits where id = #{id}
+    <delete id="deleteFieldMetadataById" parameterType="Long">
+        delete from customer_field_metadata where id = #{id}
     </delete>
 
-    <delete id="deleteLimitsByIds" parameterType="String">
-        delete from customer_limits where id in 
+    <delete id="deleteFieldMetadataByIds" parameterType="String">
+        delete from customer_field_metadata where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

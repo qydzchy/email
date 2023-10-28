@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Limits;
+import com.ruoyi.customer.domain.LimitsListVO;
 
 /**
  * 客户上限Mapper接口
@@ -58,4 +59,10 @@ public interface LimitsMapper
      * @return 结果
      */
     public int deleteLimitsByIds(Long[] ids);
+
+    /**
+     * 客户上限列表
+     * @return
+     */
+    List<LimitsListVO> list();
 }

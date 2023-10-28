@@ -2,6 +2,7 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Limits;
+import com.ruoyi.customer.domain.LimitsListVO;
 
 /**
  * 客户上限Service接口
@@ -58,4 +59,10 @@ public interface ILimitsService
      * @return 结果
      */
     public int deleteLimitsById(Long id);
+
+    /**
+     * 客户上限列表
+     * @return
+     */
+    List<LimitsListVO> list();
 }

@@ -2,11 +2,13 @@ package com.ruoyi.customer.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.customer.domain.vo.DuplicationSettingsListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.DuplicationSettingsMapper;
 import com.ruoyi.customer.domain.DuplicationSettings;
 import com.ruoyi.customer.service.IDuplicationSettingsService;
+
+import javax.annotation.Resource;
 
 /**
  * 客户查重设置Service业务层处理
@@ -17,7 +19,7 @@ import com.ruoyi.customer.service.IDuplicationSettingsService;
 @Service
 public class DuplicationSettingsServiceImpl implements IDuplicationSettingsService 
 {
-    @Autowired
+    @Resource
     private DuplicationSettingsMapper duplicationSettingsMapper;
 
     /**
@@ -92,5 +94,24 @@ public class DuplicationSettingsServiceImpl implements IDuplicationSettingsServi
     public int deleteDuplicationSettingsById(Long id)
     {
         return duplicationSettingsMapper.deleteDuplicationSettingsById(id);
+    }
+
+    /**
+     * 查询客户查重设置列表
+     * @return
+     */
+    @Override
+    public List<DuplicationSettingsListVO> list() {
+        return duplicationSettingsMapper.list();
+    }
+
+    /**
+     * 更新标志
+     * @param id
+     * @return
+     */
+    @Override
+    public int updateActiveFlag(Long id) {
+        return duplicationSettingsMapper.updateActiveFlag(id);
     }
 }

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
+
+import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.system.domain.vo.DeptUsersVO;
+import com.ruoyi.system.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +26,6 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.mapper.SysPostMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.mapper.SysUserMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
-import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
@@ -48,6 +47,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     private SysPostMapper postMapper;
+
+    @Autowired
+    private SysDeptMapper deptMapper;
 
     @Autowired
     private SysUserRoleMapper userRoleMapper;
@@ -540,5 +542,41 @@ public class SysUserServiceImpl implements ISysUserService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Override
+    public List<DeptUsersVO> deptUsersTree() {
+        List<SysDept> deptList = deptMapper.selectDeptList(new SysDept());
+        List<DeptUsersVO> deptUsersVOList = new ArrayList<>();
+        deptList.stream().forEach(dept -> {
+            DeptUsersVO deptUsersVO = new DeptUsersVO();
+            deptUsersVO.setId(dept.getDeptId());
+            deptUsersVO.setParentId(dept.getParentId());
+            deptUsersVO.setName(dept.getDeptName());
+            deptUsersVO.setType(1);
+            deptUsersVOList.add(deptUsersVO);
+        });
+
+
+        List<SysUser> userList = userMapper.selectUserList(new SysUser());
+
+        //todo 未完成
+        return null;
+    }
+
+
+    private List<DeptUsersVO> buildTree(List<DeptUsersVO> deptUsersVOList, List<SysUser> userList, Long parentId) {
+        List<DeptUsersVO> children = new ArrayList<>();
+
+        for (DeptUsersVO deptUsersVO : deptUsersVOList) {
+            if ((parentId == null && deptUsersVO.getParentId() == null)
+                    || (parentId != null && parentId.equals(deptUsersVO.getParentId()))) {
+                List<DeptUsersVO> childDeptUsers = buildTree(deptUsersVOList, userList, deptUsersVO.getId());
+                deptUsersVO.setChildren(childDeptUsers);
+                children.add(deptUsersVO);
+            }
+        }
+
+        return children;
     }
 }

@@ -2,11 +2,14 @@ package com.ruoyi.customer.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.customer.domain.LimitsListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.LimitsMapper;
 import com.ruoyi.customer.domain.Limits;
 import com.ruoyi.customer.service.ILimitsService;
+
+import javax.annotation.Resource;
 
 /**
  * 客户上限Service业务层处理
@@ -17,7 +20,7 @@ import com.ruoyi.customer.service.ILimitsService;
 @Service
 public class LimitsServiceImpl implements ILimitsService 
 {
-    @Autowired
+    @Resource
     private LimitsMapper limitsMapper;
 
     /**
@@ -92,5 +95,14 @@ public class LimitsServiceImpl implements ILimitsService
     public int deleteLimitsById(Long id)
     {
         return limitsMapper.deleteLimitsById(id);
+    }
+
+    /**
+     * 客户上限列表
+     * @return
+     */
+    @Override
+    public List<LimitsListVO> list() {
+        return limitsMapper.list();
     }
 }

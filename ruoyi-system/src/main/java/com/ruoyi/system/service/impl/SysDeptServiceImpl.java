@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.annotation.DataScope;
@@ -34,6 +36,9 @@ public class SysDeptServiceImpl implements ISysDeptService
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询部门管理数据

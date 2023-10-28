@@ -58,4 +58,10 @@ public interface SettingsMapper
      * @return 结果
      */
     public int deleteSettingsByIds(Long[] ids);
+
+    /**
+     *
+     * @return
+     */
+    Settings selectSettings();
 }

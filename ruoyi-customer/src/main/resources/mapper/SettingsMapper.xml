@@ -50,7 +50,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSettingsVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectSettings" resultType="com.ruoyi.customer.domain.Settings">
+        <include refid="selectSettingsVo"/>
+        limit 1
+    </select>
+
     <insert id="insertSettings" parameterType="Settings">
         insert into customer_settings
         <trim prefix="(" suffix=")" suffixOverrides=",">

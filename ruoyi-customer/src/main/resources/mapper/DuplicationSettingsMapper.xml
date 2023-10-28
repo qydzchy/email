@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="DuplicationSettings" id="DuplicationSettingsResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
-        <result property="displayFlag"    column="display_flag"    />
+        <result property="activeFlag"    column="active_flag"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -18,14 +18,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectDuplicationSettingsVo">
-        select id, name, display_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_duplication_settings
+        select id, name, active_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_duplication_settings
     </sql>
 
     <select id="selectDuplicationSettingsList" parameterType="DuplicationSettings" resultMap="DuplicationSettingsResult">
         <include refid="selectDuplicationSettingsVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="displayFlag != null "> and display_flag = #{displayFlag}</if>
+            <if test="activeFlag != null "> and active_flag = #{activeFlag}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
             and del_flag = '0'
@@ -36,13 +36,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDuplicationSettingsVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.DuplicationSettingsListVO">
+        select ds.id, fm.id as fieldId, fm.name as fieldName, ds.active_flag as activeFlag from customer_duplication_settings ds
+                        left join customer_field_metadata on fm on ds.field_id = fm.id
+                        where ds.del_flag = '0' and fm.del_flag = '0'
+    </select>
+
     <insert id="insertDuplicationSettings" parameterType="DuplicationSettings">
         insert into customer_duplication_settings
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="name != null and name != ''">name,</if>
-            <if test="displayFlag != null">display_flag,</if>
+            <if test="activeFlag != null">active_flag,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -54,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="name != null and name != ''">#{name},</if>
-            <if test="displayFlag != null">#{displayFlag},</if>
+            <if test="activeFlag != null">#{activeFlag},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -69,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update customer_duplication_settings
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null and name != ''">name = #{name},</if>
-            <if test="displayFlag != null">display_flag = #{displayFlag},</if>
+            <if test="activeFlag != null">active_flag = #{activeFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -79,6 +85,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="updateActiveFlag">
+            update customer_duplication_settings set active_flag = #{activeFlag} where id = #{id}
     </update>
 
     <delete id="deleteDuplicationSettingsById" parameterType="Long">
