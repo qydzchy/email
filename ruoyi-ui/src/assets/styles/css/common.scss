@@ -22,6 +22,9 @@
     .tooltip-W-#{$var}{
         width: #{$var}px;
     }
+    .radius-#{$var}{
+        border-radius: #{$var}px;
+    }
 }
 
 @for $size from 1 through 50 {

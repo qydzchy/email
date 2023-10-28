@@ -133,21 +133,31 @@ export const constantRoutes = [
                         path: 'list',
                         name: 'CustomerList',
                         meta: {title: '客户列表', is: 'list', dontAnimate: true,},
+                        component: () => import('@/views/customer/list/index.vue'),
+                    },
+                    {
+                        path: 'personal/:id',
+                        name: 'CustomerPersonal',
+                        meta: { is: 'list', dontAnimate: true},
+                        component: () => import('@/views/customer/personal/index.vue'),
                     },
                     {
                         path: 'public',
                         name: 'CustomerPublic',
                         meta: {title: '公海客户', is: 'public', dontAnimate: true,},
+                        component: () => import('@/views/customer/public/index.vue'),
                     },
                     {
                         path: 'query',
                         name: 'CustomerQuery',
                         meta: {title: '客户查重', is: 'query', dontAnimate: true,},
+                        component: () => import('@/views/customer/query/index.vue'),
                     },
                     {
                         path: 'config',
                         name: 'CustomerConfig',
                         meta: {title: '客户设置', is: 'config', dontAnimate: true,},
+                        component: () => import('@/views/customer/config/index.vue'),
                     },
                 ]
             },
