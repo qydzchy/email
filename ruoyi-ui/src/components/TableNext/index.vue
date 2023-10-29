@@ -46,60 +46,60 @@ export default {
   render() {
 
     return (
-      <div>
-        <el-table
-          data={this.list}
-          v-loading={this.loading}
-          element-loading-text='Loading'
-          props={{...this.extraOption}}
-          on={{...this.extraEvent}}>
-          // 自定义empty
-          {
-            this.customerEmpty ?
-              <template slot="empty">{this.customerEmpty}</template>
-              : <template slot="empty">
-                <el-empty imageSize={100}></el-empty>
-              </template>
-          }
-          // 列渲染
-          {this.columns?.map((item) => {
-            return (
-              !item.hide &&
-              (item.type !== 'selection' ? (
-                <el-table-column
-                  key={'table_' + item.label}
-                  props={{...item}}
-                  align={item.align || 'center'}>
-                  {(value) => {
-                    if (item?.render) {
-                      const vNode = item.render(
-                        value.row,
-                        value.row[item.field],
-                      );
+        <div>
+          <el-table
+              data={this.list}
+              v-loading={this.loading}
+              element-loading-text='Loading'
+              props={{...this.extraOption}}
+              on={{...this.extraEvent}}>
+            // 自定义empty
+            {
+              this.customerEmpty ?
+                  <template slot="empty">{this.customerEmpty}</template>
+                  : <template slot="empty">
+                    <el-empty imageSize={100}></el-empty>
+                  </template>
+            }
+            // 列渲染
+            {this.columns?.map((item) => {
+              return (
+                  !item.hide &&
+                  (item.type !== 'selection' ? (
+                      <el-table-column
+                          key={'table_' + item.label}
+                          props={{...item}}
+                          align={item.align || 'center'}>
+                        {(value) => {
+                          if (item?.render) {
+                            const vNode = item.render(
+                                value.row,
+                                value.row[item.field],
+                            );
 
-                      return vNode;
-                    }
-                    return value.row[item.field];
-                  }}
-                </el-table-column>
-              ) : (
-                <el-table-column
-                  key={'table_' + item.label}
-                  props={{...item}}
-                  align={item.align || 'center'}
-                />
-              ))
-            );
-          }) || null}
-        </el-table>
-        {this.paginateOption?.total > 0 && (
-          <el-pagination
-            layout='total, prev, pager, next'
-            props={{...this.paginateOption}}
-            on={{...this.paginateEvent}}
-          />
-        )}
-      </div>
+                            return vNode;
+                          }
+                          return value.row[item.field];
+                        }}
+                      </el-table-column>
+                  ) : (
+                      <el-table-column
+                          key={'table_' + item.label}
+                          props={{...item}}
+                          align={item.align || 'center'}
+                      />
+                  ))
+              );
+            }) || null}
+          </el-table>
+          {this.paginateOption?.total > 0 && (
+              <el-pagination
+                  layout={this.paginateOption?.layout || 'total, prev, pager, next'}
+                  props={{...this.paginateOption}}
+                  on={{...this.paginateEvent}}
+              />
+          )}
+        </div>
     );
   },
 };

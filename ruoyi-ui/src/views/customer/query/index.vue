@@ -21,34 +21,116 @@
         <el-button class="custom-btn radius-0" type="primary">查询</el-button>
       </div>
     </el-card>
-    <el-card shadow="always" class="container mb-20"></el-card>
+    <el-card shadow="always" class="container mb-20">
+      <!--      <TableNext v-if="list.length" :list="list" :columns="columns" :extra-option="{height:'60vh'}"/>-->
+      <TableNext :list="list" :columns="columns" :extra-option="{height:'56vh'}" :paginate-option="paginateOption"/>
+    </el-card>
   </div>
 </template>
 
 <script>
+import TableNext from '@/components/TableNext'
+import {EmptyStr} from "@/utils/tools";
+
 export default {
+  components: {
+    TableNext
+  },
   data() {
     return {
       querySearch: {
-        key: '111',
+        key: 'all',
         value: ''
       },
-      options: [{
-        value: '111',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [
+        {
+          value: 'all',
+          label: '全部'
+        }, {
+          value: 'companyName',
+          label: '公司名称/简称'
+        }, {
+          value: 'customerNo',
+          label: '客户编号'
+        }, {
+          value: 'email',
+          label: '邮箱'
+        }, {
+          value: 'emailSuffix',
+          label: '邮箱后缀'
+        }, {
+          value: 'contactName',
+          label: '联系人名称'
+        }, {
+          value: 'contactTel',
+          label: '联系电话'
+        }, {
+          value: 'communityAccount',
+          label: '社交账号'
+        }
+      ],
+      list: [],
+      columns: [
+        {
+          label: '客户编号',
+          field: 'id',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '客户阶段',
+          field: 'stage',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '公司名称/简称',
+          field: 'companyName',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '联系人名',
+          field: 'contactName',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '客户邮箱',
+          field: 'email',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '客户电话',
+          field: 'phone',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '电话来源',
+          field: 'telOrigin',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '国家地区',
+          field: 'area',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '原跟进人',
+          field: 'followMan',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '当前所属',
+          field: 'department',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '创建时间',
+          field: 'crateAt',
+          render: (_row, field) => EmptyStr(field),
+        }, {
+          label: '社交账号',
+          field: 'socialAccount',
+          render: (_row, field) => EmptyStr(field),
+        },
+      ],
+      paginateOption: {
+        total: 0,
+        layout: 'total, sizes, prev, pager, next',
+        pageSize: 20,
+        pageSizes: [10, 20, 50, 100]
+      },
+
     }
   },
   mounted() {
@@ -58,16 +140,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.custom-select, .custom-input, .custom-btn {
-
-}
 
 .custom-select {
   width: 140px;
 
   ::v-deep .el-input__inner {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    height: 42px;
+    border: 1px solid #1890ff;
+    border-radius: 4px 0 0 4px;
   }
 }
 
@@ -75,6 +155,9 @@ export default {
   width: 60%;
 
   ::v-deep .el-input__inner {
+    height: 42px;
+    border-radius: unset;
+    border: 1px solid #1890ff;
     border-left-width: 0 !important;
   }
 }
@@ -87,12 +170,14 @@ export default {
 
 .container {
   min-height: 66vh;
+
+  .query-table {
+
+  }
 }
 
 ::v-deep .el-input__inner {
-  height: 42px;
-  border-radius: unset;
-  border: 1px solid #1890ff;
+
 }
 
 ::v-deep .el-card__body {

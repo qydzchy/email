@@ -9,17 +9,20 @@
     </div>
 
     <ElTableDraggable handle=".el-icon-s-grid">
-      <el-table row-key="customer-status" :data="list">
+      <el-table row-key="customer-status" :data="list" v-loading="tableLoading">
+        <template slot="empty">
+          <el-empty imageSize={100}></el-empty>
+        </template>
         <el-table-column width="40">
           <i class="el-icon-s-grid" style="cursor: grab"/>
         </el-table-column>
-        <el-table-column prop="stageName" label="阶段名称" align="left">
+        <el-table-column prop="name" label="阶段名称" align="left">
           <template slot-scope="scope">
             <div class="flex-middle">
               <div class="table-color-wrap" :style="{backgroundColor:colorMap[scope.row.color]}">
-                {{ scope.row.stageName.slice(0, 1) }}
+                {{ scope.row.name.slice(0, 1) }}
               </div>
-              <div class="ml-10">{{ scope.row.stageName }}</div>
+              <div class="ml-10">{{ scope.row.name }}</div>
             </div>
 
           </template>
@@ -29,7 +32,7 @@
             <el-button size="mini" type="text" @click="onEdit(scope.row)">
               编辑
             </el-button>
-            <DelPopover/>
+            <DelPopover :id="scope.row.id" @onDelete="stageDeleteReq"/>
           </template>
         </el-table-column>
       </el-table>
@@ -37,11 +40,11 @@
 
     <el-dialog title="新增阶段" width="460px" style="margin-top: 25vh" :visible.sync="stageDialog"
                destroy-on-close>
-      <el-form :model="stageForm" ref="fastTextRef" :rules="stageRules">
-        <el-form-item label="阶段名称" prop="groupName">
-          <el-input v-model="stageForm.stageName" autocomplete="off" placeholder="请输入阶段名称"></el-input>
+      <el-form :model="stageForm" ref="stageFormRef" :rules="stageRules">
+        <el-form-item label="阶段名称" prop="name">
+          <el-input v-model="stageForm.name" autocomplete="off" placeholder="请输入阶段名称"></el-input>
         </el-form-item>
-        <el-form-item label="标签颜色" prop="groupName">
+        <el-form-item label="标签颜色">
           <div class="container">
             <div class="color-box">
               <div class="color-wrap"
@@ -58,8 +61,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button round @click="stageDialog=false">取 消</el-button>
-        <el-button type="primary" round>确 定</el-button>
+        <el-button round :loading="btnLoading" @click="onCancel">取 消</el-button>
+        <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -68,10 +71,12 @@
 <script>
 import ElTableDraggable from "el-table-draggable";
 import DelPopover from "./DelPopover.vue";
+import {stageAdd, stageDelete, stageEdit, stageList} from "@/api/company/status";
 
 const initStageForm = {
-  stageName: '',
-  color: '',
+  id: '',
+  name: '',
+  color: '0',
 }
 export default {
   components: {
@@ -80,60 +85,126 @@ export default {
   },
   data() {
     return {
-      list: [
-        {
-          id: 1,
-          stageName: '1',
-          color: '0'
-        },
-        {
-          id: 2,
-          stageName: '2',
-          color: '2'
-        },
-        {
-          id: 3,
-          stageName: '3',
-          color: '4'
-        },
-      ],
+      list: [],
       stageDialog: false,
       stageForm: initStageForm,
-      stageRules: {},
+      stageRules: {
+        name: [
+          {required: true, message: '请输入名称', trigger: 'blur'},
+
+        ]
+      },
       colorMap: {
         0: '#000000',
-        1: '#dadada',
-        2: '#bc5959',
-        3: '#000000',
-        4: '#dadada',
-        5: '#bc5959',
-        6: '#000000',
-        7: '#dadada',
-        8: '#bc5959',
-        9: '#000000',
-        10: '#dadada',
-        11: '#bc5959',
-        12: '#000000',
-        13: '#dadada',
-        14: '#bc5959',
-        15: '#000000',
-        16: '#dadada',
-        17: '#bc5959'
+        1: '#bc5959',
+        2: '#d87538',
+        3: '#209890',
+        4: '#4b679d',
+        5: '#595dbe',
+        6: '#333333',
+        7: '#e43e3e',
+        8: '#eb9955',
+        9: '#61bc81',
+        10: '#5d89e9',
+        11: '#8d54bd',
+        12: '#7b8291',
+        13: '#ee7b7b',
+        14: '#e2ad28',
+        15: '#80c463',
+        16: '#4aa8eb',
+        17: '#acacac'
       },
-
+      tableLoading: false,
+      btnLoading: false,
     }
   },
   mounted() {
+    this.getList()
   },
   methods: {
+    async getList() {
+      this.tableLoading = true
+      try {
+        const res = await stageList().finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch (e) {
+        this.tableLoading = false
+      }
+    },
+    async stageAddReq() {
+      try {
+        const res = await stageAdd({...this.stageForm}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res?.code === 200) {
+
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          });
+          await this.getList()
+          this.onCancel()
+        }
+      } catch {
+        this.btnLoading = false
+      }
+    },
+    async stageEditReq() {
+      try {
+        const res = await stageEdit({...this.stageForm}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res?.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          });
+          await this.getList()
+          this.onCancel()
+        }
+
+      } catch {
+        this.btnLoading = false
+      }
+    },
+    async stageDeleteReq(id) {
+      try {
+        const res = await stageDelete({id})
+        if (res?.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+          await this.getList()
+        }
+      } catch {
+        this.btnLoading = false
+      }
+    },
     onEdit(item) {
       this.stageForm = {...item}
       this.stageDialog = true
     },
     onConfirm() {
-      this.onCancel()
+      this.$refs['stageFormRef'].validate((valid) => {
+        if (valid) {
+          this.btnLoading = true
+          if (!this.stageForm.id) {
+            this.stageAddReq()
+          } else {
+            this.stageEditReq()
+          }
+        }
+      });
     },
     onCancel() {
+      if (this.btnLoading) {
+        return
+      }
       this.stageForm = initStageForm
       this.stageDialog = false
     },
