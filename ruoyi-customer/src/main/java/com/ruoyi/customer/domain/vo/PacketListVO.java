@@ -19,6 +19,11 @@ public class PacketListVO {
     private Long parentId;
 
     /**
+     * 父分组名称
+     */
+    private String parentName;
+
+    /**
      * 分组名称
      */
     private String name;
@@ -32,8 +37,6 @@ public class PacketListVO {
      * 指定成员
      */
     private String designatedMember;
-
-    private List<Long> memberIds;
 
     private List<PacketListVO> children = new ArrayList<>();
 }

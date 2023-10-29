@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
@@ -547,33 +548,41 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public List<DeptUsersVO> deptUsersTree() {
         List<SysDept> deptList = deptMapper.selectDeptList(new SysDept());
+        List<SysUser> userList = userMapper.selectUserList(new SysUser());
         List<DeptUsersVO> deptUsersVOList = new ArrayList<>();
-        deptList.stream().forEach(dept -> {
+
+        // 添加部门到VO列表
+        for (SysDept dept : deptList) {
             DeptUsersVO deptUsersVO = new DeptUsersVO();
             deptUsersVO.setId(dept.getDeptId());
-            deptUsersVO.setParentId(dept.getParentId());
+            deptUsersVO.setParentId(dept.getParentId() != null ? dept.getParentId() : 0L);
             deptUsersVO.setName(dept.getDeptName());
             deptUsersVO.setType(1);
             deptUsersVOList.add(deptUsersVO);
-        });
+        }
 
+        // 添加用户到VO列表
+        for (SysUser user : userList) {
+            DeptUsersVO userVO = new DeptUsersVO();
+            userVO.setId(user.getUserId());
+            userVO.setParentId(user.getDeptId() != null ? user.getDeptId() : 0L);
+            userVO.setName(user.getUserName());
+            userVO.setType(2);
+            deptUsersVOList.add(userVO);
+        }
 
-        List<SysUser> userList = userMapper.selectUserList(new SysUser());
-
-        //todo 未完成
-        return null;
+        // 生成树形结构
+        return buildTree(deptUsersVOList, 0L);
     }
 
 
-    private List<DeptUsersVO> buildTree(List<DeptUsersVO> deptUsersVOList, List<SysUser> userList, Long parentId) {
+    private List<DeptUsersVO> buildTree(List<DeptUsersVO> allNodes, Long parentId) {
         List<DeptUsersVO> children = new ArrayList<>();
 
-        for (DeptUsersVO deptUsersVO : deptUsersVOList) {
-            if ((parentId == null && deptUsersVO.getParentId() == null)
-                    || (parentId != null && parentId.equals(deptUsersVO.getParentId()))) {
-                List<DeptUsersVO> childDeptUsers = buildTree(deptUsersVOList, userList, deptUsersVO.getId());
-                deptUsersVO.setChildren(childDeptUsers);
-                children.add(deptUsersVO);
+        for (DeptUsersVO node : allNodes) {
+            if (Objects.equals(node.getParentId(), parentId)) {
+                node.setChildren(buildTree(allNodes, node.getId()));
+                children.add(node);
             }
         }
 

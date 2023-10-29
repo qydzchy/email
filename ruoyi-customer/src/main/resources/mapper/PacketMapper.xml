@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="Packet" id="PacketResult">
         <result property="id"    column="id"    />
-        <result property="parenId"    column="paren_id"    />
+        <result property="parentId"    column="parent_id"    />
         <result property="name"    column="name"    />
         <result property="availableMember"    column="available_member"    />
         <result property="designatedMember"    column="designated_member"    />
@@ -20,13 +20,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPacketVo">
-        select id, paren_id, name, available_member, designated_member, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_packet
+        select id, parent_id, name, available_member, designated_member, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_packet
     </sql>
 
     <select id="selectPacketList" parameterType="Packet" resultMap="PacketResult">
         <include refid="selectPacketVo"/>
         <where>
-            <if test="parenId != null "> and paren_id = #{parenId}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="availableMember != null "> and available_member = #{availableMember}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
@@ -39,12 +39,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPacketVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.PacketListVO">
+        SELECT p1.id, p1.parent_id as parentId, p2.name as parentName, p1.name, p1.available_member as availableMember, p1.designated_member as designatedMember
+        FROM customer_packet p1
+        LEFT JOIN customer_packet p2 ON p1.parent_id = p2.id AND p2.del_flag = '0'
+        WHERE p1.del_flag = '0'
+    </select>
+
     <insert id="insertPacket" parameterType="Packet">
         insert into customer_packet
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
-            <if test="parenId != null">paren_id,</if>
+            <if test="parentId != null">parent_id,</if>
             <if test="name != null and name != ''">name,</if>
             <if test="availableMember != null">available_member,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
@@ -57,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
-            <if test="parenId != null">#{parenId},</if>
+            <if test="parentId != null">#{parentId},</if>
             <if test="name != null and name != ''">#{name},</if>
             <if test="availableMember != null">#{availableMember},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
@@ -73,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updatePacket" parameterType="Packet">
         update customer_packet
         <trim prefix="SET" suffixOverrides=",">
-            <if test="parenId != null">paren_id = #{parenId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="availableMember != null">available_member = #{availableMember},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>

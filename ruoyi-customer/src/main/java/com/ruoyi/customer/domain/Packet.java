@@ -1,7 +1,5 @@
 package com.ruoyi.customer.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -20,7 +18,7 @@ public class Packet extends BaseEntity
 
     /** 父ID（第一级为-1） */
     @Excel(name = "父ID", readConverterExp = "第=一级为-1")
-    private Long parenId;
+    private Long parentId;
 
     /** 客户名称 */
     @Excel(name = "客户名称")
@@ -55,16 +53,16 @@ public class Packet extends BaseEntity
     {
         return id;
     }
-    public void setParenId(Long parenId) 
-    {
-        this.parenId = parenId;
+
+    public Long getParentId() {
+        return parentId;
     }
 
-    public Long getParenId() 
-    {
-        return parenId;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
-    public void setName(String name) 
+
+    public void setName(String name)
     {
         this.name = name;
     }
@@ -121,18 +119,15 @@ public class Packet extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("parenId", getParenId())
-            .append("name", getName())
-            .append("availableMember", getAvailableMember())
-            .append("delFlag", getDelFlag())
-            .append("createId", getCreateId())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateId", getUpdateId())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+        return "Packet{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", name='" + name + '\'' +
+                ", availableMember=" + availableMember +
+                ", designatedMember='" + designatedMember + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                ", createId=" + createId +
+                ", updateId=" + updateId +
+                '}';
     }
 }

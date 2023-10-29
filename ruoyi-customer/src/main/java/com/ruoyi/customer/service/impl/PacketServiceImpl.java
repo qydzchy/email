@@ -86,14 +86,7 @@ public class PacketServiceImpl implements IPacketService
 
     @Override
     public List<PacketListVO> getPacketTree() {
-        List<Packet> packetList = packetMapper.selectPacketList(new Packet());
-        List<PacketListVO> packetListVOList = new ArrayList<>();
-        for (Packet packet : packetList) {
-            PacketListVO packetListVO = new PacketListVO();
-            BeanUtils.copyProperties(packet, packetListVO);
-            packetListVOList.add(packetListVO);
-        }
-
+        List<PacketListVO> packetListVOList = packetMapper.list();
         return buildTree(packetListVOList, -1L);
     }
 
@@ -102,7 +95,7 @@ public class PacketServiceImpl implements IPacketService
 
         for (PacketListVO packetListVO : packetListVOList) {
             if ((parentId == null && packetListVO.getParentId() == null)
-                    || (parentId != null && parentId.equals(packetListVO.getParentId()))) {
+                    || (parentId != null && parentId.longValue() == packetListVO.getParentId().longValue())) {
                 List<PacketListVO> childFolders = buildTree(packetListVOList, packetListVO.getId());
                 packetListVO.setChildren(childFolders);
                 children.add(packetListVO);

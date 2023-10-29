@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Packet;
+import com.ruoyi.customer.domain.vo.PacketListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -59,4 +60,10 @@ public interface PacketMapper
      * @return 结果
      */
     public int deletePacketByIds(Long[] ids);
+
+    /**
+     * 查询客户分组树列表
+     * @return
+     */
+    List<PacketListVO> list();
 }

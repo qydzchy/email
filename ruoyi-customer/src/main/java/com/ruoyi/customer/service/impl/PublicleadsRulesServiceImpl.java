@@ -52,6 +52,7 @@ public class PublicleadsRulesServiceImpl implements IPublicleadsRulesService
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        publicleadsRules.setStatus(0);
         publicleadsRules.setCreateId(userId);
         publicleadsRules.setCreateBy(username);
         publicleadsRules.setCreateTime(DateUtils.getNowDate());
