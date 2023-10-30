@@ -47,7 +47,7 @@
         <div class="body">
           <el-checkbox-group v-model="follow.checkedFollows" @change="handleCheckedFollow">
             <el-checkbox class="my-6" v-for="(fItem,index) in follow.followList" :label="fItem.label" :key="index"
-                         :disabled="!follow.showBtnGroup">{{ fItem.text }}}
+                         :disabled="!follow.showBtnGroup">{{ fItem.text }}
             </el-checkbox>
           </el-checkbox-group>
         </div>

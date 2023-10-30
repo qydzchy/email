@@ -72,7 +72,7 @@ export default {
                 visible ?
                     <div>
                       <el-row style={{display: row?.isEdit ? 'none' : 'block'}}>
-                        <el-button type='text' onClick={() => this.onEdit(row?.id)}>
+                        <el-button type='text' onClick={() => this.onEdit(row?.menuId)}>
                           编辑
                         </el-button>
                         <DelPopover id={row?.id}/>
@@ -116,7 +116,7 @@ export default {
       this.editStatus = true
     },
     onEdit(id) {
-      const tableIndex = this.originList.findIndex(val => val.id === id)
+      const tableIndex = this.originList.findIndex(val => val.menuId === id)
       this.$set(this.originList, tableIndex, {...this.originList[tableIndex], isEdit: true})
       this.editStatus = true
     },

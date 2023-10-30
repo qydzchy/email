@@ -9,9 +9,15 @@
     </div>
 
     <ElTableDraggable handle=".el-icon-s-grid">
-      <el-table row-key="customer-status" :data="list" v-loading="tableLoading">
-        <template slot="empty">
-          <el-empty imageSize={100}></el-empty>
+      <el-table
+          row-key="customer-status"
+          :data="list"
+          v-loading="tableLoading"
+          element-loading-text='拼命加载中...'
+          elemnt-loading-background="rgba(0,0,0,0.5)"
+          element-loading-spinner="el-icon-loading">
+        <template #empty>
+          <el-empty :imageSize="100"></el-empty>
         </template>
         <el-table-column width="40">
           <i class="el-icon-s-grid" style="cursor: grab"/>
@@ -40,24 +46,12 @@
 
     <el-dialog title="新增阶段" width="460px" style="margin-top: 25vh" :visible.sync="stageDialog"
                destroy-on-close>
-      <el-form :model="stageForm" ref="stageFormRef" :rules="stageRules">
+      <el-form :model="stageForm" ref="stageFormRef" :rules="stageRules" @submit.native.prevent>
         <el-form-item label="阶段名称" prop="name">
-          <el-input v-model="stageForm.name" autocomplete="off" placeholder="请输入阶段名称"></el-input>
+          <el-input v-model="stageForm.name" autocomplete="off" placeholder="请输入阶段名称" @keydown.enter.native="onConfirm"></el-input>
         </el-form-item>
         <el-form-item label="标签颜色">
-          <div class="container">
-            <div class="color-box">
-              <div class="color-wrap"
-                   v-for="(color,key) in colorMap"
-                   :key="key"
-                   :style="{backgroundColor:color}"
-                   @click="stageForm.color = key">
-                <i class="el-icon-check check-icon" v-if="stageForm.color===key"
-                ></i>
-              </div>
-            </div>
-          </div>
-
+          <SelectTagColor :checked-color.sync="stageForm.color"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -71,6 +65,8 @@
 <script>
 import ElTableDraggable from "el-table-draggable";
 import DelPopover from "./DelPopover.vue";
+import SelectTagColor from '@/views/components/SelectTagColor/index.vue'
+import colorMap from '@/views/components/SelectTagColor/colorMap'
 import {stageAdd, stageDelete, stageEdit, stageList} from "@/api/company/status";
 
 const initStageForm = {
@@ -81,7 +77,8 @@ const initStageForm = {
 export default {
   components: {
     ElTableDraggable,
-    DelPopover
+    DelPopover,
+    SelectTagColor
   },
   data() {
     return {
@@ -90,30 +87,10 @@ export default {
       stageForm: initStageForm,
       stageRules: {
         name: [
-          {required: true, message: '请输入名称', trigger: 'blur'},
-
+          {required: true, message: '请输入名称', trigger: 'blur'}
         ]
       },
-      colorMap: {
-        0: '#000000',
-        1: '#bc5959',
-        2: '#d87538',
-        3: '#209890',
-        4: '#4b679d',
-        5: '#595dbe',
-        6: '#333333',
-        7: '#e43e3e',
-        8: '#eb9955',
-        9: '#61bc81',
-        10: '#5d89e9',
-        11: '#8d54bd',
-        12: '#7b8291',
-        13: '#ee7b7b',
-        14: '#e2ad28',
-        15: '#80c463',
-        16: '#4aa8eb',
-        17: '#acacac'
-      },
+      colorMap:colorMap,
       tableLoading: false,
       btnLoading: false,
     }
@@ -206,8 +183,12 @@ export default {
         return
       }
       this.stageForm = initStageForm
+      this.$refs.stageFormRef.resetFields();
       this.stageDialog = false
     },
+    keyDownTest(){
+      console.log('down')
+    }
   }
 }
 </script>
@@ -223,42 +204,6 @@ export default {
   color: #ffffff;
   padding: 4px;
 }
-
-.container {
-  width: 100%;
-  display: inline-block;
-  box-sizing: border-box;
-}
-
-.color-box {
-  width: 256px;
-  row-gap: 8px;
-  display: flex;
-  justify-content: flex-start;
-  flex-flow: row wrap;
-  box-sizing: border-box;
-
-  .color-wrap {
-    width: 20px;
-    height: 20px;
-    padding: 0 4px;
-    max-width: 100%;
-    min-height: 1px;
-    position: relative;
-    border-radius: 4px;
-    margin: 0 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .color-wrap > .check-icon {
-    color: #ffffff;
-    position: absolute;
-  }
-}
-
 
 ::v-deep .el-table__row {
   &:focus-visible {

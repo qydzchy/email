@@ -6,7 +6,7 @@
         <span class="fs-13 ml-10 gray-text">白名单人员的客户不受移入公海规则的限制</span>
       </div>
       <div class="mr-10">
-        <el-button class="add-rule-btn" round size="mini" @click="whiteListDialog=true">添加名单</el-button>
+        <el-button class="add-rule-btn" round size="mini" @click="whiteListDialog = true">添加名单</el-button>
       </div>
     </div>
     <div class="mt-10">
@@ -21,7 +21,7 @@
       </el-tooltip>
     </div>
     <div class="mt-10">
-      <TableNext :list="whitelist" :columns="whiteListColumn" :extra-option="{height:'260'}"
+      <TableNext :list="whitelist" :columns="whiteListColumn" :extra-option="{height:'260'}" :loading="tableLoading"
       />
     </div>
     <el-dialog
@@ -34,27 +34,17 @@
       <el-form>
         <el-form-item label="选择人员" props="member">
           <div class="form-item">
-            <el-select class="select-tree" style="width:100%" v-model="whiteListForm.member"
-                       :popper-append-to-body="false" multiple>
-              <el-option :value="emptyOption" style="height:auto">
-                <el-tree
-                    :data="data"
-                    show-checkbox
-                    node-key="id"
-                    ref="tree"
-                    highlight-current
-                    :default-expand-all="false"
-                    :props="defaultProps"></el-tree>
-              </el-option>
-
-            </el-select>
+            <TreeSelectNext
+                :default-props="defaultProps"
+                :echo-data.sync="whiteListForm.userIds"
+                :tree-data="memberOption"/>
           </div>
         </el-form-item>
       </el-form>
 
 
       <div slot="footer" class="dialog-footer">
-        <el-button round @click="whiteListDialog=false">取 消</el-button>
+        <el-button round @click="onCancel">取 消</el-button>
         <el-button type="primary" round @click="onConfirm">确 定</el-button>
       </div>
     </el-dialog>
@@ -63,25 +53,26 @@
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
-import DelPopover from "../DelPopover.vue";
+import DelPopover from "@/components/DevPopover/index.vue";
+import TreeSelectNext from "@/components/TreeSelectNext/index.vue"
 import {EmptyStr} from "@/utils/tools";
-import {treeList} from "@/mock";
+import {whiteList, whiteListAdd, whiteListDelete} from "@/api/company/poolRule";
+import {listDeptUsersTree} from "@/api/system/dept";
 
 const initWhiteListForm = {
-  member: ''
+  userIds: []
 }
 export default {
-  components: {TableNext},
+  components: {TableNext, TreeSelectNext},
   data() {
     return {
       // 移入公海白名单
       whitelist: [
-        {id: 1, member: 'test'}
       ],
       whiteListColumn: [
         {
           label: '成员',
-          field: 'member',
+          field: 'userId',
           align: 'left',
           render: (_row, field) => EmptyStr(field),
         },
@@ -91,7 +82,7 @@ export default {
           width: '140',
           render: (row) => {
             return (
-                <DelPopover id={row?.id}/>
+                <DelPopover id={row?.id} on={{onDelete: (id) => this.onDelete(id)}}/>
             );
           },
         },
@@ -101,17 +92,75 @@ export default {
       whiteListDialog: false,
       whiteListForm: initWhiteListForm,
       emptyOption: [],
-      data: treeList,
       defaultProps: {
         children: 'children',
-        label: 'label'
-      }
+        label: 'name'
+      },
+      tableLoading: false,
     }
   },
+  mounted() {
+    this.getList()
+    this.getCommonTree()
+  },
   methods: {
-    onConfirm() {
+    async getList() {
+      this.tableLoading = true
+      try {
+        const res = whiteList().finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.whitelist = res.data
+        }
+      } catch {
+        this.tableLoading = false
+      }
+    },
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.memberOption = res.data
+        }
+      } catch {
+      }
+    },
+    async addWhiteListReq() {
+      try {
+        const res = await whiteListAdd({userIdList: this.whiteListForm.userIds})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+        }
+      } catch {
+      }
+    },
 
-    }
+    async onDelete(id) {
+      try {
+        const res = await whiteListDelete({id})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+        }
+      } catch {
+      }
+    },
+
+    onConfirm() {
+      this.addWhiteListReq()
+    },
+
+    onCancel() {
+      this.whiteListForm = initWhiteListForm
+      this.whiteListDialog = false
+    },
+
   }
 
 }

@@ -49,14 +49,6 @@ export function whiteListAdd(data) {
     })
 }
 
-export function whiteListEdit(data) {
-    return request({
-        url: '/customer/public/leads/white/list/edit',
-        method: 'post',
-        data
-    })
-}
-
 export function whiteListDelete(data) {
     return request({
         url: '/customer/public/leads/white/list/delete',
