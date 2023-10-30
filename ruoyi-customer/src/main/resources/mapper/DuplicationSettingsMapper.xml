@@ -40,13 +40,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="list" resultType="com.ruoyi.customer.domain.vo.DuplicationSettingsListVO">
         SELECT
             ds.id,
-            fm.id AS fieldId,
-            fm.NAME AS fieldName,
-            fm.alias AS fieldAlias,
+            fm.id AS columnId,
+            fm.NAME AS columnName,
+            fm.alias AS columnAlias,
             ds.active_flag AS activeFlag
         FROM
             customer_duplication_settings ds
-            LEFT JOIN customer_field_metadata fm ON ds.field_id = fm.id AND fm.del_flag = '0'
+            LEFT JOIN customer_metadata_column mc ON ds.column_id = mc.id AND fm.del_flag = '0'
         WHERE
             ds.del_flag = '0'
     </select>

@@ -11,19 +11,19 @@ public class DuplicationSettingsListVO {
     private Long id;
 
     /**
-     * 字段ID
+     * 列ID
      */
-    private Long fieldId;
+    private Long columnId;
 
     /**
-     * 字段名称
+     * 列名称
      */
-    private String fieldName;
+    private String columnName;
 
     /**
-     * 字段别名
+     * 列别名
      */
-    private String fieldAlias;
+    private String columnAlias;
 
     /**
      * 标志 0.未选 1.选中
