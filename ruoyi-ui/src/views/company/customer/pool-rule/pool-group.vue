@@ -26,28 +26,15 @@
           <el-input :disabled="poolGroupFrom.isView" v-model="poolGroupFrom.name"
                     placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item label="分组成员" props="member">
+        <el-form-item label="分组成员" props="userIds">
           <div class="form-item">
-            <el-select
-                multiple
-                style="width:100%"
-                class="select-tree"
-                v-model="poolGroupFrom.memberList"
+            <TreeSelectNext
                 v-if="!poolGroupFrom.isView"
-                :popper-append-to-body="false"
-            >
-              <el-option :value="emptyOption" style="height:auto">
-                <el-tree
-                    :data="data"
-                    show-checkbox
-                    node-key="id"
-                    ref="tree"
-                    highlight-current
-                    :default-expand-all="false"
-                    :props="defaultProps"></el-tree>
-              </el-option>
+                :default-props="defaultProps"
+                :tree-data="memberOption"
+                :echo-data.sync="poolGroupFrom.userIds"
+            />
 
-            </el-select>
             <div class="flex-middle" v-else>
               <el-tooltip :content="formatMemberList">
                 <div style="width: auto">
@@ -56,15 +43,11 @@
               </el-tooltip>
             </div>
           </div>
-
-
         </el-form-item>
       </el-form>
-
-
       <div slot="footer" class="dialog-footer">
         <el-button round @click="onCancel">取 消</el-button>
-        <el-button type="primary" round>确 定</el-button>
+        <el-button type="primary" round @click="onConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -75,14 +58,17 @@ import TableNext from "@/components/TableNext/index.vue";
 import DelPopover from "@/views/company/customer/DelPopover.vue";
 import {EmptyStr} from "@/utils/tools";
 import {treeList} from "@/mock";
+import {groupsAdd, groupsDelete, groupsEdit, groupsList} from "@/api/company/poolRule";
+import TreeSelectNext from "@/components/TreeSelectNext/index.vue";
+import {listDeptUsersTree} from "@/api/system/dept";
 
 const initPoolGroupFrom = {
   name: '',
-  memberList: [],
+  userIds: [],
   isView: false
 }
 export default {
-  components: {TableNext, DelPopover},
+  components: {TreeSelectNext, TableNext, DelPopover},
   data() {
     return {
       poolGroupByList: [
@@ -110,7 +96,7 @@ export default {
         },
         {
           label: '成员',
-          field: 'member',
+          field: 'userInfoList',
           align: 'left',
           render: (_row, field) => {
             if (!field?.length) {
@@ -120,8 +106,10 @@ export default {
               if (index > 3) {
                 return null
               }
-              return <el-tooltip content={val.name}>
-                <el-image class="icon-40 radius-20 mx-4" src={val.avatar}></el-image>
+              const name = val?.nickName || ''
+
+              return <el-tooltip disabled={!name} content={name}>
+                <el-avatar class="el-icon-user-solid icon-40 radius-20 mx-4"></el-avatar>
               </el-tooltip>
             })
             return <div class="flex-middle">
@@ -154,7 +142,7 @@ export default {
                           <el-button type='text' onClick={() => this.onEdit(row)}>
                             编辑
                           </el-button>
-                          <DelPopover id={row?.id}/>
+                          <DelPopover id={row?.id} on={{onDelete: (id) => this.onDelete(id)}}/>
                         </el-row>
                   }
                 </div>
@@ -163,28 +151,18 @@ export default {
           },
         },
       ],
-      poolGroupFrom: initPoolGroupFrom,
-      poolGroupOptions: [
-        {
-          value: 'zhinan',
-          label: '指南',
-          children: [{
-            value: 'shejiyuanze',
-            label: '设计原则',
-          }, {
-            value: 'daohang',
-            label: '导航',
-          }]
-        }
-      ],
+      poolGroupFrom: {...initPoolGroupFrom},
       poolGroupDialog: false,
-      poolGroupDialogTitle: '添加白名单',
+      poolGroupDialogTitle: '新建公海分组',
       emptyOption: [],
       data: treeList,
       defaultProps: {
         children: 'children',
-        label: 'label'
-      }
+        label: 'name'
+      },
+      memberOption: [],
+      tableLoading: false,
+      btnLoading: false,
     }
   }
   ,
@@ -201,36 +179,127 @@ export default {
     }
   }
   ,
+  mounted() {
+    this.getList()
+    this.getCommonTree()
+  },
   methods: {
+    async getList() {
+      this.tableLoading = true
+      try {
+        const res = await groupsList().finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          let disabledList = []
+          this.poolGroupByList = res.data
+          this.poolGroupByList.forEach(val => {
+            disabledList.push(val.userId)
+          })
+          this.disabledList = disabledList
+        }
+      } catch {
+        this.tableLoading = false
+      }
+    },
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.memberOption = res.data
+        }
+      } catch {
+      }
+    },
     onView(row) {
       this.poolGroupFrom = {
         name: row.name,
         memberList: row.member,
         isView: true
       }
-      this.poolGroupDialogTitle = '查看白名单'
+      this.poolGroupDialogTitle = '查看公海分组'
       this.poolGroupDialog = true
     },
     onEdit(row) {
+      console.log(row)
       this.poolGroupFrom = {
-        name: row.name,
-        memberList: row.member?.map(val => val.name) || [],
+        id: row?.id,
+        name: row?.name,
+        userIds: row?.userInfoList?.map(val => val?.name) || [],
         isView: false
       }
-      console.log(this.poolGroupFrom)
-      this.poolGroupDialogTitle = '查看白名单'
+      this.poolGroupDialogTitle = '编辑公海分组'
       this.poolGroupDialog = true
+    },
+    async onDelete(id) {
+      try {
+        const res = await groupsDelete({id})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          await this.getList()
+        }
+      } catch {
+      }
+    },
+    // 新增分组
+    async groupsAddReq(row) {
+      try {
+        const res = await groupsAdd({
+          name: row?.name,
+          userIds: row?.userIds.join(',')
+        }).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+          await this.getList()
+          this.onCancel()
+        }
+      } catch {
+      }
+    },
+    // 编辑分组
+    async groupsEditReq(row) {
+      try {
+        const res = await groupsEdit({
+          id: row?.id,
+          name: row?.name,
+          userIds: row?.userIds.join(',')
+        }).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+          await this.getList()
+          this.onCancel()
+        }
+      } catch {
+      }
+    },
+    onConfirm() {
+      this.btnLoading = true
+      const formData = this.poolGroupFrom
+      if (!formData.id) {
+        this.groupsAddReq(formData)
+      } else {
+        this.groupsEditReq(formData)
+      }
     },
     onCancel() {
       console.log(this.poolGroupFrom)
-      this.poolGroupDialogTitle = '添加白名单'
+      this.poolGroupDialogTitle = '添加公海分组'
       this.poolGroupFrom = initPoolGroupFrom
       this.poolGroupDialog = false
     },
-    nodeExpand() {
-    },
-    nodeCollapse() {
-    }
   }
 }
 </script>
