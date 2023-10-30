@@ -39,10 +39,9 @@ public class PublicleadsReasonController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:public:leads:reason:list')")
     @GetMapping("/list")
-    public TableDataInfo list()
+    public AjaxResult list()
     {
-        List<PublicleadsReasonListVO> list = publicleadsReasonService.list();
-        return getDataTable(list);
+        return success(publicleadsReasonService.list());
     }
 
     /**

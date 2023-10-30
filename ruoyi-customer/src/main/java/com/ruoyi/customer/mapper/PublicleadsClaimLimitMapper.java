@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsClaimLimit;
+import com.ruoyi.customer.domain.vo.PublicleadsClaimLimitListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -66,4 +67,10 @@ public interface PublicleadsClaimLimitMapper
      * @return
      */
     int batchInsertPublicleadsClaimLimit(@Param("publicleadsClaimLimitList") List<PublicleadsClaimLimit> publicleadsClaimLimitList);
+
+    /**
+     * 领取上限列表
+     * @return
+     */
+    List<PublicleadsClaimLimitListVO> list();
 }

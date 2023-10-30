@@ -38,7 +38,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPublicleadsClaimLimitVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.PublicleadsClaimLimitListVO">
+        select pcl.id, pcl.user_id as userId, u.nick_name as nickName, pcl.claim_limit as claimLimit, pcl.claim_period as claimPeriod from customer_publicleads_claim_limit pcl
+        left join sys_user u on pcl.user_id = u.user_id
+        where pcl.del_flag = '0'
+    </select>
+
     <insert id="insertPublicleadsClaimLimit" parameterType="PublicleadsClaimLimit">
         insert into customer_publicleads_claim_limit
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -70,12 +76,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="batchInsertPublicleadsClaimLimit">
-        INSERT INTO customer_publicleads_claim_limit (user_id, claimLimit, claimPeriod, create_id, create_by, create_time, update_id, update_by, update_time)
+        INSERT INTO customer_publicleads_claim_limit (user_id, claim_limit, claim_period, create_id, create_by, create_time, update_id, update_by, update_time)
         VALUES
         <foreach collection="publicleadsClaimLimitList" item="publicleadsClaimLimit" separator=",">
             (#{publicleadsClaimLimit.userId}, #{publicleadsClaimLimit.claimLimit}, #{publicleadsClaimLimit.claimPeriod},
             #{publicleadsClaimLimit.createId}, #{publicleadsClaimLimit.createBy}, #{publicleadsClaimLimit.createTime},
-            #{publicleadsClaimLimit.updateId}, , #{publicleadsClaimLimit.updateBy}, #{publicleadsClaimLimit.updateTime})
+            #{publicleadsClaimLimit.updateId}, #{publicleadsClaimLimit.updateBy}, #{publicleadsClaimLimit.updateTime})
         </foreach>
     </insert>
 

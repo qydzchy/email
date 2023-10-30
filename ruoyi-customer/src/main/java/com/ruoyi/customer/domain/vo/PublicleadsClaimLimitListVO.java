@@ -13,6 +13,11 @@ public class PublicleadsClaimLimitListVO {
     /** 人员ID */
     private Long userId;
 
+    /**
+     * 人员昵称
+     */
+    private String nickName;
+
     /** 领取上限 */
     private Long claimLimit;
 

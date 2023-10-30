@@ -14,4 +14,9 @@ public class PublicleadsWhiteListListVO {
      * 人员ID
      */
     private Long userId;
+
+    /**
+     * 人员昵称
+     */
+    private String nickName;
 }

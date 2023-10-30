@@ -79,15 +79,6 @@ public class PublicleadsWhiteListServiceImpl implements IPublicleadsWhiteListSer
 
     @Override
     public List<PublicleadsWhiteListListVO> list() {
-        List<PublicleadsWhiteList> publicleadsWhiteListList = publicleadsWhiteListMapper.selectPublicleadsWhiteListList(new PublicleadsWhiteList());
-        List<PublicleadsWhiteListListVO> publicleadsWhiteListVOList = new ArrayList<>();
-        for (PublicleadsWhiteList publicleadsWhiteList : publicleadsWhiteListList) {
-            PublicleadsWhiteListListVO publicleadsWhiteListVO = new PublicleadsWhiteListListVO();
-            publicleadsWhiteListVO.setId(publicleadsWhiteList.getId());
-            publicleadsWhiteListVO.setUserId(publicleadsWhiteList.getUserId());
-            publicleadsWhiteListVOList.add(publicleadsWhiteListVO);
-        }
-
-        return publicleadsWhiteListVOList;
+        return publicleadsWhiteListMapper.list();
     }
 }

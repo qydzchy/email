@@ -7,8 +7,6 @@ import java.util.List;
 @Data
 public class PublicleadsClaimLimitAddDTO {
 
-    private Long id;
-
     /**
      * 人员ID
      */

@@ -35,6 +35,14 @@
             <artifactId>jsoup</artifactId>
             <version>1.14.3</version> <!-- Use the latest version -->
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-system</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-system</artifactId>
+        </dependency>
 
 
     </dependencies>

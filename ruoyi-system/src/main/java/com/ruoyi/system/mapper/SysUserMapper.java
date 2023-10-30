@@ -1,6 +1,9 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import java.util.Set;
+
+import com.ruoyi.system.domain.vo.UserInfoVO;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysUser;
 
@@ -124,4 +127,11 @@ public interface SysUserMapper
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+    /**
+     *
+     * @param ids
+     * @return
+     */
+    List<UserInfoVO> listByIds(@Param("ids") List<Long> ids);
 }

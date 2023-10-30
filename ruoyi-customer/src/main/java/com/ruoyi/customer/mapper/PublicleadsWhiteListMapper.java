@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsWhiteList;
+import com.ruoyi.customer.domain.vo.PublicleadsWhiteListListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -66,4 +67,10 @@ public interface PublicleadsWhiteListMapper
      * @return
      */
     int batchInsertPublicleadsWhiteList(@Param("publicleadsWhiteListList") List<PublicleadsWhiteList> publicleadsWhiteListList);
+
+    /**
+     * 新增移入公海白名单列表
+     * @return
+     */
+    List<PublicleadsWhiteListListVO> list();
 }

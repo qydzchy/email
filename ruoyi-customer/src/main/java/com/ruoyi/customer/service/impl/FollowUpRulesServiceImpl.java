@@ -35,6 +35,7 @@ public class FollowUpRulesServiceImpl implements IFollowUpRulesService
             followUpRulesVO.setId(followUpRules.getId());
             followUpRulesVO.setName(followUpRules.getName());
             followUpRulesVO.setType(followUpRules.getType());
+            followUpRulesVO.setActiveFlag(followUpRules.getActiveFlag());
             followUpRulesVOList.add(followUpRulesVO);
         }
 

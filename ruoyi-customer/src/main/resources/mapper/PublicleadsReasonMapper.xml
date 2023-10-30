@@ -76,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <update id="deletePublicleadsReasonById" parameterType="Long">
+    <update id="deletePublicleadsReasonById">
         update customer_publicleads_reason set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
     </update>
 

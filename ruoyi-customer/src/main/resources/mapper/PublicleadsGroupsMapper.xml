@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="userIds"    column="user_ids"    />
+        <result property="defaultGroupFlag"    column="default_group_flag"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -18,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPublicleadsGroupsVo">
-        select id, name, user_ids, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_groups
+        select id, name, user_ids, default_group_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_groups
     </sql>
 
     <select id="selectPublicleadsGroupsList" parameterType="PublicleadsGroups" resultMap="PublicleadsGroupsResult">
@@ -43,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">id,</if>
             <if test="name != null and name != ''">name,</if>
             <if test="userIds != null and userIds != ''">user_ids,</if>
+            <if test="defaultGroupFlag != null">default_group_flag,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -55,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null">#{id},</if>
             <if test="name != null and name != ''">#{name},</if>
             <if test="userIds != null and userIds != ''">#{userIds},</if>
+            <if test="defaultGroupFlag != null">#{defaultGroupFlag},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -70,6 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="userIds != null and userIds != ''">user_ids = #{userIds},</if>
+            <if test="defaultGroupFlag != null">default_group_flag = #{defaultGroupFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

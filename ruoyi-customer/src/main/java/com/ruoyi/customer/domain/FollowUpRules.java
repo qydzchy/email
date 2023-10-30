@@ -22,9 +22,7 @@ public class FollowUpRules extends BaseEntity
     @Excel(name = "名称")
     private String name;
 
-    /** 类型 
-1. 发生以下行为会影响客户的“最近联系时间”，进而影响客户被自动移入公海的时间
-2. 发生以下行为会影响客户的“最近跟进时间”，进而影响跟进客户类型的任务截止时间 */
+    /** 类型 */
     @Excel(name = "类型")
     private Integer type;
 

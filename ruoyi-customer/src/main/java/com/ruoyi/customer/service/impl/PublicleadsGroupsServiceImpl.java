@@ -1,12 +1,14 @@
 package com.ruoyi.customer.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
+import com.ruoyi.system.domain.vo.UserInfoVO;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PublicleadsGroupsMapper;
 import com.ruoyi.customer.domain.PublicleadsGroups;
@@ -25,6 +27,9 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
 {
     @Resource
     private PublicleadsGroupsMapper publicleadsGroupsMapper;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     /**
      * 新增公海分组
@@ -87,14 +92,40 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
     @Override
     public List<PublicleadsGroupsListVO> list() {
         List<PublicleadsGroups> publicleadsGroupsList = publicleadsGroupsMapper.selectPublicleadsGroupsList(new PublicleadsGroups());
-        List<PublicleadsGroupsListVO> publicleadsGroupsListVOList = new ArrayList<>();
-        for (PublicleadsGroups publicleadsGroups : publicleadsGroupsList) {
-            PublicleadsGroupsListVO publicleadsGroupsVO = new PublicleadsGroupsListVO();
-            publicleadsGroupsVO.setName(publicleadsGroups.getName());
-            publicleadsGroupsVO.setUserIds(publicleadsGroups.getUserIds());
-            publicleadsGroupsListVOList.add(publicleadsGroupsVO);
+
+        List<Long> userIdList = new ArrayList<>();
+        publicleadsGroupsList.stream().forEach(publicleadsGroups -> {
+            String userIds = publicleadsGroups.getUserIds();
+            String[] userIdArray = userIds.split(",");
+            for (String userId : userIdArray) {
+                userIdList.add(Long.valueOf(userId));
+            }
+        });
+
+        Map<Long, UserInfoVO> userInfoMap = new HashMap<>();
+        if (!userIdList.isEmpty()) {
+            List<UserInfoVO> userInfoList = sysUserMapper.listByIds(userIdList);
+            userInfoMap = userInfoList.stream().collect(Collectors.toMap(userInfo -> userInfo.getUserId(), userInfo -> userInfo));
         }
 
-        return publicleadsGroupsListVOList;
+        List<PublicleadsGroupsListVO> publicleadsGroupsVOList = new ArrayList<>();
+        for (PublicleadsGroups publicleadsGroups : publicleadsGroupsList) {
+            PublicleadsGroupsListVO publicleadsGroupsListVO = new PublicleadsGroupsListVO();
+            publicleadsGroupsListVO.setId(publicleadsGroups.getId());
+            publicleadsGroupsListVO.setName(publicleadsGroups.getName());
+            publicleadsGroupsListVO.setDefaultGroupFlag(publicleadsGroups.getDefaultGroupFlag());
+
+            List<UserInfoVO> userInfoList = new ArrayList<>();
+            String userIds = publicleadsGroups.getUserIds();
+            String[] userIdArray = userIds.split(",");
+            for (String userId : userIdArray) {
+                UserInfoVO userInfoVO = userInfoMap.get(Long.valueOf(userId));
+                userInfoList.add(userInfoVO);
+            }
+            publicleadsGroupsListVO.setUserInfoList(userInfoList);
+            publicleadsGroupsVOList.add(publicleadsGroupsListVO);
+        }
+
+        return publicleadsGroupsVOList;
     }
 }

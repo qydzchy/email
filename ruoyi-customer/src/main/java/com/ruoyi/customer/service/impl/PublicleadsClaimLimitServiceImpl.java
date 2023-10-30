@@ -81,16 +81,12 @@ public class PublicleadsClaimLimitServiceImpl implements IPublicleadsClaimLimitS
         return publicleadsClaimLimitMapper.deletePublicleadsClaimLimitById(id, userId, username);
     }
 
+    /**
+     * 领取上限列表
+     * @return
+     */
     @Override
     public List<PublicleadsClaimLimitListVO> list() {
-        List<PublicleadsClaimLimit> publicleadsClaimLimitList = publicleadsClaimLimitMapper.selectPublicleadsClaimLimitList(new PublicleadsClaimLimit());
-        List<PublicleadsClaimLimitListVO> publicleadsClaimLimitVOList = new ArrayList<>();
-        for (PublicleadsClaimLimit publicleadsClaimLimit : publicleadsClaimLimitList) {
-            PublicleadsClaimLimitListVO publicleadsClaimLimitVO = new PublicleadsClaimLimitListVO();
-            BeanUtils.copyProperties(publicleadsClaimLimitVO, publicleadsClaimLimit);
-            publicleadsClaimLimitVOList.add(publicleadsClaimLimitVO);
-        }
-
-        return publicleadsClaimLimitVOList;
+        return publicleadsClaimLimitMapper.list();
     }
 }

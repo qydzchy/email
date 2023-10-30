@@ -34,7 +34,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPublicleadsWhiteListVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.PublicleadsWhiteListListVO">
+        select pwl.id, pwl.user_id as userId, u.nick_name as nickName from customer_publicleads_white_list pwl
+        left join sys_user u on pwl.user_id = u.user_id
+        where pwl.del_flag = '0'
+    </select>
+
     <insert id="insertPublicleadsWhiteList" parameterType="PublicleadsWhiteList">
         insert into customer_publicleads_white_list
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -66,7 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         VALUES
         <foreach collection="publicleadsWhiteListList" item="publicleadsWhiteList" separator=",">
             (#{publicleadsWhiteList.userId}, #{publicleadsWhiteList.createId}, #{publicleadsWhiteList.createBy}, #{publicleadsWhiteList.createTime},
-             #{publicleadsWhiteList.updateId}, , #{publicleadsWhiteList.updateBy}, #{publicleadsWhiteList.updateTime})
+            #{publicleadsWhiteList.updateId}, #{publicleadsWhiteList.updateBy}, #{publicleadsWhiteList.updateTime})
         </foreach>
     </insert>
 
