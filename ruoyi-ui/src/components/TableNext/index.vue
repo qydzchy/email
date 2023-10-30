@@ -50,7 +50,9 @@ export default {
           <el-table
               data={this.list}
               v-loading={this.loading}
-              element-loading-text='Loading'
+              element-loading-text='拼命加载中...'
+              element-loading-spinner="el-icon-loading"
+              elemnt-loading-background="rgba(0,0,0,0.5)"
               props={{...this.extraOption}}
               on={{...this.extraEvent}}>
             // 自定义empty

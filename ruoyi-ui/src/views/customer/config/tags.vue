@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="bold fs-26 pb-4">
-      客户列表
-    </div>
+
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+
+}
 </script>
 
 <style lang="scss" scoped>
