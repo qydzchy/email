@@ -42,7 +42,7 @@ public interface ILimitsService
      * @param limits 客户上限
      * @return 结果
      */
-    public int updateLimits(Limits limits);
+    public boolean updateLimits(Limits limits);
 
     /**
      * 批量删除客户上限

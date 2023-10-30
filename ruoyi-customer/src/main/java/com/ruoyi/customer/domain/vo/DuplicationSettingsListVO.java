@@ -21,6 +21,11 @@ public class DuplicationSettingsListVO {
     private String fieldName;
 
     /**
+     * 字段别名
+     */
+    private String fieldAlias;
+
+    /**
      * 标志 0.未选 1.选中
      */
     private Boolean activeFlag;

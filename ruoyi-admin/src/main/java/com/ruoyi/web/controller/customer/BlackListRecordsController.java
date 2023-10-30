@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.customer;
 import java.util.List;
 import javax.annotation.Resource;
 
+import com.ruoyi.customer.domain.BlackListRecords;
 import com.ruoyi.customer.domain.vo.BlackListRecordsListVO;
 import com.ruoyi.email.domain.dto.email.BatchDeleteDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,12 +38,23 @@ public class BlackListRecordsController extends BaseController
         return success(list);
     }
 
+    /**
+     * 新建建档黑名单
+     */
+    @PreAuthorize("@ss.hasPermi('customer:black:list:records:add')")
+    @Log(title = "新建建档黑名单", businessType = BusinessType.INSERT)
+    @PostMapping("/add")
+    public AjaxResult add(@RequestBody BlackListRecords blackListRecords)
+    {
+        return toAjax(blackListRecordsService.insertBlackListRecords(blackListRecords));
+    }
+
 
     /**
      * 删除建档黑名单
      */
     @PreAuthorize("@ss.hasPermi('customer:black:list:records:delete')")
-    @Log(title = "建档黑名单", businessType = BusinessType.DELETE)
+    @Log(title = "删除建档黑名单", businessType = BusinessType.DELETE)
 	@PostMapping("/batch/delete")
     public AjaxResult delete(@RequestBody BatchDeleteDTO batchDeleteDTO)
     {

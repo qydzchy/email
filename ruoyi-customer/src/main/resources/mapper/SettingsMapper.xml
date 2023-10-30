@@ -51,8 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="selectSettings" resultType="com.ruoyi.customer.domain.Settings">
-        <include refid="selectSettingsVo"/>
+    <select id="selectSettings" resultType="com.ruoyi.customer.domain.vo.SettingsGetVO">
+        select id, mandatory_subgroup_flag as mandatorySubgroupFlag, advance_flag as advanceFlag, advance_days as advanceDays, account_disabled_flag as accountDisabledFlag, claim_limit_flag as claimLimitFlag, claim_limit_days as claimLimitDays, opportunity_view_rule as opportunityViewRule, show_public_leads_flag as showPublicLeadsFlag, followup_time as followupTime from customer_settings
         limit 1
     </select>
 

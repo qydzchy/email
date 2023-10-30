@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="type"    column="type"    />
+        <result property="category"    column="category"    />
         <result property="activeFlag"    column="active_flag"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
@@ -19,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectFollowUpRulesVo">
-        select id, name, type, active_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_follow_up_rules
+        select id, name, type, category, active_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_follow_up_rules
     </sql>
 
     <select id="selectFollowUpRulesList" parameterType="FollowUpRules" resultMap="FollowUpRulesResult">

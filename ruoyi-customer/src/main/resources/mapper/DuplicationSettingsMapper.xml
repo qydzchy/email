@@ -38,9 +38,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="list" resultType="com.ruoyi.customer.domain.vo.DuplicationSettingsListVO">
-        select ds.id, fm.id as fieldId, fm.name as fieldName, ds.active_flag as activeFlag from customer_duplication_settings ds
-                        left join customer_field_metadata on fm on ds.field_id = fm.id
-                        where ds.del_flag = '0' and fm.del_flag = '0'
+        SELECT
+            ds.id,
+            fm.id AS fieldId,
+            fm.NAME AS fieldName,
+            fm.alias AS fieldAlias,
+            ds.active_flag AS activeFlag
+        FROM
+            customer_duplication_settings ds
+            LEFT JOIN customer_field_metadata fm ON ds.field_id = fm.id AND fm.del_flag = '0'
+        WHERE
+            ds.del_flag = '0'
     </select>
 
     <insert id="insertDuplicationSettings" parameterType="DuplicationSettings">
@@ -88,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="updateActiveFlag">
-            update customer_duplication_settings set active_flag = #{activeFlag} where id = #{id}
+            update customer_duplication_settings set active_flag = !active_flag where id = #{id}
     </update>
 
     <delete id="deleteDuplicationSettingsById" parameterType="Long">

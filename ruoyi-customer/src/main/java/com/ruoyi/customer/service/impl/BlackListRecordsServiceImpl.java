@@ -2,6 +2,10 @@ package com.ruoyi.customer.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.BlackListRecordsListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.BlackListRecordsMapper;
@@ -43,5 +47,25 @@ public class BlackListRecordsServiceImpl implements IBlackListRecordsService
     @Override
     public int batchDeleteByIds(List<Long> ids) {
         return blackListRecordsMapper.batchDeleteByIds(ids);
+    }
+
+    /**
+     * 新建建档黑名单
+     * @param blackListRecords
+     * @return
+     */
+    @Override
+    public int insertBlackListRecords(BlackListRecords blackListRecords) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        blackListRecords.setCreateId(userId);
+        blackListRecords.setCreateBy(username);
+        blackListRecords.setCreateTime(DateUtils.getNowDate());
+        blackListRecords.setUpdateId(userId);
+        blackListRecords.setUpdateBy(username);
+        blackListRecords.setUpdateTime(DateUtils.getNowDate());
+        return blackListRecordsMapper.insertBlackListRecords(blackListRecords);
     }
 }

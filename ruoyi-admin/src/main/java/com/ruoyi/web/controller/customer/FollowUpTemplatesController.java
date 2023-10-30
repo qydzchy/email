@@ -6,12 +6,8 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.vo.FollowUpTemplatesListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +17,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.customer.domain.FollowUpTemplates;
 import com.ruoyi.customer.service.IFollowUpTemplatesService;
-import com.ruoyi.common.core.page.TableDataInfo;
 
 import javax.annotation.Resource;
 
@@ -44,10 +39,10 @@ public class FollowUpTemplatesController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:follow:up:templates:list')")
     @GetMapping("/list")
-    public TableDataInfo list()
+    public AjaxResult list()
     {
         List<FollowUpTemplatesListVO> list = followUpTemplatesService.list();
-        return getDataTable(list);
+        return success(list);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.ruoyi.customer.service;
 
 import com.ruoyi.customer.domain.Settings;
+import com.ruoyi.customer.domain.vo.SettingsGetVO;
 
 /**
  * 客户设置Service接口
@@ -15,7 +16,7 @@ public interface ISettingsService
      *
      * @return 客户设置
      */
-    public Settings selectSettings();
+    public SettingsGetVO selectSettings();
 
     /**
      * 修改客户设置

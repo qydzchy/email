@@ -1,6 +1,8 @@
 package com.ruoyi.customer.service;
 
 import java.util.List;
+
+import com.ruoyi.customer.domain.BlackListRecords;
 import com.ruoyi.customer.domain.vo.BlackListRecordsListVO;
 
 /**
@@ -23,4 +25,11 @@ public interface IBlackListRecordsService
      * @return
      */
     int batchDeleteByIds(List<Long> ids);
+
+    /**
+     * 新建建档黑名单
+     * @param blackListRecords
+     * @return
+     */
+    int insertBlackListRecords(BlackListRecords blackListRecords);
 }

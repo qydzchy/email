@@ -7,7 +7,6 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.FollowUpQuickTextListVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.FollowUpQuickTextMapper;
 import com.ruoyi.customer.domain.FollowUpQuickText;
@@ -92,7 +91,7 @@ public class FollowUpQuickTextServiceImpl implements IFollowUpQuickTextService
             FollowUpQuickTextListVO followUpQuickTextVO = new FollowUpQuickTextListVO();
             followUpQuickTextVO.setId(followUpQuickText.getId());
             followUpQuickTextVO.setName(followUpQuickText.getName());
-            followUpQuickTextVO.setLabel(followUpQuickTextVO.getLabel());
+            followUpQuickTextVO.setLabel(followUpQuickText.getLabel());
             followUpQuickTextVOList.add(followUpQuickTextVO);
         }
 

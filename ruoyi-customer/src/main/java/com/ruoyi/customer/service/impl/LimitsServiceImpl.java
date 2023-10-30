@@ -1,9 +1,11 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.LimitsListVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.LimitsMapper;
 import com.ruoyi.customer.domain.Limits;
@@ -67,10 +69,27 @@ public class LimitsServiceImpl implements ILimitsService
      * @return 结果
      */
     @Override
-    public int updateLimits(Limits limits)
+    public boolean updateLimits(Limits limits)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        limits.setUpdateId(userId);
+        limits.setUpdateBy(username);
         limits.setUpdateTime(DateUtils.getNowDate());
-        return limitsMapper.updateLimits(limits);
+
+        if (limits.getId() == null) {
+            limits.setCreateId(userId);
+            limits.setCreateBy(username);
+            limits.setCreateTime(DateUtils.getNowDate());
+
+            limitsMapper.insertLimits(limits);
+        } else {
+            limitsMapper.updateLimits(limits);
+        }
+
+        return true;
     }
 
     /**

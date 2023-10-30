@@ -2,11 +2,7 @@ package com.ruoyi.web.controller.customer;
 
 import javax.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -30,7 +26,7 @@ public class SettingsController extends BaseController
 
 
     /**
-     * 查询客户查重设置列表
+     * 查询客户设置
      */
     @PreAuthorize("@ss.hasPermi('customer:settings:get')")
     @GetMapping("/get")
@@ -45,7 +41,7 @@ public class SettingsController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:settings:edit')")
     @Log(title = "修改客户设置", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody Settings settings)
     {
         return toAjax(settingsService.updateSettings(settings));

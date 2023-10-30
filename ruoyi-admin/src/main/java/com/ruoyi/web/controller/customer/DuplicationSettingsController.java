@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.DuplicationSettings;
-import com.ruoyi.customer.domain.FollowUpRules;
 import com.ruoyi.customer.domain.vo.DuplicationSettingsListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,6 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.customer.service.IDuplicationSettingsService;
-import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 客户查重设置Controller
@@ -39,10 +37,10 @@ public class DuplicationSettingsController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:duplication:settings:list')")
     @GetMapping("/list")
-    public TableDataInfo list()
+    public AjaxResult list()
     {
         List<DuplicationSettingsListVO> list = duplicationSettingsService.list();
-        return getDataTable(list);
+        return success(list);
     }
 
     /**

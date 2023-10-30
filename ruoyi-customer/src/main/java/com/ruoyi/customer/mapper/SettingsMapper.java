@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Settings;
+import com.ruoyi.customer.domain.vo.SettingsGetVO;
 
 /**
  * 客户设置Mapper接口
@@ -63,5 +64,5 @@ public interface SettingsMapper
      *
      * @return
      */
-    Settings selectSettings();
+    SettingsGetVO selectSettings();
 }

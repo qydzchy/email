@@ -27,6 +27,12 @@ public class FollowUpRules extends BaseEntity
     private Integer type;
 
     /**
+     * 类别 1. 发生以下行为会影响客户的“最近联系时间”，进而影响客户被自动移入公海的时间
+     * 2. 发生以下行为会影响客户的“最近跟进时间”，进而影响跟进客户类型的任务截止时间
+     */
+    private Integer category;
+
+    /**
      * 标志 0.未选 1.选中
      */
     private Boolean activeFlag;
@@ -68,6 +74,14 @@ public class FollowUpRules extends BaseEntity
     public Integer getType() 
     {
         return type;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
     }
 
     public Boolean getActiveFlag() {

@@ -3,6 +3,7 @@ package com.ruoyi.customer.service.impl;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.vo.SettingsGetVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.SettingsMapper;
 import com.ruoyi.customer.domain.Settings;
@@ -23,8 +24,9 @@ public class SettingsServiceImpl implements ISettingsService
     private SettingsMapper settingsMapper;
 
     @Override
-    public Settings selectSettings() {
-        return settingsMapper.selectSettings();
+    public SettingsGetVO selectSettings() {
+        SettingsGetVO settingsGetVO = settingsMapper.selectSettings();
+        return settingsGetVO != null ? settingsGetVO : new SettingsGetVO();
     }
 
     /**
