@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.customer.domain.DuplicationSettings;
+import com.ruoyi.customer.domain.dto.DuplicationSettingsActiveFlagEditDTO;
 import com.ruoyi.customer.domain.vo.DuplicationSettingsListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,15 +46,15 @@ public class DuplicationSettingsController extends BaseController
     /**
      * 修改客户查重设置标志
      */
-    @PreAuthorize("@ss.hasPermi('customer:duplication:settings:activeFlag')")
-    @Log(title = "修改客户查重设置标志", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@ss.hasPermi('customer:duplication:settings:edit:activeFlag')")
+    @Log(title = "批量修改客户查重设置标志", businessType = BusinessType.UPDATE)
     @PostMapping("/edit/activeFlag")
-    public AjaxResult editActiveFlag(@RequestBody DuplicationSettings duplicationSettings)
+    public AjaxResult batchEditActiveFlag(@RequestBody List<DuplicationSettingsActiveFlagEditDTO> duplicationSettingsActiveFlagEditDTOList)
     {
-        if (duplicationSettings.getId() == null) {
-            throw new ServiceException("ID不能为空");
+        if (duplicationSettingsActiveFlagEditDTOList == null || duplicationSettingsActiveFlagEditDTOList.isEmpty()) {
+            throw new ServiceException("参数不能为空");
         }
 
-        return toAjax(duplicationSettingsService.updateActiveFlag(duplicationSettings.getId()));
+        return toAjax(duplicationSettingsService.updateActiveFlag(duplicationSettingsActiveFlagEditDTOList));
     }
 }

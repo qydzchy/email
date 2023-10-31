@@ -2,6 +2,7 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.DuplicationSettings;
+import com.ruoyi.customer.domain.dto.DuplicationSettingsActiveFlagEditDTO;
 import com.ruoyi.customer.domain.vo.DuplicationSettingsListVO;
 
 /**
@@ -68,8 +69,8 @@ public interface IDuplicationSettingsService
 
     /**
      * 更新标志
-     * @param id
+     * @param duplicationSettingsActiveFlagEditDTOList
      * @return
      */
-    int updateActiveFlag(Long id);
+    boolean updateActiveFlag(List<DuplicationSettingsActiveFlagEditDTO> duplicationSettingsActiveFlagEditDTOList);
 }

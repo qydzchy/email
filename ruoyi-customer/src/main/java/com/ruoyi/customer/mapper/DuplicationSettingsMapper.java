@@ -67,10 +67,11 @@ public interface DuplicationSettingsMapper
      */
     List<DuplicationSettingsListVO> list();
 
+
     /**
-     * 更新标志
-     * @param id
-     * @return
+     * 批量更新标志
+     * @param ids
+     * @param activeFlag
      */
-    int updateActiveFlag(@Param("id") Long id);
+    void batchUpdateActiveFlag(@Param("ids") List<Long> ids, @Param("activeFlag") boolean activeFlag);
 }

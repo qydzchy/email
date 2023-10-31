@@ -40,7 +40,7 @@ CREATE TABLE `customer_black_list_records`  (
 DROP TABLE IF EXISTS `customer_duplication_settings`;
 CREATE TABLE `customer_duplication_settings`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `colume_id` bigint(20) NOT NULL COMMENT '列ID',
+  `column_id` bigint(20) NOT NULL COMMENT '列ID',
   `active_flag` tinyint(1) NOT NULL COMMENT '标志 0.未选 1.选中',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',

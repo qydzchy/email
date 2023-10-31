@@ -1,12 +1,16 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.customer.domain.dto.DuplicationSettingsActiveFlagEditDTO;
 import com.ruoyi.customer.domain.vo.DuplicationSettingsListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.DuplicationSettingsMapper;
 import com.ruoyi.customer.domain.DuplicationSettings;
 import com.ruoyi.customer.service.IDuplicationSettingsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -107,11 +111,16 @@ public class DuplicationSettingsServiceImpl implements IDuplicationSettingsServi
 
     /**
      * 更新标志
-     * @param id
+     * @param duplicationSettingsActiveFlagEditDTOList
      * @return
      */
     @Override
-    public int updateActiveFlag(Long id) {
-        return duplicationSettingsMapper.updateActiveFlag(id);
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateActiveFlag(List<DuplicationSettingsActiveFlagEditDTO> duplicationSettingsActiveFlagEditDTOList) {
+        List<Long> selectedIdList = duplicationSettingsActiveFlagEditDTOList.stream().filter(duplicationSettingsActiveFlagEditDTO -> duplicationSettingsActiveFlagEditDTO.getActiveFlag()).map(duplicationSettingsActiveFlagEditDTO -> duplicationSettingsActiveFlagEditDTO.getId()).collect(Collectors.toList());
+        List<Long> unSelectedIdList = duplicationSettingsActiveFlagEditDTOList.stream().filter(duplicationSettingsActiveFlagEditDTO -> !duplicationSettingsActiveFlagEditDTO.getActiveFlag()).map(duplicationSettingsActiveFlagEditDTO -> duplicationSettingsActiveFlagEditDTO.getId()).collect(Collectors.toList());
+        duplicationSettingsMapper.batchUpdateActiveFlag(selectedIdList, true);
+        duplicationSettingsMapper.batchUpdateActiveFlag(unSelectedIdList, false);
+        return true;
     }
 }

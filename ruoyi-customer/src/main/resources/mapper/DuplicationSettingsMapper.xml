@@ -40,13 +40,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="list" resultType="com.ruoyi.customer.domain.vo.DuplicationSettingsListVO">
         SELECT
             ds.id,
-            fm.id AS columnId,
-            fm.NAME AS columnName,
-            fm.alias AS columnAlias,
+            mc.id AS columnId,
+            mc.NAME AS columnName,
+            mc.alias AS columnAlias,
             ds.active_flag AS activeFlag
         FROM
             customer_duplication_settings ds
-            LEFT JOIN customer_metadata_column mc ON ds.column_id = mc.id AND fm.del_flag = '0'
+            LEFT JOIN customer_metadata_column mc ON ds.column_id = mc.id AND mc.del_flag = '0'
         WHERE
             ds.del_flag = '0'
     </select>
@@ -95,8 +95,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <update id="updateActiveFlag">
-            update customer_duplication_settings set active_flag = !active_flag where id = #{id}
+    <update id="batchUpdateActiveFlag">
+        update customer_duplication_settings set active_flag = #{activeFlag} where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </update>
 
     <delete id="deleteDuplicationSettingsById" parameterType="Long">
