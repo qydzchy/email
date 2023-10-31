@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.DetailsMapper">
+
+    <resultMap type="Details" id="DetailsResult">
+        <result property="id"    column="id"    />
+        <result property="companyWebsite"    column="company_website"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="shortName"    column="short_name"    />
+        <result property="countryRegion"    column="country_region"    />
+        <result property="sourceIds"    column="source_ids"    />
+        <result property="tagIds"    column="tag_ids"    />
+        <result property="seaType"    column="sea_type"    />
+        <result property="packetId"    column="packet_id"    />
+        <result property="stageId"    column="stage_id"    />
+        <result property="rating"    column="rating"    />
+        <result property="customerNoType"    column="customer_no_type"    />
+        <result property="customerNo"    column="customer_no"    />
+        <result property="phonePrefix"    column="phone_prefix"    />
+        <result property="phone"    column="phone"    />
+        <result property="timezone"    column="timezone"    />
+        <result property="scale"    column="scale"    />
+        <result property="fax"    column="fax"    />
+        <result property="address"    column="address"    />
+        <result property="companyRemarks"    column="company_remarks"    />
+        <result property="companyLogo"    column="company_logo"    />
+        <result property="focusFlag"    column="focus_flag"    />
+        <result property="lastContactedAt"    column="last_contacted_at"    />
+        <result property="lastFollowupAt"    column="last_followup_at"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDetailsVo">
+        select id, company_website, company_name, short_name, country_region, source_ids, tag_ids, sea_type, packet_id, stage_id, rating, customer_no_type, customer_no, phone_prefix, phone, timezone, scale, fax, address, company_remarks, company_logo, focus_flag, last_contacted_at, last_followup_at, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_details
+    </sql>
+
+    <select id="selectDetailsList" parameterType="Details" resultMap="DetailsResult">
+        <include refid="selectDetailsVo"/>
+        <where>
+            <if test="companyWebsite != null  and companyWebsite != ''"> and company_website = #{companyWebsite}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="shortName != null  and shortName != ''"> and short_name like concat('%', #{shortName}, '%')</if>
+            <if test="countryRegion != null  and countryRegion != ''"> and country_region = #{countryRegion}</if>
+            <if test="sourceIds != null  and sourceIds != ''"> and source_ids = #{sourceIds}</if>
+            <if test="tagIds != null  and tagIds != ''"> and tag_ids = #{tagIds}</if>
+            <if test="seaType != null "> and sea_type = #{seaType}</if>
+            <if test="packetId != null "> and packet_id = #{packetId}</if>
+            <if test="stageId != null "> and stage_id = #{stageId}</if>
+            <if test="rating != null "> and rating = #{rating}</if>
+            <if test="customerNoType != null "> and customer_no_type = #{customerNoType}</if>
+            <if test="customerNo != null  and customerNo != ''"> and customer_no = #{customerNo}</if>
+            <if test="phonePrefix != null  and phonePrefix != ''"> and phone_prefix = #{phonePrefix}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="timezone != null  and timezone != ''"> and timezone = #{timezone}</if>
+            <if test="scale != null "> and scale = #{scale}</if>
+            <if test="fax != null  and fax != ''"> and fax = #{fax}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="companyRemarks != null  and companyRemarks != ''"> and company_remarks = #{companyRemarks}</if>
+            <if test="companyLogo != null  and companyLogo != ''"> and company_logo = #{companyLogo}</if>
+            <if test="focusFlag != null "> and focus_flag = #{focusFlag}</if>
+            <if test="lastContactedAt != null "> and last_contacted_at = #{lastContactedAt}</if>
+            <if test="lastFollowupAt != null "> and last_followup_at = #{lastFollowupAt}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectDetailsById" parameterType="Long" resultMap="DetailsResult">
+        <include refid="selectDetailsVo"/>
+        where id = #{id}
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+
+    </select>
+
+    <insert id="insertDetails" parameterType="Details" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyWebsite != null">company_website,</if>
+            <if test="companyName != null and companyName != ''">company_name,</if>
+            <if test="shortName != null">short_name,</if>
+            <if test="countryRegion != null">country_region,</if>
+            <if test="sourceIds != null">source_ids,</if>
+            <if test="tagIds != null">tag_ids,</if>
+            <if test="seaType != null">sea_type,</if>
+            <if test="packetId != null">packet_id,</if>
+            <if test="stageId != null">stage_id,</if>
+            <if test="rating != null">rating,</if>
+            <if test="customerNoType != null">customer_no_type,</if>
+            <if test="customerNo != null and customerNo != ''">customer_no,</if>
+            <if test="phonePrefix != null">phone_prefix,</if>
+            <if test="phone != null">phone,</if>
+            <if test="timezone != null">timezone,</if>
+            <if test="scale != null">scale,</if>
+            <if test="fax != null">fax,</if>
+            <if test="address != null">address,</if>
+            <if test="companyRemarks != null">company_remarks,</if>
+            <if test="companyLogo != null">company_logo,</if>
+            <if test="focusFlag != null">focus_flag,</if>
+            <if test="lastContactedAt != null">last_contacted_at,</if>
+            <if test="lastFollowupAt != null">last_followup_at,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyWebsite != null">#{companyWebsite},</if>
+            <if test="companyName != null and companyName != ''">#{companyName},</if>
+            <if test="shortName != null">#{shortName},</if>
+            <if test="countryRegion != null">#{countryRegion},</if>
+            <if test="sourceIds != null">#{sourceIds},</if>
+            <if test="tagIds != null">#{tagIds},</if>
+            <if test="seaType != null">#{seaType},</if>
+            <if test="packetId != null">#{packetId},</if>
+            <if test="stageId != null">#{stageId},</if>
+            <if test="rating != null">#{rating},</if>
+            <if test="customerNoType != null">#{customerNoType},</if>
+            <if test="customerNo != null and customerNo != ''">#{customerNo},</if>
+            <if test="phonePrefix != null">#{phonePrefix},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="timezone != null">#{timezone},</if>
+            <if test="scale != null">#{scale},</if>
+            <if test="fax != null">#{fax},</if>
+            <if test="address != null">#{address},</if>
+            <if test="companyRemarks != null">#{companyRemarks},</if>
+            <if test="companyLogo != null">#{companyLogo},</if>
+            <if test="focusFlag != null">#{focusFlag},</if>
+            <if test="lastContactedAt != null">#{lastContactedAt},</if>
+            <if test="lastFollowupAt != null">#{lastFollowupAt},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDetails" parameterType="Details">
+        update customer_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyWebsite != null">company_website = #{companyWebsite},</if>
+            <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
+            <if test="shortName != null">short_name = #{shortName},</if>
+            <if test="countryRegion != null">country_region = #{countryRegion},</if>
+            <if test="sourceIds != null">source_ids = #{sourceIds},</if>
+            <if test="tagIds != null">tag_ids = #{tagIds},</if>
+            <if test="seaType != null">sea_type = #{seaType},</if>
+            <if test="packetId != null">packet_id = #{packetId},</if>
+            <if test="stageId != null">stage_id = #{stageId},</if>
+            <if test="rating != null">rating = #{rating},</if>
+            <if test="customerNoType != null">customer_no_type = #{customerNoType},</if>
+            <if test="customerNo != null and customerNo != ''">customer_no = #{customerNo},</if>
+            <if test="phonePrefix != null">phone_prefix = #{phonePrefix},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="timezone != null">timezone = #{timezone},</if>
+            <if test="scale != null">scale = #{scale},</if>
+            <if test="fax != null">fax = #{fax},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="companyRemarks != null">company_remarks = #{companyRemarks},</if>
+            <if test="companyLogo != null">company_logo = #{companyLogo},</if>
+            <if test="focusFlag != null">focus_flag = #{focusFlag},</if>
+            <if test="lastContactedAt != null">last_contacted_at = #{lastContactedAt},</if>
+            <if test="lastFollowupAt != null">last_followup_at = #{lastFollowupAt},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDetailsById" parameterType="Long">
+        delete from customer_details where id = #{id}
+    </delete>
+
+    <delete id="deleteDetailsByIds" parameterType="String">
+        delete from customer_details where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

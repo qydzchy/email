@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.DetailsContactMapper">
+
+    <resultMap type="DetailsContact" id="DetailsContactResult">
+        <result property="id"    column="id"    />
+        <result property="customerDetailsId"    column="customer_details_id"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="email"    column="email"    />
+        <result property="socialPlatform"    column="social_platform"    />
+        <result property="phone"    column="phone"    />
+        <result property="rank"    column="rank"    />
+        <result property="position"    column="position"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="sex"    column="sex"    />
+        <result property="avatarOrBusinessCard"    column="avatar_or_business_card"    />
+        <result property="contactRemarks"    column="contact_remarks"    />
+        <result property="primaryContactFlag"    column="primary_contact_flag"    />
+        <result property="orderIndex"    column="order_index"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDetailsContactVo">
+        select id, customer_details_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_details_contact
+    </sql>
+
+    <select id="selectDetailsContactList" parameterType="DetailsContact" resultMap="DetailsContactResult">
+        <include refid="selectDetailsContactVo"/>
+        <where>
+            <if test="customerDetailsId != null "> and customer_details_id = #{customerDetailsId}</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="socialPlatform != null  and socialPlatform != ''"> and social_platform = #{socialPlatform}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="rank != null "> and rank = #{rank}</if>
+            <if test="position != null  and position != ''"> and position = #{position}</if>
+            <if test="birthday != null "> and birthday = #{birthday}</if>
+            <if test="sex != null "> and sex = #{sex}</if>
+            <if test="avatarOrBusinessCard != null  and avatarOrBusinessCard != ''"> and avatar_or_business_card = #{avatarOrBusinessCard}</if>
+            <if test="contactRemarks != null  and contactRemarks != ''"> and contact_remarks = #{contactRemarks}</if>
+            <if test="primaryContactFlag != null "> and primary_contact_flag = #{primaryContactFlag}</if>
+            <if test="orderIndex != null "> and order_index = #{orderIndex}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectDetailsContactById" parameterType="Long" resultMap="DetailsContactResult">
+        <include refid="selectDetailsContactVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDetailsContact" parameterType="DetailsContact">
+        insert into customer_details_contact
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="customerDetailsId != null">customer_details_id,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="email != null">email,</if>
+            <if test="socialPlatform != null">social_platform,</if>
+            <if test="phone != null">phone,</if>
+            <if test="rank != null">rank,</if>
+            <if test="position != null">position,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="sex != null">sex,</if>
+            <if test="avatarOrBusinessCard != null">avatar_or_business_card,</if>
+            <if test="contactRemarks != null">contact_remarks,</if>
+            <if test="primaryContactFlag != null">primary_contact_flag,</if>
+            <if test="orderIndex != null">order_index,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="customerDetailsId != null">#{customerDetailsId},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="email != null">#{email},</if>
+            <if test="socialPlatform != null">#{socialPlatform},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="rank != null">#{rank},</if>
+            <if test="position != null">#{position},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="avatarOrBusinessCard != null">#{avatarOrBusinessCard},</if>
+            <if test="contactRemarks != null">#{contactRemarks},</if>
+            <if test="primaryContactFlag != null">#{primaryContactFlag},</if>
+            <if test="orderIndex != null">#{orderIndex},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertDetailsContact" parameterType="java.util.List">
+        insert into customer_details_contact
+        (id, customer_details_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        values
+        <foreach collection="detailsContactList" item="item" separator=",">
+            (#{item.id}, #{item.customerDetailsId}, #{item.nickName}, #{item.email}, #{item.socialPlatform}, #{item.phone}, #{item.rank}, #{item.position}, #{item.birthday}, #{item.sex}, #{item.avatarOrBusinessCard}, #{item.contactRemarks}, #{item.primaryContactFlag}, #{item.orderIndex}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <update id="updateDetailsContact" parameterType="DetailsContact">
+        update customer_details_contact
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerDetailsId != null">customer_details_id = #{customerDetailsId},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="socialPlatform != null">social_platform = #{socialPlatform},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="rank != null">rank = #{rank},</if>
+            <if test="position != null">position = #{position},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="avatarOrBusinessCard != null">avatar_or_business_card = #{avatarOrBusinessCard},</if>
+            <if test="contactRemarks != null">contact_remarks = #{contactRemarks},</if>
+            <if test="primaryContactFlag != null">primary_contact_flag = #{primaryContactFlag},</if>
+            <if test="orderIndex != null">order_index = #{orderIndex},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDetailsContactById" parameterType="Long">
+        delete from customer_details_contact where id = #{id}
+    </delete>
+
+    <delete id="deleteDetailsContactByIds" parameterType="String">
+        delete from customer_details_contact where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="deleteDetailsContactByCustomerDetailsId">
+        update customer_details_contact set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where customer_details_id = #{customerDetailsId}
+    </update>
+</mapper>
