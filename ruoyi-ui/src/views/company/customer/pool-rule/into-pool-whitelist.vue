@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="mt-10">
-      <el-checkbox>排除禁用账号</el-checkbox>
+      <el-checkbox v-model="disabledAccount" @change="editSettings">排除禁用账号</el-checkbox>
       <el-tooltip placement="top">
         <div slot="content">
           <div class="pool-rule-tooltip fs-14 lineH-24">
@@ -30,22 +30,27 @@
         style="margin-top: 25vh"
         title="添加白名单"
         destroy-on-close
+        @close="onCancel"
     >
-      <el-form>
-        <el-form-item label="选择人员" props="member">
+      <el-form :model="whiteListForm" ref="whiteListRef">
+        <el-form-item label="选择人员" props="userIds">
           <div class="form-item">
             <TreeSelectNext
                 :default-props="defaultProps"
+                :tree-data="memberOption"
                 :echo-data.sync="whiteListForm.userIds"
-                :tree-data="memberOption"/>
+                :disabled-list="disabledList"
+                disabled-key="id"
+                echo-name="nickName"
+            />
           </div>
         </el-form-item>
       </el-form>
 
 
       <div slot="footer" class="dialog-footer">
-        <el-button round @click="onCancel">取 消</el-button>
-        <el-button type="primary" round @click="onConfirm">确 定</el-button>
+        <el-button round :loading="btnLoading" @click="onCancel">取 消</el-button>
+        <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -58,6 +63,7 @@ import TreeSelectNext from "@/components/TreeSelectNext/index.vue"
 import {EmptyStr} from "@/utils/tools";
 import {whiteList, whiteListAdd, whiteListDelete} from "@/api/company/poolRule";
 import {listDeptUsersTree} from "@/api/system/dept";
+import {mapState} from "vuex";
 
 const initWhiteListForm = {
   userIds: []
@@ -67,12 +73,11 @@ export default {
   data() {
     return {
       // 移入公海白名单
-      whitelist: [
-      ],
+      whitelist: [],
       whiteListColumn: [
         {
           label: '成员',
-          field: 'userId',
+          field: 'nickName',
           align: 'left',
           render: (_row, field) => EmptyStr(field),
         },
@@ -90,28 +95,45 @@ export default {
       memberOption: [],
       chooseMember: [],
       whiteListDialog: false,
-      whiteListForm: initWhiteListForm,
+      whiteListForm: {...initWhiteListForm},
       emptyOption: [],
       defaultProps: {
         children: 'children',
         label: 'name'
       },
+      disabledList: [],
       tableLoading: false,
+      btnLoading: false,
+      disabledAccount: false
     }
+  },
+  computed: {
+    ...mapState({
+      settings: state => state.company.settings
+    })
   },
   mounted() {
     this.getList()
     this.getCommonTree()
+    this.$watch('settings', (newVal) => {
+      const {accountDisabledFlag} = newVal
+      this.disabledAccount = Boolean(accountDisabledFlag)
+    }, {immediate:true})
   },
   methods: {
     async getList() {
       this.tableLoading = true
       try {
-        const res = whiteList().finally(() => {
+        const res = await whiteList().finally(() => {
           this.tableLoading = false
         })
         if (res.code === 200) {
+          let disabledList = []
           this.whitelist = res.data
+          this.whitelist.forEach(val => {
+            disabledList.push(val.userId)
+          })
+          this.disabledList = disabledList
         }
       } catch {
         this.tableLoading = false
@@ -127,13 +149,18 @@ export default {
       }
     },
     async addWhiteListReq() {
+      this.btnLoading = true
       try {
-        const res = await whiteListAdd({userIdList: this.whiteListForm.userIds})
+        const res = await whiteListAdd({userIdList: this.whiteListForm.userIds}).finally(() => {
+          this.btnLoading = false
+        })
         if (res.code === 200) {
           this.$message({
             type: 'success',
             message: '添加成功'
           })
+          await this.getList()
+          this.onCancel()
         }
       } catch {
       }
@@ -147,6 +174,7 @@ export default {
             type: 'success',
             message: '删除成功'
           })
+          await this.getList()
         }
       } catch {
       }
@@ -159,6 +187,20 @@ export default {
     onCancel() {
       this.whiteListForm = initWhiteListForm
       this.whiteListDialog = false
+    },
+
+    editSettings() {
+      this.$store.dispatch('company/EditCompanyCustomerSettings', {
+        ...this.settings,
+        accountDisabledFlag: +this.disabledAccount
+      }).then(res => {
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        }
+      })
     },
 
   }

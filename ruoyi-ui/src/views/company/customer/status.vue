@@ -8,41 +8,43 @@
 
     </div>
 
-    <ElTableDraggable handle=".el-icon-s-grid">
-      <el-table
-          row-key="customer-status"
-          :data="list"
-          v-loading="tableLoading"
-          element-loading-text='拼命加载中...'
-          elemnt-loading-background="rgba(0,0,0,0.5)"
-          element-loading-spinner="el-icon-loading">
-        <template #empty>
-          <el-empty :imageSize="100"></el-empty>
-        </template>
-        <el-table-column width="40">
-          <i class="el-icon-s-grid" style="cursor: grab"/>
-        </el-table-column>
-        <el-table-column prop="name" label="阶段名称" align="left">
-          <template slot-scope="scope">
-            <div class="flex-middle">
-              <div class="table-color-wrap" :style="{backgroundColor:colorMap[scope.row.color]}">
-                {{ scope.row.name.slice(0, 1) }}
-              </div>
-              <div class="ml-10">{{ scope.row.name }}</div>
-            </div>
+<!--    <ElTableDraggable handle=".el-icon-s-grid">-->
+<!--      -->
+<!--    </ElTableDraggable>-->
 
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="onEdit(scope.row)">
-              编辑
-            </el-button>
-            <DelPopover :id="scope.row.id" @onDelete="stageDeleteReq"/>
-          </template>
-        </el-table-column>
-      </el-table>
-    </ElTableDraggable>
+    <el-table
+        row-key="customer-status"
+        :data="list"
+        v-loading="tableLoading"
+        element-loading-text='拼命加载中...'
+        elemnt-loading-background="rgba(0,0,0,0.5)"
+        element-loading-spinner="el-icon-loading">
+      <template #empty>
+        <el-empty :imageSize="100"></el-empty>
+      </template>
+      <el-table-column width="40">
+        <i class="el-icon-s-grid" style="cursor: grab"/>
+      </el-table-column>
+      <el-table-column prop="name" label="阶段名称" align="left">
+        <template slot-scope="scope">
+          <div class="flex-middle">
+            <div class="table-color-wrap" :style="{backgroundColor:colorMap[scope.row.color]}">
+              {{ scope.row.name.slice(0, 1) }}
+            </div>
+            <div class="ml-10">{{ scope.row.name }}</div>
+          </div>
+
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="200" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button size="mini" type="text" @click="onEdit(scope.row)">
+            编辑
+          </el-button>
+          <DelPopover :id="scope.row.id" @onDelete="stageDeleteReq"/>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <el-dialog title="新增阶段" width="460px" style="margin-top: 25vh" :visible.sync="stageDialog"
                destroy-on-close>

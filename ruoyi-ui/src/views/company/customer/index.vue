@@ -75,6 +75,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch('company/GetCompanyCustomerSettings')
     const tab = this.$route.query?.tab
     this.generateTab(tab)
   },

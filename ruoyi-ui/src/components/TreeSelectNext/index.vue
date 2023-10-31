@@ -10,11 +10,11 @@
       @remove-tag="removeTag"
       @clear="clearAll">
     <el-option :value="selectTree" style="height:auto">
-      <el-option v-show="false" v-for="item in selectTree" :value="item.id"
+      <el-option v-show="false" v-for="item in selectTree" :value="item[disabledKey]"
                  :label="item[defaultProps.label]"></el-option>
       <el-tree
           ref="tree"
-          :data="treeData"
+          :data="curTreeData"
           show-checkbox
           node-key="id"
           highlight-current
@@ -49,22 +49,43 @@ export default {
       type: Array,
       default: () => [],
       required: true
-    }
+    },
+    disabledList: {
+      type: Array,
+      default: () => [],
+      required: false
+    },
+    disabledKey: {
+      type: String,
+      default: 'id',
+      required: false
+    },
   },
   data() {
     return {
       selectTree: [],
-      checkedData: this.echoData
+      checkedData: [],
     }
   },
-  watch: {},
+  mounted() {
+    this.checkedData = this.echoData
+  },
+  computed: {
+    curTreeData() {
+      const newMemberOption = arr => arr.map((val) => {
+        val.disabled = this.disabledList.includes(val[this.disabledKey])
+        val[this.defaultProps.children] = val[this.defaultProps.children].length ? newMemberOption(val[this.defaultProps.children]) : []
+        return val
+      })
+      return newMemberOption(this.treeData)
+    },
+  },
   methods: {
     removeTag(item) {
       this.selectTree = this.selectTree.filter(val => val.id !== item)
       this.$nextTick(() => {
         this.$refs.tree.setChecked(item, false)
       })
-
     },
     clearAll() {
       this.$nextTick(() => {
@@ -80,7 +101,6 @@ export default {
         if (!item.children.length) {
           this.selectTree.push({
             id: item.id,
-            parentId: item.parentId,
             [this.defaultProps.label]: item[this.defaultProps.label]
           })
           this.checkedData.push(item.id)

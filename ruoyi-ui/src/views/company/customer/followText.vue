@@ -6,9 +6,9 @@
         <i class="vertical-line mr-5"></i>
         <span class="bold">写跟进时间</span>
       </div>
-      <el-radio-group v-model="followTextRadio">
+      <el-radio-group v-model="followTextRadio" @change="editSettings">
         <el-radio :label="1">提交跟进记录时默认提交时间，不允许修改</el-radio>
-        <el-radio :label="0">提交跟进记录时默认提交时间，可手动修改为历史时间</el-radio>
+        <el-radio :label="2">提交跟进记录时默认提交时间，可手动修改为历史时间</el-radio>
       </el-radio-group>
     </el-card>
     <!-- 写跟进模板 -->
@@ -28,39 +28,44 @@
         </div>
 
       </div>
-      <div class="mt-16 flex-wrap gap-16">
-        <div class="follow-text-template radius-5" style="width:33.333%" v-for="item in followTextList"
-             :key="item.id">
-          <div class="wrap px-16 py-14 radius-4 flex-column">
-            <div class="card-head flex-middle space-between">
-              <div class="fs-14 bold">模板名称：{{ item.templateName }}</div>
-              <el-row :gutter="2">
-                <el-button type="text" @click="onEdit('followText',item)">编辑</el-button>
-                <DelPopover @onDelete="confirmDelTemplate"/>
-              </el-row>
-            </div>
-            <div class="card-main fs-14 gray-text">
-              {{ item.templateContent }}
+      <div class="mt-16 flex-wrap gap-16" v-loading="templateLoading">
+        <template v-if="followTextList.length">
+          <div class="follow-text-template radius-5" style="width:33.333%" v-for="item in followTextList"
+               :key="item.id">
+            <div class="wrap px-16 py-14 radius-4 flex-column">
+              <div class="card-head flex-middle space-between">
+                <div class="fs-14 bold">模板名称：{{ item.name }}</div>
+                <el-row :gutter="2">
+                  <el-button type="text" @click="onEdit('followText',item)">编辑</el-button>
+                  <DelPopover @onDelete="confirmDelTemplate"/>
+                </el-row>
+              </div>
+              <div class="card-main fs-14 gray-text">
+                {{ item.content }}
+              </div>
             </div>
           </div>
-        </div>
+        </template>
+        <el-empty v-else :image-size="100"></el-empty>
       </div>
     </el-card>
     <!--  跟进模板表单  -->
     <el-dialog title="添加快捷模板" width="500px" style="margin-top: 25vh" :visible.sync="followTextDialog"
-               destroy-on-close>
+               destroy-on-close @close="onCancel('followText')">
       <el-form :model="followTextForm" ref="followTextRef" :rules="followTextRules">
-        <el-form-item label="模板名称" prop="templateName">
-          <el-input v-model="followTextForm.templateName" autocomplete="off" placeholder="请输入模板名称"></el-input>
+        <el-form-item label="模板名称" prop="name">
+          <el-input v-model="followTextForm.name" autocomplete="off" placeholder="请输入模板名称"></el-input>
         </el-form-item>
-        <el-form-item label="模板内容" prop="templateContent">
-          <el-input type="textarea" v-model="followTextForm.templateContent" :rows="4" resize="none"
+        <el-form-item label="模板内容" prop="content">
+          <el-input type="textarea" v-model="followTextForm.content" :rows="4" resize="none"
                     autocomplete="off" placeholder="请输入模板内容"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button round @click="onCancel('followText')">取 消</el-button>
-        <el-button type="primary" round @click="onConfirm('followText','followTextRef')">确 定</el-button>
+        <el-button round :loading="btnTemplateLoading" @click="onCancel('followText')">取 消</el-button>
+        <el-button type="primary" round :loading="btnTemplateLoading" @click="onConfirm('followText','followTextRef')">确
+          定
+        </el-button>
       </div>
     </el-dialog>
 
@@ -81,49 +86,59 @@
         </div>
 
       </div>
-      <div class="mt-16 flex-wrap gap-16">
-        <div class="follow-text-template radius-5 mb-20" v-for="item in fastTextList" :key="item.id">
-          <div class="px-16 py-14 radius-4 flex-column">
-            <div class="card-head flex-middle space-between">
-              <div class="fs-14 bold">模板名称：{{ item.groupName }}</div>
-              <el-row :gutter="2">
-                <el-button type="text" @click="onEdit('fastText',item)">编辑</el-button>
-                <DelPopover :id="item" @onDelete="confirmDelText"/>
-              </el-row>
-            </div>
-            <div class="flex-middle gap-8">
-              <el-tag effect="plain" v-for="(tag,idx) in item.textTag" :key="idx">{{ tag }}</el-tag>
+      <div class="mt-16 flex-wrap gap-16" v-loading="quickTextLoading">
+        <template v-if="fastTextList.length">
+          <div class="follow-text-template radius-5 mb-20" v-for="item in fastTextList" :key="item.id">
+            <div class="px-16 py-14 radius-4 flex-column">
+              <div class="card-head flex-middle space-between">
+                <div class="fs-14 bold">模板名称：{{ item.name }}</div>
+                <el-row :gutter="2">
+                  <el-button type="text" @click="onEdit('fastText',item)">编辑</el-button>
+                  <DelPopover :id="item" @onDelete="confirmDelText"/>
+                </el-row>
+              </div>
+              <div class="flex-middle gap-8">
+                <el-tag effect="plain" v-for="(tag,idx) in item.label" :key="idx">{{ tag }}</el-tag>
+              </div>
             </div>
           </div>
-        </div>
+        </template>
+
+        <el-empty v-else :image-size="100"></el-empty>
       </div>
     </el-card>
 
 
     <!--  快捷文本表单  -->
     <el-dialog title="添加快捷文本" width="500px" style="margin-top: 25vh" :visible.sync="fastTextDialog"
-               destroy-on-close>
+               destroy-on-close @close="onCancel('fastText')">
       <el-form :model="fastTextForm" ref="fastTextRef" :rules="fastTextRules">
-        <el-form-item label="文本分组名称" prop="groupName">
-          <el-input v-model="fastTextForm.groupName" autocomplete="off" placeholder="请输入文本分组名称"></el-input>
+        <el-form-item label="文本分组名称" prop="name">
+          <el-input v-model="fastTextForm.name" autocomplete="off" placeholder="请输入文本分组名称"></el-input>
         </el-form-item>
-        <el-form-item label="文本标签" prop="groupName">
+        <el-form-item label="文本标签" prop="label">
           <el-select
-            style="width: 100%"
-            autocomplete="off"
-            multiple
-            clearable
-            filterable
-            allow-create
-            default-first-option
-            v-model="fastTextForm.textTag"
-            placeholder="请输入文本标签">
+              style="width: 100%"
+              multiple
+              clearable
+              filterable
+              allow-create
+              ref="selectRef"
+              autocomplete="off"
+              class="customer-select"
+              popper-class="hide-option"
+              v-model="fastTextForm.label"
+              placeholder="请输入文本标签"
+              :popper-append-to-body="false"
+          >
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button round @click="onCancel('fastText')">取 消</el-button>
-        <el-button type="primary" round @click="onConfirm('fastText','fastTextRef')">确 定</el-button>
+        <el-button round @click="onCancel('fastText')" :loading="btnQuickTextLoading">取 消</el-button>
+        <el-button type="primary" round :loading="btnQuickTextLoading" @click="onConfirm('fastText','fastTextRef')">确
+          定
+        </el-button>
       </div>
     </el-dialog>
 
@@ -133,15 +148,23 @@
 
 <script>
 import DelPopover from "./DelPopover.vue";
+import {mapState} from "vuex";
+import {
+  followTextQuickAdd,
+  followTextQuickDelete, followTextQuickEdit,
+  followTextQuickList, followTextTemplateAdd,
+  followTextTemplateDelete, followTextTemplateEdit,
+  followTextTemplateList
+} from "@/api/company/followText";
 
 const iniFollowTextForm = {
-  templateName: '',
-  templateContent: ''
+  name: '',
+  content: ''
 }
 
 const iniFastTextForm = {
-  groupName: '',
-  textTag: ''
+  name: '',
+  label: ''
 }
 
 export default {
@@ -152,41 +175,165 @@ export default {
     return {
       // 写跟进时间
       followTextRadio: 1,
-      followTextList: [
-        {id: 1, templateName: '模板名称测试', templateContent: '模板内容测试'}
-      ],
+      followTextList: [],
       followTextDialog: false,
-      followTextForm: iniFollowTextForm,
+      followTextForm: {...iniFollowTextForm},
       followTextRules: {
-        templateName: [
+        name: [
           {required: true, message: '请输入文本分组名称', trigger: 'blur'},
         ],
-        templateContent: [
+        content: [
           {required: true, message: '请输入文本标签', trigger: 'blur'},
         ],
       },
       // 快捷文本
-      fastTextList: [
-        {id: 1, groupName: '模板名称测试', textTag: ['hello', '你好', 'test']}
-      ],
+      fastTextList: [],
       fastTextDialog: false,
-      fastTextForm: iniFastTextForm,
+      fastTextForm: {...iniFastTextForm},
       fastTextRules: {
-        groupName: [
+        name: [
           {required: true, message: '请输入文本分组名称', trigger: 'blur'},
         ],
-        textTag: [
+        label: [
           {required: true, message: '请添加文本标签', trigger: 'change'},
         ],
-      }
+      },
+      templateLoading: false,
+      btnTemplateLoading: false,
+      quickTextLoading: false,
+      btnQuickTextLoading: false
     }
   },
+  mounted() {
+    this.$watch('settings', (newVal) => {
+      const {followupTime} = newVal
+      this.followTextRadio = followupTime
+    }, {immediate: true})
+    this.getTemplateList()
+    this.getQuickTextList()
+  },
+  computed: {
+    ...mapState({
+      settings: state => state.company.settings
+    }),
+  },
   methods: {
-    confirmDelTemplate(id) {
+    async getTemplateList() {
+      this.templateLoading = true
+      try {
+        const res = await followTextTemplateList().finally(() => {
+          this.templateLoading = false
+        })
+        if (res.code === 200) {
+          this.followTextList = res.data
+        }
+      } catch {
+      }
+    },
+    async getQuickTextList() {
+      this.quickTextLoading = true
+      try {
+        const res = await followTextQuickList().finally(() => {
+          this.quickTextLoading = false
+        })
+        if (res.code === 200) {
+          this.fastTextList = res.data.map(val => {
+            val.label = val.label.split(';')
+            return val
+          })
+        }
+      } catch {
+      }
+    },
+    templateCommOperate(row) {
+      return new Promise(async resolve => {
+        this.btnTemplateLoading = true
+        try {
+          if (!row.id) {
+            const res = await followTextTemplateAdd({...row}).finally(() => {
+              this.btnTemplateLoading = false
+            })
+            if (res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
+              resolve(true)
+            }
+          } else {
+            const res = await followTextTemplateEdit({...row})
+            if (res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              resolve(true)
+            }
+          }
+        } catch {
+          this.btnTemplateLoading = false
+          resolve(false)
+        }
+      })
 
     },
-    confirmDelText(id) {
-      console.log(id)
+    quickCommOperate(row) {
+      return new Promise(async resolve => {
+        this.btnQuickTextLoading = true
+        try {
+          const data = {...row, label: row?.label.join(';')}
+          if (!row.id) {
+            const res = await followTextQuickAdd(data).finally(() => {
+              this.btnQuickTextLoading = false
+            })
+            if (res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
+              resolve(true)
+            }
+          } else {
+            const res = await followTextQuickEdit(data)
+            if (res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              resolve(true)
+            }
+          }
+        } catch {
+          this.btnQuickTextLoading = false
+          resolve(false)
+        }
+      })
+    },
+    // 删除文本模板
+    async confirmDelTemplate(id) {
+      try {
+        const res = await followTextTemplateDelete({id})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+        }
+      } catch {
+      }
+    },
+    // 删除快捷文本
+    async confirmDelText(id) {
+      try {
+        const res = await followTextQuickDelete({id})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+        }
+      } catch {
+      }
     },
     // 编辑
     onEdit(type, item) {
@@ -203,11 +350,20 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (type === 'followText') {
-            console.log(this.followTextForm)
-            // this.followTextDialog = false
+            this.templateCommOperate(this.followTextForm).then(res => {
+              console.log(res)
+              if (res) {
+                this.getTemplateList()
+                this.onCancel('followText')
+              }
+            })
           } else if (type === 'fastText') {
-            console.log(this.fastTextForm)
-            // this.fastTextDialog = false
+            this.quickCommOperate(this.fastTextForm).then(res => {
+              if (res) {
+                this.getQuickTextList()
+                this.onCancel('fastText')
+              }
+            })
           }
         } else {
           return false;
@@ -223,7 +379,21 @@ export default {
         this.fastTextForm = iniFastTextForm
         this.fastTextDialog = false
       }
-    }
+    },
+    editSettings() {
+      this.$store.dispatch('company/EditCompanyCustomerSettings', {
+        ...this.settings,
+        followupTime: this.followTextRadio
+      }).then(res => {
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        }
+      })
+    },
+
   }
 }
 </script>
@@ -250,4 +420,13 @@ export default {
     height: 148px;
   }
 }
+
+.customer-select {
+  ::v-deep .el-icon-arrow-up,
+  ::v-deep .hide-option {
+    display: none;
+  }
+}
+
+
 </style>
