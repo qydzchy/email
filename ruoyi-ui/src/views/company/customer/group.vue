@@ -17,13 +17,13 @@
       <el-button type="primary" round @click="addGroup">新建分组</el-button>
     </div>
     <el-table
-      lazy
-      v-if="refreshTable"
-      v-loading="loading"
-      :data="menuList"
-      row-key="menuId"
-      :default-expand-all="isExpandAll"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        lazy
+        v-if="refreshTable"
+        v-loading="loading"
+        :data="menuList"
+        row-key="menuId"
+        :default-expand-all="isExpandAll"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column prop="menuName" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作" width="200" align="center" fixed="right" class-name="small-padding fixed-width">
@@ -40,7 +40,7 @@
       </el-table-column>
     </el-table>
     <div class="flex-middle mt-10">
-      <el-checkbox v-model="checkChildren">子分组必选</el-checkbox>
+      <el-checkbox v-model="checkChildren" @change="editSettings">子分组必选</el-checkbox>
       <el-tooltip placement="top">
         <div slot="content" class="group-tooltip">
           <p>勾选“子分组必选”后，则不允许只选择填入父级分组。</p>
@@ -81,22 +81,22 @@
               <el-radio :label="0">指定成员</el-radio>
             </el-radio-group>
             <el-select
-              multiple
-              style="width:100%"
-              v-model="groupDialogForm.group_id"
-              class="select-tree mt-10"
-              :popper-append-to-body="false"
-              :disabled="!!groupDialogForm.all"
-              filterable>
+                multiple
+                style="width:100%"
+                v-model="groupDialogForm.group_id"
+                class="select-tree mt-10"
+                :popper-append-to-body="false"
+                :disabled="!!groupDialogForm.all"
+                filterable>
               <el-option :value="emptyOption" style="height:auto">
                 <el-tree
-                  :data="data"
-                  show-checkbox
-                  node-key="id"
-                  ref="tree"
-                  highlight-current
-                  :default-expand-all="false"
-                  :props="defaultProps"></el-tree>
+                    :data="data"
+                    show-checkbox
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :default-expand-all="false"
+                    :props="defaultProps"></el-tree>
               </el-option>
 
             </el-select>
@@ -118,6 +118,7 @@ import {delMenu, getMenu, listMenu} from "@/api/system/menu";
 import DelPopover from "./DelPopover.vue";
 import TableNext from '@/components/TableNext'
 import {cascaderList, treeList} from "@/mock/index";
+import {mapState} from "vuex";
 
 const initGroupForm = {
   echoName: '',
@@ -157,8 +158,15 @@ export default {
   mounted() {
     this.getList()
     this.groupCanUseOption = cascaderList
+    this.$watch('settings', (newVal) => {
+      const {mandatorySubgroupFlag} = newVal
+      this.checkChildren = Boolean(mandatorySubgroupFlag)
+    }, {immediate:true})
   },
   computed: {
+    ...mapState({
+      settings: state => state.company.settings
+    }),
     groupName() {
       return this.groupDialogForm.parent_id === -1 ? '客户分组' : (this.groupDialogForm.echoName || '---')
     }
@@ -206,6 +214,20 @@ export default {
       this.groupDialogForm = initGroupForm
       this.groupDialog = false
     },
+
+    editSettings() {
+      this.$store.dispatch('company/EditCompanyCustomerSettings', {
+        ...this.settings,
+        mandatorySubgroupFlag: +this.checkChildren
+      }).then(res => {
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        }
+      })
+    }
   }
 }
 </script>

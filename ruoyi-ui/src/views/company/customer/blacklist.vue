@@ -8,7 +8,8 @@
       <div class="card">
         <div class="head flex-middle space-between">
           <div class="check-all">
-            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAll">全选
+            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAll"
+                         :disabled="!emails.length">全选
             </el-checkbox>
           </div>
           <div class="checked-count">
@@ -30,11 +31,17 @@
 
           </div>
         </div>
-        <div class="body">
-          <el-checkbox-group v-model="checkedEmail" @change="handleCheckedEmail">
-            <el-checkbox class="my-6" v-for="(email,index) in emails" :label="email.label" :key="index"
-                         :disabled="email.disabled"></el-checkbox>
+        <div class="body" v-loading="cardLoading">
+          <el-checkbox-group v-model="checkedEmail" @change="handleCheckedEmail" v-if="emails.length">
+            <el-checkbox
+                class="my-6"
+                v-for="(email,index) in emails"
+                :label="email.id"
+                :key="index"
+                :disabled="email.disabled">{{ email.domain }}
+            </el-checkbox>
           </el-checkbox-group>
+          <el-empty v-else :imageSize="100"></el-empty>
         </div>
       </div>
     </div>
@@ -42,27 +49,17 @@
 </template>
 
 <script>
+import {blackListAdd, blackListDelete, getBlackList} from "@/api/company/blackList";
+
 export default {
   data() {
     return {
       checkAll: false,
       checkedEmail: [],
-      emails: [
-        {
-          label: 'w0r1d_space@tom.com',
-          disabled: false,
-        },
-        {
-          label: 'w0r1d_space@sina.com',
-          disabled: false,
-        },
-        {
-          label: 'service@intl.paypal.com',
-          disabled: true,
-        },
-      ],
+      emails: [],
       isIndeterminate: false,
-      deleteEmailsPopover: false
+      deleteEmailsPopover: false,
+      cardLoading: false
     }
   },
   computed: {
@@ -70,7 +67,25 @@ export default {
       return this.checkedEmail.length
     },
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
+    async getList() {
+      this.cardLoading = true
+      try {
+        const res = await getBlackList().finally(() => {
+          this.cardLoading = false
+        })
+        if (res.code === 200) {
+          this.emails = res.data.map((val) => {
+            val.disabled = false
+            return val
+          })
+        }
+      } catch {
+      }
+    },
     // 添加黑名单
     addBlackList() {
       const h = this.$createElement;
@@ -94,16 +109,24 @@ export default {
         inputErrorMessage: '邮箱格式不正确',
         inputPlaceholder: '邮箱/邮箱后缀',
         roundButton: true,
-        beforeClose: (action, instance, done) => {
+        beforeClose: async (action, instance, done) => {
           if (action === 'confirm') {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = '执行中...';
-            setTimeout(() => {
-              done();
-              setTimeout(() => {
+            done()
+            try {
+              const res = await blackListAdd({domain: instance.inputValue}).finally(() => {
                 instance.confirmButtonLoading = false;
-              }, 300);
-            }, 3000);
+              })
+              if (res.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: '添加成功'
+                })
+                await this.getList()
+              }
+            } catch {
+            }
           } else {
             done();
           }
@@ -114,7 +137,7 @@ export default {
     },
     // 全选
     handleCheckAll(val) {
-      let checked = val ? this.emails.filter(val => !val.disabled).map(val => val.label) : [];
+      let checked = val ? this.emails.filter(val => !val.disabled).map(val => val.id) : [];
       this.checkedEmail = checked
       if (!checked.length || this.isIndeterminate) {
         this.checkAll = false
@@ -132,8 +155,22 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.emails.length;
     },
     // 确认删除邮箱
-    confirmDeleteEmail() {
-      this.deleteEmailsPopover = false
+    async confirmDeleteEmail() {
+      try {
+        const res = await blackListDelete({ids: this.checkedEmail}).finally(() => {
+          this.deleteEmailsPopover = false
+          this.checkAll = false
+        })
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          await this.getList()
+        }
+      } catch {
+      }
+
     }
   }
 }

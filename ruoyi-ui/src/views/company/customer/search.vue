@@ -5,7 +5,8 @@
       <div class="card">
         <div class="head flex-middle space-between">
           <div class="check-all">
-            <el-checkbox v-model="checkAll" :disabled="!showBtnGroup" @change="handleCheckAll">全选
+            <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" :disabled="!showBtnGroup"
+                         @change="handleCheckAll">全选
             </el-checkbox>
           </div>
           <div>
@@ -16,13 +17,14 @@
             <el-button v-else type="primary" round size="mini" @click="showBtnGroup=true">编辑</el-button>
           </div>
         </div>
-        <div class="body">
-          <el-checkbox-group v-model="checkedList" @change="handleChecked">
-            <el-checkbox class="my-6" v-for="(item,index) in list" :label="item.label" :key="index"
+        <div class="body" v-loading="cardLoading">
+          <el-checkbox-group v-if="list.length" v-model="checkedList" @change="handleChecked">
+            <el-checkbox class="my-6" v-for="(item,index) in list" :label="item.id" :key="index"
                          :disabled="!showBtnGroup">
-              {{ item.text }}
+              {{ item.columnAlias }}
             </el-checkbox>
           </el-checkbox-group>
+          <el-empty v-else :image-size="100"></el-empty>
         </div>
       </div>
     </div>
@@ -30,85 +32,46 @@
 </template>
 
 <script>
+import {getDuplicateList} from "@/api/company/search";
+
 export default {
   data() {
     return {
       checkAll: false,
       showBtnGroup: false,
-      showLoading: false,
-      checkedList: ['2', '3', '4', '5', '6'],
-      list: [
-        {
-          label: '1',
-          text: '客户编号',
-          disabled: false,
-        },
-        {
-          label: '2',
-          text: '客户阶段',
-          disabled: false,
-        },
-        {
-          label: '3',
-          text: '公司名称/简称',
-          disabled: false,
-        },
-        {
-          label: '4',
-          text: '联系人名',
-          disabled: false,
-        },
-        {
-          label: '5',
-          text: '客户邮箱',
-          disabled: false,
-        },
-        {
-          label: '6',
-          text: '客户电话',
-          disabled: false,
-        },
-        {
-          label: '7',
-          text: '客户来源',
-          disabled: false,
-        },
-        {
-          label: '8',
-          text: '国家地区',
-          disabled: false,
-        },
-        {
-          label: '9',
-          text: '原跟进人',
-          disabled: false,
-        },
-        {
-          label: '10',
-          text: '当前归属',
-          disabled: false,
-        },
-        {
-          label: '11',
-          text: '创建时间',
-          disabled: false,
-        },
-        {
-          label: '12',
-          text: '最近联系时间',
-          disabled: false,
-        },
-        {
-          label: '13',
-          text: '社交账号',
-          disabled: false,
-        },
-      ]
+      isIndeterminate: false,
+      checkedList: [],
+      list: [],
+      cardLoading: false
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
-    handleCheckAll() {
-
+    async getList() {
+      this.cardLoading = true
+      try {
+        const res = await getDuplicateList().finally(() => {
+          this.cardLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch {
+      }
+    },
+    handleCheckAll(val) {
+      let checked = val ? this.list.filter(val => !val.disabled).map(val => val.id) : [];
+      this.checkedList = checked
+      if (!checked.length || this.isIndeterminate) {
+        this.checkAll = false
+        this.isIndeterminate = false
+        return
+      }
+      if (checked.length !== this.list.length) {
+        this.isIndeterminate = true;
+      }
     },
     handleChecked() {
     }

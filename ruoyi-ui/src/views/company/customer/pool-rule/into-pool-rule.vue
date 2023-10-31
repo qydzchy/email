@@ -18,13 +18,19 @@
       </div>
     </div>
     <div class="flex-middle mt-10">
-      <el-form :inline="true" :model="poolRuleForm">
+      <el-form :inline="true" :model="poolRuleForm" @submit.native.prevent>
         <el-form-item>
-          <el-checkbox v-model="poolRuleForm.beforehand">提前</el-checkbox>
+          <el-checkbox v-model="poolRuleForm.advanceFlag" @change="handleFlag">提前
+          </el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-input-number v-model="poolRuleForm.beforehandDay" style="width: 100px" :controls="false"
-                           :disabled="!poolRuleForm.beforehand"/>
+          <el-input-number
+              style="width: 100px"
+              :controls="false"
+              v-model="poolRuleForm.advanceDays"
+              :disabled="!poolRuleForm.advanceFlag"
+              @blur="editSettings"
+          />
         </el-form-item>
         <el-form-item>
           <span>天发送邮件通知</span>
@@ -42,7 +48,7 @@
         :visible.sync="poolRuleDialog"
         @close="onCancelPoolRule"
     >
-      <el-form v-model="poolRuleFormSecond">
+      <el-form v-model="poolRuleFormSecond" @submit.native.prevent>
         <el-form-item label="规则名称">
           <el-input v-model="poolRuleFormSecond.name" placeholder="请输入规则名称"/>
         </el-form-item>
@@ -110,6 +116,7 @@ import {rulesAdd, rulesDelete, rulesEdit, rulesList} from "@/api/company/poolRul
 import TreeSelect from "@riophae/vue-treeselect";
 import TreeSelectNext from "@/components/TreeSelectNext/index.vue";
 import {listDeptUsersTree} from "@/api/system/dept";
+import {mapState} from "vuex";
 
 const initPoolRuleForm2 = {
   id: '',
@@ -129,8 +136,8 @@ export default {
     return {
       // 移入公海规则
       poolRuleForm: {
-        beforehand: true,
-        beforehandDay: 7
+        advanceFlag: false,
+        advanceDays: ''
       },
       poolRuleList: [],
       poolRuleColumns: [
@@ -216,9 +223,21 @@ export default {
       btnLoading: false,
     }
   },
+  computed: {
+    ...mapState({
+      settings: state => state.company.settings
+    })
+  },
   mounted() {
     this.getList()
     this.getCommonTree()
+    this.$watch('settings', (newVal) => {
+      const {advanceDays, advanceFlag} = newVal
+      this.poolRuleForm = {
+        advanceFlag: Boolean(advanceFlag),
+        advanceDays
+      }
+    }, {immediate: true})
   },
   methods: {
     async getList() {
@@ -247,6 +266,24 @@ export default {
         }
       } catch {
       }
+    },
+    handleFlag(value) {
+      this.poolRuleForm.advanceFlag = value
+      this.editSettings()
+    },
+    editSettings() {
+      this.$store.dispatch('company/EditCompanyCustomerSettings', {
+        ...this.settings,
+        advanceFlag: +this.poolRuleForm.advanceFlag,
+        advanceDays: this.poolRuleForm.advanceDays
+      }).then(res => {
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        }
+      })
     },
     // table switch
     handleRowStatus(row) {

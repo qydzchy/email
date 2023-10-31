@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="mt-10">
-      <el-checkbox>排除禁用账号</el-checkbox>
+      <el-checkbox v-model="disabledAccount" @change="editSettings">排除禁用账号</el-checkbox>
       <el-tooltip placement="top">
         <div slot="content">
           <div class="pool-rule-tooltip fs-14 lineH-24">
@@ -63,6 +63,7 @@ import TreeSelectNext from "@/components/TreeSelectNext/index.vue"
 import {EmptyStr} from "@/utils/tools";
 import {whiteList, whiteListAdd, whiteListDelete} from "@/api/company/poolRule";
 import {listDeptUsersTree} from "@/api/system/dept";
+import {mapState} from "vuex";
 
 const initWhiteListForm = {
   userIds: []
@@ -102,12 +103,22 @@ export default {
       },
       disabledList: [],
       tableLoading: false,
-      btnLoading: false
+      btnLoading: false,
+      disabledAccount: false
     }
+  },
+  computed: {
+    ...mapState({
+      settings: state => state.company.settings
+    })
   },
   mounted() {
     this.getList()
     this.getCommonTree()
+    this.$watch('settings', (newVal) => {
+      const {accountDisabledFlag} = newVal
+      this.disabledAccount = Boolean(accountDisabledFlag)
+    }, {immediate:true})
   },
   methods: {
     async getList() {
@@ -176,6 +187,20 @@ export default {
     onCancel() {
       this.whiteListForm = initWhiteListForm
       this.whiteListDialog = false
+    },
+
+    editSettings() {
+      this.$store.dispatch('company/EditCompanyCustomerSettings', {
+        ...this.settings,
+        accountDisabledFlag: +this.disabledAccount
+      }).then(res => {
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        }
+      })
     },
 
   }
