@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 31/10/2023 18:06:46
+ Date: 30/10/2023 22:51:57
 */
 
 SET NAMES utf8mb4;
@@ -35,74 +35,6 @@ CREATE TABLE `customer_black_list_records`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '建档黑名单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for customer_details
--- ----------------------------
-DROP TABLE IF EXISTS `customer_details`;
-CREATE TABLE `customer_details`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `company_website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司网址',
-  `company_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公司名称',
-  `short_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '简称',
-  `country_region` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家地区',
-  `source_ids` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户来源ID（多个以逗号分隔拼接)',
-  `tag_ids` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户标签ID（多个以逗号分隔拼接）',
-  `sea_type` tinyint(1) NOT NULL COMMENT '私海/公海类型 1.私海 2.公海',
-  `packet_id` bigint(20) NULL DEFAULT NULL COMMENT '分组ID',
-  `stage_id` bigint(20) NULL DEFAULT NULL COMMENT '阶段ID',
-  `rating` tinyint(1) NULL DEFAULT NULL COMMENT '客户星级',
-  `customer_no_type` tinyint(1) NOT NULL COMMENT '客户编号类型 1.自动生成 2.自定义',
-  `customer_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户编号',
-  `phone_prefix` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '座机-电话区号',
-  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '座机-电话号码',
-  `timezone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '时区',
-  `scale` tinyint(1) NULL DEFAULT NULL COMMENT '规模 1.少于59人 2.60-149人 3.150-499人 4.500-999人 5.1000-4999人 6.5000人以上',
-  `fax` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '传真',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '详细地址',
-  `company_remarks` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司备注',
-  `company_logo` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司logo',
-  `focus_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '关注 0.未关注 1.已关注',
-  `last_contacted_at` datetime(0) NOT NULL COMMENT '最近联系时间',
-  `last_followup_at` datetime(0) NOT NULL COMMENT '最近跟进时间',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户详情表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for customer_details_contact
--- ----------------------------
-DROP TABLE IF EXISTS `customer_details_contact`;
-CREATE TABLE `customer_details_contact`  (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `customer_details_id` bigint(20) NOT NULL COMMENT '客户详情ID',
-  `nick_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
-  `email` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `social_platform` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '社交平台\r\n[{\"type\":1,\"account\":\"\"}]\r\n',
-  `phone` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话\r\n[{\"phone_prefix\":\"\",\"phone\":\"\"}]\r\n',
-  `rank` tinyint(1) NULL DEFAULT NULL COMMENT '职级 1.普通职员 2.中层管理者 3.高层管理者',
-  `position` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '职位',
-  `birthday` datetime(0) NULL DEFAULT NULL COMMENT '生日',
-  `sex` tinyint(1) NULL DEFAULT NULL COMMENT '性别 1.不设置 2.男 3.女',
-  `avatar_or_business_card` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像/名片',
-  `contact_remarks` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人备注',
-  `primary_contact_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否为主要联系人 1.是 0.否',
-  `order_index` bigint(20) NULL DEFAULT NULL COMMENT '排序',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户联系人表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for customer_duplication_settings
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_duplication_settings`;
@@ -118,20 +50,27 @@ CREATE TABLE `customer_duplication_settings`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户查重设置表' ROW_FORMAT = Dynamic;
-INSERT INTO `customer_duplication_settings` VALUES (1, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (2, 2, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (3, 3, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (4, 4, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (5, 5, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (6, 6, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (7, 7, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (8, 8, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (9, 9, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (10, 10, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (11, 11, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (12, 12, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_duplication_settings` VALUES (13, 13, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户查重设置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for customer_field_metadata
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_field_metadata`;
+CREATE TABLE `customer_field_metadata`  (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
+  `alias` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段别名',
+  `type` tinyint(1) NOT NULL COMMENT '类型 1.公司信息 2.联系人信息 3.日期时间',
+  `order_index` bigint(20) NULL DEFAULT NULL COMMENT '排序',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户字段元数据' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for customer_follow_up_quick_text
@@ -214,9 +153,9 @@ CREATE TABLE `customer_limits`  (
 DROP TABLE IF EXISTS `customer_metadata_column`;
 CREATE TABLE `customer_metadata_column`  (
   `id` bigint(20) NOT NULL COMMENT '主键',
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
-  `alias` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段别名',
-  `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段类型',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `alias` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '别名',
+  `type` tinyint(1) NOT NULL COMMENT '类型 1.公司信息 2.联系人信息 3.日期时间',
   `order_index` bigint(20) NULL DEFAULT NULL COMMENT '排序',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
@@ -227,19 +166,6 @@ CREATE TABLE `customer_metadata_column`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-INSERT INTO `customer_metadata_column` VALUES (1, 'customer_no', '客户编号', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (2, 'customer_stage', '客户阶段', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (3, 'company_name', '公司名称/简称', 'STRINIG', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (4, 'contact_name', '联系人名', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (5, 'customer_email', '客户邮箱', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (6, 'customer_phone', '客户电话', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (7, 'customer_source', '客户来源', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (8, 'country_region', '国家地区', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (9, 'source_follower', '源跟进人', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (10, 'current_attribution', '当前归属', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (11, 'create_time', '创建时间', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (12, 'last_contacted_at', '最近联系时间', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (13, 'social_media_account\n', '社交账号', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_packet
