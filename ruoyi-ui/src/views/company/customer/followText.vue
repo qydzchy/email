@@ -119,14 +119,18 @@
         <el-form-item label="文本标签" prop="label">
           <el-select
               style="width: 100%"
-              autocomplete="off"
               multiple
               clearable
               filterable
               allow-create
-              default-first-option
+              ref="selectRef"
+              autocomplete="off"
+              class="customer-select"
+              popper-class="hide-option"
               v-model="fastTextForm.label"
-              placeholder="请输入文本标签">
+              placeholder="请输入文本标签"
+              :popper-append-to-body="false"
+          >
           </el-select>
         </el-form-item>
       </el-form>
@@ -389,6 +393,7 @@ export default {
         }
       })
     },
+
   }
 }
 </script>
@@ -415,4 +420,13 @@ export default {
     height: 148px;
   }
 }
+
+.customer-select {
+  ::v-deep .el-icon-arrow-up,
+  ::v-deep .hide-option {
+    display: none;
+  }
+}
+
+
 </style>
