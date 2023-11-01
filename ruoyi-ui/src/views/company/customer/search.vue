@@ -68,16 +68,10 @@ export default {
       }
     },
     handleCheckAll(val) {
-      let checked = val ? this.list.filter(val => !val.disabled).map(val => val.id) : [];
-      this.checkedList = checked
-      if (!checked.length || this.isIndeterminate) {
-        this.checkAll = false
-        this.isIndeterminate = false
-        return
-      }
-      if (checked.length !== this.list.length) {
-        this.isIndeterminate = true;
-      }
+      const checked = this.checkedList.length === this.list.length
+      this.checkedList = !checked ? this.list.map(val => val.id) : []
+      this.isIndeterminate = this.checkedList.length > 0 && this.checkedList.length < this.list.length
+      this.checkAll = val
     },
     handleChecked(value) {
       let checkedCount = value.length;

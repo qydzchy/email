@@ -124,23 +124,19 @@ export default {
     },
 
     handleCheckAllContact(val) {
-      let checked = val ?  this.contact.contactList.filter(val => !val.activeFlag).map(val => val.id) : [];
-      this.contact.checkedContacts = checked
-      if (!checked.length || this.contact.isIndeterminate) {
-        this.contact.checkAll = false
-        this.contact.isIndeterminate = false
-        return
-      }
-      if (checked.length !== this.contact.checkedContacts.length) {
-        this.contact.isIndeterminate = true;
-      }
+      const checkedLen = this.contact.checkedContacts.length
+      const listLen = this.contact.contactList.length
+      const checked = checkedLen === listLen
+      this.contact.checkedContacts = !checked ? this.contact.contactList.map(val => val.id) : []
+      this.contact.isIndeterminate = checkedLen > 0 && checkedLen < listLen
+      this.contact.checkAll = val
     },
 
     handleCheckedContact(value) {
-      let checkedCount = value.length
-      const list = this.contact.contactList.length
-      this.contact.checkAll = checkedCount === list
-      this.contact.isIndeterminate = checkedCount > 0 && checkedCount < list
+      const checkedLen = value.length
+      const listLen = this.contact.contactList.length
+      this.contact.checkAll = checkedLen === listLen
+      this.contact.isIndeterminate = checkedLen > 0 && checkedLen < listLen
     },
 
     onContactSave() {
@@ -163,22 +159,18 @@ export default {
     },
 
     handleCheckAllFollow(val) {
-      let checked = val ? this.follow.followList.filter(val => !val.activeFlag).map(val => val.id) : [];
-      this.follow.checkedFollows = checked
-      if (!checked.length || this.follow.isIndeterminate) {
-        this.follow.checkAll = false
-        this.follow.isIndeterminate = false
-        return
-      }
-      if (checked.length !== this.follow.checkedFollows.length) {
-        this.follow.isIndeterminate = true;
-      }
+      const checkedLen = this.follow.checkedFollows.length
+      const listLen = this.follow.followList.length
+      const checked = checkedLen === listLen
+      this.follow.checkedFollows = !checked ? this.follow.followList.map(val => val.id) : []
+      this.follow.isIndeterminate = checkedLen > 0 && checkedLen < listLen
+      this.follow.checkAll = val
     },
     handleCheckedFollow(value) {
-      let checkedCount = value.length
-      const list = this.follow.followList.length
-      this.follow.checkAll = checkedCount === list
-      this.follow.isIndeterminate = checkedCount > 0 && checkedCount < list
+      const checkedLen = value.length
+      const listLen = this.follow.followList.length
+      this.follow.checkAll = checkedLen === listLen
+      this.follow.isIndeterminate = checkedLen > 0 && checkedLen < listLen
     },
     onFollowSave() {
       let newArr = []
