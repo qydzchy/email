@@ -1,24 +1,26 @@
 <template>
   <div>
-<!--    <div class="mb-8">-->
-<!--      <el-button type="primary" icon="el-icon-edit" size="small" :disabled="multiple" @click="onSelectModify">-->
-<!--        批量修改-->
-<!--      </el-button>-->
-<!--    </div>-->
+    <!--    <div class="mb-8">-->
+    <!--      <el-button type="primary" icon="el-icon-edit" size="small" :disabled="multiple" @click="onSelectModify">-->
+    <!--        批量修改-->
+    <!--      </el-button>-->
+    <!--    </div>-->
     <TableNext
-        :list="list"
-        :columns="columns"
-        :loading="tableLoading"
-        :extra-event="{'selection-change': handleSelectionChange}"
+      :list="list"
+      :columns="columns"
+      :loading="tableLoading"
+      :extra-event="{'selection-change': handleSelectionChange}"
     />
     <el-dialog title="编辑" width="400px" style="margin-top: 25vh" :visible.sync="openSeaDialog"
-               destroy-on-close>
+               destroy-on-close @close="onCancel">
       <div class="gray-text">客户上限</div>
-      <el-radio-group class="flex-column" v-model="limitMaxRadio">
+      <el-radio-group class="flex-column" v-model="openSeaForm.limitMaxRadio">
         <el-radio class="my-20" :label="1">不限</el-radio>
         <div>
           <el-radio :label="2">客户上限</el-radio>
-          <el-input-number style="width: 240px" controls-position="right" :disabled="limitMaxRadio" v-model="limitMax"/>
+          <el-input-number style="width: 240px" controls-position="right" :min="1"
+                           :disabled="openSeaForm.limitMaxRadio!==2"
+                           v-model="openSeaForm.limitMax"/>
         </div>
 
       </el-radio-group>
@@ -35,6 +37,12 @@ import TableNext from "@/components/TableNext/index.vue";
 import {EmptyStr} from "@/utils/tools";
 import {getOpenSeaList, openSeaEdit} from "@/api/company/openSea";
 
+const initOpenSeaForm = {
+  ids: [],
+  limitMaxRadio: 1,
+  limitMax: 0,
+  userIds: []
+}
 export default {
   components: {
     TableNext
@@ -70,23 +78,22 @@ export default {
           fixed: 'right',
           render: (row) => {
             return (
-                <el-button type='text' onClick={() => this.onModify(row)}>
-                  修改
-                </el-button>
+              <el-button type='text' onClick={() => this.onModify(row)}>
+                修改
+              </el-button>
             );
           },
         },
       ],
-      ids: [],  // 选中数组
       single: true, // 非单个禁用
       multiple: true, // 非多个禁用
       openSeaDialog: false,
-      limitMaxRadio: 1,
-      limitMax: 0,
-      tableLoading: false
+      tableLoading: false,
+      openSeaForm: {...initOpenSeaForm}
     }
   },
   mounted() {
+    this.getList()
   },
   methods: {
     async getList() {
@@ -104,32 +111,47 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
+      this.openSeaForm.ids = selection.map((item) => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
     // 单个修改
     onModify(row) {
-      this.ids = [row.id]
-      this.limitMaxRadio = !row.limit
-      this.limitMax = row.limit
+      this.openSeaForm = {
+        ids: [row.id],
+        userIds: [row.userId],
+        limitMaxRadio: row.type,
+        limitMax: row.limits,
+      }
       this.openSeaDialog = true
     },
-    // 选择修改
+    // 批量选择修改
     onSelectModify() {
       this.openSeaDialog = true
     },
-    async onConfirm(){
-      try{
+    async onConfirm() {
+      try {
+        const {ids, userIds, limitMax, limitMaxRadio} = this.openSeaForm
         const res = await openSeaEdit({
-
+          id: ids[0],
+          userId: userIds[0],
+          type: limitMaxRadio,
+          limits: limitMaxRadio === 2 ? limitMax : 0,
         })
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+          await this.getList()
+          this.onCancel()
+        }
 
-      }catch {}
+      } catch {
+      }
     },
     onCancel() {
-      this.limitMaxRadio = 1
-      this.limitMax = 0
+      this.openSeaForm = {...initOpenSeaForm}
       this.openSeaDialog = false
     },
   }

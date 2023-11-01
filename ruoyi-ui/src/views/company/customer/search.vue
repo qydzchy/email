@@ -62,6 +62,7 @@ export default {
               this.checkedList.push(val.id)
             }
           })
+          this.handleChecked(this.checkedList)
         }
       } catch {
       }

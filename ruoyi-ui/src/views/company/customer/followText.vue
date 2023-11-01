@@ -36,8 +36,8 @@
               <div class="card-head flex-middle space-between">
                 <div class="fs-14 bold">模板名称：{{ item.name }}</div>
                 <el-row :gutter="2">
-                  <el-button type="text" @click="onEdit('followText',item)">编辑</el-button>
-                  <DelPopover @onDelete="confirmDelTemplate"/>
+                  <el-button type="text" size="mini" @click="onEdit('followText',item)">编辑</el-button>
+                  <DelPopover :id="item.id" @onDelete="confirmDelTemplate"/>
                 </el-row>
               </div>
               <div class="card-main fs-14 gray-text">
@@ -93,8 +93,8 @@
               <div class="card-head flex-middle space-between">
                 <div class="fs-14 bold">模板名称：{{ item.name }}</div>
                 <el-row :gutter="2">
-                  <el-button type="text" @click="onEdit('fastText',item)">编辑</el-button>
-                  <DelPopover :id="item" @onDelete="confirmDelText"/>
+                  <el-button type="text" size="mini" @click="onEdit('fastText',item)">编辑</el-button>
+                  <DelPopover :id="item.id" @onDelete="confirmDelText"/>
                 </el-row>
               </div>
               <div class="flex-middle gap-8">
@@ -111,25 +111,26 @@
 
     <!--  快捷文本表单  -->
     <el-dialog title="添加快捷文本" width="500px" style="margin-top: 25vh" :visible.sync="fastTextDialog"
-               destroy-on-close @close="onCancel('fastText')">
+               ref="fastTextRef" destroy-on-close @close="onCancel('fastText')">
       <el-form :model="fastTextForm" ref="fastTextRef" :rules="fastTextRules">
         <el-form-item label="文本分组名称" prop="name">
           <el-input v-model="fastTextForm.name" autocomplete="off" placeholder="请输入文本分组名称"></el-input>
         </el-form-item>
         <el-form-item label="文本标签" prop="label">
           <el-select
-              style="width: 100%"
-              multiple
-              clearable
-              filterable
-              allow-create
-              ref="selectRef"
-              autocomplete="off"
-              class="customer-select"
-              popper-class="hide-option"
-              v-model="fastTextForm.label"
-              placeholder="请输入文本标签"
-              :popper-append-to-body="false"
+            style="width: 100%"
+            multiple
+            clearable
+            filterable
+            allow-create
+            default-first-option
+            ref="selectRef"
+            autocomplete="off"
+            class="customer-select"
+            popper-class="hide-option"
+            v-model="fastTextForm.label"
+            placeholder="请输入文本标签"
+            :popper-append-to-body="false"
           >
           </el-select>
         </el-form-item>
@@ -318,6 +319,7 @@ export default {
             type: 'success',
             message: '删除成功'
           })
+          await this.getTemplateList()
         }
       } catch {
       }
@@ -331,6 +333,7 @@ export default {
             type: 'success',
             message: '删除成功'
           })
+          await this.getQuickTextList()
         }
       } catch {
       }
@@ -375,9 +378,11 @@ export default {
       if (type === 'followText') {
         this.followTextForm = iniFollowTextForm
         this.followTextDialog = false
+        this.btnTemplateLoading = false
       } else if (type === 'fastText') {
         this.fastTextForm = iniFastTextForm
         this.fastTextDialog = false
+        this.btnQuickTextLoading = false
       }
     },
     editSettings() {
