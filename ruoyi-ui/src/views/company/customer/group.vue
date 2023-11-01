@@ -31,7 +31,7 @@
       <el-table-column prop="name" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作" width="200" align="center" fixed="right">
         <template v-slot="scope">
-          <el-button size="mini" type="text" @click="addGroupTable(scope.row)" v-if="!scope.row.unAdd">
+          <el-button size="mini" type="text" @click="addGroupTable(scope.row)" v-if="scope.row.level!==3">
             添加子级分组
           </el-button>
           <el-button size="mini" type="text" @click="editGroupTable(scope.row)">
@@ -169,7 +169,8 @@ export default {
           this.loading = false
         })
         if (res.code === 200) {
-          this.menuList = this.generateLevelList(res.data, 3)
+          this.menuList = this.generateLevelList(res.data)
+          console.log(this.menuList)
         }
       } catch {
       }
@@ -305,22 +306,21 @@ export default {
         }
       })
     },
-    generateLevelList(list, level) {
-      let count = 0
-      const deepLevel = (arr, c) => {
+    generateLevelList(list) {
+
+      const deepLevel = (arr, count = 0) => {
         count++
         return arr.map(val => {
-          val.unAdd = false
-          if (count === c) {
-            val.unAdd = true
-            return val
+          val.level = count
+          const child = val.children
+          if (child && child.length) {
+            deepLevel(child, count)
           }
-          val?.children && deepLevel(val.children, c)
           return val
         })
 
       }
-      return deepLevel(list, level)
+      return deepLevel(list)
     },
     generateSearchParent(list, parentId) {
       let parentName = ''
