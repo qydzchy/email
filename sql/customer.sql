@@ -191,6 +191,22 @@ CREATE TABLE `customer_follow_up_rules`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户跟进规则表' ROW_FORMAT = Dynamic;
 
+INSERT INTO `customer_follow_up_rules` VALUES (1, '获取公海/同事客户', 1, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (2, '发送邮件 (客户+商机)', 2, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (3, '接收邮件 (客户+商机)', 3, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (4, '营销邮件 (客户+商机)', 4, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (5, '编辑客户', 5, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (6, '新建跟进 (客户+商机)', 6, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (7, '新建/编辑 商机', 7, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (8, '新建/编辑 报价单', 8, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (9, '新建/编辑 销售订单', 9, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (10, '上传客户文档', 10, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (11, '发送聊天消息 (TM+WhatsAPP+FB Messenger)', 11, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (12, '接收聊天消息 (TM+WhatsAPP+FB Messenger)', 12, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (13, '发送聊天消息 (TM+WhatsAPP+FB Messenger)', 13, 2, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (14, '发送邮件 (客户+商机)', 14, 2, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (15, '营销邮件 (客户+商机)', 15, 2, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_follow_up_rules` VALUES (16, '新建跟进 (客户+商机)', 16, 2, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 -- ----------------------------
 -- Records of customer_follow_up_rules
 -- ----------------------------
