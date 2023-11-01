@@ -17,21 +17,21 @@
       <el-button type="primary" round @click="groupDialog = true">新建分组</el-button>
     </div>
     <el-table
-        lazy
-        v-if="refreshTable"
-        v-loading="loading"
-        :data="menuList"
-        row-key="id"
-        :default-expand-all="isExpandAll"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      lazy
+      v-if="refreshTable"
+      v-loading="loading"
+      :data="menuList"
+      row-key="id"
+      :default-expand-all="isExpandAll"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <template #empty>
         <el-empty :imageSize="100"></el-empty>
       </template>
       <el-table-column prop="name" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="操作" width="200" align="center" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="200" align="center" fixed="right">
         <template v-slot="scope">
-          <el-button size="mini" type="text" @click="addGroupTable(scope.row)">
+          <el-button size="mini" type="text" @click="addGroupTable(scope.row)" v-if="!scope.row.unAdd">
             添加子级分组
           </el-button>
           <el-button size="mini" type="text" @click="editGroupTable(scope.row)">
@@ -55,7 +55,7 @@
     </div>
     <!-- dialog -->
     <el-dialog :title="groupDialogTitle" width="460px" :visible.sync="groupDialog"
-               destroy-on-close>
+               destroy-on-close @close="onCancel">
       <el-form :model="groupDialogForm" class="group-dialog-form">
         <el-form-item label="父级分组" prop="parentName">
           <div class="parent-group">
@@ -63,7 +63,7 @@
           </div>
 
         </el-form-item>
-        <el-form-item label="分组名称" prop="groupName">
+        <el-form-item label="分组名称" prop="name">
           <el-input v-model="groupDialogForm.name" autocomplete="off" placeholder="请输入分组名称"></el-input>
         </el-form-item>
         <el-form-item prop="designatedMember">
@@ -84,11 +84,11 @@
               <el-radio :label="2">指定成员</el-radio>
             </el-radio-group>
             <TreeSelectNext
-                :default-props="defaultProps"
-                :tree-data="memberOption"
-                :echo-data.sync="groupDialogForm.designatedMember"
-                :disabled="groupDialogForm.availableMember === 1"
-                echo-name="nickName"
+              :default-props="defaultProps"
+              :tree-data="memberOption"
+              :echo-data.sync="groupDialogForm.designatedMember"
+              :disabled="groupDialogForm.availableMember === 1"
+              echo-name="nickName"
             />
 
           </div>
@@ -169,7 +169,7 @@ export default {
           this.loading = false
         })
         if (res.code === 200) {
-          this.menuList = res.data
+          this.menuList = this.generateLevelList(res.data, 3)
         }
       } catch {
       }
@@ -190,7 +190,8 @@ export default {
     },
     // 表格添加组
     addGroupTable(row) {
-      const parentName = row?.parentId !== -1 ? this.menuList.find(val => val.id === row?.parentId).name : '客户分组'
+      const searchName = this.generateSearchParent(this.menuList, row?.parentId)
+      const parentName = row?.parentId !== -1 ? searchName : '客户分组'
       this.groupDialogForm = {
         ...this.groupDialogForm,
         parentId: row?.id,
@@ -200,11 +201,13 @@ export default {
     },
     editGroupTable(row) {
       this.groupDialogTitle = '编辑客户分组'
-      const parentName = row?.parentId !== -1 ? this.menuList.find(val => val.id === row?.parentId).name : '客户分组'
+      const searchName = this.generateSearchParent(this.menuList, row?.parentId)
+      const parentName = row?.parentId !== -1 ? searchName : '客户分组'
       this.groupDialogForm = {
         ...this.groupDialogForm,
         ...row,
-        parentName: parentName
+        parentName: parentName,
+        designatedMember: row?.designatedMember?.split(',') || []
       }
       this.groupDialog = true
     },
@@ -229,7 +232,7 @@ export default {
           parentId,
           parentName,
           availableMember,
-          designatedMember: designatedMember.join(','),
+          designatedMember: availableMember === 2 ? designatedMember.join(',') : "",
         })
         if (res.code === 200) {
           this.$message({
@@ -251,7 +254,7 @@ export default {
           parentId,
           parentName,
           availableMember,
-          designatedMember: designatedMember.join(','),
+          designatedMember: availableMember === 2 ? designatedMember.join(',') : "",
         })
         if (res.code === 200) {
           this.$message({
@@ -284,7 +287,7 @@ export default {
     // 取消
     onCancel() {
       this.groupDialogTitle = '新建客户分组'
-      this.groupDialogForm = initGroupForm
+      this.groupDialogForm = {...initGroupForm}
       this.groupDialog = false
     },
 
@@ -300,6 +303,36 @@ export default {
           })
         }
       })
+    },
+    generateLevelList(list, level) {
+      let count = 0
+      const deepLevel = (arr, c) => {
+        count++
+        return arr.map(val => {
+          val.unAdd = false
+          if (count === c) {
+            val.unAdd = true
+            return val
+          }
+          val?.children && deepLevel(val.children, c)
+          return val
+        })
+
+      }
+      return deepLevel(list, level)
+    },
+    generateSearchParent(list, parentId) {
+      let parentName = ''
+      const searchParent = (arr, id) => {
+        return arr.forEach(val => {
+          if (val.id === id) {
+            parentName = val.name
+          }
+          val?.children && searchParent(val.children, id)
+        })
+      }
+      searchParent(list, parentId)
+      return parentName
     }
   }
 }
