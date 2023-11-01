@@ -2,6 +2,9 @@ package com.ruoyi.customer.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.ruoyi.customer.domain.dto.FollowUpRulesActiveFlagEditDTO;
 import com.ruoyi.customer.domain.vo.FollowUpRulesListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.FollowUpRulesMapper;
@@ -44,7 +47,15 @@ public class FollowUpRulesServiceImpl implements IFollowUpRulesService
     }
 
     @Override
-    public int updateActiveFlag(Long id) {
-        return followUpRulesMapper.updateActiveFlag(id);
+    public boolean updateActiveFlag(List<FollowUpRulesActiveFlagEditDTO> followUpRulesActiveFlagEditDTOList) {
+        List<Long> selectedIdList = followUpRulesActiveFlagEditDTOList.stream().filter(followUpRulesActiveFlagEditDTO -> followUpRulesActiveFlagEditDTO.getActiveFlag()).map(followUpRulesActiveFlagEditDTO -> followUpRulesActiveFlagEditDTO.getId()).collect(Collectors.toList());
+        List<Long> unSelectedIdList = followUpRulesActiveFlagEditDTOList.stream().filter(followUpRulesActiveFlagEditDTO -> !followUpRulesActiveFlagEditDTO.getActiveFlag()).map(followUpRulesActiveFlagEditDTO -> followUpRulesActiveFlagEditDTO.getId()).collect(Collectors.toList());
+        if (selectedIdList != null && !selectedIdList.isEmpty()) {
+            followUpRulesMapper.batchUpdateActiveFlag(selectedIdList, true);
+        }
+        if (unSelectedIdList != null && !unSelectedIdList.isEmpty()) {
+            followUpRulesMapper.batchUpdateActiveFlag(unSelectedIdList, false);
+        }
+        return true;
     }
 }

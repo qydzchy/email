@@ -170,6 +170,13 @@ public class DetailsServiceImpl implements IDetailsService
         return detailsMapper.deleteDetailsById(id);
     }
 
+    /**
+     * 客户列表（分页）
+     * @param seaType
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @Override
     public List<Details> list(Integer seaType, Integer pageNum, Integer pageSize) {
         /*int count = detailsMapper.count(seaType);
@@ -182,8 +189,7 @@ public class DetailsServiceImpl implements IDetailsService
         List<EmailListVO> emailListVOList = detailsMapper.selectCustomerDetailsPage(offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
-        }
-*/
+        }*/
         return null;
     }
 }

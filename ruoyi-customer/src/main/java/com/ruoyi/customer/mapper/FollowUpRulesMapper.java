@@ -66,4 +66,11 @@ public interface FollowUpRulesMapper
      * @return
      */
     int updateActiveFlag(@Param("id") Long id);
+
+    /**
+     * 批量更新标志
+     * @param ids
+     * @param activeFlag
+     */
+    void batchUpdateActiveFlag(@Param("ids") List<Long> ids, @Param("activeFlag") boolean activeFlag);
 }

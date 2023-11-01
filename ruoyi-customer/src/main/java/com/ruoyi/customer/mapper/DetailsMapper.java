@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Details;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户详情Mapper接口
@@ -63,5 +64,5 @@ public interface DetailsMapper
      * 统计客户数量
      * @return
      */
-    int count(Integer seaType);
+    int count(@Param("seaType") Integer seaType);
 }

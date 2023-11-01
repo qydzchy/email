@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class PublicleadsRulesController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PublicleadsRules publicleadsRules)
     {
+        checkParam(publicleadsRules);
         return toAjax(publicleadsRulesService.insertPublicleadsRules(publicleadsRules));
     }
 
@@ -58,7 +60,37 @@ public class PublicleadsRulesController extends BaseController
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody PublicleadsRules publicleadsRules)
     {
+        if (publicleadsRules.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        checkParam(publicleadsRules);
+
         return toAjax(publicleadsRulesService.updatePublicleadsRules(publicleadsRules));
+    }
+
+    /**
+     * 校验参数
+     * @param publicleadsRules
+     */
+    private static void checkParam(PublicleadsRules publicleadsRules) {
+        if (StringUtils.isBlank(publicleadsRules.getName())) {
+            throw new ServiceException("规则名称不能为空");
+        }
+        if (publicleadsRules.getCustomerSegmentId() == null) {
+            throw new ServiceException("客群不能为空");
+        }
+        if (publicleadsRules.getDays() == null) {
+            throw new ServiceException("规则天数不能为空");
+        }
+        if (publicleadsRules.getDays() < 0) {
+            throw new ServiceException("规则天数不能小于0");
+        }
+        if (publicleadsRules.getType() == null) {
+            throw new ServiceException("规则类型不能为空");
+        }
+        if (publicleadsRules.getStartTime() == null) {
+            throw new ServiceException("开始时间不能为空");
+        }
     }
 
     /**

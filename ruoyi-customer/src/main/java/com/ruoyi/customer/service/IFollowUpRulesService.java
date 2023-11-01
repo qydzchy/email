@@ -1,6 +1,8 @@
 package com.ruoyi.customer.service;
 
 import java.util.List;
+
+import com.ruoyi.customer.domain.dto.FollowUpRulesActiveFlagEditDTO;
 import com.ruoyi.customer.domain.vo.FollowUpRulesListVO;
 
 /**
@@ -19,8 +21,8 @@ public interface IFollowUpRulesService
 
     /**
      * 更新标志状态
-     * @param id
+     * @param followUpRulesActiveFlagEditDTOList
      * @return
      */
-    int updateActiveFlag(Long id);
+    boolean updateActiveFlag(List<FollowUpRulesActiveFlagEditDTO> followUpRulesActiveFlagEditDTOList);
 }

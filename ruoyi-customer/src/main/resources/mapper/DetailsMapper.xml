@@ -78,7 +78,7 @@
         where id = #{id}
     </select>
     <select id="count" resultType="java.lang.Integer">
-
+        select count(*) from customer_details where sea_type = #{seaType}
     </select>
 
     <insert id="insertDetails" parameterType="Details" useGeneratedKeys="true" keyProperty="id">

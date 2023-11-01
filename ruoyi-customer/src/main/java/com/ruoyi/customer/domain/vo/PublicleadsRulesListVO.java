@@ -1,7 +1,10 @@
 package com.ruoyi.customer.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.enums.customer.PublicleadsRulesTypeEnum;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class PublicleadsRulesListVO {
@@ -25,6 +28,9 @@ public class PublicleadsRulesListVO {
 
     /** 启用状态 0.关闭 1.启用 */
     private Integer status;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;
 
     /**
      * 移入条件

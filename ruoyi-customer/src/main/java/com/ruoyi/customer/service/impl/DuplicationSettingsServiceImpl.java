@@ -119,8 +119,12 @@ public class DuplicationSettingsServiceImpl implements IDuplicationSettingsServi
     public boolean updateActiveFlag(List<DuplicationSettingsActiveFlagEditDTO> duplicationSettingsActiveFlagEditDTOList) {
         List<Long> selectedIdList = duplicationSettingsActiveFlagEditDTOList.stream().filter(duplicationSettingsActiveFlagEditDTO -> duplicationSettingsActiveFlagEditDTO.getActiveFlag()).map(duplicationSettingsActiveFlagEditDTO -> duplicationSettingsActiveFlagEditDTO.getId()).collect(Collectors.toList());
         List<Long> unSelectedIdList = duplicationSettingsActiveFlagEditDTOList.stream().filter(duplicationSettingsActiveFlagEditDTO -> !duplicationSettingsActiveFlagEditDTO.getActiveFlag()).map(duplicationSettingsActiveFlagEditDTO -> duplicationSettingsActiveFlagEditDTO.getId()).collect(Collectors.toList());
-        duplicationSettingsMapper.batchUpdateActiveFlag(selectedIdList, true);
-        duplicationSettingsMapper.batchUpdateActiveFlag(unSelectedIdList, false);
+        if (selectedIdList != null && !selectedIdList.isEmpty()) {
+            duplicationSettingsMapper.batchUpdateActiveFlag(selectedIdList, true);
+        }
+        if (unSelectedIdList != null && !unSelectedIdList.isEmpty()) {
+            duplicationSettingsMapper.batchUpdateActiveFlag(unSelectedIdList, false);
+        }
         return true;
     }
 }

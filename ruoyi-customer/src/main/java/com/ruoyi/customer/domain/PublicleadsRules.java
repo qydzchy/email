@@ -1,9 +1,12 @@
 package com.ruoyi.customer.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 移入公海规则对象 customer_publicleads_rules
@@ -37,6 +40,9 @@ public class PublicleadsRules extends BaseEntity
     /** 启用状态 0.关闭 1.启用 */
     @Excel(name = "启用状态 0.关闭 1.启用")
     private Integer status;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -103,7 +109,16 @@ public class PublicleadsRules extends BaseEntity
     {
         return status;
     }
-    public void setDelFlag(String delFlag) 
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }

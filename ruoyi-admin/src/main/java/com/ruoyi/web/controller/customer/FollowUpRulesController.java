@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.customer.domain.dto.FollowUpRulesActiveFlagEditDTO;
 import com.ruoyi.customer.domain.vo.FollowUpRulesListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,6 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.customer.domain.FollowUpRules;
 import com.ruoyi.customer.service.IFollowUpRulesService;
 
 /**
@@ -49,12 +49,12 @@ public class FollowUpRulesController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:follow:up:rules:edit:activeFlag')")
     @Log(title = "修改客户跟进规则标志", businessType = BusinessType.UPDATE)
     @PostMapping("/edit/activeFlag")
-    public AjaxResult editActiveFlag(@RequestBody FollowUpRules followUpRules)
+    public AjaxResult editActiveFlag(@RequestBody List<FollowUpRulesActiveFlagEditDTO> followUpRulesActiveFlagEditDTOList)
     {
-        if (followUpRules.getId() == null) {
-            throw new ServiceException("ID不能为空");
+        if (followUpRulesActiveFlagEditDTOList == null || followUpRulesActiveFlagEditDTOList.isEmpty()) {
+            throw new ServiceException("参数不能为空");
         }
 
-        return toAjax(followUpRulesService.updateActiveFlag(followUpRules.getId()));
+        return toAjax(followUpRulesService.updateActiveFlag(followUpRulesActiveFlagEditDTOList));
     }
 }

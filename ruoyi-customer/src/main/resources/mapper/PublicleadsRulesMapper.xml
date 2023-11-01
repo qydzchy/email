@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="days"    column="days"    />
         <result property="type"    column="type"    />
         <result property="status"    column="status"    />
+        <result property="startTime"    column="start_time"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -21,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPublicleadsRulesVo">
-        select id, name, customer_segment_id, days, type, status, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_rules
+        select id, name, customer_segment_id, days, type, status, start_time, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_rules
     </sql>
 
     <select id="selectPublicleadsRulesList" parameterType="PublicleadsRules" resultMap="PublicleadsRulesResult">
@@ -52,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="days != null">days,</if>
             <if test="type != null">type,</if>
             <if test="status != null">status,</if>
+            <if test="startTime != null">start_time,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -67,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="days != null">#{days},</if>
             <if test="type != null">#{type},</if>
             <if test="status != null">#{status},</if>
+            <if test="startTime != null">#{startTime},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -85,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="days != null">days = #{days},</if>
             <if test="type != null">type = #{type},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

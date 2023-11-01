@@ -87,6 +87,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update customer_follow_up_rules set active_flag = !active_flag where id = #{id}
     </update>
 
+    <update id="batchUpdateActiveFlag">
+        update customer_follow_up_rules set active_flag = #{activeFlag} where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
     <delete id="deleteFollowUpRulesById" parameterType="Long">
         delete from customer_follow_up_rules where id = #{id}
     </delete>
