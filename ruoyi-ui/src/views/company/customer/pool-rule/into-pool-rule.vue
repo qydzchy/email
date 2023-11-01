@@ -93,6 +93,7 @@
                 placeholder="选择日期时间"
                 clearable
                 :picker-options="pickerOptions"
+                value-format="yyyy-MM-dd hh:mm:ss"
                 v-model="poolRuleFormSecond.startTime"
             >
             </el-date-picker>
@@ -123,7 +124,8 @@ const initPoolRuleForm2 = {
   name: '',
   customerSegmentId: [],
   days: 1,
-  type: 1
+  type: 1,
+  startTime: ''
 }
 export default {
   components: {
@@ -171,7 +173,13 @@ export default {
         {
           label: '开始时间',
           field: 'startTime',
-          render: (_row, field) => EmptyStr(field),
+          render: (_row, field) => {
+            const date = new Date(field)
+            const year = date.getFullYear()
+            const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+            const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+            return field ? `${year}-${month}-${day}` : '---'
+          },
         },
         {
           label: '操作',
@@ -314,7 +322,8 @@ export default {
           name: row?.name,
           customerSegmentId: row?.customerSegmentId.join(''),
           days: row?.days,
-          type: row?.type
+          type: row?.type,
+          startTime: row?.startTime
         }).finally(() => {
           this.btnLoading = false
         })
@@ -360,8 +369,12 @@ export default {
       }
     },
     onConfirm() {
-      const formData = this.poolRuleFormSecond
+      let formData = this.poolRuleFormSecond
       this.btnLoading = true
+      formData = {
+        ...formData,
+        startTime: formData.startTime
+      }
       if (!formData.id) {
         this.intoPoolRuleAddReq(formData)
       } else {
