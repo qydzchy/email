@@ -12,7 +12,7 @@
           </div>
           <div>
             <el-row v-if="contact.showBtnGroup">
-              <el-button round size="mini" @click="contact.showBtnGroup=false">取消</el-button>
+              <el-button round size="mini" @click="onCancel('contact')">取消</el-button>
               <el-button round size="mini" type="primary" @click="onContactSave">保存</el-button>
             </el-row>
             <el-button v-else type="primary" round size="mini" @click="contact.showBtnGroup=true">编辑</el-button>
@@ -40,7 +40,7 @@
           </div>
           <div>
             <el-row v-if="follow.showBtnGroup">
-              <el-button round size="mini" @click="follow.showBtnGroup=false">取消</el-button>
+              <el-button round size="mini" @click="onCancel('follow')">取消</el-button>
               <el-button round size="mini" type="primary" @click="onFollowSave">保存</el-button>
             </el-row>
             <el-button v-else type="primary" round size="mini" @click="follow.showBtnGroup=true">编辑</el-button>
@@ -70,7 +70,8 @@ export default {
         showBtnGroup: false,
         showLoading: false,
         checkedContacts: [],
-        contactList: []
+        contactList: [],
+        tempCheckList: [],
       },
       follow: {
         checkAll: false,
@@ -78,7 +79,8 @@ export default {
         showBtnGroup: false,
         showLoading: false,
         checkedFollows: [],
-        followList: []
+        followList: [],
+        tempCheckList: []
       },
     }
   },
@@ -101,6 +103,8 @@ export default {
               val.activeFlag && this.follow.checkedFollows.push(val.id)
             }
           })
+          this.contact.tempCheckList = this.contact.checkedContacts
+          this.follow.tempCheckList = this.follow.checkedFollows
           this.handleCheckedContact(this.contact.checkedContacts)
           this.handleCheckedFollow(this.follow.checkedFollows)
         }
@@ -188,6 +192,21 @@ export default {
           this.getList()
         }
       })
+    },
+    onCancel(type) {
+      if (type === 'contact') {
+        this.contact = {
+          ...this.contact,
+          showBtnGroup: false,
+          checkedContacts: this.contact.tempCheckList,
+        }
+      } else if (type === 'follow') {
+        this.follow = {
+          ...this.contact,
+          showBtnGroup: false,
+          checkedContacts: this.follow.tempCheckList,
+        }
+      }
     }
   }
 }

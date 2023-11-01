@@ -11,7 +11,7 @@
           </div>
           <div>
             <el-row v-if="showBtnGroup">
-              <el-button round size="mini" @click="showBtnGroup=false">取消</el-button>
+              <el-button round size="mini" @click="onCancel">取消</el-button>
               <el-button round size="mini" type="primary" @click="onSave">保存</el-button>
             </el-row>
             <el-button v-else type="primary" round size="mini" @click="showBtnGroup=true">编辑</el-button>
@@ -41,6 +41,7 @@ export default {
       showBtnGroup: false,
       isIndeterminate: false,
       checkedList: [],
+      tempCheckList: [],
       list: [],
       cardLoading: false
     }
@@ -62,6 +63,7 @@ export default {
               this.checkedList.push(val.id)
             }
           })
+          this.tempCheckList = this.checkedList
           this.handleChecked(this.checkedList)
         }
       } catch {
@@ -96,6 +98,10 @@ export default {
       } catch {
       }
     },
+    onCancel() {
+      this.checkedList = this.tempCheckList
+      this.showBtnGroup = false
+    }
   }
 }
 </script>
