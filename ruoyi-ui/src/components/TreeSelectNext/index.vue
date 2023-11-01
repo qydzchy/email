@@ -1,29 +1,29 @@
 <template>
   <el-select
-      class="select-tree"
-      style="width:100%"
-      multiple
-      collapse-tags
-      clearable
-      v-model="checkedData"
-      :popper-append-to-body="false"
-      @remove-tag="removeTag"
-      @clear="clearAll"
-      :disabled="disabled"
+    class="select-tree"
+    style="width:100%"
+    multiple
+    collapse-tags
+    clearable
+    v-model="checkedData"
+    :popper-append-to-body="false"
+    @remove-tag="removeTag"
+    @clear="clearAll"
+    :disabled="disabled"
   >
-    <el-option :value="selectTree" style="height:auto">
+    <el-option value="empty" style="height:auto">
       <el-option v-show="false" v-for="item in selectTree" :value="item[disabledKey]"
                  :label="item[defaultProps.label]"></el-option>
       <el-tree
-          ref="tree"
-          :data="curTreeData"
-          show-checkbox
-          node-key="id"
-          highlight-current
-          :default-expand-all="true"
-          :props="defaultProps"
-          :expand-on-click-node="false"
-          @check-change="handleNodeClick"
+        ref="tree"
+        :data="curTreeData"
+        show-checkbox
+        node-key="id"
+        highlight-current
+        :default-expand-all="true"
+        :props="defaultProps"
+        :expand-on-click-node="false"
+        @check-change="handleNodeClick"
       ></el-tree>
     </el-option>
   </el-select>
@@ -75,7 +75,18 @@ export default {
     }
   },
   mounted() {
-    this.checkedData = this.echoData
+    this.generateOption()
+  },
+  watch: {
+    echoData: {
+      handler(newVal) {
+        this.checkedData = newVal
+        this.$nextTick(() => {
+          this.$refs.tree.setCheckedKeys(newVal, true)
+        })
+      },
+      immediate: true
+    }
   },
   computed: {
     curTreeData() {
@@ -89,31 +100,36 @@ export default {
   },
   methods: {
     removeTag(item) {
-      this.selectTree = this.selectTree.filter(val => val.id !== item)
       this.$nextTick(() => {
         this.$refs.tree.setChecked(item, false)
       })
     },
     clearAll() {
       this.$nextTick(() => {
-        this.selectTree = []
         this.$refs.tree.setCheckedNodes([])
       })
     },
     handleNodeClick(data, _self, _child) {
       let dataList = this.$refs.tree.getCheckedNodes()
-      this.selectTree = []
       this.checkedData = []
       dataList.forEach((item) => {
         if (!item.children.length) {
-          this.selectTree.push({
-            id: item.id,
-            [this.defaultProps.label]: item[this.defaultProps.label]
-          })
           this.checkedData.push(item.id)
         }
       })
       this.$emit('update:echoData', this.checkedData)
+    },
+    generateOption() {
+      let newOption = []
+      const flatOption = arr => arr.forEach(val => {
+        newOption.push({
+          [this.disabledKey]: val[this.disabledKey],
+          [this.defaultProps.label]: val[this.defaultProps.label]
+        })
+        val[this.defaultProps.children] && flatOption(val[this.defaultProps.children])
+      })
+      flatOption(this.treeData)
+      this.selectTree = newOption
     },
   }
 }

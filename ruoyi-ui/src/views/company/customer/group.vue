@@ -203,11 +203,12 @@ export default {
       this.groupDialogTitle = '编辑客户分组'
       const searchName = this.generateSearchParent(this.menuList, row?.parentId)
       const parentName = row?.parentId !== -1 ? searchName : '客户分组'
+      const designatedMember = row?.designatedMember?.length ? row.designatedMember.split(',').map(val => +val) : []
       this.groupDialogForm = {
         ...this.groupDialogForm,
         ...row,
         parentName: parentName,
-        designatedMember: row?.designatedMember?.split(',') || []
+        designatedMember: designatedMember
       }
       this.groupDialog = true
     },
