@@ -1,15 +1,23 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.MetadataColumnAppTypeEnum;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.DetailsContact;
+import com.ruoyi.customer.domain.MetadataColumn;
 import com.ruoyi.customer.domain.dto.DetailsAddOrUpdateDTO;
 import com.ruoyi.customer.domain.dto.DetailsContactAddOrUpdateDTO;
+import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.MetadataColumnListVO;
 import com.ruoyi.customer.mapper.DetailsContactMapper;
+import com.ruoyi.customer.mapper.MetadataColumnMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -26,6 +34,7 @@ import javax.annotation.Resource;
  * @author tangJM.
  * @date 2023-10-31
  */
+@Slf4j
 @Service
 public class DetailsServiceImpl implements IDetailsService 
 {
@@ -34,6 +43,9 @@ public class DetailsServiceImpl implements IDetailsService
 
     @Resource
     private DetailsContactMapper detailsContactMapper;
+
+    @Resource
+    private MetadataColumnMapper metadataColumnMapper;
 
     /**
      * 查询客户详情
@@ -178,18 +190,45 @@ public class DetailsServiceImpl implements IDetailsService
      * @return
      */
     @Override
-    public List<Details> list(Integer seaType, Integer pageNum, Integer pageSize) {
-        /*int count = detailsMapper.count(seaType);
-        if (count <= 0) {
-            return Pair.of(0, new ArrayList<>());
+    public Map<String, Object> list(Integer seaType, Integer pageNum, Integer pageSize) {
+        try {
+            // 查询字段信息
+            MetadataColumn metadataColumnParam = new MetadataColumn();
+            metadataColumnParam.setAppType(MetadataColumnAppTypeEnum.CUSTOMER_LIST.getAppType());
+            List<MetadataColumn> metadataColumnList = metadataColumnMapper.selectMetadataColumnList(metadataColumnParam);
+            List<MetadataColumnListVO> metadataColumnListVOList = new ArrayList<>();
+            metadataColumnList.stream().forEach(metadataColumn -> {
+                MetadataColumnListVO metadataColumnListVO = new MetadataColumnListVO();
+                metadataColumnListVO.setId(metadataColumn.getId());
+                metadataColumnListVO.setColumnName(metadataColumn.getColumnName());
+                metadataColumnListVO.setColumnAlias(metadataColumn.getColumnAlias());
+                metadataColumnListVO.setColumnType(metadataColumn.getColumnType());
+                metadataColumnListVOList.add(metadataColumnListVO);
+            });
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("column", metadataColumnParam);
+
+            int count = detailsMapper.count(seaType);
+            result.put("total", count);
+            if (count <= 0) {
+                result.put("data", new ArrayList<>());
+                return result;
+            }
+
+            int offset = (pageNum - 1) * pageSize;
+            int limit = pageSize;
+            List<CustomerSimpleListVO> customerSimpleListVOList = detailsMapper.selectCustomerDetailsPage(seaType, offset, limit);
+            if (customerSimpleListVOList == null || customerSimpleListVOList.isEmpty()) {
+                result.put("data", new ArrayList<>());
+                return result;
+            }
+
+        } catch (Exception e) {
+            log.error("查询客户列表（分页）异常：{}", e);
+            return new HashMap<>();
         }
 
-        int offset = (pageNum - 1) * pageSize;
-        int limit = pageSize;
-        List<EmailListVO> emailListVOList = detailsMapper.selectCustomerDetailsPage(offset, limit);
-        if (emailListVOList == null || emailListVOList.isEmpty()) {
-            return Pair.of(count, new ArrayList<>());
-        }*/
         return null;
     }
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.MetadataColumnMapper">
+
+    <resultMap type="MetadataColumn" id="MetadataColumnResult">
+        <result property="id"    column="id"    />
+        <result property="columnName"    column="column_name"    />
+        <result property="columnAlias"    column="column_alias"    />
+        <result property="columnType"    column="column_type"    />
+        <result property="appType"    column="app_type"    />
+        <result property="orderIndex"    column="order_index"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMetadataColumnVo">
+        select id, column_name, column_alias, column_type, app_type, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_metadata_column
+    </sql>
+
+    <select id="selectMetadataColumnList" parameterType="MetadataColumn" resultMap="MetadataColumnResult">
+        <include refid="selectMetadataColumnVo"/>
+        <where>
+            <if test="columnName != null  and columnName != ''"> and column_name like concat('%', #{columnName}, '%')</if>
+            <if test="columnAlias != null  and columnAlias != ''"> and column_alias = #{columnAlias}</if>
+            <if test="columnType != null  and columnType != ''"> and column_type = #{columnType}</if>
+            <if test="appType != null "> and app_type = #{appType}</if>
+            <if test="orderIndex != null "> and order_index = #{orderIndex}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectMetadataColumnById" parameterType="Long" resultMap="MetadataColumnResult">
+        <include refid="selectMetadataColumnVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMetadataColumn" parameterType="MetadataColumn">
+        insert into customer_metadata_column
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="columnName != null and columnName != ''">column_name,</if>
+            <if test="columnAlias != null and columnAlias != ''">column_alias,</if>
+            <if test="columnType != null and columnType != ''">column_type,</if>
+            <if test="appType != null">app_type,</if>
+            <if test="orderIndex != null">order_index,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="columnName != null and columnName != ''">#{columnName},</if>
+            <if test="columnAlias != null and columnAlias != ''">#{columnAlias},</if>
+            <if test="columnType != null and columnType != ''">#{columnType},</if>
+            <if test="appType != null">#{appType},</if>
+            <if test="orderIndex != null">#{orderIndex},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMetadataColumn" parameterType="MetadataColumn">
+        update customer_metadata_column
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="columnName != null and columnName != ''">column_name = #{columnName},</if>
+            <if test="columnAlias != null and columnAlias != ''">column_alias = #{columnAlias},</if>
+            <if test="columnType != null and columnType != ''">column_type = #{columnType},</if>
+            <if test="appType != null">app_type = #{appType},</if>
+            <if test="orderIndex != null">order_index = #{orderIndex},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMetadataColumnById" parameterType="Long">
+        delete from customer_metadata_column where id = #{id}
+    </delete>
+
+    <delete id="deleteMetadataColumnByIds" parameterType="String">
+        delete from customer_metadata_column where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

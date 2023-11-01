@@ -1,7 +1,5 @@
 package com.ruoyi.web.controller.customer;
 
-import java.util.List;
-
 import com.ruoyi.customer.domain.dto.DetailsAddOrUpdateDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +12,7 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.customer.domain.Details;
 import com.ruoyi.customer.service.IDetailsService;
-import com.ruoyi.common.core.page.TableDataInfo;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -39,12 +35,11 @@ public class DetailsController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:list')")
     @GetMapping("/list")
-    public TableDataInfo list(@NotNull(message = "私海/公海类型不能为空") Integer seaType,
+    public AjaxResult list(@NotNull(message = "私海/公海类型不能为空") Integer seaType,
                               @NotNull(message = "页数不能为空") Integer pageNum,
                               @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        List<Details> list = detailsService.list(seaType, pageNum, pageSize);
-        return getDataTable(list);
+        return success(detailsService.list(seaType, pageNum, pageSize));
     }
 
     /**

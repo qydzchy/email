@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Details;
+import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -65,4 +66,13 @@ public interface DetailsMapper
      * @return
      */
     int count(@Param("seaType") Integer seaType);
+
+    /**
+     * 客户列表（分页）
+     * @param seaType
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<CustomerSimpleListVO> selectCustomerDetailsPage(@Param("seaType") Integer seaType, @Param("offset") int offset, @Param("limit") int limit);
 }

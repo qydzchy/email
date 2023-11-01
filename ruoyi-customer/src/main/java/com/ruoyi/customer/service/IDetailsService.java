@@ -1,6 +1,8 @@
 package com.ruoyi.customer.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.customer.domain.Details;
 import com.ruoyi.customer.domain.dto.DetailsAddOrUpdateDTO;
 
@@ -64,5 +66,5 @@ public interface IDetailsService
      * 客户列表（分页）
      * @return
      */
-    List<Details> list(Integer seaType, Integer pageNum, Integer pageSize);
+    Map<String, Object> list(Integer seaType, Integer pageNum, Integer pageSize);
 }

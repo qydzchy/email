@@ -41,12 +41,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             ds.id,
             mc.id AS columnId,
-            mc.NAME AS columnName,
-            mc.alias AS columnAlias,
+            mc.column_name AS columnName,
+            mc.column_alias AS columnAlias,
             ds.active_flag AS activeFlag
         FROM
             customer_duplication_settings ds
-            LEFT JOIN customer_metadata_column mc ON ds.column_id = mc.id AND mc.del_flag = '0'
+            LEFT JOIN customer_metadata_column mc ON ds.column_id = mc.id AND mc.app_type = 1 AND mc.del_flag = '0'
         WHERE
             ds.del_flag = '0'
     </select>
