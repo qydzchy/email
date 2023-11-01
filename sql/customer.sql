@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 31/10/2023 18:06:46
+ Date: 01/11/2023 18:04:20
 */
 
 SET NAMES utf8mb4;
@@ -33,6 +33,10 @@ CREATE TABLE `customer_black_list_records`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '建档黑名单表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_black_list_records
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for customer_details
@@ -74,6 +78,10 @@ CREATE TABLE `customer_details`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户详情表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_details
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_details_contact
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_details_contact`;
@@ -103,12 +111,16 @@ CREATE TABLE `customer_details_contact`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户联系人表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_details_contact
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_duplication_settings
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_duplication_settings`;
 CREATE TABLE `customer_duplication_settings`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `column_id` bigint(20) NOT NULL COMMENT '列ID',
+  `column_id` bigint(20) NOT NULL COMMENT '字段ID',
   `active_flag` tinyint(1) NOT NULL COMMENT '标志 0.未选 1.选中',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
@@ -119,6 +131,10 @@ CREATE TABLE `customer_duplication_settings`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户查重设置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_duplication_settings
+-- ----------------------------
 INSERT INTO `customer_duplication_settings` VALUES (1, 1, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `customer_duplication_settings` VALUES (2, 2, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `customer_duplication_settings` VALUES (3, 3, 1, '0', NULL, NULL, NULL, NULL, NULL, NULL);
@@ -152,6 +168,10 @@ CREATE TABLE `customer_follow_up_quick_text`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '写跟进快捷文本表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_follow_up_quick_text
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_follow_up_rules
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_follow_up_rules`;
@@ -169,7 +189,11 @@ CREATE TABLE `customer_follow_up_rules`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户跟进规则表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户跟进规则表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_follow_up_rules
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for customer_follow_up_templates
@@ -188,6 +212,10 @@ CREATE TABLE `customer_follow_up_templates`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '写跟进模板表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_follow_up_templates
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for customer_limits
@@ -209,14 +237,19 @@ CREATE TABLE `customer_limits`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户上限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_limits
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_metadata_column
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_metadata_column`;
 CREATE TABLE `customer_metadata_column`  (
   `id` bigint(20) NOT NULL COMMENT '主键',
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
-  `alias` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段别名',
-  `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段类型',
+  `column_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
+  `column_alias` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段别名',
+  `column_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段类型',
+  `app_type` tinyint(1) NOT NULL COMMENT '应用类型 1.客户查重 2.客户列表 3.公海客户',
   `order_index` bigint(20) NULL DEFAULT NULL COMMENT '排序',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
@@ -226,20 +259,24 @@ CREATE TABLE `customer_metadata_column`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-INSERT INTO `customer_metadata_column` VALUES (1, 'customer_no', '客户编号', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (2, 'customer_stage', '客户阶段', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (3, 'company_name', '公司名称/简称', 'STRINIG', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (4, 'contact_name', '联系人名', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (5, 'customer_email', '客户邮箱', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (6, 'customer_phone', '客户电话', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (7, 'customer_source', '客户来源', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (8, 'country_region', '国家地区', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (9, 'source_follower', '源跟进人', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (10, 'current_attribution', '当前归属', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (11, 'create_time', '创建时间', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (12, 'last_contacted_at', '最近联系时间', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_metadata_column` VALUES (13, 'social_media_account\n', '社交账号', 'STRING', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户元数据列' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_metadata_column
+-- ----------------------------
+INSERT INTO `customer_metadata_column` VALUES (1, 'customer_no', '客户编号', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (2, 'customer_stage', '客户阶段', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (3, 'company_name', '公司名称/简称', 'STRINIG', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (4, 'contact_name', '联系人名', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (5, 'customer_email', '客户邮箱', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (6, 'customer_phone', '客户电话', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (7, 'customer_source', '客户来源', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (8, 'country_region', '国家地区', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (9, 'source_follower', '源跟进人', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (10, 'current_attribution', '当前归属', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (11, 'create_time', '创建时间', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (12, 'last_contacted_at', '最近联系时间', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_metadata_column` VALUES (13, 'social_media_account\n', '社交账号', 'STRING', 1, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_packet
@@ -259,7 +296,14 @@ CREATE TABLE `customer_packet`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户分组表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户分组表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_packet
+-- ----------------------------
+INSERT INTO `customer_packet` VALUES (1, -1, '分组测试', 2, NULL, '0', 1, 'admin', '2023-11-01 17:50:38', 1, 'admin', '2023-11-01 17:50:38');
+INSERT INTO `customer_packet` VALUES (2, -1, '测试分组2', 2, NULL, '0', 1, 'admin', '2023-11-01 17:54:24', 1, 'admin', '2023-11-01 17:54:24');
+INSERT INTO `customer_packet` VALUES (3, -1, '分组测试3', 2, '1,2', '0', 1, 'admin', '2023-11-01 17:56:59', 1, 'admin', '2023-11-01 17:56:59');
 
 -- ----------------------------
 -- Table structure for customer_packet_designate_member
@@ -278,6 +322,10 @@ CREATE TABLE `customer_packet_designate_member`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户分组指定成员表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_packet_designate_member
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for customer_publicleads_claim_limit
@@ -299,6 +347,10 @@ CREATE TABLE `customer_publicleads_claim_limit`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '领取上限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_publicleads_claim_limit
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_publicleads_groups
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_groups`;
@@ -318,6 +370,10 @@ CREATE TABLE `customer_publicleads_groups`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_publicleads_groups
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_publicleads_reason
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_reason`;
@@ -335,26 +391,35 @@ CREATE TABLE `customer_publicleads_reason`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入公海原因表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_publicleads_reason
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_publicleads_rules
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_rules`;
 CREATE TABLE `customer_publicleads_rules`  (
-`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-`name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '规则名称',
-`customer_segment_id` bigint(20) NOT NULL COMMENT '客群ID',
-`days` int(11) NOT NULL COMMENT '客户状态-天数',
-`type` tinyint(1) NOT NULL COMMENT '客户状态-类型1.未联系 2.未成交',
-`status` tinyint(1) NOT NULL COMMENT '启用状态 0.关闭 1.启用',
-`start_time` datetime(0) NOT NULL COMMENT '开始时间',
-`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-PRIMARY KEY (`id`) USING BTREE
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '规则名称',
+  `customer_segment_id` bigint(20) NOT NULL COMMENT '客群ID',
+  `days` int(11) NOT NULL COMMENT '客户状态-天数',
+  `type` tinyint(1) NOT NULL COMMENT '客户状态-类型1.未联系 2.未成交',
+  `status` tinyint(1) NOT NULL COMMENT '启用状态 0.关闭 1.启用',
+  `start_time` datetime(0) NOT NULL COMMENT '开始时间',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入公海规则表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_publicleads_rules
+-- ----------------------------
+INSERT INTO `customer_publicleads_rules` VALUES (1, '规则名称测试01', 1, 1, 1, 0, '2023-10-31 23:59:59', '0', 1, 'admin', '2023-11-01 14:23:21', 1, 'admin', '2023-11-01 14:28:31');
 
 -- ----------------------------
 -- Table structure for customer_publicleads_white_list
@@ -372,6 +437,10 @@ CREATE TABLE `customer_publicleads_white_list`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入公海白名单表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_publicleads_white_list
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for customer_settings
@@ -396,7 +465,12 @@ CREATE TABLE `customer_settings`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户设置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_settings
+-- ----------------------------
+INSERT INTO `customer_settings` VALUES (1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '0', 1, 'admin', '2023-11-01 17:59:59', 1, 'admin', '2023-11-01 17:59:59');
 
 -- ----------------------------
 -- Table structure for customer_source
@@ -416,6 +490,10 @@ CREATE TABLE `customer_source`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户来源' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of customer_source
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for customer_stage
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_stage`;
@@ -431,4 +509,30 @@ CREATE TABLE `customer_stage`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户阶段表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户阶段表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_stage
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for customer_tag
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_tag`;
+CREATE TABLE `customer_tag`  (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标签名称',
+  `color` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标签颜色',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户标签' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer_tag
+-- ----------------------------
