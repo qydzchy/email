@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.ruoyi.customer.domain.Limits;
-import com.ruoyi.customer.domain.LimitsListVO;
+import com.ruoyi.customer.domain.vo.LimitsListVO;
 import com.ruoyi.customer.service.ILimitsService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

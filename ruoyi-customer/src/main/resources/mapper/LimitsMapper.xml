@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="list" resultType="com.ruoyi.customer.domain.LimitsListVO">
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.LimitsListVO">
         select u.user_id as userId, u.nick_name as nickName, d.dept_id as deptId, d.dept_name as deptName, l.id as id, l.type, l.limits from sys_user u
         left join sys_dept d on u.dept_id = d.dept_id
         left join customer_limits l on l.user_id = u.user_id

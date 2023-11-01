@@ -5,7 +5,7 @@ import java.util.List;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.customer.domain.LimitsListVO;
+import com.ruoyi.customer.domain.vo.LimitsListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.LimitsMapper;
 import com.ruoyi.customer.domain.Limits;

@@ -96,7 +96,6 @@
         AND details.del_flag = #{delFlag}
         ORDER BY details.create_time DESC
         LIMIT #{offset}, #{limit}
-
     </select>
     <insert id="insertDetails" parameterType="Details" useGeneratedKeys="true" keyProperty="id">
         insert into customer_details

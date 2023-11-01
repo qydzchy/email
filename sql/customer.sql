@@ -17,6 +17,9 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+INSERT INTO `email`.`sys_menu`(`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (2003, '客户', 0, 5, '/customer', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'peoples', 'admin', '2023-11-01 21:00:41', '', NULL, '');
+INSERT INTO `email`.`sys_menu`(`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (2004, '企业管理', 0, 6, '/company', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'compnay', 'admin', '2023-11-01 21:01:18', '', NULL, '');
+
 -- ----------------------------
 -- Table structure for customer_black_list_records
 -- ----------------------------
@@ -552,3 +555,29 @@ CREATE TABLE `customer_tag`  (
 -- ----------------------------
 -- Records of customer_tag
 -- ----------------------------
+
+
+-- ----------------------------
+-- Table structure for customer_segment
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_segment`;
+CREATE TABLE `customer_segment`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客群名称',
+`usage_scope` tinyint(1) NOT NULL COMMENT '使用范围 1.公司共享 2.个人使用',
+`visibility_scope_type` tinyint(1) NOT NULL COMMENT '可见范围-类型 1.全公司可见 2.全部部门 3.指定部门 4.全部人员 5.指定人员',
+`visibility_scope_content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '可见范围-内容',
+`condition_rule_type` tinyint(1) NOT NULL COMMENT '条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件',
+`condition_rule_content` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '条件规则内容',
+`subgroup_flag` tinyint(1) NOT NULL COMMENT '添加二级客群 0.未选 1.选中',
+`addition_rule` tinyint(1) NULL DEFAULT NULL COMMENT '添加规则 1.自动生成 2.手动添加',
+`subgroup_segment_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '二级客群内容',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客群表' ROW_FORMAT = Dynamic;

@@ -2,7 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Limits;
-import com.ruoyi.customer.domain.LimitsListVO;
+import com.ruoyi.customer.domain.vo.LimitsListVO;
 
 /**
  * 客户上限Mapper接口
