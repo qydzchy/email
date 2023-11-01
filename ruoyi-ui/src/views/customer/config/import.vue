@@ -2,12 +2,14 @@
   <div>
     <div class="my-20 flex-end">
       <el-row>
-        <el-button type="text">刷新
+        <el-button type="text" @click="onRefresh">
+          <span>刷新</span>
           <i class="el-icon-refresh"></i></el-button>
-        <el-button type="primary" round>新增导入</el-button>
+        <el-button type="primary" round @click="$router.push('/customer/config/import-operate')">新增导入</el-button>
       </el-row>
     </div>
-    <TableNext :columns="columns" :list="list" :paginate-option="paginationOption" :paginate-event="paginationEvent"/>
+    <TableNext :loading="tableLoading" :columns="columns" :list="list" :paginate-option="paginationOption"
+               :paginate-event="paginationEvent"/>
   </div>
 </template>
 
@@ -61,7 +63,7 @@ export default {
         },
       ],
       paginationOption: {
-        total: 100,
+        total: 0,
         currentPage: 1,
         pageSize: 20,
         pageSizes: [10, 20, 50, 100],
@@ -70,12 +72,12 @@ export default {
       paginationEvent: {
         'size-change': this.handleSizeChange,
         'current-change': this.handleCurrentChange,
-
-      }
+      },
+      tableLoading: false,
     }
   },
   mounted() {
-    const {current = 1, pageSize=20} = this.$route.query
+    const {current = 1, pageSize = 20} = this.$route.query
     console.log(this.$route.query)
     this.generateRoute(current, pageSize)
     this.paginationOption = {
@@ -88,6 +90,12 @@ export default {
   methods: {
     getList() {
       console.log('test')
+    },
+    onRefresh() {
+      this.tableLoading = true
+      setTimeout(() => {
+        this.tableLoading = false
+      }, 2000)
     },
     handleSizeChange(value) {
       this.paginationOption.pageSize = value

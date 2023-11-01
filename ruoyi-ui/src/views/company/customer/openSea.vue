@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="mb-8">
-      <el-button type="primary" icon="el-icon-edit" size="small" :disabled="multiple" @click="onSelectModify">
-        批量修改
-      </el-button>
-    </div>
+<!--    <div class="mb-8">-->
+<!--      <el-button type="primary" icon="el-icon-edit" size="small" :disabled="multiple" @click="onSelectModify">-->
+<!--        批量修改-->
+<!--      </el-button>-->
+<!--    </div>-->
     <TableNext
         :list="list"
         :columns="columns"

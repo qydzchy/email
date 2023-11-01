@@ -12,7 +12,7 @@
           <div>
             <el-row v-if="showBtnGroup">
               <el-button round size="mini" @click="showBtnGroup=false">取消</el-button>
-              <el-button round size="mini" type="primary">保存</el-button>
+              <el-button round size="mini" type="primary" @click="onSave">保存</el-button>
             </el-row>
             <el-button v-else type="primary" round size="mini" @click="showBtnGroup=true">编辑</el-button>
           </div>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import {getDuplicateList} from "@/api/company/search";
+import {duplicateEdit, getDuplicateList} from "@/api/company/search";
 
 export default {
   data() {
@@ -57,6 +57,11 @@ export default {
         })
         if (res.code === 200) {
           this.list = res.data
+          this.list.forEach((val) => {
+            if (val.activeFlag) {
+              this.checkedList.push(val.id)
+            }
+          })
         }
       } catch {
       }
@@ -73,8 +78,29 @@ export default {
         this.isIndeterminate = true;
       }
     },
-    handleChecked() {
-    }
+    handleChecked(value) {
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.list.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.list.length;
+    },
+    async onSave() {
+      let config = []
+      this.list.map(val => {
+        const isValid = this.checkedList.includes(val.id)
+        config.push({id: val.id, activeFlag: isValid})
+      })
+      try {
+        const res = await duplicateEdit(JSON.stringify(config))
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+          this.showBtnGroup = false
+        }
+      } catch {
+      }
+    },
   }
 }
 </script>

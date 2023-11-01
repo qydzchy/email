@@ -8,7 +8,9 @@
       v-model="checkedData"
       :popper-append-to-body="false"
       @remove-tag="removeTag"
-      @clear="clearAll">
+      @clear="clearAll"
+      :disabled="disabled"
+  >
     <el-option :value="selectTree" style="height:auto">
       <el-option v-show="false" v-for="item in selectTree" :value="item[disabledKey]"
                  :label="item[defaultProps.label]"></el-option>
@@ -58,6 +60,11 @@ export default {
     disabledKey: {
       type: String,
       default: 'id',
+      required: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
       required: false
     },
   },
