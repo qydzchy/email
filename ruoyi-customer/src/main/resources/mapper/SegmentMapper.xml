@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.SegmentMapper">
+
+    <resultMap type="Segment" id="SegmentResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="usageScope"    column="usage_scope"    />
+        <result property="visibilityScopeType"    column="visibility_scope_type"    />
+        <result property="visibilityScopeContent"    column="visibility_scope_content"    />
+        <result property="conditionRuleType"    column="condition_rule_type"    />
+        <result property="conditionRuleContent"    column="condition_rule_content"    />
+        <result property="subgroupFlag"    column="subgroup_flag"    />
+        <result property="additionRule"    column="addition_rule"    />
+        <result property="subgroupSegmentContent"    column="subgroup_segment_content"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSegmentVo">
+        select id, name, usage_scope, visibility_scope_type, visibility_scope_content, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, subgroup_segment_content, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
+    </sql>
+
+    <select id="selectSegmentList" parameterType="Segment" resultMap="SegmentResult">
+        <include refid="selectSegmentVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="usageScope != null "> and usage_scope = #{usageScope}</if>
+            <if test="visibilityScopeType != null "> and visibility_scope_type = #{visibilityScopeType}</if>
+            <if test="visibilityScopeContent != null  and visibilityScopeContent != ''"> and visibility_scope_content = #{visibilityScopeContent}</if>
+            <if test="conditionRuleType != null "> and condition_rule_type = #{conditionRuleType}</if>
+            <if test="conditionRuleContent != null  and conditionRuleContent != ''"> and condition_rule_content = #{conditionRuleContent}</if>
+            <if test="subgroupFlag != null "> and subgroup_flag = #{subgroupFlag}</if>
+            <if test="additionRule != null "> and addition_rule = #{additionRule}</if>
+            <if test="subgroupSegmentContent != null  and subgroupSegmentContent != ''"> and subgroup_segment_content = #{subgroupSegmentContent}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectSegmentById" parameterType="Long" resultMap="SegmentResult">
+        <include refid="selectSegmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSegment" parameterType="Segment" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_segment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="usageScope != null">usage_scope,</if>
+            <if test="visibilityScopeType != null">visibility_scope_type,</if>
+            <if test="visibilityScopeContent != null">visibility_scope_content,</if>
+            <if test="conditionRuleType != null">condition_rule_type,</if>
+            <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content,</if>
+            <if test="subgroupFlag != null">subgroup_flag,</if>
+            <if test="additionRule != null">addition_rule,</if>
+            <if test="subgroupSegmentContent != null">subgroup_segment_content,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="usageScope != null">#{usageScope},</if>
+            <if test="visibilityScopeType != null">#{visibilityScopeType},</if>
+            <if test="visibilityScopeContent != null">#{visibilityScopeContent},</if>
+            <if test="conditionRuleType != null">#{conditionRuleType},</if>
+            <if test="conditionRuleContent != null and conditionRuleContent != ''">#{conditionRuleContent},</if>
+            <if test="subgroupFlag != null">#{subgroupFlag},</if>
+            <if test="additionRule != null">#{additionRule},</if>
+            <if test="subgroupSegmentContent != null">#{subgroupSegmentContent},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSegment" parameterType="Segment">
+        update customer_segment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="usageScope != null">usage_scope = #{usageScope},</if>
+            <if test="visibilityScopeType != null">visibility_scope_type = #{visibilityScopeType},</if>
+            <if test="visibilityScopeContent != null">visibility_scope_content = #{visibilityScopeContent},</if>
+            <if test="conditionRuleType != null">condition_rule_type = #{conditionRuleType},</if>
+            <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content = #{conditionRuleContent},</if>
+            <if test="subgroupFlag != null">subgroup_flag = #{subgroupFlag},</if>
+            <if test="additionRule != null">addition_rule = #{additionRule},</if>
+            <if test="subgroupSegmentContent != null">subgroup_segment_content = #{subgroupSegmentContent},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSegmentById" parameterType="Long">
+        delete from customer_segment where id = #{id}
+    </delete>
+
+    <delete id="deleteSegmentByIds" parameterType="String">
+        delete from customer_segment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

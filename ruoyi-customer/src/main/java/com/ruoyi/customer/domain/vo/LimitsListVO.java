@@ -1,4 +1,4 @@
-package com.ruoyi.customer.domain;
+package com.ruoyi.customer.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -52,10 +52,10 @@ public class LimitsListVO {
     }
 
     public String getContent() {
-        String typeName = this.type == null ? "不限" : "(上限)";
         this.limits = this.limits == null ? 0 : this.limits;
+        String typeName = this.type == null ? "不限" : this.limits + "(上限)";
         this.customerCount = this.customerCount == null ? 0 : this.customerCount;
-        String content = String.format("客户 %s/%s%s", this.customerCount, this.limits, typeName);
+        String content = String.format("客户 %s/%s", this.customerCount, typeName);
         return content;
     }
 }
