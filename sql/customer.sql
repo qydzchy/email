@@ -339,21 +339,22 @@ CREATE TABLE `customer_publicleads_reason`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_rules`;
 CREATE TABLE `customer_publicleads_rules`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '规则名称',
-  `customer_segment_id` bigint(20) NOT NULL COMMENT '客群ID',
-  `days` int(11) NOT NULL COMMENT '客户状态-天数',
-  `type` tinyint(1) NOT NULL COMMENT '客户状态-类型1.未联系 2.未成交',
-  `status` tinyint(1) NOT NULL COMMENT '启用状态 0.关闭 1.启用',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入公海规则表' ROW_FORMAT = Dynamic;
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '规则名称',
+`customer_segment_id` bigint(20) NOT NULL COMMENT '客群ID',
+`days` int(11) NOT NULL COMMENT '客户状态-天数',
+`type` tinyint(1) NOT NULL COMMENT '客户状态-类型1.未联系 2.未成交',
+`status` tinyint(1) NOT NULL COMMENT '启用状态 0.关闭 1.启用',
+`start_time` datetime(0) NOT NULL COMMENT '开始时间',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入公海规则表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for customer_publicleads_white_list
