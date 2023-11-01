@@ -105,14 +105,6 @@ export default {
     reasonAddReq(row) {
       return new Promise(async (resolve) => {
         try {
-          if(!row.reason){
-            this.$message({
-              type: 'error',
-              message: '添加失败,原因不能为空'
-            })
-            resolve(false)
-            return
-          }
           const res = await reasonAdd({
             reason: row?.reason
           }).finally(() => {
@@ -160,6 +152,14 @@ export default {
     async onSaveInput(item) {
       let isSet = false
       this.tableLoading = true
+      if (!item.reason) {
+        this.$message({
+          type: 'error',
+          message: '添加失败,原因不能为空'
+        })
+        this.tableLoading = false
+        return
+      }
 
       if (item?.id === -1) {
         isSet = await this.reasonAddReq(item)

@@ -138,7 +138,7 @@ export const constantRoutes = [
                     {
                         path: 'personal/:id',
                         name: 'CustomerPersonal',
-                        meta: { is: 'list', dontAnimate: true},
+                        meta: {is: 'list', dontAnimate: true},
                         component: () => import('@/views/customer/personal/index.vue'),
                     },
                     {
@@ -158,6 +158,12 @@ export const constantRoutes = [
                         name: 'CustomerConfig',
                         meta: {title: '客户设置', is: 'config', dontAnimate: true,},
                         component: () => import('@/views/customer/config/index.vue'),
+                    },
+                    {
+                        path: 'config/import-operate',
+                        name: 'CustomerImportOperate',
+                        meta: {title: '客户导入', is: 'config', dontAnimate: true,},
+                        component: () => import('@/views/customer/config/import-operate.vue'),
                     },
                 ]
             },

@@ -14,18 +14,21 @@
       <div class="fs-14">分组管理客户，最多可设置2级子分组。
         一级分组可设置自动移入公海规则，子分组遵循与一级父分组相同的规则。
       </div>
-      <el-button type="primary" round @click="addGroup">新建分组</el-button>
+      <el-button type="primary" round @click="groupDialog = true">新建分组</el-button>
     </div>
     <el-table
         lazy
         v-if="refreshTable"
         v-loading="loading"
         :data="menuList"
-        row-key="menuId"
+        row-key="id"
         :default-expand-all="isExpandAll"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="menuName" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
+      <template #empty>
+        <el-empty :imageSize="100"></el-empty>
+      </template>
+      <el-table-column prop="name" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作" width="200" align="center" fixed="right" class-name="small-padding fixed-width">
         <template v-slot="scope">
           <el-button size="mini" type="text" @click="addGroupTable(scope.row)">
@@ -34,7 +37,7 @@
           <el-button size="mini" type="text" @click="editGroupTable(scope.row)">
             编辑
           </el-button>
-          <DelPopover :id="scope.row.group_id" width="200" :content="`确定要删除分组【${scope.row.menuName}】吗？`"
+          <DelPopover :id="scope.row.id" width="200" :content="`确定要删除分组【${scope.row.name}】吗？`"
                       @onDelete="onDelete"/>
         </template>
       </el-table-column>
@@ -54,16 +57,16 @@
     <el-dialog :title="groupDialogTitle" width="460px" :visible.sync="groupDialog"
                destroy-on-close>
       <el-form :model="groupDialogForm" class="group-dialog-form">
-        <el-form-item label="父级分组" prop="groupName">
+        <el-form-item label="父级分组" prop="parentName">
           <div class="parent-group">
-            {{ groupName }}
+            {{ groupDialogForm.parentName }}
           </div>
 
         </el-form-item>
         <el-form-item label="分组名称" prop="groupName">
           <el-input v-model="groupDialogForm.name" autocomplete="off" placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item prop="group_id">
+        <el-form-item prop="designatedMember">
           <div class="flex-column">
             <div>
               <span class="bold black-color">可用成员</span>
@@ -76,30 +79,17 @@
                 <i class="el-icon-warning-outline ml-6"></i>
               </el-tooltip>
             </div>
-            <el-radio-group class="flex-column gap-10" v-model="groupDialogForm.all">
+            <el-radio-group class="flex-column gap-10 mb-10" v-model="groupDialogForm.availableMember">
               <el-radio :label="1">全部成员</el-radio>
-              <el-radio :label="0">指定成员</el-radio>
+              <el-radio :label="2">指定成员</el-radio>
             </el-radio-group>
-            <el-select
-                multiple
-                style="width:100%"
-                v-model="groupDialogForm.group_id"
-                class="select-tree mt-10"
-                :popper-append-to-body="false"
-                :disabled="!!groupDialogForm.all"
-                filterable>
-              <el-option :value="emptyOption" style="height:auto">
-                <el-tree
-                    :data="data"
-                    show-checkbox
-                    node-key="id"
-                    ref="tree"
-                    highlight-current
-                    :default-expand-all="false"
-                    :props="defaultProps"></el-tree>
-              </el-option>
-
-            </el-select>
+            <TreeSelectNext
+                :default-props="defaultProps"
+                :tree-data="memberOption"
+                :echo-data.sync="groupDialogForm.designatedMember"
+                :disabled="groupDialogForm.availableMember === 1"
+                echo-name="nickName"
+            />
 
           </div>
 
@@ -107,7 +97,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button round @click="onCancel">取 消</el-button>
-        <el-button type="primary" round>确 定</el-button>
+        <el-button type="primary" round @click="onConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -116,23 +106,25 @@
 <script>
 import {delMenu, getMenu, listMenu} from "@/api/system/menu";
 import DelPopover from "./DelPopover.vue";
-import TableNext from '@/components/TableNext'
-import {cascaderList, treeList} from "@/mock/index";
+import TreeSelectNext from '@/components/TreeSelectNext'
 import {mapState} from "vuex";
+import {packetAdd, packetDelete, packetEdit, packetList} from "@/api/company/group";
+import {listDeptUsersTree} from "@/api/system/dept";
 
 const initGroupForm = {
-  echoName: '',
+  id: '',
   name: '',
-  parent_id: -1,
-  group_id: '',
-  owner_ids: [],
-  all: 1
+  parentId: -1,
+  parentName: '客户分组',
+  availableMember: 1,
+  designatedMember: []
 }
 
 export default {
   dicts: ['sys_show_hide', 'sys_normal_disable'],
   components: {
-    DelPopover
+    DelPopover,
+    TreeSelectNext
   },
   data() {
     return {
@@ -145,67 +137,148 @@ export default {
       visible: false, // 选择删除提示
       groupDialog: false, //
       groupDialogTitle: '新建客户分组',
-      groupDialogForm: initGroupForm,
-      groupCanUseOption: [],
-      emptyOption: [],
+      groupDialogForm: {...initGroupForm},
+      data: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'name'
       },
-      data: treeList
+      memberOption: [],
+
     }
   },
   mounted() {
     this.getList()
-    this.groupCanUseOption = cascaderList
+    this.getCommonTree()
     this.$watch('settings', (newVal) => {
       const {mandatorySubgroupFlag} = newVal
       this.checkChildren = Boolean(mandatorySubgroupFlag)
-    }, {immediate:true})
+    }, {immediate: true})
   },
   computed: {
     ...mapState({
       settings: state => state.company.settings
     }),
-    groupName() {
-      return this.groupDialogForm.parent_id === -1 ? '客户分组' : (this.groupDialogForm.echoName || '---')
-    }
   },
   methods: {
     /** 获取数据 **/
-    getList() {
+    async getList() {
       this.loading = true;
-      listMenu({}).then(response => {
-        this.tempMenuList = response.data
-        this.menuList = this.handleTree(response.data, "menuId");
-        this.loading = false;
-      });
+      try {
+        const res = await packetList().finally(() => {
+          this.loading = false
+        })
+        if (res.code === 200) {
+          this.menuList = res.data
+        }
+      } catch {
+      }
+      // listMenu({}).then(response => {
+      //   this.tempMenuList = response.data
+      //   this.menuList = this.handleTree(response.data, "menuId");
+      //   this.loading = false;
+      // });
     },
-    // 添加成员组
-    addGroup() {
-      this.groupDialog = true
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.memberOption = res.data
+        }
+      } catch {
+      }
     },
     // 表格添加组
     addGroupTable(row) {
+      const parentName = row?.parentId !== -1 ? this.menuList.find(val => val.id === row?.parentId).name : '客户分组'
       this.groupDialogForm = {
         ...this.groupDialogForm,
-        parent_id: row.parentId,
-        echoName: row.menuName
+        parentId: row?.id,
+        parentName: parentName
       }
       this.groupDialog = true
     },
     editGroupTable(row) {
-      const echoName = !row.parentId ? '客户分组' : this.tempMenuList.find(val => val.menuId === row.parentId).menuName
       this.groupDialogTitle = '编辑客户分组'
+      const parentName = row?.parentId !== -1 ? this.menuList.find(val => val.id === row?.parentId).name : '客户分组'
       this.groupDialogForm = {
         ...this.groupDialogForm,
-        parent_id: row.parentId,
-        name: row.menuName,
-        echoName: echoName
+        ...row,
+        parentName: parentName
       }
       this.groupDialog = true
     },
-    onDelete(id) {
+    async onDelete(id) {
+      try {
+        const res = await packetDelete({id})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          await this.getList()
+        }
+      } catch {
+      }
+    },
+    async packetAddReq(row) {
+      try {
+        const {name, parentId, parentName, availableMember, designatedMember} = row
+        const res = await packetAdd({
+          name,
+          parentId,
+          parentName,
+          availableMember,
+          designatedMember: designatedMember.join(','),
+        })
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '新增成功'
+          })
+          await this.getList()
+          this.onCancel()
+        }
+      } catch {
+      }
+    },
+    async packetEditReq(row) {
+      try {
+        const {id, name, parentId, parentName, availableMember, designatedMember} = row
+        const res = await packetEdit({
+          id,
+          name,
+          parentId,
+          parentName,
+          availableMember,
+          designatedMember: designatedMember.join(','),
+        })
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+          await this.getList()
+          this.onCancel()
+        }
+      } catch {
+      }
+    },
+    // 确认
+    onConfirm() {
+      const formData = this.groupDialogForm
+      if (!formData.name) {
+        this.$message({
+          type: 'error',
+          message: '请填写分组名'
+        })
+        return
+      }
+      if (!formData.id) {
+        this.packetAddReq(formData)
+      } else {
+        this.packetEditReq(formData)
+      }
     },
 
     // 取消

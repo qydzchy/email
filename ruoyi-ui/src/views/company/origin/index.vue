@@ -33,6 +33,8 @@ import DelPopover from "@/components/DevPopover/index.vue"
 import {EmptyStr} from "@/utils/tools";
 import {listMenu} from "@/api/system/menu";
 import {debounce} from "@/utils";
+import {reasonAdd, reasonEdit} from "@/api/company/poolRule";
+import {getOriginList, originAdd, originDelete, originEdit} from "@/api/company/origin";
 
 export default {
   components: {
@@ -45,7 +47,7 @@ export default {
       originColumns: [
         {
           label: '来源名称',
-          field: 'menuName',
+          field: 'name',
           align: 'left',
           render: (row, field) => {
 
@@ -55,6 +57,7 @@ export default {
                   value={field}
                   style={{display: row?.isEdit ? 'block' : 'none'}}
                   onInput={(value) => this.handleOriginNameInput(row, value)}
+                  nativeOnKeydown={(e) => this.inputKeydown(e, row)}
                   placeholder="请输入原因">
               </el-input>
             </div>
@@ -72,10 +75,10 @@ export default {
                 visible ?
                     <div>
                       <el-row style={{display: row?.isEdit ? 'none' : 'block'}}>
-                        <el-button type='text' onClick={() => this.onEdit(row?.menuId)}>
+                        <el-button type='text' onClick={() => this.onEdit(row?.id)}>
                           编辑
                         </el-button>
-                        <DelPopover id={row?.id}/>
+                        <DelPopover id={row?.id} on={{onDelete: (id) => this.originDeleteReq(id)}}/>
                       </el-row>
                       <el-row style={{display: row?.isEdit ? 'block' : 'none'}}>
                         <el-button type="text" onClick={() => this.onCancelInput(row?.id)}>取消</el-button>
@@ -103,20 +106,30 @@ export default {
   },
   methods: {
     /** 获取数据 **/
-    getList() {
+    async getList() {
       this.tableLoading = true;
-      listMenu({}).then(response => {
-        this.originList = this.handleTree(response.data, "menuId");
-        console.log(this.originList)
-        this.tableLoading = false;
-      });
+      try {
+        const res = await getOriginList().finally(() => {
+          this.tableLoading = false;
+        })
+        if (res.code === 200) {
+          this.originList = res.data
+        }
+      } catch {
+      }
+      //
+      // listMenu({}).then(response => {
+      //   this.originList = this.handleTree(response.data, "menuId");
+      //   console.log(this.originList)
+      //   this.tableLoading = false;
+      // });
     },
     addOrigin() {
-      this.originList.unshift({id: -1, menuName: '', isEdit: true})
+      this.originList.unshift({id: -1, name: '', isEdit: true})
       this.editStatus = true
     },
     onEdit(id) {
-      const tableIndex = this.originList.findIndex(val => val.menuId === id)
+      const tableIndex = this.originList.findIndex(val => val.id === id)
       this.$set(this.originList, tableIndex, {...this.originList[tableIndex], isEdit: true})
       this.editStatus = true
     },
@@ -134,19 +147,101 @@ export default {
 
       this.editStatus = false
     },
-    onSaveInput(item) {
+    async originDeleteReq(id) {
+      try {
+        const res = await originDelete({id})
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          await this.getList()
+        }
+      } catch {
+      }
+    },
+    originAddReq(row) {
+      return new Promise(async (resolve) => {
+        try {
+          const res = await originAdd({
+            name: row?.name
+          }).finally(() => {
+            this.tableLoading = false
+          })
+          if (res.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '添加成功'
+            })
+            resolve(true)
+            return
+          }
+          resolve(false)
+        } catch {
+          resolve(false)
+        }
+      })
+
+    },
+    originEditReq(row) {
+      return new Promise(async (resolve) => {
+        try {
+          const res = await originEdit({
+            name: row?.name,
+            id: row?.id
+          }).finally(() => {
+            this.tableLoading = false
+          })
+          if (res.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '编辑成功'
+            })
+            resolve(true)
+            return
+          }
+          resolve(false)
+        } catch {
+          resolve(false)
+        }
+      })
+
+    },
+    async onSaveInput(item) {
+      let isSet = false
       this.tableLoading = true
-      setTimeout(() => {
+      console.log(!item.name)
+      if (!item.name) {
+        this.$message({
+          type: 'error',
+          message: '添加失败,原因不能为空'
+        })
+        this.tableLoading = false
+        return
+      }
+
+      if (item?.id === -1) {
+        isSet = await this.originAddReq(item)
+      } else {
+        isSet = await this.originEditReq(item)
+      }
+
+      if (isSet) {
         const tableIndex = this.originList.findIndex(val => val.id === item?.id)
         this.$set(this.originList, tableIndex, {...item, isEdit: false})
-        this.tableLoading = false
         this.editStatus = false
-      }, 2000)
+      }
     },
     handleOriginNameInput(item, value) {
       const tableIndex = this.originList.findIndex(val => val.id === item?.id)
-      this.$set(this.originList, tableIndex, {...item, menuName: value})
+      this.$set(this.originList, tableIndex, {...item, name: value})
     },
+    inputKeydown(e, row) {
+      // 回车输入
+      if (e.keyCode === 13) {
+        this.onSaveInput(row)
+      }
+    }
   }
 }
 </script>

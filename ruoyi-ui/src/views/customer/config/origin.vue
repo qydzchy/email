@@ -1,9 +1,7 @@
 <template>
   <div class="page-origin">
     <div class="my-14 flex-middle space-between">
-      <div class="fs-14 gray-text">一级分组: 45个</div>
-      <el-button class="mr-20" type="primary" round size="medium" :disabled="editStatus" @click="addOrigin">添加来源
-      </el-button>
+      <div class="fs-14">* 应用于：线索来源、客户来源、商机来源</div>
     </div>
     <div class="table-card">
       <TableNext

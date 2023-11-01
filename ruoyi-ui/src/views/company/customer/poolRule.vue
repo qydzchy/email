@@ -18,9 +18,6 @@
 </template>
 
 <script>
-import TableNext from "@/components/TableNext/index.vue";
-import DelPopover from "./DelPopover.vue"
-import {EmptyStr} from "@/utils/tools";
 import IntoPoolRule from './pool-rule/into-pool-rule.vue'
 import IntoPoolWhitelist from "./pool-rule/into-pool-whitelist.vue";
 import PoolReceiveRule from "./pool-rule/pool-receive-rule.vue";
@@ -31,8 +28,6 @@ import PoolReason from "./pool-rule/pool-reason.vue";
 
 export default {
   components: {
-    TableNext,
-    DelPopover,
     IntoPoolRule,
     IntoPoolWhitelist,
     PoolReceiveRule,
