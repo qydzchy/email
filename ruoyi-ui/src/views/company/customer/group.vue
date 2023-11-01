@@ -21,7 +21,7 @@
         v-if="refreshTable"
         v-loading="loading"
         :data="menuList"
-        row-key="menuId"
+        row-key="id"
         :default-expand-all="isExpandAll"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
@@ -66,7 +66,7 @@
         <el-form-item label="分组名称" prop="groupName">
           <el-input v-model="groupDialogForm.name" autocomplete="off" placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item prop="userIds">
+        <el-form-item prop="designatedMember">
           <div class="flex-column">
             <div>
               <span class="bold black-color">可用成员</span>
@@ -86,9 +86,7 @@
             <TreeSelectNext
                 :default-props="defaultProps"
                 :tree-data="memberOption"
-                :echo-data.sync="groupDialogForm.userIds"
-                :disabled-list="disabledList"
-                :disabled-key="disabledKey"
+                :echo-data.sync="groupDialogForm.designatedMember"
                 :disabled="groupDialogForm.availableMember === 1"
                 echo-name="nickName"
             />
@@ -114,12 +112,11 @@ import {packetAdd, packetDelete, packetEdit, packetList} from "@/api/company/gro
 import {listDeptUsersTree} from "@/api/system/dept";
 
 const initGroupForm = {
-  id:'',
+  id: '',
   name: '',
   parentId: -1,
   parentName: '客户分组',
   availableMember: 1,
-  userIds: [],
   designatedMember: []
 }
 
@@ -147,8 +144,6 @@ export default {
         label: 'name'
       },
       memberOption: [],
-      disabledList: [],
-      disabledKey: 'id',
 
     }
   },
@@ -174,12 +169,7 @@ export default {
           this.loading = false
         })
         if (res.code === 200) {
-          let disabledList = []
           this.menuList = res.data
-          this.menuList.forEach(val => {
-            disabledList.push(val.userId)
-          })
-          this.disabledList = disabledList
         }
       } catch {
       }
@@ -200,17 +190,21 @@ export default {
     },
     // 表格添加组
     addGroupTable(row) {
+      const parentName = row?.parentId !== -1 ? this.menuList.find(val => val.id === row?.parentId).name : '客户分组'
       this.groupDialogForm = {
         ...this.groupDialogForm,
-        ...row
+        parentId: row?.id,
+        parentName: parentName
       }
       this.groupDialog = true
     },
     editGroupTable(row) {
       this.groupDialogTitle = '编辑客户分组'
+      const parentName = row?.parentId !== -1 ? this.menuList.find(val => val.id === row?.parentId).name : '客户分组'
       this.groupDialogForm = {
         ...this.groupDialogForm,
-       ...row
+        ...row,
+        parentName: parentName
       }
       this.groupDialog = true
     },
@@ -229,12 +223,13 @@ export default {
     },
     async packetAddReq(row) {
       try {
+        const {name, parentId, parentName, availableMember, designatedMember} = row
         const res = await packetAdd({
-          name: row?.name,
-          parentId: row?.parentId,
-          parentName: row?.parentName,
-          availableMember: row?.availableMember,
-          designatedMember: "",
+          name,
+          parentId,
+          parentName,
+          availableMember,
+          designatedMember: designatedMember.join(','),
         })
         if (res.code === 200) {
           this.$message({
@@ -249,13 +244,14 @@ export default {
     },
     async packetEditReq(row) {
       try {
+        const {id, name, parentId, parentName, availableMember, designatedMember} = row
         const res = await packetEdit({
-          id: row?.id,
-          name: row?.name,
-          parentId: row?.parentId,
-          parentName: row?.parentName,
-          availableMember: row?.availableMember,
-          designatedMember: "",
+          id,
+          name,
+          parentId,
+          parentName,
+          availableMember,
+          designatedMember: designatedMember.join(','),
         })
         if (res.code === 200) {
           this.$message({

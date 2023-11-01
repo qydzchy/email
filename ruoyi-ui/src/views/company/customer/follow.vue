@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import {getFollowRulesList} from "@/api/company/follow";
+
 export default {
   data() {
     return {
@@ -119,6 +121,14 @@ export default {
     }
   },
   methods: {
+    async getList(type){
+      try{
+        const res = await getFollowRulesList()
+        if(res.code===200){
+
+        }
+      }catch{}
+    },
     handleCheckAllContact() {
     },
     handleCheckAllFollow() {
