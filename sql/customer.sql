@@ -624,3 +624,39 @@ CREATE TABLE `customer_tag`  (
 -- ----------------------------
 -- Records of customer_tag
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for customer_customer_follow_up_personnel
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_customer_follow_up_personnel`;
+CREATE TABLE `customer_customer_follow_up_personnel`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`customer_id` bigint(20) NOT NULL COMMENT '客户ID',
+`user_id` bigint(20) NOT NULL COMMENT '跟进人ID',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户跟进人' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for customer_customer_follow_up_records
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_customer_follow_up_records`;
+CREATE TABLE `customer_customer_follow_up_records`  (
+`id` bigint(20) NOT NULL COMMENT '主键',
+`follow_up_type` tinyint(1) NOT NULL COMMENT '跟进类型 1.快速记录 2.电话 3.会面 4.社交平台',
+`follow_up_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '跟进内容',
+`submission_time` datetime(0) NOT NULL COMMENT '提交时间',
+`follow_up_contact` bigint(20) NOT NULL COMMENT '跟进联系人ID',
+`next_follow_up_schedule` datetime(0) NULL DEFAULT NULL COMMENT '下次跟进日程',
+`all_day_flag` tinyint(1) NULL DEFAULT NULL COMMENT '全天 0.否 1.是',
+`schedule_content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日程内容',
+`color` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '颜色',
+`remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '备注',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户写跟进' ROW_FORMAT = Dynamic;

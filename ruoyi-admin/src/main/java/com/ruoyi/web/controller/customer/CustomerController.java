@@ -31,7 +31,7 @@ public class CustomerController extends BaseController
     private ICustomerService customerService;
 
     /**
-     * 查询客户详情列表
+     * 查询客户列表
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:list')")
     @GetMapping("/list")
@@ -55,10 +55,10 @@ public class CustomerController extends BaseController
     }
 
     /**
-     * 新增客户详情
+     * 新增客户
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:add')")
-    @Log(title = "新增客户详情", businessType = BusinessType.INSERT)
+    @Log(title = "新增客户", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult add(@RequestBody CustomerAddOrUpdateDTO customerAddOrUpdateDTO)
     {
@@ -66,13 +66,17 @@ public class CustomerController extends BaseController
     }
 
     /**
-     * 修改客户详情
+     * 修改客户
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:edit')")
-    @Log(title = "修改客户详情", businessType = BusinessType.UPDATE)
+    @Log(title = "修改客户", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody CustomerAddOrUpdateDTO customerAddOrUpdateDTO)
     {
         return toAjax(customerService.updateCustomer(customerAddOrUpdateDTO));
     }
+
+    /**
+     * 移入
+     */
 }
