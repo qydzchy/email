@@ -8,12 +8,12 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 客户联系人对象 customer_details_contact
+ * 客户联系人对象 customer_customer_contact
  * 
  * @author tangJM.
- * @date 2023-10-31
+ * @date 2023-11-02
  */
-public class DetailsContact extends BaseEntity
+public class CustomerContact extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class DetailsContact extends BaseEntity
 
     /** 客户详情ID */
     @Excel(name = "客户详情ID")
-    private Long customerDetailsId;
+    private Long customerId;
 
     /** 昵称 */
     @Excel(name = "昵称")
@@ -33,7 +33,7 @@ public class DetailsContact extends BaseEntity
     private String email;
 
     /** 社交平台
-        [{"type":1,"account":""}]
+[{"type":1,"account":""}]
  */
     @Excel(name = "社交平台")
     private String socialPlatform;
@@ -97,14 +97,14 @@ public class DetailsContact extends BaseEntity
     {
         return id;
     }
-    public void setCustomerDetailsId(Long customerDetailsId) 
+    public void setCustomerId(Long customerId) 
     {
-        this.customerDetailsId = customerDetailsId;
+        this.customerId = customerId;
     }
 
-    public Long getCustomerDetailsId() 
+    public Long getCustomerId() 
     {
-        return customerDetailsId;
+        return customerId;
     }
     public void setNickName(String nickName) 
     {
@@ -246,7 +246,7 @@ public class DetailsContact extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
-            .append("customerDetailsId", getCustomerDetailsId())
+            .append("customerId", getCustomerId())
             .append("nickName", getNickName())
             .append("email", getEmail())
             .append("socialPlatform", getSocialPlatform())

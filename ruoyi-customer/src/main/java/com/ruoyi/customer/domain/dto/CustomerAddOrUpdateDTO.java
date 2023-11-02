@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class DetailsAddOrUpdateDTO {
+public class CustomerAddOrUpdateDTO {
 
     /** 主键 */
     private Long id;
@@ -27,11 +27,9 @@ public class DetailsAddOrUpdateDTO {
     /** 国家地区 */
     private String countryRegion;
 
-    /** 客户来源ID（多个以逗号分隔拼接) */
-    private String sourceIds;
+    private List<Long> sourceIds;
 
-    /** 客户标签ID（多个以逗号分隔拼接） */
-    private String tagIds;
+    private List<Long> tagIds;
 
     /** 私海/公海类型 1.私海 2.公海 */
     @NotNull(message = "私海/公海类型不能为空")
@@ -91,5 +89,5 @@ public class DetailsAddOrUpdateDTO {
     /**
      * 客户联系人
      */
-    private List<DetailsContactAddOrUpdateDTO> contactList;
+    private List<CustomerContactAddOrUpdateDTO> contactList;
 }

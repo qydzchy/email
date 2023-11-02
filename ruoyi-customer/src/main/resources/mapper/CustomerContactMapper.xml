@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.customer.mapper.DetailsContactMapper">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerContactMapper">
 
-    <resultMap type="DetailsContact" id="DetailsContactResult">
+    <resultMap type="CustomerContact" id="CustomerContactResult">
         <result property="id"    column="id"    />
-        <result property="customerDetailsId"    column="customer_details_id"    />
+        <result property="customerId"    column="customer_id"    />
         <result property="nickName"    column="nick_name"    />
         <result property="email"    column="email"    />
         <result property="socialPlatform"    column="social_platform"    />
@@ -28,14 +28,14 @@
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectDetailsContactVo">
-        select id, customer_details_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_details_contact
+    <sql id="selectCustomerContactVo">
+        select id, customer_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_contact
     </sql>
 
-    <select id="selectDetailsContactList" parameterType="DetailsContact" resultMap="DetailsContactResult">
-        <include refid="selectDetailsContactVo"/>
+    <select id="selectCustomerContactList" parameterType="CustomerContact" resultMap="CustomerContactResult">
+        <include refid="selectCustomerContactVo"/>
         <where>
-            <if test="customerDetailsId != null "> and customer_details_id = #{customerDetailsId}</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
             <if test="email != null  and email != ''"> and email = #{email}</if>
             <if test="socialPlatform != null  and socialPlatform != ''"> and social_platform = #{socialPlatform}</if>
@@ -53,16 +53,16 @@
         </where>
     </select>
 
-    <select id="selectDetailsContactById" parameterType="Long" resultMap="DetailsContactResult">
-        <include refid="selectDetailsContactVo"/>
+    <select id="selectCustomerContactById" parameterType="Long" resultMap="CustomerContactResult">
+        <include refid="selectCustomerContactVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertDetailsContact" parameterType="DetailsContact">
-        insert into customer_details_contact
+    <insert id="insertCustomerContact" parameterType="CustomerContact">
+        insert into customer_customer_contact
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
-            <if test="customerDetailsId != null">customer_details_id,</if>
+            <if test="customerId != null">customer_id,</if>
             <if test="nickName != null">nick_name,</if>
             <if test="email != null">email,</if>
             <if test="socialPlatform != null">social_platform,</if>
@@ -85,7 +85,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
-            <if test="customerDetailsId != null">#{customerDetailsId},</if>
+            <if test="customerId != null">#{customerId},</if>
             <if test="nickName != null">#{nickName},</if>
             <if test="email != null">#{email},</if>
             <if test="socialPlatform != null">#{socialPlatform},</if>
@@ -108,19 +108,19 @@
         </trim>
     </insert>
 
-    <insert id="batchInsertDetailsContact" parameterType="java.util.List">
-        insert into customer_details_contact
-        (id, customer_details_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+    <insert id="batchInsertCustomerContact">
+        insert into customer_customer_contact
+        (id, customer_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
         values
         <foreach collection="detailsContactList" item="item" separator=",">
-            (#{item.id}, #{item.customerDetailsId}, #{item.nickName}, #{item.email}, #{item.socialPlatform}, #{item.phone}, #{item.rank}, #{item.position}, #{item.birthday}, #{item.sex}, #{item.avatarOrBusinessCard}, #{item.contactRemarks}, #{item.primaryContactFlag}, #{item.orderIndex}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+            (#{item.id}, #{item.customerId}, #{item.nickName}, #{item.email}, #{item.socialPlatform}, #{item.phone}, #{item.rank}, #{item.position}, #{item.birthday}, #{item.sex}, #{item.avatarOrBusinessCard}, #{item.contactRemarks}, #{item.primaryContactFlag}, #{item.orderIndex}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
         </foreach>
     </insert>
 
-    <update id="updateDetailsContact" parameterType="DetailsContact">
-        update customer_details_contact
+    <update id="updateCustomerContact" parameterType="CustomerContact">
+        update customer_customer_contact
         <trim prefix="SET" suffixOverrides=",">
-            <if test="customerDetailsId != null">customer_details_id = #{customerDetailsId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
             <if test="nickName != null">nick_name = #{nickName},</if>
             <if test="email != null">email = #{email},</if>
             <if test="socialPlatform != null">social_platform = #{socialPlatform},</if>
@@ -144,18 +144,18 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteDetailsContactById" parameterType="Long">
-        delete from customer_details_contact where id = #{id}
+    <delete id="deleteCustomerContactById" parameterType="Long">
+        delete from customer_customer_contact where id = #{id}
     </delete>
 
-    <delete id="deleteDetailsContactByIds" parameterType="String">
-        delete from customer_details_contact where id in
+    <delete id="deleteCustomerContactByIds" parameterType="String">
+        delete from customer_customer_contact where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
 
-    <update id="deleteDetailsContactByCustomerDetailsId">
-        update customer_details_contact set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where customer_details_id = #{customerDetailsId}
+    <update id="deleteCustomerContactByCustomerId">
+        update customer_customer_contact set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where customer_id = #{customerId}
     </update>
 </mapper>

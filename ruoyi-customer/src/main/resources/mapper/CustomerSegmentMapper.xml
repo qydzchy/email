@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerSegmentMapper">
+
+    <resultMap type="CustomerSegment" id="CustomerSegmentResult">
+        <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="segmentId"    column="segment_id"    />
+    </resultMap>
+
+    <sql id="selectCustomerSegmentVo">
+        select id, customer_id, segment_id from customer_customer_segment
+    </sql>
+
+    <select id="selectCustomerSegmentList" parameterType="CustomerSegment" resultMap="CustomerSegmentResult">
+        <include refid="selectCustomerSegmentVo"/>
+        <where>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="segmentId != null "> and segment_id = #{segmentId}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerSegmentById" parameterType="Long" resultMap="CustomerSegmentResult">
+        <include refid="selectCustomerSegmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCustomerSegment" parameterType="CustomerSegment" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer_segment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="segmentId != null">segment_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="segmentId != null">#{segmentId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomerSegment" parameterType="CustomerSegment">
+        update customer_customer_segment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="segmentId != null">segment_id = #{segmentId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerSegmentById" parameterType="Long">
+        delete from customer_customer_segment where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerSegmentByIds" parameterType="String">
+        delete from customer_customer_segment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

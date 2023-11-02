@@ -2,16 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.customer.mapper.DetailsMapper">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerMapper">
 
-    <resultMap type="Details" id="DetailsResult">
+    <resultMap type="Customer" id="CustomerResult">
         <result property="id"    column="id"    />
         <result property="companyWebsite"    column="company_website"    />
         <result property="companyName"    column="company_name"    />
         <result property="shortName"    column="short_name"    />
         <result property="countryRegion"    column="country_region"    />
-        <result property="sourceIds"    column="source_ids"    />
-        <result property="tagIds"    column="tag_ids"    />
         <result property="seaType"    column="sea_type"    />
         <result property="packetId"    column="packet_id"    />
         <result property="stageId"    column="stage_id"    />
@@ -38,19 +36,17 @@
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectDetailsVo">
-        select id, company_website, company_name, short_name, country_region, source_ids, tag_ids, sea_type, packet_id, stage_id, rating, customer_no_type, customer_no, phone_prefix, phone, timezone, scale, fax, address, company_remarks, company_logo, focus_flag, last_contacted_at, last_followup_at, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_details
+    <sql id="selectCustomerVo">
+        select id, company_website, company_name, short_name, country_region, sea_type, packet_id, stage_id, rating, customer_no_type, customer_no, phone_prefix, phone, timezone, scale, fax, address, company_remarks, company_logo, focus_flag, last_contacted_at, last_followup_at, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer
     </sql>
 
-    <select id="selectDetailsList" parameterType="Details" resultMap="DetailsResult">
-        <include refid="selectDetailsVo"/>
+    <select id="selectCustomerList" parameterType="Customer" resultMap="CustomerResult">
+        <include refid="selectCustomerVo"/>
         <where>
             <if test="companyWebsite != null  and companyWebsite != ''"> and company_website = #{companyWebsite}</if>
             <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
             <if test="shortName != null  and shortName != ''"> and short_name like concat('%', #{shortName}, '%')</if>
             <if test="countryRegion != null  and countryRegion != ''"> and country_region = #{countryRegion}</if>
-            <if test="sourceIds != null  and sourceIds != ''"> and source_ids = #{sourceIds}</if>
-            <if test="tagIds != null  and tagIds != ''"> and tag_ids = #{tagIds}</if>
             <if test="seaType != null "> and sea_type = #{seaType}</if>
             <if test="packetId != null "> and packet_id = #{packetId}</if>
             <if test="stageId != null "> and stage_id = #{stageId}</if>
@@ -73,39 +69,46 @@
         </where>
     </select>
 
-    <select id="selectDetailsById" parameterType="Long" resultMap="DetailsResult">
-        <include refid="selectDetailsVo"/>
+    <select id="selectCustomerById" parameterType="Long" resultMap="CustomerResult">
+        <include refid="selectCustomerVo"/>
         where id = #{id}
     </select>
+
     <select id="count" resultType="java.lang.Integer">
-        select count(*) from customer_details where sea_type = #{seaType}
+        select count(*) from customer_customer where sea_type = #{seaType} and del_flag = '0'
     </select>
 
-    <select id="selectCustomerDetailsPage" resultType="com.ruoyi.customer.domain.vo.CustomerSimpleListVO">
+    <select id="selectCustomerPage" resultType="com.ruoyi.customer.domain.vo.CustomerSimpleListVO">
         SELECT
             details.id,
             details.company_name as companyName,
             details.packet_id as packetId,
-            packet.name as packetName
+            packet.name as packetName,
+            stage.id as stageId,
+            stage.name as stageName,
+            (select nick_name from customer_details_contact where customer_details_id = details.id and del_flag = '0' and primary_contact_flag = 1 limit 1) as primaryContact,
+            details.last_contacted_at as lastContactedAt,
+            details.country_region as countryRegion,
+            details.create_time as createTime
         FROM
             customer_details details
-                LEFT JOIN
-            customer_packet packet
-            ON
-        details.packet_id = packet.id
-        AND details.del_flag = #{delFlag}
+            LEFT JOIN customer_packet packet ON details.packet_id = packet.id AND packet.del_flag = '0'
+            LEFT JOIN customer_stage stage ON details.stage_id = stage.id AND stage.del_flag = '0'
+            LEFT JOIN customer_details_contact contact ON details.id = contact.customer_details_id AND contact.del_flag = '0'
+        WHERE
+            details.sea_type = #{seaType}
+          AND details.del_flag = #{delFlag}
         ORDER BY details.create_time DESC
-        LIMIT #{offset}, #{limit}
+            LIMIT #{offset}, #{limit}
     </select>
-    <insert id="insertDetails" parameterType="Details" useGeneratedKeys="true" keyProperty="id">
-        insert into customer_details
+
+    <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="companyWebsite != null">company_website,</if>
             <if test="companyName != null and companyName != ''">company_name,</if>
             <if test="shortName != null">short_name,</if>
             <if test="countryRegion != null">country_region,</if>
-            <if test="sourceIds != null">source_ids,</if>
-            <if test="tagIds != null">tag_ids,</if>
             <if test="seaType != null">sea_type,</if>
             <if test="packetId != null">packet_id,</if>
             <if test="stageId != null">stage_id,</if>
@@ -136,8 +139,6 @@
             <if test="companyName != null and companyName != ''">#{companyName},</if>
             <if test="shortName != null">#{shortName},</if>
             <if test="countryRegion != null">#{countryRegion},</if>
-            <if test="sourceIds != null">#{sourceIds},</if>
-            <if test="tagIds != null">#{tagIds},</if>
             <if test="seaType != null">#{seaType},</if>
             <if test="packetId != null">#{packetId},</if>
             <if test="stageId != null">#{stageId},</if>
@@ -165,15 +166,13 @@
         </trim>
     </insert>
 
-    <update id="updateDetails" parameterType="Details">
-        update customer_details
+    <update id="updateCustomer" parameterType="Customer">
+        update customer_customer
         <trim prefix="SET" suffixOverrides=",">
             <if test="companyWebsite != null">company_website = #{companyWebsite},</if>
             <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
             <if test="shortName != null">short_name = #{shortName},</if>
             <if test="countryRegion != null">country_region = #{countryRegion},</if>
-            <if test="sourceIds != null">source_ids = #{sourceIds},</if>
-            <if test="tagIds != null">tag_ids = #{tagIds},</if>
             <if test="seaType != null">sea_type = #{seaType},</if>
             <if test="packetId != null">packet_id = #{packetId},</if>
             <if test="stageId != null">stage_id = #{stageId},</if>
@@ -202,12 +201,12 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteDetailsById" parameterType="Long">
-        delete from customer_details where id = #{id}
+    <delete id="deleteCustomerById" parameterType="Long">
+        delete from customer_customer where id = #{id}
     </delete>
 
-    <delete id="deleteDetailsByIds" parameterType="String">
-        delete from customer_details where id in
+    <delete id="deleteCustomerByIds" parameterType="String">
+        delete from customer_customer where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

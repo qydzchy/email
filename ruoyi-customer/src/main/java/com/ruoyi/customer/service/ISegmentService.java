@@ -2,6 +2,8 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Segment;
+import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
+import com.ruoyi.customer.domain.vo.SegmentListVO;
 
 /**
  * 客群Service接口
@@ -30,18 +32,18 @@ public interface ISegmentService
     /**
      * 新增客群
      * 
-     * @param segment 客群
+     * @param segmentAddOrUpdateDTO 客群
      * @return 结果
      */
-    public int insertSegment(Segment segment);
+    public boolean insertSegment(SegmentAddOrUpdateDTO segmentAddOrUpdateDTO);
 
     /**
      * 修改客群
      * 
-     * @param segment 客群
+     * @param segmentAddOrUpdateDTO 客群
      * @return 结果
      */
-    public int updateSegment(Segment segment);
+    public boolean updateSegment(SegmentAddOrUpdateDTO segmentAddOrUpdateDTO);
 
     /**
      * 批量删除客群
@@ -58,4 +60,11 @@ public interface ISegmentService
      * @return 结果
      */
     public int deleteSegmentById(Long id);
+
+    /**
+     * 查询客群树列表
+     * @param usageScope
+     * @return
+     */
+    List<SegmentListVO> getSegmentTree(Integer usageScope);
 }

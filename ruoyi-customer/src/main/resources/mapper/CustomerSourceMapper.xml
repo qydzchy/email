@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerSourceMapper">
+
+    <resultMap type="CustomerSource" id="CustomerSourceResult">
+        <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="sourceId"    column="source_id"    />
+    </resultMap>
+
+    <sql id="selectCustomerSourceVo">
+        select id, customer_id, source_id from customer_customer_source
+    </sql>
+
+    <select id="selectCustomerSourceList" parameterType="CustomerSource" resultMap="CustomerSourceResult">
+        <include refid="selectCustomerSourceVo"/>
+        <where>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="sourceId != null "> and source_id = #{sourceId}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerSourceById" parameterType="Long" resultMap="CustomerSourceResult">
+        <include refid="selectCustomerSourceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCustomerSource" parameterType="CustomerSource" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer_source
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="sourceId != null">source_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="sourceId != null">#{sourceId},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertCustomerSource">
+        insert into customer_customer_source (customer_id, source_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.customerId}, #{item.sourceId})
+        </foreach>
+    </insert>
+
+    <update id="updateCustomerSource" parameterType="CustomerSource">
+        update customer_customer_source
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerSourceById" parameterType="Long">
+        delete from customer_customer_source where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerSourceByIds" parameterType="String">
+        delete from customer_customer_source where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteCustomerSourceByCustomerId">
+        delete from customer_customer_source where customer_id = #{customerId}
+    </delete>
+</mapper>

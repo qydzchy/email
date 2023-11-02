@@ -6,6 +6,7 @@
 
     <resultMap type="Segment" id="SegmentResult">
         <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
         <result property="name"    column="name"    />
         <result property="usageScope"    column="usage_scope"    />
         <result property="visibilityScopeType"    column="visibility_scope_type"    />
@@ -14,7 +15,6 @@
         <result property="conditionRuleContent"    column="condition_rule_content"    />
         <result property="subgroupFlag"    column="subgroup_flag"    />
         <result property="additionRule"    column="addition_rule"    />
-        <result property="subgroupSegmentContent"    column="subgroup_segment_content"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -25,12 +25,13 @@
     </resultMap>
 
     <sql id="selectSegmentVo">
-        select id, name, usage_scope, visibility_scope_type, visibility_scope_content, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, subgroup_segment_content, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
+        select id, parent_id, name, usage_scope, visibility_scope_type, visibility_scope_content, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
     </sql>
 
     <select id="selectSegmentList" parameterType="Segment" resultMap="SegmentResult">
         <include refid="selectSegmentVo"/>
         <where>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="usageScope != null "> and usage_scope = #{usageScope}</if>
             <if test="visibilityScopeType != null "> and visibility_scope_type = #{visibilityScopeType}</if>
@@ -39,7 +40,6 @@
             <if test="conditionRuleContent != null  and conditionRuleContent != ''"> and condition_rule_content = #{conditionRuleContent}</if>
             <if test="subgroupFlag != null "> and subgroup_flag = #{subgroupFlag}</if>
             <if test="additionRule != null "> and addition_rule = #{additionRule}</if>
-            <if test="subgroupSegmentContent != null  and subgroupSegmentContent != ''"> and subgroup_segment_content = #{subgroupSegmentContent}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
@@ -50,9 +50,17 @@
         where id = #{id}
     </select>
 
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.SegmentListVO">
+        select id, parent_id as parentId, name, usage_scope as usageScope, visibility_scope_type as visibilityScopeType, visibility_scope_content as visibilityScopeContent, condition_rule_type as conditionRuleType,
+               visibility_scope_content as visibilityScopeContent, condition_rule_type as conditionRuleType, condition_rule_content as conditionRuleContent, subgroup_flag as subgroupFlag,
+               addition_rule as additionRule from customer_segment where del_flag = '0'
+        <if test="usageScope != null"> and usage_scope = #{usageScope}</if>
+    </select>
+
     <insert id="insertSegment" parameterType="Segment" useGeneratedKeys="true" keyProperty="id">
         insert into customer_segment
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
             <if test="name != null and name != ''">name,</if>
             <if test="usageScope != null">usage_scope,</if>
             <if test="visibilityScopeType != null">visibility_scope_type,</if>
@@ -61,7 +69,6 @@
             <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content,</if>
             <if test="subgroupFlag != null">subgroup_flag,</if>
             <if test="additionRule != null">addition_rule,</if>
-            <if test="subgroupSegmentContent != null">subgroup_segment_content,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -71,6 +78,7 @@
             <if test="updateTime != null">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
             <if test="name != null and name != ''">#{name},</if>
             <if test="usageScope != null">#{usageScope},</if>
             <if test="visibilityScopeType != null">#{visibilityScopeType},</if>
@@ -79,7 +87,6 @@
             <if test="conditionRuleContent != null and conditionRuleContent != ''">#{conditionRuleContent},</if>
             <if test="subgroupFlag != null">#{subgroupFlag},</if>
             <if test="additionRule != null">#{additionRule},</if>
-            <if test="subgroupSegmentContent != null">#{subgroupSegmentContent},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -90,9 +97,18 @@
         </trim>
     </insert>
 
+    <insert id="batchInsertSegment">
+        insert into customer_segment(parent_id, name, usage_scope, visibility_scope_type, visibility_scope_content, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        values
+        <foreach collection="segmentList" item="item" index="index" separator=",">
+            (#{item.parentId}, #{item.name}, #{item.usageScope}, #{item.visibilityScopeType}, #{item.visibilityScopeContent}, #{item.conditionRuleType}, #{item.conditionRuleContent}, #{item.subgroupFlag}, #{item.additionRule}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
     <update id="updateSegment" parameterType="Segment">
         update customer_segment
         <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="usageScope != null">usage_scope = #{usageScope},</if>
             <if test="visibilityScopeType != null">visibility_scope_type = #{visibilityScopeType},</if>
@@ -101,7 +117,6 @@
             <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content = #{conditionRuleContent},</if>
             <if test="subgroupFlag != null">subgroup_flag = #{subgroupFlag},</if>
             <if test="additionRule != null">addition_rule = #{additionRule},</if>
-            <if test="subgroupSegmentContent != null">subgroup_segment_content = #{subgroupSegmentContent},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -113,9 +128,9 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteSegmentById" parameterType="Long">
-        delete from customer_segment where id = #{id}
-    </delete>
+    <update id="deleteSegmentById">
+        update customer_segment set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
 
     <delete id="deleteSegmentByIds" parameterType="String">
         delete from customer_segment where id in
@@ -123,4 +138,8 @@
             #{id}
         </foreach>
     </delete>
+
+    <update id="deleteSegmentByParentId">
+        update customer_segment set del_flag = '2' where parent_id = #{parentId} and del_flag = '0'
+    </update>
 </mapper>

@@ -8,12 +8,12 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 客户详情对象 customer_details
+ * 客户详情对象 customer_customer
  * 
  * @author tangJM.
- * @date 2023-10-31
+ * @date 2023-11-02
  */
-public class Details extends BaseEntity
+public class Customer extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -35,14 +35,6 @@ public class Details extends BaseEntity
     /** 国家地区 */
     @Excel(name = "国家地区")
     private String countryRegion;
-
-    /** 客户来源ID（多个以逗号分隔拼接) */
-    @Excel(name = "客户来源ID", readConverterExp = "客户来源ID（多个以逗号分隔拼接)")
-    private String sourceIds;
-
-    /** 客户标签ID（多个以逗号分隔拼接） */
-    @Excel(name = "客户标签ID", readConverterExp = "多=个以逗号分隔拼接")
-    private String tagIds;
 
     /** 私海/公海类型 1.私海 2.公海 */
     @Excel(name = "私海/公海类型 1.私海 2.公海")
@@ -170,24 +162,6 @@ public class Details extends BaseEntity
     {
         return countryRegion;
     }
-    public void setSourceIds(String sourceIds) 
-    {
-        this.sourceIds = sourceIds;
-    }
-
-    public String getSourceIds() 
-    {
-        return sourceIds;
-    }
-    public void setTagIds(String tagIds) 
-    {
-        this.tagIds = tagIds;
-    }
-
-    public String getTagIds() 
-    {
-        return tagIds;
-    }
     public void setSeaType(Integer seaType) 
     {
         this.seaType = seaType;
@@ -224,16 +198,16 @@ public class Details extends BaseEntity
     {
         return rating;
     }
-
-    public Integer getCustomerNoType() {
-        return customerNoType;
-    }
-
-    public void setCustomerNoType(Integer customerNoType) {
+    public void setCustomerNoType(Integer customerNoType) 
+    {
         this.customerNoType = customerNoType;
     }
 
-    public void setCustomerNo(String customerNo)
+    public Integer getCustomerNoType() 
+    {
+        return customerNoType;
+    }
+    public void setCustomerNo(String customerNo) 
     {
         this.customerNo = customerNo;
     }
@@ -377,8 +351,6 @@ public class Details extends BaseEntity
             .append("companyName", getCompanyName())
             .append("shortName", getShortName())
             .append("countryRegion", getCountryRegion())
-            .append("sourceIds", getSourceIds())
-            .append("tagIds", getTagIds())
             .append("seaType", getSeaType())
             .append("packetId", getPacketId())
             .append("stageId", getStageId())

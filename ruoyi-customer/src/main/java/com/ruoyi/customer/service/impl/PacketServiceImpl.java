@@ -7,7 +7,6 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.PacketListVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PacketMapper;
 import com.ruoyi.customer.domain.Packet;

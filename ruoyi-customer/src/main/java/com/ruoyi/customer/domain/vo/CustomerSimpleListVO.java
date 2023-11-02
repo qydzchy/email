@@ -25,14 +25,24 @@ public class CustomerSimpleListVO {
     private List<TagListVO> tagList;
 
     /**
-     * 客户分组
+     * 客户分组ID
      */
-    private List<PacketListVO> packetList;
+    private Long packetId;
 
     /**
-     * 客户阶段
+     * 客户分组名称
      */
-    private List<StageListVO> stageList;
+    private String packetName;
+
+    /**
+     * 客户阶段ID
+     */
+    private Long stageId;
+
+    /**
+     * 客户阶段名称
+     */
+    private String stageName;
 
     /**
      * 主要联系人

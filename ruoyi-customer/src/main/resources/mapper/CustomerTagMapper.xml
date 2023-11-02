@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerTagMapper">
+
+    <resultMap type="CustomerTag" id="CustomerTagResult">
+        <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="tagId"    column="tag_id"    />
+    </resultMap>
+
+    <sql id="selectCustomerTagVo">
+        select id, customer_id, tag_id from customer_customer_tag
+    </sql>
+
+    <select id="selectCustomerTagList" parameterType="CustomerTag" resultMap="CustomerTagResult">
+        <include refid="selectCustomerTagVo"/>
+        <where>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="tagId != null "> and tag_id = #{tagId}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerTagById" parameterType="Long" resultMap="CustomerTagResult">
+        <include refid="selectCustomerTagVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCustomerTag" parameterType="CustomerTag" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer_tag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="tagId != null">tag_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="tagId != null">#{tagId},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertCustomerTag">
+        insert into customer_customer_tag (customer_id, tag_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.customerId}, #{item.tagId})
+        </foreach>
+    </insert>
+
+    <update id="updateCustomerTag" parameterType="CustomerTag">
+        update customer_customer_tag
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="tagId != null">tag_id = #{tagId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerTagById" parameterType="Long">
+        delete from customer_customer_tag where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerTagByIds" parameterType="String">
+        delete from customer_customer_tag where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteCustomerTagByCustomerId">
+        delete from customer_customer_tag where customer_id = #{customerId}
+    </delete>
+</mapper>
