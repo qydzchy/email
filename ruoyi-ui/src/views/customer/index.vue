@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="right-wrap pt-16 px-32">
+      <div class="right-wrap pt-16">
         <keep-alive>
           <RouterView/>
         </keep-alive>

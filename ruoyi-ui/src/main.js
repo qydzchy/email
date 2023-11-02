@@ -13,13 +13,13 @@ import store from './store'
 import router from './router'
 import directive from './directive' // directive
 import plugins from './plugins' // plugins
-import { download } from '@/utils/request'
+import {download} from '@/utils/request'
 
 import './assets/icons' // icon
 import './permission' // permission control
-import { getDicts } from "@/api/system/dict/data";
-import { getConfigKey } from "@/api/system/config";
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
+import {getDicts} from "@/api/system/dict/data";
+import {getConfigKey} from "@/api/system/config";
+import {parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree} from "@/utils/ruoyi";
 // 分页组件
 import Pagination from "@/components/Pagination";
 // 自定义表格工具组件
@@ -42,6 +42,8 @@ import DictData from '@/components/DictData'
 import formCreate from '@form-create/element-ui'
 // 图片上传组件
 import UploadPicture from '@/components/UploadPicture'
+// 拖拽状态栏
+import splitPane from 'vue-splitpane'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -64,6 +66,7 @@ Vue.component('ImageUpload', ImageUpload)
 Vue.component('ImagePreview', ImagePreview)
 
 Vue.component('upload-picture', UploadPicture)
+Vue.component('split-pane', splitPane);
 
 Vue.use(directive)
 Vue.use(plugins)
@@ -71,6 +74,7 @@ Vue.use(VueMeta)
 DictData.install()
 // form-create
 Vue.use(formCreate)
+
 
 /**
  * If you don't want to use mock-server
