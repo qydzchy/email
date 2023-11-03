@@ -7,7 +7,7 @@
           <el-radio-button :label="0">我的客户</el-radio-button>
           <el-radio-button :label="1">团队客户</el-radio-button>
         </el-radio-group>
-<!--        <el-select class="ml-6"></el-select>-->
+        <!--        <el-select class="ml-6"></el-select>-->
       </div>
       <div>
         <el-button type="primary" round>新建客户</el-button>
@@ -100,8 +100,12 @@
               </div>
             </div>
             <div class="mt-20">
-              <TableNext :list="list" :columns="columns" :extra-option="{height:'66vh'}"
-                         :paginate-option="paginateOption"/>
+              <TableNext
+                :list="list"
+                :columns="columns"
+                :extra-option="{height:'66vh'}"
+                :extra-event="extraEvent"
+                :paginate-option="paginateOption"/>
             </div>
 
           </div>
@@ -151,53 +155,93 @@ export default {
           label: '公司名称',
           field: 'companyName',
           fixed: 'left',
-          render: (_row, field) => EmptyStr(field),
+          align: 'left',
+          width: '200',
+          sortable: true,
+          render: (_row, field, scope) => {
+            return <div class="flex-middle space-between">
+              <el-row>
+                <span title={field}>{field}</span>
+              </el-row>
+              <el-row
+                class="pl-10 operate gap-8"
+                style={{display: this.showEditIcon && this.rowId === scope.column.id ? 'flex' : 'none'}}
+              >
+                <i class="el-icon-edit pointer"></i>
+                <i class="el-icon-document-copy pointer"></i>
+              </el-row>
+
+            </div>
+          }
         },
         {
           label: '最近跟进',
           field: 'nearly',
+          align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
+          render: (_row, field, scope) => {
+            return <div class="flex-middle space-between">
+              <el-row>
+                <span title={field}>{field}</span>
+              </el-row>
+              <el-row
+                class="pl-10 operate gap-8"
+                style={{display: this.showEditIcon && this.rowId === scope.column.id ? 'flex' : 'none'}}
+              >
+                <i class="el-icon-edit pointer"></i>
+                <i class="el-icon-document-copy pointer"></i>
+              </el-row>
+
+            </div>
+          },
         }, {
           label: '最近动态',
           field: 'companyName',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '原跟进人',
           field: 'contactName',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '国家地区',
           field: 'email',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '客户类型',
           field: 'phone',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '客户评分',
           field: 'telOrigin',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近联系时间',
           field: 'area',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '时区',
           field: 'followMan',
+          align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '社交平台',
           field: 'department',
+          align: 'left',
           render: (_row, field) => EmptyStr(field),
         },
         {
@@ -221,17 +265,22 @@ export default {
           }
         }
       ],
+      extraEvent: {
+        'cell-mouse-enter': (row, column) => this.onCellMouseEvent(row, column),
+        'cell-mouse-leave': (row) => this.onCellMouseLeave(row)
+      },
       paginateOption: {
         total: 0,
         layout: 'total, sizes, prev, pager, next',
         pageSize: 20,
         pageSizes: [10, 20, 50, 100]
       },
+      showEditIcon: false,
+      rowId: '',
       menuOptions: [],
       searchQuery: {
         group: '',
         parentId: null,
-
       }
     }
   },
@@ -265,17 +314,23 @@ export default {
     },
     onLeftCollapsed() {
       this.collapsed = false
-      console.log(this.percent)
       this.$refs.splitPane.percent = this.percent
     },
     resize(value) {
-      console.log(value)
       if (value > 50) {
         this.$refs.splitPane.percent = 50
         this.percent = 50
         return
       }
       this.percent = value
+    },
+    onCellMouseEvent(_row, column) {
+      this.showEditIcon = true
+      this.rowId = column.id
+    },
+    onCellMouseLeave(_value) {
+      this.showEditIcon = false
+      this.rowId = ''
     },
     handleChange(val) {
       console.log(val);

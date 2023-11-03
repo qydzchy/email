@@ -20,7 +20,8 @@
             v-model="fApi"
             :rule="rule"
             :option="option"/>
-          <formCreate v-show="filterType==='senior'" v-model="fApi2" :rule="rule2" :option="option2"/>
+          <formCreate v-loading="formLoading" v-show="filterType==='senior'" v-model="fApi2" :rule="rule2"
+                      :option="option2"/>
         </div>
         <!--   operate     -->
         <div class="drawer-operate">
@@ -32,7 +33,6 @@
               <el-button type="primary" round>确认</el-button>
             </el-row>
           </div>
-
         </div>
       </div>
     </el-drawer>
@@ -60,6 +60,7 @@ export default {
           width: '100%'
         }
       },
+      formLoading: false,
       fApi2: {},
       rule2: [],
       option2: {}
@@ -69,11 +70,15 @@ export default {
     onClick() {
       console.log('click')
     },
-    handleFilter(value){
-      if(value==='ordinary'){
-        this.fApi.resetFields()
-      }else if(value==='senior'){
+    handleFilter(value) {
+      if (value === 'ordinary') {
         this.fApi2.resetFields()
+      } else if (value === 'senior') {
+        // this.formLoading = true
+        setTimeout(() => {
+          // this.formLoading = false
+        }, 2000)
+        this.fApi.resetFields()
       }
     },
     handleClose() {

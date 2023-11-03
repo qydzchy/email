@@ -256,6 +256,11 @@ const ordinaryRuleForm = [
   }
 ]
 
+
+const seniorRuleForm = [
+
+]
 export {
-  ordinaryRuleForm
+  ordinaryRuleForm,
+  seniorRuleForm
 }
