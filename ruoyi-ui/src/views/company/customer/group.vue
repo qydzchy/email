@@ -31,14 +31,17 @@
       <el-table-column prop="name" label="客户分组" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作" width="200" align="center" fixed="right">
         <template v-slot="scope">
-          <el-button size="mini" type="text" @click="addGroupTable(scope.row)" v-if="scope.row.level!==3">
-            添加子级分组
-          </el-button>
-          <el-button size="mini" type="text" @click="editGroupTable(scope.row)">
-            编辑
-          </el-button>
-          <DelPopover :id="scope.row.id" width="200" :content="`确定要删除分组【${scope.row.name}】吗？`"
-                      @onDelete="onDelete"/>
+          <el-row>
+            <el-button size="mini" type="text" @click="addGroupTable(scope.row)" v-if="scope.row.level!==3">
+              添加子级分组
+            </el-button>
+            <el-button v-else style="visibility: hidden" size="mini" type="text">添加子级分组</el-button>
+            <el-button size="mini" type="text" @click="editGroupTable(scope.row)">
+              编辑
+            </el-button>
+            <DelPopover :id="scope.row.id" width="200" :content="`确定要删除分组【${scope.row.name}】吗？`"
+                        @onDelete="onDelete"/>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
