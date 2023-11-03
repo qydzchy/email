@@ -20,6 +20,11 @@ public class CustomerSchedule extends BaseEntity
     /** 主键 */
     private Long id;
 
+    /**
+     * 客户ID
+     */
+    private Long customerId;
+
     /** 日程内容 */
     @Excel(name = "日程内容")
     private String scheduleContent;
@@ -69,6 +74,16 @@ reminderTimeType：提醒时间类型 1.不提醒 2.当天开始(上午9:00) 3.1
 reminderTimeValue：提醒时间 */
     @Excel(name = "提醒时间")
     private String reminderTime;
+
+    /**
+     * 重点关注 false否 true是
+     */
+    private Boolean focusFlag;
+
+    /**
+     * 备注
+     */
+    private String remark;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -215,6 +230,32 @@ reminderTimeValue：提醒时间 */
     public Long getUpdateId() 
     {
         return updateId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Boolean getFocusFlag() {
+        return focusFlag;
+    }
+
+    public void setFocusFlag(Boolean focusFlag) {
+        this.focusFlag = focusFlag;
+    }
+
+    @Override
+    public String getRemark() {
+        return remark;
+    }
+
+    @Override
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     @Override

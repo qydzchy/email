@@ -6,6 +6,7 @@
 
     <resultMap type="CustomerSchedule" id="CustomerScheduleResult">
         <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
         <result property="scheduleContent"    column="schedule_content"    />
         <result property="color"    column="color"    />
         <result property="allDayFlag"    column="all_day_flag"    />
@@ -17,6 +18,7 @@
         <result property="customCycleType"    column="custom_cycle_type"    />
         <result property="cycleEndTime"    column="cycle_end_time"    />
         <result property="reminderTime"    column="reminder_time"    />
+        <result property="focusFlag"    column="focus_flag"    />
         <result property="remark"    column="remark"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
@@ -28,12 +30,13 @@
     </resultMap>
 
     <sql id="selectCustomerScheduleVo">
-        select id, schedule_content, color, all_day_flag, schedule_start_time, schedule_end_time, completed_flag, recurringSchedule, custom_cycle_value, custom_cycle_type, cycle_end_time, reminder_time, remark, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_schedule
+        select id, customer_id, schedule_content, color, all_day_flag, schedule_start_time, schedule_end_time, completed_flag, recurringSchedule, custom_cycle_value, custom_cycle_type, cycle_end_time, reminder_time, focus_flag, remark, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_schedule
     </sql>
 
     <select id="selectCustomerScheduleList" parameterType="CustomerSchedule" resultMap="CustomerScheduleResult">
         <include refid="selectCustomerScheduleVo"/>
         <where>
+            <if test="customerId != null"> and customer_id = #{customerId}</if>
             <if test="scheduleContent != null  and scheduleContent != ''"> and schedule_content = #{scheduleContent}</if>
             <if test="color != null  and color != ''"> and color = #{color}</if>
             <if test="allDayFlag != null "> and all_day_flag = #{allDayFlag}</if>
@@ -45,6 +48,7 @@
             <if test="customCycleType != null "> and custom_cycle_type = #{customCycleType}</if>
             <if test="cycleEndTime != null "> and cycle_end_time = #{cycleEndTime}</if>
             <if test="reminderTime != null  and reminderTime != ''"> and reminder_time = #{reminderTime}</if>
+            <if test="focusFlag != null"> and focus_flag = #{focusFlag}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
@@ -55,9 +59,29 @@
         where id = #{id}
     </select>
 
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from customer_customer_schedule cs
+        left join customer_customer_schedule_participants csp on cs.id = csp.schedule_id and csp.del_flag = '0'
+        where cs.del_flag = '0' and cs.customer_id = #{customerId}
+        <if test="startTime != null and endTime != null">
+             and ((cs.schedule_start_time between startTime and endTime) or (cs.schedule_end_time between startTime and endTime))
+        </if>
+        <if test="userIds != null">
+            and csp.userId in
+            <foreach item="userId" collection="userIds" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.CustomerScheduleListVO">
+
+    </select>
+
     <insert id="insertCustomerSchedule" parameterType="CustomerSchedule" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_schedule
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
             <if test="scheduleContent != null and scheduleContent != ''">schedule_content,</if>
             <if test="color != null">color,</if>
             <if test="allDayFlag != null">all_day_flag,</if>
@@ -69,6 +93,7 @@
             <if test="customCycleType != null">custom_cycle_type,</if>
             <if test="cycleEndTime != null">cycle_end_time,</if>
             <if test="reminderTime != null">reminder_time,</if>
+            <if test="focusFlag != null">focus_flag,</if>
             <if test="remark != null">remark,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
@@ -79,6 +104,7 @@
             <if test="updateTime != null">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
             <if test="scheduleContent != null and scheduleContent != ''">#{scheduleContent},</if>
             <if test="color != null">#{color},</if>
             <if test="allDayFlag != null">#{allDayFlag},</if>
@@ -90,6 +116,7 @@
             <if test="customCycleType != null">#{customCycleType},</if>
             <if test="cycleEndTime != null">#{cycleEndTime},</if>
             <if test="reminderTime != null">#{reminderTime},</if>
+            <if test="focusFlag != null">#{focusFlag},</if>
             <if test="remark != null">#{remark},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
@@ -104,6 +131,7 @@
     <update id="updateCustomerSchedule" parameterType="CustomerSchedule">
         update customer_customer_schedule
         <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
             <if test="scheduleContent != null and scheduleContent != ''">schedule_content = #{scheduleContent},</if>
             <if test="color != null">color = #{color},</if>
             <if test="allDayFlag != null">all_day_flag = #{allDayFlag},</if>
@@ -115,6 +143,7 @@
             <if test="customCycleType != null">custom_cycle_type = #{customCycleType},</if>
             <if test="cycleEndTime != null">cycle_end_time = #{cycleEndTime},</if>
             <if test="reminderTime != null">reminder_time = #{reminderTime},</if>
+            <if test="focusFlag != null">focus_flag = #{focusFlag},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>

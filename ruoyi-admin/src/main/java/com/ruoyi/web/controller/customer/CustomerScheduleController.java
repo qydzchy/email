@@ -1,15 +1,14 @@
 package com.ruoyi.web.controller.customer;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.dto.CustomerScheduleAddOrUpdateDTO;
-import com.ruoyi.customer.domain.dto.CustomerScheduleListDTO;
-import com.ruoyi.customer.domain.vo.PacketListVO;
-import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.customer.domain.vo.CustomerScheduleListVO;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,6 @@ import com.ruoyi.customer.domain.CustomerSchedule;
 import com.ruoyi.customer.service.ICustomerScheduleService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 客户日程Controller
@@ -39,19 +37,24 @@ public class CustomerScheduleController extends BaseController
 
     @PreAuthorize("@ss.hasPermi('customer:customer:schedule:list')")
     @GetMapping("/list")
-    public TableDataInfo list(CustomerScheduleListDTO customerScheduleListDTO)
+    public TableDataInfo list(
+            String startTime,
+            String endTime,
+            List<Long> userIds,
+            @NotNull(message = "页数不能为空") Integer pageNum,
+            @NotNull(message = "页大小不能为空") Integer pageSize
+    )
     {
-       /* Pair<Integer, List<CustomerScheduleListVO>> pair = customerContactService.selectCustomerContactList(customerContact);
-        List<CustomerScheduleListDTO> CustomerScheduleList = pair.getSecond();
+        Pair<Integer, List<CustomerScheduleListVO>> pair = customerScheduleService.list(startTime, endTime, userIds, pageNum, pageSize);
+        List<CustomerScheduleListVO> customerScheduleVOList = pair.getSecond();
         long total = pair.getFirst();
 
         TableDataInfo rspData = new TableDataInfo();
         rspData.setCode(HttpStatus.SUCCESS);
         rspData.setMsg("查询成功");
-        rspData.setRows(rows);
+        rspData.setRows(customerScheduleVOList);
         rspData.setTotal(total);
-        return rspData;*/
-        return null;
+        return rspData;
     }
 
     /**

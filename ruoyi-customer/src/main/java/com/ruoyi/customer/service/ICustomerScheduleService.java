@@ -3,6 +3,8 @@ package com.ruoyi.customer.service;
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSchedule;
 import com.ruoyi.customer.domain.dto.CustomerScheduleAddOrUpdateDTO;
+import com.ruoyi.customer.domain.vo.CustomerScheduleListVO;
+import org.springframework.data.util.Pair;
 
 /**
  * 客户日程Service接口
@@ -59,4 +61,13 @@ public interface ICustomerScheduleService
      * @return 结果
      */
     public boolean deleteCustomerScheduleById(Long id);
+
+    /**
+     * 客户日程列表
+     * @param startTime
+     * @param endTime
+     * @param userIds
+     * @return
+     */
+    Pair<Integer, List<CustomerScheduleListVO>> list(String startTime, String endTime, List<Long> userIds, Integer pageNum, Integer pageSize);
 }

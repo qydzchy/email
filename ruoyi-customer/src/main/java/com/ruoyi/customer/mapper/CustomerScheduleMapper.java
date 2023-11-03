@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSchedule;
+import com.ruoyi.customer.domain.vo.CustomerScheduleListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -59,4 +60,24 @@ public interface CustomerScheduleMapper
      * @return 结果
      */
     public int deleteCustomerScheduleByIds(Long[] ids);
+
+    /**
+     * 统计客户日程数量
+     * @param startTime
+     * @param endTime
+     * @param userIds
+     * @return
+     */
+    Integer count(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds);
+
+    /**
+     * 客户日程列表
+     * @param startTime
+     * @param endTime
+     * @param userIds
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    List<CustomerScheduleListVO> list(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 }

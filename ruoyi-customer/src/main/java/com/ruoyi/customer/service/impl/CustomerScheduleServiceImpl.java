@@ -9,7 +9,9 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.customer.domain.CustomerScheduleParticipants;
 import com.ruoyi.customer.domain.dto.CustomerScheduleAddOrUpdateDTO;
+import com.ruoyi.customer.domain.vo.CustomerScheduleListVO;
 import com.ruoyi.customer.mapper.CustomerScheduleParticipantsMapper;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.CustomerScheduleMapper;
 import com.ruoyi.customer.domain.CustomerSchedule;
@@ -177,5 +179,23 @@ public class CustomerScheduleServiceImpl implements ICustomerScheduleService
         // 删除参与人
         customerScheduleParticipantsMapper.deleteCustomerScheduleParticipantsByScheduleId(id, userId, username);
         return true;
+    }
+
+    /**
+     * 客户日程列表
+     * @param startTime
+     * @param endTime
+     * @param userIds
+     * @return
+     */
+    @Override
+    public Pair<Integer, List<CustomerScheduleListVO>> list(String startTime, String endTime, List<Long> userIds, Integer pageNum, Integer pageSize) {
+        Integer count = customerScheduleMapper.count(startTime, endTime, userIds);
+        if (count == 0) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        List<CustomerScheduleListVO> customerScheduleListVOList = customerScheduleMapper.list(startTime, endTime, userIds, pageNum, pageSize);
+        return null;
     }
 }
