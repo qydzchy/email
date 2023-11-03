@@ -25,11 +25,11 @@
         </el-form-item>
         <el-form-item>
           <el-input-number
-              style="width: 100px"
-              :controls="false"
-              v-model="poolRuleForm.advanceDays"
-              :disabled="!poolRuleForm.advanceFlag"
-              @blur="editSettings"
+            style="width: 100px"
+            :controls="false"
+            v-model="poolRuleForm.advanceDays"
+            :disabled="!poolRuleForm.advanceFlag"
+            @blur="editSettings"
           />
         </el-form-item>
         <el-form-item>
@@ -42,11 +42,11 @@
                  :extra-option="{height:'260'}"/>
     </div>
     <el-dialog
-        width="500px"
-        destroy-on-close
-        :title="poolRuleDialogTitle"
-        :visible.sync="poolRuleDialog"
-        @close="onCancelPoolRule"
+      width="500px"
+      destroy-on-close
+      :title="poolRuleDialogTitle"
+      :visible.sync="poolRuleDialog"
+      @close="onCancelPoolRule"
     >
       <el-form v-model="poolRuleFormSecond" @submit.native.prevent>
         <el-form-item label="规则名称">
@@ -55,22 +55,22 @@
         <el-form-item label="生效客群">
           <div class="form-item">
             <TreeSelectNext
-                :default-props="defaultProps"
-                :tree-data="memberOption"
-                :echo-data.sync="poolRuleFormSecond.customerSegmentId"
-                :disabled-list="disabledList"
-                :disabled-key="disabledKey"
-                echo-name="nickName"
+              :default-props="defaultProps"
+              :tree-data="memberOption"
+              :echo-data.sync="poolRuleFormSecond.customerSegmentId"
+              :disabled-list="disabledList"
+              :disabled-key="disabledKey"
+              echo-name="nickName"
             />
           </div>
         </el-form-item>
         <el-form-item label="客户状态" required>
           <div class="form-item flex-middle">
             <el-input-number
-                :min="1"
-                style="width: 30%"
-                controls-position="right"
-                v-model="poolRuleFormSecond.days"
+              :min="1"
+              style="width: 30%"
+              controls-position="right"
+              v-model="poolRuleFormSecond.days"
             />
             <span class="px-6">天内</span>
             <el-select style="width: 30%" v-model="poolRuleFormSecond.type">
@@ -88,13 +88,13 @@
         <el-form-item label="开始时间">
           <div class="form-item">
             <el-date-picker
-                type="date"
-                style="width: 100%"
-                placeholder="选择日期时间"
-                clearable
-                :picker-options="pickerOptions"
-                value-format="yyyy-MM-dd hh:mm:ss"
-                v-model="poolRuleFormSecond.startTime"
+              type="date"
+              style="width: 100%"
+              placeholder="选择日期时间"
+              clearable
+              :picker-options="pickerOptions"
+              value-format="yyyy-MM-dd hh:mm:ss"
+              v-model="poolRuleFormSecond.startTime"
             >
             </el-date-picker>
           </div>
@@ -166,8 +166,8 @@ export default {
           showOverflowTooltip: true,
           render: (_row, field) => {
             return field?.length ?
-                <div>{field.join(',')}</div>
-                : '---'
+              <div>{field.join(',')}</div>
+              : '---'
           },
         },
         {
@@ -187,15 +187,15 @@ export default {
           render: (row) => {
             const disabled = !!row?.status
             return (
-                <el-tooltip disabled={!disabled} content="公海规则开启后，不允许编辑和删除">
-                  <el-row>
-                    <el-button type='text' disabled={disabled} onClick={() => this.onModifyPoolRule(row)}>
-                      编辑
-                    </el-button>
-                    <DelPopover id={row.id} btnDisabled={disabled} on={{onDelete: (id) => this.onDelete(id)}}/>
+              <el-tooltip disabled={!disabled} content="公海规则开启后，不允许编辑和删除">
+                <el-row>
+                  <el-button type='text' disabled={disabled} onClick={() => this.onModifyPoolRule(row)}>
+                    编辑
+                  </el-button>
+                  <DelPopover id={row.id} btnDisabled={disabled} on={{onDelete: (id) => this.onDelete(id)}}/>
 
-                  </el-row>
-                </el-tooltip>
+                </el-row>
+              </el-tooltip>
 
             );
           },
@@ -279,12 +279,13 @@ export default {
       this.poolRuleForm.advanceFlag = value
       this.editSettings()
     },
-    editSettings() {
-      this.$store.dispatch('company/EditCompanyCustomerSettings', {
+    editSettings(e) {
+      const payload = {
         ...this.settings,
         advanceFlag: +this.poolRuleForm.advanceFlag,
-        advanceDays: this.poolRuleForm.advanceDays
-      }).then(res => {
+        advanceDays: e.target.value
+      }
+      this.$store.dispatch('company/EditCompanyCustomerSettings', payload).then(res => {
         if (res) {
           this.$message({
             type: 'success',
@@ -292,6 +293,7 @@ export default {
           })
         }
       })
+
     },
     // table switch
     handleRowStatus(row) {

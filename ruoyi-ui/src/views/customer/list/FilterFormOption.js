@@ -56,13 +56,13 @@ const ordinaryRuleForm = [
     field: 'tag',
     value: ["0"],
     props: {
-      multiple:true,
+      multiple: true,
     },
     options: [
       {
         value: "0", label: '新鲜水果', 'slot': function ($h) {
           return $h('el-tag', {
-            props:{color:'#eaeaea'}
+            props: {color: '#eaeaea'}
           }, ['新鲜水果'])
         }
       },
@@ -209,31 +209,47 @@ const ordinaryRuleForm = [
       startPlaceholder: "开始日期",
       endPlaceholder: "结束日期",
       pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
+        shortcuts: [
+          {
+            text: '今天',
+            onClick(picker) {
+              const today = new Date();
+              picker.$emit('pick', [today, today]);
+            }
+          },
+          {
+            text: '明天',
+            onClick(picker) {
+              const yesterday = new Date();
+              yesterday.setTime(yesterday.getTime() + 3600 * 1000 * 24);
+              picker.$emit('pick', [yesterday, yesterday]);
+            }
+          },
+          {
+            text: '未来7天',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '未来30天',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '未来90天',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
       }
     }
   },
@@ -257,9 +273,7 @@ const ordinaryRuleForm = [
 ]
 
 
-const seniorRuleForm = [
-
-]
+const seniorRuleForm = []
 export {
   ordinaryRuleForm,
   seniorRuleForm

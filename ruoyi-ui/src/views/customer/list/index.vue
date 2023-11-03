@@ -1,8 +1,9 @@
 <template>
   <div class="page-customer-public">
     <div class="bold fs-24 space-between px-30 pb-10 header">
-      <div>
-        <span class="mr-6">客户列表</span>
+      <div class="flex-middle">
+        <span>客户列表</span>
+        <div class="line mx-10"></div>
         <el-radio-group v-model="listType">
           <el-radio-button :label="0">我的客户</el-radio-button>
           <el-radio-button :label="1">团队客户</el-radio-button>
@@ -90,20 +91,19 @@
                 <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group"></el-select>
                 <el-input style="width:200px" placeholder="请输入"></el-input>
                 <FilterDrawer/>
-                <!--                <el-popover-->
-                <!--                  trigger="click"-->
-
-                <!--                  width="200"-->
-                <!--                  content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">-->
-                <!--                  <el-button icon="el-icon-setting" round slot="reference">设置</el-button>-->
-                <!--                </el-popover>-->
+<!--                <el-popover-->
+<!--                  trigger="click"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <el-button icon="el-icon-setting" round slot="reference">设置</el-button>-->
+<!--                </el-popover>-->
               </div>
             </div>
             <div class="mt-20">
               <TableNext
                 :list="list"
                 :columns="columns"
-                :extra-option="{height:'66vh'}"
+                :extra-option="extraOption"
                 :extra-event="extraEvent"
                 :paginate-option="paginateOption"/>
             </div>
@@ -121,11 +121,13 @@
 import TableNext from "@/components/TableNext/index.vue";
 import TreeSelect from "@riophae/vue-treeselect";
 import FilterDrawer from './FilterDrawer.vue'
+import CellOperate from '@/views/components/CellOperate/index.vue'
+import OperateMenu from './OperateMenu.vue'
 import {EmptyStr} from "@/utils/tools";
 import {listMenu} from "@/api/system/menu";
 
 export default {
-  components: {TreeSelect, TableNext, FilterDrawer},
+  components: {TreeSelect, TableNext, FilterDrawer, CellOperate},
   data() {
     return {
       listType: 0,
@@ -145,12 +147,55 @@ export default {
           ]
         },
       ],
+      extraOption: {
+        height: '66vh',
+        border: true,
+        defaultExpandAll: true
+      },
+      extraEvent: {
+        'cell-mouse-enter': (row, column, cell) => this.onCellMouseEvent(row, column, cell),
+        'cell-mouse-leave': (row) => this.onCellMouseLeave(row)
+      },
+      paginateOption: {
+        total: 0,
+        layout: 'total, sizes, prev, pager, next',
+        pageSize: 20,
+        pageSizes: [10, 20, 50, 100]
+      },
       list: [{
+        id: 1,
         companyName: '111',
-        nearly: '111'
-      }],
+        nearly: '111',
+        isFollow: true
+      },
+        {
+          id: 2,
+          companyName: '222',
+          nearly: '222',
+          isFollow: false
+        }],
       columns: [
         {type: 'selection', width: '50'},
+        {
+          label: '',
+          field: 'isFollow',
+          fixed: 'left',
+          align: 'left',
+          width: '20',
+          resizable: false,
+          className: 'follow-cell',
+          render: (row, field, scope) => {
+            const {rowId, columnId} = this.tableCell
+            const id = scope.column.id
+            const isShow = (columnId === id && rowId === row.id) || field
+            return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
+              <el-tooltip placement="top" content={field ? '取消关注' : '关注'}>
+                <i class="el-icon-time" style={{display: isShow ? 'block' : 'none'}}></i>
+              </el-tooltip>
+            </div>
+
+          }
+        },
         {
           label: '公司名称',
           field: 'companyName',
@@ -158,19 +203,24 @@ export default {
           align: 'left',
           width: '200',
           sortable: true,
-          render: (_row, field, scope) => {
-            return <div class="flex-middle space-between">
-              <el-row>
-                <span title={field}>{field}</span>
-              </el-row>
-              <el-row
-                class="pl-10 operate gap-8"
-                style={{display: this.showEditIcon && this.rowId === scope.column.id ? 'flex' : 'none'}}
-              >
-                <i class="el-icon-edit pointer"></i>
-                <i class="el-icon-document-copy pointer"></i>
-              </el-row>
-
+          render: (row, field, scope) => {
+            const {rowId, columnId, showEditIcon} = this.tableCell
+            const id = scope.column.id
+            const isShow = showEditIcon && columnId === id && rowId === row?.id
+            return <div>
+              {this.curEditId === id && rowId === row?.id
+                ?
+                <el-input
+                  size="small"
+                  value={field}
+                  clearable
+                  onInput={(value) => this.onInput(value, scope, 'companyName')}
+                  nativeOnKeydown={(e) => this.inputKeydown(e, row)}/>
+                : <CellOperate
+                  text={field}
+                  visible={isShow}
+                  on={{onEdit: () => this.onEdit(id, row?.id)}}
+                />}
             </div>
           }
         },
@@ -179,24 +229,21 @@ export default {
           field: 'nearly',
           align: 'left',
           width: '200',
-          render: (_row, field, scope) => {
-            return <div class="flex-middle space-between">
-              <el-row>
-                <span title={field}>{field}</span>
-              </el-row>
-              <el-row
-                class="pl-10 operate gap-8"
-                style={{display: this.showEditIcon && this.rowId === scope.column.id ? 'flex' : 'none'}}
-              >
-                <i class="el-icon-edit pointer"></i>
-                <i class="el-icon-document-copy pointer"></i>
-              </el-row>
-
+          render: (row, field, scope) => {
+            const {rowId, columnId, showEditIcon} = this.tableCell
+            const id = scope.column.id
+            const isShow = showEditIcon && columnId === id && rowId === row?.id
+            return <div>
+              <CellOperate
+                text={field}
+                visible={isShow}
+                on={{onEdit: () => this.onEdit(id, row?.id)}}
+              />
             </div>
           },
         }, {
           label: '最近动态',
-          field: 'companyName',
+          field: 'new',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
@@ -248,35 +295,20 @@ export default {
           label: '操作',
           field: 'operate',
           fixed: 'right',
-          render: (_row, field) => {
-            const operateList = [
-              {name: ''}
-            ]
-            return <div>
-              <el-popover appendToBody={false}>
-                <div class="operate-list">
-                  <ul>
-
-                  </ul>
-                </div>
-                <i class="operate-more pointer el-icon-more-outline" slot="reference"></i>
-              </el-popover>
-            </div>
+          render: (row, _field) => {
+            return <OperateMenu row={row}/>
           }
         }
       ],
-      extraEvent: {
-        'cell-mouse-enter': (row, column) => this.onCellMouseEvent(row, column),
-        'cell-mouse-leave': (row) => this.onCellMouseLeave(row)
+
+      // 行内容编辑
+      tableCell: {
+        rowId: '',
+        columnId: '',
+        showEditIcon: false,
       },
-      paginateOption: {
-        total: 0,
-        layout: 'total, sizes, prev, pager, next',
-        pageSize: 20,
-        pageSizes: [10, 20, 50, 100]
-      },
-      showEditIcon: false,
-      rowId: '',
+      curEditId: '',
+
       menuOptions: [],
       searchQuery: {
         group: '',
@@ -324,16 +356,35 @@ export default {
       }
       this.percent = value
     },
-    onCellMouseEvent(_row, column) {
-      this.showEditIcon = true
-      this.rowId = column.id
+    onCellMouseEvent(row, column, cell) {
+      this.tableCell = {
+        showEditIcon: true,
+        rowId: row.id,
+        columnId: column.id
+      }
     },
     onCellMouseLeave(_value) {
-      this.showEditIcon = false
-      this.rowId = ''
+      this.tableCell = {
+        showEditIcon: false,
+        rowId: '',
+        columnId: ''
+      }
     },
-    handleChange(val) {
-      console.log(val);
+    onEdit(id, rowId) {
+      this.curEditId = id
+      this.tableCell.rowId = rowId
+    },
+    onInput(value, scope, field) {
+      this.$set(this.list, scope.$index, {...scope.row, [field]: value})
+    },
+    inputKeydown(e, scope) {
+      // 回车输入
+      if (e.keyCode === 13) {
+        this.curEditId = ''
+      }
+    },
+    handleChange(e) {
+
     }
   }
 }
@@ -343,6 +394,12 @@ export default {
 .page-customer-public {
   .header {
     border-bottom: 1px solid #f0f0f0;
+  }
+
+  .line {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(194, 197, 204);
   }
 }
 
@@ -457,13 +514,37 @@ export default {
     box-sizing: border-box;
     margin-right: 20px;
 
-    .operate-list {
-      width: 400px;
+
+    ::v-deep .el-table__body {
+      .el-table__cell {
+        border-right: none;
+      }
     }
 
-    .operate-more {
-      transform: rotate(90deg);
+    ::v-deep .el-table_1_column_1.el-table__cell {
+      border-right: none;
     }
+
+    ::v-deep .follow-cell {
+      > .cell {
+        padding: 0;
+      }
+
+      .follow-icon > i {
+        &:hover {
+          color: red;
+        }
+      }
+
+      .follow-icon-active > i {
+        color: red;
+
+        &:hover {
+          color: unset;
+        }
+      }
+    }
+
   }
 
   ::v-deep .splitter-pane-resizer.vertical {

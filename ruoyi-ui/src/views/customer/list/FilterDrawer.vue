@@ -52,7 +52,8 @@ export default {
       fApi: {},
       rule: [...ordinaryRuleForm],
       option: {
-        ...formOption, form: {
+        ...formOption,
+        form: {
           ...formOption.form,
           inline: true,
           labelWidth: '100%',
