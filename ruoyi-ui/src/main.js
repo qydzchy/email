@@ -44,6 +44,8 @@ import formCreate from '@form-create/element-ui'
 import UploadPicture from '@/components/UploadPicture'
 // 拖拽状态栏
 import splitPane from 'vue-splitpane'
+// select tag
+import TreeSelectNext from '@/components/TreeSelectNext'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -67,6 +69,8 @@ Vue.component('ImagePreview', ImagePreview)
 
 Vue.component('upload-picture', UploadPicture)
 Vue.component('split-pane', splitPane);
+Vue.component('tree-select-next', TreeSelectNext)
+
 
 Vue.use(directive)
 Vue.use(plugins)

@@ -117,6 +117,7 @@ export default {
           this.checkedData.push(item.id)
         }
       })
+      this.$emit('input', this.checkedData)
       this.$emit('update:echoData', this.checkedData)
     },
     generateOption() {

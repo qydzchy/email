@@ -7,7 +7,7 @@
           <el-radio-button :label="0">我的客户</el-radio-button>
           <el-radio-button :label="1">团队客户</el-radio-button>
         </el-radio-group>
-        <el-select class="ml-6"></el-select>
+<!--        <el-select class="ml-6"></el-select>-->
       </div>
       <div>
         <el-button type="primary" round>新建客户</el-button>
@@ -38,10 +38,18 @@
                     <div class="pt-4" v-else>
                       <el-collapse-item :key="item.key" :name="item.key">
                         <template #title>
-                          一致性 Consistency<i class="header-icon el-icon-info"></i>
+                          <div class="pl-6 fs-14">
+                            {{ item.name }}
+                            <!--                            <i class="header-icon el-icon-info"></i>-->
+                          </div>
+
                         </template>
-                        <div class="menu-item flex-middle space-between my-4 pl-20 pr-10"
-                             v-for="subItem in item.children" :key="subItem.key">
+                        <div
+                          class="menu-item flex-middle space-between my-4 pl-20 pr-10"
+                          :class="{'active':subItem.key === curMenuActive}"
+                          v-for="subItem in item.children"
+                          :key="subItem.key"
+                          @click="curMenuActive = subItem.key">
                           <span>{{ subItem.name }}</span>
                           <span>{{ subItem.count }}</span>
                         </div>
@@ -53,7 +61,13 @@
                 </el-collapse>
               </div>
               <div class="fixed-operate flex-middle flex-center">
-                <div class="jump-manage fs-15 pointer">客群管理</div>
+                <div class="hover-color fs-14 pointer">客群管理</div>
+                <el-tooltip>
+                  <template #content>
+                    查看&nbsp;<a style="text-decoration: underline">客群功能详细说明</a>
+                  </template>
+                  <i class="hover-color el-icon-question pl-6 pointer"></i>
+                </el-tooltip>
               </div>
               <span class="right-wrap-icon pointer" @click="onCollapsed">
               <i class="el-icon-d-arrow-left"></i>
@@ -75,13 +89,14 @@
               <div class="search-group flex-middle gap-8">
                 <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group"></el-select>
                 <el-input style="width:200px" placeholder="请输入"></el-input>
-                <el-popover
-                  trigger="click"
+                <FilterDrawer/>
+                <!--                <el-popover-->
+                <!--                  trigger="click"-->
 
-                  width="200"
-                  content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-                  <el-button icon="el-icon-setting" round slot="reference">设置</el-button>
-                </el-popover>
+                <!--                  width="200"-->
+                <!--                  content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">-->
+                <!--                  <el-button icon="el-icon-setting" round slot="reference">设置</el-button>-->
+                <!--                </el-popover>-->
               </div>
             </div>
             <div class="mt-20">
@@ -101,11 +116,12 @@
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import TreeSelect from "@riophae/vue-treeselect";
+import FilterDrawer from './FilterDrawer.vue'
 import {EmptyStr} from "@/utils/tools";
 import {listMenu} from "@/api/system/menu";
 
 export default {
-  components: {TreeSelect, TableNext},
+  components: {TreeSelect, TableNext, FilterDrawer},
   data() {
     return {
       listType: 0,
@@ -125,7 +141,10 @@ export default {
           ]
         },
       ],
-      list: [],
+      list: [{
+        companyName: '111',
+        nearly: '111'
+      }],
       columns: [
         {type: 'selection', width: '50'},
         {
@@ -137,41 +156,69 @@ export default {
         {
           label: '最近跟进',
           field: 'nearly',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '最近动态',
           field: 'companyName',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '原跟进人',
           field: 'contactName',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '国家地区',
           field: 'email',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '客户类型',
           field: 'phone',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '客户评分',
           field: 'telOrigin',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近联系时间',
           field: 'area',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '时区',
           field: 'followMan',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '社交平台',
           field: 'department',
           render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '操作',
+          field: 'operate',
+          fixed: 'right',
+          render: (_row, field) => {
+            const operateList = [
+              {name: ''}
+            ]
+            return <div>
+              <el-popover appendToBody={false}>
+                <div class="operate-list">
+                  <ul>
+
+                  </ul>
+                </div>
+                <i class="operate-more pointer el-icon-more-outline" slot="reference"></i>
+              </el-popover>
+            </div>
+          }
         }
       ],
       paginateOption: {
@@ -279,6 +326,7 @@ export default {
       }
 
       .menu-item.active {
+        color: #0064ff;
         background-color: #f0f8ff;
       }
 
@@ -297,7 +345,7 @@ export default {
       height: 40px;
       border-top: 1px solid #f0f0f0;
 
-      .jump-manage {
+      .hover-color {
         &:hover {
           color: #0a6aff;
         }
@@ -353,6 +401,14 @@ export default {
   .right-wrap {
     box-sizing: border-box;
     margin-right: 20px;
+
+    .operate-list {
+      width: 400px;
+    }
+
+    .operate-more {
+      transform: rotate(90deg);
+    }
   }
 
   ::v-deep .splitter-pane-resizer.vertical {
