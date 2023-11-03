@@ -2,6 +2,8 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerFollowUpRecords;
+import com.ruoyi.customer.domain.dto.CustomerFollowUpRecordsListDTO;
+import com.ruoyi.customer.domain.vo.CustomerFollowUpRecordsListVO;
 
 /**
  * 客户写跟进Service接口
@@ -58,4 +60,11 @@ public interface ICustomerFollowUpRecordsService
      * @return 结果
      */
     public int deleteCustomerFollowUpRecordsById(Long id);
+
+    /**
+     * 写跟进列表
+     * @param customerFollowUpRecordsListDTO
+     * @return
+     */
+    List<CustomerFollowUpRecordsListVO> list(CustomerFollowUpRecordsListDTO customerFollowUpRecordsListDTO);
 }

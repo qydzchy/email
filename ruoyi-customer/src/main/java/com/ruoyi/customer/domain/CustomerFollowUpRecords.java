@@ -18,7 +18,7 @@ public class CustomerFollowUpRecords extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    private Long id;
+private Long id;
 
     /** 跟进类型 1.快速记录 2.电话 3.会面 4.社交平台 */
     @Excel(name = "跟进类型 1.快速记录 2.电话 3.会面 4.社交平台")
@@ -35,7 +35,7 @@ public class CustomerFollowUpRecords extends BaseEntity
 
     /** 跟进联系人ID */
     @Excel(name = "跟进联系人ID")
-    private Long followUpContact;
+    private Long followUpContactId;
 
     /** 下次跟进日程 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -105,16 +105,15 @@ public class CustomerFollowUpRecords extends BaseEntity
     {
         return submissionTime;
     }
-    public void setFollowUpContact(Long followUpContact) 
-    {
-        this.followUpContact = followUpContact;
+    public Long getFollowUpContactId() {
+        return followUpContactId;
     }
 
-    public Long getFollowUpContact() 
-    {
-        return followUpContact;
+    public void setFollowUpContactId(Long followUpContactId) {
+        this.followUpContactId = followUpContactId;
     }
-    public void setNextFollowUpSchedule(Date nextFollowUpSchedule) 
+
+    public void setNextFollowUpSchedule(Date nextFollowUpSchedule)
     {
         this.nextFollowUpSchedule = nextFollowUpSchedule;
     }
@@ -194,7 +193,7 @@ public class CustomerFollowUpRecords extends BaseEntity
             .append("followUpType", getFollowUpType())
             .append("followUpContent", getFollowUpContent())
             .append("submissionTime", getSubmissionTime())
-            .append("followUpContact", getFollowUpContact())
+            .append("followUpContactId", getFollowUpContactId())
             .append("nextFollowUpSchedule", getNextFollowUpSchedule())
             .append("allDayFlag", getAllDayFlag())
             .append("scheduleContent", getScheduleContent())

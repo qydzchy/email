@@ -2,6 +2,8 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerFollowUpRecords;
+import com.ruoyi.customer.domain.bo.CustomerFollowUpRecordsListBO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户写跟进Mapper接口
@@ -49,7 +51,7 @@ public interface CustomerFollowUpRecordsMapper
      * @param id 客户写跟进主键
      * @return 结果
      */
-    public int deleteCustomerFollowUpRecordsById(Long id);
+    public int deleteCustomerFollowUpRecordsById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除客户写跟进
@@ -58,4 +60,11 @@ public interface CustomerFollowUpRecordsMapper
      * @return 结果
      */
     public int deleteCustomerFollowUpRecordsByIds(Long[] ids);
+
+    /**
+     * 写跟进列表
+     * @param searchText
+     * @return
+     */
+    List<CustomerFollowUpRecordsListBO> list(@Param("customerId") Long customerId, @Param("searchText") String searchText);
 }

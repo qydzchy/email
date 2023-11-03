@@ -660,3 +660,23 @@ CREATE TABLE `customer_customer_follow_up_records`  (
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户写跟进' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for customer_customer_follow_up_records_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_customer_follow_up_records_comment`;
+CREATE TABLE `customer_customer_follow_up_records_comment`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`follow_up_records_id` bigint(20) NOT NULL COMMENT '写跟进ID',
+`comment` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '评论内容',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '写跟进评论' ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;

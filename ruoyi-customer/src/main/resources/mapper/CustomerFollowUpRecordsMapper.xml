@@ -50,6 +50,15 @@
         where id = #{id}
     </select>
 
+    <select id="list" resultType="com.ruoyi.customer.domain.bo.CustomerFollowUpRecordsListBO">
+        select fur.id, fur.follow_up_type, fur.follow_up_content, fur.submission_time, fur.follow_up_contact, fur.next_follow_up_schedule, fur.all_day_flag, fur.schedule_content, fur.color, fur.remarks, furc.comment from customer_customer_follow_up_records fur
+        left join customer_customer_follow_up_records_comment furc on fur.id = furc.follow_up_records_id and furc.del_flag = 0
+        where fur.del_flag = 0 and fur.customer_id = #{customerId}
+        <if test="searchText != null and searchText != ''">
+            and (fur.follow_up_content like concat('%', #{searchText}, '%') or furc.comment like concat('%', #{searchText}, '%'))
+        </if>
+    </select>
+
     <insert id="insertCustomerFollowUpRecords" parameterType="CustomerFollowUpRecords">
         insert into customer_customer_follow_up_records
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -115,9 +124,9 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteCustomerFollowUpRecordsById" parameterType="Long">
-        delete from customer_customer_follow_up_records where id = #{id}
-    </delete>
+    <update id="deleteCustomerFollowUpRecordsById">
+        update customer_customer_follow_up_records set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
 
     <delete id="deleteCustomerFollowUpRecordsByIds" parameterType="String">
         delete from customer_customer_follow_up_records where id in
