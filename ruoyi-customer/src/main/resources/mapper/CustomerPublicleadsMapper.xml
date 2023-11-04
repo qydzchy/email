@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerPublicleadsMapper">
+
+    <resultMap type="CustomerPublicleads" id="CustomerPublicleadsResult">
+        <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="publicleadsGroupsId"    column="publicleads_groups_id"    />
+        <result property="publicleadsReasonId"    column="publicleads_reason_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCustomerPublicleadsVo">
+        select id, customer_id, publicleads_groups_id, publicleads_reason_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_publicleads
+    </sql>
+
+    <select id="selectCustomerPublicleadsList" parameterType="CustomerPublicleads" resultMap="CustomerPublicleadsResult">
+        <include refid="selectCustomerPublicleadsVo"/>
+        <where>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="publicleadsGroupsId != null "> and publicleads_groups_id = #{publicleadsGroupsId}</if>
+            <if test="publicleadsReasonId != null "> and publicleads_reason_id = #{publicleadsReasonId}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerPublicleadsById" parameterType="Long" resultMap="CustomerPublicleadsResult">
+        <include refid="selectCustomerPublicleadsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCustomerPublicleads" parameterType="CustomerPublicleads" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer_publicleads
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="publicleadsGroupsId != null">publicleads_groups_id,</if>
+            <if test="publicleadsReasonId != null">publicleads_reason_id,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="publicleadsGroupsId != null">#{publicleadsGroupsId},</if>
+            <if test="publicleadsReasonId != null">#{publicleadsReasonId},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomerPublicleads" parameterType="CustomerPublicleads">
+        update customer_customer_publicleads
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="publicleadsGroupsId != null">publicleads_groups_id = #{publicleadsGroupsId},</if>
+            <if test="publicleadsReasonId != null">publicleads_reason_id = #{publicleadsReasonId},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerPublicleadsById" parameterType="Long">
+        delete from customer_customer_publicleads where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerPublicleadsByIds" parameterType="String">
+        delete from customer_customer_publicleads where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

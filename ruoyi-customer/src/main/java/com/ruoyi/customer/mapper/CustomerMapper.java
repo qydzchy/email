@@ -77,4 +77,19 @@ public interface CustomerMapper
      * @return
      */
     List<CustomerSimpleListVO> selectCustomerPage(@Param("segmentId") Long segmentId, @Param("seaType") Integer seaType, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 移动客户到分组
+     * @param id
+     * @param packetId
+     */
+    void moveCustomerToPacket(@Param("id") Long id, @Param("packetId") Long packetId);
+
+    /**
+     * 修改重点关注
+     * @param id
+     * @param updateId
+     * @param updateBy
+     */
+    void updateFocusFlag(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

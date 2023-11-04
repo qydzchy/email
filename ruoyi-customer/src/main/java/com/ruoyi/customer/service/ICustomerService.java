@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.customer.domain.Customer;
-import com.ruoyi.customer.domain.dto.CustomerAddOrUpdateDTO;
+import com.ruoyi.customer.domain.dto.*;
+import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 
 /**
  * 客户详情Service接口
@@ -71,4 +72,67 @@ public interface ICustomerService
      * @return
      */
     Map<String, Object> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize);
+
+    /**
+     * 移入客户至分组
+     * @param customerPacketMoveDTO
+     * @return
+     */
+    boolean moveCustomerToPacket(CustomerPacketMoveDTO customerPacketMoveDTO);
+
+    /**
+     * 转移给
+     * @param transferredToDTO
+     * @return
+     */
+    boolean transferredTo(TransferredToDTO transferredToDTO);
+
+    /**
+     * 共享给
+     * @param shareToDTO
+     * @return
+     */
+    boolean shareTo(ShareToDTO shareToDTO);
+
+    /**
+     * 取消跟进
+     * @param id
+     * @return
+     */
+    boolean cancelFollowUp(Long id);
+
+    /**
+     * 移入公海
+     * @param moveToPublicleadsDTO
+     * @return
+     */
+    boolean moveToPublicleads(MoveToPublicleadsDTO moveToPublicleadsDTO);
+
+    /**
+     * 重新分配
+     * @param reassignToDTO
+     * @return
+     */
+    boolean reassignTo(ReassignToDTO reassignToDTO);
+
+    /**
+     * 取消跟进人
+     * @param unassignFollowUpDTO
+     * @return
+     */
+    boolean unassignFollowUp(UnassignFollowUpDTO unassignFollowUpDTO);
+
+    /**
+     * 查询客户跟进人
+     * @param id
+     * @return
+     */
+    List<CustomerFollowUpPersonnelListVO> followUpPersonnelList(Long id);
+
+    /**
+     * 修改重点客户
+     * @param id
+     * @return
+     */
+    boolean editFocusFlag(Long id);
 }

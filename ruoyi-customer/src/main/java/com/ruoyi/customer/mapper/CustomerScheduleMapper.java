@@ -80,4 +80,13 @@ public interface CustomerScheduleMapper
      * @return
      */
     List<CustomerScheduleListVO> list(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+
+    /**
+     * 修改重点关注标志
+     * @param id
+     * @param updateId
+     * @param updateBy
+     * @return
+     */
+    boolean updateFocusFlag(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

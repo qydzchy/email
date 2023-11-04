@@ -100,6 +100,20 @@ public class CustomerScheduleController extends BaseController
     }
 
     /**
+     * 修改客户日程重点关注
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:schedule:edit:focusFlag')")
+    @Log(title = "修改客户日程重点关注", businessType = BusinessType.UPDATE)
+    @PostMapping("/edit/focusFlag")
+    public AjaxResult editFocusFlag(@RequestBody CustomerSchedule customerSchedule)
+    {
+        if (customerSchedule.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        return toAjax(customerScheduleService.updateCustomerScheduleByFocusFlag(customerSchedule.getId()));
+    }
+
+    /**
      * 参数校验
      */
     private void checkParam(CustomerScheduleAddOrUpdateDTO customerScheduleAddOrUpdateDTO) {

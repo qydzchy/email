@@ -11,6 +11,7 @@
         <result property="shortName"    column="short_name"    />
         <result property="countryRegion"    column="country_region"    />
         <result property="seaType"    column="sea_type"    />
+        <result property="publicleadsGroupsId"    column="publicleads_groups_id"    />
         <result property="packetId"    column="packet_id"    />
         <result property="stageId"    column="stage_id"    />
         <result property="rating"    column="rating"    />
@@ -37,7 +38,7 @@
     </resultMap>
 
     <sql id="selectCustomerVo">
-        select id, company_website, company_name, short_name, country_region, sea_type, packet_id, stage_id, rating, customer_no_type, customer_no, phone_prefix, phone, timezone, scale, fax, address, company_remarks, company_logo, focus_flag, last_contacted_at, last_followup_at, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer
+        select id, company_website, company_name, short_name, country_region, sea_type, publicleads_groups_id, packet_id, stage_id, rating, customer_no_type, customer_no, phone_prefix, phone, timezone, scale, fax, address, company_remarks, company_logo, focus_flag, last_contacted_at, last_followup_at, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer
     </sql>
 
     <select id="selectCustomerList" parameterType="Customer" resultMap="CustomerResult">
@@ -48,6 +49,7 @@
             <if test="shortName != null  and shortName != ''"> and short_name like concat('%', #{shortName}, '%')</if>
             <if test="countryRegion != null  and countryRegion != ''"> and country_region = #{countryRegion}</if>
             <if test="seaType != null "> and sea_type = #{seaType}</if>
+            <if test="publicleadsGroupsId != null "> and publicleads_groups_id = #{publicleadsGroupsId}</if>
             <if test="packetId != null "> and packet_id = #{packetId}</if>
             <if test="stageId != null "> and stage_id = #{stageId}</if>
             <if test="rating != null "> and rating = #{rating}</if>
@@ -71,7 +73,7 @@
 
     <select id="selectCustomerById" parameterType="Long" resultMap="CustomerResult">
         <include refid="selectCustomerVo"/>
-        where id = #{id}
+        where id = #{id} and del_flag = '0'
     </select>
 
     <select id="count" resultType="java.lang.Integer">
@@ -110,6 +112,7 @@
             <if test="shortName != null">short_name,</if>
             <if test="countryRegion != null">country_region,</if>
             <if test="seaType != null">sea_type,</if>
+            <if test="publicleadsGroupsId != null">publicleads_groups_id,</if>
             <if test="packetId != null">packet_id,</if>
             <if test="stageId != null">stage_id,</if>
             <if test="rating != null">rating,</if>
@@ -140,6 +143,7 @@
             <if test="shortName != null">#{shortName},</if>
             <if test="countryRegion != null">#{countryRegion},</if>
             <if test="seaType != null">#{seaType},</if>
+            <if test="publicleadsGroupsId != null">#{publicleadsGroupsId},</if>
             <if test="packetId != null">#{packetId},</if>
             <if test="stageId != null">#{stageId},</if>
             <if test="rating != null">#{rating},</if>
@@ -174,6 +178,7 @@
             <if test="shortName != null">short_name = #{shortName},</if>
             <if test="countryRegion != null">country_region = #{countryRegion},</if>
             <if test="seaType != null">sea_type = #{seaType},</if>
+            <if test="publicleadsGroupsId != null">publicleads_groups_id = #{publicleadsGroupsId},</if>
             <if test="packetId != null">packet_id = #{packetId},</if>
             <if test="stageId != null">stage_id = #{stageId},</if>
             <if test="rating != null">rating = #{rating},</if>
@@ -199,6 +204,14 @@
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="moveCustomerToPacket">
+        update customer_customer set packet_id = #{packetId} where id = #{id}
+    </update>
+
+    <update id="updateFocusFlag">
+        update customer_customer set focus_flag = !focus_flag, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id} and del_flag = '0'
     </update>
 
     <delete id="deleteCustomerById" parameterType="Long">

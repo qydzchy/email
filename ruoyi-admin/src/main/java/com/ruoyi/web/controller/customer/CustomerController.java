@@ -3,7 +3,10 @@ package com.ruoyi.web.controller.customer;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
-import com.ruoyi.customer.domain.dto.CustomerAddOrUpdateDTO;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.customer.domain.Customer;
+import com.ruoyi.customer.domain.dto.*;
+import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,6 +80,174 @@ public class CustomerController extends BaseController
     }
 
     /**
-     * 移入
+     * 移入客户至分组
      */
+    @PreAuthorize("@ss.hasPermi('customer:customer:move:packet')")
+    @Log(title = "移入客户至分组", businessType = BusinessType.UPDATE)
+    @PostMapping("/move/customer/to/packet")
+    public AjaxResult moveCustomerToPacket(@RequestBody CustomerPacketMoveDTO customerPacketMoveDTO)
+    {
+        if (customerPacketMoveDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (customerPacketMoveDTO.getPacketId() == null) {
+            throw new ServiceException("分组ID不能为空");
+        }
+        return toAjax(customerService.moveCustomerToPacket(customerPacketMoveDTO));
+    }
+
+
+    /**
+     * 合并客户
+     */
+
+
+    /**
+     * 转移给
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:transferred:to')")
+    @Log(title = "转移给", businessType = BusinessType.UPDATE)
+    @PostMapping("/transferred/to")
+    public AjaxResult transferredTo(@RequestBody TransferredToDTO transferredToDTO)
+    {
+        if (transferredToDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (transferredToDTO.getUserId() == null) {
+            throw new ServiceException("转移给不能为空");
+        }
+
+        return toAjax(customerService.transferredTo(transferredToDTO));
+    }
+
+    /**
+     * 共享给
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:share:to')")
+    @Log(title = "共享给", businessType = BusinessType.UPDATE)
+    @PostMapping("/share/to")
+    public AjaxResult shareTo(@RequestBody ShareToDTO shareToDTO)
+    {
+        if (shareToDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (shareToDTO.getUserIds() == null || shareToDTO.getUserIds().isEmpty()) {
+            throw new ServiceException("请选择跟进人");
+        }
+
+        return toAjax(customerService.shareTo(shareToDTO));
+    }
+
+    /**
+     * 取消跟进
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:cancel:follow:up')")
+    @Log(title = "取消跟进", businessType = BusinessType.UPDATE)
+    @PostMapping("/cancel/follow/up")
+    public AjaxResult cancelFollowUp(@RequestBody Customer customer)
+    {
+        if (customer.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return toAjax(customerService.cancelFollowUp(customer.getId()));
+    }
+
+    /**
+     * 移入公海
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:move:to:publicleads')")
+    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
+    @PostMapping("/move/to/publicleads")
+    public AjaxResult moveToPublicleads(@RequestBody MoveToPublicleadsDTO moveToPublicleadsDTO)
+    {
+        if (moveToPublicleadsDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return toAjax(customerService.moveToPublicleads(moveToPublicleadsDTO));
+    }
+
+    /**
+     * 重新分配
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:reassign:to')")
+    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
+    @PostMapping("/reassign/to")
+    public AjaxResult reassignTo(@RequestBody ReassignToDTO reassignToDTO)
+    {
+        if (reassignToDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (reassignToDTO.getUserIds() == null || reassignToDTO.getUserIds().isEmpty()) {
+            throw new ServiceException("请选择跟进人");
+        }
+
+        return toAjax(customerService.reassignTo(reassignToDTO));
+    }
+
+    /**
+     * 查询客户跟进人
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:follow:up:personnel:list')")
+    @GetMapping("/follow/up/personnel/list")
+    public AjaxResult followUpPersonnelList(Long id)
+    {
+        if (id == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return success(customerService.followUpPersonnelList(id));
+    }
+
+    /**
+     * 取消跟进人
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:unassign:follow:up')")
+    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
+    @PostMapping("/unassign/follow/up")
+    public AjaxResult unassignFollowUp(@RequestBody UnassignFollowUpDTO unassignFollowUpDTO)
+    {
+        if (unassignFollowUpDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (unassignFollowUpDTO.getUserId() == null) {
+            throw new ServiceException("跟进人不能为空");
+        }
+
+        return toAjax(customerService.unassignFollowUp(unassignFollowUpDTO));
+    }
+
+    /**
+     * 变更公海分组
+     */
+    /*@PreAuthorize("@ss.hasPermi('customer:customer:change:publicleads:groups')")
+    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
+    @PostMapping("/change/publicleads/groups")
+    public AjaxResult changePublicleadsGroups(@RequestBody UnassignFollowUpDTO unassignFollowUpDTO)
+    {
+        if (unassignFollowUpDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (unassignFollowUpDTO.getUserId() == null) {
+            throw new ServiceException("跟进人不能为空");
+        }
+
+        return toAjax(customerService.unassignFollowUp(unassignFollowUpDTO));
+    }*/
+
+    /**
+     * 修改重点关注
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:edit:focusFlag')")
+    @Log(title = "修改重点关注", businessType = BusinessType.UPDATE)
+    @PostMapping("/edit/focusFlag")
+    public AjaxResult editFocusFlag(@RequestBody Customer customer)
+    {
+        if (customer.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return toAjax(customerService.editFocusFlag(customer.getId()));
+    }
 }

@@ -35,6 +35,11 @@ public class CustomerAddOrUpdateDTO {
     @NotNull(message = "私海/公海类型不能为空")
     private Integer seaType;
 
+    /**
+     * 公海分组ID
+     */
+    private Long publicleadsGroupsId;
+
     /** 分组ID */
     private Long packetId;
 

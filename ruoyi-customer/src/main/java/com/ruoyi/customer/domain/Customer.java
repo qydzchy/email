@@ -40,6 +40,11 @@ public class Customer extends BaseEntity
     @Excel(name = "私海/公海类型 1.私海 2.公海")
     private Integer seaType;
 
+    /**
+     * 公海分组ID
+     */
+    private Long publicleadsGroupsId;
+
     /** 分组ID */
     @Excel(name = "分组ID")
     private Long packetId;
@@ -171,7 +176,16 @@ public class Customer extends BaseEntity
     {
         return seaType;
     }
-    public void setPacketId(Long packetId) 
+
+    public Long getPublicleadsGroupsId() {
+        return publicleadsGroupsId;
+    }
+
+    public void setPublicleadsGroupsId(Long publicleadsGroupsId) {
+        this.publicleadsGroupsId = publicleadsGroupsId;
+    }
+
+    public void setPacketId(Long packetId)
     {
         this.packetId = packetId;
     }

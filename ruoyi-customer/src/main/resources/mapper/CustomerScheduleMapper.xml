@@ -13,7 +13,7 @@
         <result property="scheduleStartTime"    column="schedule_start_time"    />
         <result property="scheduleEndTime"    column="schedule_end_time"    />
         <result property="completedFlag"    column="completed_flag"    />
-        <result property="recurringSchedule"    column="recurringSchedule"    />
+        <result property="recurringSchedule"    column="recurring_schedule"    />
         <result property="customCycleValue"    column="custom_cycle_value"    />
         <result property="customCycleType"    column="custom_cycle_type"    />
         <result property="cycleEndTime"    column="cycle_end_time"    />
@@ -30,7 +30,7 @@
     </resultMap>
 
     <sql id="selectCustomerScheduleVo">
-        select id, customer_id, schedule_content, color, all_day_flag, schedule_start_time, schedule_end_time, completed_flag, recurringSchedule, custom_cycle_value, custom_cycle_type, cycle_end_time, reminder_time, focus_flag, remark, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_schedule
+        select id, customer_id, schedule_content, color, all_day_flag, schedule_start_time, schedule_end_time, completed_flag, recurring_schedule, custom_cycle_value, custom_cycle_type, cycle_end_time, reminder_time, focus_flag, remark, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_schedule
     </sql>
 
     <select id="selectCustomerScheduleList" parameterType="CustomerSchedule" resultMap="CustomerScheduleResult">
@@ -43,7 +43,7 @@
             <if test="scheduleStartTime != null "> and schedule_start_time = #{scheduleStartTime}</if>
             <if test="scheduleEndTime != null "> and schedule_end_time = #{scheduleEndTime}</if>
             <if test="completedFlag != null "> and completed_flag = #{completedFlag}</if>
-            <if test="recurringSchedule != null "> and recurringSchedule = #{recurringSchedule}</if>
+            <if test="recurringSchedule != null "> and recurring_schedule = #{recurringSchedule}</if>
             <if test="customCycleValue != null "> and custom_cycle_value = #{customCycleValue}</if>
             <if test="customCycleType != null "> and custom_cycle_type = #{customCycleType}</if>
             <if test="cycleEndTime != null "> and cycle_end_time = #{cycleEndTime}</if>
@@ -75,7 +75,38 @@
     </select>
 
     <select id="list" resultType="com.ruoyi.customer.domain.vo.CustomerScheduleListVO">
-
+        SELECT
+            cs.id,
+            c.id AS customerId,
+            c.name AS customerName,
+            cs.schedule_content AS scheduleContent,
+            cs.create_time AS createTime,
+            cs.create_by AS createBy,
+            cs.recurring_schedule AS recurringSchedule,
+            cs.schedule_start_time AS scheduleStartTime,
+            cs.schedule_end_time AS scheduleEndTime,
+            cs.all_day_flag AS allDayFlag,
+            cs.remark,
+            cs.reminder_time AS reminderTime,
+            cs.focus_flag AS focusFlag,
+            GROUP_CONCAT(u.nick_name SEPARATOR ',') AS participants
+        FROM customer_customer_schedule cs
+        LEFT JOIN customer_customer_schedule_participants csp ON cs.id = csp.schedule_id
+        LEFT JOIN customer_customer c ON cs.customer_id = c.id
+        LEFT JOIN sys_user u ON u.id = csp.user_id
+        WHERE cs.del_flag = '0' and cs.customer_id = #{customerId}
+        <if test="startTime != null and endTime != null">
+            and ((cs.schedule_start_time between startTime and endTime) or (cs.schedule_end_time between startTime and endTime))
+        </if>
+        <if test="userIds != null">
+            and csp.userId in
+            <foreach item="userId" collection="userIds" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+        GROUP BY cs.id;
+        ORDER BY cs.create_time DESC
+        LIMIT #{offset}, #{limit}
     </select>
 
     <insert id="insertCustomerSchedule" parameterType="CustomerSchedule" useGeneratedKeys="true" keyProperty="id">
@@ -88,7 +119,7 @@
             <if test="scheduleStartTime != null">schedule_start_time,</if>
             <if test="scheduleEndTime != null">schedule_end_time,</if>
             <if test="completedFlag != null">completed_flag,</if>
-            <if test="recurringSchedule != null">recurringSchedule,</if>
+            <if test="recurringSchedule != null">recurring_schedule,</if>
             <if test="customCycleValue != null">custom_cycle_value,</if>
             <if test="customCycleType != null">custom_cycle_type,</if>
             <if test="cycleEndTime != null">cycle_end_time,</if>
@@ -138,7 +169,7 @@
             <if test="scheduleStartTime != null">schedule_start_time = #{scheduleStartTime},</if>
             <if test="scheduleEndTime != null">schedule_end_time = #{scheduleEndTime},</if>
             <if test="completedFlag != null">completed_flag = #{completedFlag},</if>
-            <if test="recurringSchedule != null">recurringSchedule = #{recurringSchedule},</if>
+            <if test="recurringSchedule != null">recurring_schedule = #{recurringSchedule},</if>
             <if test="customCycleValue != null">custom_cycle_value = #{customCycleValue},</if>
             <if test="customCycleType != null">custom_cycle_type = #{customCycleType},</if>
             <if test="cycleEndTime != null">cycle_end_time = #{cycleEndTime},</if>
@@ -158,6 +189,10 @@
 
     <update id="deleteCustomerScheduleById">
         update customer_customer_schedule set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+    </update>
+
+    <update id="updateFocusFlag">
+        update customer_customer_schedule set focus_flag = #{focusFlag}, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
     </update>
 
     <delete id="deleteCustomerScheduleByIds" parameterType="String">

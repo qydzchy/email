@@ -1,17 +1,17 @@
 package com.ruoyi.customer.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
 import com.ruoyi.common.enums.customer.MetadataColumnAppTypeEnum;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.*;
-import com.ruoyi.customer.domain.dto.CustomerAddOrUpdateDTO;
-import com.ruoyi.customer.domain.dto.CustomerContactAddOrUpdateDTO;
+import com.ruoyi.customer.domain.dto.*;
+import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.MetadataColumnListVO;
 import com.ruoyi.customer.mapper.*;
@@ -43,6 +43,10 @@ public class CustomerServiceImpl implements ICustomerService
     private CustomerSourceMapper customerSourceMapper;
     @Resource
     private CustomerTagMapper customerTagMapper;
+    @Resource
+    private CustomerFollowUpPersonnelMapper customerFollowUpPersonnelMapper;
+    @Resource
+    private CustomerPublicleadsMapper customerPublicleadsMapper;
 
 
     /**
@@ -98,6 +102,7 @@ public class CustomerServiceImpl implements ICustomerService
         batchInsertCustomerSource(id, customerAddOrUpdateDTO.getSourceIds());
         // 新增客户标签的关联关系
         batchInsertCustomerTag(id, customerAddOrUpdateDTO.getTagIds());
+        // 新增跟进人 todo
 
         // 批量新增客户联系人
         batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
@@ -273,4 +278,205 @@ public class CustomerServiceImpl implements ICustomerService
 
         return null;
     }
+
+    @Override
+    public boolean moveCustomerToPacket(CustomerPacketMoveDTO customerPacketMoveDTO) {
+        customerMapper.moveCustomerToPacket(customerPacketMoveDTO.getId(), customerPacketMoveDTO.getPacketId());
+        return false;
+    }
+
+    /**
+     * 转移给
+     * @param transferredToDTO
+     * @return
+     */
+    @Override
+    public boolean transferredTo(TransferredToDTO transferredToDTO) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        // 查询转移的跟进人是否已经存在该客户了，如若存在，直接删除当前的跟进人，不存在则更新跟进人
+        List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(transferredToDTO.getId());
+        List<Long> dbUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+        if (!dbUserIds.contains(userId)) {
+            throw new ServiceException("您不是该客户的跟进人，无法转移");
+        }
+
+        Long transferredToFollowerId = transferredToDTO.getUserId();
+        if (dbUserIds.contains(transferredToFollowerId)) {
+            // 删除当前的跟进人
+            customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(transferredToDTO.getId(), transferredToFollowerId, userId, username);
+        } else {
+            customerFollowUpPersonnelMapper.transferredTo(transferredToDTO.getId(), userId, transferredToDTO.getUserId());
+        }
+
+        return true;
+    }
+
+    /**
+     * 共享给
+     * @param shareToDTO
+     * @return
+     */
+    @Override
+    public boolean shareTo(ShareToDTO shareToDTO) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        // 查询客户跟进人是否包含当前用户，没有则不给分享，防止恶意使用该功能
+        List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelsVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(shareToDTO.getId());
+        List<Long> dbUserIds = customerFollowUpPersonnelsVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+
+        if (!dbUserIds.contains(userId)) {
+            throw new ServiceException("您不是该客户的跟进人，无法分享");
+        }
+
+        // 删掉已经存在的跟进人
+        List<Long> userIds = shareToDTO.getUserIds();
+        Iterator<Long> iterator = userIds.iterator();
+        while (iterator.hasNext()) {
+            Long next = iterator.next();
+            if (dbUserIds.contains(next)) {
+                iterator.remove();
+            }
+        }
+
+        if (!userIds.isEmpty()) {
+            // 批量新增跟进人
+            List<CustomerFollowUpPersonnel> customerFollowUpPersonnelList = new ArrayList<>();
+            for (Long userId1 : userIds) {
+                CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+                customerFollowUpPersonnel.setCustomerId(shareToDTO.getId());
+                customerFollowUpPersonnel.setUserId(userId1);
+                customerFollowUpPersonnel.setCreateId(userId);
+                customerFollowUpPersonnel.setCreateBy(loginUser.getUsername());
+                customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
+                customerFollowUpPersonnel.setUpdateId(userId);
+                customerFollowUpPersonnel.setUpdateBy(loginUser.getUsername());
+                customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
+                customerFollowUpPersonnelList.add(customerFollowUpPersonnel);
+            }
+            customerFollowUpPersonnelMapper.batchInsertCustomerFollowUpPersonnel(customerFollowUpPersonnelList);
+        }
+
+        return true;
+    }
+
+    /**
+     * 取消跟进
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean cancelFollowUp(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(id, userId, userId, username);
+        return true;
+    }
+
+    /**
+     * 移入公海
+     * @param moveToPublicleadsDTO
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean moveToPublicleads(MoveToPublicleadsDTO moveToPublicleadsDTO) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        CustomerPublicleads customerPublicleads = new CustomerPublicleads();
+        customerPublicleads.setCustomerId(moveToPublicleadsDTO.getId());
+        customerPublicleads.setPublicleadsGroupsId(moveToPublicleadsDTO.getPublicleadsGroupsId());
+        customerPublicleads.setPublicleadsReasonId(moveToPublicleadsDTO.getPublicleadsReasonId());
+        customerPublicleads.setCreateId(userId);
+        customerPublicleads.setCreateBy(username);
+        customerPublicleads.setCreateTime(DateUtils.getNowDate());
+        customerPublicleads.setUpdateId(userId);
+        customerPublicleads.setUpdateBy(username);
+        customerPublicleads.setUpdateTime(DateUtils.getNowDate());
+        customerPublicleadsMapper.insertCustomerPublicleads(customerPublicleads);
+
+        Customer customer = customerMapper.selectCustomerById(moveToPublicleadsDTO.getId());
+        customer.setPublicleadsGroupsId(moveToPublicleadsDTO.getPublicleadsGroupsId());
+        customer.setSeaType(CustomerSeaTypeEnum.PUBLIC_LEADS.getType());
+        customerMapper.updateCustomer(customer);
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean reassignTo(ReassignToDTO reassignToDTO) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        // 删除客户的跟进人
+        customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(reassignToDTO.getId(), userId, username);
+
+        // 批量新增跟进人
+        List<CustomerFollowUpPersonnel> customerFollowUpPersonnelList = new ArrayList<>();
+        for (Long userId1 : reassignToDTO.getUserIds()) {
+            CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+            customerFollowUpPersonnel.setCustomerId(reassignToDTO.getId());
+            customerFollowUpPersonnel.setUserId(userId1);
+            customerFollowUpPersonnel.setCreateId(userId);
+            customerFollowUpPersonnel.setCreateBy(loginUser.getUsername());
+            customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
+            customerFollowUpPersonnel.setUpdateId(userId);
+            customerFollowUpPersonnel.setUpdateBy(loginUser.getUsername());
+            customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
+            customerFollowUpPersonnelList.add(customerFollowUpPersonnel);
+        }
+        customerFollowUpPersonnelMapper.batchInsertCustomerFollowUpPersonnel(customerFollowUpPersonnelList);
+        return true;
+    }
+
+    @Override
+    public boolean unassignFollowUp(UnassignFollowUpDTO unassignFollowUpDTO) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        // 删除客户的跟进人
+        customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(unassignFollowUpDTO.getId(), unassignFollowUpDTO.getUserId(), userId, username);
+        return true;
+    }
+
+    /**
+     * 查询客户跟进人列表
+     * @param id
+     * @return
+     */
+    @Override
+    public List<CustomerFollowUpPersonnelListVO> followUpPersonnelList(Long id) {
+        return customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(id);
+    }
+
+    /**
+     * 修改重点客户
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean editFocusFlag(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(id);
+        List<Long> dbUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+        if (!dbUserIds.contains(userId)) {
+            throw new ServiceException("您不是该客户的跟进人，无法修改重点客户");
+        }
+
+        customerMapper.updateFocusFlag(id, userId, username);
+        return true;
+    }
+
 }

@@ -2,6 +2,8 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerFollowUpPersonnel;
+import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户跟进人Mapper接口
@@ -58,4 +60,40 @@ public interface CustomerFollowUpPersonnelMapper
      * @return 结果
      */
     public int deleteCustomerFollowUpPersonnelByIds(Long[] ids);
+
+    /**
+     * 转移给
+     * @param customerId 客户ID
+     * @param currentFollowerId 当前跟进人ID
+     * @param transferredToFollowerId 转移给跟进人ID
+     */
+    void transferredTo(@Param("customerId") Long customerId, @Param("currentFollowerId") Long currentFollowerId, @Param("transferredToFollowerId") Long transferredToFollowerId);
+
+    /**
+     * 根据客户ID删除
+     * @param customerId
+     */
+    void deleteCustomerFollowUpPersonnelByCustomerId(@Param("customerId") Long customerId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 查询客户跟进人列表
+     * @param customerId
+     * @return
+     */
+    List<CustomerFollowUpPersonnelListVO> selectCustomerFollowUpPersonnelByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * 批量新增跟进人
+     * @param customerFollowUpPersonnelList
+     */
+    void batchInsertCustomerFollowUpPersonnel(@Param("customerFollowUpPersonnelList") List<CustomerFollowUpPersonnel> customerFollowUpPersonnelList);
+
+    /**
+     * 删除客户跟进人
+     * @param customerId
+     * @param currentFollowerId
+     * @param userId
+     * @param username
+     */
+    void deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(@Param("customerId") Long customerId, @Param("currentFollowerId") Long currentFollowerId, @Param("userId") Long userId, @Param("username") String username);
 }

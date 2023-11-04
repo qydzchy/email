@@ -70,4 +70,11 @@ public interface ICustomerScheduleService
      * @return
      */
     Pair<Integer, List<CustomerScheduleListVO>> list(String startTime, String endTime, List<Long> userIds, Integer pageNum, Integer pageSize);
+
+    /**
+     * 修改重点关注状态
+     * @param id
+     * @return
+     */
+    boolean updateCustomerScheduleByFocusFlag(Long id);
 }

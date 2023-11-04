@@ -8,10 +8,17 @@
         <result property="id"    column="id"    />
         <result property="customerId"    column="customer_id"    />
         <result property="userId"    column="user_id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectCustomerFollowUpPersonnelVo">
-        select id, customer_id, user_id from customer_customer_follow_up_personnel
+        select id, customer_id, user_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_follow_up_personnel
     </sql>
 
     <select id="selectCustomerFollowUpPersonnelList" parameterType="CustomerFollowUpPersonnel" resultMap="CustomerFollowUpPersonnelResult">
@@ -19,6 +26,8 @@
         <where>
             <if test="customerId != null "> and customer_id = #{customerId}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
     </select>
 
@@ -27,16 +36,48 @@
         where id = #{id}
     </select>
 
+    <select id="countCustomerFollowUpPersonnelByCustomerIdAndUserId" resultType="java.lang.Integer">
+        select count(1) from customer_customer_follow_up_personnel where customer_id = #{customerId} and user_id = #{userId} and del_flag = '0'
+    </select>
+
+    <select id="selectCustomerFollowUpPersonnelByCustomerId" resultType="CustomerFollowUpPersonnelListVO">
+        select fup.id, fup.customer_id as customerId, fup.user_id as userId, u.nick_name as nickName from customer_customer_follow_up_personnel fup
+        left join sys_user u on fup.user_id = u.user_id and u.del_flag = '0'
+        where fup.customer_id = #{customerId} and fup.del_flag = '0'
+    </select>
+
     <insert id="insertCustomerFollowUpPersonnel" parameterType="CustomerFollowUpPersonnel" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_follow_up_personnel
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="customerId != null">customer_id,</if>
             <if test="userId != null">user_id,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="customerId != null">#{customerId},</if>
             <if test="userId != null">#{userId},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
         </trim>
+    </insert>
+
+    <insert id="batchInsertCustomerFollowUpPersonnel">
+        insert into customer_customer_follow_up_personnel (customer_id, user_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        values
+        <foreach collection="customerFollowUpPersonnelList" item="item" index="index" separator=",">
+            (#{item.customerId}, #{item.userId}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
     </insert>
 
     <update id="updateCustomerFollowUpPersonnel" parameterType="CustomerFollowUpPersonnel">
@@ -44,6 +85,13 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="customerId != null">customer_id = #{customerId},</if>
             <if test="userId != null">user_id = #{userId},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
     </update>
@@ -58,4 +106,16 @@
             #{id}
         </foreach>
     </delete>
+
+    <update id="deleteCustomerFollowUpPersonnelByCustomerIdAndUserId">
+        update customer_customer_follow_up_personnel set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW()  where customer_id = #{customerId} and user_id = #{currentFollowerId}
+    </update>
+
+    <update id="deleteCustomerFollowUpPersonnelByCustomerId">
+        update customer_customer_follow_up_personnel set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW()  where customer_id = #{customerId}
+    </update>
+
+    <update id="transferredTo">
+        update customer_customer_follow_up_personnel set user_id = #{transferredToFollowerId} where customer_id = #{customerId} and user_id = #{currentFollowerId} and del_flag = '0'
+    </update>
 </mapper>

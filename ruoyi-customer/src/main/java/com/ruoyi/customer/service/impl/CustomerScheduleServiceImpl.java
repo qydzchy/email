@@ -196,6 +196,15 @@ public class CustomerScheduleServiceImpl implements ICustomerScheduleService
         }
 
         List<CustomerScheduleListVO> customerScheduleListVOList = customerScheduleMapper.list(startTime, endTime, userIds, pageNum, pageSize);
-        return null;
+        return Pair.of(count, customerScheduleListVOList);
+    }
+
+    @Override
+    public boolean updateCustomerScheduleByFocusFlag(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return customerScheduleMapper.updateFocusFlag(id, userId, username);
     }
 }
