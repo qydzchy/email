@@ -1,17 +1,20 @@
 <template>
-  <div>
-    <el-popover
-      width="100"
-      placement="bottom"
-      :visible-arrow="false"
-    >
-      <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)" slot="reference"></i>
-    </el-popover>
-  </div>
+  <el-dropdown trigger="click" placement="bottom">
+    <span>
+      <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
+    </span>
+
+    <el-dropdown-menu slot="dropdown">
+      <el-dropdown-item>黄金糕</el-dropdown-item>
+      <el-dropdown-item>狮子头</el-dropdown-item>
+      <el-dropdown-item>螺蛳粉</el-dropdown-item>
+    </el-dropdown-menu>
+  </el-dropdown>
 </template>
 
 <script>
 import Vue from 'vue'
+
 export default {
   props: {
     row: {
