@@ -22,8 +22,13 @@
     .tooltip-W-#{$var}{
         width: #{$var}px;
     }
+
     .radius-#{$var}{
         border-radius: #{$var}px;
+    }
+
+    .zIndex-#{$var}{
+      z-index: $var;
     }
 }
 
@@ -63,6 +68,12 @@
       grid-gap: #{$size}px;
       gap:#{$size}px;
     }
+}
+
+@each $pos in $positionList {
+  .#{$pos} {
+    position: #{$pos};
+  }
 }
 
 .flex1 {
