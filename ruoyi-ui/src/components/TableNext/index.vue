@@ -70,7 +70,7 @@ export default {
               (item.type !== 'selection' ? (
                 <el-table-column
                   key={'table_' + item.label}
-                  props={{...item}}
+                  props={{...item, prop: item.field}}
                   align={item.align || 'center'}
                 >
                   {(value) => {
@@ -109,6 +109,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-table__empty-block {
+  width: 100% !important;
+  min-width: 100%;
+  max-width: 100%;
+  position: sticky;
+  left: 0;
+}
+
 ::v-deep .el-pagination {
   display: flex;
   justify-content: flex-end;

@@ -1,22 +1,19 @@
 <template>
   <div class="flex-middle space-between">
-    <el-row>
-      <span :title="content">{{ content || '---'}}</span>
-    </el-row>
+    <span class="flex1 span-style" :title="content" @click="onClick">{{ content || '---' }}</span>
     <el-row
       type="flex"
       class="pl-10 gap-8"
       v-show="innerVisible"
     >
-      <i class="el-icon-edit pointer" @click="$emit('onEdit')"></i>
-      <i class="el-icon-document-copy pointer" @click="onCopy"></i>
+      <i v-if="disabledEdit" class="el-icon-edit pointer" @click="$emit('onEdit')"></i>
+      <i class="el-icon-copy-document pointer" @click="onCopy"></i>
     </el-row>
-
   </div>
-
 </template>
 
 <script>
+
 
 export default {
   props: {
@@ -29,12 +26,17 @@ export default {
       type: Boolean,
       default: false,
       required: true
+    },
+    disabledEdit: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   data() {
     return {
       content: '',
-      innerVisible: false
+      innerVisible: false,
     }
   },
   watch: {
@@ -60,11 +62,16 @@ export default {
       this.$copyText(this.content).then(() => {
         this.$message.success('复制成功')
       })
-    }
+    },
+    onClick() {
+      this.$emit('click')
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-
+.span-style {
+  cursor: default;
+}
 </style>

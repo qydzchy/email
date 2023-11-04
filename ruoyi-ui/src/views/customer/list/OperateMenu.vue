@@ -1,13 +1,21 @@
 <template>
-  <el-dropdown trigger="click" placement="bottom">
+  <el-dropdown trigger="click">
     <span>
-      <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
+      <slot></slot>
     </span>
-
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item>黄金糕</el-dropdown-item>
-      <el-dropdown-item>狮子头</el-dropdown-item>
-      <el-dropdown-item>螺蛳粉</el-dropdown-item>
+      <el-dropdown-item>写跟进</el-dropdown-item>
+      <el-dropdown-item>写邮件</el-dropdown-item>
+      <el-dropdown-item>新建日程</el-dropdown-item>
+      <el-dropdown-item>移动至分组</el-dropdown-item>
+      <el-dropdown-item>合并客户</el-dropdown-item>
+      <el-dropdown-item>转移给</el-dropdown-item>
+      <el-dropdown-item>共享给</el-dropdown-item>
+      <el-dropdown-item>取消跟进</el-dropdown-item>
+      <el-dropdown-item>移入公海</el-dropdown-item>
+      <el-dropdown-item>重新分配</el-dropdown-item>
+      <el-dropdown-item>移除跟进入</el-dropdown-item>
+      <el-dropdown-item>变更公海分组</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>
@@ -21,13 +29,14 @@ export default {
       type: Object,
       default: () => {
       },
-      required: true
+      required: false
     }
   },
+  mounted() {
+
+  },
   data() {
-    return {
-      aa: 111
-    }
+    return {}
   },
   methods: {}
 }
