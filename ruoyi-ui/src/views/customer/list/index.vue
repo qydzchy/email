@@ -11,7 +11,16 @@
         <!--        <el-select class="ml-6"></el-select>-->
       </div>
       <div>
-        <el-button type="primary" round>新建客户</el-button>
+        <el-dropdown trigger="click" split-button type="primary" round>
+          新建客户
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>黄金糕</el-dropdown-item>
+            <el-dropdown-item>狮子头</el-dropdown-item>
+            <el-dropdown-item>螺蛳粉</el-dropdown-item>
+            <el-dropdown-item>双皮奶</el-dropdown-item>
+            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
 
@@ -91,12 +100,12 @@
                 <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group"></el-select>
                 <el-input style="width:200px" placeholder="请输入"></el-input>
                 <FilterDrawer/>
-<!--                <el-popover-->
-<!--                  trigger="click"-->
-<!--                  width="200"-->
-<!--                >-->
-<!--                  <el-button icon="el-icon-setting" round slot="reference">设置</el-button>-->
-<!--                </el-popover>-->
+                <!--                <el-popover-->
+                <!--                  trigger="click"-->
+                <!--                  width="200"-->
+                <!--                >-->
+                <!--                  <el-button icon="el-icon-setting" round slot="reference">设置</el-button>-->
+                <!--                </el-popover>-->
               </div>
             </div>
             <div class="mt-20">
@@ -208,7 +217,7 @@ export default {
             const id = scope.column.id
             const isShow = showEditIcon && columnId === id && rowId === row?.id
             return <div>
-              {this.curEditId === id && rowId === row?.id
+              {this.curEditId === row?.id && columnId === id
                 ?
                 <el-input
                   size="small"
@@ -219,7 +228,7 @@ export default {
                 : <CellOperate
                   text={field}
                   visible={isShow}
-                  on={{onEdit: () => this.onEdit(id, row?.id)}}
+                  on={{onEdit: () => this.onCellEdit(row?.id, id)}}
                 />}
             </div>
           }
@@ -370,9 +379,9 @@ export default {
         columnId: ''
       }
     },
-    onEdit(id, rowId) {
-      this.curEditId = id
-      this.tableCell.rowId = rowId
+    onCellEdit(rowId, columnId) {
+      this.curEditId = rowId
+      this.tableCell.rowId = columnId
     },
     onInput(value, scope, field) {
       this.$set(this.list, scope.$index, {...scope.row, [field]: value})
@@ -572,6 +581,20 @@ export default {
 
   ::v-deep .splitter-paneR {
     padding: 0;
+  }
+}
+
+::v-deep .el-dropdown {
+  .el-button-group {
+    button:nth-child(1) {
+      border-bottom-left-radius: 20px;
+      border-top-left-radius: 20px;
+    }
+
+    button:nth-child(2) {
+      border-bottom-right-radius: 20px;
+      border-top-right-radius: 20px;
+    }
   }
 }
 
