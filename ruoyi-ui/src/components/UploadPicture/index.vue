@@ -15,9 +15,9 @@
 				slot="trigger"
 				size="small"
 				type="primary"
-				>{{ $t('selectPicture') }}</el-button
+				>选择图片</el-button
 			>
-			<div>{{ $t('uploadTip') }}</div>
+			<div>修改文件名，需选取图片后点击文件名</div>
 		</el-upload>
 	</div>
 </template>
@@ -49,8 +49,8 @@
 			// 修改文件名
 			handleModify(file) {
 				this.$prompt('请输入修改的文件名', '提示', {
-					confirmButtonText: this.$t('confirm'),
-					confirmButtonText: this.$t('cancel'),
+					confirmButtonText: '确定',
+					confirmButtonText: '取消',
 					inputPattern: /^.+$/,
 					inputErrorMessage: '填写不能为空',
 				})

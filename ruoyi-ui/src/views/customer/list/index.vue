@@ -11,10 +11,10 @@
         <!--        <el-select class="ml-6"></el-select>-->
       </div>
       <div>
-        <el-dropdown trigger="click" split-button type="primary" round>
-          新建客户
+        <el-dropdown trigger="click" split-button type="primary" round @click="onShowDrawer" @command="handleCommand">
+          <span>新建客户</span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>导入客户</el-dropdown-item>
+            <el-dropdown-item command="import">导入客户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -67,7 +67,7 @@
                 </el-collapse>
               </div>
               <div class="fixed-operate flex-middle flex-center">
-                <div class="hover-color fs-14 pointer">客群管理</div>
+                <div class="hover-color fs-14 pointer" @click="$router.push('/customer/group?tab=list')">客群管理</div>
                 <el-tooltip>
                   <template #content>
                     查看&nbsp;<a style="text-decoration: underline">客群功能详细说明</a>
@@ -104,6 +104,7 @@
       </split-pane>
 
     </div>
+    <CreateCustomerDrawer :visible.sync="customerVisible"/>
   </div>
 </template>
 
@@ -112,6 +113,7 @@ import FilterDrawer from './FilterDrawer.vue'
 import CellOperate from './CellOperate.vue'
 import HeaderFilter from './HeaderFilter.vue'
 import TableList from './TableList.vue'
+import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import {listMenu} from "@/api/system/menu";
 
 export default {
@@ -119,7 +121,8 @@ export default {
     FilterDrawer,
     CellOperate,
     HeaderFilter,
-    TableList
+    TableList,
+    CreateCustomerDrawer
   },
   data() {
     return {
@@ -141,6 +144,7 @@ export default {
         },
       ],
       menuOptions: [],
+      customerVisible: false
     }
   },
   mounted() {
@@ -167,6 +171,9 @@ export default {
         this.menuOptions.push(menu);
       });
     },
+    onShowDrawer() {
+      this.customerVisible = true
+    },
     onCollapsed() {
       this.collapsed = true
       this.$refs.splitPane.percent = 0
@@ -183,6 +190,11 @@ export default {
       }
       this.percent = value
     },
+    handleCommand(command) {
+      if (command === 'import') {
+        this.$router.push('/customer/config/import-operate')
+      }
+    },
     handleChange(e) {
 
     },
@@ -192,6 +204,7 @@ export default {
 
 <style lang="scss" scoped>
 .page-customer-public {
+  height: 100%;
   .header {
     border-bottom: 1px solid #f0f0f0;
   }
@@ -204,7 +217,7 @@ export default {
 }
 
 .container {
-  height: calc(100vh - 154px);
+  height: calc(100% - 50px);
 
   .cur-collapsed {
     ::v-deep .splitter-pane-resizer {
@@ -223,6 +236,7 @@ export default {
     height: 100%;
     border-left: 1px solid #f0f0f0;
     background: #f7f8fb;
+    z-index: 10;
 
     .menu {
       overflow-y: auto;

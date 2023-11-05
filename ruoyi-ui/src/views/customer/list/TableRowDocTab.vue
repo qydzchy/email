@@ -2,8 +2,16 @@
   <div v-loading="tableLoading">
     <el-row class="mb-10">
       <el-col class="flex-middle space-between">
-        <div>销售订单</div>
-        <div><i class="el-icon-circle-plus-outline"></i></div>
+        <div>文档</div>
+        <el-dropdown trigger="click">
+          <el-tooltip placement="top" content="上传文件">
+            <i class="el-icon-circle-plus-outline pointer"></i>
+          </el-tooltip>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>本地文件</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
       </el-col>
       <el-col class="mt-10">
         <formCreate
@@ -40,7 +48,7 @@ export default {
             },
             children: [{
               type: "input",
-              field:'docName',
+              field: 'docName',
               props: {
                 placeholder: '搜索文档名称',
               },

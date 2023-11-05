@@ -1,6 +1,6 @@
 <template>
   <div class="search-group flex-middle gap-8">
-    <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group">
+    <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group" @change="handleSelect">
       <el-option v-for="(opt,index) in infoOption" :key="index" :label="opt.label" :value="opt.value">
       </el-option>
     </el-select>
@@ -23,15 +23,15 @@ export default {
   data() {
     return {
       infoOption: [
-        {label: '公司名称', value: 'name'},
-        {label: '邮箱', value: 'email'},
-        {label: '客户标签', value: 'tag'},
-        {label: '分组', value: 'group'},
-        {label: '国家地区', value: 'area'},
-        {label: '客户来源', value: 'origin'},
-        {label: '客户阶段', value: 'stage'},
-        {label: '客户星级', value: 'star'},
-        {label: '最近联系时间', value: 'contactTime'},
+        {label: '公司名称', value: 'name', type: 'input'},
+        {label: '邮箱', value: 'email', type: 'input'},
+        {label: '客户标签', value: 'tag', type: 'select-tag'},
+        {label: '分组', value: 'group', type: 'select-tree'},
+        {label: '国家地区', value: 'area', type: 'select-tree'},
+        {label: '客户来源', value: 'origin', type:'select-tree'},
+        {label: '客户阶段', value: 'stage',type:'select-tag'},
+        {label: '客户星级', value: 'star',type:'select'},
+        {label: '最近联系时间', value: 'contactTime',},
         {label: '下次移入公海时间', value: 'movePoolTime'},
         {label: '是否关注', value: 'isFollow'},
         {label: '跟进人', value: 'follow'},
@@ -41,6 +41,11 @@ export default {
         parentId: null,
       }
     }
+  },
+  methods: {
+    handleSelect(value) {
+
+    },
   }
 }
 </script>

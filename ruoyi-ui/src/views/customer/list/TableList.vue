@@ -10,8 +10,8 @@
         :extra-option="extraOption"
         :extra-event="extraEvent"
         :paginate-option="paginateOption"/>
-      <TableRowDrawer :visible.sync="rowDrawerVisible"/>
     </div>
+    <TableRowDrawer :visible.sync="rowDrawerVisible"/>
   </div>
 </template>
 
@@ -71,7 +71,7 @@ export default {
             const isShow = (fieldName === propName && rowId === row.id) || field
             return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
               <el-tooltip placement="top" content={field ? '取消关注' : '关注'}>
-                <i class="el-icon-time" style={{display: isShow ? 'block' : 'none'}}></i>
+                <svg-icon icon-class="like"  style={{display: isShow ? 'block' : 'none'}}/>
               </el-tooltip>
             </div>
 
@@ -288,7 +288,7 @@ export default {
       }
     }
 
-    .follow-icon-active > i {
+    .follow-icon-active > svg {
       color: red;
 
       &:hover {

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-customer-public">
+  <div class="page-customer-public mx-20">
     <div class="bold fs-24 pb-4">
       公海客户
     </div>

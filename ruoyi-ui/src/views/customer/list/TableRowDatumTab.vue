@@ -57,7 +57,7 @@
     <el-row class="py-10 bottom-line">
       <div class="flex-middle space-between">
         <div>公司常用信息</div>
-        <div><i class="el-icon-edit"></i></div>
+        <div><i class="el-icon-setting"></i></div>
       </div>
       <div class="my-10 info-card">
         <el-row class="flex-wrap" type="flex" :gutter="10">
@@ -74,7 +74,6 @@
     <el-row class="py-10 bottom-line">
       <div class="flex-middle space-between">
         <div>公司其他信息</div>
-        <div><i class="el-icon-edit"></i></div>
       </div>
       <div class="my-10 info-card">
         <el-row class="flex-wrap" type="flex" :gutter="10">
@@ -95,7 +94,6 @@
     <el-row class="py-10 bottom-line">
       <div class="flex-middle space-between">
         <div>跟进信息</div>
-        <div><i class="el-icon-edit"></i></div>
       </div>
       <div class="my-10 echo-info">
         <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
@@ -111,7 +109,6 @@
     <el-row class="py-10">
       <div class="flex-middle space-between">
         <div>系统信息</div>
-        <div><i class="el-icon-edit"></i></div>
       </div>
       <div class="my-10 echo-info">
         <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
@@ -139,10 +136,6 @@ export default {
           id: 1,
           checked: true
         },
-        {
-          id: 2,
-          checked: false,
-        }
       ],
       usuallyInfo: [
         {

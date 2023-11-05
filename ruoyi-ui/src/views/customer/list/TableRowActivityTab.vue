@@ -1,12 +1,12 @@
 <template>
   <div class="active-tab">
-    <div class="create-company flex-middle flex-center py-2">
-      <p class="fs-14">
-        如有新的交易，可在此
-        <el-button type="text" style="text-underline: #0d0c0c">新建商机</el-button>
-        进行管理。
-      </p>
-    </div>
+    <!--    <div class="create-company flex-middle flex-center py-2">-->
+    <!--      <p class="fs-14">-->
+    <!--        如有新的交易，可在此-->
+    <!--        <el-button type="text" style="text-underline: #0d0c0c">新建商机</el-button>-->
+    <!--        进行管理。-->
+    <!--      </p>-->
+    <!--    </div>-->
     <div class="mt-20">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">写跟进</div>
@@ -24,6 +24,13 @@
         <div class="fs-14 bold">计划日程</div>
         <el-button round size="medium">添加日程</el-button>
       </div>
+      <ul class="plan-ul">
+        <li class="plan-li pointer">
+          <div class="circle"></div>
+          <span class="date">10-18</span>
+          <span class="content">客户生日：测试公司001-王五</span>
+        </li>
+      </ul>
     </div>
     <div class="mt-20">
       <div class="flex-middle space-between">
@@ -191,6 +198,39 @@ export default {
     position: relative;
   }
 
+  .plan-ul {
+    padding-inline-start: 0;
+  }
+
+  .plan-ul > .plan-li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    .circle {
+      width: 8px;
+      height: 8px;
+      background: rgb(255, 51, 51);
+      border-radius: 8px;
+      padding: 0 4px;
+    }
+
+    .date {
+      width: 102px;
+      color: #0a6aff;
+      word-wrap: break-word;
+      padding-left: 4px;
+    }
+
+    .content {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: rgba(37, 40, 46)
+    }
+  }
+
   .sort-caret {
     width: 0;
     height: 0;
@@ -261,7 +301,7 @@ export default {
       .comment-item {
 
         .icon-operate {
-         display: none;
+          display: none;
         }
 
         &:hover .icon-operate {
