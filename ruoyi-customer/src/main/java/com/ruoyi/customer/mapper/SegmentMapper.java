@@ -75,7 +75,16 @@ public interface SegmentMapper
 
     /**
      * 查询客群列表
+     * @param userId 跟进人ID
      * @param usageScope
      */
-    List<SegmentListVO> list(@Param("usageScope") Integer usageScope);
+    List<SegmentListVO> list(@Param("userId") Long userId, @Param("usageScope") Integer usageScope);
+
+    /**
+     * 统计客户数
+     * @param userId
+     * @param focusFlag
+     * @return
+     */
+    Integer countCustomerCount(Long userId, Boolean focusFlag);
 }

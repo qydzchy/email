@@ -176,8 +176,52 @@ public class SegmentServiceImpl implements ISegmentService
      */
     @Override
     public List<SegmentListVO> getSegmentTree(Integer usageScope) {
-        List<SegmentListVO> segmentVOList = segmentMapper.list(usageScope);
-        return buildTree(segmentVOList, -1L);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        /**
+         * 生成基础客群
+         */
+        List<SegmentListVO> allSegmentVOList = new ArrayList<>();
+        if (usageScope.intValue() != 1) {
+            List<SegmentListVO> basicSegmentVO = initBasicSegment(userId);
+            allSegmentVOList.addAll(basicSegmentVO);
+        }
+
+        List<SegmentListVO> segmentVOList = segmentMapper.list(userId, usageScope);
+        allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
+
+        return allSegmentVOList;
+    }
+
+    /**
+     * 生成基础客群
+     * @return
+     */
+    private List<SegmentListVO> initBasicSegment(Long userId) {
+        List<SegmentListVO> basicSegment = new ArrayList<>();
+
+        SegmentListVO allSegment = new SegmentListVO();
+        allSegment.setId(-2L);
+        allSegment.setParentId(null);
+        allSegment.setName("全部客户");
+        allSegment.setUsageScope(2);
+        // 查询客户数量
+        Integer allCustomerCount = segmentMapper.countCustomerCount(userId, null);
+        allSegment.setCustomerCount(allCustomerCount);
+        basicSegment.add(allSegment);
+
+        SegmentListVO followSegment = new SegmentListVO();
+        followSegment.setId(-1L);
+        followSegment.setParentId(null);
+        followSegment.setName("我的关注");
+        followSegment.setUsageScope(2);
+        // 查询客户数量
+        Integer focusCustomerCount = segmentMapper.countCustomerCount(userId, true);
+        followSegment.setCustomerCount(focusCustomerCount);
+        basicSegment.add(followSegment);
+
+        return basicSegment;
     }
 
     private List<SegmentListVO> buildTree(List<SegmentListVO> segmentVOList, Long parentId) {

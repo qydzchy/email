@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.PublicleadsGroupsUserMapper">
+
+    <resultMap type="PublicleadsGroupsUser" id="PublicleadsGroupsUserResult">
+        <result property="id"    column="id"    />
+        <result property="publicleadsGroupsId"    column="publicleads_groups_id"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectPublicleadsGroupsUserVo">
+        select id, publicleads_groups_id, user_id from customer_publicleads_groups_user
+    </sql>
+
+    <select id="selectPublicleadsGroupsUserList" parameterType="PublicleadsGroupsUser" resultMap="PublicleadsGroupsUserResult">
+        <include refid="selectPublicleadsGroupsUserVo"/>
+        <where>
+            <if test="publicleadsGroupsId != null "> and publicleads_groups_id = #{publicleadsGroupsId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+
+    <select id="selectPublicleadsGroupsUserById" parameterType="Long" resultMap="PublicleadsGroupsUserResult">
+        <include refid="selectPublicleadsGroupsUserVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPublicleadsGroupsUser" parameterType="PublicleadsGroupsUser">
+        insert into customer_publicleads_groups_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="publicleadsGroupsId != null">publicleads_groups_id,</if>
+            <if test="userId != null">user_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="publicleadsGroupsId != null">#{publicleadsGroupsId},</if>
+            <if test="userId != null">#{userId},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertPublicleadsGroupsUser">
+        insert into customer_publicleads_groups_user (publicleads_groups_id, user_id)
+        values
+        <foreach collection="publicleadsGroupsUserList" item="item" index="index" separator=",">
+            (#{item.publicleadsGroupsId}, #{item.userId})
+        </foreach>
+    </insert>
+
+    <update id="updatePublicleadsGroupsUser" parameterType="PublicleadsGroupsUser">
+        update customer_publicleads_groups_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="publicleadsGroupsId != null">publicleads_groups_id = #{publicleadsGroupsId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePublicleadsGroupsUserById" parameterType="Long">
+        delete from customer_publicleads_groups_user where id = #{id}
+    </delete>
+
+    <delete id="deletePublicleadsGroupsUserByIds" parameterType="String">
+        delete from customer_publicleads_groups_user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deletePublicleadsGroupsUserByPublicleadsGroupsId">
+        delete from customer_publicleads_groups_user where publicleads_groups_id = #{publicleadsGroupsId}
+    </delete>
+</mapper>

@@ -7,7 +7,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PublicleadsGroups" id="PublicleadsGroupsResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
-        <result property="userIds"    column="user_ids"    />
         <result property="defaultGroupFlag"    column="default_group_flag"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
@@ -19,14 +18,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPublicleadsGroupsVo">
-        select id, name, user_ids, default_group_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_groups
+        select id, name, default_group_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_groups
     </sql>
 
     <select id="selectPublicleadsGroupsList" parameterType="PublicleadsGroups" resultMap="PublicleadsGroupsResult">
         <include refid="selectPublicleadsGroupsVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="userIds != null  and userIds != ''"> and user_ids = #{userIds}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
             and del_flag = '0'
@@ -37,13 +35,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPublicleadsGroupsVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="list" resultType="com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO">
+        select pg.id, pg.name, pg.default_group_flag as defaultGroupFlag, pgu.user_id as userId, pgu.user_name as userName, pgu.nick_name as nickName
+        from customer_publicleads_groups pg
+        left join customer_publicleads_groups_user pgu on pg.id = pgu.publicleads_groups_id
+        where pg.del_flag = '0'
+    </select>
+
     <insert id="insertPublicleadsGroups" parameterType="PublicleadsGroups">
         insert into customer_publicleads_groups
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="name != null and name != ''">name,</if>
-            <if test="userIds != null and userIds != ''">user_ids,</if>
             <if test="defaultGroupFlag != null">default_group_flag,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
@@ -56,7 +60,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="name != null and name != ''">#{name},</if>
-            <if test="userIds != null and userIds != ''">#{userIds},</if>
             <if test="defaultGroupFlag != null">#{defaultGroupFlag},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
@@ -72,7 +75,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update customer_publicleads_groups
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null and name != ''">name = #{name},</if>
-            <if test="userIds != null and userIds != ''">user_ids = #{userIds},</if>
             <if test="defaultGroupFlag != null">default_group_flag = #{defaultGroupFlag},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>

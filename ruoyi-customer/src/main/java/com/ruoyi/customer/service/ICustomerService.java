@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 
 /**
  * 客户详情Service接口
@@ -135,4 +136,30 @@ public interface ICustomerService
      * @return
      */
     boolean editFocusFlag(Long id);
+
+    /**
+     * 变更公海分组
+     * @param id
+     * @param publicleadsGroupsId
+     * @return
+     */
+    boolean changePublicleadsGroups(Long id, Long publicleadsGroupsId);
+
+    /**
+     * 公海分组列表
+     * @param customerId
+     * @return
+     */
+    List<PublicleadsGroupsListVO> publicleadsGroupsList(Long customerId);
+
+    /**
+     * 移入私海
+     * @param id
+     * @return
+     */
+    boolean moveToPrivateleads(Long id);
+
+    /**
+     *
+     */
 }

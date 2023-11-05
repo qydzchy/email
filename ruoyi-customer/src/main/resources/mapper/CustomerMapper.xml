@@ -104,6 +104,12 @@
             LIMIT #{offset}, #{limit}
     </select>
 
+    <select id="publicleadsGroupsList" resultType="com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO">
+        select pg.id, pg.name from customer_publicleads_groups pg
+        left join customer_publicleads_groups_user pgu on pg.id = pgu.publicleads_groups_id
+        where pg.del_flag = '0'
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -212,6 +218,14 @@
 
     <update id="updateFocusFlag">
         update customer_customer set focus_flag = !focus_flag, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id} and del_flag = '0'
+    </update>
+
+    <update id="changePublicleadsGroups">
+        update customer_customer set publicleads_groups_id = #{publicleadsGroupsId}, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id} and del_flag = '0'
+    </update>
+
+    <update id="moveToPrivateleads">
+        update customer_customer set sea_type = 1, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id} and del_flag = '0'
     </update>
 
     <delete id="deleteCustomerById" parameterType="Long">

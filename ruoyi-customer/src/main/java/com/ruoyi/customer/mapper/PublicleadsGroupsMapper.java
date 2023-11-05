@@ -2,6 +2,8 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsGroups;
+import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -34,7 +36,7 @@ public interface PublicleadsGroupsMapper
      * @param publicleadsGroups 公海分组
      * @return 结果
      */
-    public int insertPublicleadsGroups(PublicleadsGroups publicleadsGroups);
+    public long insertPublicleadsGroups(PublicleadsGroups publicleadsGroups);
 
     /**
      * 修改公海分组
@@ -59,4 +61,10 @@ public interface PublicleadsGroupsMapper
      * @return 结果
      */
     public int deletePublicleadsGroupsByIds(Long[] ids);
+
+    /**
+     * 公海分组列表
+     * @return
+     */
+    List<PublicleadsGroupsListBO> list();
 }

@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
-import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -219,24 +218,6 @@ public class CustomerController extends BaseController
     }
 
     /**
-     * 变更公海分组
-     */
-    /*@PreAuthorize("@ss.hasPermi('customer:customer:change:publicleads:groups')")
-    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
-    @PostMapping("/change/publicleads/groups")
-    public AjaxResult changePublicleadsGroups(@RequestBody UnassignFollowUpDTO unassignFollowUpDTO)
-    {
-        if (unassignFollowUpDTO.getId() == null) {
-            throw new ServiceException("ID不能为空");
-        }
-        if (unassignFollowUpDTO.getUserId() == null) {
-            throw new ServiceException("跟进人不能为空");
-        }
-
-        return toAjax(customerService.unassignFollowUp(unassignFollowUpDTO));
-    }*/
-
-    /**
      * 修改重点关注
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:edit:focusFlag')")
@@ -249,5 +230,48 @@ public class CustomerController extends BaseController
         }
 
         return toAjax(customerService.editFocusFlag(customer.getId()));
+    }
+
+    /**
+     * 查询公海分组
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:groups:list')")
+    @GetMapping("/publicleads/groups/list")
+    public AjaxResult publicleadsGroupsList(Long customerId)
+    {
+        return success(customerService.publicleadsGroupsList(customerId));
+    }
+
+    /**
+     * 变更公海分组
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:change:publicleads:groups')")
+    @Log(title = "变更公海分组", businessType = BusinessType.UPDATE)
+    @PostMapping("/change/publicleads/groups")
+    public AjaxResult changePublicleadsGroups(@RequestBody ChangePublicleadsGroupsDTO changePublicleadsGroupsDTO)
+    {
+        if (changePublicleadsGroupsDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (changePublicleadsGroupsDTO.getPublicleadsGroupsId() == null) {
+            throw new ServiceException("公海分组ID不能为空");
+        }
+
+        return toAjax(customerService.changePublicleadsGroups(changePublicleadsGroupsDTO.getId(), changePublicleadsGroupsDTO.getPublicleadsGroupsId()));
+    }
+
+    /**
+     * 移入私海
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:move:to:privateleads')")
+    @Log(title = "移入私海", businessType = BusinessType.UPDATE)
+    @PostMapping("/move/to/privateleads")
+    public AjaxResult moveToPrivateleads(@RequestBody Customer customer)
+    {
+        if (customer.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return toAjax(customerService.moveToPrivateleads(customer.getId()));
     }
 }

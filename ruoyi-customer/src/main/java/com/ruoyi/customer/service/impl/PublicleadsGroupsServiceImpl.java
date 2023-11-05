@@ -6,13 +6,17 @@ import java.util.stream.Collectors;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.PublicleadsGroupsUser;
+import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
+import com.ruoyi.customer.domain.dto.PublicleadsGroupAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
+import com.ruoyi.customer.mapper.PublicleadsGroupsUserMapper;
 import com.ruoyi.system.domain.vo.UserInfoVO;
-import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PublicleadsGroupsMapper;
 import com.ruoyi.customer.domain.PublicleadsGroups;
 import com.ruoyi.customer.service.IPublicleadsGroupsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -27,23 +31,25 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
 {
     @Resource
     private PublicleadsGroupsMapper publicleadsGroupsMapper;
-
     @Resource
-    private SysUserMapper sysUserMapper;
+    private PublicleadsGroupsUserMapper publicleadsGroupsUserMapper;
 
     /**
      * 新增公海分组
      * 
-     * @param publicleadsGroups 公海分组
+     * @param publicleadsGroupAddOrUpdateDTO 公海分组
      * @return 结果
      */
     @Override
-    public int insertPublicleadsGroups(PublicleadsGroups publicleadsGroups)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertPublicleadsGroups(PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        PublicleadsGroups publicleadsGroups = new PublicleadsGroups();
+        publicleadsGroups.setName(publicleadsGroupAddOrUpdateDTO.getName());
         publicleadsGroups.setDefaultGroupFlag(false);
         publicleadsGroups.setCreateId(userId);
         publicleadsGroups.setCreateBy(username);
@@ -51,26 +57,68 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
         publicleadsGroups.setUpdateId(userId);
         publicleadsGroups.setUpdateBy(username);
         publicleadsGroups.setUpdateTime(DateUtils.getNowDate());
-        return publicleadsGroupsMapper.insertPublicleadsGroups(publicleadsGroups);
+
+        Long id = publicleadsGroupsMapper.insertPublicleadsGroups(publicleadsGroups);
+
+        String userIds = publicleadsGroupAddOrUpdateDTO.getUserIds();
+        String[] userIdArray = userIds.split(",");
+        List<PublicleadsGroupsUser> publicleadsGroupsUserList = new ArrayList<>();
+        for (String userIdStr : userIdArray) {
+            Long userIdLong = Long.valueOf(userIdStr);
+            PublicleadsGroupsUser publicleadsGroupsUser = new PublicleadsGroupsUser();
+            publicleadsGroupsUser.setPublicleadsGroupsId(id);
+            publicleadsGroupsUser.setUserId(userIdLong);
+            publicleadsGroupsUserList.add(publicleadsGroupsUser);
+        }
+
+        if (publicleadsGroupsUserList.isEmpty()) {
+            // 批量插入分组成员
+            publicleadsGroupsUserMapper.batchInsertPublicleadsGroupsUser(publicleadsGroupsUserList);
+        }
+        return true;
     }
 
     /**
      * 修改公海分组
      * 
-     * @param publicleadsGroups 公海分组
+     * @param publicleadsGroupAddOrUpdateDTO 公海分组
      * @return 结果
      */
     @Override
-    public int updatePublicleadsGroups(PublicleadsGroups publicleadsGroups)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updatePublicleadsGroups(PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        PublicleadsGroups publicleadsGroups = new PublicleadsGroups();
+        publicleadsGroups.setId(publicleadsGroupAddOrUpdateDTO.getId());
+        publicleadsGroups.setName(publicleadsGroupAddOrUpdateDTO.getName());
         publicleadsGroups.setUpdateId(userId);
         publicleadsGroups.setUpdateBy(username);
         publicleadsGroups.setUpdateTime(DateUtils.getNowDate());
-        return publicleadsGroupsMapper.updatePublicleadsGroups(publicleadsGroups);
+        publicleadsGroupsMapper.updatePublicleadsGroups(publicleadsGroups);
+
+        // 删除分组成员
+        publicleadsGroupsUserMapper.deletePublicleadsGroupsUserByPublicleadsGroupsId(publicleadsGroupAddOrUpdateDTO.getId());
+
+        String userIds = publicleadsGroupAddOrUpdateDTO.getUserIds();
+        String[] userIdArray = userIds.split(",");
+        List<PublicleadsGroupsUser> publicleadsGroupsUserList = new ArrayList<>();
+        for (String userIdStr : userIdArray) {
+            Long userIdLong = Long.valueOf(userIdStr);
+            PublicleadsGroupsUser publicleadsGroupsUser = new PublicleadsGroupsUser();
+            publicleadsGroupsUser.setPublicleadsGroupsId(publicleadsGroupAddOrUpdateDTO.getId());
+            publicleadsGroupsUser.setUserId(userIdLong);
+            publicleadsGroupsUserList.add(publicleadsGroupsUser);
+        }
+
+        if (publicleadsGroupsUserList.isEmpty()) {
+            // 批量插入分组成员
+            publicleadsGroupsUserMapper.batchInsertPublicleadsGroupsUser(publicleadsGroupsUserList);
+        }
+        return true;
     }
 
     /**
@@ -91,40 +139,30 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
 
     @Override
     public List<PublicleadsGroupsListVO> list() {
-        List<PublicleadsGroups> publicleadsGroupsList = publicleadsGroupsMapper.selectPublicleadsGroupsList(new PublicleadsGroups());
+        List<PublicleadsGroupsListBO> publicleadsGroupsBOList = publicleadsGroupsMapper.list();
 
-        List<Long> userIdList = new ArrayList<>();
-        publicleadsGroupsList.stream().forEach(publicleadsGroups -> {
-            String userIds = publicleadsGroups.getUserIds();
-            String[] userIdArray = userIds.split(",");
-            for (String userId : userIdArray) {
-                userIdList.add(Long.valueOf(userId));
-            }
-        });
-
-        Map<Long, UserInfoVO> userInfoMap = new HashMap<>();
-        if (!userIdList.isEmpty()) {
-            List<UserInfoVO> userInfoList = sysUserMapper.listByIds(userIdList);
-            userInfoMap = userInfoList.stream().collect(Collectors.toMap(userInfo -> userInfo.getUserId(), userInfo -> userInfo));
-        }
+        Map<Long, List<PublicleadsGroupsListBO>> publicleadsGroupsIdMap = publicleadsGroupsBOList.stream().collect(Collectors.groupingBy(PublicleadsGroupsListBO::getId));
 
         List<PublicleadsGroupsListVO> publicleadsGroupsVOList = new ArrayList<>();
-        for (PublicleadsGroups publicleadsGroups : publicleadsGroupsList) {
-            PublicleadsGroupsListVO publicleadsGroupsListVO = new PublicleadsGroupsListVO();
-            publicleadsGroupsListVO.setId(publicleadsGroups.getId());
-            publicleadsGroupsListVO.setName(publicleadsGroups.getName());
-            publicleadsGroupsListVO.setDefaultGroupFlag(publicleadsGroups.getDefaultGroupFlag());
+        publicleadsGroupsIdMap.forEach((publicleadsGroupsId, publicleadsGroupsBOGroupingList) -> {
 
-            List<UserInfoVO> userInfoList = new ArrayList<>();
-            String userIds = publicleadsGroups.getUserIds();
-            String[] userIdArray = userIds.split(",");
-            for (String userId : userIdArray) {
-                UserInfoVO userInfoVO = userInfoMap.get(Long.valueOf(userId));
-                userInfoList.add(userInfoVO);
+            PublicleadsGroupsListBO publicleadsGroupsBO = publicleadsGroupsBOGroupingList.get(0);
+            PublicleadsGroupsListVO publicleadsGroupsVO = new PublicleadsGroupsListVO();
+            publicleadsGroupsVO.setId(publicleadsGroupsId);
+            publicleadsGroupsVO.setName(publicleadsGroupsBO.getName());
+            publicleadsGroupsVO.setDefaultGroupFlag(publicleadsGroupsBO.getDefaultGroupFlag());
+            List<UserInfoVO> userInfoVOList = new ArrayList<>();
+            for (PublicleadsGroupsListBO publicleadsGroupsListBO : publicleadsGroupsBOGroupingList) {
+                UserInfoVO userInfoVO = new UserInfoVO();
+                userInfoVO.setUserId(publicleadsGroupsListBO.getUserId());
+                userInfoVO.setUserName(publicleadsGroupsListBO.getUserName());
+                userInfoVO.setNickName(publicleadsGroupsListBO.getNickName());
+                userInfoVOList.add(userInfoVO);
             }
-            publicleadsGroupsListVO.setUserInfoList(userInfoList);
-            publicleadsGroupsVOList.add(publicleadsGroupsListVO);
-        }
+
+            publicleadsGroupsVO.setUserInfoList(userInfoVOList);
+            publicleadsGroupsVOList.add(publicleadsGroupsVO);
+        });
 
         return publicleadsGroupsVOList;
     }

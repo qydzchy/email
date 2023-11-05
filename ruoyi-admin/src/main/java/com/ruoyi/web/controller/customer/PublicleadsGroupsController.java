@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.customer;
 import java.util.List;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.customer.domain.dto.PublicleadsGroupAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +49,9 @@ public class PublicleadsGroupsController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:groups:add')")
     @Log(title = "新增公海分组", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody PublicleadsGroups publicleadsGroups)
+    public AjaxResult add(@RequestBody PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
     {
-        return toAjax(publicleadsGroupsService.insertPublicleadsGroups(publicleadsGroups));
+        return toAjax(publicleadsGroupsService.insertPublicleadsGroups(publicleadsGroupAddOrUpdateDTO));
     }
 
     /**
@@ -59,9 +60,9 @@ public class PublicleadsGroupsController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:groups:edit')")
     @Log(title = "修改公海分组", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody PublicleadsGroups publicleadsGroups)
+    public AjaxResult edit(@RequestBody PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
     {
-        return toAjax(publicleadsGroupsService.updatePublicleadsGroups(publicleadsGroups));
+        return toAjax(publicleadsGroupsService.updatePublicleadsGroups(publicleadsGroupAddOrUpdateDTO));
     }
 
     /**

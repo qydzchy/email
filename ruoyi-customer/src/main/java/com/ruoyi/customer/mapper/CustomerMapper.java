@@ -2,7 +2,9 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Customer;
+import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
 import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -92,4 +94,27 @@ public interface CustomerMapper
      * @param updateBy
      */
     void updateFocusFlag(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 变更公海分组
+     * @param id
+     * @param publicleadsGroupsId
+     * @param updateId
+     * @param updateBy
+     */
+    void changePublicleadsGroups(@Param("id") Long id, @Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 查询公海分组列表
+     * @param customerId
+     * @param userId
+     * @return
+     */
+    List<PublicleadsGroupsListVO> publicleadsGroupsList(Long customerId, Long userId);
+
+    /**
+     * 将客户移入私海
+     * @param id
+     */
+    void moveToPrivateleads(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

@@ -14,6 +14,7 @@ import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.MetadataColumnListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import com.ruoyi.customer.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -476,6 +477,66 @@ public class CustomerServiceImpl implements ICustomerService
         }
 
         customerMapper.updateFocusFlag(id, userId, username);
+        return true;
+    }
+
+    /**
+     * 查询公海分组列表
+     */
+
+
+    /**
+     * 变更公海分组
+     * @param id
+     * @param publicleadsGroupsId
+     * @return
+     */
+    @Override
+    public boolean changePublicleadsGroups(Long id, Long publicleadsGroupsId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        // 变更公海分组
+        customerMapper.changePublicleadsGroups(id, publicleadsGroupsId, userId, username);
+        return true;
+    }
+
+    @Override
+    public List<PublicleadsGroupsListVO> publicleadsGroupsList(Long customerId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        return customerMapper.publicleadsGroupsList(customerId, userId);
+    }
+
+    /**
+     * 移入私海
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean moveToPrivateleads(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        customerMapper.moveToPrivateleads(id, userId, username);
+
+        // 删除跟进人
+        customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(id, userId, username);
+
+        // 新增跟进人
+        CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+        customerFollowUpPersonnel.setCustomerId(id);
+        customerFollowUpPersonnel.setUserId(userId);
+        customerFollowUpPersonnel.setCreateId(userId);
+        customerFollowUpPersonnel.setCreateBy(username);
+        customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
+        customerFollowUpPersonnel.setUpdateId(userId);
+        customerFollowUpPersonnel.setUpdateBy(username);
+        customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
+        customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
+
         return true;
     }
 

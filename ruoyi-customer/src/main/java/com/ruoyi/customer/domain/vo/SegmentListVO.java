@@ -43,5 +43,24 @@ public class SegmentListVO {
     /** 二级客群内容 */
     private String subgroupSegmentContent;
 
+    /**
+     * 客户数量
+     */
+    private Integer customerCount;
+
     private List<SegmentListVO> children = new ArrayList<>();
+
+    /**
+     * 可见范围名称
+     * @return
+     */
+    public String getUsageScopeName() {
+        if (usageScope.intValue() == 1) {
+            return "全公司可见";
+        } else if (usageScope.intValue() == 2) {
+            return "仅个人使用";
+        } else {
+            return "";
+        }
+    }
 }
