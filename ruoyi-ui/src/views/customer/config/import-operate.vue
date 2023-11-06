@@ -118,8 +118,8 @@
 </template>
 
 <script>
-//import "@/static/scss/xiaoman/windi.f61bb6b4.css"
-//import "@/static/scss/xiaoman/5261.43952d38.css"
+import "@/static/scss/xiaoman/windi.f61bb6b4.css"
+import "@/static/scss/xiaoman/5261.43952d38.css"
 
 export default {
   data() {

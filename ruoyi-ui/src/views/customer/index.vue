@@ -91,6 +91,7 @@ export default {
 
 .left-wrap {
   position: relative;
+  z-index: 10;
 
   .menu {
     display: flex;

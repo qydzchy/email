@@ -5,6 +5,7 @@
       title="筛选条件"
       :visible.sync="drawer"
       :direction="direction"
+      :wrapperClosable="false"
       @close="handleClose">
       <div class="pt-32">
         <div class="flex-center">
@@ -23,16 +24,16 @@
           <formCreate v-loading="formLoading" v-show="filterType==='senior'" v-model="fApi2" :rule="rule2"
                       :option="option2"/>
         </div>
-        <!--   operate     -->
-        <div class="drawer-operate">
-          <div class="flex-middle space-between" style="width: 660px">
-            <el-button round>设置常用筛选项</el-button>
-            <el-row>
-              <el-button round>将所选条件生成为客群</el-button>
-              <el-button round>清空</el-button>
-              <el-button type="primary" round>确认</el-button>
-            </el-row>
-          </div>
+      </div>
+      <!--   operate     -->
+      <div class="drawer-operate">
+        <div class="flex-middle space-between" style="width: 660px">
+          <el-button round>设置常用筛选项</el-button>
+          <el-row>
+            <el-button round>将所选条件生成为客群</el-button>
+            <el-button round>清空</el-button>
+            <el-button type="primary" round>确认</el-button>
+          </el-row>
         </div>
       </div>
     </el-drawer>

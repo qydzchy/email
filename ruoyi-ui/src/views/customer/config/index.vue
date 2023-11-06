@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mx-20">
     <div class="bold fs-26 pb-4">
       客户设置
     </div>
