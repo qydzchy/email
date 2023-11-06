@@ -24,4 +24,9 @@ public class CustomerFollowUpPersonnelListVO {
      * 跟进人名称
      */
     private String userName;
+
+    /**
+     * 部门ID
+     */
+    private Long deptId;
 }
