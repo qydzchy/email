@@ -76,24 +76,28 @@ public class SegmentServiceImpl implements ISegmentService
         segment.setUpdateBy(username);
         segment.setUpdateTime(DateUtils.getNowDate());
 
-        long id = segmentMapper.insertSegment(segment);
+        segmentMapper.insertSegment(segment);
+        Long id = segment.getId();
         List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getSubGroup();
-        List<Segment> segmentList = new ArrayList<>();
-        subGroupList.stream().forEach(subGroup -> {
-            Segment subSegment = new Segment();
-            subSegment.setParentId(id);
-            BeanUtils.copyProperties(subGroup, subSegment);
-            subSegment.setCreateId(userId);
-            subSegment.setCreateBy(username);
-            subSegment.setCreateTime(DateUtils.getNowDate());
-            subSegment.setUpdateId(userId);
-            subSegment.setUpdateBy(username);
-            subSegment.setUpdateTime(DateUtils.getNowDate());
-            segmentList.add(subSegment);
-        });
+        if (subGroupList != null && !subGroupList.isEmpty()) {
+            List<Segment> segmentList = new ArrayList<>();
+            subGroupList.stream().forEach(subGroup -> {
+                Segment subSegment = new Segment();
+                subSegment.setParentId(id);
+                BeanUtils.copyProperties(subGroup, subSegment);
+                subSegment.setCreateId(userId);
+                subSegment.setCreateBy(username);
+                subSegment.setCreateTime(DateUtils.getNowDate());
+                subSegment.setUpdateId(userId);
+                subSegment.setUpdateBy(username);
+                subSegment.setUpdateTime(DateUtils.getNowDate());
+                segmentList.add(subSegment);
+            });
 
-        // 批量新增子客群
-        segmentMapper.batchInsertSegment(segmentList);
+            // 批量新增子客群
+            segmentMapper.batchInsertSegment(segmentList);
+        }
+
         return true;
     }
 
@@ -122,22 +126,25 @@ public class SegmentServiceImpl implements ISegmentService
         segmentMapper.deleteSegmentByParentId(segment.getId());
 
         List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getSubGroup();
-        List<Segment> segmentList = new ArrayList<>();
-        subGroupList.stream().forEach(subGroup -> {
-            Segment subSegment = new Segment();
-            subSegment.setParentId(segmentAddOrUpdateDTO.getId());
-            BeanUtils.copyProperties(subGroup, subSegment);
-            subSegment.setCreateId(userId);
-            subSegment.setCreateBy(username);
-            subSegment.setCreateTime(DateUtils.getNowDate());
-            subSegment.setUpdateId(userId);
-            subSegment.setUpdateBy(username);
-            subSegment.setUpdateTime(DateUtils.getNowDate());
-            segmentList.add(subSegment);
-        });
+        if (subGroupList != null && !subGroupList.isEmpty()) {
+            List<Segment> segmentList = new ArrayList<>();
+            subGroupList.stream().forEach(subGroup -> {
+                Segment subSegment = new Segment();
+                subSegment.setParentId(segmentAddOrUpdateDTO.getId());
+                BeanUtils.copyProperties(subGroup, subSegment);
+                subSegment.setCreateId(userId);
+                subSegment.setCreateBy(username);
+                subSegment.setCreateTime(DateUtils.getNowDate());
+                subSegment.setUpdateId(userId);
+                subSegment.setUpdateBy(username);
+                subSegment.setUpdateTime(DateUtils.getNowDate());
+                segmentList.add(subSegment);
+            });
 
-        // 批量新增子客群
-        segmentMapper.batchInsertSegment(segmentList);
+            // 批量新增子客群
+            segmentMapper.batchInsertSegment(segmentList);
+        }
+
         return true;
     }
 

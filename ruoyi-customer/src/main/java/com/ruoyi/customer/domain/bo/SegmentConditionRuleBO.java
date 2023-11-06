@@ -16,7 +16,7 @@ public class SegmentConditionRuleBO {
     /**
      * 逻辑与
      */
-    private Integer andOr;
+    private String andOr;
 
     /**
      * 条件运算符 1.等于 2.不等于 3.属于 4.不属于 5.为空 6.不为空 7.早于 8.晚于

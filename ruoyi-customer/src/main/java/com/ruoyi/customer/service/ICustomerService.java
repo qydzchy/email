@@ -7,6 +7,8 @@ import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
+import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
+import org.springframework.data.util.Pair;
 
 /**
  * 客户详情Service接口
@@ -72,7 +74,7 @@ public interface ICustomerService
      * @param pageSize
      * @return
      */
-    Map<String, Object> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<CustomerSimpleListVO>> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize);
 
     /**
      * 移入客户至分组

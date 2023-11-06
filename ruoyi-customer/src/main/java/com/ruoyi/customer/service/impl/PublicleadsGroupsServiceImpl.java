@@ -58,7 +58,8 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
         publicleadsGroups.setUpdateBy(username);
         publicleadsGroups.setUpdateTime(DateUtils.getNowDate());
 
-        Long id = publicleadsGroupsMapper.insertPublicleadsGroups(publicleadsGroups);
+        publicleadsGroupsMapper.insertPublicleadsGroups(publicleadsGroups);
+        Long id = publicleadsGroups.getId();
 
         String userIds = publicleadsGroupAddOrUpdateDTO.getUserIds();
         String[] userIdArray = userIds.split(",");
@@ -71,7 +72,7 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
             publicleadsGroupsUserList.add(publicleadsGroupsUser);
         }
 
-        if (publicleadsGroupsUserList.isEmpty()) {
+        if (!publicleadsGroupsUserList.isEmpty()) {
             // 批量插入分组成员
             publicleadsGroupsUserMapper.batchInsertPublicleadsGroupsUser(publicleadsGroupsUserList);
         }
@@ -114,7 +115,7 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
             publicleadsGroupsUserList.add(publicleadsGroupsUser);
         }
 
-        if (publicleadsGroupsUserList.isEmpty()) {
+        if (!publicleadsGroupsUserList.isEmpty()) {
             // 批量插入分组成员
             publicleadsGroupsUserMapper.batchInsertPublicleadsGroupsUser(publicleadsGroupsUserList);
         }

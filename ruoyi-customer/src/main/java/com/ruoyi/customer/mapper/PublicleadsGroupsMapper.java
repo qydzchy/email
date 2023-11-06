@@ -3,7 +3,6 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsGroups;
 import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
-import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -36,7 +35,7 @@ public interface PublicleadsGroupsMapper
      * @param publicleadsGroups 公海分组
      * @return 结果
      */
-    public long insertPublicleadsGroups(PublicleadsGroups publicleadsGroups);
+    public int insertPublicleadsGroups(PublicleadsGroups publicleadsGroups);
 
     /**
      * 修改公海分组

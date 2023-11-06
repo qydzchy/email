@@ -43,6 +43,11 @@ public class SegmentAddOrUpdateDTO {
     private Integer additionRule;
 
     /**
+     * 二级客群字段
+     */
+    private Long secondarySegmentColumnId;
+
+    /**
      * 二级客群
      */
     private List<SegmentAddOrUpdateDTO> subGroup;

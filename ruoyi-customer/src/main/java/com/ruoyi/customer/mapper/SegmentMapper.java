@@ -35,7 +35,7 @@ public interface SegmentMapper
      * @param segment 客群
      * @return 结果
      */
-    public long insertSegment(Segment segment);
+    public int insertSegment(Segment segment);
 
     /**
      * 修改客群

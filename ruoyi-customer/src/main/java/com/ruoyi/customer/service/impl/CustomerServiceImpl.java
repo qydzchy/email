@@ -18,6 +18,7 @@ import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import com.ruoyi.customer.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.service.ICustomerService;
 import org.springframework.transaction.annotation.Transactional;
@@ -238,46 +239,25 @@ public class CustomerServiceImpl implements ICustomerService
     }
 
     @Override
-    public Map<String, Object> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<CustomerSimpleListVO>> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize) {
         try {
-            // 查询字段信息
-            MetadataColumn metadataColumnParam = new MetadataColumn();
-            metadataColumnParam.setAppType(MetadataColumnAppTypeEnum.CUSTOMER_LIST.getAppType());
-            List<MetadataColumn> metadataColumnList = metadataColumnMapper.selectMetadataColumnList(metadataColumnParam);
-            List<MetadataColumnListVO> metadataColumnListVOList = new ArrayList<>();
-            metadataColumnList.stream().forEach(metadataColumn -> {
-                MetadataColumnListVO metadataColumnListVO = new MetadataColumnListVO();
-                metadataColumnListVO.setId(metadataColumn.getId());
-                metadataColumnListVO.setColumnName(metadataColumn.getColumnName());
-                metadataColumnListVO.setColumnAlias(metadataColumn.getColumnAlias());
-                metadataColumnListVO.setColumnType(metadataColumn.getColumnType());
-                metadataColumnListVOList.add(metadataColumnListVO);
-            });
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("column", metadataColumnParam);
-
             int count = customerMapper.count(seaType);
-            result.put("total", count);
             if (count <= 0) {
-                result.put("data", new ArrayList<>());
-                return result;
+                return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
             List<CustomerSimpleListVO> customerSimpleListVOList = customerMapper.selectCustomerPage(segmentId, seaType, offset, limit);
             if (customerSimpleListVOList == null || customerSimpleListVOList.isEmpty()) {
-                result.put("data", new ArrayList<>());
-                return result;
+                return Pair.of(count, new ArrayList<>());
             }
 
+            return Pair.of(count, customerSimpleListVOList);
         } catch (Exception e) {
             log.error("查询客户列表（分页）异常：{}", e);
-            return new HashMap<>();
+            return Pair.of(0, new ArrayList<>());
         }
-
-        return null;
     }
 
     @Override
