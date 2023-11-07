@@ -32,7 +32,7 @@ public class Segment extends BaseEntity
 
     /** 可见范围 */
     @Excel(name = "可见范围")
-    private Integer visibilityScope;
+    private String visibilityScope;
 
     /** 条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件 */
     @Excel(name = "条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件")
@@ -98,11 +98,11 @@ public class Segment extends BaseEntity
         return usageScope;
     }
 
-    public Integer getVisibilityScope() {
+    public String getVisibilityScope() {
         return visibilityScope;
     }
 
-    public void setVisibilityScope(Integer visibilityScope) {
+    public void setVisibilityScope(String visibilityScope) {
         this.visibilityScope = visibilityScope;
     }
 

@@ -3,6 +3,9 @@ package com.ruoyi.customer.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -13,6 +16,10 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.*;
+import com.ruoyi.customer.domain.bo.SegmentConditionRuleBO;
+import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeBO;
+import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
+import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
@@ -558,10 +565,20 @@ public class CustomerServiceImpl implements ICustomerService
             Long customerId = customer.getId();
             // 获取客户跟进人
             List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(customerId);
-            segmentList.stream().forEach(segment -> {
-                // 可见范围是否成立
-                isVisibleConditionMet(customerFollowUpPersonnelVOList, segment);
-            });
+            for (Segment segment : segmentList) {
+                // 可见范围是否成立，不成立跳过客群
+                if (!isVisibleConditionMet(customerFollowUpPersonnelVOList, segment)) continue;
+                //
+                String conditionRuleContent = segment.getConditionRuleContent();
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    List<SegmentConditionRuleBO> segmentConditionRuleBOList = objectMapper.readValue(conditionRuleContent, List.class);
+
+                } catch (JsonProcessingException e) {
+                    log.error("客群条件规则转换异常：{}", e);
+                    continue;
+                }
+            }
         });
 
         return false;
@@ -574,26 +591,70 @@ public class CustomerServiceImpl implements ICustomerService
      * @return
      */
     private boolean isVisibleConditionMet(List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList, Segment segment) {
-        boolean isVisibleConditionMet = true;
         Integer usageScope = segment.getUsageScope();
         // 公司可见
         if (usageScope.intValue() == 1) {
+            String visibilityScope = segment.getVisibilityScope();
+            ObjectMapper objectMapper = new ObjectMapper();
+            // 将 JSON 字符串转换为 Java 对象
+            try {
+                SegmentVisibilityScopeBO segmentVisibilityScopeBO = objectMapper.readValue(visibilityScope, SegmentVisibilityScopeBO.class);
+                SegmentVisibilityScopeDeptBO dept = segmentVisibilityScopeBO.getDept();
+                SegmentVisibilityScopeUserBO user = segmentVisibilityScopeBO.getUser();
+                // 用户维度判断可见范围是否成立
+                if (user.getAllFlag()) {
+                    return true;
+                } else {
+                    List<Long> userIds = user.getUserIds();
+                    if (!userIds.isEmpty()) {
+                        List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+
+                        boolean userContainsAny = containsAnyElement(userIds, followUpPersonnelUserIds);
+                        if (userContainsAny) return true;
+                    }
+                }
+
+                // 部门维度判断可见范围是否成立
+                if (dept.getAllFlag()) {
+                    // 存在一个部门，客群全选部门，条件成立
+                    long count = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).count();
+                    if (count > 0) return true;
+
+                } else {
+                    List<Long> deptIds = dept.getDeptIds();
+                    if (!deptIds.isEmpty()) {
+                        List<Long> followUpPersonnelDeptIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).collect(Collectors.toList());
+
+                        boolean deptContainsAny = containsAnyElement(deptIds, followUpPersonnelDeptIds);
+                        if (deptContainsAny) return true;
+                    }
+                }
+            } catch (JsonProcessingException e) {
+                return false;
+            }
 
             // 个人可见
         } else if (usageScope.intValue() == 2) {
-            String conditionRuleContent = segment.getConditionRuleContent();
-
-            // 判断是否是该客户的跟进人
+            // 判断当前客群创建人是否是该客户的跟进人
             if (!customerFollowUpPersonnelVOList.isEmpty()) {
-                List<Long> userIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
-                if (!userIds.contains(SecurityUtils.getLoginUser().getUserId())) {
-                    isVisibleConditionMet = false;
+                List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+                if (followUpPersonnelUserIds.contains(segment.getCreateId())) {
+                    return true;
                 }
             } else {
-                isVisibleConditionMet = false;
+                return false;
             }
         }
 
+        return false;
+    }
+
+    public boolean containsAnyElement(List<Long> a, List<Long> b) {
+        for (Long element : b) {
+            if (a.contains(element)) {
+                return true;
+            }
+        }
         return false;
     }
 
