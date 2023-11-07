@@ -49,6 +49,7 @@ CREATE TABLE `customer_customer`  (
   `short_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '简称',
   `country_region` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家地区',
   `sea_type` tinyint(1) NOT NULL COMMENT '私海/公海类型 1.私海 2.公海',
+  `publicleads_groups_id` bigint(20) NULL DEFAULT NULL COMMENT '公海分组ID',
   `packet_id` bigint(20) NULL DEFAULT NULL COMMENT '分组ID',
   `stage_id` bigint(20) NULL DEFAULT NULL COMMENT '阶段ID',
   `rating` tinyint(1) NULL DEFAULT NULL COMMENT '客户星级',

@@ -80,17 +80,6 @@ public class CustomerAddOrUpdateDTO {
     /** 公司logo */
     private String companyLogo;
 
-    /** 关注 0.未关注 1.已关注 */
-    private Integer focusFlag;
-
-    /** 最近联系时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date lastContactedAt;
-
-    /** 最近跟进时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date lastFollowupAt;
-
     /**
      * 客户联系人
      */

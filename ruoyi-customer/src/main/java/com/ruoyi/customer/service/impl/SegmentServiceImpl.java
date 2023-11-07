@@ -186,9 +186,7 @@ public class SegmentServiceImpl implements ISegmentService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        /**
-         * 生成基础客群
-         */
+        // 生成基础客群
         List<SegmentListVO> allSegmentVOList = new ArrayList<>();
         if (usageScope.intValue() != 1) {
             List<SegmentListVO> basicSegmentVO = initBasicSegment(userId);

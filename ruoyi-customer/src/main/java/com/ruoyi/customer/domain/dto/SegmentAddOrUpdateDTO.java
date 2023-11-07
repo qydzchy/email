@@ -22,11 +22,8 @@ public class SegmentAddOrUpdateDTO {
     /** 使用范围 1.公司共享 2.个人使用 */
     private Integer usageScope;
 
-    /** 可见范围-类型 1.全公司可见 2.全部部门 3.指定部门 4.全部人员 5.指定人员 */
-    private Integer visibilityScopeType;
-
     /** 可见范围-内容 */
-    private String visibilityScopeContent;
+    private String visibilityScope;
 
     /** 条件规则类型 1.满足全部条件 2.满足任一条件 3.自定义条件 */
     @NotNull(message = "条件规则类型不能为空")

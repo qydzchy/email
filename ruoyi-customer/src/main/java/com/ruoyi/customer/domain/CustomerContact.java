@@ -69,9 +69,9 @@ public class CustomerContact extends BaseEntity
     @Excel(name = "联系人备注")
     private String contactRemarks;
 
-    /** 是否为主要联系人 1.是 0.否 */
+    /** 是否为主要联系人 true.是 false.否 */
     @Excel(name = "是否为主要联系人 1.是 0.否")
-    private Integer primaryContactFlag;
+    private Boolean primaryContactFlag;
 
     /** 排序 */
     @Excel(name = "排序")
@@ -196,16 +196,16 @@ public class CustomerContact extends BaseEntity
     {
         return contactRemarks;
     }
-    public void setPrimaryContactFlag(Integer primaryContactFlag) 
-    {
+
+    public Boolean getPrimaryContactFlag() {
+        return primaryContactFlag;
+    }
+
+    public void setPrimaryContactFlag(Boolean primaryContactFlag) {
         this.primaryContactFlag = primaryContactFlag;
     }
 
-    public Integer getPrimaryContactFlag() 
-    {
-        return primaryContactFlag;
-    }
-    public void setOrderIndex(Long orderIndex) 
+    public void setOrderIndex(Long orderIndex)
     {
         this.orderIndex = orderIndex;
     }

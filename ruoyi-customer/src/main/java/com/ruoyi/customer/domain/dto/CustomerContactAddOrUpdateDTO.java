@@ -10,9 +10,6 @@ public class CustomerContactAddOrUpdateDTO {
 
     private Long id;
 
-    /** 客户详情ID */
-    private Long customerDetailsId;
-
     /** 昵称 */
     private String nickName;
 
@@ -48,6 +45,6 @@ public class CustomerContactAddOrUpdateDTO {
     /** 联系人备注 */
     private String contactRemarks;
 
-    /** 是否为主要联系人 1.是 0.否 */
-    private Integer primaryContactFlag;
+    /** 是否为主要联系人 true.是 false.否 */
+    private Boolean primaryContactFlag;
 }
