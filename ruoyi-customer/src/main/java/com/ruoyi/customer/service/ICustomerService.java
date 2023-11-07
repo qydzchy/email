@@ -162,6 +162,7 @@ public interface ICustomerService
     boolean moveToPrivateleads(Long id);
 
     /**
-     *
+     * 洗牌
      */
+    boolean shuffle(Long customerId, Long segmentId);
 }

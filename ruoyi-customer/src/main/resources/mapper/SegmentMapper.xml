@@ -9,8 +9,7 @@
         <result property="parentId"    column="parent_id"    />
         <result property="name"    column="name"    />
         <result property="usageScope"    column="usage_scope"    />
-        <result property="visibilityScopeType"    column="visibility_scope_type"    />
-        <result property="visibilityScopeContent"    column="visibility_scope_content"    />
+        <result property="visibilityScope"    column="visibility_scope"    />
         <result property="conditionRuleType"    column="condition_rule_type"    />
         <result property="conditionRuleContent"    column="condition_rule_content"    />
         <result property="subgroupFlag"    column="subgroup_flag"    />
@@ -25,7 +24,7 @@
     </resultMap>
 
     <sql id="selectSegmentVo">
-        select id, parent_id, name, usage_scope, visibility_scope_type, visibility_scope_content, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
+        select id, parent_id, name, usage_scope, visibility_scope, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
     </sql>
 
     <select id="selectSegmentList" parameterType="Segment" resultMap="SegmentResult">
@@ -34,8 +33,7 @@
             <if test="parentId != null "> and parent_id = #{parentId}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="usageScope != null "> and usage_scope = #{usageScope}</if>
-            <if test="visibilityScopeType != null "> and visibility_scope_type = #{visibilityScopeType}</if>
-            <if test="visibilityScopeContent != null  and visibilityScopeContent != ''"> and visibility_scope_content = #{visibilityScopeContent}</if>
+            <if test="visibilityScope != null  and visibilityScope != ''"> and visibility_scope = #{visibilityScope}</if>
             <if test="conditionRuleType != null "> and condition_rule_type = #{conditionRuleType}</if>
             <if test="conditionRuleContent != null  and conditionRuleContent != ''"> and condition_rule_content = #{conditionRuleContent}</if>
             <if test="subgroupFlag != null "> and subgroup_flag = #{subgroupFlag}</if>
@@ -56,8 +54,7 @@
         s.parent_id AS parentId,
         s.NAME AS NAME,
         s.usage_scope AS usageScope,
-        s.visibility_scope_type AS visibilityScopeType,
-        s.visibility_scope_content AS visibilityScopeContent,
+        s.visibility_scope AS visibilityScope,
         s.condition_rule_type AS conditionRuleType,
         s.condition_rule_content AS conditionRuleContent,
         s.subgroup_flag AS subgroupFlag,
@@ -104,8 +101,7 @@
             <if test="parentId != null">parent_id,</if>
             <if test="name != null and name != ''">name,</if>
             <if test="usageScope != null">usage_scope,</if>
-            <if test="visibilityScopeType != null">visibility_scope_type,</if>
-            <if test="visibilityScopeContent != null">visibility_scope_content,</if>
+            <if test="visibilityScope != null">visibility_scope,</if>
             <if test="conditionRuleType != null">condition_rule_type,</if>
             <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content,</if>
             <if test="subgroupFlag != null">subgroup_flag,</if>
@@ -122,8 +118,7 @@
             <if test="parentId != null">#{parentId},</if>
             <if test="name != null and name != ''">#{name},</if>
             <if test="usageScope != null">#{usageScope},</if>
-            <if test="visibilityScopeType != null">#{visibilityScopeType},</if>
-            <if test="visibilityScopeContent != null">#{visibilityScopeContent},</if>
+            <if test="visibilityScope != null">#{visibilityScope},</if>
             <if test="conditionRuleType != null">#{conditionRuleType},</if>
             <if test="conditionRuleContent != null and conditionRuleContent != ''">#{conditionRuleContent},</if>
             <if test="subgroupFlag != null">#{subgroupFlag},</if>

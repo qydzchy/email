@@ -1,0 +1,11 @@
+### 客群可见范围数据结构
+{
+  "dept":{ //部门
+    "allFlag": true, // true所有部门 false指定部门
+    "deptIds": [] //指定部门ID
+  },
+  "user": { //用户
+    "allFlag": true, //true所有用户 false指定用户
+    "userIds": [] //指定用户ID
+  }
+}

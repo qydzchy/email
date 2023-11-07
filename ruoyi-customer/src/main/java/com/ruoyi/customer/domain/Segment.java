@@ -30,13 +30,9 @@ public class Segment extends BaseEntity
     @Excel(name = "使用范围 1.公司共享 2.个人使用")
     private Integer usageScope;
 
-    /** 可见范围-类型 1.全公司可见 2.全部部门 3.指定部门 4.全部人员 5.指定人员 */
-    @Excel(name = "可见范围-类型 1.全公司可见 2.全部部门 3.指定部门 4.全部人员 5.指定人员")
-    private Integer visibilityScopeType;
-
-    /** 可见范围-内容 */
-    @Excel(name = "可见范围-内容")
-    private String visibilityScopeContent;
+    /** 可见范围 */
+    @Excel(name = "可见范围")
+    private Integer visibilityScope;
 
     /** 条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件 */
     @Excel(name = "条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件")
@@ -101,24 +97,15 @@ public class Segment extends BaseEntity
     {
         return usageScope;
     }
-    public void setVisibilityScopeType(Integer visibilityScopeType)
-    {
-        this.visibilityScopeType = visibilityScopeType;
+
+    public Integer getVisibilityScope() {
+        return visibilityScope;
     }
 
-    public Integer getVisibilityScopeType()
-    {
-        return visibilityScopeType;
-    }
-    public void setVisibilityScopeContent(String visibilityScopeContent)
-    {
-        this.visibilityScopeContent = visibilityScopeContent;
+    public void setVisibilityScope(Integer visibilityScope) {
+        this.visibilityScope = visibilityScope;
     }
 
-    public String getVisibilityScopeContent()
-    {
-        return visibilityScopeContent;
-    }
     public void setConditionRuleType(Integer conditionRuleType)
     {
         this.conditionRuleType = conditionRuleType;
@@ -190,8 +177,7 @@ public class Segment extends BaseEntity
                 .append("parentId", getParentId())
                 .append("name", getName())
                 .append("usageScope", getUsageScope())
-                .append("visibilityScopeType", getVisibilityScopeType())
-                .append("visibilityScopeContent", getVisibilityScopeContent())
+                .append("visibilityScope", getVisibilityScope())
                 .append("conditionRuleType", getConditionRuleType())
                 .append("conditionRuleContent", getConditionRuleContent())
                 .append("subgroupFlag", getSubgroupFlag())

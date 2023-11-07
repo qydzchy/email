@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
 import com.ruoyi.common.enums.customer.MetadataColumnAppTypeEnum;
+import com.ruoyi.common.enums.customer.VisibilityScopeTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -49,6 +50,8 @@ public class CustomerServiceImpl implements ICustomerService
     private CustomerFollowUpPersonnelMapper customerFollowUpPersonnelMapper;
     @Resource
     private CustomerPublicleadsMapper customerPublicleadsMapper;
+    @Resource
+    private SegmentMapper segmentMapper;
 
 
     /**
@@ -518,6 +521,105 @@ public class CustomerServiceImpl implements ICustomerService
         customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
 
         return true;
+    }
+
+    @Override
+    public boolean shuffle(Long customerIdParam, Long segmentIdParam) {
+        // 获取客户列表
+        List<Customer> customerList = getCustomerList(customerIdParam);
+        if (customerList == null || customerList.isEmpty()) return false;
+
+        // 获取客群列表（第一级）
+        List<Segment> segmentList = getSegmentList(segmentIdParam);
+        if (segmentList == null || segmentList.isEmpty()) return false;
+
+        customerList.stream().forEach(customer -> {
+            Long customerId = customer.getId();
+            // 获取客户跟进人
+            List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(customerId);
+            segmentList.stream().forEach(segment -> {
+                // 可见范围是否成立
+                isVisibleConditionMet(customerFollowUpPersonnelVOList, segment);
+            });
+        });
+
+        return false;
+    }
+
+    /**
+     * 可见范围是否成立
+     * @param customerFollowUpPersonnelVOList
+     * @param segment
+     * @return
+     */
+    private boolean isVisibleConditionMet(List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList, Segment segment) {
+        boolean isVisibleConditionMet = true;
+        Integer usageScope = segment.getUsageScope();
+        // 公司可见
+        if (usageScope.intValue() == 1) {
+
+            // 个人可见
+        } else if (usageScope.intValue() == 2) {
+            String conditionRuleContent = segment.getConditionRuleContent();
+
+            // 判断是否是该客户的跟进人
+            if (!customerFollowUpPersonnelVOList.isEmpty()) {
+                List<Long> userIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+                if (!userIds.contains(SecurityUtils.getLoginUser().getUserId())) {
+                    isVisibleConditionMet = false;
+                }
+            } else {
+                isVisibleConditionMet = false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 获取客群列表
+     * @param segmentId
+     * @return
+     */
+    private List<Segment> getSegmentList(Long segmentId) {
+        List<Segment> segmentList = new ArrayList<>();
+        // segmentId == null代表所有客群
+        if (segmentId == null) {
+            Segment segment = new Segment();
+            segment.setParentId(-1L);
+            segmentList = segmentMapper.selectSegmentList(segment);
+        } else {
+            Segment segment = segmentMapper.selectSegmentById(segmentId);
+            if (segment == null) {
+                log.error("客群不存在，segmentId：{}", segmentId);
+                return null;
+            }
+            segmentList.add(segment);
+        }
+
+        return segmentList;
+    }
+
+    /**
+     * 获取客户列表
+     * @param customerId
+     * @return
+     */
+    private List<Customer> getCustomerList(Long customerId) {
+        List<Customer> customerList = new ArrayList<>();
+        // customerId == null代表所有客户
+        if (customerId == null) {
+            customerList = customerMapper.selectCustomerList(new Customer());
+        } else {
+            Customer customer = customerMapper.selectCustomerById(customerId);
+            if (customer == null) {
+                log.error("客户不存在，customerId：{}", customerId);
+                return null;
+            }
+            customerList.add(customer);
+        }
+
+        return customerList;
     }
 
 }

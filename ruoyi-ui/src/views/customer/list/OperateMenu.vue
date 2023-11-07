@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import ScheduleDialog from "./ScheduleDialog.vue";
+import ScheduleDialog from "./DialogSchedule.vue";
 
 export default {
   props: {

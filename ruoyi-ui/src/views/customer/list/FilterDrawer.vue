@@ -11,7 +11,7 @@
         <div class="flex-center">
           <el-radio-group v-model="filterType" @change="handleFilter">
             <el-radio-button label="ordinary">普通筛选</el-radio-button>
-            <el-radio-button label="senior">高级筛选</el-radio-button>
+            <el-radio-button disabled label="senior">高级筛选</el-radio-button>
           </el-radio-group>
         </div>
         <!--    filter    -->
@@ -28,9 +28,10 @@
       <!--   operate     -->
       <div class="drawer-operate">
         <div class="flex-middle space-between" style="width: 660px">
-          <el-button round>设置常用筛选项</el-button>
+          <div></div>
+<!--          <el-button round>设置常用筛选项</el-button>-->
           <el-row>
-            <el-button round>将所选条件生成为客群</el-button>
+<!--            <el-button round>将所选条件生成为客群</el-button>-->
             <el-button round>清空</el-button>
             <el-button type="primary" round>确认</el-button>
           </el-row>
