@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-20">
+  <div class="mx-20 pt-16">
     <el-tabs v-model="curTab">
       <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
         <component :is="tab.is"/>

@@ -71,7 +71,7 @@ export default {
             const isShow = (fieldName === propName && rowId === row.id) || field
             return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
               <el-tooltip placement="top" content={field ? '取消关注' : '关注'}>
-                <svg-icon icon-class="like"  style={{display: isShow ? 'block' : 'none'}}/>
+                <svg-icon icon-class="like" style={{display: isShow ? 'block' : 'none'}}/>
               </el-tooltip>
             </div>
 
@@ -137,9 +137,13 @@ export default {
                   visible={isShow}
                   on={{
                     onEdit: () => this.onCellEdit(row?.id, propName),
-                    click: () => this.onCellClick()
+                    click: () => this.onCellClick(),
                   }}
-                />}
+                >
+                  <div slot="content" onClick={(e) => this.jumpPersonalDetail(e)}>
+                    {field}
+                  </div>
+                </CellOperate>}
             </div>
           },
         }, {
@@ -266,6 +270,14 @@ export default {
         tempValue: '',
         fieldName: '',
       }
+    },
+    jumpPersonalDetail(e) {
+      e.stopPropagation()
+      const detailPath = this.$router.resolve({
+        path: '/customer/personal/1',
+      })
+      window.open(detailPath.href, "_blank")
+      // location
     },
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)

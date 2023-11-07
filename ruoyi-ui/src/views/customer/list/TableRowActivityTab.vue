@@ -19,7 +19,7 @@
 
       </el-input>
     </div>
-    <div class="mt-20">
+    <div class="mt-20" v-if="options.isShowSchedule">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">计划日程</div>
         <el-button round size="medium">添加日程</el-button>
@@ -133,6 +133,17 @@
 
 <script>
 export default {
+  props: {
+    options: {
+      type: Object,
+      default: () => {
+        return {
+          isShowSchedule: true
+        }
+      },
+      required: false
+    }
+  },
   data() {
     return {
       sortActive: "2",

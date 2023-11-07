@@ -1,5 +1,5 @@
 <template>
-  <div class="page-customer-query mx-20">
+  <div class="page-customer-query mx-20 pt-16">
     <div class="bold fs-26 pb-4">
       客户查重
     </div>

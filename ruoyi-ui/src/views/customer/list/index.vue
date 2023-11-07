@@ -1,5 +1,5 @@
 <template>
-  <div class="page-customer-public">
+  <div class="page-customer-public pt-16">
     <div class="bold fs-24 space-between px-30 pb-10 header">
       <div class="flex-middle">
         <span>客户列表</span>

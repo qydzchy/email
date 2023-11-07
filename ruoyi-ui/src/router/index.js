@@ -136,16 +136,16 @@ export const constantRoutes = [
             component: () => import('@/views/customer/list/index.vue'),
           },
           {
+            path: 'personal/:id',
+            name: 'CustomerDetail',
+            meta: {title: '客户信息', is: 'list', dontAnimate: true},
+            component: () => import('@/views/customer/list/detail/index.vue')
+          },
+          {
             path: 'group',
             name: 'GroupList',
             meta: {title: '客群', dontAnimate: true,},
             component: () => import('@/views/customer/group/index.vue'),
-          },
-          {
-            path: 'personal/:id',
-            name: 'CustomerPersonal',
-            meta: {is: 'list', dontAnimate: true},
-            component: () => import('@/views/customer/personal/index.vue'),
           },
           {
             path: 'public',

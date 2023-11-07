@@ -13,7 +13,7 @@
         </el-dropdown>
 
       </el-col>
-      <el-col class="mt-10">
+      <el-col class="mt-10 doc-form">
         <formCreate
           v-model="fApi"
           :rule="rule"
@@ -93,9 +93,6 @@ export default {
               {
                 field: "date",
                 type: 'DatePicker',
-                style: {
-                  width: '190px'
-                },
                 props: {
                   type: "daterange",
                   format: "yyyy-MM-dd",
@@ -146,9 +143,6 @@ export default {
                         }
                       }]
                   }
-                },
-                col: {
-                  span: 10
                 }
               },
             ]
@@ -194,6 +188,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.doc-form {
+  ::v-deep .el-form-item__content {
+    width: 100%;
+    .el-select,.el-date-editor{
+      width: 100%;
+    }
+  }
+}
 </style>
 

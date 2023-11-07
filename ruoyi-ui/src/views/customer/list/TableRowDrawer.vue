@@ -58,12 +58,7 @@
             </div>
           </div>
           <div class="tabs mt-10">
-            <el-tabs v-model="curTab" v-loading="cardLoading">
-              <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
-                <component :is="tab.is"/>
-              </el-tab-pane>
-
-            </el-tabs>
+            <TableRowTabs/>
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
@@ -75,11 +70,7 @@
 </template>
 
 <script>
-import TableRowActivityTab from "./TableRowActivityTab.vue";
-import TableRowDatumTab from "./TableRowDatumTab.vue";
-import TableRowTradeTab from "./TableRowTradeTab.vue";
-import TableRowTipsTab from "./TableRowTipsTab.vue";
-import TableRowDocTab from "./TableRowDocTab.vue";
+import TableRowTabs from './TableRowTabs.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 
 export default {
@@ -91,44 +82,11 @@ export default {
     }
   },
   components: {
-    TableRowActivityTab,
-    TableRowDatumTab,
-    TableRowTradeTab,
-    TableRowTipsTab,
-    TableRowDocTab,
+    TableRowTabs,
     CreateCustomerDrawer
   },
   data() {
     return {
-      curTab: "1",
-      tabList: [
-        {
-          label: '动态',
-          name: '1',
-          is: 'TableRowActivityTab',
-        },
-        {
-          label: '资料',
-          name: '2',
-          is: 'TableRowDatumTab',
-        },
-        {
-          label: '商机&交易',
-          name: '3',
-          is: 'TableRowTradeTab',
-        },
-        {
-          label: 'Tips',
-          name: '4',
-          is: 'TableRowTipsTab',
-        },
-        {
-          label: '文档',
-          name: '5',
-          is: 'TableRowDocTab',
-        },
-      ],
-      cardLoading: false,
       editVisible: false
     }
   },
@@ -161,25 +119,7 @@ export default {
     border-bottom: 1px solid #f0f0f0;
   }
 
-  ::v-deep .el-tabs__header {
-    margin: 0 30px;
-  }
-
-  ::v-deep .el-tabs__content {
-    height: 70vh;
-    overflow-y: auto;
-
-    .el-tab-pane {
-      padding: 10px 30px 0 30px;
-    }
-  }
-
   .container {
-    ::v-deep .el-tabs__nav-wrap::after {
-      height: 1px;
-      background-color: #f0f0f0;
-    }
-
     ::v-deep .customer-tag {
       .el-tag__close:before {
         display: none;
