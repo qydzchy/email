@@ -46,4 +46,9 @@ public class CacheConstants
      * 邮件拉取的key
      */
     public static final String EMAIL_PULL_KEY = "email:pull:";
+
+    /**
+     * 客户编号key
+     */
+    public static final String CUSTOMER_NO = "customer:no:";
 }

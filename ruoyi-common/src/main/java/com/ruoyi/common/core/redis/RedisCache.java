@@ -265,4 +265,12 @@ public class RedisCache
     {
         return redisTemplate.keys(pattern);
     }
+
+    /**
+     * 获取自增值
+     * @return
+     */
+    public Long increment(String key) {
+        return redisTemplate.opsForValue().increment(key, 1);
+    }
 }

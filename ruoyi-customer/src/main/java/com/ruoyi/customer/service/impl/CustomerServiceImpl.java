@@ -3,7 +3,9 @@ package com.ruoyi.customer.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
 import com.ruoyi.common.enums.customer.MetadataColumnAppTypeEnum;
 import com.ruoyi.common.enums.customer.VisibilityScopeTypeEnum;
@@ -52,6 +54,8 @@ public class CustomerServiceImpl implements ICustomerService
     private CustomerPublicleadsMapper customerPublicleadsMapper;
     @Resource
     private SegmentMapper segmentMapper;
+    @Resource
+    private RedisCache redisCache;
 
 
     /**
@@ -95,6 +99,19 @@ public class CustomerServiceImpl implements ICustomerService
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
 
+        String customerNo = "10000";
+        if (!redisCache.hasKey(CacheConstants.CUSTOMER_NO)) {
+            redisCache.setCacheObject(CacheConstants.CUSTOMER_NO, 10000);
+        } else {
+            Long increment = redisCache.increment(CacheConstants.CUSTOMER_NO);
+            if (increment == null) {
+                throw new ServiceException("客户编号生成失败");
+            }
+            customerNo = increment.toString();
+        }
+
+        customer.setCustomerNo(customerNo);
+        customer.setLastContactedAt(new Date());
         customer.setCreateId(userId);
         customer.setCreateBy(username);
         customer.setCreateTime(DateUtils.getNowDate());
@@ -107,7 +124,11 @@ public class CustomerServiceImpl implements ICustomerService
         batchInsertCustomerSource(id, customerAddOrUpdateDTO.getSourceIds());
         // 新增客户标签的关联关系
         batchInsertCustomerTag(id, customerAddOrUpdateDTO.getTagIds());
-        // 新增跟进人 todo
+        // 新增跟进人
+        CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+        customerFollowUpPersonnel.setCustomerId(id);
+        customerFollowUpPersonnel.setUserId(userId);
+        customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
 
         // 批量新增客户联系人
         batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
