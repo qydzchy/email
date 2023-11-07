@@ -1,9 +1,13 @@
 <template>
   <div class="datum-tab">
-    <el-row class="py-10 bottom-line">
+    <el-row class="py-10 bottom-line" v-if="options.isShowInfo">
       <div class="flex-middle space-between">
         <div>主要联系人信息</div>
-        <div><i class="el-icon-edit"></i></div>
+        <div>
+          <el-tooltip content="添加/编辑">
+            <i class="el-icon-edit pointer" @click="contactVisible=true"></i>
+          </el-tooltip>
+        </div>
       </div>
       <div class="collapse-content-box">
         <div class="container py-8" v-for="(item,index) in contactList" :key="index">
@@ -121,14 +125,27 @@
         </el-row>
       </div>
     </el-row>
+    <CustomerContactDrawer :visible.sync="contactVisible"/>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
+import CustomerContactDrawer from "./CustomerContactDrawer.vue";
 
 export default {
-  components: {TableNext},
+  props: {
+    options: {
+      type: Object,
+      default: () => {
+        return {
+          isShowInfo: true
+        }
+      },
+      required: false
+    }
+  },
+  components: {TableNext, CustomerContactDrawer},
   data() {
     return {
       contactList: [
@@ -343,6 +360,7 @@ export default {
           label: '客群',
         },
       ],
+      contactVisible: false
     }
   },
   methods: {

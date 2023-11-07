@@ -1,6 +1,6 @@
 <template>
-  <div class="company">
-    <div class="container pt-4">
+  <div class="customer">
+    <div class="container">
       <div class="left-wrap">
         <div class="menu" :class="{'is-collapsed':collapsed}">
           <div class="space-between pt-4 pl-10 pr-8 pb-8 borderBox">
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="right-wrap pt-16">
+      <div class="right-wrap">
         <keep-alive>
           <RouterView/>
         </keep-alive>
@@ -79,7 +79,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.company {
+.customer {
   display: flex;
 }
 

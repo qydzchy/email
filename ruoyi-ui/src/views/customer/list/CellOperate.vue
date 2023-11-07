@@ -1,13 +1,20 @@
 <template>
-  <div class="flex-middle space-between">
-    <span class="flex1 span-style" :title="content" @click="onClick">{{ content || '---' }}</span>
+  <div class="flex-middle space-between" @click="onClick">
+    <span class="span-style" :title="content">
+      <span>
+         <slot name="content">
+        {{ content || '---' }}
+      </slot>
+      </span>
+
+    </span>
     <el-row
       type="flex"
       class="pl-10 gap-8"
       v-show="innerVisible"
     >
-      <i v-if="disabledEdit" class="el-icon-edit pointer" @click="$emit('onEdit')"></i>
-      <i class="el-icon-copy-document pointer" @click="onCopy"></i>
+      <i v-if="disabledEdit" class="el-icon-edit pointer" @click.stop="$emit('onEdit')"></i>
+      <i class="el-icon-copy-document pointer" @click.stop="onCopy"></i>
     </el-row>
   </div>
 </template>
@@ -73,5 +80,9 @@ export default {
 <style lang="scss" scoped>
 .span-style {
   cursor: default;
+
+  > span {
+    width: auto;
+  }
 }
 </style>

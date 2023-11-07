@@ -13,12 +13,20 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <ScheduleDialog :visible.sync="scheduleVisible"/>
+    <DialogSchedule :visible.sync="scheduleVisible"/>
+    <DialogMoveToGroup :visible.sync="moveGroupVisible"/>
+    <DialogMergeCustomer :visible.sync="mergeVisible"/>
+    <DialogTransferTo :visible.sync="transferVisible"/>
+    <DialogFollowAndChange :visible.sync="followVisible"/>
   </div>
 </template>
 
 <script>
-import ScheduleDialog from "./DialogSchedule.vue";
+import DialogSchedule from "./DialogSchedule.vue";
+import DialogMoveToGroup from "./DialogMoveToGroup.vue";
+import DialogMergeCustomer from "./DialogMergeCustomer.vue";
+import DialogTransferTo from "./DialogTransferTo.vue";
+import DialogFollowAndChange from "./DialogFollowAndChange.vue";
 
 export default {
   props: {
@@ -30,7 +38,11 @@ export default {
     }
   },
   components: {
-    ScheduleDialog
+    DialogSchedule,
+    DialogMoveToGroup,
+    DialogMergeCustomer,
+    DialogTransferTo,
+    DialogFollowAndChange,
   },
   mounted() {
 
@@ -87,7 +99,11 @@ export default {
           label: '变更公海分组'
         },
       ],
-      scheduleVisible: false
+      scheduleVisible: false,
+      moveGroupVisible: false,
+      mergeVisible: false,
+      transferVisible: false,
+      followVisible: false
     }
   },
   methods: {
@@ -95,6 +111,18 @@ export default {
       switch (value) {
         case "schedule":
           this.scheduleVisible = true
+          break;
+        case "moveGroup":
+          this.moveGroupVisible = true
+          break;
+        case "merge":
+          this.mergeVisible = true
+          break;
+        case "removeAndInto":
+          this.followVisible = true
+          break;
+        case "changePoolGroup":
+          this.followVisible = true
           break;
       }
     }
