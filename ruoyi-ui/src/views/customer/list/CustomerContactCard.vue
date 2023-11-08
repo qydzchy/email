@@ -37,9 +37,13 @@
                 <el-input placeholder="请输入"/>
               </el-col>
               <el-col :span="3" class="flex-middle">
-                <i v-if="idxP!==0" class="fs-20 pl-6 el-icon-remove-outline pointer"
-                   @click="onReduce(contact.id,'platformList')"></i>
-                <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('platformList')"></i>
+                <el-tooltip placement="top" content="删除">
+                  <i v-if="idxP!==0" class="fs-20 pl-6 el-icon-remove-outline pointer"
+                     @click="onReduce(contact.id,'platformList')"></i>
+                </el-tooltip>
+                <el-tooltip placement="top" content="添加">
+                  <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('platformList')"></i>
+                </el-tooltip>
               </el-col>
             </el-row>
           </el-form-item>
@@ -53,9 +57,13 @@
                 <el-input placeholder="请输入"/>
               </el-col>
               <el-col :span="3" class="flex-middle">
-                <i v-if="idxC!==0" class="fs-20 pl-6 el-icon-remove-outline pointer"
-                   @click="onReduce(contact.id,'contactList')"></i>
-                <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('contactList')"></i>
+                <el-tooltip placement="top" content="删除">
+                  <i v-if="idxC!==0" class="fs-20 pl-6 el-icon-remove-outline pointer"
+                     @click="onReduce(contact.id,'contactList')"></i>
+                </el-tooltip>
+                <el-tooltip placement="top" content="添加">
+                  <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('contactList')"></i>
+                </el-tooltip>
               </el-col>
             </el-row>
           </el-form-item>

@@ -1,129 +1,153 @@
 <template>
   <div class="datum-tab">
     <el-row class="py-10 bottom-line" v-if="options.isShowInfo">
-      <div class="flex-middle space-between">
-        <div>主要联系人信息</div>
-        <div>
-          <el-tooltip content="添加/编辑">
-            <i class="el-icon-edit pointer" @click="contactVisible=true"></i>
-          </el-tooltip>
-        </div>
-      </div>
-      <div class="collapse-content-box">
-        <div class="container py-8" v-for="(item,index) in contactList" :key="index">
-          <div class="main px-16 py-12">
-            <div class="flex-middle space-between">
-              <span class="fs-14 bold">测试</span>
-              <el-row type="flex" :gutter="8">
-                <el-col>
-                  <el-tooltip placement="top" content="往来邮件">
-                    <i class="el-icon-postcard"></i>
-                  </el-tooltip>
-                </el-col>
-                <el-col>
-                  <el-tooltip placement="top" content="发送邮件">
-                    <i class="el-icon-message"></i>
-                  </el-tooltip>
-                </el-col>
-              </el-row>
-            </div>
-            <div class="fs-14 my-10 flex-start flex-wrap" v-show="item.checked">
-              <div class="wrap">
-                <div>邮箱</div>
-                <div class="py-10 email-copy flex-middle">
-                  wangwu@163.com
-                  <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
-                </div>
-
-              </div>
-              <div class="wrap">
-                <div>职级</div>
-                <div class="py-10">普通职员</div>
-              </div>
-              <div class="wrap">
-                <div>生日</div>
-                <div class="py-10">10-18</div>
-              </div>
-              <div class="wrap">
-                <div>性别</div>
-                <div class="py-10">男</div>
-              </div>
+      <CollapseWrap isCollapse :height="0">
+        <template #header>
+          <div class="flex-middle space-between">
+            <div>主要联系人信息</div>
+            <div>
+              <el-tooltip content="添加/编辑">
+                <i class="el-icon-edit pointer" @click="contactVisible=true"></i>
+              </el-tooltip>
             </div>
           </div>
-          <div class="footer flex-middle flex-center fs-12 mt-10">
+        </template>
+        <div class="collapse-content-box">
+          <div class="container py-8" v-for="(item,index) in contactList" :key="index">
+            <div class="main px-16 py-12">
+              <div class="flex-middle space-between">
+                <span class="fs-14 bold">测试</span>
+                <el-row type="flex" :gutter="8">
+                  <el-col>
+                    <el-tooltip placement="top" content="往来邮件">
+                      <i class="el-icon-postcard"></i>
+                    </el-tooltip>
+                  </el-col>
+                  <el-col>
+                    <el-tooltip placement="top" content="发送邮件">
+                      <i class="el-icon-message"></i>
+                    </el-tooltip>
+                  </el-col>
+                </el-row>
+              </div>
+              <div class="fs-14 my-10 flex-start flex-wrap" v-show="item.checked">
+                <div class="wrap">
+                  <div>邮箱</div>
+                  <div class="py-10 email-copy flex-middle">
+                    wangwu@163.com
+                    <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
+                  </div>
+
+                </div>
+                <div class="wrap">
+                  <div>职级</div>
+                  <div class="py-10">普通职员</div>
+                </div>
+                <div class="wrap">
+                  <div>生日</div>
+                  <div class="py-10">10-18</div>
+                </div>
+                <div class="wrap">
+                  <div>性别</div>
+                  <div class="py-10">男</div>
+                </div>
+              </div>
+            </div>
+            <div class="footer flex-middle flex-center fs-12 mt-10">
             <span class="pointer" @click="onCollapseContact(item.id)">
               {{ item.checked ? '收起' : '展开' }}
               <i :class="item.checked ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i></span>
+            </div>
           </div>
         </div>
-      </div>
-    </el-row>
-    <el-row class="py-10 bottom-line">
-      <div class="flex-middle space-between">
-        <div>公司常用信息</div>
-        <div><i class="el-icon-setting"></i></div>
-      </div>
-      <div class="my-10 info-card">
-        <el-row class="flex-wrap" type="flex" :gutter="10">
-          <el-col class="wrap" v-for="(usually,index) in usuallyInfo" :key="index">
-            <div>{{ usually.label }}</div>
-            <div class="flex-middle space-between py-5">
-              <span>--</span>
-              <i class="el-icon-edit edit-icon"></i>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-    </el-row>
-    <el-row class="py-10 bottom-line">
-      <div class="flex-middle space-between">
-        <div>公司其他信息</div>
-      </div>
-      <div class="my-10 info-card">
-        <el-row class="flex-wrap" type="flex" :gutter="10">
-          <el-col class="wrap" v-for="(other,index) in otherInfo" :key="index">
-            <div>{{ other.label }}</div>
-            <div class="flex-middle space-between py-5" v-if="!other.otherEcho">
-              <span>--</span>
-              <i class="el-icon-edit edit-icon"></i>
-            </div>
-            <div v-else>
-              {{ other.slot }}
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+      </CollapseWrap>
+
 
     </el-row>
     <el-row class="py-10 bottom-line">
-      <div class="flex-middle space-between">
-        <div>跟进信息</div>
-      </div>
-      <div class="my-10 echo-info">
-        <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
-          <el-col class="wrap" v-for="(follow,index) in followInfo" :key="index">
-            <div>{{ follow.label }}</div>
-            <div class="flex-middle space-between py-5">
-              <span>--</span>
+      <CollapseWrap isCollapse :height="400">
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">公司常用信息</div>
+            <div>
+              <i class="el-icon-setting" @click.stop="()=>{}"></i>
             </div>
-          </el-col>
-        </el-row>
-      </div>
+          </div>
+        </template>
+        <div class="my-10 info-card">
+          <el-row class="flex-wrap" type="flex" :gutter="10">
+            <el-col class="wrap" v-for="(usually,index) in usuallyInfo" :key="index">
+              <div>{{ usually.label }}</div>
+              <div class="flex-middle space-between py-5">
+                <span>--</span>
+                <i class="el-icon-edit edit-icon"></i>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </CollapseWrap>
+
+    </el-row>
+    <el-row class="py-10 bottom-line">
+      <CollapseWrap isCollapse :height="400">
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">公司其他信息</div>
+          </div>
+        </template>
+        <div class="my-10 info-card">
+          <el-row class="flex-wrap" type="flex" :gutter="10">
+            <el-col class="wrap" v-for="(other,index) in otherInfo" :key="index">
+              <div>{{ other.label }}</div>
+              <div class="flex-middle space-between py-5" v-if="!other.otherEcho">
+                <span>--</span>
+                <i class="el-icon-edit edit-icon"></i>
+              </div>
+              <div v-else>
+                {{ other.slot }}
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </CollapseWrap>
+    </el-row>
+    <el-row class="py-10 bottom-line">
+      <CollapseWrap isCollapse :height="400">
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">跟进信息</div>
+          </div>
+        </template>
+        <div class="my-10 echo-info">
+          <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
+            <el-col class="wrap" v-for="(follow,index) in followInfo" :key="index">
+              <div>{{ follow.label }}</div>
+              <div class="flex-middle space-between py-5">
+                <span>--</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </CollapseWrap>
     </el-row>
     <el-row class="py-10">
-      <div class="flex-middle space-between">
-        <div>系统信息</div>
-      </div>
-      <div class="my-10 echo-info">
-        <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
-          <el-col class="wrap" v-for="(sys,index) in sysInfo" :key="index">
-            <div>{{ sys.label }}</div>
-            <div class="flex-middle space-between py-5">
-              <span>--</span>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+      <CollapseWrap :height="300">
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">系统信息</div>
+          </div>
+        </template>
+        <div class="my-10 echo-info">
+          <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
+            <el-col class="wrap" v-for="(sys,index) in sysInfo" :key="index">
+              <div>{{ sys.label }}</div>
+              <div class="flex-middle space-between py-5">
+                <span>--</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </CollapseWrap>
     </el-row>
     <CustomerContactDrawer :visible.sync="contactVisible"/>
   </div>
@@ -132,6 +156,7 @@
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import CustomerContactDrawer from "./CustomerContactDrawer.vue";
+import CollapseWrap from "@/components/CollapseWrap";
 
 export default {
   props: {
@@ -145,7 +170,7 @@ export default {
       required: false
     }
   },
-  components: {TableNext, CustomerContactDrawer},
+  components: {TableNext, CustomerContactDrawer, CollapseWrap},
   data() {
     return {
       contactList: [

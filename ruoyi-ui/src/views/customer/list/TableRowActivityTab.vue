@@ -10,11 +10,27 @@
     <div class="mt-20">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">写跟进</div>
-        <el-button round size="medium">选择模板</el-button>
+        <el-popover width="280" trigger="click" placement="bottom-end" :append-to-body="false">
+          <el-row>
+            <div class="flex-middle space-between">
+              <span>点击选择模板，可自动填充到输入框</span>
+              <i class="el-icon-setting pl-10 pointer"
+                 @click="targetBlank('/company/customer-setting?tab=followText')"></i>
+            </div>
+            <div class="template-card py-8 px-16 mt-8">
+              <p class="template-title bold">模板名称测试</p>
+              <p class="template-content fs-12">模板内容测试</p>
+            </div>
+          </el-row>
+          <el-button round size="medium" slot="reference">选择模板</el-button>
+        </el-popover>
+
       </div>
       <el-input class="mt-10" placeholder="点击这里记录跟进细节，同步最新进展。">
         <template #suffix>
-          <i class="el-icon-full-screen mr-6"></i>
+          <el-tooltip placement="top" content="展开">
+            <i class="el-icon-full-screen pointer mr-6" @click="templateVisible=true"></i>
+          </el-tooltip>
         </template>
 
       </el-input>
@@ -127,11 +143,17 @@
         </el-timeline>
       </div>
     </div>
+    <div>
+      <DialogTemplateFollow :visible.sync="templateVisible"/>
+    </div>
   </div>
 
 </template>
 
 <script>
+import DialogTemplateFollow from "./DialogTemplateFollow.vue";
+import {targetBlank} from '@/utils/tools'
+
 export default {
   props: {
     options: {
@@ -144,8 +166,12 @@ export default {
       required: false
     }
   },
+  components: {
+    DialogTemplateFollow
+  },
   data() {
     return {
+      templateVisible: false,
       sortActive: "2",
       timeLineList: [
         {
@@ -177,12 +203,43 @@ export default {
       }
       this.sortActive = mapSort[this.sortActive]
     },
+    targetBlank,
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .active-tab {
+  .template-card {
+    background-color: rgba(247, 248, 251);
+    border-radius: 4px;
+    border: 1px solid rgb(235, 237, 240);
+    word-break: break-all;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(236, 249, 255)
+    }
+
+    p {
+      margin: 0;
+    }
+
+    > .template-title {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      color: rgb(37, 40, 46)
+    }
+
+    > .template-content {
+      white-space: pre-wrap;
+      color: rgb(37, 40, 46);
+      margin-top: 8px !important;
+    }
+  }
+
   .create-company {
     border: 1px solid #f0f0f0;
 

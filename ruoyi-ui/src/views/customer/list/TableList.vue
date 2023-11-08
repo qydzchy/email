@@ -11,7 +11,7 @@
         :extra-event="extraEvent"
         :paginate-option="paginateOption"/>
     </div>
-    <TableRowDrawer :visible.sync="rowDrawerVisible"/>
+    <TableRowDrawer :visible.sync="rowDrawerVisible"  />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ import TableRowDrawer from "./TableRowDrawer.vue";
 import OperateMenu from './OperateMenu.vue'
 import CellOperate from './CellOperate.vue'
 import HeaderOperate from "./HeaderOperate.vue";
-import {EmptyStr} from "@/utils/tools";
+import {EmptyStr, targetBlank} from "@/utils/tools";
 
 export default {
   components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate},
@@ -273,11 +273,7 @@ export default {
     },
     jumpPersonalDetail(e) {
       e.stopPropagation()
-      const detailPath = this.$router.resolve({
-        path: '/customer/personal/1',
-      })
-      window.open(detailPath.href, "_blank")
-      // location
+      targetBlank('/customer/personal/1')
     },
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)

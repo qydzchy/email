@@ -1,36 +1,49 @@
 <template>
   <div v-loading="tableLoading">
     <el-row class="mb-10">
-      <div class="flex-middle space-between">
-        <div>商机</div>
-        <div><i class="el-icon-circle-plus-outline"></i></div>
-      </div>
-      <TableNext :list="businessList" :columns="businessColumns" :extra-option="extraOption"/>
+      <CollapseWrap is-collapse>
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">商机</div>
+            <div><i class="el-icon-circle-plus-outline"></i></div>
+          </div>
+        </template>
+        <TableNext :list="businessList" :columns="businessColumns" :extra-option="extraOption"/>
+      </CollapseWrap>
     </el-row>
 
     <el-row class="mb-10">
-      <div class="flex-middle space-between">
-        <div>销售订单</div>
-        <div><i class="el-icon-circle-plus-outline"></i></div>
-      </div>
-      <TableNext :list="tradeList" :columns="tradeColumns" :extra-option="extraOption"/>
+      <CollapseWrap is-collapse>
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">销售订单</div>
+            <div><i class="el-icon-circle-plus-outline"></i></div>
+          </div>
+        </template>
+        <TableNext :list="tradeList" :columns="tradeColumns" :extra-option="extraOption"/>
+      </CollapseWrap>
     </el-row>
 
     <el-row class="mb-10">
-      <div class="flex-middle space-between">
-        <div>产品</div>
-        <div><i class="el-icon-circle-plus-outline"></i></div>
-      </div>
-      <TableNext :list="productList" :columns="productColumns" :extra-option="extraOption"/>
+      <CollapseWrap is-collapse>
+        <template #header>
+          <div class="flex-middle space-between">
+            <div class="bold">产品</div>
+            <div><i class="el-icon-circle-plus-outline"></i></div>
+          </div>
+        </template>
+        <TableNext :list="productList" :columns="productColumns" :extra-option="extraOption"/>
+      </CollapseWrap>
     </el-row>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
+import CollapseWrap from "@/components/CollapseWrap/index.vue";
 
 export default {
-  components: {TableNext},
+  components: {TableNext, CollapseWrap},
   data() {
     return {
       tableLoading: false,

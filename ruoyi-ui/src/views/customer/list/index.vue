@@ -92,7 +92,7 @@
                 <span class="bold">全部客户</span>
                 <span class="gray-text ml-2">69 个客户</span>
               </div>
-<!--              <HeaderFilter/>-->
+              <!--              <HeaderFilter/>-->
             </div>
             <div class="mt-20">
               <TableList/>
@@ -115,6 +115,7 @@ import HeaderFilter from './HeaderFilter.vue'
 import TableList from './TableList.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import {listMenu} from "@/api/system/menu";
+import {targetBlank} from "@/utils/tools";
 
 export default {
   components: {
@@ -192,7 +193,7 @@ export default {
     },
     handleCommand(command) {
       if (command === 'import') {
-        this.$router.push('/customer/config/import-operate')
+        targetBlank('/customer/config/import-operate')
       }
     },
     handleChange(e) {
@@ -205,6 +206,7 @@ export default {
 <style lang="scss" scoped>
 .page-customer-public {
   height: 100%;
+
   .header {
     border-bottom: 1px solid #f0f0f0;
   }

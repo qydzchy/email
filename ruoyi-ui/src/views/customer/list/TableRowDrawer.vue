@@ -58,7 +58,7 @@
             </div>
           </div>
           <div class="tabs mt-10">
-            <TableRowTabs/>
+            <TableRowTabs :options="options" />
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
@@ -87,7 +87,12 @@ export default {
   },
   data() {
     return {
-      editVisible: false
+      editVisible: false,
+      options: {
+        isShowSchedule: true,
+        isTabSetHeight: true,
+        isShowInfo: true
+      },
     }
   },
   methods: {
@@ -120,15 +125,6 @@ export default {
   }
 
   .container {
-    ::v-deep .customer-tag {
-      .el-tag__close:before {
-        display: none;
-      }
-
-      &:hover .el-tag__close:before {
-        display: block;
-      }
-    }
   }
 }
 </style>

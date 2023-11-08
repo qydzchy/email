@@ -1,35 +1,42 @@
 <template>
   <div v-loading="tableLoading">
     <el-row class="mb-10">
-      <el-col class="flex-middle space-between">
-        <div>文档</div>
-        <el-dropdown trigger="click">
-          <el-tooltip placement="top" content="上传文件">
-            <i class="el-icon-circle-plus-outline pointer"></i>
-          </el-tooltip>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>本地文件</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+      <CollapseWrap is-collapse :height="400">
+        <template slot="header">
+          <el-col class="flex-middle space-between">
+            <div>文档</div>
+            <el-dropdown trigger="click">
+              <el-tooltip placement="top" content="上传文件">
+                <i class="el-icon-circle-plus-outline pointer"></i>
+              </el-tooltip>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>本地文件</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
 
-      </el-col>
-      <el-col class="mt-10 doc-form">
-        <formCreate
-          v-model="fApi"
-          :rule="rule"
-          :option="option"/>
-      </el-col>
-      <TableNext :list="tradeList" :columns="tradeColumns" :extra-option="extraOption"/>
+          </el-col>
+        </template>
+        <el-col class="mt-10 doc-form">
+          <formCreate
+            v-model="fApi"
+            :rule="rule"
+            :option="option"/>
+        </el-col>
+        <TableNext :list="tradeList" :columns="tradeColumns" :extra-option="extraOption"/>
+      </CollapseWrap>
+
+
     </el-row>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
+import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import {formOption} from "@/constant/form"
 
 export default {
-  components: {TableNext},
+  components: {TableNext, CollapseWrap},
   data() {
     return {
       tableLoading: false,
@@ -191,7 +198,8 @@ export default {
 .doc-form {
   ::v-deep .el-form-item__content {
     width: 100%;
-    .el-select,.el-date-editor{
+
+    .el-select, .el-date-editor {
       width: 100%;
     }
   }

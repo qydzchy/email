@@ -1,17 +1,35 @@
 <template>
   <div class="page-customer-detail">
     <div class="fs-20">客户详情</div>
-    <div class="user-info card-bg px-16 py-16 mt-20"></div>
-    <el-row type="flex" :gutter="10">
-      <el-col :span="18" class="card-bg mt-16 pt-8 pb-16 px-8">
+    <div class="card-bg px-20 py-16 mt-20">
+      <div class="base-info flex-start">
+        <el-avatar :size="110" shape="square"></el-avatar>
+
+        <el-row class="pl-10 fs-14">
+          <div class="fs-20 bold">测试公司</div>
+          <div class="my-10 flex-middle gap-10">
+            <span>11248</span>
+            <span>冰岛</span>
+            <span>15:39 UTC+2</span>
+          </div>
+          <div class="mb-10">跟进入: admin</div>
+          <div class="flex-middle">
+            <el-tag class="customer-tag" closable>标签1</el-tag>
+            <el-button class="ml-10" size="mini" icon="el-icon-plus"></el-button>
+          </div>
+        </el-row>
+      </div>
+    </div>
+    <el-row type="flex">
+      <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
         <TableRowTabs :options="options"/>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
           <div class="flex-middle space-between">
             <div class="fs-14 bold">计划日程</div>
-            <el-tooltip content="添加日程">
-              <i class="el-icon-circle-plus-outline"></i>
+            <el-tooltip placement="top" content="添加日程">
+              <i class="el-icon-circle-plus-outline pointer" @click="dialogSchedule=true"></i>
             </el-tooltip>
           </div>
           <ul class="plan-ul">
@@ -24,10 +42,21 @@
         </div>
         <div class="card-bg  mt-16 px-16 py-16">
           <div class="contact flex-middle space-between">
-            <div class="black-text">联系人</div>
-            <div>
-              <i class="el-icon-search"></i>
-              <i class="el-icon-edit pl-10"></i>
+            <div class="black-text">联系人({{contactList.length}})</div>
+            <div class="flex-middle gap-20">
+              <el-row v-if="contactSearch">
+                <el-input size="mini" v-model="contactSearchValue" @blur="handleBlurSearch" clearable>
+                  <el-button slot="append" icon="el-icon-search" size="mini"></el-button>
+                </el-input>
+              </el-row>
+              <el-row v-else>
+                <el-tooltip placement="top" content="搜索">
+                  <i class="el-icon-search pointer" @click="contactSearch=true"></i>
+                </el-tooltip>
+              </el-row>
+              <el-tooltip placement="top" content="编辑">
+                <i class="el-icon-edit pointer" @click="contactVisible=true"></i>
+              </el-tooltip>
             </div>
           </div>
           <div>
@@ -79,35 +108,48 @@
         </div>
       </el-col>
     </el-row>
+    <DialogSchedule :visible.sync="dialogSchedule"/>
+    <CustomerContactDrawer :visible.sync="contactVisible"/>
   </div>
 </template>
 
 <script>
 import TableRowTabs from '../TableRowTabs.vue'
+import DialogSchedule from "../DialogSchedule.vue";
+import CustomerContactDrawer from "../CustomerContactDrawer.vue";
 
 export default {
   components: {
+    CustomerContactDrawer,
+    DialogSchedule,
     TableRowTabs
   },
   data() {
     return {
-      options: {
-        isShowSchedule: false,
-        isTabSetHeight: false,
-        isShowInfo: false
-      },
+      options: {},
       contactList: [
         {
           id: 1,
           checked: true
         },
       ],
+      contactSearchValue: '',
+      contactSearch: false,
+      contactVisible: false,
+      dialogSchedule: false
     }
   },
   mounted() {
     this.curId = this.$route.params?.id
   },
   methods: {
+    handleBlurSearch() {
+      if (!this.contactSearchValue) {
+        this.contactSearch = false
+        return
+      }
+      console.log('value', this.contactSearchValue)
+    },
     onCopy(value) {
       if (!value) {
         this.$message.info('无内容可复制')
@@ -125,12 +167,19 @@ export default {
 .page-customer-detail {
   padding: 10px 20px;
   height: 100%;
+  min-width: 1300px;
   background-color: rgba(245, 245, 245);
 }
 
 .card-bg {
   border-radius: 8px;
   background-color: rgba(255, 255, 255)
+}
+
+.base-info {
+  ::v-deep .customer-tag {
+
+  }
 }
 
 .plan-ul {
