@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-middle">
     <el-button type="text" round>跨页全选</el-button>
     <span class="fs-14 mr-10">已选&nbsp;{{ checkedLen.length }}&nbsp;个客户</span>
     <el-button round v-if="checkedLen.length===1">写邮件</el-button>

@@ -11,7 +11,7 @@
             <el-row class="flex-middle">
               <el-row class="flex-middle gap-16">
                 <el-tooltip placement="top" content="关注">
-                  <svg-icon icon-class="like"/>
+                  <svg-icon class="pointer fs-18" icon-class="like"/>
                 </el-tooltip>
                 <el-tooltip placement="top" content="写邮件">
                   <i class="el-icon-message pointer"></i>

@@ -5,18 +5,18 @@
     </div>
     <div class="wrap pt-10 flex-middle space-between">
       <div>共 {{ paginateOption.total }} 个客户</div>
-      <div class="search-group flex-middle gap-8">
-        <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group"></el-select>
-        <TreeSelect
-            style="width: 200px"
-            v-model="searchQuery.parentId"
-            :options="menuOptions"
-            :normalizer="normalizer"
-            :show-count="true"
-            :multiple="true"
-            placeholder="全部分组"
-        />
-      </div>
+<!--      <div class="search-group flex-middle gap-8">-->
+<!--        <el-select style="width:200px" placeholder="请选择" v-model="searchQuery.group"></el-select>-->
+<!--        <TreeSelect-->
+<!--            style="width: 200px"-->
+<!--            v-model="searchQuery.parentId"-->
+<!--            :options="menuOptions"-->
+<!--            :normalizer="normalizer"-->
+<!--            :show-count="true"-->
+<!--            :multiple="true"-->
+<!--            placeholder="全部分组"-->
+<!--        />-->
+<!--      </div>-->
     </div>
     <div class="mt-20">
       <TableNext :list="list" :columns="columns" :extra-option="{height:'70vh'}" :paginate-option="paginateOption"/>

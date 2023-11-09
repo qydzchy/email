@@ -1,7 +1,7 @@
 <template>
   <div v-loading="tableLoading">
     <el-row class="mb-10">
-      <CollapseWrap is-collapse>
+      <CollapseWrap>
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">商机</div>
@@ -13,7 +13,7 @@
     </el-row>
 
     <el-row class="mb-10">
-      <CollapseWrap is-collapse>
+      <CollapseWrap>
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">销售订单</div>
@@ -25,7 +25,7 @@
     </el-row>
 
     <el-row class="mb-10">
-      <CollapseWrap is-collapse>
+      <CollapseWrap>
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">产品</div>
