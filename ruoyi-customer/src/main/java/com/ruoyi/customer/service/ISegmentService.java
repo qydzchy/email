@@ -1,6 +1,8 @@
 package com.ruoyi.customer.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
@@ -59,7 +61,7 @@ public interface ISegmentService
      * @param id 客群主键
      * @return 结果
      */
-    public int deleteSegmentById(Long id);
+    public boolean deleteSegmentById(Long id);
 
     /**
      * 查询客群树列表
@@ -67,4 +69,10 @@ public interface ISegmentService
      * @return
      */
     List<SegmentListVO> getSegmentTree(Integer usageScope);
+
+    /**
+     * 获取字段
+     * @return
+     */
+    List<Map<String, Object>> getConditionRuleColumn();
 }

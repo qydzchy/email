@@ -133,10 +133,10 @@
     </insert>
 
     <insert id="batchInsertSegment">
-        insert into customer_segment(parent_id, name, usage_scope, visibility_scope_type, visibility_scope_content, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        insert into customer_segment(parent_id, name, usage_scope, visibility_scope, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
         values
         <foreach collection="segmentList" item="item" index="index" separator=",">
-            (#{item.parentId}, #{item.name}, #{item.usageScope}, #{item.visibilityScopeType}, #{item.visibilityScopeContent}, #{item.conditionRuleType}, #{item.conditionRuleContent}, #{item.subgroupFlag}, #{item.additionRule}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+            (#{item.parentId}, #{item.name}, #{item.usageScope}, #{item.visibilityScope}, #{item.conditionRuleType}, #{item.conditionRuleContent}, #{item.subgroupFlag}, #{item.additionRule}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
         </foreach>
     </insert>
 
@@ -146,8 +146,7 @@
             <if test="parentId != null">parent_id = #{parentId},</if>
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="usageScope != null">usage_scope = #{usageScope},</if>
-            <if test="visibilityScopeType != null">visibility_scope_type = #{visibilityScopeType},</if>
-            <if test="visibilityScopeContent != null">visibility_scope_content = #{visibilityScopeContent},</if>
+            <if test="visibilityScope != null">visibility_scope = #{visibilityScope},</if>
             <if test="conditionRuleType != null">condition_rule_type = #{conditionRuleType},</if>
             <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content = #{conditionRuleContent},</if>
             <if test="subgroupFlag != null">subgroup_flag = #{subgroupFlag},</if>

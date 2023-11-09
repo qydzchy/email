@@ -86,5 +86,5 @@ public interface SegmentMapper
      * @param focusFlag
      * @return
      */
-    Integer countCustomerCount(Long userId, Boolean focusFlag);
+    Integer countCustomerCount(@Param("userId") Long userId, @Param("focusFlag") Boolean focusFlag);
 }

@@ -1,9 +1,14 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.CompanyInfoEnum;
+import com.ruoyi.common.enums.customer.ContactInfoEnum;
+import com.ruoyi.common.enums.customer.DateTimeEnum;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
@@ -78,13 +83,14 @@ public class SegmentServiceImpl implements ISegmentService
 
         segmentMapper.insertSegment(segment);
         Long id = segment.getId();
-        List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getSubGroup();
+        List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
         if (subGroupList != null && !subGroupList.isEmpty()) {
             List<Segment> segmentList = new ArrayList<>();
             subGroupList.stream().forEach(subGroup -> {
                 Segment subSegment = new Segment();
-                subSegment.setParentId(id);
                 BeanUtils.copyProperties(subGroup, subSegment);
+                subSegment.setParentId(id);
+                subSegment.setDelFlag("0");
                 subSegment.setCreateId(userId);
                 subSegment.setCreateBy(username);
                 subSegment.setCreateTime(DateUtils.getNowDate());
@@ -125,13 +131,14 @@ public class SegmentServiceImpl implements ISegmentService
         // 删除子客群
         segmentMapper.deleteSegmentByParentId(segment.getId());
 
-        List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getSubGroup();
+        List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
         if (subGroupList != null && !subGroupList.isEmpty()) {
             List<Segment> segmentList = new ArrayList<>();
             subGroupList.stream().forEach(subGroup -> {
                 Segment subSegment = new Segment();
-                subSegment.setParentId(segmentAddOrUpdateDTO.getId());
                 BeanUtils.copyProperties(subGroup, subSegment);
+                subSegment.setParentId(segmentAddOrUpdateDTO.getId());
+                subSegment.setDelFlag("0");
                 subSegment.setCreateId(userId);
                 subSegment.setCreateBy(username);
                 subSegment.setCreateTime(DateUtils.getNowDate());
@@ -167,13 +174,15 @@ public class SegmentServiceImpl implements ISegmentService
      * @return 结果
      */
     @Override
-    public int deleteSegmentById(Long id)
+    public boolean deleteSegmentById(Long id)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
-        return segmentMapper.deleteSegmentById(id, userId, username);
+        segmentMapper.deleteSegmentById(id, userId, username);
+        segmentMapper.deleteSegmentByParentId(id);
+        return true;
     }
 
     /**
@@ -188,7 +197,7 @@ public class SegmentServiceImpl implements ISegmentService
 
         // 生成基础客群
         List<SegmentListVO> allSegmentVOList = new ArrayList<>();
-        if (usageScope.intValue() != 1) {
+        if (usageScope == null || usageScope.intValue() == 2) {
             List<SegmentListVO> basicSegmentVO = initBasicSegment(userId);
             allSegmentVOList.addAll(basicSegmentVO);
         }
@@ -197,6 +206,53 @@ public class SegmentServiceImpl implements ISegmentService
         allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
 
         return allSegmentVOList;
+    }
+
+    /**
+     * 获取条件规则字段
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getConditionRuleColumn() {
+        Map<String, Object> companyInfoMap = new HashMap<>();
+        companyInfoMap.put("name", "公司名称");
+        List<Map<String, String>> companyColumnMapList = new ArrayList<>();
+        for (CompanyInfoEnum companyInfoEnum : CompanyInfoEnum.values()) {
+            Map<String, String> companyColumnMap = new HashMap<>();
+            companyColumnMap.put("columnName", companyInfoEnum.getColumnName());
+            companyColumnMap.put("nickName", companyInfoEnum.getNickName());
+            companyColumnMapList.add(companyColumnMap);
+        }
+        companyInfoMap.put("children", companyColumnMapList);
+
+        Map<String, Object> contactInfoMap = new HashMap<>();
+        contactInfoMap.put("name", "联系人信息");
+        List<Map<String, String>> contackColumnMapList = new ArrayList<>();
+        for (ContactInfoEnum contactInfoEnum : ContactInfoEnum.values()) {
+            Map<String, String> contactColumnMap = new HashMap<>();
+            contactColumnMap.put("columnName", contactInfoEnum.getColumnName());
+            contactColumnMap.put("nickName", contactInfoEnum.getNickName());
+            contackColumnMapList.add(contactColumnMap);
+        }
+
+        contactInfoMap.put("children", contackColumnMapList);
+
+        Map<String, Object> dateTimeMap = new HashMap<>();
+        dateTimeMap.put("name", "日期时间");
+        List<Map<String, String>> dateTimeColumnMapList = new ArrayList<>();
+        for (DateTimeEnum dateTimeEnum : DateTimeEnum.values()) {
+            Map<String, String> dateTimeColumnMap = new HashMap<>();
+            dateTimeColumnMap.put("columnName", dateTimeEnum.getColumnName());
+            dateTimeColumnMap.put("nickName", dateTimeEnum.getNickName());
+            dateTimeColumnMapList.add(dateTimeColumnMap);
+        }
+        dateTimeMap.put("children", dateTimeColumnMapList);
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        result.add(companyInfoMap);
+        result.add(contactInfoMap);
+        result.add(dateTimeMap);
+        return result;
     }
 
     /**

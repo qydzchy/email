@@ -91,4 +91,14 @@ public class SegmentController extends BaseController
 
         return toAjax(segmentService.deleteSegmentById(segment.getId()));
     }
+
+    /**
+     * 获取条件规则字段
+     */
+    @PreAuthorize("@ss.hasPermi('customer:segment:condition:rule:column')")
+    @GetMapping("/get/condition/rule/column")
+    public AjaxResult getConditionRuleColumn()
+    {
+        return success(segmentService.getConditionRuleColumn());
+    }
 }

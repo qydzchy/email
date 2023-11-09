@@ -47,5 +47,5 @@ public class SegmentAddOrUpdateDTO {
     /**
      * 二级客群
      */
-    private List<SegmentAddOrUpdateDTO> subGroup;
+    private List<SegmentAddOrUpdateDTO> children;
 }
