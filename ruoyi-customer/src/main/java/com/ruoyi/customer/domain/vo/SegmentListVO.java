@@ -52,12 +52,14 @@ public class SegmentListVO {
      * @return
      */
     public String getUsageScopeName() {
-        if (usageScope.intValue() == 1) {
-            return "全公司可见";
-        } else if (usageScope.intValue() == 2) {
-            return "仅个人使用";
-        } else {
-            return "";
+        if (usageScope != null) {
+            if (usageScope.intValue() == 1) {
+                return "全公司可见";
+            } else if (usageScope.intValue() == 2) {
+                return "仅个人使用";
+            }
         }
+
+        return "";
     }
 }

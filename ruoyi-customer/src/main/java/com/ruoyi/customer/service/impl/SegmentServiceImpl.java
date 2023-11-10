@@ -1,9 +1,6 @@
 package com.ruoyi.customer.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.CompanyInfoEnum;
@@ -14,6 +11,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
+import com.ruoyi.customer.domain.vo.SegmentUserListVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.SegmentMapper;
 import com.ruoyi.customer.domain.Segment;
@@ -191,18 +189,18 @@ public class SegmentServiceImpl implements ISegmentService
      * @return
      */
     @Override
-    public List<SegmentListVO> getSegmentTree(Integer usageScope) {
+    public List<SegmentListVO> getSegmentTree(Integer usageScope, Long createId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
         // 生成基础客群
         List<SegmentListVO> allSegmentVOList = new ArrayList<>();
-        if (usageScope == null || usageScope.intValue() == 2) {
+        if (userId.longValue() == createId.longValue() && (usageScope == null || usageScope.intValue() == 2)) {
             List<SegmentListVO> basicSegmentVO = initBasicSegment(userId);
             allSegmentVOList.addAll(basicSegmentVO);
         }
 
-        List<SegmentListVO> segmentVOList = segmentMapper.list(userId, usageScope);
+        List<SegmentListVO> segmentVOList = segmentMapper.list(userId, usageScope, createId);
         allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
 
         return allSegmentVOList;
@@ -253,6 +251,28 @@ public class SegmentServiceImpl implements ISegmentService
         result.add(contactInfoMap);
         result.add(dateTimeMap);
         return result;
+    }
+
+    @Override
+    public List<SegmentUserListVO> userList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        List<SegmentUserListVO> segmentUserList = segmentMapper.userList();
+        SegmentUserListVO currentUser = new SegmentUserListVO();
+        Iterator<SegmentUserListVO> iterator = segmentUserList.iterator();
+        while (iterator.hasNext()) {
+            SegmentUserListVO segmentUserVO = iterator.next();
+            if (segmentUserVO.getUserId().longValue() == userId.longValue()) {
+                currentUser = segmentUserVO;
+                iterator.remove();
+                break;
+            }
+        }
+
+        currentUser.setNickName("我的");
+        segmentUserList.add(0, currentUser);
+        return segmentUserList;
     }
 
     /**

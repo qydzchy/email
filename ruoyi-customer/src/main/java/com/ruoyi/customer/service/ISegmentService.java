@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
+import com.ruoyi.customer.domain.vo.SegmentUserListVO;
 
 /**
  * 客群Service接口
@@ -68,11 +69,17 @@ public interface ISegmentService
      * @param usageScope
      * @return
      */
-    List<SegmentListVO> getSegmentTree(Integer usageScope);
+    List<SegmentListVO> getSegmentTree(Integer usageScope, Long createId);
 
     /**
      * 获取字段
      * @return
      */
     List<Map<String, Object>> getConditionRuleColumn();
+
+    /**
+     * 用户列表
+     * @return
+     */
+    List<SegmentUserListVO> userList();
 }

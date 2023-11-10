@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
+import com.ruoyi.customer.domain.vo.SegmentUserListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -78,7 +79,7 @@ public interface SegmentMapper
      * @param userId 跟进人ID
      * @param usageScope
      */
-    List<SegmentListVO> list(@Param("userId") Long userId, @Param("usageScope") Integer usageScope);
+    List<SegmentListVO> list(@Param("userId") Long userId, @Param("usageScope") Integer usageScope, @Param("createId") Long createId);
 
     /**
      * 统计客户数
@@ -87,4 +88,10 @@ public interface SegmentMapper
      * @return
      */
     Integer countCustomerCount(@Param("userId") Long userId, @Param("focusFlag") Boolean focusFlag);
+
+    /**
+     * 用户列表
+     * @return
+     */
+    List<SegmentUserListVO> userList();
 }

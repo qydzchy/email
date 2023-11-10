@@ -64,10 +64,10 @@
         customer_segment s
         LEFT JOIN customer_customer_segment cs ON cs.segment_id = s.id
         LEFT JOIN customer_customer c ON c.id = cs.customer_id AND c.del_flag = '0'
-        LEFT JOIN customer_customer_follow_up_personnel fup ON fup.customer_id = c.id
+        LEFT JOIN customer_customer_follow_up_personnel fup ON fup.customer_id = c.id and fup.user_id = #{userId}
         WHERE
         s.del_flag = '0'
-        AND fup.user_id = #{userId}
+        AND s.create_id = #{createId}
         <if test="usageScope != null"> AND s.usage_scope = #{usageScope}</if>
         GROUP BY
         s.id,
@@ -92,6 +92,13 @@
         c.del_flag = '0'
         AND fup.user_id = #{userId}
         <if test="focusFlag != null"> and c.focus_flag = #{focusFlag}</if>
+    </select>
+
+    <select id="userList" resultType="com.ruoyi.customer.domain.vo.SegmentUserListVO">
+        select u.user_id as userId, u.nick_name as nickName, count(s.id) as segmentCount from sys_user u
+        left join customer_segment s on u.user_id = s.create_id and s.del_flag = '0' and s.parent_id = -1
+        where u.del_flag = '0'
+        group by u.user_id, u.nick_name
     </select>
 
     <insert id="insertSegment" parameterType="Segment" useGeneratedKeys="true" keyProperty="id">

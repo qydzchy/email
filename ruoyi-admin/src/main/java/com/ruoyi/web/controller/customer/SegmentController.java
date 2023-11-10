@@ -40,7 +40,8 @@ public class SegmentController extends BaseController
     public AjaxResult list(Segment segment)
     {
         Integer usageScope = segment.getUsageScope();
-        List<SegmentListVO> list = segmentService.getSegmentTree(usageScope);
+        Long createId = segment.getCreateId();
+        List<SegmentListVO> list = segmentService.getSegmentTree(usageScope, createId);
         return success(list);
     }
 
@@ -100,5 +101,15 @@ public class SegmentController extends BaseController
     public AjaxResult getConditionRuleColumn()
     {
         return success(segmentService.getConditionRuleColumn());
+    }
+
+    /**
+     * 获取用户列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:segment:user:list')")
+    @GetMapping("/user/list")
+    public AjaxResult userList()
+    {
+        return success(segmentService.userList());
     }
 }
