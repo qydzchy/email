@@ -110,29 +110,39 @@
                   </div>
                 </div>
                 <div class="comment mt-20 px-20">
-                  <div class="comment-item flex-column mb-10" v-for="item in 2" :key="item">
-                    <div class="flex-middle space-between">
-                      <el-row type="flex" align="middle" class="fs-14">
-                        <i class="el-icon-s-comment"></i>
-                        <span class="pl-14 gray-text">allxchips</span>
-                        <span class="pl-10 gray-text">11-03 08:11</span>
-                      </el-row>
-                      <el-row class="icon-operate" :gutter="8">
-                        <el-col>
-                          <el-tooltip placement="top" content="删除评论">
-                            <i class="el-icon-delete pointer"></i>
-                          </el-tooltip>
-                        </el-col>
-                        <el-col>
-                          <el-tooltip placement="top" content="编辑评论">
-                            <i class="el-icon-edit pointer"></i>
-                          </el-tooltip>
-                        </el-col>
-                      </el-row>
-                    </div>
-                    <div class="comment-content mt-10">
-                      测试
-                    </div>
+                  <div class="comment-item flex-column mb-10" v-for="comment in item.comments" :key="comment.id">
+                    <template v-if="!comment.edit">
+                      <div class="flex-middle space-between">
+                        <el-row type="flex" align="middle" class="fs-14">
+                          <i class="el-icon-s-comment"></i>
+                          <span class="pl-14 gray-text">allxchips</span>
+                          <span class="pl-10 gray-text">11-03 08:11</span>
+                        </el-row>
+                        <el-row class="icon-operate" :gutter="8">
+                          <el-col>
+                            <el-tooltip placement="top" content="删除评论">
+                              <i class="el-icon-delete pointer"></i>
+                            </el-tooltip>
+                          </el-col>
+                          <el-col>
+                            <el-tooltip placement="top" content="编辑评论">
+                              <i class="el-icon-edit pointer" @click="onEdit(item.id,comment,true)"></i>
+                            </el-tooltip>
+                          </el-col>
+                        </el-row>
+                      </div>
+                      <div class="comment-content mt-10">
+                        <span>{{ comment.content }}</span>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <el-input v-model="comment.content" type="textarea" resize="none" :rows="3" size="small"/>
+                      <div class="flex-end pt-10">
+                        <el-button round size="small" @click="onEdit(item.id,comment,false)">取消</el-button>
+                        <el-button type="primary" round size="small">确认</el-button>
+                      </div>
+                    </template>
+
                   </div>
                 </div>
               </div>
@@ -175,24 +185,82 @@ export default {
       sortActive: "2",
       timeLineList: [
         {
+          id: 1,
           content: '支持使用图标',
           timestamp: '2018-04-12 20:46',
           size: 'large',
           icon: 'el-icon-document',
-          color: '#0bbd87'
-        }, {
+          color: '#0bbd87',
+          comments: [
+            {
+              id: 1,
+              content: '测试',
+              edit: false,
+            },
+            {
+              id: 2,
+              content: '测试2',
+              edit: false,
+            }
+          ]
+        },
+        {
+          id: 2,
           content: '支持自定义颜色',
           timestamp: '2018-04-03 20:46',
-
-        }, {
+          edit: false,
+          comments: [
+            {
+              id: 1,
+              content: '测试',
+              edit: false,
+            },
+            {
+              id: 2,
+              content: '测试2',
+              edit: false,
+            }
+          ]
+        },
+        {
+          id: 3,
           content: '支持自定义尺寸',
           timestamp: '2018-04-03 20:46',
-          size: 'large'
-        }, {
+          size: 'large',
+          edit: false,
+          comments: [
+            {
+              id: 1,
+              content: '测试',
+              edit: false,
+            },
+            {
+              id: 2,
+              content: '测试2',
+              edit: false,
+            }
+          ]
+        },
+        {
+          id: 4,
           content: '默认样式的节点',
-          timestamp: '2018-04-03 20:46'
+          timestamp: '2018-04-03 20:46',
+          edit: false,
+          comments: [
+            {
+              id: 1,
+              content: '测试',
+              edit: false,
+            },
+            {
+              id: 2,
+              content: '测试2',
+              edit: false,
+            }
+          ]
         }
-      ]
+      ],
+      tempEditValue: ''
     }
   },
   methods: {
@@ -202,6 +270,24 @@ export default {
         "2": "1"
       }
       this.sortActive = mapSort[this.sortActive]
+    },
+    onEdit(itemId, comment, bool) {
+      !this.tempEditValue && (this.tempEditValue = comment?.content)
+      this.timeLineList.map(val => {
+        if (val.id === itemId) {
+          val.comments.map(c => {
+            if (c.id === comment?.id) {
+              if (!bool) {
+                c.content = this.tempEditValue
+                this.tempEditValue = ''
+              }
+              c.edit = bool
+            }
+            return c
+          })
+        }
+        return val
+      })
     },
     targetBlank,
   }

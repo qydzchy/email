@@ -47,6 +47,7 @@
     "clipboard": "2.0.8",
     "core-js": "3.25.3",
     "echarts": "5.4.0",
+    "el-select-tree": "^2.1.1-beta.0",
     "el-table-draggable": "^1.4.12",
     "element-ui": "2.15.13",
     "file-saver": "2.0.5",

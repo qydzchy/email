@@ -1,13 +1,5 @@
-import {country} from '@/assets/data/countryData'
+import {generatePhone} from "@/utils/tools";
 
-function generatePhone(arr) {
-  return arr.map(val => {
-    return {
-      label: `${val?.area || ''} ${val?.areaCode || ''}`,
-      value: val?.areaCode || ''
-    }
-  })
-}
 
 const UsuallyInfoRule = [
   // 占位
@@ -138,7 +130,7 @@ const UsuallyInfoRule = [
                           filterable: true,
                           clearable: true
                         },
-                        options: generatePhone(country)
+                        options: generatePhone()
                       }
                     ]
                   },

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import colorMap from './colorMap'
+import {companyStatusColorMap} from './colorMap'
 
 export default {
   props: {
@@ -22,13 +22,15 @@ export default {
       type: Number | String,
       default: 0,
       required: true
+    },
+    colorMap: {
+      type: Object,
+      default: () => {
+        return companyStatusColorMap
+      },
+      required: false
     }
   },
-  data() {
-    return {
-      colorMap: colorMap,
-    }
-  }
 }
 </script>
 

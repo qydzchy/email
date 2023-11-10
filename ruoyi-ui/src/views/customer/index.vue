@@ -1,6 +1,6 @@
 <template>
   <div class="customer">
-    <div class="container">
+    <div class="customer-container">
       <div class="left-wrap">
         <div class="menu" :class="{'is-collapsed':collapsed}">
           <div class="space-between pt-4 pl-10 pr-8 pb-8 borderBox">
@@ -81,9 +81,10 @@ export default {
 <style lang="scss" scoped>
 .customer {
   display: flex;
+
 }
 
-.container {
+.customer-container {
   width: 100%;
   display: flex;
   min-height: calc(100vh - 84px);
@@ -202,7 +203,6 @@ export default {
 .right-wrap {
   width: 100%;
   height: 100%;
-  overflow: auto;
   box-sizing: border-box;
   min-width: 1000px;
 }

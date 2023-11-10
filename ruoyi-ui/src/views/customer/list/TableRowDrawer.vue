@@ -10,9 +10,7 @@
             </div>
             <el-row class="flex-middle">
               <el-row class="flex-middle gap-16">
-                <el-tooltip placement="top" content="关注">
-                  <svg-icon class="pointer fs-18" icon-class="like"/>
-                </el-tooltip>
+                <CollageIcon :show="isCollage" @click="isCollage=!isCollage"/>
                 <el-tooltip placement="top" content="写邮件">
                   <i class="el-icon-message pointer"></i>
                 </el-tooltip>
@@ -34,7 +32,7 @@
                   <el-dropdown-item>重新分配</el-dropdown-item>
                   <el-dropdown-item>共享客户</el-dropdown-item>
                   <el-dropdown-item>合并客户</el-dropdown-item>
-                  <el-dropdown-item>新增报价单</el-dropdown-item>
+                  <!--                  <el-dropdown-item>新增报价单</el-dropdown-item>-->
                 </el-dropdown-menu>
               </el-dropdown>
             </el-row>
@@ -58,7 +56,7 @@
             </div>
           </div>
           <div class="tabs mt-10">
-            <TableRowTabs :options="options" />
+            <TableRowTabs :options="options"/>
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
@@ -72,6 +70,7 @@
 <script>
 import TableRowTabs from './TableRowTabs.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
+import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 
 export default {
   props: {
@@ -83,7 +82,8 @@ export default {
   },
   components: {
     TableRowTabs,
-    CreateCustomerDrawer
+    CreateCustomerDrawer,
+    CollageIcon
   },
   data() {
     return {
@@ -93,6 +93,7 @@ export default {
         isTabSetHeight: true,
         isShowInfo: true
       },
+      isCollage: false
     }
   },
   methods: {

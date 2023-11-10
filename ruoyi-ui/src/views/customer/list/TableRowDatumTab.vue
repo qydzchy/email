@@ -65,7 +65,7 @@
 
     </el-row>
     <el-row class="py-10 bottom-line">
-      <CollapseWrap isCollapse :height="400">
+      <CollapseWrap isCollapse :height="480">
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">公司常用信息</div>
@@ -77,11 +77,27 @@
         <div class="my-10 info-card">
           <el-row class="flex-wrap" type="flex" :gutter="10">
             <el-col class="wrap" v-for="(usually,index) in usuallyInfo" :key="index">
-              <div>{{ usually.label }}</div>
-              <div class="flex-middle space-between py-5">
-                <span>--</span>
-                <i class="el-icon-edit edit-icon"></i>
+              <div>
+                {{ usually.label }}
+                <el-tooltip v-if="usually.showTooltip" placement="top">
+                  <div slot="content" v-html="usually.tooltipText"></div>
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
               </div>
+              <CellOperate
+                class="pt-6"
+                :text="usually.value"
+                :show-form="usually.show"
+                :type="usually.type"
+                :value.sync="usually.value"
+                :show-copy-icon="false"
+                :form-option="usually.options"
+                @onInput="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
+                @onChange="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
+                @onEnter="onShowForm('usuallyInfo',usually.field,false)"
+                @onBlur="onShowForm('usuallyInfo',usually.field,false)"
+                @onEdit="onShowForm('usuallyInfo',usually.field,true)">
+              </CellOperate>
             </el-col>
           </el-row>
         </div>
@@ -89,7 +105,7 @@
 
     </el-row>
     <el-row class="py-10 bottom-line">
-      <CollapseWrap isCollapse :height="400">
+      <CollapseWrap isCollapse :height="450">
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">公司其他信息</div>
@@ -99,13 +115,19 @@
           <el-row class="flex-wrap" type="flex" :gutter="10">
             <el-col class="wrap" v-for="(other,index) in otherInfo" :key="index">
               <div>{{ other.label }}</div>
-              <div class="flex-middle space-between py-5" v-if="!other.otherEcho">
-                <span>--</span>
-                <i class="el-icon-edit edit-icon"></i>
-              </div>
-              <div v-else>
-                {{ other.slot }}
-              </div>
+              <CellOperate
+                :text="other.value"
+                :show-form="other.show"
+                :value.sync="other.value"
+                :type="other.type"
+                :show-copy-icon="false"
+                :form-option="other.options"
+                @onInput="(val)=>handleSetValue('otherInfo',other.field,val)"
+                @onChange="(val)=>handleSetValue('otherInfo',other.field,val)"
+                @onEnter="onShowForm('otherInfo',other.field,false)"
+                @onBlur="onShowForm('otherInfo',other.field,false)"
+                @onEdit="onShowForm('otherInfo',other.field,true)">
+              </CellOperate>
             </el-col>
           </el-row>
         </div>
@@ -121,7 +143,13 @@
         <div class="my-10 echo-info">
           <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
             <el-col class="wrap" v-for="(follow,index) in followInfo" :key="index">
-              <div>{{ follow.label }}</div>
+              <div>
+                {{ follow.label }}
+                <el-tooltip v-if="follow.showTooltip" placement="top">
+                  <div slot="content" v-html="follow.tooltipText"></div>
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+              </div>
               <div class="flex-middle space-between py-5">
                 <span>--</span>
               </div>
@@ -140,7 +168,13 @@
         <div class="my-10 echo-info">
           <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
             <el-col class="wrap" v-for="(sys,index) in sysInfo" :key="index">
-              <div>{{ sys.label }}</div>
+              <div>
+                {{ sys.label }}
+                <el-tooltip v-if="sys.showTooltip" placement="top">
+                  <div slot="content" v-html="sys.tooltipText"></div>
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+              </div>
               <div class="flex-middle space-between py-5">
                 <span>--</span>
               </div>
@@ -156,7 +190,9 @@
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import CustomerContactDrawer from "./CustomerContactDrawer.vue";
+import CellOperate from "./CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap";
+import Vue from 'vue'
 
 export default {
   props: {
@@ -170,7 +206,7 @@ export default {
       required: false
     }
   },
-  components: {TableNext, CustomerContactDrawer, CollapseWrap},
+  components: {TableNext, CustomerContactDrawer, CollapseWrap, CellOperate},
   data() {
     return {
       contactList: [
@@ -181,93 +217,174 @@ export default {
       ],
       usuallyInfo: [
         {
-          field: '',
+          field: '1',
           label: '公司网址',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
-          field: '',
+          field: '2',
           label: '公司名称',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
-          field: '',
+          field: '3',
           label: '简称',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
-          field: '',
+          field: '4',
           label: '国家地区',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
-          field: '',
+          field: '5',
           label: '客户来源',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
-          field: '',
+          field: '6',
           label: '分组',
+          type: 'tree',
+          show: false,
+          value: '',
+          options: {
+            size: 'small',
+            filterable: true,
+            clearable: true,
+            data: [
+              {
+                label: '乌鲁木齐市',
+                value: '2',
+                children: [
+                  {label: '达坂城区', value: '7'},
+                  {label: '头屯河区', value: '8'},
+                  {label: '乌鲁木齐县', value: '9'},
+                ],
+              },
+            ]
+          },
         },
         {
-          field: '',
+          field: '7',
           label: '客户阶段',
+          type: 'select',
+          show: false,
+          value: '',
+          options: {
+            options: [
+              {label: 'test', value: '1', bgColor: '#fea112'},
+              {label: 'test2', value: '2'},
+              {label: 'test3', value: '3'},
+            ]
+          },
         },
         {
-          field: '',
+          field: '8',
           label: '客户星级',
+          type: 'rate',
+          show: true,
+          value: null,
+          options: {},
         },
         {
-          field: '',
+          field: '9',
           label: '客户编号',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
-          field: '',
+          field: '10',
           label: '公海分组',
+          type: 'select',
+          show: false,
+          showTooltip: true,
+          tooltipText: '移入公海时，所属的公海分组',
+          value: '1',
+          options: {
+            clearable: true,
+            options: [
+              {label: '公共公海分组', value: '1'},
+              {label: '公海2组', value: '2'},
+            ]
+          },
         },
         {
-          field: '',
+          field: '11',
           label: '座机',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
       ],
       otherInfo: [
         {
-          field: '',
+          field: '1',
           label: '主营产品',
         },
         {
-          field: '',
+          field: '2',
           label: '客户类型',
         },
         {
-          field: '',
+          field: '3',
           label: '年采购额',
         },
         {
-          field: '',
+          field: '4',
           label: '采购意向',
         },
         {
-          field: '',
+          field: '5',
           label: '时区',
         },
         {
-          field: '',
+          field: '6',
           label: '规模',
         },
         {
-          field: '',
+          field: '7',
           label: '产品分组',
         },
         {
-          field: '',
+          field: '8',
           label: '传真',
         },
         {
-          field: '',
+          field: '9',
           label: '详细地址',
         },
         {
-          field: '',
+          field: '10',
           label: '公司备注',
+          show: false,
+          value: '',
+          type: 'input',
+          options: {
+            type: 'textarea',
+            resize: 'none',
+            rows: 3
+          }
         },
         {
-          field: '',
+          field: '11',
           label: '公司logo',
           otherEcho: true,
           slot: '111'
@@ -393,6 +510,22 @@ export default {
       this.contactList.map(val => {
         if (val.id === id) {
           val.checked = !val.checked
+        }
+        return val
+      })
+    },
+    onShowForm(listType, field, bool) {
+      this[listType].map(val => {
+        if (val.field === field) {
+          val.show = bool
+        }
+        return val
+      })
+    },
+    handleSetValue(listType, field, value) {
+      this[listType].map(val => {
+        if (val.field === field) {
+          val.value = value
         }
         return val
       })

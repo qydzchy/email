@@ -8,17 +8,17 @@
 
     </div>
 
-<!--    <ElTableDraggable handle=".el-icon-s-grid">-->
-<!--      -->
-<!--    </ElTableDraggable>-->
+    <!--    <ElTableDraggable handle=".el-icon-s-grid">-->
+    <!--      -->
+    <!--    </ElTableDraggable>-->
 
     <el-table
-        row-key="customer-status"
-        :data="list"
-        v-loading="tableLoading"
-        element-loading-text='拼命加载中...'
-        elemnt-loading-background="rgba(0,0,0,0.5)"
-        element-loading-spinner="el-icon-loading">
+      row-key="customer-status"
+      :data="list"
+      v-loading="tableLoading"
+      element-loading-text='拼命加载中...'
+      elemnt-loading-background="rgba(0,0,0,0.5)"
+      element-loading-spinner="el-icon-loading">
       <template #empty>
         <el-empty :imageSize="100"></el-empty>
       </template>
@@ -46,11 +46,13 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="新增阶段" width="460px" style="margin-top: 25vh" :visible.sync="stageDialog"
+    <el-dialog :title="dialogTitle" width="460px" style="margin-top: 25vh"
+               :visible.sync="stageDialog"
                destroy-on-close>
       <el-form :model="stageForm" ref="stageFormRef" :rules="stageRules" @submit.native.prevent>
         <el-form-item label="阶段名称" prop="name">
-          <el-input v-model="stageForm.name" autocomplete="off" placeholder="请输入阶段名称" @keydown.enter.native="onConfirm"></el-input>
+          <el-input v-model="stageForm.name" autocomplete="off" placeholder="请输入阶段名称"
+                    @keydown.enter.native="onConfirm"></el-input>
         </el-form-item>
         <el-form-item label="标签颜色">
           <SelectTagColor :checked-color.sync="stageForm.color"/>
@@ -68,7 +70,7 @@
 import ElTableDraggable from "el-table-draggable";
 import DelPopover from "./DelPopover.vue";
 import SelectTagColor from '@/views/components/SelectTagColor/index.vue'
-import colorMap from '@/views/components/SelectTagColor/colorMap'
+import {companyStatusColorMap} from '@/views/components/SelectTagColor/colorMap'
 import {stageAdd, stageDelete, stageEdit, stageList} from "@/api/company/status";
 
 const initStageForm = {
@@ -92,9 +94,10 @@ export default {
           {required: true, message: '请输入名称', trigger: 'blur'}
         ]
       },
-      colorMap:colorMap,
+      colorMap: companyStatusColorMap,
       tableLoading: false,
       btnLoading: false,
+      dialogTitle: '新增阶段'
     }
   },
   mounted() {
@@ -165,6 +168,7 @@ export default {
       }
     },
     onEdit(item) {
+      this.dialogTitle = '编辑阶段'
       this.stageForm = {...item}
       this.stageDialog = true
     },
@@ -184,11 +188,12 @@ export default {
       if (this.btnLoading) {
         return
       }
+      this.dialogTitle = '新增阶段'
       this.stageForm = initStageForm
       this.$refs.stageFormRef.resetFields();
       this.stageDialog = false
     },
-    keyDownTest(){
+    keyDownTest() {
       console.log('down')
     }
   }

@@ -1,4 +1,5 @@
 import Router from '@/router'
+import {country} from '@/assets/data/countryData'
 
 // 空占位
 export function EmptyStr(text) {
@@ -13,4 +14,13 @@ export function targetBlank(url) {
     path: url,
   })
   window.open(path.href, "_blank")
+}
+
+export function generatePhone() {
+  return country.map(val => {
+    return {
+      label: `${val?.area || ''} ${val?.areaCode || ''}`,
+      value: val?.areaCode || ''
+    }
+  })
 }

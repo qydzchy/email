@@ -7,7 +7,7 @@
             <div>文档</div>
             <el-dropdown trigger="click">
               <el-tooltip placement="top" content="上传文件">
-                <i class="el-icon-circle-plus-outline pointer"></i>
+                <i class="el-icon-circle-plus-outline pointer" @click.stop></i>
               </el-tooltip>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>本地文件</el-dropdown-item>

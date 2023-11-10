@@ -48,6 +48,8 @@ import UploadPicture from '@/components/UploadPicture'
 import splitPane from 'vue-splitpane'
 // select tag
 import TreeSelectNext from '@/components/TreeSelectNext'
+// el-select-tree
+import ElSelectTree from "el-select-tree";
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -72,6 +74,7 @@ Vue.component('ImagePreview', ImagePreview)
 Vue.component('upload-picture', UploadPicture)
 Vue.component('split-pane', splitPane);
 Vue.component('tree-select-next', TreeSelectNext)
+Vue.component('el-select-tree', ElSelectTree);
 
 
 Vue.use(directive)

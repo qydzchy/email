@@ -5,7 +5,7 @@
         <el-button type="text" @click="onRefresh">
           <span>刷新</span>
           <i class="el-icon-refresh"></i></el-button>
-        <el-button type="primary" round @click="$router.push('/customer/config/import-operate')">新增导入</el-button>
+        <el-button type="primary" round @click="targetBlank('/customer/config/import-operate')">新增导入</el-button>
       </el-row>
     </div>
     <TableNext :loading="tableLoading" :columns="columns" :list="list" :paginate-option="paginationOption"
@@ -15,7 +15,7 @@
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
-import {EmptyStr} from "@/utils/tools";
+import {EmptyStr,targetBlank} from "@/utils/tools";
 
 export default {
   components: {
@@ -108,7 +108,8 @@ export default {
     },
     generateRoute(current, pageSize) {
       this.$router.replace(`/customer/config?tab=import&current=${current}&pageSize=${pageSize}`)
-    }
+    },
+    targetBlank
   }
 }
 </script>

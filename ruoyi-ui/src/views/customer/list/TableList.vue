@@ -11,7 +11,7 @@
         :extra-event="extraEvent"
         :paginate-option="paginateOption"/>
     </div>
-    <TableRowDrawer :visible.sync="rowDrawerVisible"  />
+    <TableRowDrawer :visible.sync="rowDrawerVisible"/>
   </div>
 </template>
 
@@ -21,10 +21,11 @@ import TableRowDrawer from "./TableRowDrawer.vue";
 import OperateMenu from './OperateMenu.vue'
 import CellOperate from './CellOperate.vue'
 import HeaderOperate from "./HeaderOperate.vue";
+import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 
 export default {
-  components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate},
+  components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon},
   data() {
     return {
       extraOption: {
@@ -33,26 +34,24 @@ export default {
         defaultExpandAll: true
       },
       extraEvent: {
-        'cell-mouse-enter': (row, column, cell) => this.onCellMouseEvent(row, column, cell),
-        'cell-mouse-leave': (row) => this.onCellMouseLeave(row),
         'selection-change': (value) => this.handleSelectionChange(value)
       },
       paginateOption: {
-        total: 0,
-        layout: 'total, sizes, prev, pager, next',
+        total: 2,
+        layout: 'total, prev, pager, next , sizes',
         pageSize: 20,
         pageSizes: [10, 20, 50, 100]
       },
       list: [{
         id: 1,
         companyName: '111',
-        nearly: '111',
+        companyTag: '111',
         isFollow: true
       },
         {
           id: 2,
           companyName: '222',
-          nearly: '222',
+          companyTag: '222',
           isFollow: false
         }],
       columns: [
@@ -68,11 +67,12 @@ export default {
           render: (row, field, scope) => {
             const {rowId, fieldName} = this.tableCell
             const propName = scope.column.property
-            const isShow = (fieldName === propName && rowId === row.id) || field
+            const isShow = (fieldName === propName && rowId === row?.id) || field
             return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
-              <el-tooltip placement="top" content={field ? '取消关注' : '关注'}>
-                <svg-icon icon-class="like" style={{display: isShow ? 'block' : 'none'}}/>
-              </el-tooltip>
+              <CollageIcon
+                show={isShow}
+                onClick={() => this.onCollageIcon(row?.id)}>
+              </CollageIcon>
             </div>
 
           }
@@ -88,71 +88,86 @@ export default {
             const {rowId, fieldName, showEditIcon} = this.tableCell
             const propName = scope.column.property
             const isShow = showEditIcon && rowId === row?.id && fieldName === propName
-            return <div>
-              {this.curEditId === row?.id && fieldName === propName
-                ?
-                <el-input
-                  size="small"
-                  value={field}
-                  clearable
-                  onInput={(value) => this.onInput(value, scope, 'companyName')}
-                  on={{
-                    blur: () => this.onBlur()
-                  }}
-                  nativeOnKeydown={(e) => this.inputKeydown(e, row)}/>
-                : <CellOperate
-                  text={field}
-                  visible={isShow}
-                  on={{
-                    onEdit: () => this.onCellEdit(row?.id, 'companyName'),
-                    click: () => this.onCellClick()
-                  }}
-                />}
-            </div>
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+              showForm={isShowForm}
+              type="input"
+              value={field}
+              text={field}
+              visible={isShow}
+              on={{
+                onEdit: () => this.onCellEdit(row?.id, propName),
+                click: () => this.onCellClick(),
+                onBlur: () => this.onBlur(),
+                onInput: (value) => this.onInput(value, scope, propName),
+                onEnter: () => this.inputEnter(row)
+              }}
+            >
+              <div slot="content" className="pointer" onClick={(e) => this.jumpPersonalDetail(e)}>
+                {field}
+              </div>
+            </CellOperate>
           }
         },
         {
-          label: '最近跟进',
-          field: 'nearly',
+          label: '客户标签',
+          field: 'companyTag',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '客户分组',
+          field: 'companyGroup',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '客户阶段',
+          field: 'companyStage',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '主要联系人',
+          field: 'companyStage',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '最近动态',
+          field: 'new',
           align: 'left',
           width: '200',
           render: (row, field, scope) => {
             const {rowId, fieldName, showEditIcon} = this.tableCell
             const propName = scope.column.property
             const isShow = showEditIcon && rowId === row?.id && fieldName === propName
-            return <div>
-              {this.curEditId === row?.id && fieldName === propName
-                ?
-                <el-input
-                  size="small"
-                  value={field}
-                  clearable
-                  onInput={(value) => this.onInput(value, scope, propName)}
-                  on={{
-                    blur: () => this.onBlur()
-                  }}
-                  nativeOnKeydown={(e) => this.inputKeydown(e, row)}/>
-                : <CellOperate
-                  text={field}
-                  visible={isShow}
-                  on={{
-                    onEdit: () => this.onCellEdit(row?.id, propName),
-                    click: () => this.onCellClick(),
-                  }}
-                >
-                  <div slot="content" onClick={(e) => this.jumpPersonalDetail(e)}>
-                    {field}
-                  </div>
-                </CellOperate>}
-            </div>
-          },
-        }, {
-          label: '最近动态',
-          field: 'new',
-          align: 'left',
-          width: '200',
-          render: (_row, field) => EmptyStr(field),
-        }, {
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+              showForm={isShowForm}
+              type="input"
+              value={field}
+              text={field}
+              visible={isShow}
+              on={{
+                onEdit: () => this.onCellEdit(row?.id, propName),
+                click: () => this.onCellClick(),
+                onBlur: () => this.onBlur(),
+                onInput: (value) => this.onInput(value, scope, propName),
+                onEnter: () => this.inputEnter(row)
+              }}
+            >
+              <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e)}>
+                {field}
+              </div>
+            </CellOperate>
+          }
+        },
+        {
           label: '原跟进人',
           field: 'contactName',
           align: 'left',
@@ -220,46 +235,37 @@ export default {
     }
   },
   methods: {
-    onCellMouseEvent(row, column, cell) {
-      if (!this.curEditId) {
-        this.tableCell = {
-          showEditIcon: true,
-          rowId: row.id,
-          fieldName: column.property
+    onCollageIcon(id) {
+      this.list.map(val => {
+        if (val.id === id) {
+          val.isFollow = !val.isFollow
         }
-      }
-
-    },
-    onCellMouseLeave(_value) {
-      if (this.curEditId) {
-        return
-      }
-      this.tableCell = {
-        showEditIcon: false,
-        rowId: '',
-        fieldName: ''
-      }
-    },
+        return val
+      })
+    }
+    ,
     onCellClick() {
       this.rowDrawerVisible = true
-    },
+    }
+    ,
     onCellEdit(rowId, field) {
       this.tableCell.tempValue = this.list.find(val => val.id === rowId)[field]
       this.tableCell.fieldName = field
       this.curEditId = rowId
-    },
+    }
+    ,
     onBlur() {
       this.confirmInput()
-    },
+    }
+    ,
     onInput(value, scope, field) {
       this.$set(this.list, scope.$index, {...scope.row, [field]: value})
-    },
-    inputKeydown(e, scope) {
-      // 回车输入
-      if (e.keyCode === 13) {
-        this.confirmInput()
-      }
-    },
+    }
+    ,
+    inputEnter(scope) {
+      this.confirmInput()
+    }
+    ,
     confirmInput() {
       // const newVal = this.list.find(val => val.id === this.curEditId)[this.tableCell.fieldName]
       this.curEditId = ''
@@ -270,11 +276,13 @@ export default {
         tempValue: '',
         fieldName: '',
       }
-    },
+    }
+    ,
     jumpPersonalDetail(e) {
       e.stopPropagation()
       targetBlank('/customer/personal/1')
-    },
+    }
+    ,
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)
     }
