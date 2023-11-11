@@ -1,0 +1,174 @@
+{
+    "field_type_operator_map": [
+        {
+            "field_type": 1,
+            "operators": [
+                "is_null",
+                "not_null"
+            ]
+        },
+        {
+            "field_type": 2,
+            "operators": [
+                "is_null",
+                "not_null"
+            ]
+        },
+        {
+            "field_type": 3,
+            "operators": [
+                "in",
+                "not_in",
+                "is_null",
+                "not_null"
+            ]
+        },
+        {
+            "field_type": 7,
+            "operators": [
+                "=",
+                "<>",
+                "in",
+                "not_in",
+                "is_null",
+                "not_null"
+            ]
+        },
+        {
+            "field_type": 4,
+            "operators": [
+                "=",
+                "<>",
+                "is_null",
+                "not_null",
+                "earlier",
+                "later"
+            ]
+        },
+        {
+            "field_type": 10,
+            "operators": [
+                "=",
+                "<>",
+                "is_null",
+                "not_null",
+                "earlier",
+                "later"
+            ]
+        },
+        {
+            "field_type": 5,
+            "operators": [
+                "=",
+                "<>",
+                ">",
+                ">=",
+                "<",
+                "<=",
+                "is_null",
+                "not_null",
+                "range"
+            ]
+        },
+        {
+            "field_type": 13,
+            "operators": [
+                "="
+            ]
+        },
+        {
+            "field_type": 11,
+            "operators": [
+                "=",
+                "<>",
+                ">",
+                ">=",
+                "<",
+                "<=",
+                "is_null",
+                "not_null",
+                "range"
+            ]
+        },
+        {
+            "field_type": 12,
+            "operators": [
+                "=",
+                "<>",
+                ">",
+                ">=",
+                "<",
+                "<=",
+                "is_null",
+                "not_null",
+                "range"
+            ]
+        }
+    ],
+    "operators": [
+        {
+            "key": "=",
+            "name": "等于"
+        },
+        {
+            "key": "<>",
+            "name": "不等于"
+        },
+        {
+            "key": ">",
+            "name": "大于"
+        },
+        {
+            "key": ">=",
+            "name": "大于等于"
+        },
+        {
+            "key": "<",
+            "name": "小于"
+        },
+        {
+            "key": "<=",
+            "name": "小于等于"
+        },
+        {
+            "key": "contains",
+            "name": "包含"
+        },
+        {
+            "key": "not_contains",
+            "name": "不包含"
+        },
+        {
+            "key": "in",
+            "name": "属于"
+        },
+        {
+            "key": "not_in",
+            "name": "不属于"
+        },
+        {
+            "key": "is_null",
+            "name": "为空"
+        },
+        {
+            "key": "not_null",
+            "name": "不为空"
+        },
+        {
+            "key": "earlier",
+            "name": "早于"
+        },
+        {
+            "key": "later",
+            "name": "晚于"
+        },
+        {
+            "key": "update",
+            "name": "变更时"
+        },
+        {
+            "key": "range",
+            "name": "范围内"
+        }
+    ]
+}

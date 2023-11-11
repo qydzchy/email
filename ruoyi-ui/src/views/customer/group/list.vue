@@ -19,11 +19,19 @@
       </div>
     </div>
     <div class="mt-20 mx-10 flex1">
-      <el-tabs type="card">
-        <el-tab-pane label="全部" name="all"></el-tab-pane>
-        <el-tab-pane label="公司共享" name="share"></el-tab-pane>
-        <el-tab-pane label="个人使用" name="personal"></el-tab-pane>
-      </el-tabs>
+      <div class="flex-middle space-between" v-if="curMenuActive==='all'">
+        <el-tabs type="card">
+          <el-tab-pane label="全部" name="all"></el-tab-pane>
+          <el-tab-pane label="公司共享" name="share"></el-tab-pane>
+          <el-tab-pane label="个人使用" name="personal"></el-tab-pane>
+        </el-tabs>
+        <el-button type="primary" round @click="drawerVisible=true">新建自定义客群
+        </el-button>
+      </div>
+      <div class="fs-14" v-else>
+        此处仅显示同事的个人设置客群，复制并保存后即可设置为自己的客群。
+      </div>
+
       <TableNext
         class="mt-10"
         v-loading="tableLoading"
@@ -32,17 +40,19 @@
         :extra-option="extraOption"
       />
     </div>
-
+    <DrawerCreateCustomerGroup :visible.sync="drawerVisible"/>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
+import DrawerCreateCustomerGroup from "./DrawerCreateCustomerGroup.vue";
 import {listMenu} from "@/api/system/menu";
 
 export default {
   components: {
-    TableNext
+    TableNext,
+    DrawerCreateCustomerGroup
   },
   data() {
     return {
@@ -122,6 +132,7 @@ export default {
           }
         },
       ],
+      drawerVisible: false
     }
   },
   mounted() {

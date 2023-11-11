@@ -54,6 +54,9 @@
             <span v-if="type==='select'">
               {{ generateSelectValue }}
             </span>
+            <span v-if="type==='tree'">
+              {{ generateTreeValue }}
+            </span>
             <span v-else>
                {{ content || '---' }}
             </span>
@@ -144,7 +147,22 @@ export default {
   computed: {
     generateSelectValue() {
       return this.formOption.options?.find(val => val.value === this.content)?.label
-    }
+    },
+    generateTreeValue() {
+      let res = ''
+      const deepSearch = (arr, value) => {
+        return arr.filter(val => {
+          if (val.value === value) {
+            res = val.label
+          }
+          if (val.children && val.children.length) {
+            deepSearch(val.children, value)
+          }
+        })
+      }
+      deepSearch(this.formOption.data, this.value)
+      return res || '---'
+    },
   },
   mounted() {
   },
@@ -177,7 +195,6 @@ export default {
       this.$emit('onBlur')
     },
     visibleChange(bool) {
-      console.log(bool)
       !bool && this.onBlur()
     },
   },

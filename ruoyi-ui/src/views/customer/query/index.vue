@@ -7,23 +7,34 @@
       <div class="py-10 flex-middle flex-center">
         <el-select class="custom-select" v-model="querySearch.key" placeholder="请选择">
           <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
           </el-option>
         </el-select>
         <el-input
-            class="custom-input"
-            placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
-            v-model="querySearch.value"
+          class="custom-input"
+          placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
+          v-model="querySearch.value"
         ></el-input>
         <el-button class="custom-btn radius-0" type="primary">查询</el-button>
       </div>
     </el-card>
     <el-card shadow="always" class="container mb-20">
       <!--      <TableNext v-if="list.length" :list="list" :columns="columns" :extra-option="{height:'60vh'}"/>-->
-      <TableNext :list="list" :columns="columns" :extra-option="{height:'56vh'}" :paginate-option="paginateOption"/>
+      <div v-if="list.length">
+        <TableNext :list="list" :columns="columns" :extra-option="{height:'56vh'}" :paginate-option="paginateOption"/>
+      </div>
+      <div v-else>
+        <el-empty
+          >
+          <template #description>
+            <p>为了避免销售冲突，可以通过客户查重来查看客户的归属情况</p>
+            <p>客户查重是基于全公司所有客户资料的全局查找</p>
+          </template>
+        </el-empty>
+      </div>
     </el-card>
   </div>
 </template>

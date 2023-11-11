@@ -261,7 +261,7 @@ export default {
           label: '分组',
           type: 'tree',
           show: false,
-          value: '',
+          value: '7',
           options: {
             size: 'small',
             filterable: true,

@@ -7,7 +7,7 @@
     <!--        进行管理。-->
     <!--      </p>-->
     <!--    </div>-->
-    <div class="mt-20">
+    <div class="mt-20" v-if="!showWriteFollow">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">写跟进</div>
         <el-popover width="280" trigger="click" placement="bottom-end" :append-to-body="false">
@@ -26,15 +26,18 @@
         </el-popover>
 
       </div>
-      <el-input class="mt-10" placeholder="点击这里记录跟进细节，同步最新进展。">
+      <el-input class="mt-10" placeholder="点击这里记录跟进细节，同步最新进展。" @focus="showWriteFollow=true">
         <template #suffix>
           <el-tooltip placement="top" content="展开">
-            <i class="el-icon-full-screen pointer mr-6" @click="templateVisible=true"></i>
+            <i class="el-icon-full-screen pointer mr-6" @click.stop="templateVisible=true"></i>
           </el-tooltip>
         </template>
-
       </el-input>
     </div>
+    <div class="mt-20" v-else>
+      <WriteFollow show-full-screen-icon @onFullScreen="templateVisible=true"/>
+    </div>
+    <!--  日程  -->
     <div class="mt-20" v-if="options.isShowSchedule">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">计划日程</div>
@@ -154,7 +157,7 @@
       </div>
     </div>
     <div>
-      <DialogTemplateFollow :visible.sync="templateVisible"/>
+      <DialogTemplateFollow :visible.sync="templateVisible" @close="templateVisible = false"/>
     </div>
   </div>
 
@@ -162,6 +165,7 @@
 
 <script>
 import DialogTemplateFollow from "./DialogTemplateFollow.vue";
+import WriteFollow from "./WriteFollow.vue";
 import {targetBlank} from '@/utils/tools'
 
 export default {
@@ -177,10 +181,12 @@ export default {
     }
   },
   components: {
-    DialogTemplateFollow
+    DialogTemplateFollow,
+    WriteFollow
   },
   data() {
     return {
+      showWriteFollow: false,
       templateVisible: false,
       sortActive: "2",
       timeLineList: [
@@ -288,6 +294,9 @@ export default {
         }
         return val
       })
+    },
+    handleClick() {
+      console.log('click222')
     },
     targetBlank,
   }

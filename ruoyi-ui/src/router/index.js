@@ -144,7 +144,7 @@ export const constantRoutes = [
           {
             path: 'group',
             name: 'GroupList',
-            meta: {title: '客群', dontAnimate: true,},
+            meta: {title: '客群管理', is: 'list', dontAnimate: true,},
             component: () => import('@/views/customer/group/index.vue'),
           },
           {

@@ -19,6 +19,13 @@
           </div>
         </el-row>
       </div>
+      <div class="info-wrap">
+        <div class="wrap flex-middle" v-for="item in infoRowList" :key="item.id">
+          <span class="fs-14 mr-6">{{ item.label }}</span>
+          <CellOperate :value.sync="item.value" :type="item.type" :show-form="item.show" :show-copy-icon="false"
+                       @onEdit="onEdit(item.id)"/>
+        </div>
+      </div>
     </div>
     <el-row type="flex">
       <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
@@ -39,10 +46,11 @@
               <span class="content">客户生日：测试公司001-王五</span>
             </li>
           </ul>
+          <!--          <el-empty description="暂无日程"></el-empty>-->
         </div>
         <div class="card-bg  mt-16 px-16 py-16">
           <div class="contact flex-middle space-between">
-            <div class="black-text">联系人({{contactList.length}})</div>
+            <div class="black-text">联系人({{ contactList.length }})</div>
             <div class="flex-middle gap-20">
               <el-row v-if="contactSearch">
                 <el-input size="mini" v-model="contactSearchValue" @blur="handleBlurSearch" clearable>
@@ -117,16 +125,27 @@
 import TableRowTabs from '../TableRowTabs.vue'
 import DialogSchedule from "../DialogSchedule.vue";
 import CustomerContactDrawer from "../CustomerContactDrawer.vue";
+import CellOperate from "../CellOperate.vue";
 
 export default {
   components: {
     CustomerContactDrawer,
     DialogSchedule,
-    TableRowTabs
+    TableRowTabs,
+    CellOperate
   },
   data() {
     return {
       options: {},
+      infoRowList: [
+        {
+          id: 1,
+          label: '分组',
+          value: '',
+          type: 'input',
+          show: false
+        }
+      ],
       contactList: [
         {
           id: 1,
@@ -136,13 +155,21 @@ export default {
       contactSearchValue: '',
       contactSearch: false,
       contactVisible: false,
-      dialogSchedule: false
+      dialogSchedule: false,
     }
   },
   mounted() {
     this.curId = this.$route.params?.id
   },
   methods: {
+    onEdit(id) {
+      this.infoRowList.map(val => {
+        if (val.id === id) {
+          val.show = true
+        }
+        return val
+      })
+    },
     handleBlurSearch() {
       if (!this.contactSearchValue) {
         this.contactSearch = false
@@ -169,6 +196,20 @@ export default {
   height: 100%;
   min-width: 1300px;
   background-color: rgba(245, 245, 245);
+}
+
+.info-wrap {
+  width: 100%;
+
+  .wrap {
+    width: max-content;
+    box-sizing: border-box;
+    padding: 6px 12px;
+
+    &:hover {
+      background-color: rgba(245, 245, 245);
+    }
+  }
 }
 
 .card-bg {
