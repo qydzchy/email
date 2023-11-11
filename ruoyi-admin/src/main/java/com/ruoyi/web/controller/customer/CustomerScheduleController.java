@@ -38,14 +38,19 @@ public class CustomerScheduleController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:customer:schedule:list')")
     @GetMapping("/list")
     public TableDataInfo list(
+            Long customerId,
             String startTime,
             String endTime,
-            List<Long> userIds,
+            String userIds,
             @NotNull(message = "页数不能为空") Integer pageNum,
             @NotNull(message = "页大小不能为空") Integer pageSize
     )
     {
-        Pair<Integer, List<CustomerScheduleListVO>> pair = customerScheduleService.list(startTime, endTime, userIds, pageNum, pageSize);
+        if (customerId == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
+
+        Pair<Integer, List<CustomerScheduleListVO>> pair = customerScheduleService.list(customerId, startTime, endTime, userIds, pageNum, pageSize);
         List<CustomerScheduleListVO> customerScheduleVOList = pair.getSecond();
         long total = pair.getFirst();
 
@@ -62,9 +67,13 @@ public class CustomerScheduleController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:schedule:add')")
     @Log(title = "新增客户日程", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody CustomerScheduleAddOrUpdateDTO customerScheduleAddOrUpdateDTO)
     {
+        if (customerScheduleAddOrUpdateDTO.getCustomerId() == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
+
         checkParam(customerScheduleAddOrUpdateDTO);
         return toAjax(customerScheduleService.insertCustomerSchedule(customerScheduleAddOrUpdateDTO));
     }
@@ -74,7 +83,7 @@ public class CustomerScheduleController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:schedule:edit')")
     @Log(title = "修改客户日程", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody CustomerScheduleAddOrUpdateDTO customerScheduleAddOrUpdateDTO)
     {
         if (customerScheduleAddOrUpdateDTO.getId() == null) {

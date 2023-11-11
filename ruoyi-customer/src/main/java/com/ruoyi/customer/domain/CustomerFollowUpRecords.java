@@ -18,7 +18,12 @@ public class CustomerFollowUpRecords extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-private Long id;
+    private Long id;
+
+    /**
+     * 客户ID
+     */
+    private Long customerId;
 
     /** 跟进类型 1.快速记录 2.电话 3.会面 4.社交平台 */
     @Excel(name = "跟进类型 1.快速记录 2.电话 3.会面 4.社交平台")
@@ -29,8 +34,8 @@ private Long id;
     private String followUpContent;
 
     /** 提交时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "提交时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "提交时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date submissionTime;
 
     /** 跟进联系人ID */
@@ -38,13 +43,13 @@ private Long id;
     private Long followUpContactId;
 
     /** 下次跟进日程 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "下次跟进日程", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "下次跟进日程", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date nextFollowUpSchedule;
 
     /** 全天 0.否 1.是 */
     @Excel(name = "全天 0.否 1.是")
-    private Integer allDayFlag;
+    private Boolean allDayFlag;
 
     /** 日程内容 */
     @Excel(name = "日程内容")
@@ -78,7 +83,16 @@ private Long id;
     {
         return id;
     }
-    public void setFollowUpType(Integer followUpType) 
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setFollowUpType(Integer followUpType)
     {
         this.followUpType = followUpType;
     }
@@ -122,16 +136,16 @@ private Long id;
     {
         return nextFollowUpSchedule;
     }
-    public void setAllDayFlag(Integer allDayFlag) 
-    {
+
+    public Boolean getAllDayFlag() {
+        return allDayFlag;
+    }
+
+    public void setAllDayFlag(Boolean allDayFlag) {
         this.allDayFlag = allDayFlag;
     }
 
-    public Integer getAllDayFlag() 
-    {
-        return allDayFlag;
-    }
-    public void setScheduleContent(String scheduleContent) 
+    public void setScheduleContent(String scheduleContent)
     {
         this.scheduleContent = scheduleContent;
     }

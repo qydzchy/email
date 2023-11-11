@@ -78,7 +78,7 @@
         where id = #{id}
     </update>
 
-    <update id="deleteCustomerFollowUpRecordsCommentById" parameterType="Long">
+    <update id="deleteCustomerFollowUpRecordsCommentById">
         update customer_customer_follow_up_records_comment set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
     </update>
 

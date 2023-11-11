@@ -10,9 +10,11 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.bo.CustomerFollowUpRecordsListBO;
 import com.ruoyi.customer.domain.dto.CustomerFollowUpRecordsListDTO;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpRecordsListVO;
+import com.ruoyi.customer.domain.vo.FollowUpRecordsCommentListVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.CustomerFollowUpRecordsMapper;
@@ -165,7 +167,7 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
      */
     @Override
     public List<CustomerFollowUpRecordsListVO> list(CustomerFollowUpRecordsListDTO customerFollowUpRecordsListDTO) {
-        List<CustomerFollowUpRecordsListBO> customerFollowUpRecordsBOList =  customerFollowUpRecordsMapper.list(customerFollowUpRecordsListDTO.getCustomerId(), customerFollowUpRecordsListDTO.getSearchText());
+        List<CustomerFollowUpRecordsListBO> customerFollowUpRecordsBOList = customerFollowUpRecordsMapper.list(customerFollowUpRecordsListDTO.getCustomerId(), customerFollowUpRecordsListDTO.getSearchText());
         Map<Long, List<CustomerFollowUpRecordsListBO>> customerFollowUpRecordsListBOMap = customerFollowUpRecordsBOList.stream().collect(Collectors.groupingBy(CustomerFollowUpRecordsListBO::getId));
 
         List<CustomerFollowUpRecordsListVO> customerFollowUpRecordsVOList = new ArrayList<>();
@@ -174,9 +176,11 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
             CustomerFollowUpRecordsListVO customerFollowUpRecordsListVO = new CustomerFollowUpRecordsListVO();
             BeanUtils.copyProperties(customerFollowUpRecordsListBO, customerFollowUpRecordsListVO);
 
-            List<String> commentList = new ArrayList<>();
+            List<FollowUpRecordsCommentListVO> commentList = new ArrayList<>();
             v.stream().forEach(item->{
-                commentList.add(item.getComment());
+                if (StringUtils.isNotBlank(item.getComment())) {
+                    commentList.add(FollowUpRecordsCommentListVO.builder().id(item.getCommentId()).comment(item.getComment()).operator(item.getCommentOperator()).operatorTime(item.getCommentOperatorTime()).build());
+                }
             });
             customerFollowUpRecordsListVO.setCommentList(commentList);
 

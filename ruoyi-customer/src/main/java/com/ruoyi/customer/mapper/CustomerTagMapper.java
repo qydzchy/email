@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerTag;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户标签关联Mapper接口
@@ -63,11 +64,11 @@ public interface CustomerTagMapper
      * 批量插入客户标签关联
      * @param customerTagList
      */
-    void batchInsertCustomerTag(List<CustomerTag> customerTagList);
+    void batchInsertCustomerTag(@Param("customerTagList") List<CustomerTag> customerTagList);
 
     /**
      * 根据客户id删除客户标签关联
-     * @param id
+     * @param customerId
      */
-    void deleteCustomerTagByCustomerId(Long id);
+    void deleteCustomerTagByCustomerId(@Param("customerId") Long customerId);
 }

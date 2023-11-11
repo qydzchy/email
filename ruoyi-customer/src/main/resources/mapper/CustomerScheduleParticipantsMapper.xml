@@ -98,6 +98,6 @@
     </delete>
 
     <update id="deleteCustomerScheduleParticipantsByScheduleId">
-        update customer_customer_schedule_participants set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
+        update customer_customer_schedule_participants set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where schedule_id = #{scheduleId}
     </update>
 </mapper>

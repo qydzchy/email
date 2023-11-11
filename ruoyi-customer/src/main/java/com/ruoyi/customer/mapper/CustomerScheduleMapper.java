@@ -35,7 +35,7 @@ public interface CustomerScheduleMapper
      * @param customerSchedule 客户日程
      * @return 结果
      */
-    public long insertCustomerSchedule(CustomerSchedule customerSchedule);
+    public int insertCustomerSchedule(CustomerSchedule customerSchedule);
 
     /**
      * 修改客户日程
@@ -68,18 +68,18 @@ public interface CustomerScheduleMapper
      * @param userIds
      * @return
      */
-    Integer count(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds);
+    Integer count(@Param("customerId") Long customerId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds);
 
     /**
      * 客户日程列表
      * @param startTime
      * @param endTime
      * @param userIds
-     * @param pageNum
-     * @param pageSize
+     * @param offset
+     * @param limit
      * @return
      */
-    List<CustomerScheduleListVO> list(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+    List<CustomerScheduleListVO> list(@Param("customerId") Long customerId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("userIds") List<Long> userIds, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     /**
      * 修改重点关注标志

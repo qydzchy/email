@@ -60,9 +60,10 @@
     </select>
 
     <select id="count" resultType="java.lang.Integer">
-        select count(*) from customer_customer_schedule cs
+        select count(DISTINCT(cs.id)) from customer_customer c
+        left join customer_customer_schedule cs on c.id = cs.customer_id and cs.del_flag = '0'
         left join customer_customer_schedule_participants csp on cs.id = csp.schedule_id and csp.del_flag = '0'
-        where cs.del_flag = '0' and cs.customer_id = #{customerId}
+        where c.id = #{customerId}
         <if test="startTime != null and endTime != null">
              and ((cs.schedule_start_time between startTime and endTime) or (cs.schedule_end_time between startTime and endTime))
         </if>
@@ -76,25 +77,25 @@
 
     <select id="list" resultType="com.ruoyi.customer.domain.vo.CustomerScheduleListVO">
         SELECT
-            cs.id,
-            c.id AS customerId,
-            c.name AS customerName,
-            cs.schedule_content AS scheduleContent,
-            cs.create_time AS createTime,
-            cs.create_by AS createBy,
-            cs.recurring_schedule AS recurringSchedule,
-            cs.schedule_start_time AS scheduleStartTime,
-            cs.schedule_end_time AS scheduleEndTime,
-            cs.all_day_flag AS allDayFlag,
-            cs.remark,
-            cs.reminder_time AS reminderTime,
-            cs.focus_flag AS focusFlag,
-            GROUP_CONCAT(u.nick_name SEPARATOR ',') AS participants
-        FROM customer_customer_schedule cs
+        cs.id,
+        c.id AS customerId,
+        c.company_name AS companyName,
+        cs.schedule_content AS scheduleContent,
+        cs.create_time AS createTime,
+        cs.create_by AS createBy,
+        cs.recurring_schedule AS recurringSchedule,
+        cs.schedule_start_time AS scheduleStartTime,
+        cs.schedule_end_time AS scheduleEndTime,
+        cs.all_day_flag AS allDayFlag,
+        cs.remark,
+        cs.reminder_time AS reminderTime,
+        cs.focus_flag AS focusFlag,
+        GROUP_CONCAT(u.nick_name SEPARATOR ',') AS participants
+        FROM customer_customer c
+        LEFT JOIN customer_customer_schedule cs ON cs.customer_id = c.id AND cs.del_flag = '0'
         LEFT JOIN customer_customer_schedule_participants csp ON cs.id = csp.schedule_id
-        LEFT JOIN customer_customer c ON cs.customer_id = c.id
-        LEFT JOIN sys_user u ON u.id = csp.user_id
-        WHERE cs.del_flag = '0' and cs.customer_id = #{customerId}
+        LEFT JOIN sys_user u ON u.user_id = csp.user_id
+        WHERE c.id = #{customerId}
         <if test="startTime != null and endTime != null">
             and ((cs.schedule_start_time between startTime and endTime) or (cs.schedule_end_time between startTime and endTime))
         </if>
@@ -104,10 +105,11 @@
                 #{userId}
             </foreach>
         </if>
-        GROUP BY cs.id;
+        GROUP BY cs.id
         ORDER BY cs.create_time DESC
         LIMIT #{offset}, #{limit}
     </select>
+
 
     <insert id="insertCustomerSchedule" parameterType="CustomerSchedule" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_schedule

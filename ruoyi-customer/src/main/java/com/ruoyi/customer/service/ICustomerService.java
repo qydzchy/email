@@ -1,13 +1,12 @@
 package com.ruoyi.customer.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
-import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
 import org.springframework.data.util.Pair;
 
 /**
@@ -69,12 +68,11 @@ public interface ICustomerService
     /**
      * 客户列表（分页）
      * @param segmentId
-     * @param seaType
      * @param pageNum
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<CustomerSimpleListVO>> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long segmentId, Integer pageNum, Integer pageSize);
 
     /**
      * 移入客户至分组

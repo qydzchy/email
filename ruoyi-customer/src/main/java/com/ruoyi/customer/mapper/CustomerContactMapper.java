@@ -64,13 +64,13 @@ public interface CustomerContactMapper
      * 批量插入客户联系人
      * @param customerContactList
      */
-    void batchInsertCustomerContact(List<CustomerContact> customerContactList);
+    void batchInsertCustomerContact(@Param("detailsContactList") List<CustomerContact> customerContactList);
 
     /**
      * 根据客户id删除联系人
-     * @param id
+     * @param customerId
      * @param updateId
      * @param updateBy
      */
-    void deleteCustomerContactByCustomerId(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+    void deleteCustomerContactByCustomerId(@Param("customerId") Long customerId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

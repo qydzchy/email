@@ -85,29 +85,29 @@ CREATE TABLE `customer_customer`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_customer_contact`;
 CREATE TABLE `customer_customer_contact`  (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `customer_id` bigint(20) NOT NULL COMMENT '客户详情ID',
-  `nick_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
-  `email` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `social_platform` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '社交平台\r\n[{\"type\":1,\"account\":\"\"}]\r\n',
-  `phone` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话\r\n[{\"phone_prefix\":\"\",\"phone\":\"\"}]\r\n',
-  `rank` tinyint(1) NULL DEFAULT NULL COMMENT '职级 1.普通职员 2.中层管理者 3.高层管理者',
-  `position` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '职位',
-  `birthday` datetime(0) NULL DEFAULT NULL COMMENT '生日',
-  `sex` tinyint(1) NULL DEFAULT NULL COMMENT '性别 1.不设置 2.男 3.女',
-  `avatar_or_business_card` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像/名片',
-  `contact_remarks` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人备注',
-  `primary_contact_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否为主要联系人 1.是 0.否',
-  `order_index` bigint(20) NULL DEFAULT NULL COMMENT '排序',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户联系人表' ROW_FORMAT = Dynamic;
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`customer_id` bigint(20) NOT NULL COMMENT '客户详情ID',
+`nick_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
+`email` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱',
+`social_platform` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '社交平台\r\n[{\"type\":1,\"account\":\"\"}]\r\n',
+`phone` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话\r\n[{\"phone_prefix\":\"\",\"phone\":\"\"}]\r\n',
+`rank` tinyint(1) NULL DEFAULT NULL COMMENT '职级 1.普通职员 2.中层管理者 3.高层管理者',
+`position` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '职位',
+`birthday` datetime(0) NULL DEFAULT NULL COMMENT '生日',
+`sex` tinyint(1) NULL DEFAULT NULL COMMENT '性别 1.不设置 2.男 3.女',
+`avatar_or_business_card` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像/名片',
+`contact_remarks` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人备注',
+`primary_contact_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否为主要联系人 1.是 0.否',
+`order_index` bigint(20) NULL DEFAULT NULL COMMENT '排序',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户联系人表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_customer_contact
@@ -648,11 +648,12 @@ PRIMARY KEY (`id`) USING BTREE
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_customer_follow_up_records`;
 CREATE TABLE `customer_customer_follow_up_records`  (
-`id` bigint(20) NOT NULL COMMENT '主键',
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`customer_id` bigint(20) NOT NULL COMMENT '客户ID',
 `follow_up_type` tinyint(1) NOT NULL COMMENT '跟进类型 1.快速记录 2.电话 3.会面 4.社交平台',
 `follow_up_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '跟进内容',
 `submission_time` datetime(0) NOT NULL COMMENT '提交时间',
-`follow_up_contact` bigint(20) NOT NULL COMMENT '跟进联系人ID',
+`follow_up_contact_id` bigint(20) NOT NULL COMMENT '跟进联系人ID',
 `next_follow_up_schedule` datetime(0) NULL DEFAULT NULL COMMENT '下次跟进日程',
 `all_day_flag` tinyint(1) NULL DEFAULT NULL COMMENT '全天 0.否 1.是',
 `schedule_content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日程内容',
@@ -666,7 +667,8 @@ CREATE TABLE `customer_customer_follow_up_records`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户写跟进' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户写跟进' ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- Table structure for customer_customer_follow_up_records_comment
@@ -688,19 +690,21 @@ PRIMARY KEY (`id`) USING BTREE
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+
 -- ----------------------------
 -- Table structure for customer_customer_schedule
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_customer_schedule`;
 CREATE TABLE `customer_customer_schedule`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`customer_id` bigint(20) NOT NULL COMMENT '客户ID',
 `schedule_content` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '日程内容',
 `color` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '颜色',
 `all_day_flag` tinyint(1) NOT NULL COMMENT '全天 0.否 1.是',
 `schedule_start_time` datetime(0) NOT NULL COMMENT '日程开始时间',
 `schedule_end_time` datetime(0) NOT NULL COMMENT '日程结束时间',
 `completed_flag` tinyint(1) NOT NULL COMMENT '日程是否完成 0.否 1.是',
-`recurringSchedule` tinyint(1) NULL DEFAULT NULL COMMENT '周期性日程 1.不设置 2.每天 3.每周 4.每月 5.自定义',
+`recurring_schedule` tinyint(1) NULL DEFAULT NULL COMMENT '周期性日程 1.不设置 2.每天 3.每周 4.每月 5.自定义',
 `custom_cycle_value` int(11) NULL DEFAULT NULL COMMENT '自定义周期-值',
 `custom_cycle_type` tinyint(1) NULL DEFAULT NULL COMMENT '自定义周期-类型 1.天 2.周 3.月',
 `cycle_end_time` datetime(0) NULL DEFAULT NULL COMMENT '周期结束时间',
@@ -714,8 +718,7 @@ CREATE TABLE `customer_customer_schedule`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户日程表' ROW_FORMAT = Dynamic;
-
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户日程表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for customer_customer_schedule_participants

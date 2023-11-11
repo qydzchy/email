@@ -12,6 +12,11 @@ public class CustomerScheduleAddOrUpdateDTO {
     /** 主键 */
     private Long id;
 
+    /**
+     * 客户ID
+     */
+    private Long customerId;
+
     /** 日程内容 */
     private String scheduleContent;
 
@@ -22,11 +27,11 @@ public class CustomerScheduleAddOrUpdateDTO {
     private Integer allDayFlag;
 
     /** 日程开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date scheduleStartTime;
 
     /** 日程结束时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date scheduleEndTime;
 
     /**
@@ -44,7 +49,7 @@ public class CustomerScheduleAddOrUpdateDTO {
     private Integer customCycleType;
 
     /** 周期结束时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date cycleEndTime;
 
     /** 提醒时间 [{"reminderTimeType": 1, "reminderTimeValue": "2023-11-03 00:00:00"}]

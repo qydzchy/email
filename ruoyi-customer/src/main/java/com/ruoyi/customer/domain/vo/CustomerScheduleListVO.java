@@ -21,9 +21,9 @@ public class CustomerScheduleListVO {
     private Long customerId;
 
     /**
-     * 客户名称（关联对象）
+     * 公司名称（关联对象）
      */
-    private String customerName;
+    private String companyName;
 
     /** 日程内容 */
     private String scheduleContent;

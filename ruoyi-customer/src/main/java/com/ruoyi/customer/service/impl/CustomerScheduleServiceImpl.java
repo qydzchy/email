@@ -1,11 +1,14 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.customer.domain.CustomerScheduleParticipants;
 import com.ruoyi.customer.domain.dto.CustomerScheduleAddOrUpdateDTO;
@@ -75,21 +78,24 @@ public class CustomerScheduleServiceImpl implements ICustomerScheduleService
         CustomerSchedule customerSchedule = new CustomerSchedule();
         BeanUtils.copyProperties(customerScheduleAddOrUpdateDTO, customerSchedule);
 
+        customerSchedule.setCustomerId(customerScheduleAddOrUpdateDTO.getCustomerId());
+        customerSchedule.setFocusFlag(false);
         customerSchedule.setCreateId(userId);
         customerSchedule.setCreateBy(username);
         customerSchedule.setCreateTime(DateUtils.getNowDate());
         customerSchedule.setUpdateId(userId);
         customerSchedule.setUpdateBy(username);
         customerSchedule.setUpdateTime(DateUtils.getNowDate());
-        long id = customerScheduleMapper.insertCustomerSchedule(customerSchedule);
+        customerScheduleMapper.insertCustomerSchedule(customerSchedule);
 
         // 新增参与人
         List<Long> userIds = customerScheduleAddOrUpdateDTO.getUserIds();
         List<CustomerScheduleParticipants> customerScheduleParticipantsList = new ArrayList<>();
         for (Long userIdParam : userIds) {
             CustomerScheduleParticipants customerScheduleParticipants = new CustomerScheduleParticipants();
-            customerScheduleParticipants.setScheduleId(id);
+            customerScheduleParticipants.setScheduleId(customerSchedule.getId());
             customerScheduleParticipants.setUserId(userIdParam);
+            customerScheduleParticipants.setDelFlag("0");
             customerScheduleParticipants.setCreateId(userIdParam);
             customerScheduleParticipants.setCreateBy(username);
             customerScheduleParticipants.setCreateTime(DateUtils.getNowDate());
@@ -135,6 +141,7 @@ public class CustomerScheduleServiceImpl implements ICustomerScheduleService
             CustomerScheduleParticipants customerScheduleParticipants = new CustomerScheduleParticipants();
             customerScheduleParticipants.setScheduleId(customerSchedule.getId());
             customerScheduleParticipants.setUserId(userIdParam);
+            customerScheduleParticipants.setDelFlag("0");
             customerScheduleParticipants.setCreateId(userIdParam);
             customerScheduleParticipants.setCreateBy(username);
             customerScheduleParticipants.setCreateTime(DateUtils.getNowDate());
@@ -189,13 +196,20 @@ public class CustomerScheduleServiceImpl implements ICustomerScheduleService
      * @return
      */
     @Override
-    public Pair<Integer, List<CustomerScheduleListVO>> list(String startTime, String endTime, List<Long> userIds, Integer pageNum, Integer pageSize) {
-        Integer count = customerScheduleMapper.count(startTime, endTime, userIds);
+    public Pair<Integer, List<CustomerScheduleListVO>> list(Long customerId, String startTime, String endTime, String userIds, Integer pageNum, Integer pageSize) {
+        List<Long> userIdList = null;
+        if (StringUtils.isNotBlank(userIds)) {
+            userIdList = Arrays.stream(userIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
+        }
+
+        Integer count = customerScheduleMapper.count(customerId, startTime, endTime, userIdList);
         if (count == 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
-        List<CustomerScheduleListVO> customerScheduleListVOList = customerScheduleMapper.list(startTime, endTime, userIds, pageNum, pageSize);
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<CustomerScheduleListVO> customerScheduleListVOList = customerScheduleMapper.list(customerId, startTime, endTime, userIdList, offset, limit);
         return Pair.of(count, customerScheduleListVOList);
     }
 

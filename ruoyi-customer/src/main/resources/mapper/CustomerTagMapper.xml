@@ -42,7 +42,7 @@
     <insert id="batchInsertCustomerTag">
         insert into customer_customer_tag (customer_id, tag_id)
         values
-        <foreach collection="list" item="item" index="index" separator=",">
+        <foreach collection="customerTagList" item="item" index="index" separator=",">
             (#{item.customerId}, #{item.tagId})
         </foreach>
     </insert>

@@ -3,10 +3,15 @@ package com.ruoyi.web.controller.customer;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
+import com.ruoyi.common.constant.HttpStatus;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
+import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
+import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,31 +24,42 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.customer.service.ICustomerService;
 
+import java.util.List;
+
 /**
  * 客户详情Controller
- * 
+ *
  * @author tangJM.
  * @date 2023-11-02
  */
 @RestController
 @RequestMapping("/customer/customer")
+@Validated
 public class CustomerController extends BaseController
 {
     @Resource
     private ICustomerService customerService;
 
     /**
-     * 查询客户列表
+     * 查询私海客户列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:customer:list')")
-    @GetMapping("/list")
-    public AjaxResult list(
-            Long segmentId,
-            @NotNull(message = "私海/公海类型不能为空") Integer seaType,
+    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
+    @GetMapping("/publicleads/list")
+    public TableDataInfo publicleadsList(
+            @NotNull(message = "客群不能为空") Long segmentId,
             @NotNull(message = "页数不能为空") Integer pageNum,
             @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        return success(customerService.list(segmentId, seaType, pageNum, pageSize));
+        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(segmentId, pageNum, pageSize);
+        List<PublicleadsCustomerSimpleListVO> rows = pair.getSecond();
+        long total = pair.getFirst();
+
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(rows);
+        rspData.setTotal(total);
+        return rspData;
     }
 
     /**

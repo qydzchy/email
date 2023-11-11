@@ -1,7 +1,6 @@
 package com.ruoyi.customer.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.exception.ServiceException;
 import lombok.Data;
 
 import java.util.Date;
@@ -24,7 +23,7 @@ public class CustomerFollowUpRecordsListVO {
     private Date submissionTime;
 
     /** 跟进联系人ID */
-    private Long followUpContact;
+    private Long followUpContactId;
 
     /** 下次跟进日程 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -43,9 +42,19 @@ public class CustomerFollowUpRecordsListVO {
     private String remarks;
 
     /**
+     * 操作人
+     */
+    private String operator;
+
+    /**
+     * 操作时间
+     */
+    private String operatorTime;
+
+    /**
      * 评论
      */
-    private List<String> commentList;
+    private List<FollowUpRecordsCommentListVO> commentList;
 
     /**
      * 可编辑的 false否 true是

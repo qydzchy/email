@@ -2,9 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Customer;
-import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
-import com.ruoyi.customer.domain.vo.CustomerDetailVO;
-import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,7 +36,7 @@ public interface CustomerMapper
      * @param customer 客户详情
      * @return 结果
      */
-    public long insertCustomer(Customer customer);
+    public int insertCustomer(Customer customer);
 
     /**
      * 修改客户详情
@@ -70,16 +68,6 @@ public interface CustomerMapper
      * @return
      */
     int count(@Param("seaType") Integer seaType);
-
-    /**
-     *
-     * @param segmentId
-     * @param seaType
-     * @param offset
-     * @param limit
-     * @return
-     */
-    List<CustomerSimpleListVO> selectCustomerPage(@Param("segmentId") Long segmentId, @Param("seaType") Integer seaType, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 移动客户到分组
@@ -118,4 +106,13 @@ public interface CustomerMapper
      * @param id
      */
     void moveToPrivateleads(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 获取私海客户列表
+     * @param segmentId
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<PublicleadsCustomerSimpleListVO> selectPublicleadsCustomerPage(@Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
 }

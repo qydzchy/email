@@ -7,7 +7,6 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.dto.CustomerFollowUpRecordsListDTO;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpRecordsListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,8 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.customer.domain.CustomerFollowUpRecords;
 import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
 
+import javax.annotation.Resource;
+
 /**
  * 客户写跟进Controller
  * 
@@ -31,7 +32,7 @@ import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
 @RequestMapping("/customer/customer/follow/up/records")
 public class CustomerFollowUpRecordsController extends BaseController
 {
-    @Autowired
+    @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
 
     /**
@@ -41,6 +42,9 @@ public class CustomerFollowUpRecordsController extends BaseController
     @GetMapping("/list")
     public AjaxResult list(CustomerFollowUpRecordsListDTO customerFollowUpRecordsListDTO)
     {
+        if (customerFollowUpRecordsListDTO.getCustomerId() == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
         List<CustomerFollowUpRecordsListVO> list = customerFollowUpRecordsService.list(customerFollowUpRecordsListDTO);
         return success(list);
     }
@@ -53,6 +57,10 @@ public class CustomerFollowUpRecordsController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody CustomerFollowUpRecords customerFollowUpRecords)
     {
+        if (customerFollowUpRecords.getCustomerId() == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
+
         checkParam(customerFollowUpRecords);
         return toAjax(customerFollowUpRecordsService.insertCustomerFollowUpRecords(customerFollowUpRecords));
     }

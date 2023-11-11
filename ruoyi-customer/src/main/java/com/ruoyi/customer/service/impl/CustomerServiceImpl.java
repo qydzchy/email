@@ -3,15 +3,11 @@ package com.ruoyi.customer.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
-import com.ruoyi.common.enums.customer.MetadataColumnAppTypeEnum;
-import com.ruoyi.common.enums.customer.VisibilityScopeTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -22,8 +18,7 @@ import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
-import com.ruoyi.customer.domain.vo.CustomerSimpleListVO;
-import com.ruoyi.customer.domain.vo.MetadataColumnListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import com.ruoyi.customer.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -106,16 +101,7 @@ public class CustomerServiceImpl implements ICustomerService
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
 
-        String customerNo = "10000";
-        if (!redisCache.hasKey(CacheConstants.CUSTOMER_NO)) {
-            redisCache.setCacheObject(CacheConstants.CUSTOMER_NO, 10000);
-        } else {
-            Long increment = redisCache.increment(CacheConstants.CUSTOMER_NO);
-            if (increment == null) {
-                throw new ServiceException("客户编号生成失败");
-            }
-            customerNo = increment.toString();
-        }
+        String customerNo = System.currentTimeMillis() + "";
 
         customer.setCustomerNo(customerNo);
         customer.setLastContactedAt(new Date());
@@ -125,21 +111,42 @@ public class CustomerServiceImpl implements ICustomerService
         customer.setUpdateId(userId);
         customer.setUpdateBy(username);
         customer.setUpdateTime(DateUtils.getNowDate());
-        Long id = customerMapper.insertCustomer(customer);
+        customerMapper.insertCustomer(customer);
+        Long id = customer.getId();
+
+        // 判断新增的客户是公海还是私海类型，如果是私海，需要将该客户关联到当下用户作为跟进人
+        if (customerAddOrUpdateDTO.getSeaType().intValue() == CustomerSeaTypeEnum.PRIVATE_LEADS.getType()) {
+            // 新增客户跟进人
+            insertCustomerFollowUpPersonnel(id, userId, username);
+        }
 
         // 新增客户来源的关联关系
         batchInsertCustomerSource(id, customerAddOrUpdateDTO.getSourceIds());
         // 新增客户标签的关联关系
         batchInsertCustomerTag(id, customerAddOrUpdateDTO.getTagIds());
-        // 新增跟进人
-        CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
-        customerFollowUpPersonnel.setCustomerId(id);
-        customerFollowUpPersonnel.setUserId(userId);
-        customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
 
         // 批量新增客户联系人
         batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
         return true;
+    }
+
+    /**
+     * 新增客户跟进人
+     * @param id
+     * @param userId
+     */
+    private void insertCustomerFollowUpPersonnel(Long id, Long userId, String username) {
+        CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+        customerFollowUpPersonnel.setCustomerId(id);
+        customerFollowUpPersonnel.setUserId(userId);
+        customerFollowUpPersonnel.setCreateId(userId);
+        customerFollowUpPersonnel.setCreateBy(username);
+        customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
+        customerFollowUpPersonnel.setUpdateId(userId);
+        customerFollowUpPersonnel.setUpdateBy(username);
+        customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
+
+        customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
     }
 
     /**
@@ -148,6 +155,8 @@ public class CustomerServiceImpl implements ICustomerService
      * @param tagIds
      */
     private void batchInsertCustomerTag(Long id, List<Long> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) return;
+
         List<CustomerTag> customerTagList = new ArrayList<>();
         for (Long tagId : tagIds) {
             CustomerTag customerTag = new CustomerTag();
@@ -155,6 +164,8 @@ public class CustomerServiceImpl implements ICustomerService
             customerTag.setTagId(tagId);
             customerTagList.add(customerTag);
         }
+
+        if (customerTagList == null || customerTagList.isEmpty()) return;
 
         // 批量新增客户标签
         customerTagMapper.batchInsertCustomerTag(customerTagList);
@@ -166,6 +177,8 @@ public class CustomerServiceImpl implements ICustomerService
      * @param sourceIds
      */
     private void batchInsertCustomerSource(Long id, List<Long> sourceIds) {
+        if (sourceIds == null || sourceIds.isEmpty()) return;
+
         List<CustomerSource> customerSourceList = new ArrayList<>();
         for (Long sourceId : sourceIds) {
             CustomerSource customerSource = new CustomerSource();
@@ -186,10 +199,14 @@ public class CustomerServiceImpl implements ICustomerService
      * @param id
      */
     private void batchInsertCustomerContact(List<CustomerContactAddOrUpdateDTO> contactDtoList, Long userId, String username, Long id) {
+        if (contactDtoList == null || contactDtoList.isEmpty()) return;
+
         List<CustomerContact> customerContactList = new ArrayList<>();
         for (CustomerContactAddOrUpdateDTO customerContactAddOrUpdateDTO : contactDtoList) {
             CustomerContact customerContact = new CustomerContact();
             BeanUtils.copyProperties(customerContactAddOrUpdateDTO, customerContact);
+            customerContact.setCustomerId(id);
+            customerContact.setDelFlag("0");
             customerContact.setCustomerId(id);
             customerContact.setCreateId(userId);
             customerContact.setCreateBy(username);
@@ -227,21 +244,40 @@ public class CustomerServiceImpl implements ICustomerService
         customer.setUpdateTime(DateUtils.getNowDate());
         customerMapper.updateCustomer(customer);
 
-        // 删除客户来源的关联关系
-        customerSourceMapper.deleteCustomerSourceByCustomerId(id);
-        // 删除客户标签的关联关系
-        customerTagMapper.deleteCustomerTagByCustomerId(id);
-
-        // 删除该客户现有的客户联系人
-        customerContactMapper.deleteCustomerContactByCustomerId(id, userId, username);
-
         // 新增客户来源的关联关系
-        batchInsertCustomerSource(id, customerAddOrUpdateDTO.getSourceIds());
-        // 新增客户标签的关联关系
-        batchInsertCustomerTag(id, customerAddOrUpdateDTO.getTagIds());
+        if (customerAddOrUpdateDTO.getSourceIds() != null && !customerAddOrUpdateDTO.getSourceIds().isEmpty()) {
+            // 删除客户来源的关联关系
+            customerSourceMapper.deleteCustomerSourceByCustomerId(id);
+            // 批量新增客户来源
+            batchInsertCustomerSource(id, customerAddOrUpdateDTO.getSourceIds());
+        }
 
-        // 批量新增客户联系人
-        batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
+        if (customerAddOrUpdateDTO.getTagIds() != null && !customerAddOrUpdateDTO.getTagIds().isEmpty()) {
+            // 删除客户标签的关联关系
+            customerTagMapper.deleteCustomerTagByCustomerId(id);
+            // 批量新增客户标签
+            batchInsertCustomerTag(id, customerAddOrUpdateDTO.getTagIds());
+        }
+
+        List<CustomerContactAddOrUpdateDTO> contactList = customerAddOrUpdateDTO.getContactList();
+        if (contactList != null && !contactList.isEmpty()) {
+            List<CustomerContactAddOrUpdateDTO> saveContactList = new ArrayList<>();
+            for (CustomerContactAddOrUpdateDTO contact : contactList) {
+                if (contact.getId() == null) {
+                    saveContactList.add(contact);
+                } else {
+                    CustomerContact customerContact = new CustomerContact();
+                    BeanUtils.copyProperties(contact, customerContact);
+                    customerContact.setUpdateId(userId);
+                    customerContact.setUpdateBy(username);
+                    customerContact.setUpdateTime(DateUtils.getNowDate());
+                    customerContactMapper.updateCustomerContact(customerContact);
+                }
+            }
+            // 批量新增客户跟进人
+            batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
+        }
+
         return true;
     }
 
@@ -270,8 +306,9 @@ public class CustomerServiceImpl implements ICustomerService
     }
 
     @Override
-    public Pair<Integer, List<CustomerSimpleListVO>> list(Long segmentId, Integer seaType, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
         try {
+            int seaType = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
             int count = customerMapper.count(seaType);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
@@ -279,7 +316,7 @@ public class CustomerServiceImpl implements ICustomerService
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<CustomerSimpleListVO> customerSimpleListVOList = customerMapper.selectCustomerPage(segmentId, seaType, offset, limit);
+            List<PublicleadsCustomerSimpleListVO> customerSimpleListVOList = customerMapper.selectPublicleadsCustomerPage(segmentId, offset, limit);
             if (customerSimpleListVOList == null || customerSimpleListVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }

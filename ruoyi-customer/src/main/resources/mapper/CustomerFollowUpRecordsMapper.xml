@@ -6,10 +6,11 @@
 
     <resultMap type="CustomerFollowUpRecords" id="CustomerFollowUpRecordsResult">
         <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
         <result property="followUpType"    column="follow_up_type"    />
         <result property="followUpContent"    column="follow_up_content"    />
         <result property="submissionTime"    column="submission_time"    />
-        <result property="followUpContact"    column="follow_up_contact"    />
+        <result property="followUpContactId"    column="follow_up_contact_id"    />
         <result property="nextFollowUpSchedule"    column="next_follow_up_schedule"    />
         <result property="allDayFlag"    column="all_day_flag"    />
         <result property="scheduleContent"    column="schedule_content"    />
@@ -25,16 +26,17 @@
     </resultMap>
 
     <sql id="selectCustomerFollowUpRecordsVo">
-        select id, follow_up_type, follow_up_content, submission_time, follow_up_contact, next_follow_up_schedule, all_day_flag, schedule_content, color, remarks, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_follow_up_records
+        select id, customer_id, follow_up_type, follow_up_content, submission_time, follow_up_contact_id, next_follow_up_schedule, all_day_flag, schedule_content, color, remarks, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_follow_up_records
     </sql>
 
     <select id="selectCustomerFollowUpRecordsList" parameterType="CustomerFollowUpRecords" resultMap="CustomerFollowUpRecordsResult">
         <include refid="selectCustomerFollowUpRecordsVo"/>
         <where>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
             <if test="followUpType != null "> and follow_up_type = #{followUpType}</if>
             <if test="followUpContent != null  and followUpContent != ''"> and follow_up_content = #{followUpContent}</if>
             <if test="submissionTime != null "> and submission_time = #{submissionTime}</if>
-            <if test="followUpContact != null "> and follow_up_contact = #{followUpContact}</if>
+            <if test="followUpContactId != null "> and follow_up_contact_id = #{followUpContactId}</if>
             <if test="nextFollowUpSchedule != null "> and next_follow_up_schedule = #{nextFollowUpSchedule}</if>
             <if test="allDayFlag != null "> and all_day_flag = #{allDayFlag}</if>
             <if test="scheduleContent != null  and scheduleContent != ''"> and schedule_content = #{scheduleContent}</if>
@@ -51,8 +53,10 @@
     </select>
 
     <select id="list" resultType="com.ruoyi.customer.domain.bo.CustomerFollowUpRecordsListBO">
-        select fur.id, fur.follow_up_type, fur.follow_up_content, fur.submission_time, fur.follow_up_contact, fur.next_follow_up_schedule, fur.all_day_flag, fur.schedule_content, fur.color, fur.remarks, furc.comment from customer_customer_follow_up_records fur
+        select fur.id, fur.customer_id as customerId, fur.follow_up_type as followUpType, fur.follow_up_content as followUpContent, fur.submission_time as submissionTime, fur.follow_up_contact_id as followUpContactId, fur.next_follow_up_schedule as nextFollowUpSchedule, fur.all_day_flag as allDayFlag, fur.schedule_content as scheduleContent, fur.color, fur.remarks, furSu.nick_name as operator, fur.create_time as operatorTime, furc.id as commentId, furc.comment, furcSu.nick_name as commentOperator, furc.create_time as commentOperatorTime from customer_customer_follow_up_records fur
         left join customer_customer_follow_up_records_comment furc on fur.id = furc.follow_up_records_id and furc.del_flag = 0
+        left join sys_user furSu on fur.create_id = furSu.user_id
+        left join sys_user furcSu on furc.create_id = furcSu.user_id
         where fur.del_flag = 0 and fur.customer_id = #{customerId}
         <if test="searchText != null and searchText != ''">
             and (fur.follow_up_content like concat('%', #{searchText}, '%') or furc.comment like concat('%', #{searchText}, '%'))
@@ -63,10 +67,11 @@
         insert into customer_customer_follow_up_records
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
+            <if test="customerId != null">customer_id,</if>
             <if test="followUpType != null">follow_up_type,</if>
             <if test="followUpContent != null and followUpContent != ''">follow_up_content,</if>
             <if test="submissionTime != null">submission_time,</if>
-            <if test="followUpContact != null">follow_up_contact,</if>
+            <if test="followUpContactId != null">follow_up_contact_id,</if>
             <if test="nextFollowUpSchedule != null">next_follow_up_schedule,</if>
             <if test="allDayFlag != null">all_day_flag,</if>
             <if test="scheduleContent != null">schedule_content,</if>
@@ -82,10 +87,11 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
+            <if test="customerId != null">#{customerId},</if>
             <if test="followUpType != null">#{followUpType},</if>
             <if test="followUpContent != null and followUpContent != ''">#{followUpContent},</if>
             <if test="submissionTime != null">#{submissionTime},</if>
-            <if test="followUpContact != null">#{followUpContact},</if>
+            <if test="followUpContactId != null">#{followUpContactId},</if>
             <if test="nextFollowUpSchedule != null">#{nextFollowUpSchedule},</if>
             <if test="allDayFlag != null">#{allDayFlag},</if>
             <if test="scheduleContent != null">#{scheduleContent},</if>
@@ -104,10 +110,11 @@
     <update id="updateCustomerFollowUpRecords" parameterType="CustomerFollowUpRecords">
         update customer_customer_follow_up_records
         <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
             <if test="followUpType != null">follow_up_type = #{followUpType},</if>
             <if test="followUpContent != null and followUpContent != ''">follow_up_content = #{followUpContent},</if>
             <if test="submissionTime != null">submission_time = #{submissionTime},</if>
-            <if test="followUpContact != null">follow_up_contact = #{followUpContact},</if>
+            <if test="followUpContactId != null">follow_up_contact_id = #{followUpContactId},</if>
             <if test="nextFollowUpSchedule != null">next_follow_up_schedule = #{nextFollowUpSchedule},</if>
             <if test="allDayFlag != null">all_day_flag = #{allDayFlag},</if>
             <if test="scheduleContent != null">schedule_content = #{scheduleContent},</if>

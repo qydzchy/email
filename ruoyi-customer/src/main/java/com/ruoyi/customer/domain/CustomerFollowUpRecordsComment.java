@@ -64,7 +64,8 @@ public class CustomerFollowUpRecordsComment extends BaseEntity
     {
         return comment;
     }
-    public void setDelFlag(String delFlag) 
+
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }

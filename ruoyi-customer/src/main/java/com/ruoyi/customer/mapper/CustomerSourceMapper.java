@@ -68,7 +68,7 @@ public interface CustomerSourceMapper
 
     /**
      * 根据客户id删除客户来源关联
-     * @param id
+     * @param customerId
      */
-    void deleteCustomerSourceByCustomerId(@Param("id") Long id);
+    void deleteCustomerSourceByCustomerId(@Param("customerId") Long customerId);
 }

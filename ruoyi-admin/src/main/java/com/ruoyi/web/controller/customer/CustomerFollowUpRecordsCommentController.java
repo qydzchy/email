@@ -37,7 +37,14 @@ public class CustomerFollowUpRecordsCommentController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody CustomerFollowUpRecordsComment customerFollowUpRecordsComment)
     {
-        checkParam(customerFollowUpRecordsComment);
+        if (customerFollowUpRecordsComment.getFollowUpRecordsId() == null) {
+            throw new ServiceException("跟进记录id不能为空");
+        }
+
+        if (StringUtils.isBlank(customerFollowUpRecordsComment.getComment())) {
+            throw new ServiceException("评论内容不能为空");
+        }
+
         return toAjax(customerFollowUpRecordsCommentService.insertCustomerFollowUpRecordsComment(customerFollowUpRecordsComment));
     }
 
@@ -52,8 +59,10 @@ public class CustomerFollowUpRecordsCommentController extends BaseController
         if (customerFollowUpRecordsComment.getId() == null) {
             throw new ServiceException("ID不能为空");
         }
+        if (StringUtils.isBlank(customerFollowUpRecordsComment.getComment())) {
+            throw new ServiceException("评论内容不能为空");
+        }
 
-        checkParam(customerFollowUpRecordsComment);
         return toAjax(customerFollowUpRecordsCommentService.updateCustomerFollowUpRecordsComment(customerFollowUpRecordsComment));
     }
 
@@ -70,19 +79,5 @@ public class CustomerFollowUpRecordsCommentController extends BaseController
         }
 
         return toAjax(customerFollowUpRecordsCommentService.deleteCustomerFollowUpRecordsCommentById(customerFollowUpRecordsComment.getId()));
-    }
-
-    /**
-     * 参数校验
-     * @param customerFollowUpRecordsComment
-     */
-    private void checkParam(CustomerFollowUpRecordsComment customerFollowUpRecordsComment) {
-        if (customerFollowUpRecordsComment.getFollowUpRecordsId() == null) {
-            throw new ServiceException("跟进记录id不能为空");
-        }
-
-        if (StringUtils.isBlank(customerFollowUpRecordsComment.getComment())) {
-            throw new ServiceException("评论内容不能为空");
-        }
     }
 }
