@@ -8,6 +8,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
+import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,14 +44,35 @@ public class CustomerController extends BaseController
     /**
      * 查询私海客户列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
-    @GetMapping("/publicleads/list")
-    public TableDataInfo publicleadsList(
+    @PreAuthorize("@ss.hasPermi('customer:customer:privateleads:list')")
+    @GetMapping("/privateleads/list")
+    public TableDataInfo privateleadsList(
             @NotNull(message = "客群不能为空") Long segmentId,
             @NotNull(message = "页数不能为空") Integer pageNum,
             @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(segmentId, pageNum, pageSize);
+        Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> pair = customerService.privateleadsList(segmentId, pageNum, pageSize);
+        List<PrivateleadsCustomerSimpleListVO> rows = pair.getSecond();
+        long total = pair.getFirst();
+
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(rows);
+        rspData.setTotal(total);
+        return rspData;
+    }
+
+    /**
+     * 查询公海客户列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
+    @GetMapping("/publicleads/list")
+    public TableDataInfo publicleadsList(
+            @NotNull(message = "页数不能为空") Integer pageNum,
+            @NotNull(message = "页大小不能为空") Integer pageSize)
+    {
+        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(pageNum, pageSize);
         List<PublicleadsCustomerSimpleListVO> rows = pair.getSecond();
         long total = pair.getFirst();
 

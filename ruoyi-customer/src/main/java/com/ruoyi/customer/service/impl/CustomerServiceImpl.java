@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
@@ -19,6 +18,7 @@ import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
+import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import com.ruoyi.customer.mapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +45,6 @@ public class CustomerServiceImpl implements ICustomerService
     @Resource
     private CustomerContactMapper customerContactMapper;
     @Resource
-    private MetadataColumnMapper metadataColumnMapper;
-    @Resource
     private CustomerSourceMapper customerSourceMapper;
     @Resource
     private CustomerTagMapper customerTagMapper;
@@ -56,8 +54,6 @@ public class CustomerServiceImpl implements ICustomerService
     private CustomerPublicleadsMapper customerPublicleadsMapper;
     @Resource
     private SegmentMapper segmentMapper;
-    @Resource
-    private RedisCache redisCache;
 
 
     /**
@@ -306,17 +302,16 @@ public class CustomerServiceImpl implements ICustomerService
     }
 
     @Override
-    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
         try {
-            int seaType = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
-            int count = customerMapper.count(seaType);
+            int count = customerMapper.countPublicleadsCustomer(segmentId);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PublicleadsCustomerSimpleListVO> customerSimpleListVOList = customerMapper.selectPublicleadsCustomerPage(segmentId, offset, limit);
+            List<PrivateleadsCustomerSimpleListVO> customerSimpleListVOList = customerMapper.selectPrivateleadsCustomerPage(segmentId, offset, limit);
             if (customerSimpleListVOList == null || customerSimpleListVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }
@@ -622,6 +617,11 @@ public class CustomerServiceImpl implements ICustomerService
         });
 
         return false;
+    }
+
+    @Override
+    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Integer pageNum, Integer pageSize) {
+        return null;
     }
 
     /**

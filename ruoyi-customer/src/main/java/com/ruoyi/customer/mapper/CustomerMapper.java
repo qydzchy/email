@@ -3,7 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -64,10 +64,10 @@ public interface CustomerMapper
 
     /**
      * 统计客户数量
-     * @param seaType
+     * @param segmentId
      * @return
      */
-    int count(@Param("seaType") Integer seaType);
+    int countPublicleadsCustomer(@Param("segmentId") Long segmentId);
 
     /**
      * 移动客户到分组
@@ -114,5 +114,5 @@ public interface CustomerMapper
      * @param limit
      * @return
      */
-    List<PublicleadsCustomerSimpleListVO> selectPublicleadsCustomerPage(@Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
+    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
 }
