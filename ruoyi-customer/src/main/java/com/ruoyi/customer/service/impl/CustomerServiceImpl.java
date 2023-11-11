@@ -18,8 +18,8 @@ import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import com.ruoyi.customer.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -331,7 +331,7 @@ public class CustomerServiceImpl implements ICustomerService
     @Override
     public boolean moveCustomerToPacket(CustomerPacketMoveDTO customerPacketMoveDTO) {
         customerMapper.moveCustomerToPacket(customerPacketMoveDTO.getId(), customerPacketMoveDTO.getPacketId());
-        return false;
+        return true;
     }
 
     /**
@@ -356,6 +356,7 @@ public class CustomerServiceImpl implements ICustomerService
         if (dbUserIds.contains(transferredToFollowerId)) {
             // 删除当前的跟进人
             customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(transferredToDTO.getId(), transferredToFollowerId, userId, username);
+
         } else {
             customerFollowUpPersonnelMapper.transferredTo(transferredToDTO.getId(), userId, transferredToDTO.getUserId());
         }
@@ -398,6 +399,7 @@ public class CustomerServiceImpl implements ICustomerService
                 CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
                 customerFollowUpPersonnel.setCustomerId(shareToDTO.getId());
                 customerFollowUpPersonnel.setUserId(userId1);
+                customerFollowUpPersonnel.setDelFlag("0");
                 customerFollowUpPersonnel.setCreateId(userId);
                 customerFollowUpPersonnel.setCreateBy(loginUser.getUsername());
                 customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
@@ -474,6 +476,7 @@ public class CustomerServiceImpl implements ICustomerService
             CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
             customerFollowUpPersonnel.setCustomerId(reassignToDTO.getId());
             customerFollowUpPersonnel.setUserId(userId1);
+            customerFollowUpPersonnel.setDelFlag("0");
             customerFollowUpPersonnel.setCreateId(userId);
             customerFollowUpPersonnel.setCreateBy(loginUser.getUsername());
             customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
@@ -550,7 +553,7 @@ public class CustomerServiceImpl implements ICustomerService
     }
 
     @Override
-    public List<PublicleadsGroupsListVO> publicleadsGroupsList(Long customerId) {
+    public List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(Long customerId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         return customerMapper.publicleadsGroupsList(customerId, userId);

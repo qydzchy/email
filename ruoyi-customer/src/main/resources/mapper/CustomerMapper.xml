@@ -80,7 +80,7 @@
         select count(*) from customer_customer where sea_type = #{seaType} and del_flag = '0'
     </select>
 
-    <select id="publicleadsGroupsList" resultType="com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO">
+    <select id="publicleadsGroupsList" resultType="com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO">
         select pg.id, pg.name from customer_publicleads_groups pg
         left join customer_publicleads_groups_user pgu on pg.id = pgu.publicleads_groups_id
         where pg.del_flag = '0'

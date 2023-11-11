@@ -23,7 +23,7 @@ public class CustomerFollowUpPersonnelListVO {
     /**
      * 跟进人名称
      */
-    private String userName;
+    private String nickName;
 
     /**
      * 部门ID

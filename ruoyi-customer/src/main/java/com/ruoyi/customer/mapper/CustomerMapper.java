@@ -2,8 +2,8 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Customer;
+import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -99,7 +99,7 @@ public interface CustomerMapper
      * @param userId
      * @return
      */
-    List<PublicleadsGroupsListVO> publicleadsGroupsList(Long customerId, Long userId);
+    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(Long customerId, Long userId);
 
     /**
      * 将客户移入私海

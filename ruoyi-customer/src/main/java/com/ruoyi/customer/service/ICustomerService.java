@@ -5,8 +5,8 @@ import java.util.List;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.springframework.data.util.Pair;
 
 /**
@@ -150,7 +150,7 @@ public interface ICustomerService
      * @param customerId
      * @return
      */
-    List<PublicleadsGroupsListVO> publicleadsGroupsList(Long customerId);
+    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(Long customerId);
 
     /**
      * 移入私海

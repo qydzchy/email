@@ -92,8 +92,8 @@ public interface CustomerFollowUpPersonnelMapper
      * 删除客户跟进人
      * @param customerId
      * @param currentFollowerId
-     * @param userId
-     * @param username
+     * @param updateId
+     * @param updateBy
      */
-    void deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(@Param("customerId") Long customerId, @Param("currentFollowerId") Long currentFollowerId, @Param("userId") Long userId, @Param("username") String username);
+    void deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(@Param("customerId") Long customerId, @Param("currentFollowerId") Long currentFollowerId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

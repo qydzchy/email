@@ -187,7 +187,7 @@ public class CustomerController extends BaseController
      * 重新分配
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:reassign:to')")
-    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
+    @Log(title = "重新分配", businessType = BusinessType.UPDATE)
     @PostMapping("/reassign/to")
     public AjaxResult reassignTo(@RequestBody ReassignToDTO reassignToDTO)
     {
@@ -219,7 +219,7 @@ public class CustomerController extends BaseController
      * 取消跟进人
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:unassign:follow:up')")
-    @Log(title = "移入公海", businessType = BusinessType.UPDATE)
+    @Log(title = "取消跟进人", businessType = BusinessType.UPDATE)
     @PostMapping("/unassign/follow/up")
     public AjaxResult unassignFollowUp(@RequestBody UnassignFollowUpDTO unassignFollowUpDTO)
     {
