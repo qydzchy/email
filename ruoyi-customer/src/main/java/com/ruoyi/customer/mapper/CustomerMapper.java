@@ -134,4 +134,10 @@ public interface CustomerMapper
      * @return
      */
     List<PublicleadsCustomerSimpleListVO> selectPublicleadsCustomerPage(@Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("packetId") Long packetId, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 查询客户ID列表
+     * @return
+     */
+    List<Long> selectCustomerIdList();
 }

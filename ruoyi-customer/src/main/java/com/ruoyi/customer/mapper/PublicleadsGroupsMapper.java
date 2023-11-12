@@ -66,4 +66,11 @@ public interface PublicleadsGroupsMapper
      * @return
      */
     List<PublicleadsGroupsListBO> list();
+
+    /**
+     * 根据客户id查询客户所在的公海分组
+     * @param customerId
+     * @return
+     */
+    List<PublicleadsGroupsListBO> selectPublicleadsGroupsByCustomerId(@Param("customerId") Long customerId);
 }

@@ -4,10 +4,7 @@ import java.util.List;
 
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
-import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
-import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
-import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.*;
 import org.springframework.data.util.Pair;
 
 /**
@@ -24,7 +21,7 @@ public interface ICustomerService
      * @param id 客户详情主键
      * @return 客户详情
      */
-    public Customer selectCustomerById(Long id);
+    public CustomerDetailVO getCustomerDetail(Long id);
 
     /**
      * 查询客户详情列表

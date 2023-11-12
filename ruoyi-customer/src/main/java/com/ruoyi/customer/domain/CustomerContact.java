@@ -53,8 +53,8 @@ public class CustomerContact extends BaseEntity
     private String position;
 
     /** 生日 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "生日", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "生日", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date birthday;
 
     /** 性别 1.不设置 2.男 3.女 */

@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerTag;
+import com.ruoyi.customer.domain.vo.CustomerTagListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -71,4 +72,11 @@ public interface CustomerTagMapper
      * @param customerId
      */
     void deleteCustomerTagByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * 根据客户id查询客户标签关联
+     * @param id
+     * @return
+     */
+    List<CustomerTagListVO> selectCustomerTagByCustomerId(@Param("customerId") Long id);
 }

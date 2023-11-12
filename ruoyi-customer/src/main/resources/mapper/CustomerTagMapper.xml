@@ -26,6 +26,12 @@
         <include refid="selectCustomerTagVo"/>
         where id = #{id}
     </select>
+    <select id="selectCustomerTagByCustomerId" resultType="com.ruoyi.customer.domain.vo.CustomerTagListVO">
+        select ct.id, ct.name, ct.color
+        from customer_customer_tag cct
+        left join customer_tag ct on cct.tag_id = ct.id
+        where cct.customer_id = #{customerId}
+    </select>
 
     <insert id="insertCustomerTag" parameterType="CustomerTag" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_tag

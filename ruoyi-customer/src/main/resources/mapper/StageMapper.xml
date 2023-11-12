@@ -36,7 +36,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectStageVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectStageByCustomerId" resultType="com.ruoyi.customer.domain.vo.StageListVO">
+        select cs.id, cs.name
+        from customer_customer cc
+        left join customer_stage cs on cc.stage_id = cs.id AND cs.del_flag = '0'
+        where cc.id = #{customerId} AND cc.del_flag = '0'
+    </select>
+
     <insert id="insertStage" parameterType="Stage">
         insert into customer_stage
         <trim prefix="(" suffix=")" suffixOverrides=",">

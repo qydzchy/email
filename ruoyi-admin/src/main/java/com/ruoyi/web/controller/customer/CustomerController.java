@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,10 +89,14 @@ public class CustomerController extends BaseController
      * 获取客户详情详细信息
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:query')")
-    @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
+    @GetMapping(value = "/detail")
+    public AjaxResult getCustomerDetail(Long id)
     {
-        return success(customerService.selectCustomerById(id));
+        if (id == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return success(customerService.getCustomerDetail(id));
     }
 
     /**

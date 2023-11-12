@@ -81,4 +81,11 @@ public interface CustomerContactMapper
      * @return
      */
     List<CustomerContactBO> selectCustomerMainContactByCustomerIds(@Param("customerIds") List<Long> customerIds);
+
+    /**
+     * 查询客户联系人
+     * @param customerId
+     * @return
+     */
+    List<CustomerContactBO> selectCustomerContactByCustomerId(@Param("customerId") Long customerId);
 }

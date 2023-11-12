@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.Packet;
 import com.ruoyi.customer.domain.vo.PacketListVO;
+import com.ruoyi.customer.domain.vo.SimplePacketVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -66,4 +67,11 @@ public interface PacketMapper
      * @return
      */
     List<PacketListVO> list();
+
+    /**
+     * 查询客户分组
+     * @param id
+     * @return
+     */
+    SimplePacketVO selectSimplePacketByCustomerId(@Param("customerId") Long id);
 }

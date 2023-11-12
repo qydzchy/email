@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentUserListVO;
+import com.ruoyi.customer.domain.vo.StageListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

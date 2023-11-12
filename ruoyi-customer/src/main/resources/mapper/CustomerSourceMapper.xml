@@ -27,6 +27,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectCustomerSourceByCustomerId" resultType="com.ruoyi.customer.domain.vo.SourceListVO">
+        select cs.id, cs.name
+        from customer_customer_source ccs
+        left join customer_source cs on ccs.source_id = cs.id
+        where ccs.customer_id = #{customerId}
+    </select>
+
     <insert id="insertCustomerSource" parameterType="CustomerSource" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_source
         <trim prefix="(" suffix=")" suffixOverrides=",">

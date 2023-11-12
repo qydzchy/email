@@ -1,6 +1,9 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,11 +16,10 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.*;
 import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.dto.*;
-import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
-import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
-import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.*;
 import com.ruoyi.customer.mapper.*;
+import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
+import com.ruoyi.customer.service.IPublicleadsGroupsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
@@ -53,7 +55,16 @@ public class CustomerServiceImpl implements ICustomerService
     private SegmentMapper segmentMapper;
     @Resource
     private CustomerFollowUpRecordsMapper customerFollowUpRecordsMapper;
+    @Resource
+    private StageMapper stageMapper;
+    @Resource
+    private PacketMapper packetMapper;
+    @Resource
+    private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
+    @Resource
+    private IPublicleadsGroupsService publicleadsGroupsService;
 
+    private static final Executor executor = Executors.newFixedThreadPool(3);
 
     /**
      * 查询客户详情
@@ -61,11 +72,74 @@ public class CustomerServiceImpl implements ICustomerService
      * @param id 客户详情主键
      * @return 客户详情
      */
-    @Override
-    public Customer selectCustomerById(Long id)
-    {
+    public CustomerDetailVO getCustomerDetail(Long id) {
+        CompletableFuture<Customer> customerFuture = CompletableFuture.supplyAsync(() ->
+                customerMapper.selectCustomerById(id), executor
+        );
 
-        return customerMapper.selectCustomerById(id);
+        CompletableFuture<List<CustomerContactBO>> contactListFuture = CompletableFuture.supplyAsync(() ->
+                customerContactMapper.selectCustomerContactByCustomerId(id), executor
+        );
+
+        CompletableFuture<List<CustomerFollowUpPersonnelListVO>> followUpPersonnelListFuture = CompletableFuture.supplyAsync(() ->
+                customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(id), executor
+        );
+
+        CompletableFuture<List<CustomerFollowUpRecordsListVO>> followUpRecordsListFuture = CompletableFuture.supplyAsync(() -> {
+            CustomerFollowUpRecordsListDTO customerFollowUpRecordsListDTO = new CustomerFollowUpRecordsListDTO();
+            customerFollowUpRecordsListDTO.setCustomerId(id);
+            return customerFollowUpRecordsService.list(customerFollowUpRecordsListDTO);
+        }, executor);
+
+        CompletableFuture<List<CustomerTagListVO>> tagListFuture = CompletableFuture.supplyAsync(() ->
+                customerTagMapper.selectCustomerTagByCustomerId(id), executor
+        );
+
+        CompletableFuture<List<SourceListVO>> sourceListFuture = CompletableFuture.supplyAsync(() ->
+                customerSourceMapper.selectCustomerSourceByCustomerId(id), executor
+        );
+
+        CompletableFuture<StageListVO> stageFuture = CompletableFuture.supplyAsync(() ->
+                stageMapper.selectStageByCustomerId(id), executor
+        );
+
+        CompletableFuture<SimplePacketVO> packetFuture = CompletableFuture.supplyAsync(() ->
+                packetMapper.selectSimplePacketByCustomerId(id), executor
+        );
+
+        CompletableFuture<PublicleadsGroupsListVO> publicleadsGroupsFuture = CompletableFuture.supplyAsync(() ->
+                publicleadsGroupsService.selectPublicleadsGroupsByCustomerId(id), executor
+        );
+
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(customerFuture, contactListFuture, followUpPersonnelListFuture,
+                followUpRecordsListFuture, tagListFuture, sourceListFuture, stageFuture, packetFuture, publicleadsGroupsFuture);
+
+        return allFutures.thenApplyAsync(ignored ->
+                        buildCustomerDetailVO(customerFuture.join(), contactListFuture.join(), followUpPersonnelListFuture.join(),
+                                followUpRecordsListFuture.join(), tagListFuture.join(), sourceListFuture.join(),
+                                stageFuture.join(), packetFuture.join(), publicleadsGroupsFuture.join()), executor)
+                .join();
+    }
+
+    private CustomerDetailVO buildCustomerDetailVO(Customer customer, List<CustomerContactBO> contactList,
+                                                   List<CustomerFollowUpPersonnelListVO> followUpPersonnelList,
+                                                   List<CustomerFollowUpRecordsListVO> followUpRecordsList,
+                                                   List<CustomerTagListVO> tagList, List<SourceListVO> sourceList,
+                                                   StageListVO stage, SimplePacketVO packet,
+                                                   PublicleadsGroupsListVO publicleadsGroupsListVO) {
+        CustomerDetailVO customerDetailVO = new CustomerDetailVO();
+        BeanUtils.copyProperties(customer, customerDetailVO);
+
+        customerDetailVO.setContactList(contactList);
+        customerDetailVO.setFollowUpPersonnelList(followUpPersonnelList);
+        customerDetailVO.setFollowUpRecordsList(followUpRecordsList);
+        customerDetailVO.setTagList(tagList);
+        customerDetailVO.setSourceList(sourceList);
+        customerDetailVO.setStage(stage);
+        customerDetailVO.setPacket(packet);
+        customerDetailVO.setPublicleadsGroups(publicleadsGroupsListVO);
+
+        return customerDetailVO;
     }
 
     /**
@@ -601,15 +675,16 @@ public class CustomerServiceImpl implements ICustomerService
     @Override
     public boolean shuffle(Long customerIdParam, Long segmentIdParam) {
         // 获取客户列表
-        List<Customer> customerList = getCustomerList(customerIdParam);
-        if (customerList == null || customerList.isEmpty()) return false;
+        List<Long> customerIdList = getCustomerIdList(customerIdParam);
+        if (customerIdList == null || customerIdList.isEmpty()) return false;
 
         // 获取客群列表（第一级）
         List<Segment> segmentList = getSegmentList(segmentIdParam);
         if (segmentList == null || segmentList.isEmpty()) return false;
 
-        customerList.stream().forEach(customer -> {
-            Long customerId = customer.getId();
+        customerIdList.stream().forEach(customerId -> {
+            // 获取客户详情
+            CustomerDetailVO customerDetail = getCustomerDetail(customerId);
             // 获取客户跟进人
             List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(customerId);
             for (Segment segment : segmentList) {
@@ -775,21 +850,16 @@ public class CustomerServiceImpl implements ICustomerService
      * @param customerId
      * @return
      */
-    private List<Customer> getCustomerList(Long customerId) {
-        List<Customer> customerList = new ArrayList<>();
+    private List<Long> getCustomerIdList(Long customerId) {
+        List<Long> customerIdList = new ArrayList<>();
         // customerId == null代表所有客户
         if (customerId == null) {
-            customerList = customerMapper.selectCustomerList(new Customer());
+            customerIdList = customerMapper.selectCustomerIdList();
         } else {
-            Customer customer = customerMapper.selectCustomerById(customerId);
-            if (customer == null) {
-                log.error("客户不存在，customerId：{}", customerId);
-                return null;
-            }
-            customerList.add(customer);
+            customerIdList.add(customerId);
         }
 
-        return customerList;
+        return customerIdList;
     }
 
 }

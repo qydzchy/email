@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Stage;
+import com.ruoyi.customer.domain.vo.StageListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -59,4 +60,11 @@ public interface StageMapper
      * @return 结果
      */
     public int deleteStageByIds(Long[] ids);
+
+    /**
+     * 跟进客户ID查询阶段
+     * @param customerId
+     * @return
+     */
+    StageListVO selectStageByCustomerId(@Param("customerId") Long customerId);
 }
