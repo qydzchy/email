@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.ConditionTypeEnum;
 import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
@@ -695,13 +696,30 @@ public class CustomerServiceImpl implements ICustomerService
                 ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     List<SegmentConditionRuleBO> segmentConditionRuleBOList = objectMapper.readValue(conditionRuleContent, List.class);
-
+                    // 判断父客群是否成立，成立则判断是否有二级客群
+                    boolean parentSegmentConditionMet = isSegmentConditionMet(customerDetail, segmentConditionRuleBOList);
                 } catch (JsonProcessingException e) {
                     log.error("客群条件规则转换异常：{}", e);
                     continue;
                 }
             }
         });
+
+        return false;
+    }
+
+    /**
+     * 判断该客户是否满足客群条件
+     * @param customerDetail
+     * @param segmentConditionRuleBOList
+     * @return
+     */
+    private boolean isSegmentConditionMet(CustomerDetailVO customerDetail, List<SegmentConditionRuleBO> segmentConditionRuleBOList) {
+        for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
+            String andOr = segmentConditionRuleBO.getAndOr();
+            Integer conditionType = segmentConditionRuleBO.getConditionType();
+            ConditionTypeEnum conditionTypeEnum = ConditionTypeEnum.getByType(conditionType);
+        }
 
         return false;
     }
