@@ -11,10 +11,7 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.*;
-import com.ruoyi.customer.domain.bo.SegmentConditionRuleBO;
-import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeBO;
-import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
-import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
+import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
@@ -54,6 +51,8 @@ public class CustomerServiceImpl implements ICustomerService
     private CustomerPublicleadsMapper customerPublicleadsMapper;
     @Resource
     private SegmentMapper segmentMapper;
+    @Resource
+    private CustomerFollowUpRecordsMapper customerFollowUpRecordsMapper;
 
 
     /**
@@ -65,6 +64,7 @@ public class CustomerServiceImpl implements ICustomerService
     @Override
     public Customer selectCustomerById(Long id)
     {
+
         return customerMapper.selectCustomerById(id);
     }
 
@@ -304,19 +304,31 @@ public class CustomerServiceImpl implements ICustomerService
     @Override
     public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
         try {
-            int count = customerMapper.countPublicleadsCustomer(segmentId);
+            int count = customerMapper.countPrivateleadsCustomer(segmentId);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PrivateleadsCustomerSimpleListVO> customerSimpleListVOList = customerMapper.selectPrivateleadsCustomerPage(segmentId, offset, limit);
-            if (customerSimpleListVOList == null || customerSimpleListVOList.isEmpty()) {
+            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(segmentId, offset, limit);
+            if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }
 
-            return Pair.of(count, customerSimpleListVOList);
+            // 获取查询的客户id
+            List<Long> ids = customerSimpleVOList.stream().map(PrivateleadsCustomerSimpleListVO::getId).collect(Collectors.toList());
+            // 查询最近动态
+            List<CustomerRecentActivityBO> customerRecentActivityList = customerFollowUpRecordsMapper.selectRecentActivityByCustomerIds(ids);
+            Map<Long, CustomerRecentActivityBO> customerIdMap = customerRecentActivityList.stream().collect(Collectors.toMap(customerRecentActivity -> customerRecentActivity.getCustomerId(), customerRecentActivity -> customerRecentActivity));
+
+            customerSimpleVOList.stream().forEach(customerSimpleVO -> {
+                if (customerIdMap.containsKey(customerSimpleVO.getId())) {
+                    customerSimpleVO.setRecentActivity(customerIdMap.get(customerSimpleVO.getId()));
+                }
+            });
+
+            return Pair.of(count, customerSimpleVOList);
         } catch (Exception e) {
             log.error("查询客户列表（分页）异常：{}", e);
             return Pair.of(0, new ArrayList<>());
@@ -620,8 +632,44 @@ public class CustomerServiceImpl implements ICustomerService
     }
 
     @Override
-    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Integer pageNum, Integer pageSize) {
-        return null;
+    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long publicleadsGroupsId, Long packetId, Integer pageNum, Integer pageSize) {
+        try {
+            int count = customerMapper.countPublicleadsCustomer(publicleadsGroupsId, packetId);
+            if (count <= 0) {
+                return Pair.of(count, new ArrayList<>());
+            }
+
+            int offset = (pageNum - 1) * pageSize;
+            int limit = pageSize;
+            List<PublicleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPublicleadsCustomerPage(publicleadsGroupsId, packetId, offset, limit);
+            if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
+                return Pair.of(count, new ArrayList<>());
+            }
+
+            // 获取查询的客户id
+            List<Long> ids = customerSimpleVOList.stream().map(PublicleadsCustomerSimpleListVO::getId).collect(Collectors.toList());
+            // 查询最近动态
+            List<CustomerRecentActivityBO> customerRecentActivityList = customerFollowUpRecordsMapper.selectRecentActivityByCustomerIds(ids);
+            Map<Long, CustomerRecentActivityBO> recentActivityMap = customerRecentActivityList.stream().collect(Collectors.toMap(customerRecentActivity -> customerRecentActivity.getCustomerId(), customerRecentActivity -> customerRecentActivity));
+            // 查询客户主要联系人信息
+            List<CustomerContactBO> customerContactBOList = customerContactMapper.selectCustomerMainContactByCustomerIds(ids);
+            Map<Long, CustomerContactBO> customerContactMap = customerContactBOList.stream().collect(Collectors.toMap(customerContactBO -> customerContactBO.getCustomerId(), customerContactBO -> customerContactBO));
+            customerSimpleVOList.stream().forEach(customerSimpleVO -> {
+                if (recentActivityMap.containsKey(customerSimpleVO.getId())) {
+                    customerSimpleVO.setRecentActivity(recentActivityMap.get(customerSimpleVO.getId()));
+                    customerSimpleVO.setRecentFollowUp(recentActivityMap.get(customerSimpleVO.getId()));
+                }
+
+                if (customerContactMap.containsKey(customerSimpleVO.getId())) {
+                    customerSimpleVO.setContact(customerContactMap.get(customerSimpleVO.getId()));
+                }
+            });
+
+            return Pair.of(count, customerSimpleVOList);
+        } catch (Exception e) {
+            log.error("查询客户列表（分页）异常：{}", e);
+            return Pair.of(0, new ArrayList<>());
+        }
     }
 
     /**

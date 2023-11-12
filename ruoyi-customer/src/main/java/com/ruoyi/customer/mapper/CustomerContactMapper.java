@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerContact;
+import com.ruoyi.customer.domain.bo.CustomerContactBO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -73,4 +74,11 @@ public interface CustomerContactMapper
      * @param updateBy
      */
     void deleteCustomerContactByCustomerId(@Param("customerId") Long customerId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 根据客户id查询主要联系人
+     * @param customerIds
+     * @return
+     */
+    List<CustomerContactBO> selectCustomerMainContactByCustomerIds(@Param("customerIds") List<Long> customerIds);
 }

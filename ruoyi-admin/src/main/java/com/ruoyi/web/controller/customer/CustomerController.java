@@ -69,10 +69,12 @@ public class CustomerController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
     @GetMapping("/publicleads/list")
     public TableDataInfo publicleadsList(
+            Long publicleadsGroupsId,
+            Long packetId,
             @NotNull(message = "页数不能为空") Integer pageNum,
             @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(pageNum, pageSize);
+        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(publicleadsGroupsId, packetId, pageNum, pageSize);
         List<PublicleadsCustomerSimpleListVO> rows = pair.getSecond();
         long total = pair.getFirst();
 

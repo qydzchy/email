@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
 import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -67,7 +68,7 @@ public interface CustomerMapper
      * @param segmentId
      * @return
      */
-    int countPublicleadsCustomer(@Param("segmentId") Long segmentId);
+    int countPrivateleadsCustomer(@Param("segmentId") Long segmentId);
 
     /**
      * 移动客户到分组
@@ -115,4 +116,22 @@ public interface CustomerMapper
      * @return
      */
     List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 统计公海客户数量
+     * @param publicleadsGroupsId
+     * @param packetId
+     * @return
+     */
+    int countPublicleadsCustomer(@Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("packetId") Long packetId);
+
+    /**
+     * 获取公海客户列表
+     * @param publicleadsGroupsId
+     * @param packetId
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<PublicleadsCustomerSimpleListVO> selectPublicleadsCustomerPage(@Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("packetId") Long packetId, @Param("offset") int offset, @Param("limit") int limit);
 }

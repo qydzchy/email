@@ -76,7 +76,7 @@
         where id = #{id} and del_flag = '0'
     </select>
 
-    <select id="countPublicleadsCustomer" resultType="java.lang.Integer">
+    <select id="countPrivateleadsCustomer" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM customer_customer customer
         LEFT JOIN customer_customer_segment customerSegment ON customer.id = customerSegment.customer_id
@@ -125,6 +125,44 @@
               (#{segmentId} = -1 AND customer.focus_flag = 1) OR
               (#{segmentId} > 0 AND customerSegment.segment_id = #{segmentId})
             )
+        ORDER BY customer.create_time DESC
+            LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countPublicleadsCustomer" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM customer_customer customer
+        WHERE
+          customer.sea_type = 2
+          AND customer.del_flag = '0'
+          <if test="publicleadsGroupsId != null">
+            AND customer.publicleads_groups_id = #{publicleadsGroupsId}
+          </if>
+          <if test="packetId != null">
+            AND customer.packet_id = #{packetId}
+          </if>
+    </select>
+
+    <select id="selectPublicleadsCustomerPage"
+            resultType="com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO">
+        SELECT
+            customer.id,
+            customer.company_name as companyName,
+            (select concat(u.nick_name) from customer_customer_follow_up_personnel fup left join sys_user u on fup.user_id = u.user_id where fup.customer_id = customer.id and fup.del_flag = '0' order by fup.create_time desc) as followUpPersonnel,
+            customer.country_region as countryRegion,
+            customer.last_contacted_at as lastContactedAt,
+            customer.timezone as timezone
+        FROM
+            customer_customer customer
+        WHERE
+            customer.sea_type = 2
+            AND customer.del_flag = '0'
+            <if test="publicleadsGroupsId != null">
+                AND customer.publicleads_groups_id = #{publicleadsGroupsId}
+            </if>
+            <if test="packetId != null">
+                AND customer.packet_id = #{packetId}
+            </if>
         ORDER BY customer.create_time DESC
             LIMIT #{offset}, #{limit}
     </select>

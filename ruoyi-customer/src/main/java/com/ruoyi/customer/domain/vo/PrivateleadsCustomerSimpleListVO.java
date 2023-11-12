@@ -3,6 +3,7 @@ package com.ruoyi.customer.domain.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.customer.domain.bo.CustomerRecentActivityBO;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class PrivateleadsCustomerSimpleListVO {
     /**
      * 最近动态
      */
-    private String recentActivity;
+    private CustomerRecentActivityBO recentActivity;
 
     /**
      * 最近联系时间
