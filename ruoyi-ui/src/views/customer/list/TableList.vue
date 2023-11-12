@@ -1,18 +1,29 @@
 <template>
-  <div class="table-list">
-    <div class="mt-16" v-show="ids.length">
-      <HeaderOperate :ids="ids"/>
+  <div>
+    <div class="wrap pt-10 flex-middle space-between ml-30">
+      <div>
+        <span class="bold">全部客户</span>
+        <span class="gray-text ml-2">{{paginateOption.total}} 个客户</span>
+      </div>
+      <!--              <HeaderFilter/>-->
     </div>
-    <div class="mt-20">
-      <TableNext
-        :list="list"
-        :columns="columns"
-        :extra-option="extraOption"
-        :extra-event="extraEvent"
-        :paginate-option="paginateOption"/>
+    <div class="table-list mt-20">
+      <div class="mt-16" v-show="ids.length">
+        <HeaderOperate :ids="ids"/>
+      </div>
+      <div class="mt-20">
+        <TableNext
+            :loading="tableLoading"
+            :list="list"
+            :columns="columns"
+            :extra-option="extraOption"
+            :extra-event="extraEvent"
+            :paginate-option="paginateOption"/>
+      </div>
+      <TableRowDrawer :visible.sync="rowDrawerVisible"/>
     </div>
-    <TableRowDrawer :visible.sync="rowDrawerVisible"/>
   </div>
+
 </template>
 
 <script>
@@ -23,6 +34,7 @@ import CellOperate from './CellOperate.vue'
 import HeaderOperate from "./HeaderOperate.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
+import {getPrivateLeadsList} from "@/api/customer/publicleads";
 
 export default {
   components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon},
@@ -37,23 +49,15 @@ export default {
         'selection-change': (value) => this.handleSelectionChange(value)
       },
       paginateOption: {
-        total: 2,
+        total: 0,
         layout: 'total, prev, pager, next , sizes',
-        pageSize: 20,
-        pageSizes: [10, 20, 50, 100]
+        currentPage: 1,
+        pageSize: 10,
+        pageSizes: [10, 20, 50, 100],
       },
-      list: [{
-        id: 1,
-        companyName: '111',
-        companyTag: '111',
-        isFollow: true
-      },
-        {
-          id: 2,
-          companyName: '222',
-          companyTag: '222',
-          isFollow: false
-        }],
+      list: [
+
+      ],
       columns: [
         {type: 'selection', width: '50'},
         {
@@ -70,8 +74,8 @@ export default {
             const isShow = (fieldName === propName && rowId === row?.id) || field
             return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
               <CollageIcon
-                show={isShow}
-                onClick={() => this.onCollageIcon(row?.id)}>
+                  show={isShow}
+                  onClick={() => this.onCollageIcon(row?.id)}>
               </CollageIcon>
             </div>
 
@@ -90,18 +94,18 @@ export default {
             const isShow = showEditIcon && rowId === row?.id && fieldName === propName
             const isShowForm = this.curEditId === row?.id && fieldName === propName
             return <CellOperate
-              showForm={isShowForm}
-              type="input"
-              value={field}
-              text={field}
-              visible={isShow}
-              on={{
-                onEdit: () => this.onCellEdit(row?.id, propName),
-                click: () => this.onCellClick(),
-                onBlur: () => this.onBlur(),
-                onInput: (value) => this.onInput(value, scope, propName),
-                onEnter: () => this.inputEnter(row)
-              }}
+                showForm={isShowForm}
+                type="input"
+                value={field}
+                text={field}
+                visible={isShow}
+                on={{
+                  onEdit: () => this.onCellEdit(row?.id, propName),
+                  click: () => this.onCellClick(),
+                  onBlur: () => this.onBlur(),
+                  onInput: (value) => this.onInput(value, scope, propName),
+                  onEnter: () => this.inputEnter(row)
+                }}
             >
               <div slot="content" className="pointer" onClick={(e) => this.jumpPersonalDetail(e)}>
                 {field}
@@ -111,35 +115,35 @@ export default {
         },
         {
           label: '客户标签',
-          field: 'companyTag',
+          field: 'tagList',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '客户分组',
-          field: 'companyGroup',
+          field: 'packetId',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '客户阶段',
-          field: 'companyStage',
+          field: 'stageId',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '主要联系人',
-          field: 'companyStage',
+          field: 'primaryContact',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近动态',
-          field: 'new',
+          field: 'recentActivity',
           align: 'left',
           width: '200',
           render: (row, field, scope) => {
@@ -148,18 +152,18 @@ export default {
             const isShow = showEditIcon && rowId === row?.id && fieldName === propName
             const isShowForm = this.curEditId === row?.id && fieldName === propName
             return <CellOperate
-              showForm={isShowForm}
-              type="input"
-              value={field}
-              text={field}
-              visible={isShow}
-              on={{
-                onEdit: () => this.onCellEdit(row?.id, propName),
-                click: () => this.onCellClick(),
-                onBlur: () => this.onBlur(),
-                onInput: (value) => this.onInput(value, scope, propName),
-                onEnter: () => this.inputEnter(row)
-              }}
+                showForm={isShowForm}
+                type="input"
+                value={field}
+                text={field}
+                visible={isShow}
+                on={{
+                  onEdit: () => this.onCellEdit(row?.id, propName),
+                  click: () => this.onCellClick(),
+                  onBlur: () => this.onBlur(),
+                  onInput: (value) => this.onInput(value, scope, propName),
+                  onEnter: () => this.inputEnter(row)
+                }}
             >
               <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e)}>
                 {field}
@@ -175,7 +179,7 @@ export default {
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '国家地区',
-          field: 'email',
+          field: 'countryRegion',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
@@ -187,27 +191,27 @@ export default {
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '客户评分',
-          field: 'telOrigin',
+          field: 'rating',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近联系时间',
-          field: 'area',
+          field: 'lastContactedAt',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '时区',
-          field: 'followMan',
+          field: 'timeZone',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '社交平台',
-          field: 'department',
+          field: 'socialPlatform',
           align: 'left',
           render: (_row, field) => EmptyStr(field),
         },
@@ -222,6 +226,7 @@ export default {
           }
         }
       ],
+      tableLoading: false,
       // 行内容编辑
       tableCell: {
         rowId: '',
@@ -234,7 +239,28 @@ export default {
       ids: [],
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
+    async getList() {
+      this.tableLoading = true
+      try {
+        const {currentPage, pageSize} = this.paginateOption
+        const res = await getPrivateLeadsList({
+          segmentId: 1,
+          pageNum: currentPage,
+          pageSize: pageSize
+        }).finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.rows
+          this.paginateOption.total = res.total
+        }
+      } catch {
+      }
+    },
     onCollageIcon(id) {
       this.list.map(val => {
         if (val.id === id) {

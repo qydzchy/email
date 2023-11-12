@@ -37,6 +37,7 @@ import TableNext from "@/components/TableNext/index.vue";
 import TreeSelect from "@riophae/vue-treeselect";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 import {listMenu} from "@/api/system/menu";
+import {getPublicLeadsList} from "@/api/customer/publicleads";
 
 export default {
   components: {TreeSelect, TableNext},
@@ -94,6 +95,7 @@ export default {
       paginateOption: {
         total: 0,
         layout: 'total, sizes, prev, pager, next',
+        currentPage: 1,
         pageSize: 20,
         pageSizes: [10, 20, 50, 100]
       },
@@ -106,28 +108,24 @@ export default {
     }
   },
   mounted() {
-    this.getTreeselect();
+    this.getList()
   },
   methods: {
-    /** 转换菜单数据结构 */
-    normalizer(node) {
-      if (node.children && !node.children.length) {
-        delete node.children;
+    async getList() {
+      this.tableLoading = true
+      try {
+        const {currentPage, pageSize} = this.paginateOption
+        const res = await getPublicLeadsList({
+          pageNum: currentPage,
+          pageSize: pageSize
+        }).finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch {
       }
-      return {
-        id: node.menuId,
-        label: node.menuName,
-        children: node.children
-      };
-    },
-    /** 查询菜单下拉树结构 */
-    getTreeselect() {
-      listMenu().then(response => {
-        this.menuOptions = [];
-        const menu = {menuId: 0, menuName: '主类目', children: []};
-        menu.children = this.handleTree(response.data, "menuId");
-        this.menuOptions.push(menu);
-      });
     },
     onShowModal() {
 

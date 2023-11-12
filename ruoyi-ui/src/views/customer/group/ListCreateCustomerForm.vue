@@ -9,21 +9,21 @@
         <el-col>
           <span>使用范围</span>
           <el-tooltip
-            content="公司统一标准请选择【公司共享】，个人使用习惯可选择【个人使用】。客群保存成功后，使用范围不可修改。">
+              content="公司统一标准请选择【公司共享】，个人使用习惯可选择【个人使用】。客群保存成功后，使用范围不可修改。">
             <i class="el-icon-question ml-8"></i>
           </el-tooltip>
         </el-col>
         <el-col class="mt-16 mb-20">
           <el-radio-group v-model="innerForm.area">
-            <el-radio label="company">公司共享</el-radio>
-            <el-radio label="my">个人使用</el-radio>
+            <el-radio :label="1">公司共享</el-radio>
+            <el-radio :label="2">个人使用</el-radio>
           </el-radio-group>
         </el-col>
       </el-row>
       <el-form-item label="可见范围" v-if="innerForm.area==='company'">
         <TreeSelectNext
-          :default-props="{ children: 'children',label: 'label'}"
-          :echo-data="[]" :tree-data="[]"/>
+            :default-props="{ children: 'children',label: 'label'}"
+            :echo-data="[]" :tree-data="[]"/>
         <div>注：公司共享的客群默认选择全公司可见，若只选择部门/人员后，该客群不可被应用于移入公海规则。</div>
       </el-form-item>
     </template>
@@ -66,14 +66,14 @@
             <el-row type="flex" :gutter="10">
               <el-col style="width: 140px">
                 <el-cascader
-                  v-model="item.ruleStep1"
-                  size="small"
-                  filterable
-                  :show-all-levels="false"
-                  :emitPath="false"
-                  :options="CustomerRuleOption"
-                  :props="{value:'id',label:'name',children:'children'}"
-                  @change="()=>{
+                    v-model="item.ruleStep1"
+                    size="small"
+                    filterable
+                    :show-all-levels="false"
+                    :emitPath="false"
+                    :options="CustomerRuleOption"
+                    :props="{value:'id',label:'name',children:'children'}"
+                    @change="()=>{
                     item.ruleStep2 = ''
                   }"
                 >
@@ -106,10 +106,10 @@
             <span>|</span>
             <div class="ml-10">
               <el-cascader
-                size="small"
-                :show-all-levels="false"
-                :options="CustomerRuleOption"
-                :props="{value:'id',label:'name',children:'children'}"></el-cascader>
+                  size="small"
+                  :show-all-levels="false"
+                  :options="CustomerRuleOption"
+                  :props="{value:'id',label:'name',children:'children'}"></el-cascader>
 
             </div>
           </div>

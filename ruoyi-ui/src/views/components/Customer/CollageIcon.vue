@@ -1,8 +1,11 @@
 <template>
   <el-tooltip placement="top" :content="isCollage?'取消关注':'关注'">
     <span class="wrap">
-      <svg-icon class="like-icon pointer fs-18" :class="{'active':isCollage}" icon-class="like"
-                @click="onClick"/>
+      <svg-icon
+        class="like-icon pointer fs-18"
+        :style="{display:defaultHide?'':'block'}"
+        :class="{'active':isCollage}" icon-class="like"
+        @click="onClick"/>
     </span>
 
   </el-tooltip>
@@ -15,7 +18,12 @@ export default {
       type: Boolean,
       default: false,
       required: true
-    }
+    },
+    defaultHide: {
+      type: Boolean,
+      default: true,
+      required: false
+    },
   },
   data() {
     return {
@@ -53,7 +61,6 @@ export default {
     display: none;
   }
 }
-
 
 .like-icon.active {
   color: red;

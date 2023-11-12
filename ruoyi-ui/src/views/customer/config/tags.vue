@@ -54,6 +54,10 @@ import {EmptyStr} from "@/utils/tools";
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
 import {customerConfigTagColorMap} from '@/views/components/SelectTagColor/colorMap'
 
+const initDialogForm = {
+  name: '',
+  color: '#80c463'
+}
 export default {
   components: {
     SelectTagColor,
@@ -164,10 +168,7 @@ export default {
       dialogTitle: '',
       tagDialog: false,
       btnLoading: false,
-      tagDialogForm: {
-        name: '',
-        color: ''
-      },
+      tagDialogForm: {...initDialogForm},
       tagRules: {
         name: [
           {required: true, message: '请输入名称', trigger: 'blur'}
@@ -210,6 +211,7 @@ export default {
         return
       }
       this.dialogTitle = ''
+      this.tagDialogForm = {...initDialogForm}
       this.tagDialog = false
     },
   }

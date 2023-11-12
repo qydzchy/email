@@ -1,7 +1,7 @@
 <template>
   <div class="mx-20 pt-16">
     <el-tabs v-model="curTab">
-      <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
+      <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name" :disabled="tab.disabled">
         <component :is="tab.is"/>
       </el-tab-pane>
     </el-tabs>
@@ -24,12 +24,14 @@ export default {
         {
           name: 'list',
           label: '客户列表',
-          is: 'List'
+          is: 'List',
+          disabled: false
         },
         {
           name: 'template',
           label: '客户模板',
-          is: 'Templates'
+          is: 'Templates',
+          disabled: true
         }
       ]
     }
@@ -52,7 +54,7 @@ export default {
   margin: 0;
 }
 
-::v-deep .el-tabs__nav-wrap::after{
+::v-deep .el-tabs__nav-wrap::after {
   height: 1px;
 }
 </style>

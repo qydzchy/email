@@ -5,7 +5,7 @@
       <div class="card" v-for="(item,index) in formList" :key="index">
         <div class="flex-middle space-between">
           <div class="card-title">
-            <span>{{ item.name || `联系人${index + 1}` }}</span>
+            <span>{{ item.nickName || `联系人${index + 1}` }}</span>
             <span v-if="index===0" class="pl-6">
                <svg-icon icon-class="important"/>
             </span>
@@ -22,47 +22,58 @@
 
         <el-form>
           <el-form-item label="昵称">
-            <el-input v-model="item.name" placeholder="请输入"/>
+            <el-input v-model="item.nickName" placeholder="请输入"/>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input placeholder="请输入"/>
+            <el-input v-model="item.email" placeholder="请输入"/>
           </el-form-item>
           <el-form-item label="社交平台"/>
-          <el-form-item class="special-item" v-for="(contact,idxP) in item.platformList" :key="idxP">
+          <el-form-item class="special-item" v-for="(platform,idxP) in item.socialPlatform" :key="`platform-${idxP}`">
             <el-row type="flex" :gutter="4">
               <el-col :span="8">
-                <el-select placeholder="社交平台"></el-select>
+                <el-select v-model="platform.type" placeholder="社交平台">
+                  <el-option v-for="(opt,index) in platformOption" :key="index" :label="opt.label"
+                             :value="opt.value">
+                    <span>
+                      <svg-icon :icon-class="opt.svg"/>
+                      {{ opt.label }}
+                    </span>
+                  </el-option>
+                </el-select>
               </el-col>
               <el-col :span="13">
-                <el-input placeholder="请输入"/>
+                <el-input v-model="platform.account" placeholder="请输入"/>
               </el-col>
               <el-col :span="3" class="flex-middle">
                 <el-tooltip placement="top" content="删除">
                   <i v-if="idxP!==0" class="fs-20 pl-6 el-icon-remove-outline pointer"
-                     @click="onReduce(contact.id,'platformList')"></i>
+                     @click="onReduce(platform.id,'socialPlatform')"></i>
                 </el-tooltip>
                 <el-tooltip placement="top" content="添加">
-                  <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('platformList')"></i>
+                  <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('socialPlatform')"></i>
                 </el-tooltip>
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="联系电话"/>
-          <el-form-item class="special-item" v-for="(contact,idxC) in item.contactList" :key="idxC">
+          <el-form-item class="special-item" v-for="(contact,idxC) in item.phone" :key="`contact-${idxC}`">
             <el-row type="flex" :gutter="4">
               <el-col :span="8">
-                <el-select placeholder="电话区号"></el-select>
+                <el-select v-model="contact.phone_prefix" placeholder="电话区号" filterable clearable>
+                  <el-option v-for="(prefix,index) in phonePrefixList" :key="index" :label="prefix.label"
+                             :value="prefix.value"></el-option>
+                </el-select>
               </el-col>
               <el-col :span="13">
-                <el-input placeholder="请输入"/>
+                <el-input v-model="contact.phone" placeholder="请输入"/>
               </el-col>
               <el-col :span="3" class="flex-middle">
                 <el-tooltip placement="top" content="删除">
                   <i v-if="idxC!==0" class="fs-20 pl-6 el-icon-remove-outline pointer"
-                     @click="onReduce(contact.id,'contactList')"></i>
+                     @click="onReduce(contact.id,'phone')"></i>
                 </el-tooltip>
                 <el-tooltip placement="top" content="添加">
-                  <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('contactList')"></i>
+                  <i class="fs-20 pl-6 el-icon-circle-plus-outline pointer" @click="onAdd('phone')"></i>
                 </el-tooltip>
               </el-col>
             </el-row>
@@ -73,25 +84,25 @@
               <el-select></el-select>
             </el-form-item>
             <el-form-item label="职位" style="width: 210px;">
-              <el-select style="width:220px"></el-select>
+              <el-select style="width:220px" v-model="item.rank"></el-select>
             </el-form-item>
             <el-form-item label="生日" style="width: 210px;">
-              <el-date-picker></el-date-picker>
+              <el-date-picker v-model="item.birthday"></el-date-picker>
             </el-form-item>
             <el-form-item label="性别" style="width: 210px;">
               <el-row>
-                <el-radio-group>
-                  <el-radio value="0">不限</el-radio>
-                  <el-radio value="1">男</el-radio>
-                  <el-radio value="2">女</el-radio>
+                <el-radio-group v-model="item.sex">
+                  <el-radio :label="1">不限</el-radio>
+                  <el-radio :label="2">男</el-radio>
+                  <el-radio :label="3">女</el-radio>
                 </el-radio-group>
               </el-row>
             </el-form-item>
             <el-form-item label="头像/名片">
-              <el-upload action="" list-type="picture"/>
+              <el-upload v-model="item.avatarOrBusinessCard" action="" list-type="picture"/>
             </el-form-item>
             <el-form-item label="联系人备注">
-              <el-input type="textarea" :rows="3"></el-input>
+              <el-input v-model="item.contactRemarks" type="textarea" :rows="3"></el-input>
             </el-form-item>
           </el-row>
         </el-form>
@@ -112,34 +123,91 @@
 </template>
 
 <script>
+import {generatePhone} from "@/utils/tools";
+import {deepClone} from "@/utils";
+
 const addConstruct = {
   id: +new Date(),
   show: false,
-  platformList: [
-    {id: +new Date()}
+  nickName: '',
+  email: '',
+  rank: '',
+  position: '',
+  birthday: '',
+  sex: 1,
+  avatarOrBusinessCard: '',
+  contactRemarks: '',
+  primaryContactFlag: true,
+  socialPlatform: [
+    {
+      id: +new Date(),
+      type: '',
+      account: '',
+    }
   ],
-  contactList: [
-    {id: +new Date()},
-  ]
+  phone: [
+    {
+      id: +new Date(),
+      phone_prefix: '',
+      phone: ''
+    },
+  ],
+
 }
 
 export default {
+  props: {
+    contactList: {
+      type: Array,
+      default: () => [],
+      required: true,
+    }
+  },
   data() {
     return {
       formList: [
-        {
-          id: +new Date(),
-          name: '',
-          show: false,
-          platformList: [
-            {id: +new Date()}
-          ],
-          contactList: [
-            {id: +new Date()},
-          ]
-        },
-      ]
+        {...deepClone(addConstruct)}
+      ],
+      platformOption: [
+        {label: 'Facebook', value: 'Facebook', svg: 'Facebook'},
+        {label: 'LinkedIn', value: 'LinkedIn', svg: 'LinkedIn'},
+        {label: '阿里TM', value: '阿里TM', svg: 'AliTM'},
+        {label: 'WhatsApp', value: 'WhatsApp', svg: 'WhatsApp'},
+        {label: 'Skype', value: 'Skype', svg: 'Skype'},
+        {label: 'WeChat', value: 'WeChat', svg: 'WeChats'},
+        {label: 'QQ', value: 'QQ', svg: 'QQs'},
+        {label: 'Instagram', value: 'Instagram', svg: 'Instagram'},
+        {label: 'Twitter', value: 'Twitter', svg: 'Twitter'},
+        {label: 'YouTube', value: 'YouTube', svg: 'YouTube'},
+        {label: 'Messenger', value: 'Messenger', svg: 'Messenger'},
+        {label: 'Line', value: 'Line', svg: 'Line'},
+        {label: 'VK', value: 'VK', svg: 'VK'},
+        {label: 'Telegram', value: 'Telegram', svg: 'Telegram'},
+        {label: 'CrunchBase', value: 'CrunchBase', svg: 'CrunchBase'},
+        {label: 'AngelList', value: 'AngelList', svg: 'AngelList'},
+        {label: 'Pinterest', value: 'Pinterest', svg: 'Pinterest'},
+        {label: 'Tiktok', value: 'Tiktok', svg: 'Tiktok'},
+        {label: 'Kakao Talk', value: 'Kakao Talk', svg: 'Kakao Talk'},
+        {label: 'Zalo', value: 'Zalo', svg: 'Zalo'},
+        {label: 'Etsy', value: 'Etsy', svg: 'Etsy'},
+        {label: 'Reddit', value: 'Reddit', svg: 'Reddit'},
+        {label: 'Red', value: 'Red', svg: 'Red'},
+        {label: 'Shopee', value: 'Shopee', svg: 'Shopee'},
+        {label: 'Viber', value: 'Vibe', svg: 'Viber'},
+      ],
+      phonePrefixList: generatePhone(),
     }
+  },
+  watch: {
+    contactList: {
+      handler(newVal) {
+        if (newVal && newVal.length) {
+          this.formList = newVal
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   methods: {
     onCollapsed(id) {
@@ -151,7 +219,7 @@ export default {
       })
     },
     onAddContactForm() {
-      this.formList.push({...addConstruct})
+      this.formList.push({...deepClone(addConstruct), id: +new Date()})
     },
     onDelContactForm(id) {
       this.formList = this.formList.filter(val => val.id !== id)
@@ -160,8 +228,10 @@ export default {
       let tempValue = {}
       let filterResList = this.formList.filter(val => {
         if (val.id !== id) {
+          val.primaryContactFlag = false
           return val
         } else {
+          val.primaryContactFlag = true
           Object.assign(tempValue, val)
         }
       })
@@ -171,7 +241,7 @@ export default {
     onAdd(type) {
       this.formList.map(val => {
         val[type].push({
-          id: +new Date()
+          id: +new Date(),
         })
         return val
       })
@@ -181,6 +251,16 @@ export default {
         val[type] = val[type].filter(val => val.id !== id)
         return val
       })
+    },
+    getInnerData() {
+      console.log(this.formList)
+      let innerData = JSON.parse(JSON.stringify(this.formList))
+      innerData.map(val => {
+        val.socialPlatform = JSON.stringify(val.socialPlatform)
+        val.phone = JSON.stringify(val.phone)
+        return val
+      })
+      return innerData
     }
   }
 }
@@ -234,5 +314,6 @@ export default {
     color: rgba(104, 108, 115);
     background-color: rgba(247, 248, 251);
   }
+
 }
 </style>

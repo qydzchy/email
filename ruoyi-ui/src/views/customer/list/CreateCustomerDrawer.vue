@@ -42,15 +42,15 @@
           </el-col>
           <!--    联系人     -->
           <el-col :span="14" class="px-16">
-            <ContactCard/>
+            <ContactCard ref="contact-card" :contact-list="[]"/>
           </el-col>
         </el-row>
       </div>
       <!--   operate     -->
       <div class="drawer-operate">
         <div class="wrap flex-middle flex-end">
-          <el-button round @click="onHideDrawer">取消</el-button>
-          <el-button type="primary" round>确认</el-button>
+          <el-button round :loading="btnLoading" @click="onHideDrawer">取消</el-button>
+          <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确认</el-button>
         </div>
       </div>
     </el-drawer>
@@ -61,6 +61,7 @@
 import {UsuallyInfoRule, OtherInfoRule} from './CreateCustomerOption'
 import {formOption} from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
+import {addCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -96,7 +97,8 @@ export default {
           labelPosition: 'top'
         }
       },
-      showOtherForm: false
+      showOtherForm: false,
+      btnLoading: false,
     }
   },
   watch: {
@@ -118,6 +120,36 @@ export default {
     },
   },
   methods: {
+    async addCustomerPrivate(data) {
+      try {
+        this.btnLoading = true
+        const res = await addCustomer({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          console.log(res)
+        }
+      } catch {
+      }
+    },
+    onConfirm() {
+      this.customerForm.validate(val => {
+        if (val) {
+          const contactList = this.$refs['contact-card'].getInnerData()
+          const customerForm = this.customerForm.formData()
+          const otherForm = this.customerOtherForm.formData()
+          const data = {
+            ...customerForm,
+            ...otherForm,
+            contactList,
+            seaType: 1,
+            customerNoType: 1,
+          }
+          this.addCustomerPrivate(data)
+        }
+      })
+
+    },
     onHideDrawer() {
       this.$emit('update:visible', false)
     },

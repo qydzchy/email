@@ -2,16 +2,16 @@
   <div class="flex-start">
     <div class="container">
       <div class="menu">
-        <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse>
           <template v-for="item in menuList">
             <div
-              class="menu-item px-10 flex-middle space-between fs-14"
-              :class="{'active':item.key === curMenuActive}"
-              :key="item.key"
-              @click="curMenuActive = item.key"
+                class="menu-item px-10 flex-middle space-between fs-14"
+                :class="{'active':item.userId === curMenuActive}"
+                :key="item.userId"
+                @click="curMenuActive = item.userId"
             >
-              <span>{{ item.name }}</span>
-              <span>{{ item.count }}</span>
+              <span>{{ item.nickName }}</span>
+              <span>{{ item.segmentCount }}</span>
             </div>
           </template>
 
@@ -19,11 +19,11 @@
       </div>
     </div>
     <div class="mt-20 mx-10 flex1">
-      <div class="flex-middle space-between" v-if="curMenuActive==='all'">
-        <el-tabs type="card">
-          <el-tab-pane label="全部" name="all"></el-tab-pane>
-          <el-tab-pane label="公司共享" name="share"></el-tab-pane>
-          <el-tab-pane label="个人使用" name="personal"></el-tab-pane>
+      <div class="flex-middle space-between" v-if="curMenuActive===isMySegment">
+        <el-tabs v-model="curTab" type="card" @tab-click="handleTabOfTable">
+          <el-tab-pane label="全部" name="-1"></el-tab-pane>
+          <el-tab-pane label="公司共享" name="1"></el-tab-pane>
+          <el-tab-pane label="个人使用" name="2"></el-tab-pane>
         </el-tabs>
         <el-button type="primary" round @click="drawerVisible=true">新建自定义客群
         </el-button>
@@ -33,21 +33,22 @@
       </div>
 
       <TableNext
-        class="mt-10"
-        v-loading="tableLoading"
-        :list="list"
-        :columns="columns"
-        :extra-option="extraOption"
+          class="mt-10"
+          v-loading="tableLoading"
+          :list="list"
+          :columns="columns"
+          :extra-option="extraOption"
+          :paginate-option="paginateOption"
       />
     </div>
-    <DrawerCreateCustomerGroup :visible.sync="drawerVisible"/>
+    <DrawerCreateCustomerGroup :visible.sync="drawerVisible" @onCancel="onCancel"/>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import DrawerCreateCustomerGroup from "./DrawerCreateCustomerGroup.vue";
-import {listMenu} from "@/api/system/menu";
+import {getSegmentList, getSegmentUserList} from "@/api/customer/segment";
 
 export default {
   components: {
@@ -56,20 +57,9 @@ export default {
   },
   data() {
     return {
-      curMenuActive: 'all',
-      activeNames: ['group'],
-      menuList: [
-        {name: '全部', key: 'all', count: 6},
-        {name: '我的关注', key: 'follow', count: 0},
-        {
-          name: '分组',
-          key: 'group',
-          children: [
-            {name: '全部', key: 'group-all', count: 1},
-            {name: '未分组', key: 'group-un', count: 0},
-          ]
-        },
-      ],
+      curTab: '1',
+      curMenuActive: '',
+      menuList: [],
       tableLoading: false,
       extraOption: {
         height: '80vh',
@@ -80,6 +70,13 @@ export default {
           hasChildren: 'hasChildren'
         }
       },
+      paginateOption: {
+        total: 0,
+        layout: 'total, prev, pager, next , sizes',
+        currentPage: 1,
+        pageSize: 10,
+        pageSizes: [10, 20, 50, 100],
+      },
       list: [],
       columns: [
         {
@@ -88,7 +85,7 @@ export default {
           align: 'left',
           render: (_row, field) => {
             return <el-tooltip placement="top" content={field}>
-              <span> {field}</span>
+              <span>{field}</span>
             </el-tooltip>
           }
         },
@@ -123,47 +120,70 @@ export default {
           width: 160,
           render: (row, _field) => {
             return row?.level === 1 ? <el-row>
-              <el-button type="text">编辑</el-button>
+              <el-button type="text" onClick={() => this.onEdit(row)}>编辑</el-button>
               <el-button type="text">复制</el-button>
               <el-tooltip placement="top" content="是否解散此客群？客群解散后无法恢复，但不会删除该客群下的客户">
-                <el-button type="text">解散</el-button>
+                <el-button type="text" onCick={() => this.onDelete(row)}>解散</el-button>
               </el-tooltip>
             </el-row> : null
           }
         },
       ],
-      drawerVisible: false
+      drawerVisible: false,
+      createCustomerRow: {},
     }
   },
+  computed: {
+    isMySegment() {
+      return this.menuList?.[0]?.userId || ''
+    },
+  },
   mounted() {
-    this.getList()
+    this.getList({
+      createId: 1,
+      usageScope: 1,
+    })
+    this.getMenuList()
   },
   methods: {
-    getList() {
-      this.tableLoading = true;
-      listMenu({}).then(response => {
-        this.list = this.generateLevelList(this.handleTree(response.data, "menuId"));
-        this.tableLoading = false;
-      });
-    },
-    handleChange(e) {
-
-    },
-    generateLevelList(list) {
-      const deepLevel = (arr, count = 0) => {
-        count++
-        return arr.map(val => {
-          val.level = count
-          const child = val.children
-          if (child && child.length) {
-            deepLevel(child, count)
-          }
-          return val
+    async getList(params) {
+      try {
+        this.tableLoading = true;
+        const res = await getSegmentList({...params}).finally(() => {
+          this.tableLoading = false
         })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch {
+      }
+    },
+    async getMenuList() {
+      try {
+        const res = await getSegmentUserList()
+        if (res.code === 200) {
+          this.menuList = res.data
+          this.curMenuActive = this.menuList?.[0]?.userId || ''
+        }
+      } catch {
 
       }
-      return deepLevel(list)
     },
+    handleTabOfTable(tab) {
+      this.getList({
+        createId: 1,
+        usageScope: Math.abs(+tab.name),
+      })
+    },
+    onEdit(row) {
+      this.drawerVisible = true
+      this.createCustomerRow = row
+    },
+    onDelete(row) {
+    },
+    onCancel() {
+      this.createCustomerRow = {}
+    }
   }
 }
 </script>

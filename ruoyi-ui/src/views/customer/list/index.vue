@@ -87,17 +87,7 @@
         </template>
         <template #paneR>
           <div class="right-wrap">
-            <div class="wrap pt-10 flex-middle space-between ml-30">
-              <div>
-                <span class="bold">全部客户</span>
-                <span class="gray-text ml-2">69 个客户</span>
-              </div>
-              <!--              <HeaderFilter/>-->
-            </div>
-            <div class="mt-20">
-              <TableList/>
-            </div>
-
+            <TableList/>
           </div>
 
         </template>
@@ -149,29 +139,8 @@ export default {
     }
   },
   mounted() {
-    this.getTreeselect();
   },
   methods: {
-    /** 转换菜单数据结构 */
-    normalizer(node) {
-      if (node.children && !node.children.length) {
-        delete node.children;
-      }
-      return {
-        id: node.menuId,
-        label: node.menuName,
-        children: node.children
-      };
-    },
-    /** 查询菜单下拉树结构 */
-    getTreeselect() {
-      listMenu().then(response => {
-        this.menuOptions = [];
-        const menu = {menuId: 0, menuName: '主类目', children: []};
-        menu.children = this.handleTree(response.data, "menuId");
-        this.menuOptions.push(menu);
-      });
-    },
     onShowDrawer() {
       this.customerVisible = true
     },
