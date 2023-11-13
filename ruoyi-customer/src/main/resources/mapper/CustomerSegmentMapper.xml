@@ -39,6 +39,14 @@
         </trim>
     </insert>
 
+    <insert id="batchInsertCustomerSegment">
+        insert into customer_customer_segment (customer_id, segment_id)
+        values
+        <foreach collection="customerSegmentList" item="item" index="index" separator=",">
+            (#{item.customerId}, #{item.segmentId})
+        </foreach>
+    </insert>
+
     <update id="updateCustomerSegment" parameterType="CustomerSegment">
         update customer_customer_segment
         <trim prefix="SET" suffixOverrides=",">
@@ -57,5 +65,9 @@
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </delete>
+
+    <delete id="deleteCustomerSegmentByCustomerId">
+        delete from customer_customer_segment where customer_id = #{customerId}
     </delete>
 </mapper>

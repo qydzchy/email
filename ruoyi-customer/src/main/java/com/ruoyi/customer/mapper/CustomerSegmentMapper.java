@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSegment;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户客群关联Mapper接口
@@ -58,4 +59,16 @@ public interface CustomerSegmentMapper
      * @return 结果
      */
     public int deleteCustomerSegmentByIds(Long[] ids);
+
+    /**
+     * 批量插入
+     * @param customerSegmentList
+     */
+    void batchInsertCustomerSegment(@Param("customerSegmentList") List<CustomerSegment> customerSegmentList);
+
+    /**
+     * 根据客户ID删除
+     * @param customerId
+     */
+    void deleteCustomerSegmentByCustomerId(@Param("customerId") Long customerId);
 }

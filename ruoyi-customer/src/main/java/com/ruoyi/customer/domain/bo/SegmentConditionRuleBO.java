@@ -9,9 +9,9 @@ import lombok.Data;
 public class SegmentConditionRuleBO {
 
     /**
-     * 字段ID
+     * 字段名称
      */
-    private Long columnId;
+    private String columnName;
 
     /**
      * 逻辑与

@@ -1,11 +1,10 @@
 package com.ruoyi.customer.service.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.customer.CompanyInfoEnum;
-import com.ruoyi.common.enums.customer.ContactInfoEnum;
-import com.ruoyi.common.enums.customer.DateTimeEnum;
+import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
@@ -209,13 +208,19 @@ public class SegmentServiceImpl implements ISegmentService
      */
     @Override
     public List<Map<String, Object>> getConditionRuleColumn() {
+        Map<CustomerColumnCategoryEnum, List<CustomerColumnEnum>> customerColumnCategoryMap = Arrays.stream(CustomerColumnEnum.values()).collect(Collectors.groupingBy(CustomerColumnEnum::getCustomerColumnCategoryEnum));
+
+        List<CustomerColumnEnum> companyColumnEnumList = customerColumnCategoryMap.get(CustomerColumnCategoryEnum.COMPANY_INFO);
+        List<CustomerColumnEnum> contactColumnEnumList = customerColumnCategoryMap.get(CustomerColumnCategoryEnum.CONTACT_INFO);
+        List<CustomerColumnEnum> dateTimeColumnEnumList = customerColumnCategoryMap.get(CustomerColumnCategoryEnum.DATE_TIME);
+
         Map<String, Object> companyInfoMap = new HashMap<>();
         companyInfoMap.put("name", "公司名称");
         List<Map<String, String>> companyColumnMapList = new ArrayList<>();
-        for (CompanyInfoEnum companyInfoEnum : CompanyInfoEnum.values()) {
+        for (CustomerColumnEnum companyColumnEnum : companyColumnEnumList) {
             Map<String, String> companyColumnMap = new HashMap<>();
-            companyColumnMap.put("columnName", companyInfoEnum.getColumnName());
-            companyColumnMap.put("nickName", companyInfoEnum.getNickName());
+            companyColumnMap.put("columnName", companyColumnEnum.getColumnName());
+            companyColumnMap.put("nickName", companyColumnEnum.getNickName());
             companyColumnMapList.add(companyColumnMap);
         }
         companyInfoMap.put("children", companyColumnMapList);
@@ -223,22 +228,21 @@ public class SegmentServiceImpl implements ISegmentService
         Map<String, Object> contactInfoMap = new HashMap<>();
         contactInfoMap.put("name", "联系人信息");
         List<Map<String, String>> contackColumnMapList = new ArrayList<>();
-        for (ContactInfoEnum contactInfoEnum : ContactInfoEnum.values()) {
+        for (CustomerColumnEnum contactColumnEnum : contactColumnEnumList) {
             Map<String, String> contactColumnMap = new HashMap<>();
-            contactColumnMap.put("columnName", contactInfoEnum.getColumnName());
-            contactColumnMap.put("nickName", contactInfoEnum.getNickName());
+            contactColumnMap.put("columnName", contactColumnEnum.getColumnName());
+            contactColumnMap.put("nickName", contactColumnEnum.getNickName());
             contackColumnMapList.add(contactColumnMap);
         }
-
         contactInfoMap.put("children", contackColumnMapList);
 
         Map<String, Object> dateTimeMap = new HashMap<>();
         dateTimeMap.put("name", "日期时间");
         List<Map<String, String>> dateTimeColumnMapList = new ArrayList<>();
-        for (DateTimeEnum dateTimeEnum : DateTimeEnum.values()) {
+        for (CustomerColumnEnum dateTimeColumnEnum : dateTimeColumnEnumList) {
             Map<String, String> dateTimeColumnMap = new HashMap<>();
-            dateTimeColumnMap.put("columnName", dateTimeEnum.getColumnName());
-            dateTimeColumnMap.put("nickName", dateTimeEnum.getNickName());
+            dateTimeColumnMap.put("columnName", dateTimeColumnEnum.getColumnName());
+            dateTimeColumnMap.put("nickName", dateTimeColumnEnum.getNickName());
             dateTimeColumnMapList.add(dateTimeColumnMap);
         }
         dateTimeMap.put("children", dateTimeColumnMapList);

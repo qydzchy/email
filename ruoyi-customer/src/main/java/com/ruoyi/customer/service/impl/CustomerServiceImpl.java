@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.customer.ConditionTypeEnum;
+import com.ruoyi.common.enums.customer.AndOrEnum;
 import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
@@ -21,6 +21,7 @@ import com.ruoyi.customer.domain.vo.*;
 import com.ruoyi.customer.mapper.*;
 import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
 import com.ruoyi.customer.service.IPublicleadsGroupsService;
+import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
@@ -60,6 +61,8 @@ public class CustomerServiceImpl implements ICustomerService
     private StageMapper stageMapper;
     @Resource
     private PacketMapper packetMapper;
+    @Resource
+    private CustomerSegmentMapper customerSegmentMapper;
     @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
@@ -684,6 +687,7 @@ public class CustomerServiceImpl implements ICustomerService
         if (segmentList == null || segmentList.isEmpty()) return false;
 
         customerIdList.stream().forEach(customerId -> {
+            List<Long> segmentIdList = new ArrayList<>();
             // 获取客户详情
             CustomerDetailVO customerDetail = getCustomerDetail(customerId);
             // 获取客户跟进人
@@ -691,37 +695,99 @@ public class CustomerServiceImpl implements ICustomerService
             for (Segment segment : segmentList) {
                 // 可见范围是否成立，不成立跳过客群
                 if (!isVisibleConditionMet(customerFollowUpPersonnelVOList, segment)) continue;
-                //
-                String conditionRuleContent = segment.getConditionRuleContent();
-                ObjectMapper objectMapper = new ObjectMapper();
-                try {
-                    List<SegmentConditionRuleBO> segmentConditionRuleBOList = objectMapper.readValue(conditionRuleContent, List.class);
-                    // 判断父客群是否成立，成立则判断是否有二级客群
-                    boolean parentSegmentConditionMet = isSegmentConditionMet(customerDetail, segmentConditionRuleBOList);
-                } catch (JsonProcessingException e) {
-                    log.error("客群条件规则转换异常：{}", e);
-                    continue;
+                // 先判断父客群是否成立
+                boolean parentSegmentConditionMet = isSegmentConditionMet(customerDetail, segment);
+
+                if (parentSegmentConditionMet) {
+                    // 添加一级客群id
+                    segmentIdList.add(segment.getId());
+
+                    // 查询二级客群列表
+                    List<Segment> sencondSegmentList = getSencondSegmentList(segment.getId());
+                    if (sencondSegmentList != null && !sencondSegmentList.isEmpty()) {
+                        // 有二级客群，判断二级客群是否成立
+                        for (Segment sencondSegment : sencondSegmentList) {
+                            boolean sencondSegmentConditionMet = isSegmentConditionMet(customerDetail, sencondSegment);
+                            if (sencondSegmentConditionMet) {
+                                // 二级客群成立，添加二级客群id
+                                segmentIdList.add(sencondSegment.getId());
+                            }
+                        }
+                    }
                 }
             }
+
+            // 删除客户和客群的关系
+            customerSegmentMapper.deleteCustomerSegmentByCustomerId(customerId);
+            // 批量保存客户和客群的关系
+            batchSaveCustomerSegment(customerId, segmentIdList);
         });
 
         return false;
     }
 
     /**
-     * 判断该客户是否满足客群条件
-     * @param customerDetail
-     * @param segmentConditionRuleBOList
+     * 批量保存客户和客群的关系
+     * @param customerId
+     * @param segmentIdList
+     */
+    private void batchSaveCustomerSegment(Long customerId, List<Long> segmentIdList) {
+        if (segmentIdList == null || segmentIdList.isEmpty()) return;
+
+        List<CustomerSegment> customerSegmentList = new ArrayList<>();
+        segmentIdList.stream().forEach(segmentId -> {
+            CustomerSegment customerSegment = new CustomerSegment();
+            customerSegment.setCustomerId(customerId);
+            customerSegment.setSegmentId(segmentId);
+            customerSegmentList.add(customerSegment);
+        });
+
+        customerSegmentMapper.batchInsertCustomerSegment(customerSegmentList);
+    }
+
+    /**
+     * 查询二级客群列表
+     * @param segmentId
      * @return
      */
-    private boolean isSegmentConditionMet(CustomerDetailVO customerDetail, List<SegmentConditionRuleBO> segmentConditionRuleBOList) {
-        for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
-            String andOr = segmentConditionRuleBO.getAndOr();
-            Integer conditionType = segmentConditionRuleBO.getConditionType();
-            ConditionTypeEnum conditionTypeEnum = ConditionTypeEnum.getByType(conditionType);
+    private List<Segment> getSencondSegmentList(Long segmentId) {
+        Segment segment = new Segment();
+        segment.setParentId(segmentId);
+        segment.setDelFlag("0");
+        return segmentMapper.selectSegmentList(segment);
+    }
+
+    /**
+     * 判断该客户是否满足客群条件
+     * @param customerDetail
+     * @param segment
+     * @return
+     */
+    private boolean isSegmentConditionMet(CustomerDetailVO customerDetail, Segment segment) {
+        String conditionRuleContent = segment.getConditionRuleContent();
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<SegmentConditionRuleBO> segmentConditionRuleBOList = null;
+        try {
+            segmentConditionRuleBOList = objectMapper.readValue(conditionRuleContent, List.class);
+            // 判断父客群是否成立，成立则判断是否有二级客群
+
+        } catch (JsonProcessingException e) {
+            log.error("客群条件规则转换异常 客群ID：{}" +
+                    "\n原因：{}", segment.getId(), e);
+            return false;
         }
 
-        return false;
+        for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
+            ColumnContext columnContext = new ColumnContext();
+            boolean isConditionMet = columnContext.handler(customerDetail, segmentConditionRuleBO);
+            if (!isConditionMet) return false;
+
+            // 多条件如果是或条件，则只要有一个条件成立就返回true
+            String andOr = segmentConditionRuleBO.getAndOr();
+            if (AndOrEnum.OR.getAndOr().equals(andOr)) return true;
+        }
+
+        return true;
     }
 
     @Override

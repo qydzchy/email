@@ -16,7 +16,11 @@ public enum ConditionTypeEnum {
     IN(5, "属于"),
     NOT_IN(6, "不属于"),
     BEFORE(7, "早于"),
-    AFTER(8, "晚于");
+    AFTER(8, "晚于"),
+    GREATER_THAN(9, "大于"),
+    GREATER_THAN_OR_EQUAL(10, "大于等于"),
+    LESS_THAN(11, "小于"),
+    LESS_THAN_OR_EQUAL(12, "小于等于");
 
     private int type;
     private String description;
