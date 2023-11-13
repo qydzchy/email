@@ -57,6 +57,61 @@
         <include refid="selectCustomerContactVo"/>
         where id = #{id}
     </select>
+    <select id="selectCustomerMainContactByCustomerIds"
+            resultType="com.ruoyi.customer.domain.bo.CustomerContactBO">
+        SELECT
+        ranked.id,
+        ranked.customerId,
+        ranked.nickName,
+        ranked.socialPlatform,
+        ranked.birthday
+        FROM (
+        SELECT
+        ccc.id,
+        ccc.customer_id AS customerId,
+        ccc.nick_name AS nickName,
+        ccc.social_platform AS socialPlatform,
+        ccc.birthday,
+        @row_number := CASE WHEN @current_customer_id = ccc.customer_id THEN @row_number + 1 ELSE 1 END AS row_num,
+        @current_customer_id := ccc.customer_id
+        FROM
+        customer_customer_contact ccc
+        CROSS JOIN (SELECT @row_number := 0, @current_customer_id := NULL) AS vars
+        WHERE
+        ccc.del_flag = '0'
+        AND ccc.primary_contact_flag = '1'
+        AND ccc.customer_id IN
+        <foreach item="customerId" collection="customerIds" open="(" separator="," close=")">
+            #{customerId}
+        </foreach>
+        ORDER BY ccc.customer_id, ccc.create_time DESC
+        ) AS ranked
+        WHERE
+        row_num = 1;
+    </select>
+
+    <select id="selectCustomerContactByCustomerId" resultType="com.ruoyi.customer.domain.bo.CustomerContactBO">
+        SELECT
+            ccc.id,
+            ccc.customer_id AS customerId,
+            ccc.nick_name AS nickName,
+            ccc.email AS email,
+            ccc.social_platform AS socialPlatform,
+            ccc.phone,
+            ccc.rank,
+            ccc.position,
+            ccc.birthday,
+            ccc.sex,
+            ccc.avatar_or_business_card AS avatarOrBusinessCard,
+            ccc.contact_remarks AS contactRemarks,
+            ccc.primary_contact_flag AS primaryContactFlag
+        FROM
+            customer_customer_contact ccc
+        WHERE
+            ccc.del_flag = '0'
+            AND ccc.customer_id = #{customerId}
+    </select>
+
 
     <insert id="insertCustomerContact" parameterType="CustomerContact">
         insert into customer_customer_contact

@@ -63,6 +63,36 @@
         </if>
     </select>
 
+    <select id="selectRecentActivityByCustomerIds"
+            resultType="com.ruoyi.customer.domain.bo.CustomerRecentActivityBO">
+        SELECT *
+        FROM (
+        SELECT
+        cfr.id,
+        cfr.customer_id as customerId,
+        cfr.follow_up_content as followUpContent,
+        cfr.follow_up_type as followUpType,
+        u.nick_name as followUpContactName,
+        u2.nick_name as operator,
+        cfr.create_time as createTime,
+        @row_number := CASE WHEN @current_customer = cfr.customer_id THEN @row_number + 1 ELSE 1 END AS row_num,
+        @current_customer := cfr.customer_id
+        FROM
+        customer_customer_follow_up_records cfr
+        LEFT JOIN sys_user u ON cfr.follow_up_contact_id = u.user_id
+        LEFT JOIN sys_user u2 ON cfr.create_id = u2.user_id
+        CROSS JOIN (SELECT @row_number := 0, @current_customer := NULL) AS vars
+        WHERE
+        cfr.customer_id IN
+        <foreach item="customerId" collection="customerIds" open="(" separator="," close=")">
+            #{customerId}
+        </foreach>
+        ORDER BY cfr.customer_id, cfr.create_time DESC
+        ) AS ranked
+        WHERE
+        row_num = 1
+    </select>
+
     <insert id="insertCustomerFollowUpRecords" parameterType="CustomerFollowUpRecords">
         insert into customer_customer_follow_up_records
         <trim prefix="(" suffix=")" suffixOverrides=",">

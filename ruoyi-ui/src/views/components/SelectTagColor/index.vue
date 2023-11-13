@@ -1,13 +1,14 @@
 <template>
   <div class="container">
     <div class="color-box">
-      <div class="color-wrap"
-           v-for="(color,key) in colorMap"
-           :key="key"
-           :style="{backgroundColor:color}"
-           @click="$emit('update:checkedColor',key)">
-        <i class="el-icon-check check-icon" v-if="key === checkedColor"
-        ></i>
+      <div
+        class="color-wrap"
+        v-for="(color,index) in colorMap"
+        :key="index"
+        :class="{'color-hover':isHover,'color-checked':color===checkedColor}"
+        :style="{backgroundColor:color}"
+        @click="$emit('update:checkedColor',color)">
+        <i class="el-icon-check check-icon"></i>
       </div>
     </div>
   </div>
@@ -24,10 +25,15 @@ export default {
       required: true
     },
     colorMap: {
-      type: Object,
+      type: Array,
       default: () => {
         return companyStatusColorMap
       },
+      required: false
+    },
+    isHover: {
+      type: Boolean,
+      default: false,
       required: false
     }
   },
@@ -62,11 +68,27 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all .3s;
   }
 
   .color-wrap > .check-icon {
     color: #ffffff;
     position: absolute;
+    display: none;
+  }
+
+  .color-checked > .check-icon {
+    display: block !important;
+  }
+
+  .color-hover {
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  .color-hover.color-checked {
+    transform: scale(1.2);
   }
 }
 </style>

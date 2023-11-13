@@ -134,6 +134,7 @@ export default {
     },
     onHideDrawer() {
       this.$emit('update:visible', false)
+      this.$emit('onCancel')
     },
   }
 }

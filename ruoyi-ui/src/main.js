@@ -50,6 +50,8 @@ import splitPane from 'vue-splitpane'
 import TreeSelectNext from '@/components/TreeSelectNext'
 // el-select-tree
 import ElSelectTree from "el-select-tree";
+// 国家筛选
+import SelectCountry from '@/components/SelectCountry'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -75,6 +77,7 @@ Vue.component('upload-picture', UploadPicture)
 Vue.component('split-pane', splitPane);
 Vue.component('tree-select-next', TreeSelectNext)
 Vue.component('el-select-tree', ElSelectTree);
+Vue.component('select-country', SelectCountry)
 
 
 Vue.use(directive)
@@ -97,14 +100,14 @@ Vue.use(VueClipboard)
  */
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium' // set element-ui default size
+    size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
 Vue.config.productionTip = false
 
 new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
+    el: '#app',
+    router,
+    store,
+    render: h => h(App)
 })

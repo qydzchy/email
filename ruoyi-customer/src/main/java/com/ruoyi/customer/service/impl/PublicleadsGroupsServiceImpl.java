@@ -167,4 +167,26 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
 
         return publicleadsGroupsVOList;
     }
+
+    @Override
+    public PublicleadsGroupsListVO selectPublicleadsGroupsByCustomerId(Long id) {
+        List<PublicleadsGroupsListBO> publicleadsGroupsBOList = publicleadsGroupsMapper.selectPublicleadsGroupsByCustomerId(id);
+
+        PublicleadsGroupsListBO publicleadsGroupsBO = publicleadsGroupsBOList.get(0);
+        PublicleadsGroupsListVO publicleadsGroupsVO = new PublicleadsGroupsListVO();
+        publicleadsGroupsVO.setId(publicleadsGroupsBO.getId());
+        publicleadsGroupsVO.setName(publicleadsGroupsBO.getName());
+        publicleadsGroupsVO.setDefaultGroupFlag(publicleadsGroupsBO.getDefaultGroupFlag());
+        List<UserInfoVO> userInfoVOList = new ArrayList<>();
+        for (PublicleadsGroupsListBO publicleadsGroupsListBO : publicleadsGroupsBOList) {
+            UserInfoVO userInfoVO = new UserInfoVO();
+            userInfoVO.setUserId(publicleadsGroupsListBO.getUserId());
+            userInfoVO.setUserName(publicleadsGroupsListBO.getUserName());
+            userInfoVO.setNickName(publicleadsGroupsListBO.getNickName());
+            userInfoVOList.add(userInfoVO);
+        }
+
+        publicleadsGroupsVO.setUserInfoList(userInfoVOList);
+        return publicleadsGroupsVO;
+    }
 }

@@ -8,13 +8,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
+import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,14 +43,37 @@ public class CustomerController extends BaseController
     /**
      * 查询私海客户列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
-    @GetMapping("/publicleads/list")
-    public TableDataInfo publicleadsList(
+    @PreAuthorize("@ss.hasPermi('customer:customer:privateleads:list')")
+    @GetMapping("/privateleads/list")
+    public TableDataInfo privateleadsList(
             @NotNull(message = "客群不能为空") Long segmentId,
             @NotNull(message = "页数不能为空") Integer pageNum,
             @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(segmentId, pageNum, pageSize);
+        Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> pair = customerService.privateleadsList(segmentId, pageNum, pageSize);
+        List<PrivateleadsCustomerSimpleListVO> rows = pair.getSecond();
+        long total = pair.getFirst();
+
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(rows);
+        rspData.setTotal(total);
+        return rspData;
+    }
+
+    /**
+     * 查询公海客户列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
+    @GetMapping("/publicleads/list")
+    public TableDataInfo publicleadsList(
+            Long publicleadsGroupsId,
+            Long packetId,
+            @NotNull(message = "页数不能为空") Integer pageNum,
+            @NotNull(message = "页大小不能为空") Integer pageSize)
+    {
+        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(publicleadsGroupsId, packetId, pageNum, pageSize);
         List<PublicleadsCustomerSimpleListVO> rows = pair.getSecond();
         long total = pair.getFirst();
 
@@ -66,10 +89,14 @@ public class CustomerController extends BaseController
      * 获取客户详情详细信息
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:query')")
-    @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
+    @GetMapping(value = "/detail")
+    public AjaxResult getCustomerDetail(Long id)
     {
-        return success(customerService.selectCustomerById(id));
+        if (id == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return success(customerService.getCustomerDetail(id));
     }
 
     /**

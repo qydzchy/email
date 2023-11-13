@@ -76,7 +76,7 @@ import {stageAdd, stageDelete, stageEdit, stageList} from "@/api/company/status"
 const initStageForm = {
   id: '',
   name: '',
-  color: '0',
+  color: '#000000',
 }
 export default {
   components: {
@@ -88,7 +88,7 @@ export default {
     return {
       list: [],
       stageDialog: false,
-      stageForm: initStageForm,
+      stageForm: {...initStageForm},
       stageRules: {
         name: [
           {required: true, message: '请输入名称', trigger: 'blur'}
@@ -189,7 +189,7 @@ export default {
         return
       }
       this.dialogTitle = '新增阶段'
-      this.stageForm = initStageForm
+      this.stageForm = {...initStageForm}
       this.$refs.stageFormRef.resetFields();
       this.stageDialog = false
     },

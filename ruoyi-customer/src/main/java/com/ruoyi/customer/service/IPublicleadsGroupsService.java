@@ -42,4 +42,11 @@ public interface IPublicleadsGroupsService
      * @return
      */
     List<PublicleadsGroupsListVO> list();
+
+    /**
+     * 根据客户id查询客户所在的公海分组
+     * @param id
+     * @return
+     */
+    PublicleadsGroupsListVO selectPublicleadsGroupsByCustomerId(Long id);
 }

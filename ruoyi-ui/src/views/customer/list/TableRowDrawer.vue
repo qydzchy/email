@@ -10,7 +10,7 @@
             </div>
             <el-row class="flex-middle">
               <el-row class="flex-middle gap-16">
-                <CollageIcon :show="isCollage" @click="isCollage=!isCollage"/>
+                <CollageIcon :show="true" :default-hide="false" @click="isCollage=!isCollage"/>
                 <el-tooltip placement="top" content="写邮件">
                   <i class="el-icon-message pointer"></i>
                 </el-tooltip>
@@ -92,8 +92,7 @@ export default {
         isShowSchedule: true,
         isTabSetHeight: true,
         isShowInfo: true
-      },
-      isCollage: false
+      }
     }
   },
   methods: {

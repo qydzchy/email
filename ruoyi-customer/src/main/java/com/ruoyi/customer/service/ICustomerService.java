@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
-import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
-import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
-import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
+import com.ruoyi.customer.domain.vo.*;
 import org.springframework.data.util.Pair;
 
 /**
@@ -23,7 +21,7 @@ public interface ICustomerService
      * @param id 客户详情主键
      * @return 客户详情
      */
-    public Customer selectCustomerById(Long id);
+    public CustomerDetailVO getCustomerDetail(Long id);
 
     /**
      * 查询客户详情列表
@@ -72,7 +70,7 @@ public interface ICustomerService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long segmentId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize);
 
     /**
      * 移入客户至分组
@@ -163,4 +161,12 @@ public interface ICustomerService
      * 洗牌
      */
     boolean shuffle(Long customerId, Long segmentId);
+
+    /**
+     * 公海列表（分页）
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long publicleadsGroupsId, Long packetId, Integer pageNum, Integer pageSize);
 }

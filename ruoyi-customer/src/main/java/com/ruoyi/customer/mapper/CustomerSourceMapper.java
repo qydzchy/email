@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSource;
+import com.ruoyi.customer.domain.vo.SourceListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -71,4 +72,11 @@ public interface CustomerSourceMapper
      * @param customerId
      */
     void deleteCustomerSourceByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * 根据客户id查询客户来源关联
+     * @param id
+     * @return
+     */
+    List<SourceListVO> selectCustomerSourceByCustomerId(Long id);
 }

@@ -43,7 +43,6 @@ export default {
     }
   },
   mounted() {
-    this.$route.meta.title = '1111'
   }
 }
 </script>

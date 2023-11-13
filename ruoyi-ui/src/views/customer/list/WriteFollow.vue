@@ -56,10 +56,10 @@
         <div class="tool flex-middle space-between">
           <div class="flex-middle gap-8">
             <el-tooltip content="附件">
-              <i class="el-icon-files"></i>
+              <i class="el-icon-paperclip pointer"></i>
             </el-tooltip>
             <el-tooltip content="图片">
-              <i class="el-icon-picture-outline"></i>
+              <i class="el-icon-picture-outline pointer"></i>
             </el-tooltip>
           </div>
           <el-row class="flex-middle">
@@ -142,6 +142,14 @@
           <div class="remark-wrap">
             <el-input v-model="formData.remark" type="textarea" resize="none" :rows="6"
                       placeholder="请输入内容，可以将附件拖拽至此，快速上传"></el-input>
+            <div class="px-16 pb-10 flex-middle gap-8">
+              <el-tooltip content="附件">
+                <i class="el-icon-paperclip pointer"></i>
+              </el-tooltip>
+              <el-tooltip content="图片">
+                <i class="el-icon-picture-outline pointer"></i>
+              </el-tooltip>
+            </div>
           </div>
         </el-form-item>
       </el-form>

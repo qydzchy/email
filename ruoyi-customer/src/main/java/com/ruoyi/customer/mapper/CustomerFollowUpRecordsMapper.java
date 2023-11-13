@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerFollowUpRecords;
 import com.ruoyi.customer.domain.bo.CustomerFollowUpRecordsListBO;
+import com.ruoyi.customer.domain.bo.CustomerRecentActivityBO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -67,4 +68,11 @@ public interface CustomerFollowUpRecordsMapper
      * @return
      */
     List<CustomerFollowUpRecordsListBO> list(@Param("customerId") Long customerId, @Param("searchText") String searchText);
+
+    /**
+     * 查询客户最近动态
+     * @param customerIds
+     * @return
+     */
+    List<CustomerRecentActivityBO> selectRecentActivityByCustomerIds(@Param("customerIds") List<Long> customerIds);
 }
