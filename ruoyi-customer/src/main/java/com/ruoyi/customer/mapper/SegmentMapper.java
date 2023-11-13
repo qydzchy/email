@@ -77,9 +77,8 @@ public interface SegmentMapper
     /**
      * 查询客群列表
      * @param userId 跟进人ID
-     * @param usageScope
      */
-    List<SegmentListVO> list(@Param("userId") Long userId, @Param("usageScope") Integer usageScope, @Param("createId") Long createId);
+    List<SegmentListVO> list(@Param("userId") Long userId, @Param("createId") Long createId);
 
     /**
      * 统计客户数

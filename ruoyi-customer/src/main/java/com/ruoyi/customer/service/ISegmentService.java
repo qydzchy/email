@@ -66,10 +66,9 @@ public interface ISegmentService
 
     /**
      * 查询客群树列表
-     * @param usageScope
      * @return
      */
-    List<SegmentListVO> getSegmentTree(Integer usageScope, Long createId);
+    List<SegmentListVO> getSegmentTree(Long createId);
 
     /**
      * 获取字段

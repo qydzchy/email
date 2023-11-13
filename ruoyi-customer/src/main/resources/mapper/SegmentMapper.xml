@@ -68,7 +68,6 @@
         WHERE
         s.del_flag = '0'
         AND s.create_id = #{createId}
-        <if test="usageScope != null"> AND s.usage_scope = #{usageScope}</if>
         GROUP BY
         s.id,
         s.parent_id,

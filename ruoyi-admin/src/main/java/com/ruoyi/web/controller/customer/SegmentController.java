@@ -39,9 +39,12 @@ public class SegmentController extends BaseController
     @GetMapping("/list")
     public AjaxResult list(Segment segment)
     {
-        Integer usageScope = segment.getUsageScope();
         Long createId = segment.getCreateId();
-        List<SegmentListVO> list = segmentService.getSegmentTree(usageScope, createId);
+        if (createId == null) {
+            throw new ServiceException("创建人ID不能为空");
+        }
+
+        List<SegmentListVO> list = segmentService.getSegmentTree(createId);
         return success(list);
     }
 

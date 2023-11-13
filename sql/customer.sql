@@ -65,7 +65,7 @@ CREATE TABLE `customer_customer`  (
   `company_logo` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司logo',
   `focus_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '关注 0.未关注 1.已关注',
   `last_contacted_at` datetime(0) NOT NULL COMMENT '最近联系时间',
-  `last_followup_at` datetime(0) NOT NULL COMMENT '最近跟进时间',
+  `last_followup_at` datetime(0) COMMENT '最近跟进时间',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',

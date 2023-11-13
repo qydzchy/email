@@ -185,22 +185,19 @@ public class SegmentServiceImpl implements ISegmentService
 
     /**
      * 客群树
-     * @param usageScope
+     * @param createId
      * @return
      */
     @Override
-    public List<SegmentListVO> getSegmentTree(Integer usageScope, Long createId) {
+    public List<SegmentListVO> getSegmentTree(Long createId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
         // 生成基础客群
         List<SegmentListVO> allSegmentVOList = new ArrayList<>();
-        if (userId.longValue() == createId.longValue() && (usageScope == null || usageScope.intValue() == 2)) {
-            List<SegmentListVO> basicSegmentVO = initBasicSegment(userId);
-            allSegmentVOList.addAll(basicSegmentVO);
-        }
+        allSegmentVOList.addAll(initBasicSegment(userId));
 
-        List<SegmentListVO> segmentVOList = segmentMapper.list(userId, usageScope, createId);
+        List<SegmentListVO> segmentVOList = segmentMapper.list(userId, createId);
         allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
 
         return allSegmentVOList;

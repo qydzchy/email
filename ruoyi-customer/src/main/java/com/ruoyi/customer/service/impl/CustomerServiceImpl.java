@@ -104,7 +104,7 @@ public class CustomerServiceImpl implements ICustomerService
         String customerNo = System.currentTimeMillis() + "";
 
         customer.setCustomerNo(customerNo);
-        customer.setLastContactedAt(new Date());
+        customer.setLastContactedAt(DateUtils.getNowDate());
         customer.setCreateId(userId);
         customer.setCreateBy(username);
         customer.setCreateTime(DateUtils.getNowDate());
