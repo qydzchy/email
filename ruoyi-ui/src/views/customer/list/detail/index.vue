@@ -38,7 +38,7 @@
               <div class="flex-middle space-between">
                 <div class="fs-14 bold">计划日程</div>
                 <el-tooltip placement="top" content="添加日程">
-                  <i class="el-icon-circle-plus-outline pointer" @click="dialogSchedule=true"></i>
+                  <i class="el-icon-circle-plus-outline pointer" @click.stop="dialogSchedule=true"></i>
                 </el-tooltip>
               </div>
             </template>

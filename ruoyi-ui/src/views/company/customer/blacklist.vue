@@ -113,10 +113,10 @@ export default {
           if (action === 'confirm') {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = '执行中...';
-            done()
             try {
               const res = await blackListAdd({domain: instance.inputValue}).finally(() => {
                 instance.confirmButtonLoading = false;
+                done()
               })
               if (res.code === 200) {
                 this.$message({
