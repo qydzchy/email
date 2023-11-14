@@ -35,7 +35,7 @@
       </el-input>
     </div>
     <div class="mt-20" v-else>
-      <WriteFollow show-full-screen-icon @onFullScreen="templateVisible=true"/>
+      <WriteFollow show-full-screen-icon @onFullScreen="templateVisible=true" @onCancel="onCancelWriteFollow"/>
     </div>
     <!--  日程  -->
     <div class="mt-20" v-if="options.isShowSchedule">
@@ -71,8 +71,8 @@
 
         </el-row>
         <div
-          class="flex-middle fs-14 pointer"
-          @click="onSortTime"
+            class="flex-middle fs-14 pointer"
+            @click="onSortTime"
         >
               <span class="caret-wrapper">
                 <i class="sort-caret ascending" :class="{'active':sortActive==='1'}"></i>
@@ -84,13 +84,13 @@
       <div class="customer-timeline mt-20">
         <el-timeline>
           <el-timeline-item
-            placement="top"
-            v-for="(item, index) in timeLineList"
-            :key="index"
-            icon="el-icon-document"
-            :type="item.type"
-            color="#0bbd87"
-            :size="item.size">
+              placement="top"
+              v-for="(item, index) in timeLineList"
+              :key="index"
+              icon="el-icon-document"
+              :type="item.type"
+              color="#0bbd87"
+              :size="item.size">
             <el-card shadow="hover">
               <div class="card-header">
                 <div class="flex-middle space-between mx-20 py-10">
@@ -108,11 +108,35 @@
                 <div class="message px-20">
                   <div class="pt-10">hello你好</div>
                   <div class="pt-10">关联联系人：王五</div>
-                  <div class="flex-end">
-                    <el-button type="text" icon="el-icon-s-comment" size="small">评论</el-button>
+                  <div class="flex-end flex-middle">
+                    <el-row type="flex" :gutter="10">
+                      <el-col>
+                        <el-tooltip placement="top" content="可删除24小时内您发布的跟进">
+                          <DelPopover self-slot :id="item.followUpRecordsId" @onDelete="onDelete">
+                            <i class="el-icon-delete pointer fs-12"></i>
+                          </DelPopover>
+                        </el-tooltip>
+                      </el-col>
+                      <el-col>
+                        <el-tooltip placement="top" content="编辑评论">
+                          <i class="el-icon-edit pointer fs-12" @click="onEditTemplate(item)"></i>
+                        </el-tooltip>
+                      </el-col>
+                    </el-row>
+                    <el-button class="ml-10" style="color:#303133" type="text" icon="el-icon-s-comment" size="small"
+                               @click="onAdd(item.followUpRecordsId)">
+                      评论
+                    </el-button>
                   </div>
                 </div>
                 <div class="comment mt-20 px-20">
+                  <template v-if="item.add">
+                    <el-input v-model="item.newComment" type="textarea" resize="none" :rows="3" size="small"/>
+                    <div class="flex-end py-10">
+                      <el-button round size="small" @click="onCancelAdd(item.followUpRecordsId)">取消</el-button>
+                      <el-button type="primary" round size="small" @click="onConfirmAddComment(item)">确认</el-button>
+                    </div>
+                  </template>
                   <div class="comment-item flex-column mb-10" v-for="comment in item.comments" :key="comment.id">
                     <template v-if="!comment.edit">
                       <div class="flex-middle space-between">
@@ -124,7 +148,9 @@
                         <el-row class="icon-operate" :gutter="8">
                           <el-col>
                             <el-tooltip placement="top" content="删除评论">
-                              <i class="el-icon-delete pointer"></i>
+                              <DelPopover self-slot :id="comment.id" @onDelete="onDelete">
+                                <i class="el-icon-delete pointer"></i>
+                              </DelPopover>
                             </el-tooltip>
                           </el-col>
                           <el-col>
@@ -142,7 +168,9 @@
                       <el-input v-model="comment.content" type="textarea" resize="none" :rows="3" size="small"/>
                       <div class="flex-end pt-10">
                         <el-button round size="small" @click="onEdit(item.id,comment,false)">取消</el-button>
-                        <el-button type="primary" round size="small">确认</el-button>
+                        <el-button type="primary" round size="small" @click="onConfirmEditComment(item.id,comment)">
+                          确认
+                        </el-button>
                       </div>
                     </template>
 
@@ -157,7 +185,7 @@
       </div>
     </div>
     <div>
-      <DialogTemplateFollow :visible.sync="templateVisible" @close="templateVisible = false"/>
+      <DialogTemplateFollow :visible.sync="templateVisible" :row="templateDrawerRow" @close="templateVisible = false"/>
     </div>
   </div>
 
@@ -166,7 +194,9 @@
 <script>
 import DialogTemplateFollow from "./DialogTemplateFollow.vue";
 import WriteFollow from "./WriteFollow.vue";
+import DelPopover from "@/views/company/customer/DelPopover.vue";
 import {targetBlank} from '@/utils/tools'
+import {addRecordsComment, deleteRecordsComment, editRecordsComment} from "@/api/customer/comment";
 
 export default {
   props: {
@@ -182,7 +212,8 @@ export default {
   },
   components: {
     DialogTemplateFollow,
-    WriteFollow
+    WriteFollow,
+    DelPopover
   },
   data() {
     return {
@@ -191,12 +222,14 @@ export default {
       sortActive: "2",
       timeLineList: [
         {
-          id: 1,
+          followUpRecordsId: 1,
           content: '支持使用图标',
           timestamp: '2018-04-12 20:46',
           size: 'large',
           icon: 'el-icon-document',
           color: '#0bbd87',
+          add: false,
+          newComment: '',
           comments: [
             {
               id: 1,
@@ -211,10 +244,11 @@ export default {
           ]
         },
         {
-          id: 2,
+          followUpRecordsId: 2,
           content: '支持自定义颜色',
           timestamp: '2018-04-03 20:46',
-          edit: false,
+          add: false,
+          newComment: '',
           comments: [
             {
               id: 1,
@@ -229,11 +263,12 @@ export default {
           ]
         },
         {
-          id: 3,
+          followUpRecordsId: 3,
           content: '支持自定义尺寸',
           timestamp: '2018-04-03 20:46',
           size: 'large',
-          edit: false,
+          add: false,
+          newComment: '',
           comments: [
             {
               id: 1,
@@ -248,10 +283,11 @@ export default {
           ]
         },
         {
-          id: 4,
+          followUpRecordsId: 4,
           content: '默认样式的节点',
           timestamp: '2018-04-03 20:46',
-          edit: false,
+          add: false,
+          newComment: '',
           comments: [
             {
               id: 1,
@@ -266,16 +302,62 @@ export default {
           ]
         }
       ],
-      tempEditValue: ''
+      tempEditValue: '',
+      templateDrawerRow: {},
     }
   },
   methods: {
+    onCancelWriteFollow() {
+      this.showWriteFollow = false
+    },
     onSortTime() {
       const mapSort = {
         "1": "2",
         "2": "1"
       }
       this.sortActive = mapSort[this.sortActive]
+    },
+    async addComment(item) {
+      try {
+        const res = await addRecordsComment({
+          followUpRecordsId: item.followUpRecordsId,
+
+        })
+        if (res.code === 200) {
+          this.$message.success('添加成功')
+          this.onCancelAdd(item.followUpRecordsId)
+        }
+      } catch {
+      }
+    },
+
+    onConfirmAddComment(item) {
+      if (!item.newComment) {
+        this.$message.warning('添加评论内容不能为空')
+        return
+      }
+      this.addComment(item)
+    },
+    onAdd(id) {
+      this.timeLineList.map(val => {
+        if (val.followUpRecordsId === id) {
+          val.add = true
+        }
+        return val
+      })
+    },
+    onCancelAdd(id) {
+      this.timeLineList.map(val => {
+        if (val.followUpRecordsId === id) {
+          val.add = false
+          val.newComment = ''
+        }
+        return val
+      })
+    },
+    onEditTemplate(item) {
+      this.templateDrawerRow = item
+      this.templateVisible = true
     },
     onEdit(itemId, comment, bool) {
       !this.tempEditValue && (this.tempEditValue = comment?.content)
@@ -295,8 +377,29 @@ export default {
         return val
       })
     },
-    handleClick() {
-      console.log('click222')
+    async onConfirmEditComment(itemId, comment) {
+      if (!comment.content) {
+        this.$message.warning('编辑评论内容不能为空')
+        return
+      }
+      try {
+        const res = await editRecordsComment({id: comment.id})
+        if (res.code === 200) {
+          this.$message.success('编辑成功')
+          this.tempEditValue = comment.content
+          this.onEdit(itemId, comment, false)
+        }
+      } catch {
+      }
+    },
+    async onDelete(id) {
+      try {
+        const res = deleteRecordsComment({id})
+        if (res.code === 200) {
+          this.$message.success('删除成功')
+        }
+      } catch {
+      }
     },
     targetBlank,
   }

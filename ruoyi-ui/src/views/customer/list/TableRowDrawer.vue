@@ -78,7 +78,15 @@ export default {
       type: Boolean,
       default: false,
       required: false,
-    }
+    },
+    externalOpt: {
+      type: Object,
+      default: () => {
+        return {
+          groupOption: []
+        }
+      }
+    },
   },
   components: {
     TableRowTabs,
@@ -91,7 +99,8 @@ export default {
       options: {
         isShowSchedule: true,
         isTabSetHeight: true,
-        isShowInfo: true
+        isShowInfo: true,
+        groupOption: this.externalOpt.groupOption
       }
     }
   },

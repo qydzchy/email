@@ -23,13 +23,13 @@
                 <div>
                   <div class="fs-13">可点击回车连续添加快捷文本，最多20个</div>
                   <el-select
-                    v-model="formData.fastTextTag"
-                    style="width: 100%"
-                    class="fast-select my-10"
-                    size="small" multiple
-                    allow-create
-                    filterable default-first-option
-                    :popper-append-to-body="false"
+                      v-model="formData.fastTextTag"
+                      style="width: 100%"
+                      class="fast-select my-10"
+                      size="small" multiple
+                      allow-create
+                      filterable default-first-option
+                      :popper-append-to-body="false"
                   ></el-select>
                   <div class="operate flex-end">
                     <el-button size="small" @click="fastPopover=false">取消</el-button>
@@ -66,15 +66,15 @@
             <div class="auto-date-picker flex-middle">
               <span class="fs-13 pr-6">时间</span>
               <el-date-picker
-                key="fastTextTime"
-                style="width:180px"
-                size="small"
-                v-model="formData.fastTextTime"
-                placeholder="请选择日期"
-                clearable
-                type="datetime"
-                :picker-options="pickerOptions"
-                align="left"
+                  key="fastTextTime"
+                  style="width:180px"
+                  size="small"
+                  v-model="formData.fastTextTime"
+                  placeholder="请选择日期"
+                  clearable
+                  type="datetime"
+                  :picker-options="pickerOptions"
+                  align="left"
               ></el-date-picker>
             </div>
             <div class="flex-middle">
@@ -104,28 +104,28 @@
       <span class="fs-13">下次跟进日程</span>
       <div class="ml-10">
         <el-date-picker
-          v-if="formData.nextFollowFullDay"
-          key="isFullDay"
-          style="width:200px"
-          size="small"
-          v-model="formData.nextFollowDate"
-          placeholder="请选择日期"
-          clearable
-          format="yyyy-MM-dd"
-          :picker-options="pickerOptions"
-          align="left"
+            v-if="formData.nextFollowFullDay"
+            key="isFullDay"
+            style="width:200px"
+            size="small"
+            v-model="formData.nextFollowDate"
+            placeholder="请选择日期"
+            clearable
+            format="yyyy-MM-dd"
+            :picker-options="pickerOptions"
+            align="left"
         ></el-date-picker>
         <el-date-picker
-          v-else
-          key="isNotFullDay"
-          style="width:200px"
-          size="small"
-          v-model="formData.nextFollowDate"
-          placeholder="请选择日期"
-          clearable
-          type="datetime"
-          :picker-options="pickerOptions"
-          align="left"
+            v-else
+            key="isNotFullDay"
+            style="width:200px"
+            size="small"
+            v-model="formData.nextFollowDate"
+            placeholder="请选择日期"
+            clearable
+            type="datetime"
+            :picker-options="pickerOptions"
+            align="left"
         ></el-date-picker>
         <el-checkbox class="ml-10" v-model="formData.nextFollowFullDay">全天</el-checkbox>
         <el-button class="ml-20" type="text" v-if="!isFullEdit" @click="isFullEdit=true">完整编辑</el-button>
@@ -135,7 +135,10 @@
       <el-form>
         <el-form-item>
           <div>日程内容</div>
-          <el-input placeholder="跟进客户："></el-input>
+          <el-input v-model="formData.followCustomer" placeholder="跟进客户"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <SelectTagColor is-hover :checked-color.sync="formData.color" :color-map="colorMap"/>
         </el-form-item>
         <el-form-item>
           <div>备注</div>
@@ -156,14 +159,17 @@
     </el-row>
     <!--  operate  -->
     <el-row class="write-operate flex-end">
-      <el-button round size="small">取消</el-button>
-      <el-button round type="primary" size="small">确认</el-button>
+      <el-button round size="small" @click="onCancel">取消</el-button>
+      <el-button round type="primary" size="small" @click="$emit('onConfirm')">确认</el-button>
     </el-row>
   </el-row>
 </template>
 
 <script>
+import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
+
 export default {
+  components: {SelectTagColor},
   props: {
     showFullScreenIcon: {
       type: Boolean,
@@ -183,7 +189,9 @@ export default {
         nextFollowDate: '',
         businessData: '',
         nextFollowFullDay: true,
-        remark: ''
+        remark: '',
+        followCustomer: '',
+        color: '#ff3333'
       },
       fastPopover: false,
       followOptionList: [
@@ -273,15 +281,27 @@ export default {
             }
           }]
       },
+      colorMap: [
+        '#ff3333',
+        '#ff9933',
+        '#e7c837',
+        '#28b779',
+        '#00ccff',
+        '#cc9933',
+        '#9999ff'
+      ],
       isFullEdit: false,
     }
   },
-  computed: {
-    datePickerType() {
-      return !this.formData.nextFollowFullDay ? 'datetime' : 'date'
-    }
-  },
-  methods: {}
+  methods: {
+    onCancel() {
+      this.formData = {}
+      this.$emit('onCancel')
+    },
+    onConfirm(){
+
+    },
+  }
 }
 </script>
 

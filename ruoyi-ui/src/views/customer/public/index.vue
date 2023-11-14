@@ -4,7 +4,7 @@
       <div class="bold fs-24 pb-4">
         公海客户
       </div>
-      <el-dropdown trigger="click" split-button type="primary" round @click="onShowModal" @command="handleCommand">
+      <el-dropdown trigger="click" split-button type="primary" round @click="onShowDrawer" @command="handleCommand">
         <span>新建客户</span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="import">导入客户</el-dropdown-item>
@@ -29,18 +29,22 @@
     <div class="mt-20">
       <TableNext :list="list" :columns="columns" :extra-option="{height:'70vh'}" :paginate-option="paginateOption"/>
     </div>
+    <CreatePublicCustomerDrawer :visible.sync="publicDrawerVisible" :index-opt="indexOpt"/>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import TreeSelect from "@riophae/vue-treeselect";
+import CreatePublicCustomerDrawer from "./CreateCustomerDrawer.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
-import {listMenu} from "@/api/system/menu";
 import {getPublicLeadsList} from "@/api/customer/publicleads";
+import {packetList} from "@/api/company/group";
+import {stageList} from "@/api/company/status";
+import {getOriginList} from "@/api/company/origin";
 
 export default {
-  components: {TreeSelect, TableNext},
+  components: {TreeSelect, TableNext, CreatePublicCustomerDrawer},
   data() {
     return {
       list: [],
@@ -103,12 +107,20 @@ export default {
       searchQuery: {
         group: '',
         parentId: null,
-
+      },
+      publicDrawerVisible: false,
+      indexOpt: {
+        groupOption: [],
+        stageOption: [],
+        originOption: []
       }
     }
   },
   mounted() {
     this.getList()
+    this.getGroupList()
+    this.getStageList()
+    this.getOriginList()
   },
   methods: {
     async getList() {
@@ -127,8 +139,35 @@ export default {
       } catch {
       }
     },
-    onShowModal() {
-
+    async getGroupList() {
+      try {
+        const res = await packetList()
+        if (res.code === 200) {
+          this.indexOpt.groupOption = res.data
+        }
+      } catch {
+      }
+    },
+    async getStageList() {
+      try {
+        const res = await stageList()
+        if (res.code === 200) {
+          this.indexOpt.stageOption = res.data
+        }
+      } catch (e) {
+      }
+    },
+    async getOriginList() {
+      try {
+        const res = await getOriginList()
+        if (res.code === 200) {
+          this.indexOpt.originOption = res.data
+        }
+      } catch {
+      }
+    },
+    onShowDrawer() {
+      this.publicDrawerVisible = true
     },
     handleCommand(command) {
       if (command === 'import') {

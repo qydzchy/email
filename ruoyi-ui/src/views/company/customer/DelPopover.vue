@@ -1,10 +1,10 @@
 <template>
   <el-popover
-    class="ml-10"
-    :width="width"
-    trigger="click"
-    :placement="placement"
-    v-model="visible"
+      class="ml-10"
+      :width="width"
+      trigger="click"
+      :placement="placement"
+      v-model="visible"
   >
     <div class="flex-column">
       <div>
@@ -16,7 +16,10 @@
         <el-button type="danger" round size="small" @click="confirmDelete">删除</el-button>
       </div>
     </div>
-    <el-button size="mini" type="text" slot="reference" :disabled="btnDisabled">
+    <template v-if="selfSlot" #reference>
+      <slot/>
+    </template>
+    <el-button v-else size="mini" type="text" slot="reference" :disabled="btnDisabled">
       删除
     </el-button>
   </el-popover>
@@ -44,11 +47,16 @@ export default {
       default: '确定要删除吗？',
       required: false
     },
-    btnDisabled:{
-      type:Boolean,
-      default:false,
-      required:false,
-    }
+    btnDisabled: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    selfSlot: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
   },
   data() {
     return {

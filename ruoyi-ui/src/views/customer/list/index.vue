@@ -31,11 +31,11 @@
                 <el-collapse v-model="activeNames" @change="handleChange">
                   <template v-for="item in menuList">
                     <div
-                      class="menu-item px-10 flex-middle space-between fs-14"
-                      :class="{'active':item.key === curMenuActive}"
-                      :key="item.key"
-                      v-if="!item.children"
-                      @click="curMenuActive = item.key"
+                        class="menu-item px-10 flex-middle space-between fs-14"
+                        :class="{'active':item.key === curMenuActive}"
+                        :key="item.key"
+                        v-if="!item.children"
+                        @click="curMenuActive = item.key"
                     >
                       <span>{{ item.name }}</span>
                       <span>{{ item.count }}</span>
@@ -51,11 +51,11 @@
 
                         </template>
                         <div
-                          class="menu-item flex-middle space-between my-4 pl-20 pr-10"
-                          :class="{'active':subItem.key === curMenuActive}"
-                          v-for="subItem in item.children"
-                          :key="subItem.key"
-                          @click="curMenuActive = subItem.key">
+                            class="menu-item flex-middle space-between my-4 pl-20 pr-10"
+                            :class="{'active':subItem.key === curMenuActive}"
+                            v-for="subItem in item.children"
+                            :key="subItem.key"
+                            @click="curMenuActive = subItem.key">
                           <span>{{ subItem.name }}</span>
                           <span>{{ subItem.count }}</span>
                         </div>
@@ -87,14 +87,14 @@
         </template>
         <template #paneR>
           <div class="right-wrap">
-            <TableList/>
+            <TableList :index-opt="indexOpt"/>
           </div>
 
         </template>
       </split-pane>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="customerVisible"/>
+    <CreateCustomerDrawer :visible.sync="customerVisible" :index-opt="indexOpt"/>
   </div>
 </template>
 
@@ -106,6 +106,9 @@ import TableList from './TableList.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import {listMenu} from "@/api/system/menu";
 import {targetBlank} from "@/utils/tools";
+import {packetList} from "@/api/company/group";
+import {stageList} from "@/api/company/status";
+import {getOriginList} from "@/api/company/origin";
 
 export default {
   components: {
@@ -135,12 +138,48 @@ export default {
         },
       ],
       menuOptions: [],
-      customerVisible: false
+      customerVisible: false,
+      indexOpt: {
+        groupOption: [],
+        stageOption: [],
+        originOption: []
+      }
+
     }
   },
   mounted() {
+    this.getGroupList()
+    this.getStageList()
+    this.getOriginList()
   },
   methods: {
+    async getGroupList() {
+      try {
+        const res = await packetList()
+        if (res.code === 200) {
+          this.indexOpt.groupOption = res.data
+        }
+      } catch {
+      }
+    },
+    async getStageList() {
+      try {
+        const res = await stageList()
+        if (res.code === 200) {
+          this.indexOpt.stageOption = res.data
+        }
+      } catch (e) {
+      }
+    },
+    async getOriginList() {
+      try {
+        const res = await getOriginList()
+        if (res.code === 200) {
+          this.indexOpt.originOption = res.data
+        }
+      } catch {
+      }
+    },
     onShowDrawer() {
       this.customerVisible = true
     },

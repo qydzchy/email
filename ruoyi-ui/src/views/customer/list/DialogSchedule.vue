@@ -38,7 +38,7 @@
             <el-select></el-select>
           </el-form-item>
           <el-form-item label="备注" required>
-            <el-input placeholder="请输入内容，可以将附件拖拽至此，快速上传" type="textarea"></el-input>
+            <el-input placeholder="请输入内容" type="textarea"></el-input>
           </el-form-item>
         </el-form>
       </div>

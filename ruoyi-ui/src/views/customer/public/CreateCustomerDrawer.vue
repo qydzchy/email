@@ -17,7 +17,7 @@
           </el-row>
         </div>
       </template>
-      <div class="container" v-loading="containerLoading">
+      <div class="container">
         <el-row type="flex">
           <!--    常用信息     -->
           <el-col :span="10">
@@ -110,7 +110,6 @@ export default {
       },
       showOtherForm: false,
       btnLoading: false,
-      containerLoading: false,
     }
   },
   watch: {
@@ -164,16 +163,13 @@ export default {
   },
   methods: {
     async addCustomerPrivate(data) {
-      this.btnLoading = true
-      this.containerLoading = true
       try {
         this.btnLoading = true
         const res = await addCustomer({...data}).finally(() => {
           this.btnLoading = false
-          this.containerLoading = false
         })
         if (res.code === 200) {
-          this.$message.success('添加成功')
+          console.log(res)
         }
       } catch {
       }

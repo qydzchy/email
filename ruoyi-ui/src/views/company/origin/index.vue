@@ -210,7 +210,6 @@ export default {
     async onSaveInput(item) {
       let isSet = false
       this.tableLoading = true
-      console.log(!item.name)
       if (!item.name) {
         this.$message({
           type: 'error',
@@ -230,6 +229,7 @@ export default {
         const tableIndex = this.originList.findIndex(val => val.id === item?.id)
         this.$set(this.originList, tableIndex, {...item, isEdit: false})
         this.editStatus = false
+        await this.getList()
       }
     },
     handleOriginNameInput(item, value) {

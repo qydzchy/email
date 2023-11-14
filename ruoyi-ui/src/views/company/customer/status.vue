@@ -28,7 +28,7 @@
       <el-table-column prop="name" label="阶段名称" align="left">
         <template slot-scope="scope">
           <div class="flex-middle">
-            <div class="table-color-wrap" :style="{backgroundColor:colorMap[scope.row.color]}">
+            <div class="table-color-wrap" :style="{backgroundColor:scope.row.color}">
               {{ scope.row.name.slice(0, 1) }}
             </div>
             <div class="ml-10">{{ scope.row.name }}</div>
@@ -70,7 +70,6 @@
 import ElTableDraggable from "el-table-draggable";
 import DelPopover from "./DelPopover.vue";
 import SelectTagColor from '@/views/components/SelectTagColor/index.vue'
-import {companyStatusColorMap} from '@/views/components/SelectTagColor/colorMap'
 import {stageAdd, stageDelete, stageEdit, stageList} from "@/api/company/status";
 
 const initStageForm = {
@@ -94,7 +93,6 @@ export default {
           {required: true, message: '请输入名称', trigger: 'blur'}
         ]
       },
-      colorMap: companyStatusColorMap,
       tableLoading: false,
       btnLoading: false,
       dialogTitle: '新增阶段'

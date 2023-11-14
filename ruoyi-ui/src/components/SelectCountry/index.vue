@@ -28,6 +28,13 @@
 import {province, countryList} from '@/assets/data/countryData'
 
 export default {
+  props: {
+    value: {
+      type: Array,
+      default: () => [],
+      required: false
+    }
+  },
   data() {
     return {
       country: '',
@@ -38,6 +45,18 @@ export default {
         label: 'label'
       },
       province
+    }
+  },
+  watch: {
+    value: {
+      handler(newVal) {
+        if (newVal && newVal.length) {
+          this.country = newVal[0]
+          this.provinceAndCity = [newVal[1], newVal[2]].filter(val => val)
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -53,7 +72,6 @@ export default {
 
     },
     handleValue() {
-      console.log([this.country, ...this.provinceAndCity])
       this.$emit('input', [this.country, ...this.provinceAndCity]);
     },
   }

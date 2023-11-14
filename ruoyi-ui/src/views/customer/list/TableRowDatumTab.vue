@@ -85,18 +85,18 @@
                 </el-tooltip>
               </div>
               <CellOperate
-                class="pt-6"
-                :text="usually.value"
-                :show-form="usually.show"
-                :type="usually.type"
-                :value.sync="usually.value"
-                :show-copy-icon="false"
-                :form-option="usually.options"
-                @onInput="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
-                @onChange="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
-                @onEnter="onShowForm('usuallyInfo',usually.field,false)"
-                @onBlur="onShowForm('usuallyInfo',usually.field,false)"
-                @onEdit="onShowForm('usuallyInfo',usually.field,true)">
+                  class="pt-6"
+                  :text="usually.value"
+                  :show-form="usually.show"
+                  :type="usually.type"
+                  :curValue.sync="usually.value"
+                  :show-copy-icon="false"
+                  :form-option="usually.options"
+                  @onInput="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
+                  @onChange="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
+                  @onEnter="onShowForm('usuallyInfo',usually.field,false)"
+                  @onBlur="onShowForm('usuallyInfo',usually.field,false)"
+                  @onEdit="onShowForm('usuallyInfo',usually.field,true)">
               </CellOperate>
             </el-col>
           </el-row>
@@ -116,17 +116,17 @@
             <el-col class="wrap" v-for="(other,index) in otherInfo" :key="index">
               <div>{{ other.label }}</div>
               <CellOperate
-                :text="other.value"
-                :show-form="other.show"
-                :value.sync="other.value"
-                :type="other.type"
-                :show-copy-icon="false"
-                :form-option="other.options"
-                @onInput="(val)=>handleSetValue('otherInfo',other.field,val)"
-                @onChange="(val)=>handleSetValue('otherInfo',other.field,val)"
-                @onEnter="onShowForm('otherInfo',other.field,false)"
-                @onBlur="onShowForm('otherInfo',other.field,false)"
-                @onEdit="onShowForm('otherInfo',other.field,true)">
+                  :text="other.value"
+                  :show-form="other.show"
+                  :curValue.sync="other.value"
+                  :type="other.type"
+                  :show-copy-icon="false"
+                  :form-option="other.options"
+                  @onInput="(val)=>handleSetValue('otherInfo',other.field,val)"
+                  @onChange="(val)=>handleSetValue('otherInfo',other.field,val)"
+                  @onEnter="onShowForm('otherInfo',other.field,false)"
+                  @onBlur="onShowForm('otherInfo',other.field,false)"
+                  @onEdit="onShowForm('otherInfo',other.field,true)">
               </CellOperate>
             </el-col>
           </el-row>
@@ -266,17 +266,7 @@ export default {
             size: 'small',
             filterable: true,
             clearable: true,
-            data: [
-              {
-                label: '乌鲁木齐市',
-                value: '2',
-                children: [
-                  {label: '达坂城区', value: '7'},
-                  {label: '头屯河区', value: '8'},
-                  {label: '乌鲁木齐县', value: '9'},
-                ],
-              },
-            ]
+            data: this.options.groupOption
           },
         },
         {
@@ -328,10 +318,12 @@ export default {
         {
           field: '11',
           label: '座机',
-          type: 'input',
+          type: 'tel',
           show: false,
-          value: '',
-          options: {},
+          value: {
+            phone_prefix: '',
+            phone: '',
+          },
         },
       ],
       otherInfo: [
@@ -523,11 +515,10 @@ export default {
       })
     },
     handleSetValue(listType, field, value) {
-      this[listType].map(val => {
+      this[listType].forEach((val, index) => {
         if (val.field === field) {
-          val.value = value
+          this.$set(this[listType], index, {...val, value})
         }
-        return val
       })
     },
     onCopy(value) {

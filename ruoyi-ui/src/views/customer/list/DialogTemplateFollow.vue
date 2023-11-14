@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-dialog
-      width="860px"
-      :visible.sync="templateVisible"
-      :show-close="false"
-      :append-to-body="true"
-      :close-on-click-modal="false"
-      @close="onCancel">
+        width="860px"
+        :visible.sync="templateVisible"
+        :show-close="false"
+        :append-to-body="true"
+        :close-on-click-modal="false"
+        @close="onCancel">
       <template #title>
       </template>
       <div class="template-follow">
@@ -45,6 +45,12 @@ export default {
     visible: {
       type: Boolean,
       default: false,
+      required: false
+    },
+    row: {
+      type: Object,
+      default: () => {
+      },
       required: false
     }
   },
@@ -106,11 +112,13 @@ export default {
   .right-wrap {
     width: 60%;
     height: 100%;
+
     .right-title {
       height: 64px;
       border-bottom: 1px solid rgb(240, 240, 240);
     }
-    .right-main{
+
+    .right-main {
       max-height: 600px;
       overflow-y: auto;
     }

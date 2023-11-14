@@ -33,86 +33,95 @@
       </el-col>
       <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
-          <div class="flex-middle space-between">
-            <div class="fs-14 bold">计划日程</div>
-            <el-tooltip placement="top" content="添加日程">
-              <i class="el-icon-circle-plus-outline pointer" @click="dialogSchedule=true"></i>
-            </el-tooltip>
-          </div>
-          <ul class="plan-ul">
-            <li class="plan-li pointer">
-              <div class="circle"></div>
-              <span class="date">10-18</span>
-              <span class="content">客户生日：测试公司001-王五</span>
-            </li>
-          </ul>
-          <!--          <el-empty description="暂无日程"></el-empty>-->
+          <CollapseWrap is-collapse :height="0">
+            <template #header>
+              <div class="flex-middle space-between">
+                <div class="fs-14 bold">计划日程</div>
+                <el-tooltip placement="top" content="添加日程">
+                  <i class="el-icon-circle-plus-outline pointer" @click="dialogSchedule=true"></i>
+                </el-tooltip>
+              </div>
+            </template>
+            <ul class="plan-ul">
+              <li class="plan-li pointer">
+                <div class="circle"></div>
+                <span class="date">10-18</span>
+                <span class="content">客户生日：测试公司001-王五</span>
+              </li>
+            </ul>
+            <!--          <el-empty description="暂无日程"></el-empty>-->
+          </CollapseWrap>
         </div>
         <div class="card-bg  mt-16 px-16 py-16">
-          <div class="contact flex-middle space-between">
-            <div class="black-text">联系人({{ contactList.length }})</div>
-            <div class="flex-middle gap-20">
-              <el-row v-if="contactSearch">
-                <el-input size="mini" v-model="contactSearchValue" @blur="handleBlurSearch" clearable>
-                  <el-button slot="append" icon="el-icon-search" size="mini"></el-button>
-                </el-input>
-              </el-row>
-              <el-row v-else>
-                <el-tooltip placement="top" content="搜索">
-                  <i class="el-icon-search pointer" @click="contactSearch=true"></i>
-                </el-tooltip>
-              </el-row>
-              <el-tooltip placement="top" content="编辑">
-                <i class="el-icon-edit pointer" @click="contactVisible=true"></i>
-              </el-tooltip>
-            </div>
-          </div>
-          <div>
-            <div class="collapse-content-box">
-              <div class="container py-8" v-for="(item,index) in contactList" :key="index">
-                <div class="main px-16 py-12">
-                  <div class="flex-middle space-between">
-                    <span class="fs-14 bold">测试</span>
-                    <el-row type="flex" :gutter="8">
-                      <el-col>
-                        <el-tooltip placement="top" content="往来邮件">
-                          <i class="el-icon-postcard"></i>
-                        </el-tooltip>
-                      </el-col>
-                      <el-col>
-                        <el-tooltip placement="top" content="发送邮件">
-                          <i class="el-icon-message"></i>
-                        </el-tooltip>
-                      </el-col>
-                    </el-row>
-                  </div>
-                  <div class="fs-14 my-10 flex-column">
-                    <div class="wrap">
-                      <div>邮箱</div>
-                      <div class="py-10 email-copy flex-middle">
-                        wangwu@163.com
-                        <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
-                      </div>
+          <CollapseWrap is-collapse :height="0">
+            <template #header>
+              <div class="contact flex-middle space-between">
+                <div class="fs-14 bold">联系人({{ contactList.length }})</div>
+                <div class="flex-middle gap-20">
+                  <el-row v-if="contactSearch">
+                    <el-input size="mini" v-model="contactSearchValue" @click.native.stop @blur="handleBlurSearch" clearable>
+                      <el-button slot="append" icon="el-icon-search" size="mini" @click.stop></el-button>
+                    </el-input>
+                  </el-row>
+                  <el-row v-else>
+                    <el-tooltip placement="top" content="搜索">
+                      <i class="el-icon-search pointer" @click.stop="contactSearch=true"></i>
+                    </el-tooltip>
+                  </el-row>
+                  <el-tooltip placement="top" content="编辑">
+                    <i class="el-icon-edit pointer" @click.stop="contactVisible=true"></i>
+                  </el-tooltip>
+                </div>
+              </div>
+            </template>
+            <div>
+              <div class="collapse-content-box">
+                <div class="container py-8" v-for="(item,index) in contactList" :key="index">
+                  <div class="main px-16 py-12">
+                    <div class="flex-middle space-between">
+                      <span class="fs-14 bold">测试</span>
+                      <el-row type="flex" :gutter="8">
+                        <el-col>
+                          <el-tooltip placement="top" content="往来邮件">
+                            <i class="el-icon-postcard"></i>
+                          </el-tooltip>
+                        </el-col>
+                        <el-col>
+                          <el-tooltip placement="top" content="发送邮件">
+                            <i class="el-icon-message"></i>
+                          </el-tooltip>
+                        </el-col>
+                      </el-row>
+                    </div>
+                    <div class="fs-14 my-10 flex-column">
+                      <div class="wrap">
+                        <div>邮箱</div>
+                        <div class="py-10 email-copy flex-middle">
+                          wangwu@163.com
+                          <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
+                        </div>
 
-                    </div>
-                    <div class="wrap">
-                      <div>职级</div>
-                      <div class="py-10">普通职员</div>
-                    </div>
-                    <div class="wrap">
-                      <div>生日</div>
-                      <div class="py-10">10-18</div>
-                    </div>
-                    <div class="wrap">
-                      <div>性别</div>
-                      <div class="py-10">男</div>
+                      </div>
+                      <div class="wrap">
+                        <div>职级</div>
+                        <div class="py-10">普通职员</div>
+                      </div>
+                      <div class="wrap">
+                        <div>生日</div>
+                        <div class="py-10">10-18</div>
+                      </div>
+                      <div class="wrap">
+                        <div>性别</div>
+                        <div class="py-10">男</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </CollapseWrap>
 
-          </div>
+
         </div>
       </el-col>
     </el-row>
@@ -126,13 +135,17 @@ import TableRowTabs from '../TableRowTabs.vue'
 import DialogSchedule from "../DialogSchedule.vue";
 import CustomerContactDrawer from "../CustomerContactDrawer.vue";
 import CellOperate from "../CellOperate.vue";
+import CollapseWrap from "@/components/CollapseWrap/index.vue";
+import TableNext from "@/components/TableNext/index.vue";
 
 export default {
   components: {
+    TableNext,
     CustomerContactDrawer,
     DialogSchedule,
     TableRowTabs,
-    CellOperate
+    CellOperate,
+    CollapseWrap
   },
   data() {
     return {

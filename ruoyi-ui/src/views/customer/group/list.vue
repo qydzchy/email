@@ -21,9 +21,9 @@
     <div class="mt-20 mx-10 flex1">
       <div class="flex-middle space-between" v-if="curMenuActive===isMySegment">
         <el-tabs v-model="curTab" type="card" @tab-click="handleTabOfTable">
-          <el-tab-pane label="全部" name="-1"></el-tab-pane>
-          <el-tab-pane label="公司共享" name="1"></el-tab-pane>
-          <el-tab-pane label="个人使用" name="2"></el-tab-pane>
+          <el-tab-pane label="全部" name="0"></el-tab-pane>
+          <el-tab-pane :label="`公司共享(${companyShareList.length})`" name="1"></el-tab-pane>
+          <el-tab-pane :label="`个人使用(${myUseList.length})`" name="2"></el-tab-pane>
         </el-tabs>
         <el-button type="primary" round @click="drawerVisible=true">新建自定义客群
         </el-button>
@@ -78,6 +78,8 @@ export default {
         pageSizes: [10, 20, 50, 100],
       },
       list: [],
+      companyShareList: [],
+      myUseList: [],
       columns: [
         {
           label: '客群名称',
@@ -141,7 +143,6 @@ export default {
   mounted() {
     this.getList({
       createId: 1,
-      usageScope: 1,
     })
     this.getMenuList()
   },
@@ -154,6 +155,17 @@ export default {
         })
         if (res.code === 200) {
           this.list = res.data
+          let companyShare = []
+          let myUse = []
+          this.list.forEach(val => {
+            if (val?.usageScope === 1) {
+              companyShare.push(val)
+            } else if (val?.usageScope === 2) {
+              myUse.push(val)
+            }
+          })
+          this.companyShareList = companyShare
+          this.myUseList = myUse
         }
       } catch {
       }
@@ -170,10 +182,6 @@ export default {
       }
     },
     handleTabOfTable(tab) {
-      this.getList({
-        createId: 1,
-        usageScope: Math.abs(+tab.name),
-      })
     },
     onEdit(row) {
       this.drawerVisible = true

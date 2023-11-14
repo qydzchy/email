@@ -237,8 +237,36 @@ const countryList = [
         ]
     }
 ]
+
+const timeZoneList = [
+    {value: 0, label: '零时区：伦敦'},
+    {value: 1, label: '东一区：罗马，巴黎'},
+    {value: 2, label: '东二区：雅典，以色列'},
+    {value: 3, label: '东三区：莫斯科，科威特'},
+    {value: 4, label: '东四区：喀布尔'},
+    {value: 5, label: '东五区：伊斯兰堡，卡拉奇'},
+    {value: 6, label: '东六区：阿拉木图，科伦坡'},
+    {value: 7, label: '东七区：曼谷，雅加达'},
+    {value: 8, label: '东八区：北京，香港，台湾'},
+    {value: 9, label: '东九区：东京'},
+    {value: 10, label: '东十区：悉尼'},
+    {value: 11, label: '东十一区：霍尼亚拉，马加丹'},
+    {value: 12, label: '东西十二区: 奥克兰'},
+    {value: 13, label: '西十一区：帕果帕果，阿洛菲'},
+    {value: 14, label: '西十区：夏威夷'},
+    {value: 15, label: '西九区：阿拉斯加'},
+    {value: 16, label: '西八区：洛杉矶，旧金山'},
+    {value: 17, label: '西七区：盐湖城、丹佛、凤凰城'},
+    {value: 18, label: '西六区：芝加哥，休斯顿，亚特兰大'},
+    {value: 19, label: '西五区：纽约，华盛顿，波士顿'},
+    {value: 20, label: '西四区：加拿大，加拉加斯'},
+    {value: 21, label: '西三区：巴西利亚'},
+    {value: 22, label: '西二区：协调世界时'},
+    {value: 23, label: '西一区：佛得角群岛'},
+]
 export {
     country,
     province,
-    countryList
+    countryList,
+    timeZoneList
 }

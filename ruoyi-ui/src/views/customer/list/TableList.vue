@@ -3,7 +3,7 @@
     <div class="wrap pt-10 flex-middle space-between ml-30">
       <div>
         <span class="bold">全部客户</span>
-        <span class="gray-text ml-2">{{paginateOption.total}} 个客户</span>
+        <span class="gray-text ml-2">{{ paginateOption.total }} 个客户</span>
       </div>
       <!--              <HeaderFilter/>-->
     </div>
@@ -20,7 +20,7 @@
             :extra-event="extraEvent"
             :paginate-option="paginateOption"/>
       </div>
-      <TableRowDrawer :visible.sync="rowDrawerVisible"/>
+      <TableRowDrawer :visible.sync="rowDrawerVisible" :externalOpt="{groupOption:indexOpt.groupOption}"/>
     </div>
   </div>
 
@@ -35,8 +35,18 @@ import HeaderOperate from "./HeaderOperate.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 import {getPrivateLeadsList} from "@/api/customer/publicleads";
+import {packetList} from "@/api/company/group";
 
 export default {
+  props: {
+    indexOpt: {
+      type: Object,
+      default: () => {
+        return {}
+      },
+      required: false
+    }
+  },
   components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon},
   data() {
     return {
@@ -55,9 +65,7 @@ export default {
         pageSize: 10,
         pageSizes: [10, 20, 50, 100],
       },
-      list: [
-
-      ],
+      list: [],
       columns: [
         {type: 'selection', width: '50'},
         {
@@ -268,30 +276,24 @@ export default {
         }
         return val
       })
-    }
-    ,
+    },
     onCellClick() {
       this.rowDrawerVisible = true
-    }
-    ,
+    },
     onCellEdit(rowId, field) {
       this.tableCell.tempValue = this.list.find(val => val.id === rowId)[field]
       this.tableCell.fieldName = field
       this.curEditId = rowId
-    }
-    ,
+    },
     onBlur() {
       this.confirmInput()
-    }
-    ,
+    },
     onInput(value, scope, field) {
       this.$set(this.list, scope.$index, {...scope.row, [field]: value})
-    }
-    ,
+    },
     inputEnter(scope) {
       this.confirmInput()
-    }
-    ,
+    },
     confirmInput() {
       // const newVal = this.list.find(val => val.id === this.curEditId)[this.tableCell.fieldName]
       this.curEditId = ''
@@ -302,13 +304,11 @@ export default {
         tempValue: '',
         fieldName: '',
       }
-    }
-    ,
+    },
     jumpPersonalDetail(e) {
       e.stopPropagation()
       targetBlank('/customer/personal/1')
-    }
-    ,
+    },
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)
     }
