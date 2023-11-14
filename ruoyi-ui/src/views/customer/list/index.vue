@@ -32,17 +32,17 @@
                   <template v-for="item in menuList">
                     <div
                         class="menu-item px-10 flex-middle space-between fs-14"
-                        :class="{'active':item.key === curMenuActive}"
-                        :key="item.key"
-                        v-if="!item.children"
-                        @click="curMenuActive = item.key"
+                        :class="{'active':item.id === curMenuActive}"
+                        :key="item.id"
+                        v-if="!item.children.length"
+                        @click="curMenuActive = item.id"
                     >
                       <span>{{ item.name }}</span>
-                      <span>{{ item.count }}</span>
+                      <span>{{ item.customerCount }}</span>
 
                     </div>
                     <div class="pt-4" v-else>
-                      <el-collapse-item :key="item.key" :name="item.key">
+                      <el-collapse-item :key="item.id" :name="item.id">
                         <template #title>
                           <div class="pl-6 fs-14">
                             {{ item.name }}
@@ -52,12 +52,12 @@
                         </template>
                         <div
                             class="menu-item flex-middle space-between my-4 pl-20 pr-10"
-                            :class="{'active':subItem.key === curMenuActive}"
+                            :class="{'active':subItem.id === curMenuActive}"
                             v-for="subItem in item.children"
-                            :key="subItem.key"
-                            @click="curMenuActive = subItem.key">
+                            :key="subItem.id"
+                            @click="curMenuActive = subItem.id">
                           <span>{{ subItem.name }}</span>
-                          <span>{{ subItem.count }}</span>
+                          <span>{{ subItem.customerCount }}</span>
                         </div>
                       </el-collapse-item>
                     </div>
@@ -87,14 +87,14 @@
         </template>
         <template #paneR>
           <div class="right-wrap">
-            <TableList :index-opt="indexOpt"/>
+            <TableList ref="tableListRef" :segmentId="curMenuActive" :index-opt="indexOpt"/>
           </div>
 
         </template>
       </split-pane>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="customerVisible" :index-opt="indexOpt"/>
+    <CreateCustomerDrawer :visible.sync="customerVisible" :index-opt="indexOpt" @load="reloadList"/>
   </div>
 </template>
 
@@ -110,9 +110,12 @@ import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
 import {groupsList} from "@/api/company/poolRule";
+import {getPrivateSegmentMenu} from "@/api/customer/publicleads";
+import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 
 export default {
   components: {
+    TableRowDrawer,
     FilterDrawer,
     CellOperate,
     HeaderFilter,
@@ -124,20 +127,9 @@ export default {
       listType: 0,
       collapsed: false,
       percent: 16,
-      curMenuActive: 'all',
+      curMenuActive: null,
       activeNames: ['group'],
-      menuList: [
-        {name: '全部', key: 'all', count: 6},
-        {name: '我的关注', key: 'follow', count: 0},
-        {
-          name: '分组',
-          key: 'group',
-          children: [
-            {name: '全部', key: 'group-all', count: 1},
-            {name: '未分组', key: 'group-un', count: 0},
-          ]
-        },
-      ],
+      menuList: [],
       menuOptions: [],
       customerVisible: false,
       indexOpt: {
@@ -150,12 +142,26 @@ export default {
     }
   },
   mounted() {
+    this.getMenuList()
     this.getGroupList()
     this.getStageList()
     this.getOriginList()
     this.getPoolList()
   },
   methods: {
+    // 菜单列表
+    async getMenuList() {
+      try {
+        const res = await getPrivateSegmentMenu()
+        if (res.code === 200) {
+          this.menuList = res.data
+          if (this.menuList.length) {
+            this.curMenuActive = this.menuList[0].id
+          }
+        }
+      } catch {
+      }
+    },
     // 分组选项
     async getGroupList() {
       try {
@@ -222,6 +228,11 @@ export default {
     },
     handleChange(e) {
 
+    },
+    // 创建客户回调
+    reloadList() {
+      this.$refs.tableListRef.reloadList()
+      this.customerVisible = false
     },
   }
 }

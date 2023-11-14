@@ -9,7 +9,7 @@
     </div>
     <div class="table-list mt-20">
       <div class="mt-16" v-show="ids.length">
-        <HeaderOperate :ids="ids"/>
+        <HeaderOperate :ids="ids" @load="reloadList"/>
       </div>
       <div class="mt-20">
         <TableNext
@@ -20,7 +20,10 @@
             :extra-event="extraEvent"
             :paginate-option="paginateOption"/>
       </div>
-      <TableRowDrawer :visible.sync="rowDrawerVisible" :externalOpt="{groupOption:indexOpt.groupOption}"/>
+      <TableRowDrawer
+          :visible.sync="rowDrawerVisible"
+          :externalOpt="{groupOption:indexOpt.groupOption}"
+      />
     </div>
   </div>
 
@@ -39,6 +42,10 @@ import {packetList} from "@/api/company/group";
 
 export default {
   props: {
+    segmentId: {
+      type: Number | null,
+      required: true
+    },
     indexOpt: {
       type: Object,
       default: () => {
@@ -104,7 +111,7 @@ export default {
             return <CellOperate
                 showForm={isShowForm}
                 type="input"
-                value={field}
+                curValue={field}
                 text={field}
                 visible={isShow}
                 on={{
@@ -115,7 +122,7 @@ export default {
                   onEnter: () => this.inputEnter(row)
                 }}
             >
-              <div slot="content" className="pointer" onClick={(e) => this.jumpPersonalDetail(e)}>
+              <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e, row?.id)}>
                 {field}
               </div>
             </CellOperate>
@@ -162,7 +169,7 @@ export default {
             return <CellOperate
                 showForm={isShowForm}
                 type="input"
-                value={field}
+                curValue={field}
                 text={field}
                 visible={isShow}
                 on={{
@@ -173,8 +180,8 @@ export default {
                   onEnter: () => this.inputEnter(row)
                 }}
             >
-              <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e)}>
-                {field}
+              <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e, row?.id)}>
+                {field || '---'}
               </div>
             </CellOperate>
           }
@@ -189,8 +196,26 @@ export default {
           label: '国家地区',
           field: 'countryRegion',
           align: 'left',
-          width: '200',
-          render: (_row, field) => EmptyStr(field),
+          width: '240',
+          render: (row, field, scope) => {
+            const {rowId, fieldName, showEditIcon} = this.tableCell
+            const propName = scope.column.property
+            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+                showForm={isShowForm}
+                type="country"
+                curValue={field}
+                text={field}
+                visible={isShow}
+                on={{
+                  onEdit: () => this.onCellEdit(row?.id, propName),
+                  click: () => this.onCellClick(),
+                  onBlur: () => this.onBlur(),
+                }}
+            >
+            </CellOperate>
+          }
         }, {
           label: '客户类型',
           field: 'phone',
@@ -247,16 +272,24 @@ export default {
       ids: [],
     }
   },
+  watch: {
+    segmentId: {
+      handler(newVal) {
+        if (newVal) {
+          this.getList(newVal)
+        }
+      }
+    }
+  },
   mounted() {
-    this.getList()
   },
   methods: {
-    async getList() {
+    async getList(segmentId) {
       this.tableLoading = true
       try {
         const {currentPage, pageSize} = this.paginateOption
         const res = await getPrivateLeadsList({
-          segmentId: 1,
+          segmentId: segmentId,
           pageNum: currentPage,
           pageSize: pageSize
         }).finally(() => {
@@ -265,6 +298,11 @@ export default {
         if (res.code === 200) {
           this.list = res.rows
           this.paginateOption.total = res.total
+          this.list.map((val) => {
+            val.countryRegion = val.countryRegion.split('/')
+            return val
+          })
+
         }
       } catch {
       }
@@ -305,12 +343,15 @@ export default {
         fieldName: '',
       }
     },
-    jumpPersonalDetail(e) {
+    jumpPersonalDetail(e, id) {
       e.stopPropagation()
-      targetBlank('/customer/personal/1')
+      targetBlank('/customer/personal/' + id)
     },
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)
+    },
+    reloadList() {
+      this.getList(this.segmentId)
     }
   }
 }

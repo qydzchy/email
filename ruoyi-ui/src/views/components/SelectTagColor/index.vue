@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="color-container">
     <div class="color-box">
       <div
         class="color-wrap"
@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.color-container {
   width: 100%;
   display: inline-block;
   box-sizing: border-box;

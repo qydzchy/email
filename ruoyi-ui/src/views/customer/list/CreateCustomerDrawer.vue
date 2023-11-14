@@ -161,7 +161,7 @@ export default {
             if (valid) {
               return
             }
-            val.value = newVal.poolGroupOption[0].id
+            val.value = newVal.poolGroupOption[0]?.id
             val.options = newVal.poolGroupOption.map(val => {
               return {
                 value: val.id,
@@ -187,6 +187,7 @@ export default {
         })
         if (res.code === 200) {
           this.$message.success('添加成功')
+          this.$emit('load')
         }
       } catch {
       }
@@ -202,8 +203,7 @@ export default {
             ...otherForm,
             contactList,
             seaType: 1,
-            customerNoType: 1,
-            countryRegion: customerForm.countryRegion.join('/')
+            countryRegion: customerForm.countryRegion?.join('/') || undefined
           }
           this.addCustomerPrivate(data)
         }

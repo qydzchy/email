@@ -15,7 +15,7 @@
         />
       </template>
       <!--   select   -->
-      <template v-if="type==='select'">
+      <template v-else-if="type==='select'">
         <SelectNext
             :value.sync="curValue"
             :selectOptions="formOption"
@@ -23,7 +23,7 @@
             @visibleChange="visibleChange"/>
       </template>
       <!--   tree   -->
-      <template v-if="type==='tree'">
+      <template v-else-if="type==='tree'">
         <el-select-tree
             style="width:100%"
             ref="select-tree"
@@ -35,11 +35,11 @@
         </el-select-tree>
       </template>
       <!--   rate   -->
-      <template v-if="type==='rate'">
+      <template v-else-if="type==='rate'">
         <el-rate :value.sync="curValue" v-bind="formOption" @change="handleChange"></el-rate>
       </template>
       <!--   tel   -->
-      <template v-if="type==='tel'">
+      <template v-else-if="type==='tel'">
         <el-row type="flex" :gutter="4">
           <el-col :span="8">
             <SelectNext
@@ -58,6 +58,10 @@
           </el-col>
         </el-row>
       </template>
+      <!--   country   -->
+      <template v-else-if="type==='country'">
+        <select-country :value.sync="curValue"></select-country>
+      </template>
       <!--   picture   -->
       <template v-if="type==='picture'">
         <el-image v-bind="formOption"/>
@@ -75,6 +79,10 @@
             </span>
             <span v-else-if="type==='tel'">
               {{ generateTelValue }}
+            </span>
+            <span v-else-if="type==='country'" class="flex-middle">
+              <svg-icon v-if="generateCountryValue.svg" class="pr-4" :icon-class="generateCountryValue.svg"/>
+              {{ generateCountryValue.value }}
             </span>
             <span v-else>
                {{ content || '---' }}
@@ -97,7 +105,8 @@
 <script>
 import SelectNext from "@/components/SelectNext/index.vue";
 import {generatePhone} from "@/utils/tools";
-import {value} from "dom7";
+import {countryList} from '@/assets/data/countryData'
+
 
 export default {
   props: {
@@ -193,11 +202,35 @@ export default {
       const phone = this.content?.phone
       return (phonePrefix || phone) ? `${phonePrefix}-${phone}` : '---'
     },
+    generateCountryValue() {
+      if (!this.content && !this.content?.length) {
+        return '---'
+      }
+      let country = this.content[0] || ''
+      let countrySvg = ''
+      const province = this.content[1] || ''
+      const city = this.content[2] || ''
+      const deepSearch = arr => {
+        arr.forEach(val => {
+          if (val.value === country) {
+            country = val.label
+            countrySvg = val.svg
+          }
+          if (val.children && val.children?.length) {
+            deepSearch(val.children)
+          }
+        })
+      }
+      deepSearch(countryList)
+      return {
+        value: `${country} ${province} ${city}`,
+        svg: countrySvg
+      }
+    },
   },
   mounted() {
   },
   methods: {
-    value,
     onCopy() {
       if (!this.content) {
         this.$message.info('复制内容不能为空')

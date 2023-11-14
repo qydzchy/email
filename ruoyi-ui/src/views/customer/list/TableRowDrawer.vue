@@ -10,7 +10,7 @@
             </div>
             <el-row class="flex-middle">
               <el-row class="flex-middle gap-16">
-                <CollageIcon :show="true" :default-hide="false" @click="isCollage=!isCollage"/>
+                <CollageIcon :show="true" :default-hide="false"/>
                 <el-tooltip placement="top" content="写邮件">
                   <i class="el-icon-message pointer"></i>
                 </el-tooltip>
@@ -63,7 +63,7 @@
       </el-drawer>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="editVisible" :row="{id:1}"/>
+    <CreateCustomerDrawer :visible.sync="editVisible" :row="{id:1}" />
   </div>
 </template>
 

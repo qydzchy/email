@@ -90,3 +90,10 @@
   .el-submenu__icon-arrow {
   display: none;
 }
+
+.el-dialog__body{
+  padding: 0 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+

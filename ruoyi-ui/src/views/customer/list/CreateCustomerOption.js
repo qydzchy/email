@@ -129,8 +129,11 @@ const UsuallyInfoRule = [
         title: '公海分组',
         type: 'select',
         field: 'poolGroup',
-        value: '',
-        options: [],
+        value: 1,
+        options: [
+            {value: 1, label: '公共公海分组'},
+            {value: 2, label: '公海2组'},
+        ],
         validate: [
             {
                 required: true,
