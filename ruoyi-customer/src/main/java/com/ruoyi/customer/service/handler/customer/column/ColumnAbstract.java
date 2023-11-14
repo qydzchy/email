@@ -6,17 +6,25 @@ import com.ruoyi.common.enums.customer.TimeRangeEnum;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.bo.SegmentConditionRuleBO;
+import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
+import com.ruoyi.customer.service.IUserDeptService;
 import com.ruoyi.customer.service.handler.customer.column.utils.ColumnUtils;
 import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class ColumnAbstract {
+
+    @Resource
+    private IUserDeptService userDeptService;
 
     /**
      * 空值处理
@@ -152,6 +160,40 @@ public class ColumnAbstract {
         }
 
         return false;
+    }
+
+    /**
+     * 用户校验
+     * @param userDeptInfoBO
+     * @param segmentConditionRule
+     * @return
+     */
+    protected boolean userHandler(UserDeptInfoBO userDeptInfoBO, SegmentConditionRuleBO segmentConditionRule) {
+        Integer conditionType = segmentConditionRule.getConditionType();
+        ConditionTypeEnum conditionTypeEnum = ConditionTypeEnum.getByType(conditionType);
+        switch (conditionTypeEnum) {
+            case IS_NULL:
+                return userDeptInfoBO == null;
+
+            case NOT_NULL:
+                return userDeptInfoBO != null;
+
+            case IN:
+                Object value1 = segmentConditionRule.getValue();
+                if (value1 == null) return false;
+
+                // 跟进创建人查询部门
+                return userDeptService.userDeptVerify(Arrays.asList(userDeptInfoBO), value1.toString());
+
+            case NOT_IN:
+                Object value2 = segmentConditionRule.getValue();
+                if (value2 == null) return false;
+
+                return !userDeptService.userDeptVerify(Arrays.asList(userDeptInfoBO), value2.toString());
+
+            default:
+                return false;
+        }
     }
 
 

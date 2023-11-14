@@ -140,4 +140,11 @@ public interface CustomerMapper
      * @return
      */
     List<Long> selectCustomerIdList();
+
+    /**
+     * 根据用户ID查询部门ID
+     * @param userId
+     * @return
+     */
+    Long getDeptIdByUserId(@Param("userId") Long userId);
 }

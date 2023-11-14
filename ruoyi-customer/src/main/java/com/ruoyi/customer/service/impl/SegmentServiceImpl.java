@@ -3,22 +3,19 @@ package com.ruoyi.customer.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
-import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeBO;
-import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
-import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
+import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerSegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentUserListVO;
+import com.ruoyi.customer.service.IUserDeptService;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.SegmentMapper;
 import com.ruoyi.customer.domain.Segment;
@@ -38,6 +35,8 @@ public class SegmentServiceImpl implements ISegmentService
 {
     @Resource
     private SegmentMapper segmentMapper;
+    @Resource
+    private IUserDeptService userDeptService;
 
     /**
      * 查询客群
@@ -397,43 +396,15 @@ public class SegmentServiceImpl implements ISegmentService
             String visibilityScope = segment.getVisibilityScope();
             if (StringUtils.isBlank(visibilityScope)) return false;
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            // 将 JSON 字符串转换为 Java 对象
-            try {
-                SegmentVisibilityScopeBO segmentVisibilityScopeBO = objectMapper.readValue(visibilityScope, SegmentVisibilityScopeBO.class);
-                SegmentVisibilityScopeDeptBO dept = segmentVisibilityScopeBO.getDept();
-                SegmentVisibilityScopeUserBO user = segmentVisibilityScopeBO.getUser();
-                // 用户维度判断可见范围是否成立
-                if (user.getAllFlag()) {
-                    return true;
-                } else {
-                    List<Long> userIds = user.getUserIds();
-                    if (!userIds.isEmpty()) {
-                        List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
-
-                        boolean userContainsAny = containsAnyElement(userIds, followUpPersonnelUserIds);
-                        if (userContainsAny) return true;
-                    }
-                }
-
-                // 部门维度判断可见范围是否成立
-                if (dept.getAllFlag()) {
-                    // 存在一个部门，客群全选部门，条件成立
-                    long count = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).count();
-                    if (count > 0) return true;
-
-                } else {
-                    List<Long> deptIds = dept.getDeptIds();
-                    if (!deptIds.isEmpty()) {
-                        List<Long> followUpPersonnelDeptIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).collect(Collectors.toList());
-
-                        boolean deptContainsAny = containsAnyElement(deptIds, followUpPersonnelDeptIds);
-                        if (deptContainsAny) return true;
-                    }
-                }
-            } catch (JsonProcessingException e) {
-                return false;
+            List<UserDeptInfoBO> userDeptInfoBOList = new ArrayList<>();
+            for (CustomerFollowUpPersonnelListVO customerFollowUpPersonnelVO : customerFollowUpPersonnelVOList) {
+                userDeptInfoBOList.add(UserDeptInfoBO.builder()
+                        .userId(customerFollowUpPersonnelVO.getUserId())
+                        .deptId(customerFollowUpPersonnelVO.getDeptId())
+                        .build());
             }
+
+            return userDeptService.userDeptVerify(userDeptInfoBOList, segment.getVisibilityScope());
 
             // 个人可见
         } else if (usageScope.intValue() == 2) {
@@ -451,14 +422,6 @@ public class SegmentServiceImpl implements ISegmentService
         return false;
     }
 
-    public boolean containsAnyElement(List<Long> a, List<Long> b) {
-        for (Long element : b) {
-            if (a.contains(element)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 生成基础客群
