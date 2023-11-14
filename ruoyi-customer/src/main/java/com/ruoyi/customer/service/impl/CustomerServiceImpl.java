@@ -384,15 +384,18 @@ public class CustomerServiceImpl implements ICustomerService
 
     @Override
     public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
         try {
-            int count = customerMapper.countPrivateleadsCustomer(segmentId);
+            int count = customerMapper.countPrivateleadsCustomer(userId, segmentId);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(segmentId, offset, limit);
+            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(userId, segmentId, offset, limit);
             if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }
@@ -508,12 +511,23 @@ public class CustomerServiceImpl implements ICustomerService
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean cancelFollowUp(Long id) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        // 查询当前客户的所有跟进人
+        List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(id);
+        // 判断当前是否只有一个跟进人，并且是自己，如果是的话，那么需要将该客户移至公海
+        if (customerFollowUpPersonnelVOList != null && customerFollowUpPersonnelVOList.size() == 1
+                && customerFollowUpPersonnelVOList.get(0).getUserId().longValue() == userId.longValue()) {
+            // 移至客户到公海
+            customerMapper.updateCustomerSeaType(id, CustomerSeaTypeEnum.PUBLIC_LEADS.getType(), userId, username);
+        }
+
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(id, userId, userId, username);
+
         return true;
     }
 

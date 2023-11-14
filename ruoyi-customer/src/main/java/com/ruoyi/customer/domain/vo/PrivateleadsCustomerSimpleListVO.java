@@ -87,6 +87,12 @@ public class PrivateleadsCustomerSimpleListVO {
      */
     private String shortName;
 
+    /**
+     * 关注 0.未关注 1.已关注
+     * @return
+     */
+    private Integer focusFlag;
+
     public List<TagListVO> getTagList() {
         if (StringUtils.isNotBlank(tagStr)) {
             String[] tagArr = tagStr.split(",");
