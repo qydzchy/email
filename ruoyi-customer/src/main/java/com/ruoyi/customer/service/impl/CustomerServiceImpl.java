@@ -21,6 +21,7 @@ import com.ruoyi.customer.domain.vo.*;
 import com.ruoyi.customer.mapper.*;
 import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
 import com.ruoyi.customer.service.IPublicleadsGroupsService;
+import com.ruoyi.customer.service.ISegmentService;
 import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -67,6 +68,8 @@ public class CustomerServiceImpl implements ICustomerService
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
     private IPublicleadsGroupsService publicleadsGroupsService;
+    @Resource
+    private ISegmentService segmentService;
 
     private static final Executor executor = Executors.newFixedThreadPool(3);
 
@@ -694,7 +697,7 @@ public class CustomerServiceImpl implements ICustomerService
             List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(customerId);
             for (Segment segment : segmentList) {
                 // 可见范围是否成立，不成立跳过客群
-                if (!isVisibleConditionMet(customerFollowUpPersonnelVOList, segment)) continue;
+                if (!segmentService.isVisibleConditionMet(customerFollowUpPersonnelVOList, segment)) continue;
                 // 先判断父客群是否成立
                 boolean parentSegmentConditionMet = isSegmentConditionMet(customerDetail, segment);
 
@@ -829,80 +832,6 @@ public class CustomerServiceImpl implements ICustomerService
             log.error("查询客户列表（分页）异常：{}", e);
             return Pair.of(0, new ArrayList<>());
         }
-    }
-
-    /**
-     * 可见范围是否成立
-     * @param customerFollowUpPersonnelVOList
-     * @param segment
-     * @return
-     */
-    private boolean isVisibleConditionMet(List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList, Segment segment) {
-        Integer usageScope = segment.getUsageScope();
-        // 公司可见
-        if (usageScope.intValue() == 1) {
-            String visibilityScope = segment.getVisibilityScope();
-            ObjectMapper objectMapper = new ObjectMapper();
-            // 将 JSON 字符串转换为 Java 对象
-            try {
-                SegmentVisibilityScopeBO segmentVisibilityScopeBO = objectMapper.readValue(visibilityScope, SegmentVisibilityScopeBO.class);
-                SegmentVisibilityScopeDeptBO dept = segmentVisibilityScopeBO.getDept();
-                SegmentVisibilityScopeUserBO user = segmentVisibilityScopeBO.getUser();
-                // 用户维度判断可见范围是否成立
-                if (user.getAllFlag()) {
-                    return true;
-                } else {
-                    List<Long> userIds = user.getUserIds();
-                    if (!userIds.isEmpty()) {
-                        List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
-
-                        boolean userContainsAny = containsAnyElement(userIds, followUpPersonnelUserIds);
-                        if (userContainsAny) return true;
-                    }
-                }
-
-                // 部门维度判断可见范围是否成立
-                if (dept.getAllFlag()) {
-                    // 存在一个部门，客群全选部门，条件成立
-                    long count = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).count();
-                    if (count > 0) return true;
-
-                } else {
-                    List<Long> deptIds = dept.getDeptIds();
-                    if (!deptIds.isEmpty()) {
-                        List<Long> followUpPersonnelDeptIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).collect(Collectors.toList());
-
-                        boolean deptContainsAny = containsAnyElement(deptIds, followUpPersonnelDeptIds);
-                        if (deptContainsAny) return true;
-                    }
-                }
-            } catch (JsonProcessingException e) {
-                return false;
-            }
-
-            // 个人可见
-        } else if (usageScope.intValue() == 2) {
-            // 判断当前客群创建人是否是该客户的跟进人
-            if (!customerFollowUpPersonnelVOList.isEmpty()) {
-                List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
-                if (followUpPersonnelUserIds.contains(segment.getCreateId())) {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean containsAnyElement(List<Long> a, List<Long> b) {
-        for (Long element : b) {
-            if (a.contains(element)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

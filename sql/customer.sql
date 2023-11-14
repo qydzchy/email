@@ -426,18 +426,18 @@ CREATE TABLE `customer_publicleads_groups`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for customer_publicleads_groups_user
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_groups_user`;
 CREATE TABLE `customer_publicleads_groups_user`  (
-`id` bigint(20) NOT NULL COMMENT '主键',
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `publicleads_groups_id` bigint(20) NULL DEFAULT NULL COMMENT '公海分组',
 `user_id` bigint(20) NULL DEFAULT NULL COMMENT '分组成员',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组成员' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组成员' ROW_FORMAT = Dynamic;
 
 
 -- ----------------------------

@@ -1,6 +1,8 @@
 package com.ruoyi.customer.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentUserListVO;
@@ -77,21 +79,34 @@ public interface SegmentMapper
 
     /**
      * 查询客群列表
-     * @param userId 跟进人ID
      */
-    List<SegmentListVO> list(@Param("userId") Long userId, @Param("createId") Long createId);
+    List<SegmentListVO> list(@Param("createId") Long createId);
 
     /**
      * 统计客户数
-     * @param userId
      * @param focusFlag
      * @return
      */
-    Integer countCustomerCount(@Param("userId") Long userId, @Param("focusFlag") Boolean focusFlag);
+    Integer countCustomerCount(@Param("focusFlag") Boolean focusFlag);
 
     /**
      * 用户列表
      * @return
      */
     List<SegmentUserListVO> userList();
+
+    /**
+     * 用户的客群客户数
+     * @param userId
+     * @return
+     */
+    Map<Long, Integer> selectSegmentCustomerCountByUserId(@Param("userId") Long userId);
+
+    /**
+     * 根据跟进人统计客户数
+     * @param userId
+     * @param focusFlag
+     * @return
+     */
+    Integer countCustomerCountByUserId(@Param("userId") Long userId, @Param("focusFlag") Boolean focusFlag);
 }

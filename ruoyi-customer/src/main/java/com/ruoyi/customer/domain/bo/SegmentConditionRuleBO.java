@@ -29,6 +29,11 @@ public class SegmentConditionRuleBO {
     private Integer dateType;
 
     /**
+     * 时间范围 1. 今天 2. 昨天 3.明天 4.本周 5.上周 6.下周 7.本月 8.上月 9.本季度 10.上季度 11.本年 12.过去7天 13.过去14天 14.过去30天 15.过去60天 15.过去90天 15.过去180天 16.过去365天 17.未来3天 17.未来7天 18.未来14天 19.未来30天
+     */
+    private Integer timeRange;
+
+    /**
      * 值
      */
     private Object value;

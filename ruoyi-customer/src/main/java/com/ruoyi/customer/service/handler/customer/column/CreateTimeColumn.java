@@ -36,10 +36,24 @@ public class CreateTimeColumn extends ColumnAbstract implements IColumnService {
                         String[] dateArr = value.toString().split("~");
                         Date startDate = DateUtils.parseDate(dateArr[0]);
                         Date endDate = DateUtils.parseDate(dateArr[1]);
-
+                        return createTime.compareTo(startDate) >= 0 && createTime.compareTo(endDate) <= 0;
+                    } else if (dateType.intValue() == DateTypeEnum.DYNAMIC_DATE_RANGE.getType()) {
+                        Object value = segmentConditionRule.getValue();
+                        String[] dateArr = value.toString().split("~");
+                        Date startDate = DateUtils.parseDate(dateArr[0]);
+                        Date endDate = DateUtils.parseDate(dateArr[1]);
+                        return createTime.compareTo(startDate) >= 0 && createTime.compareTo(endDate) <= 0;
                     }
                     break;
                 case NOT_EQUALS:
+                    Integer dateType2 = segmentConditionRule.getDateType();
+                    if (dateType2.intValue() == DateTypeEnum.SPECIFIC_DATE_RANGE.getType()) {
+                        Object value = segmentConditionRule.getValue();
+                        String[] dateArr = value.toString().split("~");
+                        Date startDate = DateUtils.parseDate(dateArr[0]);
+                        Date endDate = DateUtils.parseDate(dateArr[1]);
+                        return createTime.compareTo(startDate) >= 0 && createTime.compareTo(endDate) <= 0;
+                    }
                     break;
                 case IS_NULL:
                     break;

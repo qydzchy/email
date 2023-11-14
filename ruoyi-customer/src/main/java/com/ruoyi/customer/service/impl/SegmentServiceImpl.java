@@ -3,12 +3,20 @@ package com.ruoyi.customer.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeBO;
+import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
+import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
+import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import com.ruoyi.customer.domain.vo.CustomerSegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentUserListVO;
 import org.springframework.stereotype.Service;
@@ -189,14 +197,11 @@ public class SegmentServiceImpl implements ISegmentService
      */
     @Override
     public List<SegmentListVO> getSegmentTree(Long createId) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-
         // 生成基础客群
         List<SegmentListVO> allSegmentVOList = new ArrayList<>();
-        allSegmentVOList.addAll(initBasicSegment(userId));
+        allSegmentVOList.addAll(initBasicSegment());
 
-        List<SegmentListVO> segmentVOList = segmentMapper.list(userId, createId);
+        List<SegmentListVO> segmentVOList = segmentMapper.list(createId);
         allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
 
         return allSegmentVOList;
@@ -277,10 +282,189 @@ public class SegmentServiceImpl implements ISegmentService
     }
 
     /**
+     * 客户列表-客群列表
+     * @return
+     */
+    @Override
+    public List<CustomerSegmentListVO> segmentList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Long deptId = loginUser.getDeptId();
+
+        // 查询所有客群
+        Segment segmentParam = new Segment();
+        segmentParam.setDelFlag("0");
+        List<Segment> segmentList = segmentMapper.selectSegmentList(segmentParam);
+
+        // 不成立的客群ID
+        Set<Long> notMetSegmentIdSet = new HashSet<>();
+        segmentList.stream().forEach(segment -> {
+            if (segment.getParentId().longValue() == -1L) {
+                CustomerFollowUpPersonnelListVO customerFollowUpPersonnelVO = new CustomerFollowUpPersonnelListVO();
+                customerFollowUpPersonnelVO.setUserId(userId);
+                customerFollowUpPersonnelVO.setDeptId(deptId);
+                boolean visibleConditionMet = isVisibleConditionMet(Arrays.asList(customerFollowUpPersonnelVO), segment);
+                if (!visibleConditionMet) {
+                    notMetSegmentIdSet.add(segment.getId());
+                }
+            }
+        });
+
+        // 移除掉不成立的客群包括子客群
+        Iterator<Segment> iterator = segmentList.iterator();
+        while (iterator.hasNext()) {
+            Segment segment = iterator.next();
+            if (notMetSegmentIdSet.contains(segment.getId()) || notMetSegmentIdSet.contains(segment.getParentId())) {
+                iterator.remove();
+            }
+        }
+
+        // 查询当前用户的客群客户数
+        Map<Long, Integer> segmentCustomerCountMap = segmentMapper.selectSegmentCustomerCountByUserId(userId);
+
+        List<CustomerSegmentListVO> customerSegmentVOList = new ArrayList<>();
+        for (Segment segment : segmentList) {
+            CustomerSegmentListVO customerSegmentVO = new CustomerSegmentListVO();
+            customerSegmentVO.setId(segment.getId());
+            customerSegmentVO.setParentId(segment.getParentId());
+            customerSegmentVO.setName(segment.getName());
+
+            int customerCount = segmentCustomerCountMap.get(segment.getId()) != null ? segmentCustomerCountMap.get(segment.getId()) : 0;
+            customerSegmentVO.setCustomerCount(customerCount);
+            customerSegmentVOList.add(customerSegmentVO);
+        }
+
+        // 初始化客群
+        List<CustomerSegmentListVO> allCustomerSegmentVOList = initBasicSegment(userId);
+        allCustomerSegmentVOList.addAll(buildTree2(customerSegmentVOList, -1L));
+        return allCustomerSegmentVOList;
+    }
+
+    private List<CustomerSegmentListVO> buildTree2(List<CustomerSegmentListVO> customerSegmentVOList, Long parentId) {
+        List<CustomerSegmentListVO> children = new ArrayList<>();
+
+        for (CustomerSegmentListVO customerSegmentVO : customerSegmentVOList) {
+            if ((parentId == null && customerSegmentVO.getParentId() == null)
+                    || (parentId != null && parentId.longValue() == customerSegmentVO.getParentId().longValue())) {
+                List<CustomerSegmentListVO> childCustomerSegmentVOList = buildTree2(customerSegmentVOList, customerSegmentVO.getId());
+                customerSegmentVO.setChildren(childCustomerSegmentVOList);
+                children.add(customerSegmentVO);
+            }
+        }
+
+        return children;
+    }
+
+    /**
      * 生成基础客群
      * @return
      */
-    private List<SegmentListVO> initBasicSegment(Long userId) {
+    private List<CustomerSegmentListVO> initBasicSegment(Long userId) {
+        List<CustomerSegmentListVO> basicSegment = new ArrayList<>();
+
+        CustomerSegmentListVO allSegment = new CustomerSegmentListVO();
+        allSegment.setId(-2L);
+        allSegment.setParentId(-1L);
+        allSegment.setName("全部客户");
+        // 查询客户数量
+        Integer allCustomerCount = segmentMapper.countCustomerCountByUserId(userId, null);
+        allSegment.setCustomerCount(allCustomerCount);
+        basicSegment.add(allSegment);
+
+        CustomerSegmentListVO followSegment = new CustomerSegmentListVO();
+        followSegment.setId(-1L);
+        followSegment.setParentId(-1L);
+        followSegment.setName("我的关注");
+        // 查询客户数量
+        Integer focusCustomerCount = segmentMapper.countCustomerCountByUserId(userId, true);
+        followSegment.setCustomerCount(focusCustomerCount);
+        basicSegment.add(followSegment);
+
+        return basicSegment;
+    }
+
+    /**
+     * 可见范围是否成立
+     * @param customerFollowUpPersonnelVOList
+     * @param segment
+     * @return
+     */
+    @Override
+    public boolean isVisibleConditionMet(List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList, Segment segment) {
+        Integer usageScope = segment.getUsageScope();
+        // 公司可见
+        if (usageScope.intValue() == 1) {
+            String visibilityScope = segment.getVisibilityScope();
+            if (StringUtils.isBlank(visibilityScope)) return false;
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            // 将 JSON 字符串转换为 Java 对象
+            try {
+                SegmentVisibilityScopeBO segmentVisibilityScopeBO = objectMapper.readValue(visibilityScope, SegmentVisibilityScopeBO.class);
+                SegmentVisibilityScopeDeptBO dept = segmentVisibilityScopeBO.getDept();
+                SegmentVisibilityScopeUserBO user = segmentVisibilityScopeBO.getUser();
+                // 用户维度判断可见范围是否成立
+                if (user.getAllFlag()) {
+                    return true;
+                } else {
+                    List<Long> userIds = user.getUserIds();
+                    if (!userIds.isEmpty()) {
+                        List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+
+                        boolean userContainsAny = containsAnyElement(userIds, followUpPersonnelUserIds);
+                        if (userContainsAny) return true;
+                    }
+                }
+
+                // 部门维度判断可见范围是否成立
+                if (dept.getAllFlag()) {
+                    // 存在一个部门，客群全选部门，条件成立
+                    long count = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).count();
+                    if (count > 0) return true;
+
+                } else {
+                    List<Long> deptIds = dept.getDeptIds();
+                    if (!deptIds.isEmpty()) {
+                        List<Long> followUpPersonnelDeptIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getDeptId).collect(Collectors.toList());
+
+                        boolean deptContainsAny = containsAnyElement(deptIds, followUpPersonnelDeptIds);
+                        if (deptContainsAny) return true;
+                    }
+                }
+            } catch (JsonProcessingException e) {
+                return false;
+            }
+
+            // 个人可见
+        } else if (usageScope.intValue() == 2) {
+            // 判断当前客群创建人是否是该客户的跟进人
+            if (!customerFollowUpPersonnelVOList.isEmpty()) {
+                List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
+                if (followUpPersonnelUserIds.contains(segment.getCreateId())) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean containsAnyElement(List<Long> a, List<Long> b) {
+        for (Long element : b) {
+            if (a.contains(element)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 生成基础客群
+     * @return
+     */
+    private List<SegmentListVO> initBasicSegment() {
         List<SegmentListVO> basicSegment = new ArrayList<>();
 
         SegmentListVO allSegment = new SegmentListVO();
@@ -289,7 +473,7 @@ public class SegmentServiceImpl implements ISegmentService
         allSegment.setName("全部客户");
         allSegment.setUsageScope(2);
         // 查询客户数量
-        Integer allCustomerCount = segmentMapper.countCustomerCount(userId, null);
+        Integer allCustomerCount = segmentMapper.countCustomerCount(null);
         allSegment.setCustomerCount(allCustomerCount);
         basicSegment.add(allSegment);
 
@@ -299,7 +483,7 @@ public class SegmentServiceImpl implements ISegmentService
         followSegment.setName("我的关注");
         followSegment.setUsageScope(2);
         // 查询客户数量
-        Integer focusCustomerCount = segmentMapper.countCustomerCount(userId, true);
+        Integer focusCustomerCount = segmentMapper.countCustomerCount(true);
         followSegment.setCustomerCount(focusCustomerCount);
         basicSegment.add(followSegment);
 

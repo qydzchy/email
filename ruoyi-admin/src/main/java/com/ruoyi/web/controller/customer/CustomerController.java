@@ -10,6 +10,7 @@ import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
+import com.ruoyi.customer.service.ISegmentService;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +40,18 @@ public class CustomerController extends BaseController
 {
     @Resource
     private ICustomerService customerService;
+    @Resource
+    private ISegmentService segmentService;
+
+    /**
+     * 客群列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:segment:list')")
+    @GetMapping("/segment/list")
+    public AjaxResult segmentList()
+    {
+        return success(segmentService.segmentList());
+    }
 
     /**
      * 查询私海客户列表

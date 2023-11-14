@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.customer;
 import java.util.List;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.dto.PublicleadsGroupAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,6 +52,12 @@ public class PublicleadsGroupsController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
     {
+        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getName())) {
+            throw new ServiceException("分组名称不能为空");
+        }
+        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getUserIds())) {
+            throw new ServiceException("分组成员不能为空");
+        }
         return toAjax(publicleadsGroupsService.insertPublicleadsGroups(publicleadsGroupAddOrUpdateDTO));
     }
 
@@ -62,6 +69,15 @@ public class PublicleadsGroupsController extends BaseController
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
     {
+        if (publicleadsGroupAddOrUpdateDTO.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getName())) {
+            throw new ServiceException("分组名称不能为空");
+        }
+        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getUserIds())) {
+            throw new ServiceException("分组成员不能为空");
+        }
         return toAjax(publicleadsGroupsService.updatePublicleadsGroups(publicleadsGroupAddOrUpdateDTO));
     }
 
