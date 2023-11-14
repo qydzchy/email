@@ -83,6 +83,7 @@ export default {
           groupOption: [],
           stageOption: [],
           originOption: [],
+          poolGroupOption: [],
         }
       },
       required: false
@@ -155,6 +156,18 @@ export default {
             })
           } else if (val.field === 'origin') {
             val.props.data = newVal.originOption || []
+          } else if (val.field === 'poolGroup') {
+            const valid = !newVal.poolGroupOption && !newVal.poolGroupOption.length
+            if (valid) {
+              return
+            }
+            val.value = newVal.poolGroupOption[0].id
+            val.options = newVal.poolGroupOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name
+              }
+            })
           }
           return val
         })
@@ -190,6 +203,7 @@ export default {
             contactList,
             seaType: 1,
             customerNoType: 1,
+            countryRegion: customerForm.countryRegion.join('/')
           }
           this.addCustomerPrivate(data)
         }

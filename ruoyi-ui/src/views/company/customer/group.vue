@@ -173,15 +173,9 @@ export default {
         })
         if (res.code === 200) {
           this.menuList = this.generateLevelList(res.data)
-          console.log(this.menuList)
         }
       } catch {
       }
-      // listMenu({}).then(response => {
-      //   this.tempMenuList = response.data
-      //   this.menuList = this.handleTree(response.data, "menuId");
-      //   this.loading = false;
-      // });
     },
     async getCommonTree() {
       try {

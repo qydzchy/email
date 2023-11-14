@@ -1,29 +1,29 @@
 <template>
   <el-select
-    class="select-tree"
-    style="width:100%"
-    multiple
-    collapse-tags
-    clearable
-    v-model="checkedData"
-    :popper-append-to-body="false"
-    @remove-tag="removeTag"
-    @clear="clearAll"
-    :disabled="disabled"
+      class="select-tree"
+      style="width:100%"
+      multiple
+      collapse-tags
+      clearable
+      v-model="checkedData"
+      :popper-append-to-body="false"
+      @remove-tag="removeTag"
+      @clear="clearAll"
+      :disabled="disabled"
   >
     <el-option value="empty" style="height:auto">
       <el-option v-show="false" v-for="item in selectTree" :value="item[disabledKey]"
                  :label="item[defaultProps.label]"></el-option>
       <el-tree
-        ref="tree"
-        :data="curTreeData"
-        show-checkbox
-        node-key="id"
-        highlight-current
-        :default-expand-all="true"
-        :props="defaultProps"
-        :expand-on-click-node="false"
-        @check-change="handleNodeClick"
+          ref="tree"
+          :data="curTreeData"
+          show-checkbox
+          node-key="id"
+          highlight-current
+          :default-expand-all="true"
+          :props="defaultProps"
+          :expand-on-click-node="false"
+          @check-change="handleNodeClick"
       ></el-tree>
     </el-option>
   </el-select>
@@ -113,7 +113,7 @@ export default {
       let dataList = this.$refs.tree.getCheckedNodes()
       this.checkedData = []
       dataList.forEach((item) => {
-        if (!item.children.length) {
+        if (item.type === 2) {
           this.checkedData.push(item.id)
         }
       })

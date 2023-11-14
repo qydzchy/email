@@ -278,16 +278,6 @@ export default {
       })
       return innerData
     },
-    // 上传图片
-    handleAvatarSuccess(file, id) {
-      this.formList.map(val => {
-        if (val.id === id) {
-          val.avatarOrBusinessCard = file.raw
-        }
-      })
-    },
-    beforeAvatarUpload(file) {
-    },
   }
 }
 </script>

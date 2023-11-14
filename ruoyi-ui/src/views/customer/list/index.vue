@@ -109,6 +109,7 @@ import {targetBlank} from "@/utils/tools";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
+import {groupsList} from "@/api/company/poolRule";
 
 export default {
   components: {
@@ -142,7 +143,8 @@ export default {
       indexOpt: {
         groupOption: [],
         stageOption: [],
-        originOption: []
+        originOption: [],
+        poolGroupOption: []
       }
 
     }
@@ -151,8 +153,10 @@ export default {
     this.getGroupList()
     this.getStageList()
     this.getOriginList()
+    this.getPoolList()
   },
   methods: {
+    // 分组选项
     async getGroupList() {
       try {
         const res = await packetList()
@@ -162,6 +166,7 @@ export default {
       } catch {
       }
     },
+    // 阶段选项
     async getStageList() {
       try {
         const res = await stageList()
@@ -171,11 +176,22 @@ export default {
       } catch (e) {
       }
     },
+    // 来源选项
     async getOriginList() {
       try {
         const res = await getOriginList()
         if (res.code === 200) {
           this.indexOpt.originOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 公海分组选项
+    async getPoolList() {
+      try {
+        const res = await groupsList()
+        if (res.code === 200) {
+          this.indexOpt.poolGroupOption = res.data
         }
       } catch {
       }
