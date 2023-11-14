@@ -74,9 +74,20 @@ public class CustomerDetailVO {
     /** 创建者ID */
     private Long createId;
 
-    /** 更新者ID */
+    /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    /**
+     * 更新者ID
+     */
+    private Long updateId;
+
+    /**
+     * 更新时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 
     /**
      * 联系人

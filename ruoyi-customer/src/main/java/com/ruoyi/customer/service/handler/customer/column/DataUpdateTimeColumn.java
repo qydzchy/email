@@ -9,24 +9,25 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * 创建时间
+ * 资料更新时间
  */
 @Slf4j
 @Component
-public class CreateTimeColumn extends ColumnAbstract implements IColumnService {
+public class DataUpdateTimeColumn extends ColumnAbstract implements IColumnService {
+
     @Override
     public CustomerColumnEnum getCustomerColumnEnum() {
-        return CustomerColumnEnum.CREATE_TIME;
+        return CustomerColumnEnum.DATA_UPDATE_TIME;
     }
 
     @Override
     public boolean handler(CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) {
-        Date createTime = customerDetail.getCreateTime();
-        if (createTime == null) return false;
+        Date updateTime = customerDetail.getUpdateTime();
+        if (updateTime == null) return false;
         try {
-            return super.dateHandler(createTime, segmentConditionRule);
+            return super.dateHandler(updateTime, segmentConditionRule);
         } catch (Exception e) {
-            log.error("创建时间处理异常", e);
+            log.error("资料更新时间处理异常", e);
             return false;
         }
     }

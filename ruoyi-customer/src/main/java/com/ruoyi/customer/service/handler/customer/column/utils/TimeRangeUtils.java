@@ -43,4 +43,65 @@ public class TimeRangeUtils {
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         return getEndOfDay(calendar.getTime());
     }
+
+    // 获取明天的开始时间
+    public static Date getStartOfTomorrow() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取明天的结束时间
+    public static Date getEndOfTomorrow() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取本周的开始时间
+    public static Date getStartOfThisWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取本周的结束时间
+    public static Date getEndOfThisWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 6);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取上周的开始时间
+    public static Date getStartOfLastWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取上周的结束时间
+    public static Date getEndOfLastWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 6);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取下周的开始时间
+    public static Date getStartOfNextWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取下周的结束时间
+    public static Date getEndOfNextWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 6);
+        return getEndOfDay(calendar.getTime());
+    }
+
 }

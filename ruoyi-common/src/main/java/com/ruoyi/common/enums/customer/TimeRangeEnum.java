@@ -29,8 +29,24 @@ public enum TimeRangeEnum {
     NEXT_3_DAYS(19, "未来3天"),
     NEXT_7_DAYS(20, "未来7天"),
     NEXT_14_DAYS(21, "未来14天"),
-    NEXT_30_DAYS(22, "未来30天");
+    NEXT_30_DAYS(22, "未来30天"),
+    // 早于、晚于
+    BEFORE_TODAY(23, "当天之前"),
+    AFTER_TODAY(24, "当天之后"),
+    SPECIFIC_DATE(25, "具体日期"),
+    DATE_FIELD(26, "日期字段");
 
     private int code;
     private String description;
+
+    public static TimeRangeEnum getByCode(Integer code) {
+        if (code == null) return null;
+
+        for (TimeRangeEnum timeRangeEnum : TimeRangeEnum.values()) {
+            if (timeRangeEnum.getCode() == code) {
+                return timeRangeEnum;
+            }
+        }
+        return null;
+    }
 }

@@ -61,6 +61,7 @@
         <if test="searchText != null and searchText != ''">
             and (fur.follow_up_content like concat('%', #{searchText}, '%') or furc.comment like concat('%', #{searchText}, '%'))
         </if>
+        order by fur.create_time desc
     </select>
 
     <select id="selectRecentActivityByCustomerIds"

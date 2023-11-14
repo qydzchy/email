@@ -9,24 +9,25 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * 创建时间
+ * 最近跟进时间
  */
 @Slf4j
 @Component
-public class CreateTimeColumn extends ColumnAbstract implements IColumnService {
+public class LastFollowupAtColumn extends ColumnAbstract implements IColumnService {
+
     @Override
     public CustomerColumnEnum getCustomerColumnEnum() {
-        return CustomerColumnEnum.CREATE_TIME;
+        return CustomerColumnEnum.LAST_FOLLOWUP_AT;
     }
 
     @Override
     public boolean handler(CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) {
-        Date createTime = customerDetail.getCreateTime();
-        if (createTime == null) return false;
+        Date lastFollowupAt = customerDetail.getLastFollowupAt();
+        if (lastFollowupAt == null) return false;
         try {
-            return super.dateHandler(createTime, segmentConditionRule);
+            return super.dateHandler(lastFollowupAt, segmentConditionRule);
         } catch (Exception e) {
-            log.error("创建时间处理异常", e);
+            log.error("最近跟进时间处理异常", e);
             return false;
         }
     }
