@@ -69,7 +69,7 @@
     </template>
     <!--   展示字段数据   -->
     <div class="wrap flex-middle space-between" v-else @click="onClick">
-      <span class="span-style" :title="content">
+      <span class="span-style" :title="generateTitle">
           <slot name="content">
             <span v-if="type==='select'">
               {{ generateSelectValue }}
@@ -179,6 +179,15 @@ export default {
     },
   },
   computed: {
+    generateTitle() {
+      let echoTitle = ''
+      if (this.type === 'country') {
+        echoTitle = this.generateCountryValue.value
+      } else {
+        echoTitle = this.content
+      }
+      return echoTitle
+    },
     generateSelectValue() {
       return this.formOption.options?.find(val => val.value === this.content)?.label || '---'
     },

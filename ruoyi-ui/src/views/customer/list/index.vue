@@ -109,7 +109,7 @@ import {targetBlank} from "@/utils/tools";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
-import {groupsList} from "@/api/company/poolRule";
+import {groupsList, reasonList} from "@/api/company/poolRule";
 import {getPrivateSegmentMenu} from "@/api/customer/publicleads";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 
@@ -136,7 +136,8 @@ export default {
         groupOption: [],
         stageOption: [],
         originOption: [],
-        poolGroupOption: []
+        poolGroupOption: [],
+        poolReasonOption: [],
       }
 
     }
@@ -147,6 +148,7 @@ export default {
     this.getStageList()
     this.getOriginList()
     this.getPoolList()
+    this.getPoolReasonList()
   },
   methods: {
     // 菜单列表
@@ -200,6 +202,17 @@ export default {
           this.indexOpt.poolGroupOption = res.data
         }
       } catch {
+      }
+    },
+    // 移入公海原因
+    async getPoolReasonList() {
+      try {
+        const res = await reasonList()
+        if (res.code === 200) {
+          this.indexOpt.poolReasonOption = res.data
+        }
+      } catch {
+
       }
     },
     onShowDrawer() {

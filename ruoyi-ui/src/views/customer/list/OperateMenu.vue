@@ -13,11 +13,42 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <DialogSchedule :visible.sync="scheduleVisible"/>
-    <DialogMoveToGroup :visible.sync="moveGroupVisible"/>
-    <DialogMergeCustomer :visible.sync="mergeVisible"/>
-    <DialogTransferTo :visible.sync="transferVisible"/>
-    <DialogFollowAndChange :visible.sync="followVisible"/>
+    <DialogSchedule
+        v-if="scheduleVisible"
+        :visible.sync="scheduleVisible"/>
+    <!--    -->
+    <DialogMoveToGroup
+        v-if="moveGroupVisible"
+        :visible.sync="moveGroupVisible"
+        :row="this.row"
+        :groupOption="indexOpt.groupOption"/>
+    <!--    -->
+    <DialogMergeCustomer
+        v-if="mergeVisible"
+        :visible.sync="mergeVisible"/>
+    <!--    -->
+    <DialogTransferTo
+        v-if="transferVisible"
+        :visible.sync="transferVisible"/>
+    <!--    -->
+    <DialogFollowAndChange
+        v-if="followVisible"
+        :visible.sync="followVisible"/>
+    <!--  移入公海  -->
+    <DialogMoveToPool
+        v-if="moveToPoolVisible"
+        :row="this.row"
+        :visible.sync="moveToPoolVisible"
+        :poolOption="indexOpt.poolGroupOption"
+        :reasonOption="indexOpt.poolReasonOption"
+    />
+    <!--  改变公海分组  -->
+    <DialogChangePoolGroup
+        v-if="changePoolVisible"
+        :row="this.row"
+        :visible.sync="changePoolVisible"
+        :poolOption="indexOpt.poolGroupOption"
+    />
   </div>
 </template>
 
@@ -27,6 +58,8 @@ import DialogMoveToGroup from "./DialogMoveToGroup.vue";
 import DialogMergeCustomer from "./DialogMergeCustomer.vue";
 import DialogTransferTo from "./DialogTransferTo.vue";
 import DialogFollowAndChange from "./DialogFollowAndChange.vue";
+import DialogMoveToPool from "./DialogMoveToPool.vue";
+import DialogChangePoolGroup from "./DialogChangePoolGroup.vue";
 import {followCancelCustomer} from "@/api/customer/publicleads";
 
 export default {
@@ -34,6 +67,13 @@ export default {
     row: {
       type: Object,
       default: () => {
+      },
+      required: false
+    },
+    indexOpt: {
+      type: Object,
+      default: () => {
+        return {}
       },
       required: false
     }
@@ -44,9 +84,8 @@ export default {
     DialogMergeCustomer,
     DialogTransferTo,
     DialogFollowAndChange,
-  },
-  mounted() {
-
+    DialogMoveToPool,
+    DialogChangePoolGroup,
   },
   data() {
     return {
@@ -104,7 +143,9 @@ export default {
       moveGroupVisible: false,
       mergeVisible: false,
       transferVisible: false,
-      followVisible: false
+      followVisible: false,
+      moveToPoolVisible: false,
+      changePoolVisible: false,
     }
   },
   methods: {
@@ -116,7 +157,7 @@ export default {
         case "moveGroup":
           this.moveGroupVisible = true
           break;
-        case "merge":
+        case "mergeCustomer":
           this.mergeVisible = true
           break;
         case "cancel":
@@ -151,8 +192,11 @@ export default {
         case "removeAndInto":
           this.followVisible = true
           break;
+        case "movePool":
+          this.moveToPoolVisible = true
+          break;
         case "changePoolGroup":
-          this.followVisible = true
+          this.changePoolVisible = true
           break;
       }
     },
