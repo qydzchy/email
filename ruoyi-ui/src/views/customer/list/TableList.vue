@@ -21,6 +21,7 @@
             :paginate-option="paginateOption"/>
       </div>
       <TableRowDrawer
+          :row="rowDrawerData"
           :visible.sync="rowDrawerVisible"
           :externalOpt="{groupOption:indexOpt.groupOption}"
       />
@@ -84,10 +85,9 @@ export default {
           resizable: false,
           className: 'follow-cell',
           render: (row, field, scope) => {
-            console.log(row)
             return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
               <CollageIcon
-                  show={field}
+                  show={!!field}
                   onClick={() => this.onCollageIcon(row?.id, scope)}>
               </CollageIcon>
             </div>
@@ -114,7 +114,7 @@ export default {
                 visible={isShow}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(),
+                  click: () => this.onCellClick(row),
                   onBlur: () => this.onBlur(),
                   onInput: (value) => this.onInput(value, scope, propName),
                   onEnter: () => this.inputEnter(row)
@@ -172,7 +172,7 @@ export default {
                 visible={isShow}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(),
+                  click: () => this.onCellClick(row),
                   onBlur: () => this.onBlur(),
                   onInput: (value) => this.onInput(value, scope, propName),
                   onEnter: () => this.inputEnter(row)
@@ -208,7 +208,7 @@ export default {
                 visible={isShow}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(),
+                  click: () => this.onCellClick(row),
                   onBlur: () => this.onBlur(),
                 }}
             >
@@ -251,7 +251,7 @@ export default {
           field: 'operate',
           fixed: 'right',
           render: (row, _field) => {
-            return <OperateMenu row={row} indexOpt={this.indexOpt}>
+            return <OperateMenu row={row} indexOpt={this.indexOpt} on={{load: () => this.reloadList()}}>
               <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
             </OperateMenu>
           }
@@ -267,6 +267,7 @@ export default {
       },
       curEditId: '',
       rowDrawerVisible: false, //点击显示详情抽屉
+      rowDrawerData: {},//抽屉回显的数据
       ids: [],
     }
   },
@@ -317,7 +318,8 @@ export default {
       }
 
     },
-    onCellClick() {
+    onCellClick(row) {
+      this.rowDrawerData = row
       this.rowDrawerVisible = true
     },
     onCellEdit(rowId, field) {
@@ -353,6 +355,7 @@ export default {
       this.ids = selection.map(item => item.postId)
     },
     reloadList() {
+      console.log('reload')
       this.getList(this.segmentId)
     }
   }

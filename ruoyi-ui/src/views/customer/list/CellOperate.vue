@@ -124,7 +124,7 @@ export default {
       required: false
     },
     type: {
-      type: "input" | "select" | "rate" | "tel",
+      type: "input" | "select" | "rate" | "tel" | "country" | "picture",
       default: "",
       required: false
     },

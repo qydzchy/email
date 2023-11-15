@@ -185,8 +185,7 @@ export default {
                 done();
               }
             }
-          }).then(action => {
-            console.log(action)
+          }).then(_action => {
           });
           break;
         case "removeAndInto":

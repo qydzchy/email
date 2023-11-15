@@ -42,14 +42,14 @@
                 </el-tooltip>
               </div>
             </template>
-            <ul class="plan-ul">
-              <li class="plan-li pointer">
-                <div class="circle"></div>
-                <span class="date">10-18</span>
-                <span class="content">客户生日：测试公司001-王五</span>
+            <ul class="plan-ul" v-if="scheduleList && scheduleList.length">
+              <li class="plan-li pointer" v-for="(schedule,index) in scheduleList" :key="index">
+                <div class="circle" :style="{color:schedule.color}"></div>
+                <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
+                <span class="content">{{ schedule.scheduleContent }}</span>
               </li>
             </ul>
-            <!--          <el-empty description="暂无日程"></el-empty>-->
+            <el-empty v-else description="暂无日程" :image-size="40"/>
           </CollapseWrap>
         </div>
         <div class="card-bg  mt-16 px-16 py-16">
@@ -59,7 +59,8 @@
                 <div class="fs-14 bold">联系人({{ contactList.length }})</div>
                 <div class="flex-middle gap-20">
                   <el-row v-if="contactSearch">
-                    <el-input size="mini" v-model="contactSearchValue" @click.native.stop @blur="handleBlurSearch" clearable>
+                    <el-input size="mini" v-model="contactSearchValue" @click.native.stop @blur="handleBlurSearch"
+                              clearable>
                       <el-button slot="append" icon="el-icon-search" size="mini" @click.stop></el-button>
                     </el-input>
                   </el-row>
@@ -137,6 +138,8 @@ import CustomerContactDrawer from "../CustomerContactDrawer.vue";
 import CellOperate from "../CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
+import {getScheduleList} from "@/api/customer/schedule";
+import {formatMonthAndDay} from "@/utils";
 
 export default {
   components: {
@@ -149,6 +152,7 @@ export default {
   },
   data() {
     return {
+      customerId: null,
       options: {},
       infoRowList: [
         {
@@ -169,12 +173,27 @@ export default {
       contactSearch: false,
       contactVisible: false,
       dialogSchedule: false,
+      scheduleList: [],
     }
   },
   mounted() {
-    this.curId = this.$route.params?.id
+    this.customerId = this.$route.params?.id
+    this.getFollowUpRecordList()
   },
   methods: {
+    async getFollowUpRecordList() {
+      try {
+        const res = await getScheduleList({
+          customerId: this.customerId,
+          pageNum: 1,
+          pageSize: 3,
+        })
+        if (res.code === 200) {
+          this.scheduleList = res.data
+        }
+      } catch {
+      }
+    },
     onEdit(id) {
       this.infoRowList.map(val => {
         if (val.id === id) {
@@ -199,6 +218,7 @@ export default {
         this.$message.success('复制成功')
       })
     },
+    formatMonthAndDay,
   }
 }
 </script>
