@@ -7,7 +7,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PublicleadsRules" id="PublicleadsRulesResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
-        <result property="customerSegmentId"    column="customer_segment_id"    />
         <result property="days"    column="days"    />
         <result property="type"    column="type"    />
         <result property="status"    column="status"    />
@@ -22,14 +21,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPublicleadsRulesVo">
-        select id, name, customer_segment_id, days, type, status, start_time, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_rules
+        select id, name, days, type, status, start_time, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_publicleads_rules
     </sql>
 
     <select id="selectPublicleadsRulesList" parameterType="PublicleadsRules" resultMap="PublicleadsRulesResult">
         <include refid="selectPublicleadsRulesVo"/>
-        <where>  
+        <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="customerSegmentId != null "> and customer_segment_id = #{customerSegmentId}</if>
             <if test="days != null "> and days = #{days}</if>
             <if test="type != null "> and type = #{type}</if>
             <if test="status != null "> and status = #{status}</if>
@@ -43,7 +41,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPublicleadsRulesVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.PublicleadsRulesListVO">
+        select cpr.id, cpr.name, cpr.days, cpr.type, cpr.status, cpr.start_time as startTime, cpr.create_id as createId, cpr.create_time as createTime, GROUP_CONCAT(cprs.segment_id) as segmentIds
+        from customer_publicleads_rules cpr
+        left join customer_publicleads_rules_segment cprs on cprs.publicleads_rules_id = cpr.id
+        where cpr.del_flag = '0'
+    </select>
+
     <insert id="insertPublicleadsRules" parameterType="PublicleadsRules">
         insert into customer_publicleads_rules
         <trim prefix="(" suffix=")" suffixOverrides=",">

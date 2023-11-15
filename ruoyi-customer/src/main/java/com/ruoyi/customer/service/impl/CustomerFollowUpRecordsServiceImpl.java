@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.FollowUpRulesTypeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -15,11 +16,13 @@ import com.ruoyi.customer.domain.bo.CustomerFollowUpRecordsListBO;
 import com.ruoyi.customer.domain.dto.CustomerFollowUpRecordsListDTO;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpRecordsListVO;
 import com.ruoyi.customer.domain.vo.FollowUpRecordsCommentListVO;
+import com.ruoyi.customer.service.ICustomerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.CustomerFollowUpRecordsMapper;
 import com.ruoyi.customer.domain.CustomerFollowUpRecords;
 import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -34,6 +37,9 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
 {
     @Resource
     private CustomerFollowUpRecordsMapper customerFollowUpRecordsMapper;
+
+    @Resource
+    private ICustomerService customerService;
 
     /**
      * 查询客户写跟进
@@ -66,7 +72,8 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
      * @return 结果
      */
     @Override
-    public int insertCustomerFollowUpRecords(CustomerFollowUpRecords customerFollowUpRecords)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertCustomerFollowUpRecords(CustomerFollowUpRecords customerFollowUpRecords)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
@@ -83,7 +90,11 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
         customerFollowUpRecords.setUpdateId(userId);
         customerFollowUpRecords.setUpdateBy(username);
         customerFollowUpRecords.setUpdateTime(DateUtils.getNowDate());
-        return customerFollowUpRecordsMapper.insertCustomerFollowUpRecords(customerFollowUpRecords);
+        customerFollowUpRecordsMapper.insertCustomerFollowUpRecords(customerFollowUpRecords);
+
+        // 执行客户跟进规则
+        customerService.customerFollowUpRulesHandler(customerFollowUpRecords.getCustomerId(), FollowUpRulesTypeEnum.NEW_FOLLOW_UP_CUSTOMER_OPPORTUNITY);
+        return true;
     }
 
     /**

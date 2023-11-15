@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsRules;
+import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -59,4 +60,10 @@ public interface PublicleadsRulesMapper
      * @return 结果
      */
     public int deletePublicleadsRulesByIds(Long[] ids);
+
+    /**
+     * 移入公海规则列表
+     * @return
+     */
+    List<PublicleadsRulesListVO> list();
 }

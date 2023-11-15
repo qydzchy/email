@@ -764,3 +764,42 @@ CREATE TABLE `customer_customer_publicleads`  (
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入客户到公海表' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for customer_publicleads_rules_segment
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_publicleads_rules_segment`;
+CREATE TABLE `customer_publicleads_rules_segment`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`publicleads_rules_id` bigint(20) NOT NULL COMMENT '公海规则ID',
+`segment_id` bigint(20) NOT NULL COMMENT '客群ID',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海规则客群' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for customer_customer_sea_log
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_customer_sea_log`;
+CREATE TABLE `customer_customer_sea_log`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`customer_id` bigint(20) NOT NULL COMMENT '客户ID',
+`sea_type` tinyint(1) NOT NULL COMMENT '私海/公海类型 1.私海 2.公海',
+`create_time` datetime(0) NOT NULL COMMENT '创建时间',
+`type` tinyint(1) NOT NULL COMMENT '类型 1.手动 2.自动',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户私海/公海日志' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for customer_customer_segment_log
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_customer_segment_log`;
+CREATE TABLE `customer_customer_segment_log`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`customer_id` bigint(20) NOT NULL COMMENT '客户ID',
+`segment_id` bigint(20) NOT NULL COMMENT '客群ID',
+`create_time` datetime(0) NOT NULL COMMENT '创建时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户关联客群日志' ROW_FORMAT = Dynamic;

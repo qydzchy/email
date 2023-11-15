@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerSeaLogMapper">
+
+    <resultMap type="CustomerSeaLog" id="CustomerSeaLogResult">
+        <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="seaType"    column="sea_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectCustomerSeaLogVo">
+        select id, customer_id, sea_type, create_time, type from customer_customer_sea_log
+    </sql>
+
+    <select id="selectCustomerSeaLogList" parameterType="CustomerSeaLog" resultMap="CustomerSeaLogResult">
+        <include refid="selectCustomerSeaLogVo"/>
+        <where>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="seaType != null "> and sea_type = #{seaType}</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerSeaLogById" parameterType="Long" resultMap="CustomerSeaLogResult">
+        <include refid="selectCustomerSeaLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCustomerSeaLog" parameterType="CustomerSeaLog" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer_sea_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="seaType != null">sea_type,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="type != null">type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="seaType != null">#{seaType},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomerSeaLog" parameterType="CustomerSeaLog">
+        update customer_customer_sea_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="seaType != null">sea_type = #{seaType},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerSeaLogById" parameterType="Long">
+        delete from customer_customer_sea_log where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerSeaLogByIds" parameterType="String">
+        delete from customer_customer_sea_log where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -35,7 +35,7 @@ public interface ICustomerFollowUpRecordsService
      * @param customerFollowUpRecords 客户写跟进
      * @return 结果
      */
-    public int insertCustomerFollowUpRecords(CustomerFollowUpRecords customerFollowUpRecords);
+    public boolean insertCustomerFollowUpRecords(CustomerFollowUpRecords customerFollowUpRecords);
 
     /**
      * 修改客户写跟进

@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.customer.AndOrEnum;
-import com.ruoyi.common.enums.customer.CustomerSeaTypeEnum;
+import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -64,6 +63,10 @@ public class CustomerServiceImpl implements ICustomerService
     private PacketMapper packetMapper;
     @Resource
     private CustomerSegmentMapper customerSegmentMapper;
+    @Resource
+    private FollowUpRulesMapper followUpRulesMapper;
+    @Resource
+    private CustomerSeaLogMapper customerSeaLogMapper;
     @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
@@ -355,6 +358,8 @@ public class CustomerServiceImpl implements ICustomerService
             batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
         }
 
+        // 编辑客户事件
+        customerFollowUpRulesHandler(id, FollowUpRulesTypeEnum.EDIT_CUSTOMER);
         return true;
     }
 
@@ -522,12 +527,15 @@ public class CustomerServiceImpl implements ICustomerService
         // 判断当前是否只有一个跟进人，并且是自己，如果是的话，那么需要将该客户移至公海
         if (customerFollowUpPersonnelVOList != null && customerFollowUpPersonnelVOList.size() == 1
                 && customerFollowUpPersonnelVOList.get(0).getUserId().longValue() == userId.longValue()) {
+            Integer type = CustomerSeaTypeEnum.PUBLIC_LEADS.getType();
             // 移至客户到公海
-            customerMapper.updateCustomerSeaType(id, CustomerSeaTypeEnum.PUBLIC_LEADS.getType(), userId, username);
+            customerMapper.updateCustomerSeaType(id, type, userId, username);
+
+            // 客户移入公海规则处理
+            customerMoveToSeaHandler(id, type, CustomerSeaLogTypeEnum.AUTO);
         }
 
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(id, userId, userId, username);
-
         return true;
     }
 
@@ -555,10 +563,16 @@ public class CustomerServiceImpl implements ICustomerService
         customerPublicleads.setUpdateTime(DateUtils.getNowDate());
         customerPublicleadsMapper.insertCustomerPublicleads(customerPublicleads);
 
+        Integer type = CustomerSeaTypeEnum.PUBLIC_LEADS.getType();
         Customer customer = customerMapper.selectCustomerById(moveToPublicleadsDTO.getId());
         customer.setPublicleadsGroupsId(moveToPublicleadsDTO.getPublicleadsGroupsId());
-        customer.setSeaType(CustomerSeaTypeEnum.PUBLIC_LEADS.getType());
+        customer.setSeaType(type);
+        customer.setUpdateId(userId);
+        customer.setUpdateBy(username);
+        customer.setUpdateTime(DateUtils.getNowDate());
         customerMapper.updateCustomer(customer);
+
+        customerMoveToSeaHandler(moveToPublicleadsDTO.getId(), type, CustomerSeaLogTypeEnum.MANUAL);
         return true;
     }
 
@@ -673,7 +687,16 @@ public class CustomerServiceImpl implements ICustomerService
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
-        customerMapper.moveToPrivateleads(id, userId, username);
+        Integer type = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
+        Customer customer = customerMapper.selectCustomerById(id);
+        customer.setSeaType(type);
+        customer.setUpdateId(userId);
+        customer.setUpdateBy(username);
+        customer.setUpdateTime(DateUtils.getNowDate());
+        customerMapper.updateCustomer(customer);
+
+        // 客户移入私海处理
+        customerMoveToSeaHandler(id, type, CustomerSeaLogTypeEnum.MANUAL);
 
         // 删除跟进人
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(id, userId, username);
@@ -889,4 +912,58 @@ public class CustomerServiceImpl implements ICustomerService
         return customerIdList;
     }
 
+
+    /**
+     * 客户跟进规则处理
+     * @param customerId
+     */
+    @Override
+    public void customerFollowUpRulesHandler(Long customerId, FollowUpRulesTypeEnum followUpRulesTypeEnum) {
+        if (followUpRulesTypeEnum == null) return;
+
+        FollowUpRules followUpRulesParam = new FollowUpRules();
+        followUpRulesParam.setType(followUpRulesTypeEnum.getType());
+        followUpRulesParam.setActiveFlag(true);
+        followUpRulesParam.setDelFlag("0");
+        // 查询客户跟进规则
+        List<FollowUpRules> followUpRulesList = followUpRulesMapper.selectFollowUpRulesList(followUpRulesParam);
+        long lastContactedAtCount = followUpRulesList.stream().filter(followUpRules -> followUpRules.getCategory().intValue() == FollowUpRulesCategoryEnum.LAST_CONTACTED_AT.getCategory()).count();
+        long lastFollowUpAtCount = followUpRulesList.stream().filter(followUpRules -> followUpRules.getCategory().intValue() == FollowUpRulesCategoryEnum.LAST_FOLLOWUP_AT.getCategory()).count();
+        Date lastContactedAt = null;
+        Date lastFollowUpAt = null;
+        if (lastContactedAtCount > 0) {
+            lastContactedAt = new Date();
+        }
+        if (lastFollowUpAtCount > 0) {
+            lastFollowUpAt = new Date();
+        }
+
+        // 更新客户最后联系时间和最后跟进时间
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        customer.setLastContactedAt(lastContactedAt);
+        customer.setLastFollowupAt(lastFollowUpAt);
+        customerMapper.updateCustomer(customer);
+    }
+
+    /**
+     * 客户移入公海规则处理
+     * @param customerId
+     * @param seaType
+     * @param customerSeaLogTypeEnum
+     */
+    @Override
+    public void customerMoveToSeaHandler(Long customerId, Integer seaType, CustomerSeaLogTypeEnum customerSeaLogTypeEnum) {
+        // 写入到日志
+        CustomerSeaLog customerSeaLog = new CustomerSeaLog();
+        customerSeaLog.setCustomerId(customerId);
+        customerSeaLog.setSeaType(seaType);
+        customerSeaLog.setType(customerSeaLogTypeEnum.getType());
+        customerSeaLog.setCreateTime(DateUtils.getNowDate());
+        customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
+    }
+
+    /**
+     * 移入公海
+     */
 }

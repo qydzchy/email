@@ -7,11 +7,15 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.customer.domain.PublicleadsRulesSegment;
+import com.ruoyi.customer.domain.dto.PublicleadsRulesAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
+import com.ruoyi.customer.mapper.PublicleadsRulesSegmentMapper;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PublicleadsRulesMapper;
 import com.ruoyi.customer.domain.PublicleadsRules;
 import com.ruoyi.customer.service.IPublicleadsRulesService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -26,6 +30,8 @@ public class PublicleadsRulesServiceImpl implements IPublicleadsRulesService
 {
     @Resource
     private PublicleadsRulesMapper publicleadsRulesMapper;
+    @Resource
+    private PublicleadsRulesSegmentMapper publicleadsRulesSegmentMapper;
 
     /**
      * 查询移入公海规则列表
@@ -42,16 +48,19 @@ public class PublicleadsRulesServiceImpl implements IPublicleadsRulesService
     /**
      * 新增移入公海规则
      * 
-     * @param publicleadsRules 移入公海规则
+     * @param publicleadsRulesAddOrUpdateDTO 移入公海规则
      * @return 结果
      */
     @Override
-    public int insertPublicleadsRules(PublicleadsRules publicleadsRules)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertPublicleadsRules(PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        PublicleadsRules publicleadsRules = new PublicleadsRules();
+        BeanUtils.copyProperties(publicleadsRulesAddOrUpdateDTO, publicleadsRules);
         publicleadsRules.setStatus(0);
         publicleadsRules.setCreateId(userId);
         publicleadsRules.setCreateBy(username);
@@ -59,26 +68,57 @@ public class PublicleadsRulesServiceImpl implements IPublicleadsRulesService
         publicleadsRules.setUpdateId(userId);
         publicleadsRules.setUpdateBy(username);
         publicleadsRules.setUpdateTime(DateUtils.getNowDate());
-        return publicleadsRulesMapper.insertPublicleadsRules(publicleadsRules);
+        publicleadsRulesMapper.insertPublicleadsRules(publicleadsRules);
+
+        List<Long> segmentIdList = publicleadsRulesAddOrUpdateDTO.getSegmentIdList();
+        List<PublicleadsRulesSegment> publicleadsRulesSegmentList = new ArrayList<>();
+        for (Long segmentId : segmentIdList) {
+            PublicleadsRulesSegment publicleadsRulesSegment = new PublicleadsRulesSegment();
+            publicleadsRulesSegment.setPublicleadsRulesId(publicleadsRules.getId());
+            publicleadsRulesSegment.setSegmentId(segmentId);
+            publicleadsRulesSegmentList.add(publicleadsRulesSegment);
+        }
+
+        // 批量新增公海规则客群
+        publicleadsRulesSegmentMapper.batchInsertPublicleadsRulesSegment(publicleadsRulesSegmentList);
+        return true;
     }
 
     /**
      * 修改移入公海规则
      * 
-     * @param publicleadsRules 移入公海规则
+     * @param publicleadsRulesAddOrUpdateDTO 移入公海规则
      * @return 结果
      */
     @Override
-    public int updatePublicleadsRules(PublicleadsRules publicleadsRules)
+    public boolean updatePublicleadsRules(PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        Long id = publicleadsRulesAddOrUpdateDTO.getId();
+        PublicleadsRules publicleadsRules = publicleadsRulesMapper.selectPublicleadsRulesById(id);
+        BeanUtils.copyProperties(publicleadsRulesAddOrUpdateDTO, publicleadsRules);
         publicleadsRules.setUpdateId(userId);
         publicleadsRules.setUpdateBy(username);
         publicleadsRules.setUpdateTime(DateUtils.getNowDate());
-        return publicleadsRulesMapper.updatePublicleadsRules(publicleadsRules);
+        publicleadsRulesMapper.updatePublicleadsRules(publicleadsRules);
+
+        // 删除公海规则客群
+        publicleadsRulesSegmentMapper.deleteByPublicleadsRulesId(id);
+
+        // 批量新增公海规则客群
+        List<Long> segmentIdList = publicleadsRulesAddOrUpdateDTO.getSegmentIdList();
+        List<PublicleadsRulesSegment> publicleadsRulesSegmentList = new ArrayList<>();
+        for (Long segmentId : segmentIdList) {
+            PublicleadsRulesSegment publicleadsRulesSegment = new PublicleadsRulesSegment();
+            publicleadsRulesSegment.setPublicleadsRulesId(publicleadsRules.getId());
+            publicleadsRulesSegment.setSegmentId(segmentId);
+            publicleadsRulesSegmentList.add(publicleadsRulesSegment);
+        }
+        publicleadsRulesSegmentMapper.batchInsertPublicleadsRulesSegment(publicleadsRulesSegmentList);
+        return true;
     }
 
     /**
@@ -99,15 +139,6 @@ public class PublicleadsRulesServiceImpl implements IPublicleadsRulesService
 
     @Override
     public List<PublicleadsRulesListVO> list() {
-        List<PublicleadsRules> publicleadsRuleList = selectPublicleadsRulesList(new PublicleadsRules());
-        List<PublicleadsRulesListVO> publicleadsRulesListVOList = new ArrayList<>();
-
-        for (PublicleadsRules publicleadsRules : publicleadsRuleList) {
-            PublicleadsRulesListVO publicleadsRulesListVO = new PublicleadsRulesListVO();
-            BeanUtils.copyProperties(publicleadsRules, publicleadsRulesListVO);
-            publicleadsRulesListVOList.add(publicleadsRulesListVO);
-        }
-
-        return publicleadsRulesListVOList;
+        return publicleadsRulesMapper.list();
     }
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.PublicleadsRulesSegmentMapper">
+
+    <resultMap type="PublicleadsRulesSegment" id="PublicleadsRulesSegmentResult">
+        <result property="id"    column="id"    />
+        <result property="publicleadsRulesId"    column="publicleads_rules_id"    />
+        <result property="segmentId"    column="segment_id"    />
+    </resultMap>
+
+    <sql id="selectPublicleadsRulesSegmentVo">
+        select id, publicleads_rules_id, segment_id from customer_publicleads_rules_segment
+    </sql>
+
+    <select id="selectPublicleadsRulesSegmentList" parameterType="PublicleadsRulesSegment" resultMap="PublicleadsRulesSegmentResult">
+        <include refid="selectPublicleadsRulesSegmentVo"/>
+        <where>
+            <if test="publicleadsRulesId != null "> and publicleads_rules_id = #{publicleadsRulesId}</if>
+            <if test="segmentId != null "> and segment_id = #{segmentId}</if>
+        </where>
+    </select>
+
+    <select id="selectPublicleadsRulesSegmentById" parameterType="Long" resultMap="PublicleadsRulesSegmentResult">
+        <include refid="selectPublicleadsRulesSegmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPublicleadsRulesSegment" parameterType="PublicleadsRulesSegment">
+        insert into customer_publicleads_rules_segment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="publicleadsRulesId != null">publicleads_rules_id,</if>
+            <if test="segmentId != null">segment_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="publicleadsRulesId != null">#{publicleadsRulesId},</if>
+            <if test="segmentId != null">#{segmentId},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertPublicleadsRulesSegment">
+        insert into customer_publicleads_rules_segment (publicleads_rules_id, segment_id)
+        values
+        <foreach collection="publicleadsRulesSegmentList" item="item" index="index" separator=",">
+            (#{item.publicleadsRulesId}, #{item.segmentId})
+        </foreach>
+    </insert>
+
+    <update id="updatePublicleadsRulesSegment" parameterType="PublicleadsRulesSegment">
+        update customer_publicleads_rules_segment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="publicleadsRulesId != null">publicleads_rules_id = #{publicleadsRulesId},</if>
+            <if test="segmentId != null">segment_id = #{segmentId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePublicleadsRulesSegmentById" parameterType="Long">
+        delete from customer_publicleads_rules_segment where id = #{id}
+    </delete>
+
+    <delete id="deletePublicleadsRulesSegmentByIds" parameterType="String">
+        delete from customer_publicleads_rules_segment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByPublicleadsRulesId">
+        delete from customer_publicleads_rules_segment where publicleads_rules_id = #{publicleadsRulesId}
+    </delete>
+</mapper>

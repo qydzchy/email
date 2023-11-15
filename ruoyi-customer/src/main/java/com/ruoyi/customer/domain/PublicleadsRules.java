@@ -25,10 +25,6 @@ public class PublicleadsRules extends BaseEntity
     @Excel(name = "规则名称")
     private String name;
 
-    /** 客群ID */
-    @Excel(name = "客群ID")
-    private Long customerSegmentId;
-
     /** 客户状态-天数 */
     @Excel(name = "客户状态-天数")
     private Long days;
@@ -72,15 +68,6 @@ public class PublicleadsRules extends BaseEntity
     public String getName() 
     {
         return name;
-    }
-    public void setCustomerSegmentId(Long customerSegmentId) 
-    {
-        this.customerSegmentId = customerSegmentId;
-    }
-
-    public Long getCustomerSegmentId() 
-    {
-        return customerSegmentId;
     }
     public void setDays(Long days) 
     {
@@ -151,7 +138,6 @@ public class PublicleadsRules extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("name", getName())
-            .append("customerSegmentId", getCustomerSegmentId())
             .append("days", getDays())
             .append("type", getType())
             .append("status", getStatus())

@@ -2,6 +2,8 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 
+import com.ruoyi.common.enums.customer.CustomerSeaLogTypeEnum;
+import com.ruoyi.common.enums.customer.FollowUpRulesTypeEnum;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.*;
@@ -169,4 +171,16 @@ public interface ICustomerService
      * @return
      */
     Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long publicleadsGroupsId, Long packetId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 客户跟进规则处理
+     * @param customerId
+     * @param followUpRulesTypeEnum
+     */
+    void customerFollowUpRulesHandler(Long customerId, FollowUpRulesTypeEnum followUpRulesTypeEnum);
+
+    /**
+     * 移入公海或私海
+     */
+    void customerMoveToSeaHandler(Long customerId, Integer seaType, CustomerSeaLogTypeEnum customerSeaLogTypeEnum);
 }

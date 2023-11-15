@@ -2,6 +2,7 @@ package com.ruoyi.customer.service;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsRules;
+import com.ruoyi.customer.domain.dto.PublicleadsRulesAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 
 /**
@@ -23,18 +24,18 @@ public interface IPublicleadsRulesService
     /**
      * 新增移入公海规则
      * 
-     * @param publicleadsRules 移入公海规则
+     * @param publicleadsRulesAddOrUpdateDTO 移入公海规则
      * @return 结果
      */
-    public int insertPublicleadsRules(PublicleadsRules publicleadsRules);
+    public boolean insertPublicleadsRules(PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO);
 
     /**
      * 修改移入公海规则
      * 
-     * @param publicleadsRules 移入公海规则
+     * @param publicleadsRulesAddOrUpdateDTO 移入公海规则
      * @return 结果
      */
-    public int updatePublicleadsRules(PublicleadsRules publicleadsRules);
+    public boolean updatePublicleadsRules(PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO);
 
     /**
      * 删除移入公海规则信息

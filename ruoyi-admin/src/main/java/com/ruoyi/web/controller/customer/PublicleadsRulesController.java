@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.customer.domain.dto.PublicleadsRulesAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -46,10 +47,10 @@ public class PublicleadsRulesController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:rules:add')")
     @Log(title = "新增移入公海规则", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody PublicleadsRules publicleadsRules)
+    public AjaxResult add(@RequestBody PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO)
     {
-        checkParam(publicleadsRules);
-        return toAjax(publicleadsRulesService.insertPublicleadsRules(publicleadsRules));
+        checkParam(publicleadsRulesAddOrUpdateDTO);
+        return toAjax(publicleadsRulesService.insertPublicleadsRules(publicleadsRulesAddOrUpdateDTO));
     }
 
     /**
@@ -58,37 +59,37 @@ public class PublicleadsRulesController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:rules:edit')")
     @Log(title = "修改移入公海规则", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody PublicleadsRules publicleadsRules)
+    public AjaxResult edit(@RequestBody PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO)
     {
-        if (publicleadsRules.getId() == null) {
+        if (publicleadsRulesAddOrUpdateDTO.getId() == null) {
             throw new ServiceException("ID不能为空");
         }
-        checkParam(publicleadsRules);
+        checkParam(publicleadsRulesAddOrUpdateDTO);
 
-        return toAjax(publicleadsRulesService.updatePublicleadsRules(publicleadsRules));
+        return toAjax(publicleadsRulesService.updatePublicleadsRules(publicleadsRulesAddOrUpdateDTO));
     }
 
     /**
      * 校验参数
-     * @param publicleadsRules
+     * @param publicleadsRulesAddOrUpdateDTO
      */
-    private static void checkParam(PublicleadsRules publicleadsRules) {
-        if (StringUtils.isBlank(publicleadsRules.getName())) {
+    private static void checkParam(PublicleadsRulesAddOrUpdateDTO publicleadsRulesAddOrUpdateDTO) {
+        if (StringUtils.isBlank(publicleadsRulesAddOrUpdateDTO.getName())) {
             throw new ServiceException("规则名称不能为空");
         }
-        if (publicleadsRules.getCustomerSegmentId() == null) {
-            throw new ServiceException("客群不能为空");
+        if (publicleadsRulesAddOrUpdateDTO.getSegmentIdList() == null || publicleadsRulesAddOrUpdateDTO.getSegmentIdList().isEmpty()) {
+            throw new ServiceException("请选择客群");
         }
-        if (publicleadsRules.getDays() == null) {
+        if (publicleadsRulesAddOrUpdateDTO.getDays() == null) {
             throw new ServiceException("规则天数不能为空");
         }
-        if (publicleadsRules.getDays() < 0) {
+        if (publicleadsRulesAddOrUpdateDTO.getDays() < 0) {
             throw new ServiceException("规则天数不能小于0");
         }
-        if (publicleadsRules.getType() == null) {
+        if (publicleadsRulesAddOrUpdateDTO.getType() == null) {
             throw new ServiceException("规则类型不能为空");
         }
-        if (publicleadsRules.getStartTime() == null) {
+        if (publicleadsRulesAddOrUpdateDTO.getStartTime() == null) {
             throw new ServiceException("开始时间不能为空");
         }
     }
