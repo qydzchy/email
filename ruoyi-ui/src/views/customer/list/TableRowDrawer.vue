@@ -56,14 +56,14 @@
             </div>
           </div>
           <div class="tabs mt-10">
-            <TableRowTabs :options="options"/>
+            <TableRowTabs :row="row" :options="options"/>
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
       </el-drawer>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="editVisible" :row="{id:1}" />
+    <CreateCustomerDrawer :visible.sync="editVisible" :row="{id:1}"/>
   </div>
 </template>
 
@@ -74,6 +74,12 @@ import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 
 export default {
   props: {
+    row: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    },
     visible: {
       type: Boolean,
       default: false,

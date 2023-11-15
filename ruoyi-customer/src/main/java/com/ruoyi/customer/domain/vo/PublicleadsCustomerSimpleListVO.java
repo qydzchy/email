@@ -66,6 +66,12 @@ public class PublicleadsCustomerSimpleListVO {
      */
     private CustomerContactBO contact;
 
+    /**
+     * 关注 0.未关注 1.已关注
+     * @return
+     */
+    private Integer focusFlag;
+
     public String getCustomerTypeName() {
         return null;
     }

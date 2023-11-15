@@ -68,7 +68,7 @@ public interface CustomerMapper
      * @param segmentId
      * @return
      */
-    int countPrivateleadsCustomer(@Param("segmentId") Long segmentId);
+    int countPrivateleadsCustomer(@Param("userId") Long userId, @Param("segmentId") Long segmentId);
 
     /**
      * 移动客户到分组
@@ -115,7 +115,7 @@ public interface CustomerMapper
      * @param limit
      * @return
      */
-    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
+    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("userId") Long userId, @Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 统计公海客户数量
@@ -147,4 +147,11 @@ public interface CustomerMapper
      * @return
      */
     Long getDeptIdByUserId(@Param("userId") Long userId);
+
+    /**
+     * 移至客户到公海
+     * @param id
+     * @param seaType
+     */
+    void updateCustomerSeaType(@Param("id") Long id, @Param("seaType") Integer seaType, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

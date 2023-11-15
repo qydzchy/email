@@ -10,17 +10,22 @@
     <div class="mt-20" v-if="!showWriteFollow">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">写跟进</div>
-        <el-popover width="280" trigger="click" placement="bottom-end" :append-to-body="false">
+        <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
+                    :append-to-body="false">
           <el-row>
             <div class="flex-middle space-between">
               <span>点击选择模板，可自动填充到输入框</span>
               <i class="el-icon-setting pl-10 pointer"
                  @click="targetBlank('/company/customer-setting?tab=followText')"></i>
             </div>
-            <div class="template-card py-8 px-16 mt-8">
-              <p class="template-title bold">模板名称测试</p>
-              <p class="template-content fs-12">模板内容测试</p>
+            <div style="max-height: 300px;overflow-y: auto">
+              <div class="template-card py-8 px-16 mt-8" v-for="(text,index) in followTextList" :key="index"
+                   @click="chooseTemplateText(text)">
+                <p class="template-title bold">{{ text.name }}</p>
+                <p class="template-content fs-12">{{ text.content }}</p>
+              </div>
             </div>
+
           </el-row>
           <el-button round size="medium" slot="reference">选择模板</el-button>
         </el-popover>
@@ -35,21 +40,45 @@
       </el-input>
     </div>
     <div class="mt-20" v-else>
-      <WriteFollow show-full-screen-icon @onFullScreen="templateVisible=true" @onCancel="onCancelWriteFollow"/>
+      <WriteFollow :row="row" :echoData="templateData" show-full-screen-icon @onFullScreen="templateVisible=true"
+                   @onCancel="onCancelWriteFollow" @onConfirm="onConfirmWriteFollow">
+        <template #right>
+          <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
+                      :append-to-body="false">
+            <el-row>
+              <div class="flex-middle space-between">
+                <span>点击选择模板，可自动填充到输入框</span>
+                <i class="el-icon-setting pl-10 pointer"
+                   @click="targetBlank('/company/customer-setting?tab=followText')"></i>
+              </div>
+              <div style="max-height: 300px;overflow-y: auto">
+                <div class="template-card py-8 px-16 mt-8" v-for="(text,index) in followTextList" :key="index"
+                     @click="chooseTemplateText(text)">
+                  <p class="template-title bold">{{ text.name }}</p>
+                  <p class="template-content fs-12">{{ text.content }}</p>
+                </div>
+              </div>
+
+            </el-row>
+            <el-button round size="medium" slot="reference">选择模板</el-button>
+          </el-popover>
+        </template>
+      </WriteFollow>
     </div>
     <!--  日程  -->
     <div class="mt-20" v-if="options.isShowSchedule">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">计划日程</div>
-        <el-button round size="medium">添加日程</el-button>
+        <el-button round size="medium" @click="dialogSchedule=true">添加日程</el-button>
       </div>
-      <ul class="plan-ul">
-        <li class="plan-li pointer">
-          <div class="circle"></div>
-          <span class="date">10-18</span>
-          <span class="content">客户生日：测试公司001-王五</span>
+      <ul class="plan-ul" v-if="scheduleList && scheduleList.length">
+        <li class="plan-li pointer" v-for="(schedule,index) in scheduleList" :key="index">
+          <div class="circle" :style="{color:schedule.color}"></div>
+          <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
+          <span class="content">{{ schedule.scheduleContent }}</span>
         </li>
       </ul>
+      <el-empty v-else :image-size="40"/>
     </div>
     <div class="mt-20">
       <div class="flex-middle space-between">
@@ -184,22 +213,34 @@
         </el-timeline>
       </div>
     </div>
-    <div>
+    <template>
       <DialogTemplateFollow :visible.sync="templateVisible" :row="templateDrawerRow" @close="templateVisible = false"/>
-    </div>
+    </template>
+    <template>
+      <DialogSchedule :visible.sync="dialogSchedule"/>
+    </template>
   </div>
-
 </template>
 
 <script>
 import DialogTemplateFollow from "./DialogTemplateFollow.vue";
 import WriteFollow from "./WriteFollow.vue";
 import DelPopover from "@/views/company/customer/DelPopover.vue";
+import DialogSchedule from "@/views/customer/list/DialogSchedule.vue";
 import {targetBlank} from '@/utils/tools'
 import {addRecordsComment, deleteRecordsComment, editRecordsComment} from "@/api/customer/comment";
+import {followTextTemplateList} from "@/api/company/followText";
+import {getScheduleList} from "@/api/customer/schedule";
+import {formatMonthAndDay} from "@/utils";
 
 export default {
   props: {
+    row: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    },
     options: {
       type: Object,
       default: () => {
@@ -211,6 +252,7 @@ export default {
     }
   },
   components: {
+    DialogSchedule,
     DialogTemplateFollow,
     WriteFollow,
     DelPopover
@@ -304,11 +346,59 @@ export default {
       ],
       tempEditValue: '',
       templateDrawerRow: {},
+      followTextList: [],
+      templateData: {},
+      showTemplatePopover: false,
+      scheduleList: [],
+      dialogSchedule: false,
     }
   },
+  mounted() {
+    this.getTemplateList()
+    this.getFollowUpRecordList()
+  },
   methods: {
+    async getTemplateList() {
+      try {
+        const res = await followTextTemplateList()
+        if (res.code === 200) {
+          this.followTextList = res.data
+        }
+      } catch {
+      }
+    },
+    async getFollowUpRecordList() {
+      if (!this.options.isShowSchedule && !this.row.id) {
+        return
+      }
+      try {
+        const res = await getScheduleList({
+          customerId: this.row.id,
+          pageNum: 1,
+          pageSize: 3,
+        })
+        if (res.code === 200) {
+          this.scheduleList = res.data
+        }
+      } catch {
+      }
+    },
+    chooseTemplateText(text) {
+      if (!this.showWriteFollow) {
+        this.showWriteFollow = true
+      }
+      this.templateData = {
+        id: +new Date(),
+        name: text.name,
+      }
+      this.showTemplatePopover = false
+    },
     onCancelWriteFollow() {
       this.showWriteFollow = false
+      this.templateData = {}
+    },
+    onConfirmWriteFollow() {
+      this.onCancelWriteFollow()
     },
     onSortTime() {
       const mapSort = {
@@ -402,6 +492,7 @@ export default {
       }
     },
     targetBlank,
+    formatMonthAndDay,
   }
 }
 </script>

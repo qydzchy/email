@@ -21,6 +21,7 @@
             :paginate-option="paginateOption"/>
       </div>
       <TableRowDrawer
+          :row="rowDrawerData"
           :visible.sync="rowDrawerVisible"
           :externalOpt="{groupOption:indexOpt.groupOption}"
       />
@@ -37,7 +38,7 @@ import CellOperate from './CellOperate.vue'
 import HeaderOperate from "./HeaderOperate.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
-import {getPrivateLeadsList} from "@/api/customer/publicleads";
+import {editFocusFlagCustomer, getPrivateLeadsList} from "@/api/customer/publicleads";
 import {packetList} from "@/api/company/group";
 
 export default {
@@ -77,20 +78,17 @@ export default {
         {type: 'selection', width: '50'},
         {
           label: '',
-          field: 'isFollow',
+          field: 'focusFlag',
           fixed: 'left',
           align: 'left',
           width: '20',
           resizable: false,
           className: 'follow-cell',
           render: (row, field, scope) => {
-            const {rowId, fieldName} = this.tableCell
-            const propName = scope.column.property
-            const isShow = (fieldName === propName && rowId === row?.id) || field
             return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
               <CollageIcon
-                  show={isShow}
-                  onClick={() => this.onCollageIcon(row?.id)}>
+                  show={!!field}
+                  onClick={() => this.onCollageIcon(row?.id, scope)}>
               </CollageIcon>
             </div>
 
@@ -116,7 +114,7 @@ export default {
                 visible={isShow}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(),
+                  click: () => this.onCellClick(row),
                   onBlur: () => this.onBlur(),
                   onInput: (value) => this.onInput(value, scope, propName),
                   onEnter: () => this.inputEnter(row)
@@ -174,7 +172,7 @@ export default {
                 visible={isShow}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(),
+                  click: () => this.onCellClick(row),
                   onBlur: () => this.onBlur(),
                   onInput: (value) => this.onInput(value, scope, propName),
                   onEnter: () => this.inputEnter(row)
@@ -210,7 +208,7 @@ export default {
                 visible={isShow}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(),
+                  click: () => this.onCellClick(row),
                   onBlur: () => this.onBlur(),
                 }}
             >
@@ -253,7 +251,7 @@ export default {
           field: 'operate',
           fixed: 'right',
           render: (row, _field) => {
-            return <OperateMenu row={row}>
+            return <OperateMenu row={row} indexOpt={this.indexOpt} on={{load: () => this.reloadList()}}>
               <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
             </OperateMenu>
           }
@@ -269,6 +267,7 @@ export default {
       },
       curEditId: '',
       rowDrawerVisible: false, //点击显示详情抽屉
+      rowDrawerData: {},//抽屉回显的数据
       ids: [],
     }
   },
@@ -296,26 +295,31 @@ export default {
           this.tableLoading = false
         })
         if (res.code === 200) {
-          this.list = res.rows
-          this.paginateOption.total = res.total
-          this.list.map((val) => {
-            val.countryRegion = val.countryRegion.split('/')
+          this.list = res.rows.map((val) => {
+            val.countryRegion = val.countryRegion?.split('/') || []
             return val
           })
+          this.paginateOption.total = res.total
 
         }
       } catch {
       }
     },
-    onCollageIcon(id) {
-      this.list.map(val => {
-        if (val.id === id) {
-          val.isFollow = !val.isFollow
+    async onCollageIcon(id, scope) {
+      try {
+        const res = await editFocusFlagCustomer({id})
+        if (res.code === 200) {
+          const focusFlog = !this.list[scope.$index].focusFlag
+          this.$message.success(focusFlog ? '关注成功' : '取消关注成功')
+          this.$set(this.list, scope.$index, {...scope.row, focusFlag: focusFlog})
         }
-        return val
-      })
+      } catch {
+
+      }
+
     },
-    onCellClick() {
+    onCellClick(row) {
+      this.rowDrawerData = row
       this.rowDrawerVisible = true
     },
     onCellEdit(rowId, field) {
@@ -351,6 +355,7 @@ export default {
       this.ids = selection.map(item => item.postId)
     },
     reloadList() {
+      console.log('reload')
       this.getList(this.segmentId)
     }
   }

@@ -1,33 +1,62 @@
 <template>
   <div>
-    <el-dialog width="600px" :visible.sync="groupDialog" :close-on-click-modal="false" :append-to-body="true"
-               :title="title"
-               @close="$emit('update:visible',false)">
-      <el-form>
-        <el-input placeholder="请输入分组"></el-input>
-        <el-row class="wrapper">
-          <el-tree>
-
-          </el-tree>
-        </el-row>
+    <el-dialog
+        width="400px"
+        style="margin-top: 25vh"
+        :visible.sync="groupDialog"
+        :close-on-click-modal="false"
+        :append-to-body="true"
+        :title="title"
+        @close="onCancel">
+      <el-form class="py-20" style="height: 100px;">
+        <el-form-item>
+          <el-select-tree
+              style="width: 100%"
+              v-model="moveValue"
+              :data="groupOption"
+              :props="{value:'id',label:'name'}"
+              :default-expand-all="true"
+              :check-strictly="true">
+          </el-select-tree>
+        </el-form-item>
       </el-form>
+      <template #footer>
+        <el-button round :loading="btnLoading" @click="onCancel">取 消</el-button>
+        <el-button type="primary" :loading="btnLoading" :disabled="!moveValue" round @click="onConfirm">确 定
+        </el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import {movePacketCustomer} from "@/api/customer/publicleads";
+
 export default {
   props: {
+    row: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    },
     visible: {
       type: Boolean,
       default: false,
+      required: false
+    },
+    groupOption: {
+      type: Array,
+      default: () => [],
       required: false
     }
   },
   data() {
     return {
       groupDialog: false,
-      title: '将【测试公司001】移动至分组'
+      title: '',
+      moveValue: '',
+      btnLoading: false
     }
   },
   watch: {
@@ -36,8 +65,39 @@ export default {
         this.groupDialog = newVal
       },
       immediate: true
-    }
+    },
+    row: {
+      handler(newVal) {
+        this.title = newVal?.companyName ? `将【${newVal?.companyName}】移动至分组` : '移动至分组'
+      },
+      immediate: true,
+      deep: true,
+    },
   },
+  methods: {
+    async onConfirm() {
+      try {
+        this.btnLoading = true
+        const res = await movePacketCustomer({
+          id: this.row?.id,
+          packetId: this.moveValue
+        }).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success("移入分组成功")
+          this.onCancel()
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    onCancel() {
+      this.title = ''
+      this.moveValue = ''
+      this.$emit('update:visible', false)
+    }
+  }
 }
 </script>
 

@@ -28,9 +28,9 @@
         </div>
 
       </div>
-      <div class="mt-16 flex-wrap gap-16" v-loading="templateLoading">
+      <div class="mt-16 flex-start flex-wrap gap-16" v-loading="templateLoading">
         <template v-if="followTextList.length">
-          <div class="follow-text-template radius-5" style="width:33.333%" v-for="item in followTextList"
+          <div class="follow-text-template radius-5" style="width:32.333%" v-for="item in followTextList"
                :key="item.id">
             <div class="wrap px-16 py-14 radius-4 flex-column">
               <div class="card-head flex-middle space-between">
@@ -118,19 +118,19 @@
         </el-form-item>
         <el-form-item label="文本标签" prop="label">
           <el-select
-            style="width: 100%"
-            multiple
-            clearable
-            filterable
-            allow-create
-            default-first-option
-            ref="selectRef"
-            autocomplete="off"
-            class="customer-select"
-            popper-class="hide-option"
-            v-model="fastTextForm.label"
-            placeholder="请输入文本标签"
-            :popper-append-to-body="false"
+              style="width: 100%"
+              multiple
+              clearable
+              filterable
+              allow-create
+              default-first-option
+              ref="selectRef"
+              autocomplete="off"
+              class="customer-select"
+              popper-class="hide-option"
+              v-model="fastTextForm.label"
+              placeholder="请输入文本标签"
+              :popper-append-to-body="false"
           >
           </el-select>
         </el-form-item>
@@ -157,6 +157,7 @@ import {
   followTextTemplateDelete, followTextTemplateEdit,
   followTextTemplateList
 } from "@/api/company/followText";
+import {deepClone} from "@/utils";
 
 const iniFollowTextForm = {
   name: '',
@@ -178,7 +179,7 @@ export default {
       followTextRadio: 1,
       followTextList: [],
       followTextDialog: false,
-      followTextForm: {...iniFollowTextForm},
+      followTextForm: {...deepClone(iniFollowTextForm)},
       followTextRules: {
         name: [
           {required: true, message: '请输入文本分组名称', trigger: 'blur'},
@@ -190,7 +191,7 @@ export default {
       // 快捷文本
       fastTextList: [],
       fastTextDialog: false,
-      fastTextForm: {...iniFastTextForm},
+      fastTextForm: {...deepClone(iniFastTextForm)},
       fastTextRules: {
         name: [
           {required: true, message: '请输入文本分组名称', trigger: 'blur'},
@@ -239,13 +240,14 @@ export default {
         })
         if (res.code === 200) {
           this.fastTextList = res.data.map(val => {
-            val.label = val.label.split(';')
+            val.label = val.label?.split(';') || ''
             return val
           })
         }
       } catch {
       }
     },
+    // 模板添加和修改
     templateCommOperate(row) {
       return new Promise(async resolve => {
         this.btnTemplateLoading = true
@@ -278,6 +280,7 @@ export default {
       })
 
     },
+    // 快捷文本添加和修改
     quickCommOperate(row) {
       return new Promise(async resolve => {
         this.btnQuickTextLoading = true
@@ -354,7 +357,6 @@ export default {
         if (valid) {
           if (type === 'followText') {
             this.templateCommOperate(this.followTextForm).then(res => {
-              console.log(res)
               if (res) {
                 this.getTemplateList()
                 this.onCancel('followText')
@@ -376,11 +378,11 @@ export default {
     // 取消
     onCancel(type) {
       if (type === 'followText') {
-        this.followTextForm = iniFollowTextForm
+        this.followTextForm = {...deepClone(iniFollowTextForm)}
         this.followTextDialog = false
         this.btnTemplateLoading = false
       } else if (type === 'fastText') {
-        this.fastTextForm = iniFastTextForm
+        this.fastTextForm = {...deepClone(iniFastTextForm)}
         this.fastTextDialog = false
         this.btnQuickTextLoading = false
       }

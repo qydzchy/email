@@ -40,7 +40,6 @@ export default {
   },
   methods: {
     onClick() {
-      this.isCollage = !this.isCollage
       this.$emit('click', this.isCollage)
     }
   }

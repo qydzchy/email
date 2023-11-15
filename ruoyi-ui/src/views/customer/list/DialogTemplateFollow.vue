@@ -119,7 +119,7 @@ export default {
     }
 
     .right-main {
-      max-height: 600px;
+      max-height: 560px;
       overflow-y: auto;
     }
   }

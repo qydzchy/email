@@ -97,11 +97,11 @@ export function reassignToCustomer(data) {
 }
 
 // 查询客户跟进人
-export function searchFollowerCustomer(data) {
+export function searchFollowerCustomer(params) {
     return request({
         url: '/customer/customer/follow/up/personnel/list',
-        method: 'post',
-        data
+        method: 'get',
+        params
     })
 }
 

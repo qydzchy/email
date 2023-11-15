@@ -1,11 +1,16 @@
 <template>
   <el-row class="write-follow mt-10 px-16">
-    <div>
-      <span class="fs-13">跟进类型</span>
-      <el-select class="auto-select ml-10" v-model="formData.followType" size="small">
-        <el-option v-for="(item,index) in followOptionList" :value="item.value" :label="item.label"
-                   :key="index"></el-option>
-      </el-select>
+    <div class="flex-middle space-between">
+      <div>
+        <span class="fs-13">跟进类型</span>
+        <el-select class="auto-select ml-10" v-model="formData.followUpType" size="small">
+          <el-option v-for="(item,index) in followOptionList" :value="item.value" :label="item.label"
+                     :key="index"></el-option>
+        </el-select>
+      </div>
+      <div>
+        <slot name="right"></slot>
+      </div>
     </div>
     <div class="textarea-card my-10">
       <div class="header px-12">
@@ -13,12 +18,17 @@
           <div>
             <span class="fs-13">快捷文本分组</span>
             <el-select class="auto-select ml-10" v-model="formData.fastType" size="small">
-              <el-option v-for="(item,index) in fastOptionList" :value="item.value" :label="item.label"
+              <el-option v-for="(item,index) in fastOptionList" :value="item.id" :label="item.name"
                          :key="index"></el-option>
             </el-select>
           </div>
           <div>
-            <el-popover v-model="fastPopover" :append-to-body="false" :popper-options="{positionFixed:true}">
+            <el-popover
+                v-if="fastOptionList.length"
+                v-model="fastPopover"
+                :append-to-body="false"
+                class="write-follow-tag"
+            >
               <template #default>
                 <div>
                   <div class="fs-13">可点击回车连续添加快捷文本，最多20个</div>
@@ -30,15 +40,19 @@
                       allow-create
                       filterable default-first-option
                       :popper-append-to-body="false"
-                  ></el-select>
+                  >
+                  </el-select>
                   <div class="operate flex-end">
-                    <el-button size="small" @click="fastPopover=false">取消</el-button>
-                    <el-button size="small" type="primary">确认</el-button>
+                    <el-button size="small" round @click="onCancelAddTag">取消</el-button>
+                    <el-button size="small" round type="primary" @click="onConfirmAddTag">确认</el-button>
                   </div>
                 </div>
               </template>
-              <el-button type="text" icon="el-icon-setting" slot="reference">设置个人快捷文本</el-button>
+              <el-button type="text" icon="el-icon-setting" slot="reference">设置快捷文本</el-button>
             </el-popover>
+            <el-button v-else type="text" icon="el-icon-setting" slot="reference"
+                       @click="targetBlank('/company/customer-setting?tab=followText')">设置快捷文本
+            </el-button>
             <el-tooltip placement="top" content="展开" v-if="showFullScreenIcon">
               <i class="el-icon-full-screen pointer ml-6" @click.stop="$emit('onFullScreen')"></i>
             </el-tooltip>
@@ -46,7 +60,13 @@
         </div>
       </div>
       <div class="main">
-        <el-input v-model="formData.followText" type="textarea" resize="none" :rows="6"
+        <div class="tag flex-middle px-16 gap-6">
+          <el-tag class="pointer" effect="plain" v-for="(tag,idx) in fastTagList" :key="idx"
+                  @click="joinFollowText(tag)">
+            {{ tag }}
+          </el-tag>
+        </div>
+        <el-input v-model="formData.followUpContent" type="textarea" resize="none" :rows="6"
                   placeholder="请输入内容，可以将附件拖拽至此，快速上传"></el-input>
       </div>
       <div class="foot px-16 pb-10">
@@ -66,21 +86,22 @@
             <div class="auto-date-picker flex-middle">
               <span class="fs-13 pr-6">时间</span>
               <el-date-picker
-                  key="fastTextTime"
+                  key="submissionTime"
                   style="width:180px"
                   size="small"
-                  v-model="formData.fastTextTime"
+                  v-model="formData.submissionTime"
                   placeholder="请选择日期"
                   clearable
                   type="datetime"
-                  :picker-options="pickerOptions"
+                  :picker-options="submissionPickerOptions"
                   align="left"
+                  format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
             </div>
             <div class="flex-middle">
               <span class="fs-13 pl-6">跟进联系人</span>
-              <el-select class="auto-select ml-10" v-model="formData.followContact" size="small">
-                <el-option v-for="(item,index) in followContactList" :value="item.value" :label="item.label"
+              <el-select class="auto-select ml-10" v-model="formData.followUpContactId" size="small">
+                <el-option v-for="(item,index) in followContactList" :value="item.userId" :label="item.nickName"
                            :key="index"></el-option>
               </el-select>
             </div>
@@ -89,26 +110,26 @@
         </div>
       </div>
     </div>
-    <el-row class="flex-middle py-10">
-      <span class="fs-13">关联业务数据</span>
-      <div class="ml-10">
-        <el-select v-model="formData.businessData" size="small" style="width:200px">
+    <!--    <el-row class="flex-middle py-10">-->
+    <!--      <span class="fs-13">关联业务数据</span>-->
+    <!--      <div class="ml-10">-->
+    <!--        <el-select v-model="formData.businessData" size="small" style="width:200px">-->
 
-        </el-select>
-      </div>
-      <div>
-        <el-button size="small">选择</el-button>
-      </div>
-    </el-row>
+    <!--        </el-select>-->
+    <!--      </div>-->
+    <!--      <div>-->
+    <!--        <el-button size="small">选择</el-button>-->
+    <!--      </div>-->
+    <!--    </el-row>-->
     <el-row class="flex-middle py-10">
       <span class="fs-13">下次跟进日程</span>
       <div class="ml-10">
         <el-date-picker
-            v-if="formData.nextFollowFullDay"
+            v-if="formData.allDayFlag"
             key="isFullDay"
             style="width:200px"
             size="small"
-            v-model="formData.nextFollowDate"
+            v-model="formData.nextFollowUpSchedule"
             placeholder="请选择日期"
             clearable
             format="yyyy-MM-dd"
@@ -120,14 +141,15 @@
             key="isNotFullDay"
             style="width:200px"
             size="small"
-            v-model="formData.nextFollowDate"
+            v-model="formData.nextFollowUpSchedule"
             placeholder="请选择日期"
             clearable
             type="datetime"
             :picker-options="pickerOptions"
             align="left"
+            format="yyyy-MM-dd HH:mm:ss"
         ></el-date-picker>
-        <el-checkbox class="ml-10" v-model="formData.nextFollowFullDay">全天</el-checkbox>
+        <el-checkbox class="ml-10" v-model="formData.allDayFlag">全天</el-checkbox>
         <el-button class="ml-20" type="text" v-if="!isFullEdit" @click="isFullEdit=true">完整编辑</el-button>
       </div>
     </el-row>
@@ -135,7 +157,7 @@
       <el-form>
         <el-form-item>
           <div>日程内容</div>
-          <el-input v-model="formData.followCustomer" placeholder="跟进客户"></el-input>
+          <el-input v-model="formData.scheduleContent" placeholder="跟进客户"></el-input>
         </el-form-item>
         <el-form-item>
           <SelectTagColor is-hover :checked-color.sync="formData.color" :color-map="colorMap"/>
@@ -143,7 +165,7 @@
         <el-form-item>
           <div>备注</div>
           <div class="remark-wrap">
-            <el-input v-model="formData.remark" type="textarea" resize="none" :rows="6"
+            <el-input v-model="formData.remarks" type="textarea" resize="none" :rows="6"
                       placeholder="请输入内容，可以将附件拖拽至此，快速上传"></el-input>
             <div class="px-16 pb-10 flex-middle gap-8">
               <el-tooltip content="附件">
@@ -160,87 +182,86 @@
     <!--  operate  -->
     <el-row class="write-operate flex-end">
       <el-button round size="small" @click="onCancel">取消</el-button>
-      <el-button round type="primary" size="small" @click="$emit('onConfirm')">确认</el-button>
+      <el-button round type="primary" size="small" @click="onConfirm">确认</el-button>
     </el-row>
   </el-row>
 </template>
 
 <script>
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
+import {deepClone, formatDate, formatDateSimple} from "@/utils";
+import {followTextQuickEdit, followTextQuickList} from "@/api/company/followText";
+import {targetBlank} from "@/utils/tools";
+import {searchFollowerCustomer} from "@/api/customer/publicleads";
+import {addFollowUpRecords} from "@/api/customer/records";
 
+const initFormData = {
+  customerId: null,//客户ID
+  followUpType: 1,//跟进类型 1.快速记录 2.电话 3.会面 4.社交平台
+  followUpContent: '', //跟进内容
+  followUpContactId: '',//跟进联系人ID
+  fastType: '',
+  submissionTime: +new Date(),//提交时间
+  fastTextTag: [],
+  nextFollowUpSchedule: '', //下次跟进日程
+  businessData: '',
+  allDayFlag: true,//全天 0.否 1.是
+  remarks: '',//备注
+  scheduleContent: '',//日程内容
+  color: '#ff3333'//颜色
+}
 export default {
   components: {SelectTagColor},
   props: {
+    row: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    },
+    echoData: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    },
     showFullScreenIcon: {
       type: Boolean,
       default: false,
       required: false
-    }
+    },
   },
   data() {
     return {
       formData: {
-        followType: 'fastWrite',
-        followText: '',
-        followContact: '测试',
-        fastType: 'selfGroup',
-        fastTextTime: '',
-        fastTextTag: [],
-        nextFollowDate: '',
-        businessData: '',
-        nextFollowFullDay: true,
-        remark: '',
-        followCustomer: '',
-        color: '#ff3333'
+        ...deepClone(initFormData)
       },
       fastPopover: false,
+      fastOptionList: [],
       followOptionList: [
         {
-          value: 'fastWrite',
+          value: 1,
           label: '快速记录',
         },
         {
-          value: 'phone',
+          value: 2,
           label: '电话',
         },
         {
-          value: 'faceToFace',
+          value: 3,
           label: '会面',
         },
         {
-          value: 'communityPlatform',
+          value: 4,
           label: '社交平台',
         },
       ],
       followContactList: [
         {value: '测试', label: '测试'}
       ],
-      fastOptionList: [
-        {
-          value: 'selfGroup',
-          label: '个人分组',
-        },
-        {
-          value: 'talk',
-          label: '洽谈',
-        },
-        {
-          value: 'unmatched',
-          label: '未成交',
-        },
-        {
-          value: 'following',
-          label: '跟单中',
-        },
-        {
-          value: 'fallback',
-          label: '售后',
-        },
-        {
-          value: 'retain',
-          label: '客情维系',
-        },
-      ],
+      submissionPickerOptions: {
+        disabledDate: this.disabledDate
+      },
       pickerOptions: {
         shortcuts: [
           {
@@ -279,7 +300,7 @@ export default {
               end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
               picker.$emit('pick', end);
             }
-          }]
+          }],
       },
       colorMap: [
         '#ff3333',
@@ -293,20 +314,167 @@ export default {
       isFullEdit: false,
     }
   },
+  watch: {
+    echoData: {
+      handler(newVal) {
+        if (!newVal.name) {
+          return
+        }
+        this.joinFollowText(newVal.name)
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+  computed: {
+    fastTagList() {
+      if (!this.formData.fastType) {
+        return []
+      }
+      let option = []
+      this.fastOptionList.map(val => {
+        if (val.id === this.formData.fastType) {
+          option = val.label
+        }
+      })
+      this.formData.fastTextTag = option
+      return option
+    }
+  },
+  mounted() {
+    this.getFastTag()
+    this.getFollowPerson()
+  },
   methods: {
-    onCancel() {
-      this.formData = {}
-      this.$emit('onCancel')
+    async getFastTag() {
+      try {
+        const res = await followTextQuickList()
+        if (res.code === 200) {
+          this.fastOptionList = res.data?.map((val, index) => {
+            if (index === 0) {
+              this.formData.fastType = val.id
+            }
+            val.label = val.label?.split(';') || ''
+            return val
+          })
+        }
+      } catch {
+      }
     },
-    onConfirm(){
+    async getFollowPerson() {
+      if (!this.row.id) return
+      try {
+        const res = await searchFollowerCustomer({
+          id: this.row.id
+        })
+        if (res.code === 200) {
+          this.followContactList = res.data
+          this.followContactList?.forEach((val, index) => {
+            if (index === 0) {
+              this.formData.followUpContactId = val.userId
+            }
+          })
+        }
+      } catch {
+      }
+    },
+    disabledDate(time) {
+      return time.getTime() > Date.now()
+    },
+    onCancelAddTag() {
+      let option = []
+      this.fastOptionList.map(val => {
+        if (val.id === this.formData.fastType) {
+          option = val.label
+        }
+      })
+      this.formData.fastTextTag = option
+      this.fastPopover = false
+    },
+    async onConfirmAddTag() {
+      if (!this.formData.fastTextTag.length) {
+        return
+      }
+      let config = {
+        id: this.formData.fastType,
+        name: '',
+        label: this.formData.fastTextTag?.join(';') || ''
+      }
+      this.fastOptionList.forEach(val => {
+        if (val.id === config.id) {
+          config.name = val.name
+        }
+      })
+      try {
+        const res = await followTextQuickEdit({...config})
+        if (res.code === 200) {
+          this.$message.success('修改成功')
+          this.fastPopover = false
+          await this.getFastTag()
+        }
+      } catch {
+
+      }
 
     },
+    joinFollowText(text) {
+      if (!text) {
+        return
+      }
+      this.formData.followUpContent = this.formData.followUpContent + text
+    },
+    onCancel() {
+      this.formData = {
+        ...deepClone(initFormData)
+      }
+      this.$emit('onCancel')
+    },
+    async onConfirm() {
+      const {
+        followUpType,
+        followUpContent,
+        submissionTime,
+        followUpContactId,
+        nextFollowUpSchedule,
+        allDayFlag,
+        scheduleContent,
+        color,
+        remarks
+      } = this.formData
+      const config = {
+        customerId: this.row?.id,
+        followUpType,
+        followUpContent,
+        submissionTime: formatDate(submissionTime),
+        followUpContactId,
+        nextFollowUpSchedule: allDayFlag ? formatDateSimple(nextFollowUpSchedule) : formatDate(nextFollowUpSchedule),
+        allDayFlag: Number(allDayFlag),
+        scheduleContent,
+        color,
+        remarks
+      }
+      try {
+        const res = await addFollowUpRecords({...config})
+        if (res.code === 200) {
+          this.$message.success("添加成功")
+          this.$emit('onConfirm')
+        }
+      } catch {
+      }
+
+    },
+    targetBlank
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .write-follow {
+  .write-follow-tag {
+    ::v-deep .el-select-dropdown {
+      display: none !important;
+    }
+  }
 
   .write-operate {
     padding: 10px 0;
