@@ -111,7 +111,7 @@
         </div>
       </div>
       <div class="customer-timeline mt-20">
-        <el-timeline>
+        <el-timeline v-if="timeLineList.length">
           <el-timeline-item
               placement="top"
               v-for="(item, index) in timeLineList"
@@ -124,9 +124,9 @@
               <div class="card-header">
                 <div class="flex-middle space-between mx-20 py-10">
                   <div class="flex-middle">
-                    <span class="fs-12 bold">快速记录</span>
+                    <span class="fs-12 bold">{{ mapFollowUpType[item.followUpType] }}</span>
                     <div class="line"></div>
-                    <span class="fs-12">操作人：allxchips</span>
+                    <span class="fs-12">操作人：{{ item.operator }}</span>
                   </div>
                   <div class="fs-12">
                     {{ item.timestamp }}
@@ -135,13 +135,13 @@
               </div>
               <div class="card-content">
                 <div class="message px-20">
-                  <div class="pt-10">hello你好</div>
-                  <div class="pt-10">关联联系人：王五</div>
+                  <div class="pt-10">{{ item.followUpContent }}</div>
+                  <div class="pt-10">关联联系人: {{ generatePerson(item.followUpContactId) }}</div>
                   <div class="flex-end flex-middle">
-                    <el-row type="flex" :gutter="10">
+                    <el-row type="flex" :gutter="10" v-if="item.editable">
                       <el-col>
                         <el-tooltip placement="top" content="可删除24小时内您发布的跟进">
-                          <DelPopover self-slot :id="item.followUpRecordsId" @onDelete="onDelete">
+                          <DelPopover self-slot :id="item.id" @onDelete="onDelete">
                             <i class="el-icon-delete pointer fs-12"></i>
                           </DelPopover>
                         </el-tooltip>
@@ -153,7 +153,7 @@
                       </el-col>
                     </el-row>
                     <el-button class="ml-10" style="color:#303133" type="text" icon="el-icon-s-comment" size="small"
-                               @click="onAdd(item.followUpRecordsId)">
+                               @click="onAdd(item.id)">
                       评论
                     </el-button>
                   </div>
@@ -162,17 +162,17 @@
                   <template v-if="item.add">
                     <el-input v-model="item.newComment" type="textarea" resize="none" :rows="3" size="small"/>
                     <div class="flex-end py-10">
-                      <el-button round size="small" @click="onCancelAdd(item.followUpRecordsId)">取消</el-button>
+                      <el-button round size="small" @click="onCancelAdd(item.id)">取消</el-button>
                       <el-button type="primary" round size="small" @click="onConfirmAddComment(item)">确认</el-button>
                     </div>
                   </template>
-                  <div class="comment-item flex-column mb-10" v-for="comment in item.comments" :key="comment.id">
+                  <div class="comment-item flex-column mb-10" v-for="comment in item.commentList" :key="comment.id">
                     <template v-if="!comment.edit">
                       <div class="flex-middle space-between">
                         <el-row type="flex" align="middle" class="fs-14">
                           <i class="el-icon-s-comment"></i>
-                          <span class="pl-14 gray-text">allxchips</span>
-                          <span class="pl-10 gray-text">11-03 08:11</span>
+                          <span class="pl-14 gray-text">{{ comment.operator }}</span>
+                          <span class="pl-10 gray-text">{{ formatMonthAndDay(comment.operatorTime) }}</span>
                         </el-row>
                         <el-row class="icon-operate" :gutter="8">
                           <el-col>
@@ -190,11 +190,11 @@
                         </el-row>
                       </div>
                       <div class="comment-content mt-10">
-                        <span>{{ comment.content }}</span>
+                        <span>{{ comment.comment }}</span>
                       </div>
                     </template>
                     <template v-else>
-                      <el-input v-model="comment.content" type="textarea" resize="none" :rows="3" size="small"/>
+                      <el-input v-model="comment.comment" type="textarea" resize="none" :rows="3" size="small"/>
                       <div class="flex-end pt-10">
                         <el-button round size="small" @click="onEdit(item.id,comment,false)">取消</el-button>
                         <el-button type="primary" round size="small" @click="onConfirmEditComment(item.id,comment)">
@@ -211,6 +211,7 @@
           </el-timeline-item>
 
         </el-timeline>
+        <el-empty v-else :image-size="100"/>
       </div>
     </div>
     <template>
@@ -232,6 +233,8 @@ import {addRecordsComment, deleteRecordsComment, editRecordsComment} from "@/api
 import {followTextTemplateList} from "@/api/company/followText";
 import {getScheduleList} from "@/api/customer/schedule";
 import {formatMonthAndDay} from "@/utils";
+import {getFollowUpRecordsList} from "@/api/customer/records";
+import {searchFollowerCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -262,88 +265,7 @@ export default {
       showWriteFollow: false,
       templateVisible: false,
       sortActive: "2",
-      timeLineList: [
-        {
-          followUpRecordsId: 1,
-          content: '支持使用图标',
-          timestamp: '2018-04-12 20:46',
-          size: 'large',
-          icon: 'el-icon-document',
-          color: '#0bbd87',
-          add: false,
-          newComment: '',
-          comments: [
-            {
-              id: 1,
-              content: '测试',
-              edit: false,
-            },
-            {
-              id: 2,
-              content: '测试2',
-              edit: false,
-            }
-          ]
-        },
-        {
-          followUpRecordsId: 2,
-          content: '支持自定义颜色',
-          timestamp: '2018-04-03 20:46',
-          add: false,
-          newComment: '',
-          comments: [
-            {
-              id: 1,
-              content: '测试',
-              edit: false,
-            },
-            {
-              id: 2,
-              content: '测试2',
-              edit: false,
-            }
-          ]
-        },
-        {
-          followUpRecordsId: 3,
-          content: '支持自定义尺寸',
-          timestamp: '2018-04-03 20:46',
-          size: 'large',
-          add: false,
-          newComment: '',
-          comments: [
-            {
-              id: 1,
-              content: '测试',
-              edit: false,
-            },
-            {
-              id: 2,
-              content: '测试2',
-              edit: false,
-            }
-          ]
-        },
-        {
-          followUpRecordsId: 4,
-          content: '默认样式的节点',
-          timestamp: '2018-04-03 20:46',
-          add: false,
-          newComment: '',
-          comments: [
-            {
-              id: 1,
-              content: '测试',
-              edit: false,
-            },
-            {
-              id: 2,
-              content: '测试2',
-              edit: false,
-            }
-          ]
-        }
-      ],
+      timeLineList: [],
       tempEditValue: '',
       templateDrawerRow: {},
       followTextList: [],
@@ -351,11 +273,31 @@ export default {
       showTemplatePopover: false,
       scheduleList: [],
       dialogSchedule: false,
+      followContactList: [],
+      mapFollowUpType: {
+        1: '快速记录',
+        2: '电话',
+        3: '会面',
+        4: '社交平台',
+      }
     }
   },
   mounted() {
     this.getTemplateList()
-    this.getFollowUpRecordList()
+
+  },
+  watch: {
+    row: {
+      handler(newVal) {
+        if (newVal?.id) {
+          this.getScheduleList()
+          this.getRecordList()
+          this.getFollowPerson()
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     async getTemplateList() {
@@ -364,11 +306,58 @@ export default {
         if (res.code === 200) {
           this.followTextList = res.data
         }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    // 发布跟进列表
+    async getRecordList() {
+      try {
+        const res = await getFollowUpRecordsList({
+          customerId: this.row.id,
+        })
+        if (res.code === 200) {
+          this.timeLineList = res.data
+          this.timeLineList?.map(val => {
+            if (val.comments && val.comments.length) {
+              val.comments.map(comment => {
+                comment.edit = false
+                return comment
+              })
+            }
+            val.add = false
+            val.newComment = ''
+            return val
+          })
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    // 关联联系人
+    async getFollowPerson() {
+      try {
+        const res = await searchFollowerCustomer({
+          id: this.row.id
+        })
+        if (res.code === 200) {
+          this.followContactList = res.data
+        }
       } catch {
       }
     },
-    async getFollowUpRecordList() {
-      if (!this.options.isShowSchedule && !this.row.id) {
+    generatePerson(id) {
+      let personName = ''
+      this.followContactList.forEach(val => {
+        if (val.userId === id) {
+          personName = val.nickName
+        }
+      })
+      return personName
+    },
+    // 日程列表
+    async getScheduleList() {
+      if (!this.options.isShowSchedule) {
         return
       }
       try {
@@ -410,17 +399,17 @@ export default {
     async addComment(item) {
       try {
         const res = await addRecordsComment({
-          followUpRecordsId: item.followUpRecordsId,
-
+          followUpRecordsId: item.id,
+          comment: item.newComment
         })
         if (res.code === 200) {
           this.$message.success('添加成功')
-          this.onCancelAdd(item.followUpRecordsId)
+          this.onCancelAdd(item.id)
+          await this.getRecordList()
         }
       } catch {
       }
     },
-
     onConfirmAddComment(item) {
       if (!item.newComment) {
         this.$message.warning('添加评论内容不能为空')
@@ -429,34 +418,31 @@ export default {
       this.addComment(item)
     },
     onAdd(id) {
-      this.timeLineList.map(val => {
-        if (val.followUpRecordsId === id) {
-          val.add = true
-        }
-        return val
-      })
+      const target = this.timeLineList.findIndex(val => val.id === id)
+      if (target === -1) {
+        return
+      }
+      this.$set(this.timeLineList, target, {...this.timeLineList[target], add: true})
     },
     onCancelAdd(id) {
-      this.timeLineList.map(val => {
-        if (val.followUpRecordsId === id) {
-          val.add = false
-          val.newComment = ''
-        }
-        return val
-      })
+      const target = this.timeLineList.findIndex(val => val.id === id)
+      if (target === -1) {
+        return
+      }
+      this.$set(this.timeLineList, target, {...this.timeLineList[target], add: false, newComment: ''})
     },
     onEditTemplate(item) {
       this.templateDrawerRow = item
       this.templateVisible = true
     },
     onEdit(itemId, comment, bool) {
-      !this.tempEditValue && (this.tempEditValue = comment?.content)
-      this.timeLineList.map(val => {
+      !this.tempEditValue && (this.tempEditValue = comment?.comment)
+      this.timeLineList = this.timeLineList.map(val => {
         if (val.id === itemId) {
-          val.comments.map(c => {
+          val.commentList?.map(c => {
             if (c.id === comment?.id) {
               if (!bool) {
-                c.content = this.tempEditValue
+                c.comment = this.tempEditValue
                 this.tempEditValue = ''
               }
               c.edit = bool
@@ -466,17 +452,21 @@ export default {
         }
         return val
       })
+
     },
     async onConfirmEditComment(itemId, comment) {
-      if (!comment.content) {
+      if (!comment.comment) {
         this.$message.warning('编辑评论内容不能为空')
         return
       }
       try {
-        const res = await editRecordsComment({id: comment.id})
+        const res = await editRecordsComment({
+          id: comment.id,
+          comment: comment.comment
+        })
         if (res.code === 200) {
           this.$message.success('编辑成功')
-          this.tempEditValue = comment.content
+          this.tempEditValue = comment.comment
           this.onEdit(itemId, comment, false)
         }
       } catch {
@@ -484,9 +474,10 @@ export default {
     },
     async onDelete(id) {
       try {
-        const res = deleteRecordsComment({id})
+        const res = await deleteRecordsComment({id})
         if (res.code === 200) {
           this.$message.success('删除成功')
+          await this.getRecordList()
         }
       } catch {
       }

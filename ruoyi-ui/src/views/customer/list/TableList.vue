@@ -24,6 +24,7 @@
           :row="rowDrawerData"
           :visible.sync="rowDrawerVisible"
           :externalOpt="{groupOption:indexOpt.groupOption}"
+          @load="reloadList"
       />
     </div>
   </div>
@@ -159,27 +160,17 @@ export default {
           field: 'recentActivity',
           align: 'left',
           width: '200',
-          render: (row, field, scope) => {
-            const {rowId, fieldName, showEditIcon} = this.tableCell
-            const propName = scope.column.property
-            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
-            const isShowForm = this.curEditId === row?.id && fieldName === propName
+          render: (row, field, _scope) => {
             return <CellOperate
-                showForm={isShowForm}
-                type="input"
-                curValue={field}
-                text={field}
-                visible={isShow}
+                text={field?.followUpContent}
+                showEditIcon={false}
+                showCopyIcon={false}
                 on={{
-                  onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(row),
-                  onBlur: () => this.onBlur(),
-                  onInput: (value) => this.onInput(value, scope, propName),
-                  onEnter: () => this.inputEnter(row)
+                  click: () => this.onCellClick(row)
                 }}
             >
-              <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e, row?.id)}>
-                {field || '---'}
+              <div slot="content" class="pointer">
+                {field?.followUpContent || '---'}
               </div>
             </CellOperate>
           }

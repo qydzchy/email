@@ -25,13 +25,15 @@
               <div class="fs-16 bold my-10">
                 <span>公司常用信息</span>
               </div>
-              <formCreate v-model="customerForm" :rule="rule" :option="option" @change="handleCountry"/>
+              <formCreate v-model="customerForm" :value.sync="customerFormValue" :rule="rule" :option="option"
+                          @change="handleCountry"/>
             </div>
             <div v-show="showOtherForm">
               <div class="fs-16 bold my-10">
                 <span>公司其他信息</span>
               </div>
-              <formCreate v-model="customerOtherForm" :rule="otherRule" :option="option"/>
+              <formCreate v-model="customerOtherForm" :value.sync="customerOtherFormValue" :rule="otherRule"
+                          :option="option"/>
             </div>
             <div>
               <div class="collapse flex-middle flex-center fs-12 mt-10 pointer" @click="showOtherForm = !showOtherForm">
@@ -42,7 +44,7 @@
           </el-col>
           <!--    联系人     -->
           <el-col :span="14" class="px-16">
-            <ContactCard ref="contact-card" :contact-list="[]"/>
+            <ContactCard ref="contact-card" :contact-list="contactList"/>
           </el-col>
         </el-row>
       </div>
@@ -96,11 +98,13 @@ export default {
     return {
       customerVisible: false,
       formData: {
-        id: ''
+        id: '',
       },
       customerForm: {},
+      customerFormValue: {},
       rule: [...UsuallyInfoRule],
       customerOtherForm: {},
+      customerOtherFormValue: {},
       otherRule: [...OtherInfoRule],
       option: {
         ...formOption,
@@ -112,6 +116,7 @@ export default {
       showOtherForm: false,
       btnLoading: false,
       containerLoading: false,
+      contactList: [],
     }
   },
   watch: {
@@ -123,10 +128,15 @@ export default {
     },
     row: {
       handler(newVal) {
-        this.formData = {
-          ...this.formData,
-          ...newVal
+        if (!newVal?.id) {
+          return
         }
+        this.formData = {
+          id: newVal?.id
+        }
+        this.customerFormValue = {...newVal}
+        this.customerOtherFormValue = {...newVal}
+
       },
       deep: true,
       immediate: true

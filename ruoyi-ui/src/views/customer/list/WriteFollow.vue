@@ -361,6 +361,7 @@ export default {
       } catch {
       }
     },
+    // 关联恋人
     async getFollowPerson() {
       if (!this.row.id) return
       try {

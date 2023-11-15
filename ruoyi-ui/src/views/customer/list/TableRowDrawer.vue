@@ -10,7 +10,7 @@
             </div>
             <el-row class="flex-middle">
               <el-row class="flex-middle gap-16">
-                <CollageIcon :show="true" :default-hide="false"/>
+                <CollageIcon :show="focusFlag" :default-hide="false" @click="onCollageIcon"/>
                 <el-tooltip placement="top" content="写邮件">
                   <i class="el-icon-message pointer"></i>
                 </el-tooltip>
@@ -63,7 +63,7 @@
       </el-drawer>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="editVisible" :row="{id:1}"/>
+    <CreateCustomerDrawer :visible.sync="editVisible" :row="row"/>
   </div>
 </template>
 
@@ -71,12 +71,16 @@
 import TableRowTabs from './TableRowTabs.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
+import {editFocusFlagCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
     row: {
       type: Object,
       default: () => {
+        return {
+          focusFlag: false
+        }
       },
       required: false
     },
@@ -89,7 +93,8 @@ export default {
       type: Object,
       default: () => {
         return {
-          groupOption: []
+          groupOption: [],
+
         }
       }
     },
@@ -107,10 +112,33 @@ export default {
         isTabSetHeight: true,
         isShowInfo: true,
         groupOption: this.externalOpt.groupOption
-      }
+      },
+      focusFlag: false,
+    }
+  },
+  watch: {
+    row: {
+      handler(newVal) {
+        this.focusFlag = Boolean(newVal.focusFlag)
+      },
+      deep: true,
+      immediate: true,
     }
   },
   methods: {
+    async onCollageIcon(status) {
+      if (!this.row.id) {
+        return
+      }
+      try {
+        const res = await editFocusFlagCustomer({id: this.row.id})
+        if (res.code === 200) {
+          this.focusFlag = !status
+          this.$emit('load')
+        }
+      } catch {
+      }
+    },
     onHideDrawer() {
       this.$emit('update:visible', false)
     },

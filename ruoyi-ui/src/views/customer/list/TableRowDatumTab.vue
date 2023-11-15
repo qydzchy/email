@@ -196,6 +196,15 @@ import Vue from 'vue'
 
 export default {
   props: {
+    row: {
+      type: Object,
+      default: () => {
+        return {
+          focusFlag: false
+        }
+      },
+      required: false
+    },
     options: {
       type: Object,
       default: () => {

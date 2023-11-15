@@ -135,7 +135,6 @@
 <script>
 import {generatePhone} from "@/utils/tools";
 import {deepClone} from "@/utils";
-import {getToken} from "@/utils/auth";
 
 const addConstruct = {
   id: +new Date(),
@@ -175,8 +174,6 @@ export default {
   },
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_API,
-      token: getToken(),
       formList: [
         {...deepClone(addConstruct)}
       ],
