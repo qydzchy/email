@@ -40,7 +40,7 @@ public class Settings extends BaseEntity
 
     /** 限制几天内，原跟进人不能领取同一个客户 */
     @Excel(name = "限制几天内，原跟进人不能领取同一个客户")
-    private Long claimLimitDays;
+    private Integer claimLimitDays;
 
     /** 商机查看规则
 1.领取公海客户后，不能查看客户历史商机
@@ -125,12 +125,12 @@ public class Settings extends BaseEntity
     {
         return claimLimitFlag;
     }
-    public void setClaimLimitDays(Long claimLimitDays) 
+    public void setClaimLimitDays(Integer claimLimitDays)
     {
         this.claimLimitDays = claimLimitDays;
     }
 
-    public Long getClaimLimitDays() 
+    public Integer getClaimLimitDays()
     {
         return claimLimitDays;
     }

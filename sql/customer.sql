@@ -786,8 +786,9 @@ CREATE TABLE `customer_customer_sea_log`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `customer_id` bigint(20) NOT NULL COMMENT '客户ID',
 `sea_type` tinyint(1) NOT NULL COMMENT '私海/公海类型 1.私海 2.公海',
-`create_time` datetime(0) NOT NULL COMMENT '创建时间',
 `type` tinyint(1) NOT NULL COMMENT '类型 1.手动 2.自动',
+`create_id` bigint(20) NOT NULL COMMENT '创建者ID',
+`create_time` datetime(0) NOT NULL COMMENT '创建时间',
 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户私海/公海日志' ROW_FORMAT = Dynamic;
 

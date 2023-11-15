@@ -24,7 +24,7 @@ public class PublicleadsClaimLimit extends BaseEntity
 
     /** 领取上限 */
     @Excel(name = "领取上限")
-    private Long claimLimit;
+    private Integer claimLimit;
 
     /** 上限周期 1.每日2.每周3.每月4.每年 */
     @Excel(name = "上限周期 1.每日2.每周3.每月4.每年")
@@ -59,12 +59,12 @@ public class PublicleadsClaimLimit extends BaseEntity
     {
         return userId;
     }
-    public void setClaimLimit(Long claimLimit) 
+    public void setClaimLimit(Integer claimLimit)
     {
         this.claimLimit = claimLimit;
     }
 
-    public Long getClaimLimit() 
+    public Integer getClaimLimit()
     {
         return claimLimit;
     }

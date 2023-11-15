@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSeaLog;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户私海/公海日志Mapper接口
@@ -58,4 +59,22 @@ public interface CustomerSeaLogMapper
      * @return 结果
      */
     public int deleteCustomerSeaLogByIds(Long[] ids);
+
+    /**
+     * 查询在该时间之后是否存在该跟进人的领取该客户的记录
+     * @param customerId
+     * @param createId
+     * @param createTime
+     * @return
+     */
+    int countCustomerSeaByCustomerIdAndUserIdAndCreateTime(@Param("customerId") Long customerId, @Param("createId") Long createId, @Param("createTime") String createTime);
+
+    /**
+     * 统计在指定时间领取的客户数量
+     * @param createId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    int countCustomerSeaByUserIdAndCreateTime(@Param("createId") Long createId, @Param("startTime") String startTime, @Param("endTime") String endTime);
 }

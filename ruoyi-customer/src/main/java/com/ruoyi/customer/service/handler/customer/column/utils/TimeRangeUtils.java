@@ -104,4 +104,35 @@ public class TimeRangeUtils {
         return getEndOfDay(calendar.getTime());
     }
 
+    // 获取本月的开始时间
+    public static Date getStartOfThisMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取本月的结束时间
+    public static Date getEndOfThisMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取本年的开始时间
+    public static Date getStartOfThisYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, Calendar.JANUARY);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取本年的结束时间
+    public static Date getEndOfThisYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+        calendar.set(Calendar.DAY_OF_MONTH, 31);
+        return getEndOfDay(calendar.getTime());
+    }
 }

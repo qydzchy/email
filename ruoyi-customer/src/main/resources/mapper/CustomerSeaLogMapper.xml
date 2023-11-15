@@ -30,17 +30,42 @@
         where id = #{id}
     </select>
 
+    <select id="countCustomerSeaByCustomerIdAndUserIdAndCreateTime" resultType="java.lang.Integer">
+        select count(*) from customer_customer_sea_log
+        where customer_id = #{customerId}
+        and create_id = #{createId}
+        and create_time &gt;= #{createTime}
+        and sea_type = 1
+    </select>
+
+    <select id="countCustomerSeaByUserIdAndCreateTime" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT c1.customer_id)
+        FROM customer_customer_sea_log c1
+        WHERE c1.sea_type = 1
+        AND c1.create_time BETWEEN #{startTime} AND #{endTime}
+        AND NOT EXISTS (
+        SELECT 1
+        FROM customer_customer_sea_log c2
+        WHERE c2.customer_id = c1.customer_id
+        AND c2.sea_type = 2
+        AND c2.create_time > c1.create_time
+        AND c2.create_time &lt;= #{endTime}
+        );
+    </select>
+
     <insert id="insertCustomerSeaLog" parameterType="CustomerSeaLog" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_sea_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="customerId != null">customer_id,</if>
             <if test="seaType != null">sea_type,</if>
+            <if test="createId != null">create_id,</if>
             <if test="createTime != null">create_time,</if>
             <if test="type != null">type,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="customerId != null">#{customerId},</if>
             <if test="seaType != null">#{seaType},</if>
+            <if test="createId != null">#{createId},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="type != null">#{type},</if>
         </trim>

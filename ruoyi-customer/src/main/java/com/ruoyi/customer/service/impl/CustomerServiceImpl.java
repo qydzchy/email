@@ -22,6 +22,7 @@ import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
 import com.ruoyi.customer.service.IPublicleadsGroupsService;
 import com.ruoyi.customer.service.ISegmentService;
 import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
+import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
@@ -67,6 +68,10 @@ public class CustomerServiceImpl implements ICustomerService
     private FollowUpRulesMapper followUpRulesMapper;
     @Resource
     private CustomerSeaLogMapper customerSeaLogMapper;
+    @Resource
+    private SettingsMapper settingsMapper;
+    @Resource
+    private PublicleadsClaimLimitMapper publicleadsClaimLimitMapper;
     @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
@@ -532,7 +537,7 @@ public class CustomerServiceImpl implements ICustomerService
             customerMapper.updateCustomerSeaType(id, type, userId, username);
 
             // 客户移入公海规则处理
-            customerMoveToSeaHandler(id, type, CustomerSeaLogTypeEnum.AUTO);
+            customerMoveToSeaHandler(id, type, userId, CustomerSeaLogTypeEnum.AUTO);
         }
 
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(id, userId, userId, username);
@@ -572,7 +577,7 @@ public class CustomerServiceImpl implements ICustomerService
         customer.setUpdateTime(DateUtils.getNowDate());
         customerMapper.updateCustomer(customer);
 
-        customerMoveToSeaHandler(moveToPublicleadsDTO.getId(), type, CustomerSeaLogTypeEnum.MANUAL);
+        customerMoveToSeaHandler(moveToPublicleadsDTO.getId(), type, userId, CustomerSeaLogTypeEnum.MANUAL);
         return true;
     }
 
@@ -686,6 +691,13 @@ public class CustomerServiceImpl implements ICustomerService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
+        
+        // 校验公海领取规则
+        isClaimCountValid(id, userId);
+        // 校验领取上限
+        isPublicleadsClaimLimitValid(userId);
+        // 校验客户上限
+        isCustomerLimitsValid(userId);
 
         Integer type = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
         Customer customer = customerMapper.selectCustomerById(id);
@@ -696,7 +708,7 @@ public class CustomerServiceImpl implements ICustomerService
         customerMapper.updateCustomer(customer);
 
         // 客户移入私海处理
-        customerMoveToSeaHandler(id, type, CustomerSeaLogTypeEnum.MANUAL);
+        customerMoveToSeaHandler(id, type, userId, CustomerSeaLogTypeEnum.MANUAL);
 
         // 删除跟进人
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(id, userId, username);
@@ -715,6 +727,106 @@ public class CustomerServiceImpl implements ICustomerService
 
         return true;
     }
+
+    /**
+     * 校验客户上限
+     * todo 待开发
+     * @param userId
+     */
+    private void isCustomerLimitsValid(Long userId) {
+
+    }
+
+    /**
+     * 公海领取上限校验
+     * @param userId
+     */
+    private void isPublicleadsClaimLimitValid(Long userId) {
+        PublicleadsClaimLimit publicleadsClaimLimitParam = new PublicleadsClaimLimit();
+        publicleadsClaimLimitParam.setUserId(userId);
+        publicleadsClaimLimitParam.setDelFlag("0");
+        List<PublicleadsClaimLimit> publicleadsClaimLimitList = publicleadsClaimLimitMapper.selectPublicleadsClaimLimitList(publicleadsClaimLimitParam);
+        if (publicleadsClaimLimitList == null || publicleadsClaimLimitList.isEmpty()) return;
+
+        PublicleadsClaimLimit publicleadsClaimLimit = publicleadsClaimLimitList.get(0);
+        Integer claimLimit = publicleadsClaimLimit.getClaimLimit();
+        Integer claimPeriod = publicleadsClaimLimit.getClaimPeriod();
+        Pair<String, String> timeRangePair = getTimeRange(claimPeriod);
+        String startTime = timeRangePair.getFirst();
+        String endTime = timeRangePair.getSecond();
+
+        // 统计在指定时间领取的客户数量
+        int count = customerSeaLogMapper.countCustomerSeaByUserIdAndCreateTime(userId, startTime, endTime);
+        if (count >= claimLimit) {
+            throw new ServiceException("领取失败，您在" + startTime + "至" + endTime + "时间内领取的客户数量已达到上限");
+        }
+    }
+
+    /**
+     * 获取周期时间区间
+     * @param claimPeriod
+     * @return
+     */
+    private Pair<String, String> getTimeRange(Integer claimPeriod) {
+        PublicleadsClaimPeriodEnum publicleadsClaimPeriodEnum = PublicleadsClaimPeriodEnum.getByClaimPeriod(claimPeriod);
+        Date startTime = null;
+        Date endTime = null;
+        switch (publicleadsClaimPeriodEnum) {
+            case DAILY:
+                startTime = TimeRangeUtils.getStartOfDay(new Date());
+                endTime = TimeRangeUtils.getEndOfDay(new Date());
+                break;
+            case WEEKLY:
+                startTime = TimeRangeUtils.getStartOfThisWeek();
+                endTime = TimeRangeUtils.getEndOfThisWeek();
+                break;
+            case MONTHLY:
+                startTime = TimeRangeUtils.getStartOfThisMonth();
+                endTime = TimeRangeUtils.getEndOfThisMonth();
+                break;
+            case YEARLY:
+                startTime = TimeRangeUtils.getStartOfThisYear();
+                endTime = TimeRangeUtils.getEndOfThisYear();
+                break;
+            default:
+                break;
+        }
+
+        if (startTime == null || endTime == null) return null;
+
+        return Pair.of(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", startTime), DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", endTime));
+    }
+
+    /**
+     * 领取数量限制是否成立
+     * @param customerId
+     * @param userId
+     * @return
+     */
+    private void isClaimCountValid(Long customerId, Long userId) {
+        List<Settings> settingsList = settingsMapper.selectSettingsList(new Settings());
+        if (settingsList == null || settingsList.isEmpty()) return;
+
+        Settings settings = settingsList.get(0);
+        if (settings.getClaimLimitFlag() != null && settings.getClaimLimitFlag().intValue() == 1
+            && settings.getClaimLimitDays() != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+
+            calendar.add(Calendar.DAY_OF_YEAR, -settings.getClaimLimitDays());
+
+            String resultDate = DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", calendar.getTime());
+
+            // 查询在该时间之后是否存在该跟进人的领取该客户的记录
+            int count = customerSeaLogMapper.countCustomerSeaByCustomerIdAndUserIdAndCreateTime(customerId, userId, resultDate);
+            if (count > 0) {
+                throw new ServiceException("领取失败，该客户在" + settings.getClaimLimitDays() + "天内已被领取过");
+            }
+        }
+
+        return;
+    }
+
 
     @Override
     public boolean shuffle(Long customerIdParam, Long segmentIdParam) {
@@ -953,17 +1065,15 @@ public class CustomerServiceImpl implements ICustomerService
      * @param customerSeaLogTypeEnum
      */
     @Override
-    public void customerMoveToSeaHandler(Long customerId, Integer seaType, CustomerSeaLogTypeEnum customerSeaLogTypeEnum) {
+    public void customerMoveToSeaHandler(Long customerId, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum) {
         // 写入到日志
         CustomerSeaLog customerSeaLog = new CustomerSeaLog();
         customerSeaLog.setCustomerId(customerId);
         customerSeaLog.setSeaType(seaType);
         customerSeaLog.setType(customerSeaLogTypeEnum.getType());
         customerSeaLog.setCreateTime(DateUtils.getNowDate());
+        customerSeaLog.setCreateId(createId);
         customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
     }
 
-    /**
-     * 移入公海
-     */
 }

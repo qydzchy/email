@@ -182,5 +182,5 @@ public interface ICustomerService
     /**
      * 移入公海或私海
      */
-    void customerMoveToSeaHandler(Long customerId, Integer seaType, CustomerSeaLogTypeEnum customerSeaLogTypeEnum);
+    void customerMoveToSeaHandler(Long customerId, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum);
 }
