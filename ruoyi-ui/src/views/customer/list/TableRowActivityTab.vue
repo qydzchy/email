@@ -141,7 +141,7 @@
                     <el-row type="flex" :gutter="10" v-if="item.editable">
                       <el-col>
                         <el-tooltip placement="top" content="可删除24小时内您发布的跟进">
-                          <DelPopover self-slot :id="item.id" @onDelete="onDelete">
+                          <DelPopover self-slot :id="item.id" @onDelete="onDeleteRecord">
                             <i class="el-icon-delete pointer fs-12"></i>
                           </DelPopover>
                         </el-tooltip>
@@ -160,50 +160,55 @@
                 </div>
                 <div class="comment mt-20 px-20">
                   <template v-if="item.add">
-                    <el-input v-model="item.newComment" type="textarea" resize="none" :rows="3" size="small"/>
+                    <el-input v-model="item.newComment" type="textarea" resize="none" :rows="3" size="small"
+                              @keydown.enter="onConfirmAddComment(item)"/>
                     <div class="flex-end py-10">
                       <el-button round size="small" @click="onCancelAdd(item.id)">取消</el-button>
                       <el-button type="primary" round size="small" @click="onConfirmAddComment(item)">确认</el-button>
                     </div>
                   </template>
-                  <div class="comment-item flex-column mb-10" v-for="comment in item.commentList" :key="comment.id">
-                    <template v-if="!comment.edit">
-                      <div class="flex-middle space-between">
-                        <el-row type="flex" align="middle" class="fs-14">
-                          <i class="el-icon-s-comment"></i>
-                          <span class="pl-14 gray-text">{{ comment.operator }}</span>
-                          <span class="pl-10 gray-text">{{ formatMonthAndDay(comment.operatorTime) }}</span>
-                        </el-row>
-                        <el-row class="icon-operate" :gutter="8">
-                          <el-col>
-                            <el-tooltip placement="top" content="删除评论">
-                              <DelPopover self-slot :id="comment.id" @onDelete="onDelete">
-                                <i class="el-icon-delete pointer"></i>
-                              </DelPopover>
-                            </el-tooltip>
-                          </el-col>
-                          <el-col>
-                            <el-tooltip placement="top" content="编辑评论">
-                              <i class="el-icon-edit pointer" @click="onEdit(item.id,comment,true)"></i>
-                            </el-tooltip>
-                          </el-col>
-                        </el-row>
-                      </div>
-                      <div class="comment-content mt-10">
-                        <span>{{ comment.comment }}</span>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <el-input v-model="comment.comment" type="textarea" resize="none" :rows="3" size="small"/>
-                      <div class="flex-end pt-10">
-                        <el-button round size="small" @click="onEdit(item.id,comment,false)">取消</el-button>
-                        <el-button type="primary" round size="small" @click="onConfirmEditComment(item.id,comment)">
-                          确认
-                        </el-button>
-                      </div>
-                    </template>
+                  <template v-if="item.commentList">
+                    <div class="comment-item flex-column mb-10" v-for="comment in item.commentList" :key="comment.id">
+                      <template v-if="!comment.edit">
+                        <div class="flex-middle space-between">
+                          <el-row type="flex" align="middle" class="fs-14">
+                            <i class="el-icon-s-comment"></i>
+                            <span class="pl-14 gray-text">{{ comment.operator }}</span>
+                            <span class="pl-10 gray-text">{{ formatDate(comment.operatorTime) }}</span>
+                          </el-row>
+                          <el-row class="icon-operate" :gutter="8">
+                            <el-col>
+                              <el-tooltip placement="top" content="删除评论">
+                                <DelPopover self-slot :id="comment.id" @onDelete="onDelete">
+                                  <i class="el-icon-delete pointer"></i>
+                                </DelPopover>
+                              </el-tooltip>
+                            </el-col>
+                            <el-col>
+                              <el-tooltip placement="top" content="编辑评论">
+                                <i class="el-icon-edit pointer" @click="onEdit(item.id,comment,true)"></i>
+                              </el-tooltip>
+                            </el-col>
+                          </el-row>
+                        </div>
+                        <div class="comment-content mt-10">
+                          <span>{{ comment.comment }}</span>
+                        </div>
+                      </template>
+                      <template v-else>
+                        <el-input v-model="comment.comment" type="textarea" resize="none" :rows="3" size="small"
+                                  @keydown.enter="onConfirmEditComment(item.id,comment)"/>
+                        <div class="flex-end pt-10">
+                          <el-button round size="small" @click="onEdit(item.id,comment,false)">取消</el-button>
+                          <el-button type="primary" round size="small" @click="onConfirmEditComment(item.id,comment)">
+                            确认
+                          </el-button>
+                        </div>
+                      </template>
 
-                  </div>
+                    </div>
+                  </template>
+
                 </div>
               </div>
             </el-card>
@@ -232,8 +237,8 @@ import {targetBlank} from '@/utils/tools'
 import {addRecordsComment, deleteRecordsComment, editRecordsComment} from "@/api/customer/comment";
 import {followTextTemplateList} from "@/api/company/followText";
 import {getScheduleList} from "@/api/customer/schedule";
-import {formatMonthAndDay} from "@/utils";
-import {getFollowUpRecordsList} from "@/api/customer/records";
+import {formatDate, formatMonthAndDay} from "@/utils";
+import {deleteFollowUpRecords, getFollowUpRecordsList} from "@/api/customer/records";
 import {searchFollowerCustomer} from "@/api/customer/publicleads";
 
 export default {
@@ -300,6 +305,7 @@ export default {
     }
   },
   methods: {
+    formatDate,
     async getTemplateList() {
       try {
         const res = await followTextTemplateList()
@@ -475,6 +481,16 @@ export default {
     async onDelete(id) {
       try {
         const res = await deleteRecordsComment({id})
+        if (res.code === 200) {
+          this.$message.success('删除成功')
+          await this.getRecordList()
+        }
+      } catch {
+      }
+    },
+    async onDeleteRecord(id) {
+      try {
+        const res = await deleteFollowUpRecords({id})
         if (res.code === 200) {
           this.$message.success('删除成功')
           await this.getRecordList()
