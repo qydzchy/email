@@ -143,3 +143,7 @@ email:
     # 获取定位经纬度
     latitude-server: http://111.230.185.137:8421/ip/getIP?ip=
 
+
+customer:
+    document:
+      upload-dir: D:\back\Desktop\file\

@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.customer.domain.Customer;
+import com.ruoyi.customer.domain.vo.CustomerDuplicateListVO;
 import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
 import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
@@ -162,4 +163,20 @@ public interface CustomerMapper
      * @return
      */
     Integer selectPrivateleadsNumByUserId(@Param("userId") Long userId);
+
+    /**
+     * 统计
+     * @param columnName
+     * @param searchText
+     * @return
+     */
+    int countCustomerDuplicate(@Param("columnName") String columnName, @Param("searchText") String searchText);
+
+    /**
+     *
+     * @param columnName
+     * @param searchText
+     * @return
+     */
+    List<CustomerDuplicateListVO> customerDuplicateList(@Param("columnName") String columnName, @Param("searchText") String searchText, @Param("offset") int offset, @Param("limit") int limit);
 }

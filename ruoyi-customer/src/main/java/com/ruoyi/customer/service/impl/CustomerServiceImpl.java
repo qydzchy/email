@@ -13,6 +13,7 @@ import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.*;
 import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.dto.*;
@@ -1092,5 +1093,39 @@ public class CustomerServiceImpl implements ICustomerService
         customerSeaLog.setCreateId(createId);
         customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
     }
+
+    /**
+     * 客户查重筛选字段列表
+     * @return
+     */
+    @Override
+    public List<CustomerDuplicateFilterColumnListVO> customerDuplicateFilterColumnList() {
+        List<CustomerDuplicateFilterColumnListVO> customerDuplicateFilterColumnVOList = new ArrayList<>();
+        for (CustomerDuplicateColumnEnum customerDuplicateColumnEnum : CustomerDuplicateColumnEnum.values()) {
+            customerDuplicateFilterColumnVOList.add(CustomerDuplicateFilterColumnListVO.builder().columnName(customerDuplicateColumnEnum.getColumnName()).columnAlias(customerDuplicateColumnEnum.getColumnAlias()).build());
+        }
+
+        return customerDuplicateFilterColumnVOList;
+    }
+
+    @Override
+    public Pair<Integer, List<CustomerDuplicateListVO>> duplicateList(String columnName, String searchText, Integer pageNum, Integer pageSize) {
+        if (StringUtils.isBlank(searchText)) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        // 统计总数量
+        int count = customerMapper.countCustomerDuplicate(columnName, searchText);
+        if (count == 0) {
+            return Pair.of(0, Collections.emptyList());
+        }
+
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        // 客户查重列表
+        List<CustomerDuplicateListVO> customerDuplicateVOList = customerMapper.customerDuplicateList(columnName, searchText, offset, limit);
+        return Pair.of(count, customerDuplicateVOList);
+    }
+
 
 }

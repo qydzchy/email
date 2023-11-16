@@ -183,4 +183,20 @@ public interface ICustomerService
      * 移入公海或私海
      */
     void customerMoveToSeaHandler(Long customerId, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum);
+
+    /**
+     * 客户查重筛选字段列表
+     * @return
+     */
+    List<CustomerDuplicateFilterColumnListVO> customerDuplicateFilterColumnList();
+
+    /**
+     * 客户查重列表
+     * @param columnName
+     * @param searchText
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Pair<Integer, List<CustomerDuplicateListVO>> duplicateList(String columnName, String searchText, Integer pageNum, Integer pageSize);
 }

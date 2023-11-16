@@ -187,6 +187,95 @@
         where c.del_flag = '0' and c.sea_type = 1 and fup.user_id = #{userId}
     </select>
 
+    <select id="countCustomerDuplicate" resultType="java.lang.Integer">
+        select count(cc.id) from customer_customer cc where del_flag = '0'
+        left join customer_customer_contact ccc on cc.id = ccc.customer_id and ccc.del_flag = '0'
+        <if test="columnName != 'all'">
+            and (cc.company_name = #{searchText} or cc.short_name = #{searchText} or cc.customer_no = #{searchText} or ccc.email = #{searchText} or ccc.nick_name = #{searchText} or ccc.phone like concat('%', #{searchText}, '%'} or ccc.social_platform like concat('%', #{searchText}, '%'})
+        </if>
+        <if test="columnName != 'company_name'">
+            and (cc.company_name = #{searchText} or cc.short_name = #{searchText})
+        </if>
+        <if test="columnName != 'customer_no'">
+            and cc.customer_no = #{searchText}
+        </if>
+        <if test="columnName != 'email'">
+            and ccc.email = #{searchText}
+        </if>
+        <if test="columnName != 'email_suffix'">
+            and ccc.email like concat('%', #{searchText})
+        </if>
+        <if test="columnName != 'contact_name'">
+            and ccc.nick_name = #{searchText}
+        </if>
+        <if test="columnName != 'phone_number'">
+            and ccc.phone like concat('%', #{searchText}, '%'}
+        </if>
+        <if test="columnName != 'social_media_account'">
+            and ccc.social_platform like concat('%', #{searchText}, '%'}
+        </if>
+    </select>
+
+    <select id="customerDuplicateList" resultType="com.ruoyi.customer.domain.vo.CustomerDuplicateListVO">
+        SELECT
+        cc.id,
+        cc.customer_no AS customerNo,
+        cc.company_name AS companyName,
+        cc.short_name AS shortName,
+        cc.country_region AS countryRegion,
+        cs.name as customerStageName
+        ccc.nick_name AS contactNickName,
+        ccc.email AS customerEmail,
+        ccc.nick_name AS contactNickName,
+        ccc.phone AS customerPhone,
+        ccc.social_platform AS contactSocialPlatform,
+        GROUP_CONCAT(cs2.name) AS customerSourceName
+        FROM
+        customer_customer cc
+        LEFT JOIN
+        customer_customer_contact ccc ON cc.id = ccc.customer_id AND ccc.del_flag = '0'
+        LEFT JOIN
+        customer_stage cs ON cc.stage_id = cs.id AND cs.del_flag = '0'
+        LEFT JOIN
+        customer_customer_source ccs ON cc.id = ccs.customer_id
+        LEFT JOIN
+        customer_source cs2 ON ccs.source_id = cs2.id AND cs2.del_flag = '0'
+        WHERE
+        cc.del_flag = '0'
+        <if test="columnName != 'all'">
+            AND (cc.company_name = #{searchText} OR cc.short_name = #{searchText} OR cc.customer_no = #{searchText} OR ccc.email = #{searchText} OR ccc.nick_name = #{searchText} OR ccc.phone LIKE CONCAT('%', #{searchText}, '%') OR ccc.social_platform LIKE CONCAT('%', #{searchText}, '%'))
+        </if>
+        <if test="columnName != 'company_name'">
+            AND (cc.company_name = #{searchText} OR cc.short_name = #{searchText})
+        </if>
+        <if test="columnName != 'customer_no'">
+            AND cc.customer_no = #{searchText}
+        </if>
+        <if test="columnName != 'email'">
+            AND ccc.email = #{searchText}
+        </if>
+        <if test="columnName != 'email_suffix'">
+            AND ccc.email LIKE CONCAT('%', #{searchText})
+        </if>
+        <if test="columnName != 'contact_name'">
+            AND ccc.nick_name = #{searchText}
+        </if>
+        <if test="columnName != 'phone_number'">
+            AND ccc.phone LIKE CONCAT('%', #{searchText}, '%')
+        </if>
+        <if test="columnName != 'social_media_account'">
+            AND ccc.social_platform LIKE CONCAT('%', #{searchText}, '%')
+        </if>
+        AND ccc.id = (
+        SELECT ccc_sub.id
+        FROM customer_customer_contact ccc_sub
+        WHERE ccc_sub.customer_id = cc.id AND ccc_sub.del_flag = '0'
+        ORDER BY ccc_sub.create_time DESC
+        LIMIT 1
+        );
+        GROUP BY cc.id;
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
