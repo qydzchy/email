@@ -2,7 +2,7 @@
   <div class="row-tabs">
     <el-tabs v-model="curTab" v-loading="cardLoading" :class="options.isTabSetHeight ?'tabs-height':''">
       <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
-        <component :row="row" :options="options" :is="tab.is"/>
+        <component :row="rowData" :options="options" :is="tab.is"/>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -40,6 +40,17 @@ export default {
     TableRowTipsTab,
     TableRowDocTab
   },
+  watch: {
+    row: {
+      handler(newVal) {
+        if (newVal?.id) {
+          this.rowData = {...newVal, id: '', customerId: newVal.id}
+        }
+      },
+      deep: true,
+      immediate: true,
+    }
+  },
   data() {
     return {
       curTab: "1",
@@ -71,6 +82,7 @@ export default {
         },
       ],
       cardLoading: false,
+      rowData: {},
     }
   }
 }
