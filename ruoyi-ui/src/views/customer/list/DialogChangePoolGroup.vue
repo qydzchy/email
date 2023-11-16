@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {changeGroupsCustomer, movePacketCustomer} from "@/api/customer/publicleads";
+import {changeGroupsCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -85,7 +85,7 @@ export default {
           this.btnLoading = false
         })
         if (res.code === 200) {
-          this.$message.success("移入分组成功")
+          this.$message.success("变更公海分组成功")
           this.onCancel()
         }
       } catch (e) {

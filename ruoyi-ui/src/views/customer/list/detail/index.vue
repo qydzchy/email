@@ -29,7 +29,7 @@
     </div>
     <el-row type="flex">
       <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
-        <TableRowTabs :options="options" :row="{id:customerId}"/>
+        <TableRowTabs :options="options" :row="{customerId:customerId}"/>
       </el-col>
       <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
@@ -126,7 +126,7 @@
         </div>
       </el-col>
     </el-row>
-    <DialogSchedule :visible.sync="dialogSchedule"/>
+    <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData"/>
     <CustomerContactDrawer :visible.sync="contactVisible"/>
   </div>
 </template>
@@ -140,6 +140,7 @@ import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
 import {getScheduleList} from "@/api/customer/schedule";
 import {formatMonthAndDay} from "@/utils";
+import {getCustomerDetail} from "@/api/customer/publicleads";
 
 export default {
   components: {
@@ -174,13 +175,29 @@ export default {
       contactVisible: false,
       dialogSchedule: false,
       scheduleList: [],
+      rowData: {},
     }
   },
   mounted() {
     this.customerId = this.$route.params?.id
+    if (!this.customerId) {
+      return
+    }
+    // this.getDetailData()
     this.getFollowUpRecordList()
   },
   methods: {
+    async getDetailData() {
+      try {
+        const res = await getCustomerDetail({
+          id: this.customerId
+        })
+        if (res.code === 200) {
+          this.rowData = res.data
+        }
+      } catch {
+      }
+    },
     async getFollowUpRecordList() {
       try {
         const res = await getScheduleList({

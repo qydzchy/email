@@ -24,7 +24,7 @@ export function formatDateSimple(cellValue) {
   var year = date.getFullYear()
   var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
   var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
-  return year + '-' + month + '-' + day
+  return year + '-' + month + '-' + day + ' 00:00:00'
 }
 
 /**

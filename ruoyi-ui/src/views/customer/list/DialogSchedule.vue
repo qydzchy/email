@@ -6,11 +6,11 @@
         :visible.sync="scheduleDialog"
         :close-on-click-modal="false"
         :append-to-body="true"
-        @close="$emit('update:visible',false)">
+        @close="onCancel">
       <div class="container">
-        <el-form label-position="top" class="schedule-form">
+        <el-form :model="scheduleForm" label-position="top" class="schedule-form">
           <el-form-item label="日程内容" required>
-            <el-input/>
+            <el-input v-model="scheduleForm.scheduleContent" placeholder="请输入"/>
           </el-form-item>
           <el-form-item>
             <SelectTagColor is-hover :checked-color.sync="scheduleForm.color" :color-map="colorMap"/>
@@ -24,7 +24,10 @@
                     style="width:100%"
                     size="small"
                     v-model="scheduleForm.dates"
-                    placeholder="请选择日期"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
                     clearable
                     format="yyyy-MM-dd"
                     :picker-options="pickerOptions"
@@ -36,9 +39,11 @@
                     style="width:100%"
                     size="small"
                     v-model="scheduleForm.dates"
-                    placeholder="请选择日期"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
                     clearable
-                    type="datetime"
                     :picker-options="pickerOptions"
                     align="left"
                 ></el-date-picker>
@@ -61,7 +66,14 @@
             <el-select></el-select>
           </el-form-item>
           <el-form-item label="参与人" required>
-            <el-select></el-select>
+            <el-select v-model="scheduleForm.userIds" multiple filterable>
+              <el-option
+                  v-for="(item,index) in followPersonList"
+                  :key="index"
+                  :label="item.nickName"
+                  :value="item.userId">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="备注">
             <el-input placeholder="请输入内容" type="textarea" resize="none" :rows="3"></el-input>
@@ -70,8 +82,8 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button round :loading="btnLoading" @click="onCancel">取 消</el-button>
+        <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -80,11 +92,13 @@
 <script>
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
 import SelectNext from "@/components/SelectNext/index.vue";
-import {deepClone} from "@/utils";
+import {deepClone, formatDate, formatDateSimple} from "@/utils";
+import {addSchedule, editSchedule} from "@/api/customer/schedule";
+import {searchFollowerCustomer} from "@/api/customer/publicleads";
 
 const initForm = {
   customerId: "", //客户ID
-  scheduleContent: "日程内容测试01", //日程内容
+  scheduleContent: "", //日程内容
   color: '#ff3333', //颜色
   allDayFlag: true, //全天 0.否 1.是
   scheduleStartTime: "", //日程开始时间
@@ -100,6 +114,12 @@ const initForm = {
 export default {
   components: {SelectTagColor, SelectNext},
   props: {
+    formData: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    },
     visible: {
       type: Boolean,
       default: false,
@@ -167,10 +187,22 @@ export default {
         {value: 3, label: '每周'},
         {value: 4, label: '每月'},
         {value: 5, label: '自定义'},
-      ]
+      ],
+      followPersonList: [],
+      btnLoading: false,
     }
   },
   watch: {
+    formData: {
+      handler(newVal) {
+        if (newVal && newVal?.id) {
+          this.scheduleForm = {
+            ...this.scheduleForm,
+            ...newVal
+          }
+        }
+      }
+    },
     visible: {
       handler(newVal) {
         this.scheduleDialog = newVal
@@ -178,6 +210,84 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    this.getFollowPerson()
+  },
+  methods: {
+    async getFollowPerson() {
+      if (!this.formData.customerId) return
+      try {
+        const res = await searchFollowerCustomer({
+          id: this.formData.customerId,
+        })
+        if (res.code === 200) {
+          this.followPersonList = res.data
+        }
+      } catch {
+      }
+    },
+    async addFormSchedule() {
+      if (!this.formData?.customerId) {
+        return
+      }
+      const {
+        scheduleContent,
+        color,
+        allDayFlag,
+        recurringSchedule,
+        dates,
+        userIds
+      } = this.scheduleForm
+      const config = {
+        scheduleContent,
+        color,
+        recurringSchedule,
+        userIds,
+        customerId: this.formData.customerId,
+        allDayFlag: Number(allDayFlag),
+        scheduleStartTime: allDayFlag ? formatDateSimple(dates[0]) : formatDate(dates[0]),
+        scheduleEndTime: allDayFlag ? formatDateSimple(dates[1]) : formatDate(dates[1]),
+      }
+      try {
+        this.btnLoading = true
+        const res = await addSchedule({...config}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加日程成功')
+          this.onCancel()
+        }
+      } catch {
+      }
+    },
+    async editFormSchedule() {
+      try {
+        this.btnLoading = true
+        const res = await editSchedule({
+          ...this.scheduleForm
+        }).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('编辑日程成功')
+          this.onCancel()
+        }
+      } catch {
+      }
+    },
+    onConfirm() {
+      if (!this.formData.id) {
+        this.addFormSchedule()
+      } else {
+        this.editFormSchedule()
+      }
+    },
+    onCancel() {
+      this.$emit('update:visible', false)
+      // 根据情况使用
+      this.$emit('onHideDialog')
+    }
+  }
 }
 </script>
 

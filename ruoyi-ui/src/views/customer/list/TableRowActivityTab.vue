@@ -100,8 +100,8 @@
 
         </el-row>
         <div
-            class="flex-middle fs-14 pointer"
-            @click="onSortTime"
+          class="flex-middle fs-14 pointer"
+          @click="onSortTime"
         >
               <span class="caret-wrapper">
                 <i class="sort-caret ascending" :class="{'active':sortActive==='1'}"></i>
@@ -113,13 +113,13 @@
       <div class="customer-timeline mt-20">
         <el-timeline v-if="timeLineList.length">
           <el-timeline-item
-              placement="top"
-              v-for="(item, index) in timeLineList"
-              :key="index"
-              icon="el-icon-document"
-              :type="item.type"
-              color="#0bbd87"
-              :size="item.size">
+            placement="top"
+            v-for="(item, index) in timeLineList"
+            :key="index"
+            icon="el-icon-document"
+            :type="item.type"
+            color="#0bbd87"
+            :size="item.size">
             <el-card shadow="hover">
               <div class="card-header">
                 <div class="flex-middle space-between mx-20 py-10">
@@ -160,8 +160,9 @@
                 </div>
                 <div class="comment mt-20 px-20">
                   <template v-if="item.add">
-                    <el-input v-model="item.newComment" type="textarea" resize="none" :rows="3" size="small"
-                              @keydown.enter="onConfirmAddComment(item)"/>
+                    <el-input v-model="item.newComment" placeholder="请输入评论内容" type="textarea" resize="none"
+                              :rows="3" size="small"
+                              @keydown.enter.native="onConfirmAddComment(item)"/>
                     <div class="flex-end py-10">
                       <el-button round size="small" @click="onCancelAdd(item.id)">取消</el-button>
                       <el-button type="primary" round size="small" @click="onConfirmAddComment(item)">确认</el-button>
@@ -196,8 +197,9 @@
                         </div>
                       </template>
                       <template v-else>
-                        <el-input v-model="comment.comment" type="textarea" resize="none" :rows="3" size="small"
-                                  @keydown.enter="onConfirmEditComment(item.id,comment)"/>
+                        <el-input v-model="comment.comment" placeholder="请输入评论内容" type="textarea" resize="none"
+                                  :rows="3" size="small"
+                                  @keydown.enter.native="onConfirmEditComment(item.id,comment)"/>
                         <div class="flex-end pt-10">
                           <el-button round size="small" @click="onEdit(item.id,comment,false)">取消</el-button>
                           <el-button type="primary" round size="small" @click="onConfirmEditComment(item.id,comment)">
@@ -220,10 +222,12 @@
       </div>
     </div>
     <template>
-      <DialogTemplateFollow :visible.sync="templateVisible" :row="templateDrawerRow" @close="templateVisible = false"/>
+      <DialogTemplateFollow
+        v-if="templateVisible" :visible.sync="templateVisible" :row="templateDrawerRow"
+        @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
     </template>
     <template>
-      <DialogSchedule :visible.sync="dialogSchedule"/>
+      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="row"/>
     </template>
   </div>
 </template>
@@ -289,12 +293,11 @@ export default {
   },
   mounted() {
     this.getTemplateList()
-
   },
   watch: {
     row: {
       handler(newVal) {
-        if (newVal?.id) {
+        if (newVal?.customerId) {
           this.getScheduleList()
           this.getRecordList()
           this.getFollowPerson()
@@ -306,6 +309,7 @@ export default {
   },
   methods: {
     formatDate,
+    // 快捷模板
     async getTemplateList() {
       try {
         const res = await followTextTemplateList()
@@ -320,7 +324,7 @@ export default {
     async getRecordList() {
       try {
         const res = await getFollowUpRecordsList({
-          customerId: this.row.id,
+          customerId: this.row.customerId,
         })
         if (res.code === 200) {
           this.timeLineList = res.data
@@ -344,7 +348,7 @@ export default {
     async getFollowPerson() {
       try {
         const res = await searchFollowerCustomer({
-          id: this.row.id
+          id: this.row.customerId
         })
         if (res.code === 200) {
           this.followContactList = res.data
@@ -359,7 +363,7 @@ export default {
           personName = val.nickName
         }
       })
-      return personName
+      return personName || '---'
     },
     // 日程列表
     async getScheduleList() {
@@ -368,7 +372,7 @@ export default {
       }
       try {
         const res = await getScheduleList({
-          customerId: this.row.id,
+          customerId: this.row.customerId,
           pageNum: 1,
           pageSize: 3,
         })
@@ -392,7 +396,8 @@ export default {
       this.showWriteFollow = false
       this.templateData = {}
     },
-    onConfirmWriteFollow() {
+    async onConfirmWriteFollow() {
+      await this.getRecordList()
       this.onCancelWriteFollow()
     },
     onSortTime() {
@@ -437,8 +442,13 @@ export default {
       }
       this.$set(this.timeLineList, target, {...this.timeLineList[target], add: false, newComment: ''})
     },
+    // 修改写跟进
     onEditTemplate(item) {
-      this.templateDrawerRow = item
+      this.templateDrawerRow = {
+        ...item,
+        customerId: this.row?.customerId,
+        allDayFlag: Boolean(item.allDayFlag)
+      }
       this.templateVisible = true
     },
     onEdit(itemId, comment, bool) {
@@ -497,6 +507,11 @@ export default {
         }
       } catch {
       }
+    },
+    // 确认跟进操作
+    onConfirmTemplateFollow() {
+      this.getRecordList()
+      this.templateVisible = false
     },
     targetBlank,
     formatMonthAndDay,

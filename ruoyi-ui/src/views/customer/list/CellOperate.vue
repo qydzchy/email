@@ -209,11 +209,13 @@ export default {
     generateTelValue() {
       const phonePrefix = this.content?.phone_prefix
       const phone = this.content?.phone
-      return (phonePrefix || phone) ? `${phonePrefix}-${phone}` : '---'
+      return (phonePrefix || phone) ? `${phonePrefix} - ${phone}` : '---'
     },
     generateCountryValue() {
-      if (!this.content && !this.content?.length) {
-        return '---'
+      if (!this.content?.length) {
+        return {
+          value: '---'
+        }
       }
       let country = this.content[0] || ''
       let countrySvg = ''

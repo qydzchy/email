@@ -16,9 +16,13 @@
             <span class="fs-12 pl-10">点击选择模板，可自动填充到输入框</span>
           </div>
           <el-row class="template-card mt-16 mr-8 borderBox">
-            <el-col class="borderBox py-8 px-16 pointer flex-column">
-              <span class="bold fs-14" title="模板名称测试">模板名称测试</span>
-              <span class="fs-12 mt-8">模板内容测试</span>
+            <el-col
+                class="borderBox py-8 px-16 pointer flex-column"
+                v-for="(text,index) in followTextList"
+                :key="index"
+                @click.native="chooseTemplateText(text)">
+              <span class="bold fs-14" :title="text.name">{{ text.name }}</span>
+              <span class="fs-12 mt-8">{{ text.content }}</span>
             </el-col>
           </el-row>
         </div>
@@ -28,7 +32,7 @@
             <i class="el-icon-close pointer" @click="onCancel"></i>
           </div>
           <div class="right-main">
-            <WriteFollow/>
+            <WriteFollow key="dialogWriteFollow" :row="row" :echo-data="templateData" @onConfirm="onConfirm" @onCancel="onCancel"/>
           </div>
 
         </div>
@@ -39,6 +43,7 @@
 
 <script>
 import WriteFollow from "./WriteFollow.vue";
+import {followTextTemplateList} from "@/api/company/followText";
 
 export default {
   props: {
@@ -60,6 +65,8 @@ export default {
   data() {
     return {
       templateVisible: false,
+      followTextList: [],
+      templateData: {}
     }
   },
   watch: {
@@ -70,7 +77,31 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    this.getTemplateList()
+  },
   methods: {
+    // 快捷模板
+    async getTemplateList() {
+      try {
+        const res = await followTextTemplateList()
+        if (res.code === 200) {
+          this.followTextList = res.data
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    // 选择模板
+    chooseTemplateText(text) {
+      this.templateData = {
+        id: +new Date(),
+        name: text.name,
+      }
+    },
+    onConfirm(){
+      this.$emit('onConfirm')
+    },
     onCancel() {
       this.$emit('close')
     }

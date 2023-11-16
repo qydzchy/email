@@ -104,13 +104,12 @@ import CellOperate from './CellOperate.vue'
 import HeaderFilter from './HeaderFilter.vue'
 import TableList from './TableList.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
-import {listMenu} from "@/api/system/menu";
 import {targetBlank} from "@/utils/tools";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
-import {groupsList, reasonList} from "@/api/company/poolRule";
-import {getPrivateSegmentMenu} from "@/api/customer/publicleads";
+import {reasonList} from "@/api/company/poolRule";
+import {getPrivateSegmentMenu, searchGroupsCustomer} from "@/api/customer/publicleads";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 
 export default {
@@ -197,7 +196,7 @@ export default {
     // 公海分组选项
     async getPoolList() {
       try {
-        const res = await groupsList()
+        const res = await searchGroupsCustomer()
         if (res.code === 200) {
           this.indexOpt.poolGroupOption = res.data
         }

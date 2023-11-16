@@ -15,7 +15,7 @@
         </div>
       </template>
       <div class="container">
-        <CustomerContactCard/>
+        <CustomerContactCard :contact-list="[]"/>
       </div>
 
       <!--   operate     -->
