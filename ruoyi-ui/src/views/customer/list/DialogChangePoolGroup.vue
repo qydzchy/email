@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {changeGroupsCustomer, movePacketCustomer} from "@/api/customer/publicleads";
+import {changeGroupsCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {

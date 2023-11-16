@@ -63,7 +63,7 @@
       </el-drawer>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="editVisible" :row="row"/>
+    <CreateCustomerDrawer :visible.sync="editVisible" :row="row" @load="onHideCreateDrawer"/>
   </div>
 </template>
 
@@ -141,6 +141,13 @@ export default {
     },
     onHideDrawer() {
       this.$emit('update:visible', false)
+    },
+    onHideCreateDrawer() {
+      this.editVisible = false
+      setTimeout(()=>{
+        this.$emit('load')
+      },400)
+
     },
   }
 

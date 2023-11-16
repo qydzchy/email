@@ -63,7 +63,7 @@
 import {UsuallyInfoRule, OtherInfoRule} from './CreateCustomerOption'
 import {formOption} from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
-import {addCustomer} from "@/api/customer/publicleads";
+import {addCustomer, editCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -187,16 +187,30 @@ export default {
   },
   methods: {
     async addCustomerPrivate(data) {
-      this.btnLoading = true
-      this.containerLoading = true
       try {
         this.btnLoading = true
+        this.containerLoading = true
         const res = await addCustomer({...data}).finally(() => {
           this.btnLoading = false
           this.containerLoading = false
         })
         if (res.code === 200) {
           this.$message.success('添加成功')
+          this.$emit('load')
+        }
+      } catch {
+      }
+    },
+    async editCustomerPrivate(data) {
+      this.btnLoading = true
+      this.containerLoading = true
+      try {
+        const res = await editCustomer({...data}).finally(() => {
+          this.btnLoading = false
+          this.containerLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('修改成功')
           this.$emit('load')
         }
       } catch {
@@ -216,7 +230,12 @@ export default {
             rating: +customerForm.rating,
             countryRegion: customerForm.countryRegion?.join('/') || undefined
           }
-          this.addCustomerPrivate(data)
+          if (!data.id) {
+            this.addCustomerPrivate(data)
+          } else {
+            this.editCustomerPrivate(data)
+          }
+
         }
       })
 

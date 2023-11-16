@@ -24,22 +24,22 @@
           </div>
           <div>
             <el-popover
-              v-if="fastOptionList.length"
-              v-model="fastPopover"
-              :append-to-body="false"
-              class="write-follow-tag"
+                v-if="fastOptionList.length"
+                v-model="fastPopover"
+                :append-to-body="false"
+                class="write-follow-tag"
             >
               <template #default>
                 <div>
                   <div class="fs-13">可点击回车连续添加快捷文本，最多20个</div>
                   <el-select
-                    v-model="formData.fastTextTag"
-                    style="width: 100%"
-                    class="fast-select my-10"
-                    size="small" multiple
-                    allow-create
-                    filterable default-first-option
-                    :popper-append-to-body="false"
+                      v-model="formData.fastTextTag"
+                      style="width: 100%"
+                      class="fast-select my-10"
+                      size="small" multiple
+                      allow-create
+                      filterable default-first-option
+                      :popper-append-to-body="false"
                   >
                   </el-select>
                   <div class="operate flex-end">
@@ -86,16 +86,16 @@
             <div class="auto-date-picker flex-middle">
               <span class="fs-13 pr-6">时间</span>
               <el-date-picker
-                key="submissionTime"
-                style="width:180px"
-                size="small"
-                v-model="formData.submissionTime"
-                placeholder="请选择日期"
-                clearable
-                type="datetime"
-                :picker-options="submissionPickerOptions"
-                align="left"
-                format="yyyy-MM-dd HH:mm:ss"
+                  key="submissionTime"
+                  style="width:180px"
+                  size="small"
+                  v-model="formData.submissionTime"
+                  placeholder="请选择日期"
+                  clearable
+                  type="datetime"
+                  :picker-options="submissionPickerOptions"
+                  align="left"
+                  format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
             </div>
             <div class="flex-middle">
@@ -125,29 +125,29 @@
       <span class="fs-13">下次跟进日程</span>
       <div class="ml-10">
         <el-date-picker
-          v-if="formData.allDayFlag"
-          key="isFullDay"
-          style="width:200px"
-          size="small"
-          v-model="formData.nextFollowUpSchedule"
-          placeholder="请选择日期"
-          clearable
-          format="yyyy-MM-dd"
-          :picker-options="pickerOptions"
-          align="left"
+            v-if="formData.allDayFlag"
+            key="isFullDay"
+            style="width:200px"
+            size="small"
+            v-model="formData.nextFollowUpSchedule"
+            placeholder="请选择日期"
+            clearable
+            format="yyyy-MM-dd"
+            :picker-options="pickerOptions"
+            align="left"
         ></el-date-picker>
         <el-date-picker
-          v-else
-          key="isNotFullDay"
-          style="width:200px"
-          size="small"
-          v-model="formData.nextFollowUpSchedule"
-          placeholder="请选择日期"
-          clearable
-          type="datetime"
-          :picker-options="pickerOptions"
-          align="left"
-          format="yyyy-MM-dd HH:mm:ss"
+            v-else
+            key="isNotFullDay"
+            style="width:200px"
+            size="small"
+            v-model="formData.nextFollowUpSchedule"
+            placeholder="请选择日期"
+            clearable
+            type="datetime"
+            :picker-options="pickerOptions"
+            align="left"
+            format="yyyy-MM-dd HH:mm:ss"
         ></el-date-picker>
         <el-checkbox class="ml-10" v-model="formData.allDayFlag">全天</el-checkbox>
         <el-button class="ml-20" type="text" v-if="!isFullEdit" @click="isFullEdit=true">完整编辑</el-button>
@@ -461,7 +461,7 @@ export default {
         followUpContent,
         submissionTime: formatDate(submissionTime),
         followUpContactId,
-        nextFollowUpSchedule: allDayFlag ? formatDateSimple(nextFollowUpSchedule) + '00:00:00' : formatDate(nextFollowUpSchedule),
+        nextFollowUpSchedule: allDayFlag ? formatDateSimple(nextFollowUpSchedule) : formatDate(nextFollowUpSchedule),
         allDayFlag: Number(allDayFlag),
         scheduleContent,
         color,

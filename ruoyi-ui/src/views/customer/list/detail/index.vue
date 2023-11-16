@@ -126,7 +126,7 @@
         </div>
       </el-col>
     </el-row>
-    <DialogSchedule :visible.sync="dialogSchedule"/>
+    <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData"/>
     <CustomerContactDrawer :visible.sync="contactVisible"/>
   </div>
 </template>

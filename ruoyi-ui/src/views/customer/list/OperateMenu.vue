@@ -6,49 +6,54 @@
     </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item
-            v-for="(item) in itemList"
-            :key="item.command"
-            :command="item.command">
+          v-for="(item) in itemList"
+          :key="item.command"
+          :command="item.command">
           {{ item.label }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <DialogSchedule
-        v-if="scheduleVisible"
-        :visible.sync="scheduleVisible"/>
+      v-if="scheduleVisible"
+      :visible.sync="scheduleVisible"
+      :formData="row"
+    />
     <!--    -->
     <DialogMoveToGroup
-        v-if="moveGroupVisible"
-        :visible.sync="moveGroupVisible"
-        :row="this.row"
-        :groupOption="indexOpt.groupOption"/>
+      v-if="moveGroupVisible"
+      :visible.sync="moveGroupVisible"
+      :row="row"
+      :groupOption="indexOpt.groupOption"/>
     <!--    -->
     <DialogMergeCustomer
-        v-if="mergeVisible"
-        :visible.sync="mergeVisible"/>
-    <!--    -->
-    <DialogTransferTo
-        v-if="transferVisible"
-        :visible.sync="transferVisible"/>
+      v-if="mergeVisible"
+      :visible.sync="mergeVisible"/>
+    <!--  公共弹框：转移给、共享、重新分配  -->
+    <DialogCommonOperate
+      v-if="commonVisible"
+      :cur-type="commonType"
+      :row="row"
+      :visible.sync="commonVisible"
+      @onHideDialog="onHideCommonDialog"/>
     <!--    -->
     <DialogRemoveFollow
-        v-if="followVisible"
-        :row="this.row"
-        :visible.sync="followVisible"/>
+      v-if="followVisible"
+      :row="row"
+      :visible.sync="followVisible"/>
     <!--  移入公海  -->
     <DialogMoveToPool
-        v-if="moveToPoolVisible"
-        :row="this.row"
-        :visible.sync="moveToPoolVisible"
-        :poolOption="indexOpt.poolGroupOption"
-        :reasonOption="indexOpt.poolReasonOption"
+      v-if="moveToPoolVisible"
+      :row="row"
+      :visible.sync="moveToPoolVisible"
+      :poolOption="indexOpt.poolGroupOption"
+      :reasonOption="indexOpt.poolReasonOption"
     />
     <!--  改变公海分组  -->
     <DialogChangePoolGroup
-        v-if="changePoolVisible"
-        :row="this.row"
-        :visible.sync="changePoolVisible"
-        :poolOption="indexOpt.poolGroupOption"
+      v-if="changePoolVisible"
+      :row="row"
+      :visible.sync="changePoolVisible"
+      :poolOption="indexOpt.poolGroupOption"
     />
   </div>
 </template>
@@ -57,10 +62,10 @@
 import DialogSchedule from "./DialogSchedule.vue";
 import DialogMoveToGroup from "./DialogMoveToGroup.vue";
 import DialogMergeCustomer from "./DialogMergeCustomer.vue";
-import DialogTransferTo from "./DialogTransferTo.vue";
 import DialogRemoveFollow from "./DialogRemoveFollow.vue";
 import DialogMoveToPool from "./DialogMoveToPool.vue";
 import DialogChangePoolGroup from "./DialogChangePoolGroup.vue";
+import DialogCommonOperate from "./DialogCommonOperate.vue";
 import {followCancelCustomer} from "@/api/customer/publicleads";
 
 export default {
@@ -83,10 +88,10 @@ export default {
     DialogSchedule,
     DialogMoveToGroup,
     DialogMergeCustomer,
-    DialogTransferTo,
     DialogRemoveFollow,
     DialogMoveToPool,
     DialogChangePoolGroup,
+    DialogCommonOperate
   },
   data() {
     return {
@@ -128,7 +133,7 @@ export default {
           label: '移入公海'
         },
         {
-          command: 'reallocate',
+          command: 'reassign',
           label: '重新分配'
         },
         {
@@ -143,10 +148,11 @@ export default {
       scheduleVisible: false,
       moveGroupVisible: false,
       mergeVisible: false,
-      transferVisible: false,
       followVisible: false,
       moveToPoolVisible: false,
       changePoolVisible: false,
+      commonVisible: false,
+      commonType: ''
     }
   },
   methods: {
@@ -198,7 +204,23 @@ export default {
         case "changePoolGroup":
           this.changePoolVisible = true
           break;
+        case "transfer":
+          this.commonType = value
+          this.commonVisible = true
+          break;
+        case "share":
+          this.commonType = value
+          this.commonVisible = true
+          break;
+        case "reassign":
+          this.commonType = value
+          this.commonVisible = true
+          break;
       }
+    },
+    onHideCommonDialog() {
+      this.commonType = ''
+      this.commonVisible = false
     },
   }
 }

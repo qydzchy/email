@@ -100,8 +100,8 @@
 
         </el-row>
         <div
-            class="flex-middle fs-14 pointer"
-            @click="onSortTime"
+          class="flex-middle fs-14 pointer"
+          @click="onSortTime"
         >
               <span class="caret-wrapper">
                 <i class="sort-caret ascending" :class="{'active':sortActive==='1'}"></i>
@@ -113,13 +113,13 @@
       <div class="customer-timeline mt-20">
         <el-timeline v-if="timeLineList.length">
           <el-timeline-item
-              placement="top"
-              v-for="(item, index) in timeLineList"
-              :key="index"
-              icon="el-icon-document"
-              :type="item.type"
-              color="#0bbd87"
-              :size="item.size">
+            placement="top"
+            v-for="(item, index) in timeLineList"
+            :key="index"
+            icon="el-icon-document"
+            :type="item.type"
+            color="#0bbd87"
+            :size="item.size">
             <el-card shadow="hover">
               <div class="card-header">
                 <div class="flex-middle space-between mx-20 py-10">
@@ -223,11 +223,11 @@
     </div>
     <template>
       <DialogTemplateFollow
-          v-if="templateVisible" :visible.sync="templateVisible" :row="templateDrawerRow"
-          @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
+        v-if="templateVisible" :visible.sync="templateVisible" :row="templateDrawerRow"
+        @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
     </template>
     <template>
-      <DialogSchedule :visible.sync="dialogSchedule"/>
+      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="row"/>
     </template>
   </div>
 </template>
