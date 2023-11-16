@@ -710,7 +710,7 @@ CREATE TABLE `customer_customer_schedule`  (
 `all_day_flag` tinyint(1) NOT NULL COMMENT '全天 0.否 1.是',
 `schedule_start_time` datetime(0) NOT NULL COMMENT '日程开始时间',
 `schedule_end_time` datetime(0) NOT NULL COMMENT '日程结束时间',
-`completed_flag` tinyint(1) NOT NULL COMMENT '日程是否完成 0.否 1.是',
+`completed_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '日程是否完成 0.否 1.是',
 `recurring_schedule` tinyint(1) NULL DEFAULT NULL COMMENT '周期性日程 1.不设置 2.每天 3.每周 4.每月 5.自定义',
 `custom_cycle_value` int(11) NULL DEFAULT NULL COMMENT '自定义周期-值',
 `custom_cycle_type` tinyint(1) NULL DEFAULT NULL COMMENT '自定义周期-类型 1.天 2.周 3.月',
