@@ -226,7 +226,7 @@ export default {
       ],
       usuallyInfo: [
         {
-          field: '1',
+          field: 'companyWebsite',
           label: '公司网址',
           type: 'input',
           show: false,
@@ -234,7 +234,7 @@ export default {
           options: {},
         },
         {
-          field: '2',
+          field: 'companyName',
           label: '公司名称',
           type: 'input',
           show: false,
@@ -242,7 +242,7 @@ export default {
           options: {},
         },
         {
-          field: '3',
+          field: 'shortName',
           label: '简称',
           type: 'input',
           show: false,
@@ -250,15 +250,15 @@ export default {
           options: {},
         },
         {
-          field: '4',
+          field: 'countryRegion',
           label: '国家地区',
-          type: 'input',
+          type: 'country',
           show: false,
           value: '',
           options: {},
         },
         {
-          field: '5',
+          field: 'origin',
           label: '客户来源',
           type: 'input',
           show: false,
@@ -266,7 +266,7 @@ export default {
           options: {},
         },
         {
-          field: '6',
+          field: 'packetId',
           label: '分组',
           type: 'tree',
           show: false,
@@ -279,21 +279,17 @@ export default {
           },
         },
         {
-          field: '7',
+          field: 'stageId',
           label: '客户阶段',
           type: 'select',
           show: false,
           value: '',
           options: {
-            options: [
-              {label: 'test', value: '1', bgColor: '#fea112'},
-              {label: 'test2', value: '2'},
-              {label: 'test3', value: '3'},
-            ]
+            options: []
           },
         },
         {
-          field: '8',
+          field: 'rating',
           label: '客户星级',
           type: 'rate',
           show: true,
@@ -301,79 +297,81 @@ export default {
           options: {},
         },
         {
-          field: '9',
+          field: 'customerNoType',
           label: '客户编号',
           type: 'input',
           show: false,
           value: '',
-          options: {},
+          options: {
+            options: [
+              {value: 1, label: "自动生成"},
+              {value: 2, label: "自定义"},
+            ]
+          },
         },
         {
-          field: '10',
+          field: 'poolGroup',
           label: '公海分组',
           type: 'select',
           show: false,
           showTooltip: true,
           tooltipText: '移入公海时，所属的公海分组',
-          value: '1',
+          value: '',
           options: {
             clearable: true,
-            options: [
-              {label: '公共公海分组', value: '1'},
-              {label: '公海2组', value: '2'},
-            ]
+            options: []
           },
         },
         {
-          field: '11',
+          field: 'tel',
           label: '座机',
           type: 'tel',
           show: false,
           value: {
-            phone_prefix: '',
+            phonePrefix: '',
             phone: '',
           },
         },
       ],
       otherInfo: [
         {
-          field: '1',
+          field: 'product',
           label: '主营产品',
         },
         {
-          field: '2',
+          field: 'type',
           label: '客户类型',
         },
         {
-          field: '3',
+          field: 'year',
           label: '年采购额',
         },
         {
-          field: '4',
+          field: 'yx',
           label: '采购意向',
         },
         {
-          field: '5',
+          field: 'timezone',
           label: '时区',
         },
         {
-          field: '6',
+          field: 'scale',
           label: '规模',
         },
         {
-          field: '7',
+          field: 'productGroup',
           label: '产品分组',
         },
         {
-          field: '8',
+          field: 'fax',
           label: '传真',
         },
         {
-          field: '9',
+          field: 'address',
           label: '详细地址',
         },
         {
-          field: '10',
+          field: 'companyRemarks',
           label: '公司备注',
           show: false,
           value: '',
@@ -385,7 +383,7 @@ export default {
           }
         },
         {
-          field: '11',
+          field: 'companyLogo',
           label: '公司logo',
           otherEcho: true,
           slot: '111'
@@ -504,6 +502,33 @@ export default {
         },
       ],
       contactVisible: false
+    }
+  },
+  watch: {
+    row: {
+      handler(newVal) {
+        if (!newVal?.id) {
+          return
+        }
+        this.usuallyInfo.map(val => {
+          if (val.field === 'tel') {
+            val.value = {
+              phonePrefix: newVal?.phonePrefix || '',
+              phone: newVal?.phone || '',
+            }
+          } else {
+            val.value = newVal[val.field]
+          }
+          return val
+        })
+
+        this.otherInfo.map(val => {
+          val.value = newVal[val.field]
+          return val
+        })
+      },
+      deep: true,
+      immediate: true,
     }
   },
   methods: {

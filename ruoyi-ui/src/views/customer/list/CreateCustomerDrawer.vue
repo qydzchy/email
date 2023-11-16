@@ -9,8 +9,8 @@
           </div>
           <el-row class="flex-middle">
             <el-row class="flex-middle gap-16">
-              <el-tooltip placement="top" content="关注">
-                <svg-icon icon-class="like"/>
+              <el-tooltip placement="top" content="关注" v-if="row && row.id">
+                <svg-icon class="pointer" icon-class="like"/>
               </el-tooltip>
               <i class="el-icon-close pointer fs-16" @click="onHideDrawer"></i>
             </el-row>
@@ -213,6 +213,7 @@ export default {
             ...otherForm,
             contactList,
             seaType: 1,
+            rating: +customerForm.rating,
             countryRegion: customerForm.countryRegion?.join('/') || undefined
           }
           this.addCustomerPrivate(data)
@@ -221,6 +222,8 @@ export default {
 
     },
     onHideDrawer() {
+      this.customerFormValue = {}
+      this.customerOtherFormValue = {}
       this.$emit('update:visible', false)
     },
     handleCountry(filed, value) {

@@ -31,8 +31,9 @@
         v-if="transferVisible"
         :visible.sync="transferVisible"/>
     <!--    -->
-    <DialogFollowAndChange
+    <DialogRemoveFollow
         v-if="followVisible"
+        :row="this.row"
         :visible.sync="followVisible"/>
     <!--  移入公海  -->
     <DialogMoveToPool
@@ -57,7 +58,7 @@ import DialogSchedule from "./DialogSchedule.vue";
 import DialogMoveToGroup from "./DialogMoveToGroup.vue";
 import DialogMergeCustomer from "./DialogMergeCustomer.vue";
 import DialogTransferTo from "./DialogTransferTo.vue";
-import DialogFollowAndChange from "./DialogFollowAndChange.vue";
+import DialogRemoveFollow from "./DialogRemoveFollow.vue";
 import DialogMoveToPool from "./DialogMoveToPool.vue";
 import DialogChangePoolGroup from "./DialogChangePoolGroup.vue";
 import {followCancelCustomer} from "@/api/customer/publicleads";
@@ -83,7 +84,7 @@ export default {
     DialogMoveToGroup,
     DialogMergeCustomer,
     DialogTransferTo,
-    DialogFollowAndChange,
+    DialogRemoveFollow,
     DialogMoveToPool,
     DialogChangePoolGroup,
   },

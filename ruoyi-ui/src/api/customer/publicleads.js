@@ -124,11 +124,10 @@ export function editFocusFlagCustomer(data) {
 }
 
 // 查询公海分组
-export function searchGroupsCustomer(data) {
+export function searchGroupsCustomer() {
     return request({
         url: '/customer/customer/publicleads/groups/list',
-        method: 'post',
-        data
+        method: 'get'
     })
 }
 
@@ -147,5 +146,14 @@ export function moveToPrivateLeads(data) {
         url: '/customer/customer/move/to/privateleads',
         method: 'post',
         data
+    })
+}
+
+// 客户详情
+export function getCustomerDetail(params) {
+    return request({
+        url: '/customer/customer/detail',
+        method: 'get',
+        params
     })
 }

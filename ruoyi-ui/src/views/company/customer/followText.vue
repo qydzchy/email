@@ -46,7 +46,7 @@
             </div>
           </div>
         </template>
-        <el-empty v-else :image-size="100"></el-empty>
+        <el-empty style="width: 100%" v-else :image-size="100"></el-empty>
       </div>
     </el-card>
     <!--  跟进模板表单  -->
@@ -104,7 +104,7 @@
           </div>
         </template>
 
-        <el-empty v-else :image-size="100"></el-empty>
+        <el-empty style="width: 100%" v-else :image-size="100"></el-empty>
       </div>
     </el-card>
 

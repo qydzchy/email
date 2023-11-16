@@ -193,7 +193,7 @@ import {deepClone, formatDate, formatDateSimple} from "@/utils";
 import {followTextQuickEdit, followTextQuickList} from "@/api/company/followText";
 import {targetBlank} from "@/utils/tools";
 import {searchFollowerCustomer} from "@/api/customer/publicleads";
-import {addFollowUpRecords} from "@/api/customer/records";
+import {addFollowUpRecords, editFollowUpRecords} from "@/api/customer/records";
 
 const initFormData = {
   customerId: null,//客户ID
@@ -315,9 +315,22 @@ export default {
     }
   },
   watch: {
+    row: {
+      handler(newVal) {
+        if (!newVal?.id) {
+          return
+        }
+        this.formData = {
+          ...this.formData,
+          ...newVal
+        }
+      },
+      deep: true,
+      immediate: true
+    },
     echoData: {
       handler(newVal) {
-        if (!newVal.name) {
+        if (!newVal?.name) {
           return
         }
         this.joinFollowText(newVal.name)
@@ -361,12 +374,12 @@ export default {
       } catch {
       }
     },
-    // 关联恋人
+    // 关联联系人
     async getFollowPerson() {
-      if (!this.row.id) return
+      if (!this.row.customerId) return
       try {
         const res = await searchFollowerCustomer({
-          id: this.row.id
+          id: this.row.customerId
         })
         if (res.code === 200) {
           this.followContactList = res.data
@@ -432,6 +445,7 @@ export default {
     },
     async onConfirm() {
       const {
+        id,
         followUpType,
         followUpContent,
         submissionTime,
@@ -442,8 +456,7 @@ export default {
         color,
         remarks
       } = this.formData
-      const config = {
-        customerId: this.row?.id,
+      let config = {
         followUpType,
         followUpContent,
         submissionTime: formatDate(submissionTime),
@@ -454,6 +467,18 @@ export default {
         color,
         remarks
       }
+      if (id) {
+        config = {...config, id: id}
+        await this.editFollowUp(config)
+      } else {
+        config = {...config, customerId: this.row?.customerId}
+        await this.addFollowUp(config)
+      }
+    },
+    async addFollowUp(config) {
+      if (!config.customerId) {
+        return
+      }
       try {
         const res = await addFollowUpRecords({...config})
         if (res.code === 200) {
@@ -462,7 +487,16 @@ export default {
         }
       } catch {
       }
-
+    },
+    async editFollowUp(config) {
+      try {
+        const res = await editFollowUpRecords({...config})
+        if (res.code === 200) {
+          this.$message.success("修改成功")
+          this.$emit('onConfirm')
+        }
+      } catch {
+      }
     },
     targetBlank
   }

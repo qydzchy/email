@@ -85,7 +85,7 @@ export default {
           this.btnLoading = false
         })
         if (res.code === 200) {
-          this.$message.success("移入分组成功")
+          this.$message.success("变更公海分组成功")
           this.onCancel()
         }
       } catch (e) {
