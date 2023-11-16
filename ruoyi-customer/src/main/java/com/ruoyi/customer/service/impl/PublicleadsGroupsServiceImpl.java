@@ -172,6 +172,10 @@ public class PublicleadsGroupsServiceImpl implements IPublicleadsGroupsService
     public PublicleadsGroupsListVO selectPublicleadsGroupsByCustomerId(Long id) {
         List<PublicleadsGroupsListBO> publicleadsGroupsBOList = publicleadsGroupsMapper.selectPublicleadsGroupsByCustomerId(id);
 
+        if (publicleadsGroupsBOList == null || publicleadsGroupsBOList.isEmpty()) {
+            return null;
+        }
+
         PublicleadsGroupsListBO publicleadsGroupsBO = publicleadsGroupsBOList.get(0);
         PublicleadsGroupsListVO publicleadsGroupsVO = new PublicleadsGroupsListVO();
         publicleadsGroupsVO.setId(publicleadsGroupsBO.getId());

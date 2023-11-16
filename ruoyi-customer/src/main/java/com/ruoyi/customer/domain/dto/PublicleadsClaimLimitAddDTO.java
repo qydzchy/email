@@ -13,7 +13,7 @@ public class PublicleadsClaimLimitAddDTO {
     private List<Long> userIdList;
 
     /** 领取上限 */
-    private Long claimLimit;
+    private Integer claimLimit;
 
     /** 上限周期 1.每日2.每周3.每月4.每年 */
     private Integer claimPeriod;

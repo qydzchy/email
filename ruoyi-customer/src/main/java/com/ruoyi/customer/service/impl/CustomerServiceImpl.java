@@ -73,6 +73,8 @@ public class CustomerServiceImpl implements ICustomerService
     @Resource
     private PublicleadsClaimLimitMapper publicleadsClaimLimitMapper;
     @Resource
+    private LimitsMapper limitsMapper;
+    @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
     private IPublicleadsGroupsService publicleadsGroupsService;
@@ -693,11 +695,11 @@ public class CustomerServiceImpl implements ICustomerService
         String username = loginUser.getUsername();
         
         // 校验公海领取规则
-        isClaimCountValid(id, userId);
+        /*isClaimCountValid(id, userId);
         // 校验领取上限
         isPublicleadsClaimLimitValid(userId);
         // 校验客户上限
-        isCustomerLimitsValid(userId);
+        isCustomerLimitsValid(userId);*/
 
         Integer type = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
         Customer customer = customerMapper.selectCustomerById(id);
@@ -730,11 +732,26 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 校验客户上限
-     * todo 待开发
      * @param userId
      */
     private void isCustomerLimitsValid(Long userId) {
+        Limits limitsParam = new Limits();
+        limitsParam.setUserId(userId);
+        // 客户上限
+        limitsParam.setType(2);
+        limitsParam.setDelFlag("0");
+        List<Limits> limitsList = limitsMapper.selectLimitsList(limitsParam);
+        if (limitsList == null || limitsList.isEmpty()) return;
 
+        Limits limits = limitsList.get(0);
+        Integer limitsNum = limits.getLimits();
+        if (limitsNum != null) {
+            // 查询私海客户数量
+            Integer privateleadsNum = customerMapper.selectPrivateleadsNumByUserId(userId);
+            if (privateleadsNum >= limitsNum) {
+                throw new ServiceException("您的客户数量已达上限");
+            }
+        }
     }
 
     /**

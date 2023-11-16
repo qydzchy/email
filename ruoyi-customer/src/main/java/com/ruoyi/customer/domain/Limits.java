@@ -28,7 +28,7 @@ public class Limits extends BaseEntity
 
     /** 客户上限值 */
     @Excel(name = "客户上限值")
-    private Long limits;
+    private Integer limits;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -68,12 +68,12 @@ public class Limits extends BaseEntity
     {
         return type;
     }
-    public void setLimits(Long limits) 
+    public void setLimits(Integer limits)
     {
         this.limits = limits;
     }
 
-    public Long getLimits() 
+    public Integer getLimits()
     {
         return limits;
     }

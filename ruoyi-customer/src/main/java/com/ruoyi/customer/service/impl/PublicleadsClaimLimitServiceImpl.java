@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.customer.domain.dto.PublicleadsClaimLimitAddDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsClaimLimitListVO;
 import org.springframework.stereotype.Service;

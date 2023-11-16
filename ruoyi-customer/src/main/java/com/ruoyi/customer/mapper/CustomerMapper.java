@@ -155,4 +155,11 @@ public interface CustomerMapper
      * @param seaType
      */
     void updateCustomerSeaType(@Param("id") Long id, @Param("seaType") Integer seaType, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 查询私海客户数量
+     * @param userId
+     * @return
+     */
+    Integer selectPrivateleadsNumByUserId(@Param("userId") Long userId);
 }
