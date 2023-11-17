@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.customer;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.customer.service.IPacketService;
 import com.ruoyi.customer.service.IPublicleadsRulesService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +20,25 @@ public class CustomerSettingsController extends BaseController {
 
     @Resource
     private IPublicleadsRulesService publicleadsRulesService;
+    @Resource
+    private IPacketService packetService;
 
     /**
-     * 查询移入公海规则配置
+     * 客户设置-移入公海规则列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:rules')")
-    @GetMapping("/get/publicleads/rules")
+    @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:rules:list')")
+    @GetMapping("/publicleads/rules/list")
     public AjaxResult getPublicleadsRules() {
-        return success(publicleadsRulesService.getPublicleadsRules());
+        return success(publicleadsRulesService.publicleadsRulesList());
+    }
+
+
+    /**
+     * 客户设置-分组列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:packet:list')")
+    @GetMapping("/packet:list")
+    public AjaxResult packetList() {
+        return success(packetService.packetList());
     }
 }

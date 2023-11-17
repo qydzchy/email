@@ -1,12 +1,13 @@
 package com.ruoyi.customer.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
 import com.ruoyi.customer.domain.vo.PacketListVO;
+import com.ruoyi.customer.service.IUserDeptService;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.PacketMapper;
 import com.ruoyi.customer.domain.Packet;
@@ -25,6 +26,8 @@ public class PacketServiceImpl implements IPacketService
 {
     @Resource
     private PacketMapper packetMapper;
+    @Resource
+    private IUserDeptService userDeptService;
 
     /**
      * 新增客户分组
@@ -87,6 +90,38 @@ public class PacketServiceImpl implements IPacketService
     public List<PacketListVO> getPacketTree() {
         List<PacketListVO> packetListVOList = packetMapper.list();
         return buildTree(packetListVOList, -1L);
+    }
+
+    /**
+     * 客户设置-分组列表
+     * @return
+     */
+    @Override
+    public List<PacketListVO> packetList() {
+        List<PacketListVO> packetVOList = packetMapper.list();
+        if (packetVOList == null || packetVOList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Long deptId = loginUser.getDeptId();
+
+        Iterator<PacketListVO> iterator = packetVOList.iterator();
+        while (iterator.hasNext()) {
+            PacketListVO packetVO = iterator.next();
+            if (packetVO.getParentId().longValue() != -1L) {
+                continue;
+            }
+
+            String designatedMember = packetVO.getDesignatedMember();
+            boolean isMet = userDeptService.userDeptVerify(Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build()), designatedMember);
+            if (!isMet) {
+                iterator.remove();
+            }
+        }
+
+        return buildTree(packetVOList, -1L);
     }
 
     private List<PacketListVO> buildTree(List<PacketListVO> packetListVOList, Long parentId) {

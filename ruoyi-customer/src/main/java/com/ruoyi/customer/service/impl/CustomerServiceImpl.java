@@ -864,7 +864,14 @@ public class CustomerServiceImpl implements ICustomerService
             List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(customerId);
             for (Segment segment : segmentList) {
                 // 可见范围是否成立，不成立跳过客群
-                if (!segmentService.isVisibleConditionMet(customerFollowUpPersonnelVOList, segment)) continue;
+                List<UserDeptInfoBO> userDeptInfoBOList = new ArrayList<>();
+                for (CustomerFollowUpPersonnelListVO customerFollowUpPersonnelVO : customerFollowUpPersonnelVOList) {
+                    userDeptInfoBOList.add(UserDeptInfoBO.builder()
+                            .userId(customerFollowUpPersonnelVO.getUserId())
+                            .deptId(customerFollowUpPersonnelVO.getDeptId())
+                            .build());
+                }
+                if (!segmentService.isVisibleConditionMet(userDeptInfoBOList, segment)) continue;
                 // 先判断父客群是否成立
                 boolean parentSegmentConditionMet = isSegmentConditionMet(customerDetail, segment);
 
@@ -873,14 +880,14 @@ public class CustomerServiceImpl implements ICustomerService
                     segmentIdList.add(segment.getId());
 
                     // 查询二级客群列表
-                    List<Segment> sencondSegmentList = getSencondSegmentList(segment.getId());
-                    if (sencondSegmentList != null && !sencondSegmentList.isEmpty()) {
+                    List<Segment> secondSegmentList = getSencondSegmentList(segment.getId());
+                    if (secondSegmentList != null && !secondSegmentList.isEmpty()) {
                         // 有二级客群，判断二级客群是否成立
-                        for (Segment sencondSegment : sencondSegmentList) {
-                            boolean sencondSegmentConditionMet = isSegmentConditionMet(customerDetail, sencondSegment);
-                            if (sencondSegmentConditionMet) {
+                        for (Segment secondSegment : secondSegmentList) {
+                            boolean secondSegmentConditionMet = isSegmentConditionMet(customerDetail, secondSegment);
+                            if (secondSegmentConditionMet) {
                                 // 二级客群成立，添加二级客群id
-                                segmentIdList.add(sencondSegment.getId());
+                                segmentIdList.add(secondSegment.getId());
                             }
                         }
                     }

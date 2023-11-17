@@ -53,8 +53,8 @@ public interface IPublicleadsRulesService
     List<PublicleadsRulesListVO> list();
 
     /**
-     * 获取公海规则
+     * 客户设置-移入公海规则列表
      * @return
      */
-    CustomerPublicleadsRulesSettingsVO getPublicleadsRules();
+    CustomerPublicleadsRulesSettingsVO publicleadsRulesList();
 }

@@ -152,11 +152,11 @@ public class PublicleadsRulesServiceImpl implements IPublicleadsRulesService
     }
 
     /**
-     * 获取移入公海规则
+     * 客户设置-移入公海规则列表
      * @return
      */
     @Override
-    public CustomerPublicleadsRulesSettingsVO getPublicleadsRules() {
+    public CustomerPublicleadsRulesSettingsVO publicleadsRulesList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         // 获取客户数

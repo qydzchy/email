@@ -366,28 +366,6 @@ INSERT INTO `customer_packet` VALUES (2, -1, '测试分组2', 2, NULL, '0', 1, '
 INSERT INTO `customer_packet` VALUES (3, -1, '分组测试3', 2, '1,2', '0', 1, 'admin', '2023-11-01 17:56:59', 1, 'admin', '2023-11-01 17:56:59');
 
 -- ----------------------------
--- Table structure for customer_packet_designate_member
--- ----------------------------
-DROP TABLE IF EXISTS `customer_packet_designate_member`;
-CREATE TABLE `customer_packet_designate_member`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `packet_id` bigint(20) NOT NULL COMMENT '分组ID',
-  `association_id` bigint(20) NOT NULL COMMENT '部门或者业务员ID',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户分组指定成员表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of customer_packet_designate_member
--- ----------------------------
-
--- ----------------------------
 -- Table structure for customer_publicleads_claim_limit
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_claim_limit`;

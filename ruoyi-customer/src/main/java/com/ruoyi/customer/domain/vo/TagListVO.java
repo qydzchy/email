@@ -7,6 +7,8 @@ public class TagListVO {
 
     private Long id;
 
+    private Integer type;
+
     private String name;
 
     private String color;

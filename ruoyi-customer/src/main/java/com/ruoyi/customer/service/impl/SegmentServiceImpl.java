@@ -299,10 +299,7 @@ public class SegmentServiceImpl implements ISegmentService
         Set<Long> notMetSegmentIdSet = new HashSet<>();
         segmentList.stream().forEach(segment -> {
             if (segment.getParentId().longValue() == -1L) {
-                CustomerFollowUpPersonnelListVO customerFollowUpPersonnelVO = new CustomerFollowUpPersonnelListVO();
-                customerFollowUpPersonnelVO.setUserId(userId);
-                customerFollowUpPersonnelVO.setDeptId(deptId);
-                boolean visibleConditionMet = isVisibleConditionMet(Arrays.asList(customerFollowUpPersonnelVO), segment);
+                boolean visibleConditionMet = isVisibleConditionMet(Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build()), segment);
                 if (!visibleConditionMet) {
                     notMetSegmentIdSet.add(segment.getId());
                 }
@@ -384,34 +381,26 @@ public class SegmentServiceImpl implements ISegmentService
 
     /**
      * 可见范围是否成立
-     * @param customerFollowUpPersonnelVOList
+     * @param userDeptInfoBOList
      * @param segment
      * @return
      */
     @Override
-    public boolean isVisibleConditionMet(List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList, Segment segment) {
+    public boolean isVisibleConditionMet(List<UserDeptInfoBO> userDeptInfoBOList, Segment segment) {
         Integer usageScope = segment.getUsageScope();
         // 公司可见
         if (usageScope.intValue() == 1) {
             String visibilityScope = segment.getVisibilityScope();
             if (StringUtils.isBlank(visibilityScope)) return false;
 
-            List<UserDeptInfoBO> userDeptInfoBOList = new ArrayList<>();
-            for (CustomerFollowUpPersonnelListVO customerFollowUpPersonnelVO : customerFollowUpPersonnelVOList) {
-                userDeptInfoBOList.add(UserDeptInfoBO.builder()
-                        .userId(customerFollowUpPersonnelVO.getUserId())
-                        .deptId(customerFollowUpPersonnelVO.getDeptId())
-                        .build());
-            }
-
             return userDeptService.userDeptVerify(userDeptInfoBOList, segment.getVisibilityScope());
 
             // 个人可见
         } else if (usageScope.intValue() == 2) {
             // 判断当前客群创建人是否是该客户的跟进人
-            if (!customerFollowUpPersonnelVOList.isEmpty()) {
-                List<Long> followUpPersonnelUserIds = customerFollowUpPersonnelVOList.stream().map(CustomerFollowUpPersonnelListVO::getUserId).collect(Collectors.toList());
-                if (followUpPersonnelUserIds.contains(segment.getCreateId())) {
+            if (!userDeptInfoBOList.isEmpty()) {
+                List<Long> userIds = userDeptInfoBOList.stream().map(UserDeptInfoBO::getUserId).collect(Collectors.toList());
+                if (userIds.contains(segment.getCreateId())) {
                     return true;
                 }
             } else {

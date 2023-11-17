@@ -42,4 +42,10 @@ public interface IPacketService
      * @return
      */
     List<PacketListVO> getPacketTree();
+
+    /**
+     * 客户设置-分组列表
+     * @return
+     */
+    List<PacketListVO> packetList();
 }

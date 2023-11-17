@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.customer.domain.Segment;
+import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerSegmentListVO;
@@ -92,9 +93,9 @@ public interface ISegmentService
 
     /**
      * 可见范围是否成立
-     * @param customerFollowUpPersonnelVOList
+     * @param userDeptInfoBOList
      * @param segment
      * @return
      */
-    boolean isVisibleConditionMet(List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList, Segment segment);
+    boolean isVisibleConditionMet(List<UserDeptInfoBO> userDeptInfoBOList, Segment segment);
 }
