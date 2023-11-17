@@ -49,6 +49,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where cpr.del_flag = '0'
     </select>
 
+    <select id="enableSegmentList" resultType="com.ruoyi.customer.domain.vo.CustomerPublicleadsRulesVO">
+        select cpr.id, cpr.name, cpr.start_time as startTime, GROUP_CONCAT(cs.name) as segmentNames from customer_publicleads_rules cpr
+        left join customer_publicleads_rules_segment cprs on cprs.publicleads_rules_id = cpr.id
+        left join customer_segment cs on cs.id = cprs.segment_id and cs.del_flag = '0'
+        where cpr.del_flag = '0' and cpr.status = 1
+    </select>
+
     <insert id="insertPublicleadsRules" parameterType="PublicleadsRules">
         insert into customer_publicleads_rules
         <trim prefix="(" suffix=")" suffixOverrides=",">

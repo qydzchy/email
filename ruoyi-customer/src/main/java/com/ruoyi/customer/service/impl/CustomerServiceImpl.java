@@ -748,8 +748,8 @@ public class CustomerServiceImpl implements ICustomerService
         Integer limitsNum = limits.getLimits();
         if (limitsNum != null) {
             // 查询私海客户数量
-            Integer privateleadsNum = customerMapper.selectPrivateleadsNumByUserId(userId);
-            if (privateleadsNum >= limitsNum) {
+            Integer privateleadsCustomerNum = customerMapper.selectPrivateleadsNumByUserId(userId);
+            if (privateleadsCustomerNum >= limitsNum) {
                 throw new ServiceException("您的客户数量已达上限");
             }
         }

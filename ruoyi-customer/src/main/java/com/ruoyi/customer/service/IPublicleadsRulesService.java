@@ -3,6 +3,7 @@ package com.ruoyi.customer.service;
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsRules;
 import com.ruoyi.customer.domain.dto.PublicleadsRulesAddOrUpdateDTO;
+import com.ruoyi.customer.domain.vo.CustomerPublicleadsRulesSettingsVO;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 
 /**
@@ -50,4 +51,10 @@ public interface IPublicleadsRulesService
      * @return
      */
     List<PublicleadsRulesListVO> list();
+
+    /**
+     * 获取公海规则
+     * @return
+     */
+    CustomerPublicleadsRulesSettingsVO getPublicleadsRules();
 }

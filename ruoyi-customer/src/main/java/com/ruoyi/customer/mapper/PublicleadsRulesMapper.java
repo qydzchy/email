@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsRules;
+import com.ruoyi.customer.domain.vo.CustomerPublicleadsRulesVO;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -66,4 +67,10 @@ public interface PublicleadsRulesMapper
      * @return
      */
     List<PublicleadsRulesListVO> list();
+
+    /**
+     * 查询启用客群列表
+     * @return
+     */
+    List<CustomerPublicleadsRulesVO> enableSegmentList();
 }
