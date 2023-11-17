@@ -1,174 +1,280 @@
 {
-    "field_type_operator_map": [
-        {
-            "field_type": 1,
-            "operators": [
-                "is_null",
-                "not_null"
-            ]
-        },
-        {
-            "field_type": 2,
-            "operators": [
-                "is_null",
-                "not_null"
-            ]
-        },
-        {
-            "field_type": 3,
-            "operators": [
-                "in",
-                "not_in",
-                "is_null",
-                "not_null"
-            ]
-        },
-        {
-            "field_type": 7,
-            "operators": [
-                "=",
-                "<>",
-                "in",
-                "not_in",
-                "is_null",
-                "not_null"
-            ]
-        },
-        {
-            "field_type": 4,
-            "operators": [
-                "=",
-                "<>",
-                "is_null",
-                "not_null",
-                "earlier",
-                "later"
-            ]
-        },
-        {
-            "field_type": 10,
-            "operators": [
-                "=",
-                "<>",
-                "is_null",
-                "not_null",
-                "earlier",
-                "later"
-            ]
-        },
-        {
-            "field_type": 5,
-            "operators": [
-                "=",
-                "<>",
-                ">",
-                ">=",
-                "<",
-                "<=",
-                "is_null",
-                "not_null",
-                "range"
-            ]
-        },
-        {
-            "field_type": 13,
-            "operators": [
-                "="
-            ]
-        },
-        {
-            "field_type": 11,
-            "operators": [
-                "=",
-                "<>",
-                ">",
-                ">=",
-                "<",
-                "<=",
-                "is_null",
-                "not_null",
-                "range"
-            ]
-        },
-        {
-            "field_type": 12,
-            "operators": [
-                "=",
-                "<>",
-                ">",
-                ">=",
-                "<",
-                "<=",
-                "is_null",
-                "not_null",
-                "range"
-            ]
-        }
-    ],
-    "operators": [
-        {
-            "key": "=",
-            "name": "等于"
-        },
-        {
-            "key": "<>",
-            "name": "不等于"
-        },
-        {
-            "key": ">",
-            "name": "大于"
-        },
-        {
-            "key": ">=",
-            "name": "大于等于"
-        },
-        {
-            "key": "<",
-            "name": "小于"
-        },
-        {
-            "key": "<=",
-            "name": "小于等于"
-        },
-        {
-            "key": "contains",
-            "name": "包含"
-        },
-        {
-            "key": "not_contains",
-            "name": "不包含"
-        },
-        {
-            "key": "in",
-            "name": "属于"
-        },
-        {
-            "key": "not_in",
-            "name": "不属于"
-        },
-        {
-            "key": "is_null",
-            "name": "为空"
-        },
-        {
-            "key": "not_null",
-            "name": "不为空"
-        },
-        {
-            "key": "earlier",
-            "name": "早于"
-        },
-        {
-            "key": "later",
-            "name": "晚于"
-        },
-        {
-            "key": "update",
-            "name": "变更时"
-        },
-        {
-            "key": "range",
-            "name": "范围内"
-        }
-    ]
+  "fieldList": [
+    {
+      "field_type": "company_name",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "short_name",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "customer_no",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "customer_tag",
+      "conditionType": [1, 2, 5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "country_region",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "timezone",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "customer_stage",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "customer_source",
+      "conditionType": [3, 4, 5, 6, 1, 2],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "customer_packet",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "publicleads_groups",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "customer_rating",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "scale",
+      "conditionType": [5, 6, 3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "company_website",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "fax",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "special_plane",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "address",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "company_remarks",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "follow_up_personnel",
+      "conditionType": [3, 4, 5, 6, 1, 2],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "creator",
+      "conditionType": [ 5, 6, 1, 2],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "last_modified_by",
+      "conditionType": [ 5, 6, 1, 2],
+      "dateType": [],
+      "timeRange": []
+    },
+    {
+      "field_type": "follow_up_number",
+      "conditionType": [3, 4],
+      "dateType": [],
+      "timeRange": []
+    }
+  ],
+  "conditionTypeOption": [
+    {
+      "key": 1,
+      "name": "等于"
+    },
+    {
+      "key": 2,
+      "name": "不等于"
+    },
+    {
+      "key": 3,
+      "name": "为空"
+    },
+    {
+      "key": 4,
+      "name": "不为空"
+    },
+    {
+      "key": 5,
+      "name": "属于"
+    },
+    {
+      "key": 6,
+      "name": "不属于"
+    },
+    {
+      "key": 7,
+      "name": "早于"
+    },
+    {
+      "key": 8,
+      "name": "晚于"
+    }
+  ],
+  "dateTypeOption": [
+    {
+      "key": 1,
+      "name": "具体日期范围"
+    },
+    {
+      "key": 2,
+      "name": "动态日期范围"
+    },
+    {
+      "key": 3,
+      "name": "当天之前"
+    },
+    {
+      "key": 4,
+      "name": "当天之后"
+    },
+    {
+      "key": 5,
+      "name": "具体日期"
+    },
+    {
+      "key": 6,
+      "name": "日期字段"
+    }
+  ],
+  "timeRangeOption": [
+    {
+      "key": 1,
+      "name": "今天"
+    },
+    {
+      "key": 2,
+      "name": "昨天"
+    },
+    {
+      "key": 3,
+      "name": "明天"
+    },
+    {
+      "key": 4,
+      "name": "本周"
+    },
+    {
+      "key": 5,
+      "name": "上周"
+    },
+    {
+      "key": 6,
+      "name": "下周"
+    },
+    {
+      "key": 7,
+      "name": "本月"
+    },
+    {
+      "key": 8,
+      "name": "上月"
+    },
+    {
+      "key": 9,
+      "name": "本季度"
+    },
+    {
+      "key": 10,
+      "name": "上季度"
+    },
+    {
+      "key": 11,
+      "name": "本年"
+    },
+    {
+      "key": 12,
+      "name": "过去7天"
+    },
+    {
+      "key": 13,
+      "name": "过去14天"
+    },
+    {
+      "key": 14,
+      "name": "过去30天"
+    },
+    {
+      "key": 15,
+      "name": "过去60天"
+    },
+    {
+      "key": 16,
+      "name": "过去90天"
+    },
+    {
+      "key": 17,
+      "name": "过去180天"
+    },
+    {
+      "key": 18,
+      "name": "过去365天"
+    },
+    {
+      "key": 19,
+      "name": "未来3天"
+    },
+    {
+      "key": 20,
+      "name": "未来7天"
+    },
+    {
+      "key": 21,
+      "name": "未来14天"
+    },
+    {
+      "key": 22,
+      "name": "未来30天"
+    }
+  ]
 }

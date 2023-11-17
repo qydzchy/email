@@ -183,7 +183,7 @@ export default {
     if (!this.customerId) {
       return
     }
-    // this.getDetailData()
+    this.getDetailData()
     this.getFollowUpRecordList()
   },
   methods: {

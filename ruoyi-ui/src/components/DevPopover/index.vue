@@ -1,10 +1,10 @@
 <template>
   <el-popover
-    class="ml-10"
-    :width="width"
-    trigger="click"
-    :placement="placement"
-    v-model="visible"
+      class="ml-10"
+      :width="width"
+      trigger="click"
+      :placement="placement"
+      v-model="visible"
   >
     <div class="flex-column">
       <div>
@@ -17,7 +17,7 @@
       </div>
     </div>
     <el-button size="mini" type="text" slot="reference" :disabled="btnDisabled">
-      删除
+      {{ delText}}
     </el-button>
   </el-popover>
 </template>
@@ -44,11 +44,16 @@ export default {
       default: '确定要删除吗？',
       required: false
     },
-    btnDisabled:{
-      type:Boolean,
-      default:false,
-      required:false,
-    }
+    btnDisabled: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    delText: {
+      type: String,
+      default: '删除',
+      required: false
+    },
   },
   data() {
     return {

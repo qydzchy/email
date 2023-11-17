@@ -51,6 +51,24 @@ export default {
       columns: [
         {type: 'selection', width: '50'},
         {
+          label: '',
+          field: 'focusFlag',
+          fixed: 'left',
+          align: 'left',
+          width: '20',
+          resizable: false,
+          className: 'follow-cell',
+          render: (row, field, scope) => {
+            return <div class={`follow-icon flex-miidle flex-center ${field && 'follow-icon-active'}`}>
+              <CollageIcon
+                  show={!!field}
+                  onClick={() => this.onCollageIcon(row?.id, scope)}>
+              </CollageIcon>
+            </div>
+
+          }
+        },
+        {
           label: '公司名称',
           field: 'companyName',
           fixed: 'left',

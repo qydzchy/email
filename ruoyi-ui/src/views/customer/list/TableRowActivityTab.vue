@@ -10,25 +10,28 @@
     <div class="mt-20" v-if="!showWriteFollow">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">写跟进</div>
-        <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
-                    :append-to-body="false">
-          <el-row>
-            <div class="flex-middle space-between">
-              <span>点击选择模板，可自动填充到输入框</span>
-              <i class="el-icon-setting pl-10 pointer"
-                 @click="targetBlank('/company/customer-setting?tab=followText')"></i>
-            </div>
-            <div style="max-height: 300px;overflow-y: auto">
-              <div class="template-card py-8 px-16 mt-8" v-for="(text,index) in followTextList" :key="index"
-                   @click="chooseTemplateText(text)">
-                <p class="template-title bold">{{ text.name }}</p>
-                <p class="template-content fs-12">{{ text.content }}</p>
+        <div class="flex-middle gap-8">
+          <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
+                      :append-to-body="false">
+            <el-row>
+              <div class="flex-middle space-between">
+                <span>点击选择模板，可自动填充到输入框</span>
+                <i class="el-icon-setting pl-10 pointer"
+                   @click="targetBlank('/company/customer-setting?tab=followText')"></i>
               </div>
-            </div>
+              <div style="max-height: 300px;overflow-y: auto">
+                <div class="template-card py-8 px-16 mt-8" v-for="(text,index) in followTextList" :key="index"
+                     @click="chooseTemplateText(text)">
+                  <p class="template-title bold">{{ text.name }}</p>
+                  <p class="template-content fs-12">{{ text.content }}</p>
+                </div>
+              </div>
 
-          </el-row>
-          <el-button round size="medium" slot="reference">选择模板</el-button>
-        </el-popover>
+            </el-row>
+            <el-button round size="small" slot="reference">选择模板</el-button>
+          </el-popover>
+          <el-button v-if="!scheduleList.length" round size="small" @click="dialogSchedule=true">添加日程</el-button>
+        </div>
 
       </div>
       <el-input class="mt-10" placeholder="点击这里记录跟进细节，同步最新进展。" @focus="showWriteFollow=true">
@@ -66,20 +69,31 @@
       </WriteFollow>
     </div>
     <!--  日程  -->
-    <div class="mt-20" v-if="options.isShowSchedule">
-      <div class="flex-middle space-between">
-        <div class="fs-14 bold">计划日程</div>
-        <el-button round size="medium" @click="dialogSchedule=true">添加日程</el-button>
+    <template v-if="options.isShowSchedule">
+      <div class="mt-20" v-if="scheduleList.length">
+        <div class="flex-middle space-between">
+          <div class="fs-14 bold">计划日程</div>
+          <el-button round size="small" @click="dialogSchedule=true">添加日程</el-button>
+        </div>
+        <ul class="plan-ul">
+          <li class="plan-li pointer" v-for="(schedule,index) in scheduleList" :key="index">
+            <el-popover :append-to-body="false">
+              <template #default>
+                <div style="width: 400px">内容</div>
+              </template>
+              <template #reference>
+                <div class="flex-middle" style="width: 100%">
+                  <div class="circle" :style="{color:schedule.color}"></div>
+                  <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
+                  <span class="content flex1">{{ schedule.scheduleContent }}</span>
+                </div>
+              </template>
+            </el-popover>
+          </li>
+        </ul>
       </div>
-      <ul class="plan-ul" v-if="scheduleList && scheduleList.length">
-        <li class="plan-li pointer" v-for="(schedule,index) in scheduleList" :key="index">
-          <div class="circle" :style="{color:schedule.color}"></div>
-          <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
-          <span class="content">{{ schedule.scheduleContent }}</span>
-        </li>
-      </ul>
-      <el-empty v-else :image-size="40"/>
-    </div>
+    </template>
+
     <div class="mt-20">
       <div class="flex-middle space-between">
         <div class="fs-14 bold">历史动态 <i class="el-icon-refresh"></i></div>
@@ -100,8 +114,8 @@
 
         </el-row>
         <div
-          class="flex-middle fs-14 pointer"
-          @click="onSortTime"
+            class="flex-middle fs-14 pointer"
+            @click="onSortTime"
         >
               <span class="caret-wrapper">
                 <i class="sort-caret ascending" :class="{'active':sortActive==='1'}"></i>
@@ -113,13 +127,13 @@
       <div class="customer-timeline mt-20">
         <el-timeline v-if="timeLineList.length">
           <el-timeline-item
-            placement="top"
-            v-for="(item, index) in timeLineList"
-            :key="index"
-            icon="el-icon-document"
-            :type="item.type"
-            color="#0bbd87"
-            :size="item.size">
+              placement="top"
+              v-for="(item, index) in timeLineList"
+              :key="index"
+              icon="el-icon-document"
+              :type="item.type"
+              color="#0bbd87"
+              :size="item.size">
             <el-card shadow="hover">
               <div class="card-header">
                 <div class="flex-middle space-between mx-20 py-10">
@@ -223,8 +237,8 @@
     </div>
     <template>
       <DialogTemplateFollow
-        v-if="templateVisible" :visible.sync="templateVisible" :row="templateDrawerRow"
-        @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
+          v-if="templateVisible" :visible.sync="templateVisible" :row="templateDrawerRow"
+          @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
     </template>
     <template>
       <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="row"/>
@@ -377,7 +391,7 @@ export default {
           pageSize: 3,
         })
         if (res.code === 200) {
-          this.scheduleList = res.data
+          this.scheduleList = res.rows
         }
       } catch {
       }

@@ -1,7 +1,6 @@
 <template>
   <div>
-    <el-drawer :visible.sync="customerVisible" :wrapperClosable="false" destroy-on-close :show-close="false"
-               @close="onHideDrawer">
+    <el-drawer :visible.sync="customerVisible" :wrapperClosable="false" destroy-on-close :show-close="false">
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
@@ -13,31 +12,43 @@
         </div>
       </template>
       <div class="container">
-        <ListCreateCustomerForm :showRange="true" :customer-form="formData"/>
+        <ListCreateCustomerForm
+            key="single"
+            :showRange="true"
+            :customer-form.sync="formData"
+            :rule-option="customerRuleOption"
+            :visibility-option="visibilityScopeOption"
+        />
         <div>
-          <el-checkbox v-model="addSecondChecked">添加二级客群</el-checkbox>
+          <el-checkbox v-model="formData.subgroupFlag">添加二级客群</el-checkbox>
           <div class="fs-14 mt-6 gray-text">二级客群是在以上条件规则上，附加更多条件组生成的客群</div>
-          <el-form v-if="addSecondChecked">
+          <el-form v-if="formData.subgroupFlag">
             <el-form-item label="添加规则">
-              <el-radio-group style="width: 100%" v-model="formData.secondRule" @change="handleAddRule">
-                <el-radio label="auto">自动生成</el-radio>
-                <el-radio label="manual">手动生成</el-radio>
+              <el-radio-group style="width: 100%" v-model="formData.additionRule" @change="handleAddRule">
+                <el-radio :label="1">自动生成</el-radio>
+                <el-radio :label="2">手动生成</el-radio>
               </el-radio-group>
-              <div v-show="formData.secondRule==='auto'">
+              <div v-show="formData.additionRule===1">
                 根据单选或多选字段的选项生成二级客群
               </div>
             </el-form-item>
-            <div v-show="formData.secondRule==='auto'">
+            <div v-show="formData.additionRule===1">
               <el-form-item label="二级分群字段">
-                <el-select></el-select>
+                <el-select v-model="formData.secondChildField"></el-select>
               </el-form-item>
             </div>
-            <div v-show="formData.secondRule==='manual'">
-              <el-row class="second-card mb-20" v-for="(item,index) in manualFormList" :key="index">
+            <div v-show="formData.additionRule===2">
+              <el-row class="second-card mb-20" v-for="(item,index) in formData.children" :key="index">
                 <div class="fs-15 mb-10">二级客群{{ index + 1 }}</div>
-                <ListCreateCustomerForm :customer-form="item"/>
+                <ListCreateCustomerForm
+                    key="mulitiple"
+                    :customer-form="item"
+                    :rule-option="customerRuleOption"
+                    :visibility-option="visibilityScopeOption"
+                    @update:customerForm="(value)=>onUpdate(item.ruleId,value)"
+                />
                 <el-tooltip placement="top" content="删除">
-                  <i class="del-icon pointer el-icon-remove-outline" @click="delSecondCustomer(item.id)"></i>
+                  <i class="del-icon pointer el-icon-remove-outline" @click="delSecondCustomer(item.ruleId)"></i>
                 </el-tooltip>
               </el-row>
               <el-button icon="el-icon-circle-plus-outline" round @click="addSecondCustomer">二级客群</el-button>
@@ -48,8 +59,8 @@
       <!--   operate     -->
       <div class="drawer-operate">
         <div class="wrap flex-middle flex-end">
-          <el-button round @click="onHideDrawer">取消</el-button>
-          <el-button type="primary" round>确认</el-button>
+          <el-button round :loading="btnLoading" @click="onHideDrawer">取消</el-button>
+          <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确认</el-button>
         </div>
       </div>
     </el-drawer>
@@ -58,18 +69,19 @@
 
 <script>
 import ListCreateCustomerForm from "./ListCreateCustomerForm.vue";
+import {addSegment, editSegment, getRuleField} from "@/api/customer/segment";
+import {deepClone} from "@/utils";
+import {listDeptUsersTree} from "@/api/system/dept";
 
 const initFormData = {
-  name: '',
-  area: 'company',
-  secondRule: 'auto',
-  rule: 'all',
-  mode: 'simple'
-}
-const initManualItem = {
-  name: '',
-  secondRule: 'auto',
-  rule: 'all',
+  name: '',//客群名称
+  usageScope: 1,//使用范围 1.公司共享 2.个人使用
+  visibilityScope: null, //可见范围
+  conditionRuleType: 1,//条件规则类型 1.满足全部条件 2.满足任一条件 3.自定义条件
+  subgroupFlag: false,  //添加二级客群 0.未选 1.选中
+  conditionRuleContent: [],
+  additionRule: 1, //添加规则 1.自动生成 2.手动添加
+  secondChildField: '',
   mode: 'simple'
 }
 export default {
@@ -92,14 +104,12 @@ export default {
   data() {
     return {
       customerVisible: false,
-      formData: {
-        ...initFormData,
-        id: +new Date()
-      },
-      manualFormList: [
-        {...initManualItem, id: +new Date()}
-      ],
-      addSecondChecked: false,
+      formData: {},
+      customerRuleOption: [],
+      visibilityScopeOption: [],
+      tempAllDept: [],
+      tempAllUser: [],
+      btnLoading: false,
     }
   },
   watch: {
@@ -111,30 +121,242 @@ export default {
     },
     row: {
       handler(newVal) {
-        this.formData = {
-          ...this.formData,
-          ...newVal
+        try {
+          let children = newVal?.children || []
+          let ruleContent = newVal.conditionRuleContent || '[]'
+          ruleContent = JSON.parse(ruleContent)
+          ruleContent = (ruleContent && !ruleContent?.length) ? this.generateRuleContentDefault() : this.generateRuleContentSetRuleId(ruleContent)
+          children = !children.length ? this.generateChildListDefault() : this.generateChildListSetRuleId(children)
+          let curRowData = {
+            ...newVal,
+            ruleId: +new Date(),
+            conditionRuleContent: ruleContent,
+            children: children
+          }
+          this.formData = {
+            ...this.generateInitValue(),
+            ...deepClone(curRowData)
+          }
+        } catch (e) {
+          console.error(e)
         }
       },
       deep: true,
       immediate: true
     },
   },
+  mounted() {
+    this.getRuleColumn()
+    this.getCommonTree()
+  },
   methods: {
+    // 获取规则
+    async getRuleColumn() {
+      try {
+        const res = await getRuleField()
+        if (res.code === 200) {
+          this.customerRuleOption = res.data
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    // 人员和部门数据
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.visibilityScopeOption = this.generateVisibilityScopeOption(res.data)
+        }
+      } catch {
+      }
+    },
+    // 添加客群规则请求
+    async addSegmentForm() {
+      const {
+        name,
+        visibilityScope,
+        usageScope,
+        conditionRuleType,
+        subgroupFlag,
+        conditionRuleContent,
+        additionRule,
+        children,
+      } = this.formData
+      let config = {
+        name,
+        usageScope,
+        conditionRuleType,
+        visibilityScope: null,
+        subgroupFlag: Number(subgroupFlag),
+        conditionRuleContent: this.generateConditionRuleContent(conditionRuleContent, conditionRuleType),
+        parentId: -1
+      }
+
+      if (subgroupFlag) {
+        let newChildren = deepClone([...children])
+        newChildren.map(val => {
+          delete val.ruleId
+          val.subgroupFlag = Number(val.subgroupFlag)
+          val.conditionRuleContent = this.generateConditionRuleContent(val.conditionRuleContent, val.conditionRuleType)
+          return val
+        })
+        config = {
+          ...config,
+          additionRule,
+          children: newChildren,
+        }
+      }
+      try {
+        this.btnLoading = true
+        const res = await addSegment({...config}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加客群成功')
+          this.$emit('onConfirm')
+        }
+      } catch {
+      }
+    },
+    // 编辑客群规则请求
+    async editSegmentForm() {
+      const {
+        name,
+        usageScope
+      } = this.formData
+      const config = {
+        name,
+        usageScope
+      }
+      try {
+        const res = await editSegment({...config})
+        if (res.code === 200) {
+
+        }
+      } catch {
+      }
+    },
     handleAddRule(value) {
-      if (value === 'manual' && !this.manualFormList.length) {
-        this.manualFormList.push({...initManualItem, id: +new Date()})
+      if (value === 2 && !this.formData.children.length) {
+        this.formData.children.push({...this.generateInitValue()})
       }
     },
     addSecondCustomer() {
-      this.manualFormList.push({...initManualItem, id: +new Date()})
+      this.formData.children.push({...this.generateInitValue()})
+    },
+    onUpdate(id, value) {
+      const idx = this.formData.children.findIndex(val => val.ruleId === id)
+      this.$set(this.formData.children, idx, {...value})
     },
     delSecondCustomer(id) {
-      this.manualFormList = this.manualFormList.filter(val => val.id !== id)
+      this.formData.children = this.formData.children.filter(val => val.ruleId !== id)
     },
+    onConfirm() {
+      if (!this.row?.id) {
+        this.addSegmentForm()
+      } else {
+        this.editSegmentForm()
+      }
+    },
+    // 隐藏抽屉
     onHideDrawer() {
-      this.$emit('update:visible', false)
       this.$emit('onCancel')
+    },
+    generateRuleContentDefault() {
+      return [{ruleId: +new Date()}]
+    },
+    generateRuleContentSetRuleId(arr) {
+      return arr.map((val, index) => {
+        val.ruleId = index
+        return val
+      })
+    },
+    generateChildListDefault() {
+      return [{
+        ...deepClone(initFormData),
+        ruleId: +new Date(),
+        conditionRuleContent: [
+          {ruleId: +new Date()}
+        ],
+      }]
+    },
+    generateChildListSetRuleId(arr) {
+      return arr.map((val, index) => {
+        val.ruleId = index
+        let ruleContentChild = JSON.parse(val.conditionRuleContent || '[]')
+        ruleContentChild && !ruleContentChild?.length ? this.generateRuleContentDefault(ruleContentChild) : this.generateRuleContentSetRuleId(ruleContentChild)
+        return val
+      })
+    },
+    generateInitValue() {
+      return {
+        ...deepClone(initFormData),
+        ruleId: +new Date(),
+        conditionRuleContent: [
+          {
+            ruleId: +new Date(),
+            columnName: [],
+            conditionType: null,
+            dateType: null,
+            timeRange: null,
+            value: null
+          }
+        ],
+      }
+    },
+    generateConditionRuleContent(arr, type) {
+      const mapType = {
+        1: 'and',
+        2: 'or',
+        3: '',
+      }
+      let newArr = []
+      arr.forEach(val => {
+        delete val.ruleId
+        val.andOr = mapType[type]
+        if (val.columnName?.length) {
+          val.columnName = val.columnName[val.columnName.length - 1]
+        }
+        newArr.push(val)
+      })
+      return JSON.stringify(newArr)
+    },
+    generateVisibilityScopeOption(list) {
+      let allDept = {
+        id: 'allDept',
+        name: '全部部门',
+        children: []
+      }
+      let allUser = {
+        id: 'allUser',
+        name: '全部人员',
+        children: []
+      }
+      const deepSearch = arr => arr.forEach(val => {
+        if (val.type === 1) {
+          allDept.children.push({
+            id: val.id,
+            name: val.name
+          })
+        } else if (val.type === 2) {
+          allUser.children.push({
+            id: val.id,
+            name: val.name
+          })
+        }
+        if (val.children && val.children.length) {
+          deepSearch(val.children)
+        }
+      })
+      deepSearch(list)
+      this.tempAllDept = allDept.children
+      this.tempAllUser = allUser.children
+      return [{
+        id: 'all',
+        name: '全公司可见',
+        children: [allDept, allUser]
+      }]
     },
   }
 }
@@ -148,6 +370,7 @@ export default {
     background-color: rgb(247, 248, 251);
     position: relative;
     cursor: pointer;
+
     .del-icon {
       position: absolute;
       right: 20px;

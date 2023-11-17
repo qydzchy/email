@@ -14,6 +14,7 @@ import TableRowDatumTab from "./TableRowDatumTab.vue";
 import TableRowTradeTab from "./TableRowTradeTab.vue";
 import TableRowTipsTab from "./TableRowTipsTab.vue";
 import TableRowDocTab from "./TableRowDocTab.vue";
+import {getCustomerDetail} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -44,7 +45,7 @@ export default {
     row: {
       handler(newVal) {
         if (newVal?.id) {
-          this.rowData = {...newVal, id: '', customerId: newVal.id}
+          this.getDetailData()
         }
       },
       deep: true,
@@ -84,7 +85,22 @@ export default {
       cardLoading: false,
       rowData: {},
     }
-  }
+  },
+  methods: {
+    async getDetailData() {
+      try {
+        const res = await getCustomerDetail({
+          id: this.row.id
+        })
+        if (res.code === 200) {
+          this.rowData = res.data
+          this.rowData.customerId = this.rowData.id
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+  },
 }
 </script>
 

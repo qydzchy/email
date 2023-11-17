@@ -8,7 +8,7 @@
                 class="menu-item px-10 flex-middle space-between fs-14"
                 :class="{'active':item.userId === curMenuActive}"
                 :key="item.userId"
-                @click="curMenuActive = item.userId"
+                @click="changeMenu(item.userId)"
             >
               <span>{{ item.nickName }}</span>
               <span>{{ item.segmentCount }}</span>
@@ -21,9 +21,9 @@
     <div class="mt-20 mx-10 flex1">
       <div class="flex-middle space-between" v-if="curMenuActive===isMySegment">
         <el-tabs v-model="curTab" type="card" @tab-click="handleTabOfTable">
-          <el-tab-pane label="全部" name="0"></el-tab-pane>
-          <el-tab-pane :label="`公司共享(${companyShareList.length})`" name="1"></el-tab-pane>
-          <el-tab-pane :label="`个人使用(${myUseList.length})`" name="2"></el-tab-pane>
+          <el-tab-pane :label="`全部(${echoTableTabCount.all})`" name="all"></el-tab-pane>
+          <el-tab-pane :label="`公司共享(${echoTableTabCount.company})`" name="company"></el-tab-pane>
+          <el-tab-pane :label="`个人使用(${echoTableTabCount.mySelf})`" name="personal"></el-tab-pane>
         </el-tabs>
         <el-button type="primary" round @click="drawerVisible=true">新建自定义客群
         </el-button>
@@ -41,14 +41,17 @@
           :paginate-option="paginateOption"
       />
     </div>
-    <DrawerCreateCustomerGroup :visible.sync="drawerVisible" @onCancel="onCancel"/>
+    <DrawerCreateCustomerGroup :visible.sync="drawerVisible" :row="createCustomerRow" @onConfirm="onConfirm"
+                               @onCancel="onCancel"/>
   </div>
 </template>
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import DrawerCreateCustomerGroup from "./DrawerCreateCustomerGroup.vue";
-import {getSegmentList, getSegmentUserList} from "@/api/customer/segment";
+import DelPopover from "@/components/DevPopover";
+import {deleteSegment, getSegmentList, getSegmentUserList} from "@/api/customer/segment";
+import {deepClone} from "@/utils";
 
 export default {
   components: {
@@ -57,13 +60,13 @@ export default {
   },
   data() {
     return {
-      curTab: '1',
+      curTab: 'all',
       curMenuActive: '',
       menuList: [],
       tableLoading: false,
       extraOption: {
         height: '80vh',
-        rowKey: 'menuId',
+        rowKey: 'id',
         defaultExpandAll: false,
         treeProps: {
           children: 'children',
@@ -83,23 +86,31 @@ export default {
       columns: [
         {
           label: '客群名称',
-          field: 'menuName',
+          field: 'name',
           align: 'left',
-          render: (_row, field) => {
-            return <el-tooltip placement="top" content={field}>
-              <span>{field}</span>
-            </el-tooltip>
+          render: (row, field) => {
+            return <span>
+              <el-tooltip placement="top" content={field}>
+                <div className="flex-middle gap-6">
+                  <span>{field}</span>
+                  {row?.usageScope === 2 ? <el-tag size="mini" effect='plain'>个人</el-tag> : null}
+                </div>
+              </el-tooltip>
+            </span>
           }
         },
         {
           label: '客群规则',
           field: 'menuType',
           align: 'left',
-          render: (_row, field) => {
+          render: (row, field) => {
             return <div>
               <span class="mr-10">{field}</span>
               <el-popover trigger="hover" placement="top">
-                <div>内容</div>
+                <div class="flex-center flex-column">
+                  <span class="fs-14 bold">可见范围</span>
+                  <span>{row.usageScopeName}</span>
+                </div>
                 <el-button type="text" slot="reference">详情</el-button>
               </el-popover>
             </div>
@@ -107,12 +118,12 @@ export default {
         },
         {
           label: '客户数',
-          field: 'orderNum',
+          field: 'customerCount',
           width: 120,
           align: 'center',
-          render: (_row, field) => {
+          render: (row, field) => {
             return <el-tooltip placement="top" content="去客户列表查看">
-              <el-button type="text">{field}</el-button>
+              <el-button type="text" disabled={row?.id === -1}>{field}</el-button>
             </el-tooltip>
           }
         },
@@ -121,12 +132,15 @@ export default {
           field: 'operate',
           width: 160,
           render: (row, _field) => {
-            return row?.level === 1 ? <el-row>
-              <el-button type="text" onClick={() => this.onEdit(row)}>编辑</el-button>
-              <el-button type="text">复制</el-button>
-              <el-tooltip placement="top" content="是否解散此客群？客群解散后无法恢复，但不会删除该客群下的客户">
-                <el-button type="text" onCick={() => this.onDelete(row)}>解散</el-button>
-              </el-tooltip>
+            return row?.level === 1 && ![-1, -2].includes(row?.id) ? <el-row>
+              <el-button type="text" onClick={() => this.onCommOperate(row)}>编辑</el-button>
+              <el-button type="text" onClick={() => this.onCommOperate(row, 'copy')}>复制</el-button>
+              <DelPopover
+                  width={400}
+                  content="是否解散此客群？客群解散后无法恢复，但不会删除该客群下的客户"
+                  delText="解散"
+                  id={row.id}
+                  on={{onDelete: (id) => this.onDelete(id)}}/>
             </el-row> : null
           }
         },
@@ -139,11 +153,15 @@ export default {
     isMySegment() {
       return this.menuList?.[0]?.userId || ''
     },
+    echoTableTabCount() {
+      return {
+        company: this.companyShareList.length,
+        mySelf: this.myUseList.length,
+        all: this.companyShareList.length + this.myUseList.length
+      }
+    },
   },
   mounted() {
-    this.getList({
-      createId: 1,
-    })
     this.getMenuList()
   },
   methods: {
@@ -157,12 +175,14 @@ export default {
           this.list = res.data
           let companyShare = []
           let myUse = []
-          this.list.forEach(val => {
+          this.list.map(val => {
             if (val?.usageScope === 1) {
               companyShare.push(val)
             } else if (val?.usageScope === 2) {
               myUse.push(val)
             }
+            val.level = 1
+            return val
           })
           this.companyShareList = companyShare
           this.myUseList = myUse
@@ -176,21 +196,63 @@ export default {
         if (res.code === 200) {
           this.menuList = res.data
           this.curMenuActive = this.menuList?.[0]?.userId || ''
+          await this.getList({
+            createId: this.curMenuActive,
+          })
         }
       } catch {
 
       }
     },
+    changeMenu(id) {
+      this.curMenuActive = id
+      this.getList({
+        createId: this.curMenuActive,
+      })
+    },
     handleTabOfTable(tab) {
+      switch (tab.name) {
+        case "all":
+          this.list = [...this.companyShareList, ...this.myUseList].sort(val => val.id)
+          break;
+        case "company":
+          this.list = this.companyShareList
+          console.log(this.list)
+          break;
+        case "personal":
+          this.list = this.myUseList
+          break;
+      }
     },
-    onEdit(row) {
+    onCommOperate(row, type) {
+      if (type === 'copy') {
+        delete row.id
+      }
       this.drawerVisible = true
-      this.createCustomerRow = row
+      this.createCustomerRow = deepClone(row)
     },
-    onDelete(row) {
+    async onDelete(id) {
+      try {
+        const res = await deleteSegment({id})
+        if (res.code === 200) {
+          await this.getList({
+            createId: this.curMenuActive,
+          })
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async onConfirm() {
+      this.onCancel()
+      await this.getList({
+        createId: this.curMenuActive,
+      })
     },
     onCancel() {
       this.createCustomerRow = {}
+      this.drawerVisible = false
+
     }
   }
 }
