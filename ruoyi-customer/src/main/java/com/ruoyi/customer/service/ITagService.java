@@ -66,4 +66,11 @@ public interface ITagService
      * @return
      */
     List<TagListVO> list(Integer type);
+
+    /**
+     * 设为公司标签
+     * @param id
+     * @return
+     */
+    boolean setAsCompanyTag(Long id);
 }

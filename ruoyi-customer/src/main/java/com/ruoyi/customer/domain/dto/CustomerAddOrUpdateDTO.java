@@ -1,11 +1,9 @@
 package com.ruoyi.customer.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -45,6 +43,16 @@ public class CustomerAddOrUpdateDTO {
 
     /** 阶段ID */
     private Long stageId;
+
+    /**
+     * 标签
+     */
+    private List<Integer> tagIdList;
+
+    /**
+     * 来源
+     */
+    private List<Integer> sourceIdList;
 
     /** 客户星级 */
     private Integer rating;

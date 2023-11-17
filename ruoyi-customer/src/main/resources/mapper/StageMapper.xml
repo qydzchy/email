@@ -44,6 +44,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where cc.id = #{customerId} AND cc.del_flag = '0'
     </select>
 
+    <select id="selectByNames" resultType="com.ruoyi.customer.domain.Stage">
+        <include refid="selectStageVo"/>
+        where del_flag = '0'
+            and name in
+            <foreach item="name" collection="stageNameList" open="(" separator="," close=")">
+                #{name}
+            </foreach>
+    </select>
+
     <insert id="insertStage" parameterType="Stage">
         insert into customer_stage
         <trim prefix="(" suffix=")" suffixOverrides=",">

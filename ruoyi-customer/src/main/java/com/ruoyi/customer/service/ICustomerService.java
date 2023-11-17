@@ -8,6 +8,7 @@ import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.*;
 import org.springframework.data.util.Pair;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 客户详情Service接口
@@ -199,4 +200,11 @@ public interface ICustomerService
      * @return
      */
     Pair<Integer, List<CustomerDuplicateListVO>> duplicateList(String columnName, String searchText, Integer pageNum, Integer pageSize);
+
+    /**
+     * 导入客户
+     * @param file
+     * @return
+     */
+    boolean importCustomer(MultipartFile file);
 }

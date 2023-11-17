@@ -138,6 +138,21 @@ public class TagController extends BaseController
     }
 
     /**
+     * 设为公司标签
+     */
+    @PreAuthorize("@ss.hasPermi('customer:tag:company:set:as:company:tag')")
+    @Log(title = "删除公司标签", businessType = BusinessType.DELETE)
+    @PostMapping("/set/as/company/tag")
+    public AjaxResult setAsCompanyTag(@RequestBody Tag tag)
+    {
+        if (tag.getId() == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return toAjax(tagService.setAsCompanyTag(tag.getId()));
+    }
+
+    /**
      * 校验参数
      * @param tag
      */

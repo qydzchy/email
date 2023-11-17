@@ -59,4 +59,11 @@ public interface TagMapper
      * @return 结果
      */
     public int deleteTagByIds(Long[] ids);
+
+    /**
+     * 根据标签名称查询标签
+     * @param tagNameList
+     * @return
+     */
+    List<Tag> selectByNames(@Param("tagNameList") List<String> tagNameList);
 }

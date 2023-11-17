@@ -34,6 +34,15 @@
         where id = #{id}
     </select>
 
+    <select id="selectByNames" resultType="com.ruoyi.customer.domain.Source">
+        <include refid="selectSourceVo"/>
+        where del_flag = '0'
+            and name in
+            <foreach item="name" collection="sourceNameList" open="(" separator="," close=")">
+                #{name}
+            </foreach>
+    </select>
+
     <insert id="insertSource" parameterType="Source" useGeneratedKeys="true" keyProperty="id">
         insert into customer_source
         <trim prefix="(" suffix=")" suffixOverrides=",">

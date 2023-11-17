@@ -67,4 +67,11 @@ public interface StageMapper
      * @return
      */
     StageListVO selectStageByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * 根据名称查询阶段
+     * @param stageNameList
+     * @return
+     */
+    List<Stage> selectByNames(@Param("stageNameList") List<String> stageNameList);
 }

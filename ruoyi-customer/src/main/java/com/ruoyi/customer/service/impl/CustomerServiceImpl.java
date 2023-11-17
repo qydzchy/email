@@ -1,5 +1,6 @@
 package com.ruoyi.customer.service.impl;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -25,11 +26,13 @@ import com.ruoyi.customer.service.ISegmentService;
 import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
 import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.service.ICustomerService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -61,6 +64,10 @@ public class CustomerServiceImpl implements ICustomerService
     private CustomerFollowUpRecordsMapper customerFollowUpRecordsMapper;
     @Resource
     private StageMapper stageMapper;
+    @Resource
+    private TagMapper tagMapper;
+    @Resource
+    private SourceMapper sourceMapper;
     @Resource
     private PacketMapper packetMapper;
     @Resource
@@ -1134,5 +1141,212 @@ public class CustomerServiceImpl implements ICustomerService
         return Pair.of(count, customerDuplicateVOList);
     }
 
+    @Override
+    public boolean importCustomer(MultipartFile file) {
+        List<CustomerAddOrUpdateDTO> customerAddOrUpdateDTOList = new ArrayList<>();
+        List<Map<String, Object>> mapList = new ArrayList<>();
 
+
+        boolean isFirstRow = true; // 标志，判断是否是第一行
+        try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+
+                if (isFirstRow) {
+                    // 跳过第一行
+                    isFirstRow = false;
+                    continue;
+                }
+
+                mapList.add(getExcelData(row));
+            }
+
+            // 查询存在的标签ID
+            Map<String, Long> tagMap = getTagMap(mapList);
+            // 查询存在的客户来源ID
+            Map<String, Long> sourceMap = getSourceMap(mapList);
+            // 查询存在的客户阶段
+            Map<String, Long> stageMap = getStageMap(mapList);
+
+            Map<Object, List<Map<String, Object>>> companyNameMap = mapList.stream().filter(map -> map.get("companyName") != null && !map.get("companyName").toString().equals("")).collect(Collectors.groupingBy(map -> map.get("companyName").toString()));
+
+            companyNameMap.forEach((companyName, contact) -> {
+
+            });
+
+        } catch (IOException e) {
+            log.error("获取excel数据异常{}", e);
+        }
+
+        return true;
+    }
+
+    /**
+     * 获取阶段map
+     * @param mapList
+     * @return
+     */
+    private Map<String, Long> getStageMap(List<Map<String, Object>> mapList) {
+        String stageNames = mapList.stream().filter(map -> map.get("stage") != null && !map.get("stage").toString().equals("")).map(map -> map.get("stage").toString()).collect(Collectors.joining(";"));
+        if (StringUtils.isNotBlank(stageNames)) {
+            List<String> stageNameList = Arrays.asList(stageNames.split(";"));
+            List<Stage> stageList = stageMapper.selectByNames(stageNameList);
+            Map<String, Long> stageMap = new HashMap<>();
+            stageList.forEach(stage -> stageMap.put(stage.getName(), stage.getId()));
+            return stageMap;
+        }
+
+        return new HashMap<>();
+    }
+
+    /**
+     * 获取来源map
+     * @param mapList
+     * @return
+     */
+    private Map<String, Long> getSourceMap(List<Map<String, Object>> mapList) {
+        String sourceNames = mapList.stream().filter(map -> map.get("source") != null && !map.get("source").toString().equals("")).map(map -> map.get("source").toString()).collect(Collectors.joining(";"));
+        if (StringUtils.isNotBlank(sourceNames)) {
+            List<String> sourceNameList = Arrays.asList(sourceNames.split(";"));
+            List<Source> sourceList = sourceMapper.selectByNames(sourceNameList);
+            Map<String, Long> sourceMap = new HashMap<>();
+            sourceList.forEach(source -> sourceMap.put(source.getName(), source.getId()));
+            return sourceMap;
+        }
+
+        return new HashMap<>();
+    }
+
+    /**
+     * 获取标签map
+     * @param mapList
+     * @return
+     */
+    private Map<String, Long> getTagMap(List<Map<String, Object>> mapList) {
+        String tagNames = mapList.stream().filter(map -> map.get("tag") != null && !map.get("tag").toString().equals("")).map(map -> map.get("tag").toString()).collect(Collectors.joining(";"));
+        if (StringUtils.isNotBlank(tagNames)) {
+            List<String> tagNameList = Arrays.asList(tagNames.split(";"));
+            List<Tag> tagList = tagMapper.selectByNames(tagNameList);
+            Map<String, Long> tagMap = new HashMap<>();
+            tagList.forEach(tag -> tagMap.put(tag.getName(), tag.getId()));
+            return tagMap;
+        }
+
+        return new HashMap<>();
+    }
+
+    /**
+     * 获取excel数据
+     * @param row
+     * @return
+     */
+    private Map<String, Object> getExcelData(Row row) {
+        // 公司名称
+        Cell companyNameCell = row.createCell(0);
+        String companyName = companyNameCell.getStringCellValue();
+
+        // 联系人昵称
+        Cell contactNickNameCell = row.createCell(1);
+        String contactNickName = contactNickNameCell.getStringCellValue();
+
+        //联系人邮箱
+        Cell contactEmailCell = row.createCell(1);
+        String contactEmail = contactEmailCell.getStringCellValue();
+
+        // 公司简称
+        Cell shortNameCell = row.createCell(2);
+        String shortName = shortNameCell.getStringCellValue();
+
+        // 国家地区
+        Cell countryRegionCell = row.createCell(3);
+        String countryRegion = countryRegionCell.getStringCellValue();
+
+        // 标签
+        Cell tagCell = row.createCell(4);
+        String tag = tagCell.getStringCellValue();
+
+        // 客户阶段
+        Cell stageCell = row.createCell(5);
+        String stage = stageCell.getStringCellValue();
+
+        // 客户来源
+        Cell sourceCell = row.createCell(6);
+        String source = sourceCell.getStringCellValue();
+
+        // 公司网址
+        Cell companyWebsiteCell = row.createCell(6);
+        String companyWebsite = companyWebsiteCell.getStringCellValue();
+
+        // 座机
+        Cell phoneCell = row.createCell(7);
+        String phone = phoneCell.getStringCellValue();
+
+        // 详细地址
+        Cell addressCell = row.createCell(8);
+        String address = addressCell.getStringCellValue();
+
+        // 公司备注
+        Cell companyRemarksCell = row.createCell(9);
+        String companyRemarks = companyRemarksCell.getStringCellValue();
+
+        // 客户编号
+        Cell customerNoCell = row.createCell(10);
+        String customerNo = customerNoCell.getStringCellValue();
+
+        // 联系人电话
+        Cell contactPhoneCell = row.createCell(11);
+        String contactPhone = contactPhoneCell.getStringCellValue();
+
+        // Facebook
+        Cell facebookCell = row.createCell(12);
+        String facebook = facebookCell.getStringCellValue();
+
+        // Twitter
+        Cell twitterCell = row.createCell(12);
+        String twitter = twitterCell.getStringCellValue();
+
+        // LinkedIn
+        Cell linkedInCell = row.createCell(13);
+        String linkedIn = linkedInCell.getStringCellValue();
+
+        // 职位
+        Cell positionCell = row.createCell(14);
+        String position = positionCell.getStringCellValue();
+
+        // 性别 1.不设置 2.男 3.女
+        Cell sexCell = row.createCell(15);
+        String sex = sexCell.getStringCellValue();
+
+        // 联系人备注
+        Cell contactRemarksCell = row.createCell(16);
+        String contactRemarks = contactRemarksCell.getStringCellValue();
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("companyName", companyName);
+        map.put("contactNickName", contactNickName);
+        map.put("contactEmail", contactEmail);
+        map.put("shortName", shortName);
+        map.put("countryRegion", countryRegion);
+        map.put("tag", tag);
+        map.put("stage", stage);
+        map.put("source", source);
+        map.put("companyWebsite", companyWebsite);
+        map.put("phone", phone);
+        map.put("address", address);
+        map.put("companyRemarks", companyRemarks);
+        map.put("customerNo", customerNo);
+        map.put("contactPhone", contactPhone);
+        map.put("facebook", facebook);
+        map.put("twitter", twitter);
+        map.put("linkedIn", linkedIn);
+        map.put("position", position);
+        map.put("sex", sex);
+        map.put("contactRemarks", contactRemarks);
+        return map;
+    }
 }

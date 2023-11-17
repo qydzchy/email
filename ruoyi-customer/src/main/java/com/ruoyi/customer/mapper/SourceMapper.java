@@ -59,4 +59,11 @@ public interface SourceMapper
      * @return 结果
      */
     public int deleteSourceByIds(Long[] ids);
+
+    /**
+     * 根据名称查询来源
+     * @param sourceNameList
+     * @return
+     */
+    List<Source> selectByNames(@Param("sourceNameList") List<String> sourceNameList);
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.TagTypeEnum;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.TagListVO;
@@ -136,5 +138,33 @@ public class TagServiceImpl implements ITagService
         }
 
         return tagVOList;
+    }
+
+    /**
+     * 设为公司标签
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean setAsCompanyTag(Long id) {
+        Tag tag = tagMapper.selectTagById(id);
+        if (tag == null) {
+            throw new ServiceException("不存在的标签");
+        }
+
+        if (tag.getType().intValue() == TagTypeEnum.COMPANY.getType()) {
+            throw new ServiceException("已经是公司标签");
+        }
+
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        tag.setType(TagTypeEnum.COMPANY.getType());
+        tag.setUpdateId(userId);
+        tag.setUpdateBy(username);
+        tag.setUpdateTime(DateUtils.getNowDate());
+        tagMapper.updateTag(tag);
+        return true;
     }
 }
