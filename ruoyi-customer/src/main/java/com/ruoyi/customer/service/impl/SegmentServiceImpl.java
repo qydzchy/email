@@ -219,7 +219,7 @@ public class SegmentServiceImpl implements ISegmentService
         List<CustomerColumnEnum> dateTimeColumnEnumList = customerColumnCategoryMap.get(CustomerColumnCategoryEnum.DATE_TIME);
 
         Map<String, Object> companyInfoMap = new HashMap<>();
-        companyInfoMap.put("name", "公司名称");
+        companyInfoMap.put("nickName", "公司名称");
         List<Map<String, String>> companyColumnMapList = new ArrayList<>();
         for (CustomerColumnEnum companyColumnEnum : companyColumnEnumList) {
             Map<String, String> companyColumnMap = new HashMap<>();
@@ -230,7 +230,7 @@ public class SegmentServiceImpl implements ISegmentService
         companyInfoMap.put("children", companyColumnMapList);
 
         Map<String, Object> contactInfoMap = new HashMap<>();
-        contactInfoMap.put("name", "联系人信息");
+        contactInfoMap.put("nickName", "联系人信息");
         List<Map<String, String>> contackColumnMapList = new ArrayList<>();
         for (CustomerColumnEnum contactColumnEnum : contactColumnEnumList) {
             Map<String, String> contactColumnMap = new HashMap<>();
@@ -241,7 +241,7 @@ public class SegmentServiceImpl implements ISegmentService
         contactInfoMap.put("children", contackColumnMapList);
 
         Map<String, Object> dateTimeMap = new HashMap<>();
-        dateTimeMap.put("name", "日期时间");
+        dateTimeMap.put("nickName", "日期时间");
         List<Map<String, String>> dateTimeColumnMapList = new ArrayList<>();
         for (CustomerColumnEnum dateTimeColumnEnum : dateTimeColumnEnumList) {
             Map<String, String> dateTimeColumnMap = new HashMap<>();
