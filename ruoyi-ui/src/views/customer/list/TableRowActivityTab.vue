@@ -241,7 +241,8 @@
           @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
     </template>
     <template>
-      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="row"/>
+      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="row"
+                      @onConfirm="onScheduleConfirm"/>
     </template>
   </div>
 </template>
@@ -302,7 +303,7 @@ export default {
         2: '电话',
         3: '会面',
         4: '社交平台',
-      }
+      },
     }
   },
   mounted() {
@@ -322,7 +323,7 @@ export default {
     }
   },
   methods: {
-    formatDate,
+
     // 快捷模板
     async getTemplateList() {
       try {
@@ -527,8 +528,14 @@ export default {
       this.getRecordList()
       this.templateVisible = false
     },
+    // 操作日程确认
+    onScheduleConfirm() {
+      this.getScheduleList()
+      this.dialogSchedule = false
+    },
     targetBlank,
     formatMonthAndDay,
+    formatDate,
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div class="row-tabs">
     <el-tabs v-model="curTab" v-loading="cardLoading" :class="options.isTabSetHeight ?'tabs-height':''">
       <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
-        <component :row="rowData" :options="options" :is="tab.is"/>
+        <component :row="row" :options="options" :is="tab.is"/>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -14,7 +14,6 @@ import TableRowDatumTab from "./TableRowDatumTab.vue";
 import TableRowTradeTab from "./TableRowTradeTab.vue";
 import TableRowTipsTab from "./TableRowTipsTab.vue";
 import TableRowDocTab from "./TableRowDocTab.vue";
-import {getCustomerDetail} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -40,17 +39,6 @@ export default {
     TableRowTradeTab,
     TableRowTipsTab,
     TableRowDocTab
-  },
-  watch: {
-    row: {
-      handler(newVal) {
-        if (newVal?.id) {
-          this.getDetailData()
-        }
-      },
-      deep: true,
-      immediate: true,
-    }
   },
   data() {
     return {
@@ -83,24 +71,9 @@ export default {
         },
       ],
       cardLoading: false,
-      rowData: {},
     }
   },
-  methods: {
-    async getDetailData() {
-      try {
-        const res = await getCustomerDetail({
-          id: this.row.id
-        })
-        if (res.code === 200) {
-          this.rowData = res.data
-          this.rowData.customerId = this.rowData.id
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    },
-  },
+  methods: {},
 }
 </script>
 

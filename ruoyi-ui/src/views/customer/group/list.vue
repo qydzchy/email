@@ -33,7 +33,7 @@
       </div>
 
       <TableNext
-          class="mt-10"
+          class="mt-10 segment-list"
           v-loading="tableLoading"
           :list="list"
           :columns="columns"
@@ -88,12 +88,13 @@ export default {
           label: '客群名称',
           field: 'name',
           align: 'left',
+          className: 'customer-name',
           render: (row, field) => {
             return <span>
               <el-tooltip placement="top" content={field}>
-                <div className="flex-middle gap-6">
+                <div className="flex-middle">
                   <span>{field}</span>
-                  {row?.usageScope === 2 ? <el-tag size="mini" effect='plain'>个人</el-tag> : null}
+                  {row?.usageScope === 2 ? <el-tag size="mini" effect='plain' class="ml-6">个人</el-tag> : null}
                 </div>
               </el-tooltip>
             </span>
@@ -298,5 +299,12 @@ export default {
   }
 }
 
+.segment-list {
+  ::v-deep .customer-name {
+    .cell {
+      display: flex;
+    }
+  }
+}
 
 </style>

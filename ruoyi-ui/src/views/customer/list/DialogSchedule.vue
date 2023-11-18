@@ -2,7 +2,7 @@
   <div class="schedule-dialog">
     <el-dialog
         width="600px"
-        title="新建日程"
+        :title="formData.scheduleId ? '编辑日程':'新建日程'"
         :visible.sync="scheduleDialog"
         :close-on-click-modal="false"
         :append-to-body="true"
@@ -54,16 +54,80 @@
             </el-row>
           </el-form-item>
           <el-form-item label="周期性日程">
-            <SelectNext
-                :value.sync="scheduleForm.recurringSchedule"
-                :select-options="{options:recurringScheduleOption}"
-                @change="(value)=>scheduleForm.recurringSchedule = value"/>
+            <el-row type="flex">
+              <el-col :span="12">
+                <SelectNext
+                    :value.sync="scheduleForm.recurringSchedule"
+                    :select-options="{options:recurringScheduleOption}"/>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="自定义周期" v-if="scheduleForm.recurringSchedule === 5">
+            <el-row type="flex">
+              <el-col :span="6">
+                <el-input-number
+                    size="small"
+                    controls-position="right"
+                    v-model="scheduleForm.customCycleValue"
+                    :min="1">
+                </el-input-number>
+              </el-col>
+              <el-col :span="6">
+                <SelectNext
+                    :value.sync="scheduleForm.customCycleType"
+                    :select-options="{options:customCycleTypeOption}"/>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="周期结束时间" v-if="scheduleForm.recurringSchedule !==1">
+            <el-date-picker
+                v-model="scheduleForm.cycleEndTime"
+                type="datetime"
+                clearable
+                format="yyyy-MM-dd HH:mm:ss"
+                placeholder="选择日期时间">
+            </el-date-picker>
+
           </el-form-item>
           <el-form-item label="提醒时间">
-            <el-select></el-select>
+            <el-row type="flex" align="middle" v-for="item in reminderTimeList" :key="item.id">
+              <el-col :span="10">
+                <SelectNext
+                    :value.sync="item.reminderTimeType"
+                    :select-options="{options:reminderTimeOption}"
+                />
+              </el-col>
+              <el-col :span="10" :offset="1">
+                <el-date-picker
+                    v-if="item.reminderTimeType === 6"
+                    v-model="item.reminderTimeValue"
+                    type="datetime"
+                    clearable
+                    format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="选择日期时间"/>
+              </el-col>
+              <el-col :span="1" :offset="1">
+                <i class="pointer el-icon-remove-outline" @click="onDeleteRow(item.id)"></i>
+              </el-col>
+            </el-row>
+            <el-button type="text" plain class="el-icon-plus mt-6" round @click="addReminderRow">
+              添加提醒时间
+            </el-button>
           </el-form-item>
           <el-form-item label="关联对象">
-            <el-select></el-select>
+            <el-row type="flex" :gutter="6">
+              <el-col :span="6">
+                <el-select value="客户" disabled>
+                  <el-option value="客户" label="客户"></el-option>
+                </el-select>
+              </el-col>
+              <el-col :span="10">
+                <el-select :value="[formData.companyName]" multiple disabled>
+                  <el-option :value="formData.companyName" :label="formData.companyName"></el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+
           </el-form-item>
           <el-form-item label="参与人" required>
             <el-select v-model="scheduleForm.userIds" multiple filterable>
@@ -76,7 +140,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input placeholder="请输入内容" type="textarea" resize="none" :rows="3"></el-input>
+            <el-input v-model="scheduleForm.remark" placeholder="请输入内容" type="textarea" resize="none"
+                      :rows="3"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -104,12 +169,13 @@ const initForm = {
   scheduleStartTime: "", //日程开始时间
   scheduleEndTime: "", //日程结束时间
   recurringSchedule: 1, //周期性日程 1.不设置 2.每天 3.每周 4.每月 5.自定义
-  customCycleValue: null, //自定义周期-值
-  customCycleType: null, //自定义周期-类型 1.天 2.周 3.月
+  customCycleValue: 1, //自定义周期-值
+  customCycleType: 1, //自定义周期-类型 1.天 2.周 3.月
   cycleEndTime: "",
   reminderTime: "",
+  remark: "",//备注
   userIds: [], //参与人ID
-  dates: []
+  dates: [+new Date(), +new Date()]
 }
 export default {
   components: {SelectTagColor, SelectNext},
@@ -138,7 +204,7 @@ export default {
             text: '今天',
             onClick(picker) {
               const today = new Date();
-              picker.$emit('pick', today);
+              picker.$emit('pick', [today, today]);
             }
           },
           {
@@ -146,29 +212,32 @@ export default {
             onClick(picker) {
               const yesterday = new Date();
               yesterday.setTime(yesterday.getTime() + 3600 * 1000 * 24);
-              picker.$emit('pick', yesterday);
+              picker.$emit('pick', [yesterday, yesterday]);
             }
           },
           {
             text: '未来7天',
             onClick(picker) {
+              const start = new Date()
               const end = new Date();
               end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', end);
+              picker.$emit('pick', [start, end]);
             }
           }, {
             text: '未来30天',
             onClick(picker) {
+              const start = new Date()
               const end = new Date();
               end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', end);
+              picker.$emit('pick', [start, end]);
             }
           }, {
             text: '未来90天',
             onClick(picker) {
+              const start = new Date()
               const end = new Date();
               end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', end);
+              picker.$emit('pick', [start, end]);
             }
           }]
       },
@@ -188,20 +257,39 @@ export default {
         {value: 4, label: '每月'},
         {value: 5, label: '自定义'},
       ],
+      customCycleTypeOption: [
+        {value: 1, label: '天'},
+        {value: 2, label: '周'},
+        {value: 3, label: '月'},
+      ],
+      reminderTimeOption: [
+        {value: 1, label: '不提醒'},
+        {value: 2, label: '当天开始(上午9:00)'},
+        {value: 3, label: '1天前(上午9:00)'},
+        {value: 4, label: '2天前(上午9:00)'},
+        {value: 5, label: '1周前(上午9:00)'},
+        {value: 6, label: '自定义'},
+      ],
       followPersonList: [],
+      reminderTimeList: [
+        {
+          id: +new Date(),
+          reminderTimeType: 1,
+          reminderTimeValue: ''
+        }
+      ],
       btnLoading: false,
     }
   },
   watch: {
     formData: {
       handler(newVal) {
-        if (newVal && newVal?.id) {
-          this.scheduleForm = {
-            ...this.scheduleForm,
-            ...newVal
-          }
+        if (!this.scheduleForm.scheduleContent) {
+          this.scheduleForm.scheduleContent = `跟进客户：${newVal.companyName}`
         }
-      }
+      },
+      deep: true,
+      immediate: true
     },
     visible: {
       handler(newVal) {
@@ -231,22 +319,31 @@ export default {
         return
       }
       const {
-        scheduleContent,
-        color,
-        allDayFlag,
-        recurringSchedule,
         dates,
-        userIds
+        color,
+        remark,
+        userIds,
+        allDayFlag,
+        scheduleContent,
+        recurringSchedule,
+        customCycleValue,
+        customCycleType,
+        cycleEndTime,
       } = this.scheduleForm
       const config = {
-        scheduleContent,
         color,
-        recurringSchedule,
+        remark,
         userIds,
+        scheduleContent,
+        recurringSchedule,
+        customCycleValue,
+        customCycleType,
+        cycleEndTime: formatDate(cycleEndTime),
         customerId: this.formData.customerId,
         allDayFlag: Number(allDayFlag),
         scheduleStartTime: allDayFlag ? formatDateSimple(dates[0]) : formatDate(dates[0]),
         scheduleEndTime: allDayFlag ? formatDateSimple(dates[1]) : formatDate(dates[1]),
+        reminderTime: this.generateReminderTime(this.reminderTimeList)
       }
       try {
         this.btnLoading = true
@@ -255,7 +352,7 @@ export default {
         })
         if (res.code === 200) {
           this.$message.success('添加日程成功')
-          this.onCancel()
+          this.$emit('onConfirm')
         }
       } catch {
       }
@@ -276,7 +373,7 @@ export default {
       }
     },
     onConfirm() {
-      if (!this.formData.id) {
+      if (!this.formData.scheduleId) {
         this.addFormSchedule()
       } else {
         this.editFormSchedule()
@@ -286,6 +383,24 @@ export default {
       this.$emit('update:visible', false)
       // 根据情况使用
       this.$emit('onHideDialog')
+    },
+    addReminderRow() {
+      this.reminderTimeList.push({
+        id: +new Date(),
+        reminderTimeType: 1,
+        reminderTimeValue: ''
+      })
+    },
+    onDeleteRow(id) {
+      this.reminderTimeList = this.reminderTimeList.filter(val => val.id !== id)
+    },
+    generateReminderTime(arr) {
+      const newList = arr.map(val => {
+        delete val.id
+        val.reminderTimeValue = formatDate(val.reminderTimeValue)
+        return val
+      })
+      return JSON.stringify(newList)
     }
   }
 }

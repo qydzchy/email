@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     handleChange(value) {
-      this.$emit('change', value)
+      this.$emit('update:value', value)
     },
     visibleChange(bool) {
       this.$emit('visibleChange', bool)

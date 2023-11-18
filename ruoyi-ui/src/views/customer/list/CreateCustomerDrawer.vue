@@ -5,7 +5,7 @@
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
-            {{ formData.id ? '编辑' : '新建' }}客户
+            {{ row.id ? '编辑' : '新建' }}客户
           </div>
           <el-row class="flex-middle">
             <el-row class="flex-middle gap-16">
@@ -64,6 +64,7 @@ import {UsuallyInfoRule, OtherInfoRule} from './CreateCustomerOption'
 import {formOption} from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
 import {addCustomer, editCustomer} from "@/api/customer/publicleads";
+import {deepClone} from "@/utils";
 
 export default {
   props: {
@@ -75,6 +76,9 @@ export default {
     row: {
       type: Object,
       default: () => {
+        return {
+          id: ''
+        }
       },
       required: false
     },
@@ -97,9 +101,6 @@ export default {
   data() {
     return {
       customerVisible: false,
-      formData: {
-        id: '',
-      },
       customerForm: {},
       customerFormValue: {},
       rule: [...UsuallyInfoRule],
@@ -128,15 +129,16 @@ export default {
     },
     row: {
       handler(newVal) {
-        if (!newVal?.id) {
-          return
+        try {
+          if (newVal?.id) {
+            this.customerFormValue = {...deepClone(newVal)}
+            this.customerOtherFormValue = {...deepClone(newVal)}
+            let contactList = this.generateContactList(newVal.contactList)
+            this.contactList = deepClone(contactList)
+          }
+        } catch (e) {
+          console.error(e)
         }
-        this.formData = {
-          id: newVal?.id
-        }
-        this.customerFormValue = {...newVal}
-        this.customerOtherFormValue = {...newVal}
-
       },
       deep: true,
       immediate: true
@@ -219,7 +221,13 @@ export default {
     onConfirm() {
       this.customerForm.validate(val => {
         if (val) {
-          const contactList = this.$refs['contact-card'].getInnerData()
+          let contactList = this.$refs['contact-card'].getInnerData()
+          contactList = contactList.map(val => {
+            delete val.show
+            delete val.id
+            val.primaryContactFlag = +val.primaryContactFlag
+            return val
+          })
           const customerForm = this.customerForm.formData()
           const otherForm = this.customerOtherForm.formData()
           const data = {
@@ -262,7 +270,18 @@ export default {
       } else {
         this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})
       }
-    }
+    },
+    generateContactList(arr) {
+      if (arr && !arr.length) {
+        return []
+      }
+      return arr.map(val => {
+        val.phone = val.phone ? JSON?.parse(val.phone) : []
+        console.log(val.phone)
+        val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
+        return val
+      })
+    },
   }
 }
 </script>

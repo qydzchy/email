@@ -123,11 +123,5 @@ export default {
     justify-content: flex-end;
     margin-top: 24px;
   }
-
-  ::v-deep .el-table__cell {
-    .cell {
-      display: flex;
-    }
-  }
 }
 </style>

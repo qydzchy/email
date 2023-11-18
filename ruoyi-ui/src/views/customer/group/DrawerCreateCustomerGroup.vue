@@ -15,7 +15,8 @@
         <ListCreateCustomerForm
             key="single"
             :showRange="true"
-            :customer-form.sync="formData"
+            :customer-form="formData"
+            @update:customerForm="onUpdate"
             :rule-option="customerRuleOption"
             :visibility-option="visibilityScopeOption"
         />
@@ -45,7 +46,7 @@
                     :customer-form="item"
                     :rule-option="customerRuleOption"
                     :visibility-option="visibilityScopeOption"
-                    @update:customerForm="(value)=>onUpdate(item.ruleId,value)"
+                    @update:customerForm="(value)=>onUpdateChild(item.ruleId,value)"
                 />
                 <el-tooltip placement="top" content="删除">
                   <i class="del-icon pointer el-icon-remove-outline" @click="delSecondCustomer(item.ruleId)"></i>
@@ -110,6 +111,7 @@ export default {
       tempAllDept: [],
       tempAllUser: [],
       btnLoading: false,
+      defaultChooseIds: []
     }
   },
   watch: {
@@ -127,9 +129,12 @@ export default {
           ruleContent = JSON.parse(ruleContent)
           ruleContent = (ruleContent && !ruleContent?.length) ? this.generateRuleContentDefault() : this.generateRuleContentSetRuleId(ruleContent)
           children = !children.length ? this.generateChildListDefault() : this.generateChildListSetRuleId(children)
+          let visibilityScope = newVal.visibilityScope || null
+          visibilityScope = this.generateVisibilityScopeValue(visibilityScope)
           let curRowData = {
             ...newVal,
             ruleId: +new Date(),
+            visibilityScope: visibilityScope,
             conditionRuleContent: ruleContent,
             children: children
           }
@@ -172,8 +177,33 @@ export default {
       }
     },
     // 添加客群规则请求
-    async addSegmentForm() {
+    async addSegmentForm(config) {
+      try {
+        this.btnLoading = true
+        const res = await addSegment({...config}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加客群成功')
+          this.$emit('onConfirm')
+        }
+      } catch {
+      }
+    },
+    // 编辑客群规则请求
+    async editSegmentForm(config) {
+      try {
+        const res = await editSegment({...config})
+        if (res.code === 200) {
+          this.$message.success('修改客群成功')
+          this.$emit('onConfirm')
+        }
+      } catch {
+      }
+    },
+    onConfirm() {
       const {
+        id,
         name,
         visibilityScope,
         usageScope,
@@ -187,12 +217,11 @@ export default {
         name,
         usageScope,
         conditionRuleType,
-        visibilityScope: null,
+        visibilityScope: this.generateVisibilityScopeFormat(visibilityScope),
         subgroupFlag: Number(subgroupFlag),
         conditionRuleContent: this.generateConditionRuleContent(conditionRuleContent, conditionRuleType),
-        parentId: -1
       }
-
+      // 勾选添加二级客群
       if (subgroupFlag) {
         let newChildren = deepClone([...children])
         newChildren.map(val => {
@@ -207,35 +236,13 @@ export default {
           children: newChildren,
         }
       }
-      try {
-        this.btnLoading = true
-        const res = await addSegment({...config}).finally(() => {
-          this.btnLoading = false
-        })
-        if (res.code === 200) {
-          this.$message.success('添加客群成功')
-          this.$emit('onConfirm')
-        }
-      } catch {
+      if (!this.row?.id) {
+        config = {...config, parentId: -1}
+        this.addSegmentForm(config)
+        return
       }
-    },
-    // 编辑客群规则请求
-    async editSegmentForm() {
-      const {
-        name,
-        usageScope
-      } = this.formData
-      const config = {
-        name,
-        usageScope
-      }
-      try {
-        const res = await editSegment({...config})
-        if (res.code === 200) {
-
-        }
-      } catch {
-      }
+      config = {...config, id}
+      this.editSegmentForm(config)
     },
     handleAddRule(value) {
       if (value === 2 && !this.formData.children.length) {
@@ -245,19 +252,15 @@ export default {
     addSecondCustomer() {
       this.formData.children.push({...this.generateInitValue()})
     },
-    onUpdate(id, value) {
+    onUpdate(value) {
+      this.formData = Object.assign({}, this.formData, value)
+    },
+    onUpdateChild(id, value) {
       const idx = this.formData.children.findIndex(val => val.ruleId === id)
       this.$set(this.formData.children, idx, {...value})
     },
     delSecondCustomer(id) {
       this.formData.children = this.formData.children.filter(val => val.ruleId !== id)
-    },
-    onConfirm() {
-      if (!this.row?.id) {
-        this.addSegmentForm()
-      } else {
-        this.editSegmentForm()
-      }
     },
     // 隐藏抽屉
     onHideDrawer() {
@@ -273,12 +276,19 @@ export default {
       })
     },
     generateChildListDefault() {
+      let childFormData = deepClone(initFormData)
+      delete childFormData.visibilityScope
       return [{
-        ...deepClone(initFormData),
+        ...childFormData,
         ruleId: +new Date(),
-        conditionRuleContent: [
-          {ruleId: +new Date()}
-        ],
+        conditionRuleContent: [{
+          ruleId: +new Date(),
+          columnName: null,
+          conditionType: null,
+          dateType: null,
+          timeRange: null,
+          value: null
+        }],
       }]
     },
     generateChildListSetRuleId(arr) {
@@ -293,10 +303,11 @@ export default {
       return {
         ...deepClone(initFormData),
         ruleId: +new Date(),
+        visibilityScope: this.defaultChooseIds,
         conditionRuleContent: [
           {
             ruleId: +new Date(),
-            columnName: [],
+            columnName: null,
             conditionType: null,
             dateType: null,
             timeRange: null,
@@ -323,6 +334,7 @@ export default {
       return JSON.stringify(newArr)
     },
     generateVisibilityScopeOption(list) {
+      let ids = []
       let allDept = {
         id: 'allDept',
         name: '全部部门',
@@ -334,6 +346,7 @@ export default {
         children: []
       }
       const deepSearch = arr => arr.forEach(val => {
+        ids.push(val.id)
         if (val.type === 1) {
           allDept.children.push({
             id: val.id,
@@ -352,11 +365,70 @@ export default {
       deepSearch(list)
       this.tempAllDept = allDept.children
       this.tempAllUser = allUser.children
+      this.defaultChooseIds = ids
+      this.formData.visibilityScope = this.defaultChooseIds
       return [{
         id: 'all',
         name: '全公司可见',
         children: [allDept, allUser]
       }]
+    },
+    generateVisibilityScopeValue(scopeData) {
+      let scope = JSON.parse(scopeData)
+      if (!scope) {
+        return []
+      }
+      // 部门
+      let dept = []
+      if (scope?.dept?.allFlag) {
+        this.tempAllDept.forEach(val => {
+          dept.push(val.id)
+        })
+      } else {
+        dept = scope?.dept?.deptIds || []
+      }
+      // 用户
+      let user = []
+      if (scope?.user?.allFlag) {
+        this.tempAllUser.forEach(val => {
+          user.push(val.id)
+        })
+      } else {
+        dept = scope?.user?.userIds || []
+      }
+      return [...dept, ...user]
+
+    },
+    generateVisibilityScopeFormat(ids) {
+      let templateScope = {
+        "dept": { //部门
+          "allFlag": true, // true所有部门 false指定部门
+          "deptIds": [] //指定部门ID
+        },
+        "user": { //用户
+          "allFlag": true, //true所有用户 false指定用户
+          "userIds": [] //指定用户ID
+        }
+      }
+      // 校验勾选部门
+      const validDept = this.tempAllDept.every(val => ids.includes(val.id))
+      if (validDept) {
+        templateScope.dept.allFlag = true
+      } else {
+        templateScope.dept.allFlag = false
+        let deptIds = this.tempAllDept.filter(val => ids.includes(val.id))
+        templateScope.dept.deptIds = deptIds.map(val => val.id)
+      }
+      // 校验勾选用户
+      const validUser = this.tempAllUser.every(val => ids.includes(val.id))
+      if (validUser) {
+        templateScope.user.allFlag = true
+      } else {
+        templateScope.user.allFlag = false
+        let userIds = this.tempAllUser.filter(val => ids.includes(val.id))
+        templateScope.user.userIds = userIds.map(val => val.id)
+      }
+      return JSON.stringify(templateScope)
     },
   }
 }

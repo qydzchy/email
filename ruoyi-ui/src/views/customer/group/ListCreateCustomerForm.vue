@@ -31,6 +31,7 @@
             :data="visibilityOption"
             :props="{value:'id',label:'name'}"
             :default-expand-all="true"
+            collapse-tags
             filterable
             multiple
             show-checkbox
@@ -315,7 +316,7 @@ export default {
         })
       })
       return conditionOption
-    }
+    },
   }
 }
 </script>

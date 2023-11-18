@@ -56,14 +56,14 @@
             </div>
           </div>
           <div class="tabs mt-10">
-            <TableRowTabs :row="row" :options="options"/>
+            <TableRowTabs :row="rowData" :options="options"/>
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
       </el-drawer>
 
     </div>
-    <CreateCustomerDrawer :visible.sync="editVisible" :row="row" @load="onHideCreateDrawer"/>
+    <CreateCustomerDrawer :visible.sync="editVisible" :row.sync="rowData" @load="onHideCreateDrawer"/>
   </div>
 </template>
 
@@ -71,7 +71,7 @@
 import TableRowTabs from './TableRowTabs.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
-import {editFocusFlagCustomer} from "@/api/customer/publicleads";
+import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -114,18 +114,35 @@ export default {
         groupOption: this.externalOpt.groupOption
       },
       focusFlag: false,
+      rowData: {}
     }
   },
   watch: {
     row: {
       handler(newVal) {
         this.focusFlag = Boolean(newVal.focusFlag)
+        if (newVal?.id) {
+          this.getDetailData()
+        }
       },
       deep: true,
       immediate: true,
     }
   },
   methods: {
+    async getDetailData() {
+      try {
+        const res = await getCustomerDetail({
+          id: this.row.id
+        })
+        if (res.code === 200) {
+          this.rowData = res.data
+          this.rowData.customerId = this.rowData.id
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
     async onCollageIcon(status) {
       if (!this.row.id) {
         return
@@ -140,14 +157,15 @@ export default {
       }
     },
     onHideDrawer() {
+      this.rowData = {}
       this.$emit('update:visible', false)
     },
     onHideCreateDrawer() {
       this.editVisible = false
-      setTimeout(()=>{
+      setTimeout(() => {
+        this.getDetailData()
         this.$emit('load')
-      },400)
-
+      }, 400)
     },
   }
 

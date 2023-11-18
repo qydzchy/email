@@ -91,7 +91,7 @@
               <el-input v-model="item.position" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="生日">
-              <el-date-picker style="width: 100%"  v-model="item.birthday"></el-date-picker>
+              <el-date-picker style="width: 100%" v-model="item.birthday"></el-date-picker>
             </el-form-item>
             <el-form-item label="性别" style="width: 210px;">
               <el-row>
@@ -216,7 +216,11 @@ export default {
     contactList: {
       handler(newVal) {
         if (newVal && newVal.length) {
-          this.formList = newVal
+          let list = deepClone(newVal)
+          this.formList = list.map(val => {
+            val.show = false
+            return val
+          })
         }
       },
       deep: true,
