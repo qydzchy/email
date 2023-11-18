@@ -80,7 +80,7 @@
                 <div class="container py-8" v-for="(item,index) in contactList" :key="index">
                   <div class="main px-16 py-12">
                     <div class="flex-middle space-between">
-                      <span class="fs-14 bold">{{ item.nickName }}</span>
+                      <span class="fs-14 bold">{{ item.nickName || '---' }}</span>
                       <el-row type="flex" :gutter="8">
                         <el-col>
                           <el-tooltip placement="top" content="往来邮件">
@@ -95,26 +95,41 @@
                       </el-row>
                     </div>
                     <div class="fs-14 my-10 flex-column">
-                      <div class="wrap">
-                        <div>邮箱</div>
-                        <div class="py-10 email-copy flex-middle">
-                          {{ item.email }}
-                          <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
+                      <template v-for="(contact,index) in contactFieldList">
+                        <div class="wrap"
+                             v-if="item[contact.field] && !['socialPlatform','phone'].includes(contact.field)"
+                             :key="index">
+                          <div>{{ contact.name }}</div>
+                          <div class="flex-middle" :class="{'copy-text':contact.isCopy}">
+                            <span v-if="contact.mapValue">
+                              {{ contact.mapValue[item[contact.field]] }}
+                            </span>
+                            <span v-else>
+                              {{ item[contact.field] }}
+                            </span>
+                            <i v-if="contact.isCopy" class="el-icon-copy-document pl-4"
+                               @click="onCopy(item[contact.field])"></i>
+                          </div>
                         </div>
-
-                      </div>
-                      <div class="wrap">
-                        <div>职级</div>
-                        <div class="py-10">普通职员</div>
-                      </div>
-                      <div class="wrap">
-                        <div>生日</div>
-                        <div class="py-10">10-18</div>
-                      </div>
-                      <div class="wrap">
-                        <div>性别</div>
-                        <div class="py-10">男</div>
-                      </div>
+                        <div class="wrap" v-else-if="item[contact.field]">
+                          <div>{{ contact.name }}</div>
+                          <div class="flex-column gap-10">
+                            <div class="flex-start" :class="{'copy-text': subItem[contact.childField[1]]}"
+                                 v-for="(subItem,subIdx) in item[contact.field]">
+                              <span :key="subIdx">
+                                {{ subItem[contact.childField[0]] || '---' }}
+                              </span>
+                              <span v-if="contact.field==='phone'">-</span>
+                              <span v-else class="pl-10"></span>
+                              <span>
+                                 {{ subItem[contact.childField[1]] || '---' }}
+                              </span>
+                              <i v-if="subItem[contact.childField[1]]" class="el-icon-copy-document pl-4"
+                                 @click="onCopy(generateDiffCopy(contact.field,subItem[contact.childField[0]],subItem[contact.childField[1]]))"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -128,7 +143,7 @@
       </el-col>
     </el-row>
     <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData"/>
-    <CustomerContactDrawer :visible.sync="contactVisible" :row-data="rowData" @onConfirm="onConfirm"/>
+    <CustomerContactDrawer :visible.sync="contactVisible" :rowData="rowData" @onConfirm="onConfirm"/>
   </div>
 </template>
 
@@ -142,6 +157,8 @@ import TableNext from "@/components/TableNext/index.vue";
 import {getScheduleList} from "@/api/customer/schedule";
 import {formatMonthAndDay} from "@/utils";
 import {getCustomerDetail} from "@/api/customer/publicleads";
+import {generateMapKey} from "@/utils/tools";
+import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 
 export default {
   components: {
@@ -166,7 +183,17 @@ export default {
         }
       ],
       contactList: [],
-      contactFieldList: {},
+      contactFieldList: [
+        {field: 'email', name: '邮箱', isCopy: true},
+        {field: 'socialPlatform', name: '社交平台', isCopy: true, childField: ['type', 'account']},
+        {field: 'phone', name: '手机号', isCopy: true, childField: ['phone_prefix', 'phone']},
+        {field: 'rank', name: '职级', isCopy: false, mapValue: generateMapKey(rankOption)},
+        {field: 'position', name: '职位', isCopy: false},
+        {field: 'birthday', name: '生日', isCopy: false},
+        {field: 'sex', name: '性别', isCopy: false, mapValue: generateMapKey(sexRadio)},
+        {field: 'avatarOrBusinessCard', name: '头像/名片', isCopy: false},
+        {field: 'contactRemarks', name: '联系人备注', isCopy: false}
+      ],
       contactSearchValue: '',
       contactSearch: false,
       contactVisible: false,
@@ -192,6 +219,7 @@ export default {
         if (res.code === 200) {
           this.rowData = res.data
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
+          console.log(this.rowData.contactList)
           this.contactList = this.rowData.contactList
         }
       } catch {
@@ -247,10 +275,15 @@ export default {
       }
       return arr.map(val => {
         val.phone = val.phone ? JSON?.parse(val.phone) : []
-        console.log(val.phone)
         val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
         return val
       })
+    },
+    generateDiffCopy(type, firstVal, secondVal) {
+      if (type === 'phone') {
+        return `${firstVal}-${secondVal}`
+      }
+      return secondVal
     },
     formatMonthAndDay,
   }
@@ -338,9 +371,9 @@ export default {
     grid-template-columns:88px 240px;
     grid-column-gap: 8px;
     column-gap: 8px;
-    align-items: center;
+    padding: 10px 0;
 
-    .email-copy {
+    .copy-text {
       cursor: pointer;
 
       > i {

@@ -47,7 +47,7 @@ export default {
           contactList: []
         }
       },
-      required: true,
+      required: false,
     }
   },
   components: {

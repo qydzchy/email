@@ -96,18 +96,18 @@
             <el-form-item label="性别" style="width: 210px;">
               <el-row>
                 <el-radio-group v-model="item.sex">
-                  <el-radio :label="1">不限</el-radio>
-                  <el-radio :label="2">男</el-radio>
-                  <el-radio :label="3">女</el-radio>
+                  <el-radio v-for="(sexItem,index) in sexRadio" :key="index" :label="sexItem.value">
+                    {{ sexItem.label }}
+                  </el-radio>
                 </el-radio-group>
               </el-row>
             </el-form-item>
             <el-form-item label="头像/名片">
               <el-row style="width:100%"/>
               <image-upload
-                  :value.sync="item.avatarOrBusinessCard"
-                  :limit="1"
-                  :isShowTip="false"
+                :value.sync="item.avatarOrBusinessCard"
+                :limit="1"
+                :isShowTip="false"
               >
               </image-upload>
             </el-form-item>
@@ -135,6 +135,7 @@
 <script>
 import {generatePhone} from "@/utils/tools";
 import {deepClone} from "@/utils";
+import {platformOption, rankOption, sexRadio} from "@/constant/customer/ContactCard";
 
 const addConstruct = {
   id: +new Date(),
@@ -177,39 +178,10 @@ export default {
       formList: [
         {...deepClone(addConstruct)}
       ],
-      platformOption: [
-        {label: 'Facebook', value: 'Facebook', svg: 'Facebook'},
-        {label: 'LinkedIn', value: 'LinkedIn', svg: 'LinkedIn'},
-        {label: '阿里TM', value: '阿里TM', svg: 'AliTM'},
-        {label: 'WhatsApp', value: 'WhatsApp', svg: 'WhatsApp'},
-        {label: 'Skype', value: 'Skype', svg: 'Skype'},
-        {label: 'WeChat', value: 'WeChat', svg: 'WeChats'},
-        {label: 'QQ', value: 'QQ', svg: 'QQs'},
-        {label: 'Instagram', value: 'Instagram', svg: 'Instagram'},
-        {label: 'Twitter', value: 'Twitter', svg: 'Twitter'},
-        {label: 'YouTube', value: 'YouTube', svg: 'YouTube'},
-        {label: 'Messenger', value: 'Messenger', svg: 'Messenger'},
-        {label: 'Line', value: 'Line', svg: 'Line'},
-        {label: 'VK', value: 'VK', svg: 'VK'},
-        {label: 'Telegram', value: 'Telegram', svg: 'Telegram'},
-        {label: 'CrunchBase', value: 'CrunchBase', svg: 'CrunchBase'},
-        {label: 'AngelList', value: 'AngelList', svg: 'AngelList'},
-        {label: 'Pinterest', value: 'Pinterest', svg: 'Pinterest'},
-        {label: 'Tiktok', value: 'Tiktok', svg: 'Tiktok'},
-        {label: 'Kakao Talk', value: 'Kakao Talk', svg: 'Kakao Talk'},
-        {label: 'Zalo', value: 'Zalo', svg: 'Zalo'},
-        {label: 'Etsy', value: 'Etsy', svg: 'Etsy'},
-        {label: 'Reddit', value: 'Reddit', svg: 'Reddit'},
-        {label: 'Red', value: 'Red', svg: 'Red'},
-        {label: 'Shopee', value: 'Shopee', svg: 'Shopee'},
-        {label: 'Viber', value: 'Vibe', svg: 'Viber'},
-      ],
-      rankOption: [
-        {value: 1, label: '普通职员'},
-        {value: 2, label: '中层管理者'},
-        {value: 3, label: '高层管理者'},
-      ],
       phonePrefixList: generatePhone(),
+      platformOption,
+      rankOption,
+      sexRadio,
     }
   },
   watch: {
