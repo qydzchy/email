@@ -40,10 +40,10 @@
         </template>
         <div class="container">
           <div class="base-info flex-start px-30">
-            <el-avatar shape="square"></el-avatar>
+            <el-avatar shape="square" :src="rowData.companyLogo"></el-avatar>
 
             <div class="pl-10 fs-14">
-              <label>测试公司</label>
+              <label>{{ rowData.companyName }}</label>
               <div class="my-10">
                 <span>11248</span>
                 <span class="ml-10">冰岛</span>
@@ -114,7 +114,10 @@ export default {
         groupOption: this.externalOpt.groupOption
       },
       focusFlag: false,
-      rowData: {}
+      rowData: {
+        companyName: '',
+        companyLogo: ''
+      }
     }
   },
   watch: {

@@ -75,8 +75,8 @@
                 </div>
               </div>
             </template>
-            <div>
-              <div class="collapse-content-box">
+            <template>
+              <div class="collapse-content-box" v-if="contactList.length">
                 <div class="container py-8" v-for="(item,index) in contactList" :key="index">
                   <div class="main px-16 py-12">
                     <div class="flex-middle space-between">
@@ -119,7 +119,8 @@
                   </div>
                 </div>
               </div>
-            </div>
+              <el-empty v-else :image-size="40"></el-empty>
+            </template>
           </CollapseWrap>
 
 
@@ -127,7 +128,7 @@
       </el-col>
     </el-row>
     <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData"/>
-    <CustomerContactDrawer :visible.sync="contactVisible" :contact-list="contactList"/>
+    <CustomerContactDrawer :visible.sync="contactVisible" :row-data="rowData" @onConfirm="onConfirm"/>
   </div>
 </template>
 
@@ -190,7 +191,8 @@ export default {
         })
         if (res.code === 200) {
           this.rowData = res.data
-          this.contactList = this.generateContactList(this.rowData?.contactList)
+          this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
+          this.contactList = this.rowData.contactList
         }
       } catch {
       }
@@ -231,6 +233,13 @@ export default {
       this.$copyText(value).then(() => {
         this.$message.success('复制成功')
       })
+    },
+    onConfirm() {
+      this.contactVisible = false
+      if (!this.customerId) {
+        return
+      }
+      this.getDetailData()
     },
     generateContactList(arr) {
       if (arr && !arr.length) {

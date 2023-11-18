@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-drawer
-      title="筛选条件"
-      :visible.sync="visible"
-      :direction="direction"
-      :append-to-body="true"
-      destroy-on-close
-      @close="handleClose">
+        title="筛选条件"
+        :visible.sync="visible"
+        :direction="direction"
+        :append-to-body="true"
+        destroy-on-close
+        @close="handleClose">
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
@@ -15,14 +15,14 @@
         </div>
       </template>
       <div class="container">
-        <CustomerContactCard :contact-list.sync="contactList"/>
+        <CustomerContactCard ref="contact-card" :contact-list.sync="rowData.contactList"/>
       </div>
 
       <!--   operate     -->
       <div class="drawer-operate">
         <div class="wrap flex-middle flex-end">
-          <el-button round @click="handleClose">取消</el-button>
-          <el-button type="primary" round>确认</el-button>
+          <el-button round :loading="btnLoading" @click="handleClose">取消</el-button>
+          <el-button type="primary" :loading="btnLoading" round @click="onConfirm">确认</el-button>
         </div>
       </div>
     </el-drawer>
@@ -31,6 +31,7 @@
 
 <script>
 import CustomerContactCard from "./CustomerContactCard.vue";
+import {editCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -39,9 +40,13 @@ export default {
       default: false,
       required: false,
     },
-    contactList: {
-      type: Array,
-      default: () => [],
+    rowData: {
+      type: Object,
+      default: () => {
+        return {
+          contactList: []
+        }
+      },
       required: true,
     }
   },
@@ -51,11 +56,38 @@ export default {
   data() {
     return {
       direction: 'rtl',
+      btnLoading: false
     }
   },
   methods: {
+    async editCustomerPrivate(data) {
+      this.btnLoading = true
+      try {
+        const res = await editCustomer({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('修改成功')
+          this.$emit('onConfirm')
+        }
+      } catch {
+      }
+    },
     handleClose() {
       this.$emit('update:visible', false)
+    },
+    onConfirm() {
+      let contactList = this.$refs['contact-card'].getInnerData()
+      contactList = contactList.map(val => {
+        delete val.show
+        val.primaryContactFlag = +val.primaryContactFlag
+        return val
+      })
+      let config = {
+        ...this.rowData,
+        contactList
+      }
+      this.editCustomerPrivate(config)
     },
   }
 }
