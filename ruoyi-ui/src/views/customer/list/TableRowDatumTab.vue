@@ -7,16 +7,16 @@
             <div>主要联系人信息</div>
             <div>
               <el-tooltip content="添加/编辑">
-                <i class="el-icon-edit pointer" @click="contactVisible=true"></i>
+                <i class="el-icon-edit pointer" @click.stop="contactVisible=true"></i>
               </el-tooltip>
             </div>
           </div>
         </template>
         <div class="collapse-content-box">
-          <div class="container py-8" v-for="(item,index) in contactList" :key="index">
+          <div class="container py-8">
             <div class="main px-16 py-12">
               <div class="flex-middle space-between">
-                <span class="fs-14 bold">测试</span>
+                <span class="fs-14 bold">{{ contactRow.nickName }}</span>
                 <el-row type="flex" :gutter="8">
                   <el-col>
                     <el-tooltip placement="top" content="往来邮件">
@@ -30,33 +30,48 @@
                   </el-col>
                 </el-row>
               </div>
-              <div class="fs-14 my-10 flex-start flex-wrap" v-show="item.checked">
-                <div class="wrap">
-                  <div>邮箱</div>
-                  <div class="py-10 email-copy flex-middle">
-                    wangwu@163.com
-                    <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
+              <div class="fs-14 my-10 flex-start flex-wrap" v-show="contactRowChecked">
+                <template v-for="(contact,index) in contactFieldList">
+                  <div class="wrap"
+                       v-if="contactRow[contact.field] && !['socialPlatform','phone'].includes(contact.field)"
+                       :key="index">
+                    <div>{{ contact.name }}</div>
+                    <div class="flex-middle" :class="{'copy-text':contact.isCopy}">
+                            <span v-if="contact.mapValue">
+                              {{ contact.mapValue[contactRow[contact.field]] }}
+                            </span>
+                      <span v-else>
+                              {{ contactRow[contact.field] }}
+                            </span>
+                      <i v-if="contact.isCopy" class="el-icon-copy-document pl-4"
+                         @click="onCopy(contactRow[contact.field])"></i>
+                    </div>
                   </div>
-
-                </div>
-                <div class="wrap">
-                  <div>职级</div>
-                  <div class="py-10">普通职员</div>
-                </div>
-                <div class="wrap">
-                  <div>生日</div>
-                  <div class="py-10">10-18</div>
-                </div>
-                <div class="wrap">
-                  <div>性别</div>
-                  <div class="py-10">男</div>
-                </div>
+                  <div class="wrap" v-else-if="contactRow[contact.field]">
+                    <div>{{ contact.name }}</div>
+                    <div class="flex-column gap-10">
+                      <div class="flex-start" :class="{'copy-text': subItem[contact.childField[1]]}"
+                           v-for="(subItem,subIdx) in contactRow[contact.field]">
+                              <span :key="subIdx">
+                                {{ subItem[contact.childField[0]] || '---' }}
+                              </span>
+                        <span v-if="contact.field==='phone'">-</span>
+                        <span v-else class="pl-10"></span>
+                        <span>
+                                 {{ subItem[contact.childField[1]] || '---' }}
+                              </span>
+                        <i v-if="subItem[contact.childField[1]]" class="el-icon-copy-document pl-4"
+                           @click="onCopy(generateDiffCopy(contact.field,subItem[contact.childField[0]],subItem[contact.childField[1]]))"></i>
+                      </div>
+                    </div>
+                  </div>
+                </template>
               </div>
             </div>
             <div class="footer flex-middle flex-center fs-12 mt-10">
-            <span class="pointer" @click="onCollapseContact(item.id)">
-              {{ item.checked ? '收起' : '展开' }}
-              <i :class="item.checked ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i></span>
+            <span class="pointer" @click="contactRowChecked=!contactRowChecked">
+              {{ contactRowChecked ? '收起' : '展开' }}
+              <i :class="contactRowChecked ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i></span>
             </div>
           </div>
         </div>
@@ -183,7 +198,7 @@
         </div>
       </CollapseWrap>
     </el-row>
-    <CustomerContactDrawer :visible.sync="contactVisible"/>
+    <CustomerContactDrawer :visible.sync="contactVisible" :row-data="row" @onConfirm="onConfirmContact"/>
   </div>
 </template>
 
@@ -193,6 +208,8 @@ import CustomerContactDrawer from "./CustomerContactDrawer.vue";
 import CellOperate from "./CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap";
 import Vue from 'vue'
+import {generateMapKey} from "@/utils/tools";
+import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 
 export default {
   props: {
@@ -200,7 +217,8 @@ export default {
       type: Object,
       default: () => {
         return {
-          focusFlag: false
+          focusFlag: false,
+          contactList: {}
         }
       },
       required: false
@@ -218,11 +236,27 @@ export default {
   components: {TableNext, CustomerContactDrawer, CollapseWrap, CellOperate},
   data() {
     return {
-      contactList: [
-        {
-          id: 1,
-          checked: true
-        },
+      contactRow: {
+        nickName: '',
+        email: '',
+        rank: '',
+        position: '',
+        birthday: '',
+        sex: '',
+        avatarOrBusinessCard: '',
+        contactRemarks: '',
+      },
+      contactRowChecked: false,
+      contactFieldList: [
+        {field: 'email', name: '邮箱', isCopy: true},
+        {field: 'socialPlatform', name: '社交平台', isCopy: true, childField: ['type', 'account']},
+        {field: 'phone', name: '手机号', isCopy: true, childField: ['phone_prefix', 'phone']},
+        {field: 'rank', name: '职级', isCopy: false, mapValue: generateMapKey(rankOption)},
+        {field: 'position', name: '职位', isCopy: false},
+        {field: 'birthday', name: '生日', isCopy: false},
+        {field: 'sex', name: '性别', isCopy: false, mapValue: generateMapKey(sexRadio)},
+        {field: 'avatarOrBusinessCard', name: '头像/名片', isCopy: false},
+        {field: 'contactRemarks', name: '联系人备注', isCopy: false}
       ],
       usuallyInfo: [
         {
@@ -501,7 +535,7 @@ export default {
           label: '客群',
         },
       ],
-      contactVisible: false
+      contactVisible: false,
     }
   },
   watch: {
@@ -521,25 +555,20 @@ export default {
           }
           return val
         })
-
         this.otherInfo.map(val => {
           val.value = newVal[val.field]
           return val
         })
+        if (newVal.contactList && newVal.contactList?.length) {
+          this.contactRow = newVal.contactList[0]
+        }
+
       },
       deep: true,
       immediate: true,
     }
   },
   methods: {
-    onCollapseContact(id) {
-      this.contactList.map(val => {
-        if (val.id === id) {
-          val.checked = !val.checked
-        }
-        return val
-      })
-    },
     onShowForm(listType, field, bool) {
       this[listType].map(val => {
         if (val.field === field) {
@@ -563,6 +592,16 @@ export default {
       this.$copyText(value).then(() => {
         this.$message.success('复制成功')
       })
+    },
+    onConfirmContact() {
+      this.contactVisible = false
+      this.$emit('reload')
+    },
+    generateDiffCopy(type, firstVal, secondVal) {
+      if (type === 'phone') {
+        return `${firstVal}-${secondVal}`
+      }
+      return secondVal
     },
   }
 
@@ -590,7 +629,7 @@ export default {
       width: 50%;
       padding-top: 10px;
 
-      .email-copy {
+      .copy-text {
         cursor: pointer;
 
         > i {

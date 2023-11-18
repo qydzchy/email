@@ -2,7 +2,7 @@
   <div class="row-tabs">
     <el-tabs v-model="curTab" v-loading="cardLoading" :class="options.isTabSetHeight ?'tabs-height':''">
       <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
-        <component :row="row" :options="options" :is="tab.is"/>
+        <component :row="row" :options="options" :is="tab.is" @reload="reload"/>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -73,7 +73,11 @@ export default {
       cardLoading: false,
     }
   },
-  methods: {},
+  methods: {
+    reload(){
+      this.$emit('reload')
+    }
+  },
 }
 </script>
 

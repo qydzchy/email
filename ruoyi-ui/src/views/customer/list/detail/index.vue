@@ -94,6 +94,7 @@
                         </el-col>
                       </el-row>
                     </div>
+                    <!--          联系人详情          -->
                     <div class="fs-14 my-10 flex-column">
                       <template v-for="(contact,index) in contactFieldList">
                         <div class="wrap"
@@ -219,7 +220,6 @@ export default {
         if (res.code === 200) {
           this.rowData = res.data
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
-          console.log(this.rowData.contactList)
           this.contactList = this.rowData.contactList
         }
       } catch {

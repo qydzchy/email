@@ -65,7 +65,7 @@
                 </el-select>
               </el-col>
               <el-col :span="13">
-                <el-input v-model="contact.phone" placeholder="请输入"/>
+                <el-input v-model="contact.phone" type="number" placeholder="请输入"/>
               </el-col>
               <el-col :span="3" class="flex-middle">
                 <el-tooltip placement="top" content="删除">
@@ -105,9 +105,9 @@
             <el-form-item label="头像/名片">
               <el-row style="width:100%"/>
               <image-upload
-                :value.sync="item.avatarOrBusinessCard"
-                :limit="1"
-                :isShowTip="false"
+                  :value.sync="item.avatarOrBusinessCard"
+                  :limit="1"
+                  :isShowTip="false"
               >
               </image-upload>
             </el-form-item>
@@ -230,7 +230,7 @@ export default {
     },
     onAdd(type) {
       this.formList.map(val => {
-        val[type].push({
+        val[type].unshift({
           id: +new Date(),
         })
         return val
@@ -245,7 +245,16 @@ export default {
     getInnerData() {
       let innerData = JSON.parse(JSON.stringify(this.formList))
       innerData.map(val => {
+        delete val.id
+        val.socialPlatform = val.socialPlatform.map(platform => {
+          delete platform.id
+          return platform
+        })
         val.socialPlatform = JSON.stringify(val.socialPlatform)
+        val.phone = val.phone.map(phone => {
+          delete phone.id
+          return phone
+        })
         val.phone = JSON.stringify(val.phone)
         return val
       })
@@ -302,6 +311,14 @@ export default {
     height: 40px;
     color: rgba(104, 108, 115);
     background-color: rgba(247, 248, 251);
+  }
+
+  ::v-deep .el-input__inner {
+    line-height: 1px !important; // 解决光标漂移问题
+
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
   }
 
 }
