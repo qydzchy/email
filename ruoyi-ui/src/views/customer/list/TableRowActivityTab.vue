@@ -30,7 +30,7 @@
             </el-row>
             <el-button round size="small" slot="reference">选择模板</el-button>
           </el-popover>
-          <el-button v-if="!scheduleList.length" round size="small" @click="dialogSchedule=true">添加日程</el-button>
+          <el-button v-if="!scheduleList.length && options.isShowSchedule" round size="small" @click="dialogSchedule=true">添加日程</el-button>
         </div>
 
       </div>

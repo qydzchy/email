@@ -80,7 +80,7 @@
                 <div class="container py-8" v-for="(item,index) in contactList" :key="index">
                   <div class="main px-16 py-12">
                     <div class="flex-middle space-between">
-                      <span class="fs-14 bold">{{item.nickName}}</span>
+                      <span class="fs-14 bold">{{ item.nickName }}</span>
                       <el-row type="flex" :gutter="8">
                         <el-col>
                           <el-tooltip placement="top" content="往来邮件">
@@ -98,7 +98,7 @@
                       <div class="wrap">
                         <div>邮箱</div>
                         <div class="py-10 email-copy flex-middle">
-                         {{item.email}}
+                          {{ item.email }}
                           <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
                         </div>
 
@@ -127,7 +127,7 @@
       </el-col>
     </el-row>
     <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData"/>
-    <CustomerContactDrawer :visible.sync="contactVisible"/>
+    <CustomerContactDrawer :visible.sync="contactVisible" :contact-list="contactList"/>
   </div>
 </template>
 
@@ -165,9 +165,7 @@ export default {
         }
       ],
       contactList: [],
-      contactFieldList:{
-
-      },
+      contactFieldList: {},
       contactSearchValue: '',
       contactSearch: false,
       contactVisible: false,

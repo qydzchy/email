@@ -242,8 +242,6 @@ export default {
               delete val.id
               return val
             })
-
-
             this.addCustomerPrivate(data)
           } else {
             this.editCustomerPrivate(data)

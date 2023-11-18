@@ -15,7 +15,7 @@
         </div>
       </template>
       <div class="container">
-        <CustomerContactCard :contact-list="[]"/>
+        <CustomerContactCard :contact-list.sync="contactList"/>
       </div>
 
       <!--   operate     -->
@@ -38,6 +38,11 @@ export default {
       type: Boolean,
       default: false,
       required: false,
+    },
+    contactList: {
+      type: Array,
+      default: () => [],
+      required: true,
     }
   },
   components: {
