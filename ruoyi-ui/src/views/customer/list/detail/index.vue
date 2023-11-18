@@ -80,7 +80,7 @@
                 <div class="container py-8" v-for="(item,index) in contactList" :key="index">
                   <div class="main px-16 py-12">
                     <div class="flex-middle space-between">
-                      <span class="fs-14 bold">测试</span>
+                      <span class="fs-14 bold">{{item.nickName}}</span>
                       <el-row type="flex" :gutter="8">
                         <el-col>
                           <el-tooltip placement="top" content="往来邮件">
@@ -98,7 +98,7 @@
                       <div class="wrap">
                         <div>邮箱</div>
                         <div class="py-10 email-copy flex-middle">
-                          wangwu@163.com
+                         {{item.email}}
                           <i class="el-icon-copy-document pl-4" @click="onCopy('wangwu@163.com')"></i>
                         </div>
 
@@ -164,12 +164,10 @@ export default {
           show: false
         }
       ],
-      contactList: [
-        {
-          id: 1,
-          checked: true
-        },
-      ],
+      contactList: [],
+      contactFieldList:{
+
+      },
       contactSearchValue: '',
       contactSearch: false,
       contactVisible: false,
@@ -194,6 +192,7 @@ export default {
         })
         if (res.code === 200) {
           this.rowData = res.data
+          this.contactList = this.generateContactList(this.rowData?.contactList)
         }
       } catch {
       }
@@ -233,6 +232,17 @@ export default {
       }
       this.$copyText(value).then(() => {
         this.$message.success('复制成功')
+      })
+    },
+    generateContactList(arr) {
+      if (arr && !arr.length) {
+        return []
+      }
+      return arr.map(val => {
+        val.phone = val.phone ? JSON?.parse(val.phone) : []
+        console.log(val.phone)
+        val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
+        return val
       })
     },
     formatMonthAndDay,

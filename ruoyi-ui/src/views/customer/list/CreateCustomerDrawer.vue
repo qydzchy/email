@@ -224,13 +224,12 @@ export default {
           let contactList = this.$refs['contact-card'].getInnerData()
           contactList = contactList.map(val => {
             delete val.show
-            delete val.id
             val.primaryContactFlag = +val.primaryContactFlag
             return val
           })
           const customerForm = this.customerForm.formData()
           const otherForm = this.customerOtherForm.formData()
-          const data = {
+          let data = {
             ...customerForm,
             ...otherForm,
             contactList,
@@ -238,7 +237,13 @@ export default {
             rating: +customerForm.rating,
             countryRegion: customerForm.countryRegion?.join('/') || undefined
           }
-          if (!data.id) {
+          if (!this.row.id) {
+            data.contactList = data.contactList.map(val => {
+              delete val.id
+              return val
+            })
+
+
             this.addCustomerPrivate(data)
           } else {
             this.editCustomerPrivate(data)

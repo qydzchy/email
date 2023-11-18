@@ -304,6 +304,7 @@ export default {
         3: '会面',
         4: '社交平台',
       },
+      onceReq:true
     }
   },
   mounted() {
@@ -312,10 +313,11 @@ export default {
   watch: {
     row: {
       handler(newVal) {
-        if (newVal?.customerId) {
+        if (newVal?.customerId && this.onceReq) {
           this.getScheduleList()
           this.getRecordList()
           this.getFollowPerson()
+          this.onceReq = false
         }
       },
       deep: true,
