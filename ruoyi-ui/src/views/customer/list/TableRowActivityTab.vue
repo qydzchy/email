@@ -84,7 +84,7 @@
                 <div style="width: 400px">内容</div>
               </template>
               <template #reference>
-                <div class="flex-middle" style="width: 100%">
+                <div class="flex-middle" style="width: 100%" @click="showScheduleDialog(schedule)">
                   <div class="circle" :style="{color:schedule.color}"></div>
                   <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
                   <span class="content flex1">{{ schedule.scheduleContent }}</span>
@@ -243,7 +243,7 @@
           @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
     </template>
     <template>
-      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="row"
+      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="scheduleRow"
                       @onConfirm="onScheduleConfirm"/>
     </template>
   </div>
@@ -307,6 +307,7 @@ export default {
         4: '社交平台',
       },
       rowData: {},
+      sxcheduleRow: {},
       onceReq: true
     }
   },
@@ -382,6 +383,7 @@ export default {
       } catch {
       }
     },
+    // 处理人员
     generatePerson(id) {
       let personName = ''
       this.followContactList.forEach(val => {
@@ -407,6 +409,10 @@ export default {
         }
       } catch {
       }
+    },
+    showScheduleDialog(row) {
+      this.scheduleRow = row
+      this.dialogSchedule = true
     },
     chooseTemplateText(text) {
       if (!this.showWriteFollow) {
