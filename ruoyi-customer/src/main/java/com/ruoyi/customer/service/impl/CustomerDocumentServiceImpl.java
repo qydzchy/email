@@ -87,6 +87,7 @@ public class CustomerDocumentServiceImpl implements ICustomerDocumentService
             customerDocument.setUpdateId(userId);
             customerDocument.setUpdateBy(userName);
             customerDocument.setUpdateTime(DateUtils.getNowDate());
+            customerDocumentList.add(customerDocument);
 
             File directory = new File(uploadDirectory);
             if (!directory.exists()) {
