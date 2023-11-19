@@ -57,7 +57,7 @@
             <TreeSelectNext
               :default-props="defaultProps"
               :tree-data="memberOption"
-              :echo-data.sync="poolRuleFormSecond.customerSegmentId"
+              :echo-data.sync="poolRuleFormSecond.segmentIdList"
               :disabled-list="disabledList"
               :disabled-key="disabledKey"
               echo-name="nickName"
@@ -122,7 +122,7 @@ import {mapState} from "vuex";
 const initPoolRuleForm2 = {
   id: '',
   name: '',
-  customerSegmentId: [],
+  segmentIdList: [],
   days: 1,
   type: 1,
   startTime: ''
@@ -322,7 +322,7 @@ export default {
       try {
         const res = await rulesAdd({
           name: row?.name,
-          customerSegmentId: row?.customerSegmentId.join(''),
+          segmentIdList: row?.segmentIdList,
           days: row?.days,
           type: row?.type,
           startTime: row?.startTime
