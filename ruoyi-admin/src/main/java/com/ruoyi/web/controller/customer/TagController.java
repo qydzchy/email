@@ -46,6 +46,10 @@ public class TagController extends BaseController
     @GetMapping("/list")
     public AjaxResult list(Integer type)
     {
+        if (type == null) {
+            throw new ServiceException("类型不能为空");
+        }
+
         return success(tagService.list(type));
     }
 

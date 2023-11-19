@@ -83,6 +83,12 @@ public class TagServiceImpl implements ITagService
     @Override
     public int updateTag(Tag tag)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        tag.setUpdateId(userId);
+        tag.setUpdateBy(username);
         tag.setUpdateTime(DateUtils.getNowDate());
         return tagMapper.updateTag(tag);
     }
