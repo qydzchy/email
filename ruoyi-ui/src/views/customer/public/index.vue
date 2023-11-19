@@ -26,8 +26,8 @@
       <!--        />-->
       <!--      </div>-->
     </div>
-    <div class="mt-20">
-      <TableNext :list="list" :columns="columns" :extra-option="{height:'70vh'}" :paginate-option="paginateOption"/>
+    <div class="table-list mt-20">
+      <TableNext :list="list" :columns="columns" :extra-option="{height:'68vh'}" :paginate-option="paginateOption"/>
     </div>
     <CreatePublicCustomerDrawer :visible.sync="publicDrawerVisible" :index-opt="indexOpt"/>
   </div>
@@ -37,8 +37,10 @@
 import TableNext from "@/components/TableNext/index.vue";
 import TreeSelect from "@riophae/vue-treeselect";
 import CreatePublicCustomerDrawer from "./CreateCustomerDrawer.vue";
+import CellOperate from './CellOperate.vue'
+import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
-import {getPublicLeadsList} from "@/api/customer/publicleads";
+import {editFocusFlagCustomer, getPublicLeadsList} from "@/api/customer/publicleads";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
@@ -72,45 +74,84 @@ export default {
           label: '公司名称',
           field: 'companyName',
           fixed: 'left',
+          align: 'left',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近跟进',
-          field: 'nearly',
+          field: 'originalFollowUp',
+          align: 'left',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '最近动态',
           field: 'companyName',
-          render: (_row, field) => EmptyStr(field),
+          align: 'left',
+          render: (row, field, _scope) => {
+            return <CellOperate
+                text={field?.followUpContent}
+                showEditIcon={false}
+                showCopyIcon={false}
+                on={{
+                  click: () => this.onCellClick(row)
+                }}
+            >
+              <div slot="content" class="pointer">
+                {field?.followUpContent || '---'}
+              </div>
+            </CellOperate>
+          }
         }, {
           label: '原跟进人',
-          field: 'contactName',
+          field: 'originalFollowUp',
           render: (_row, field) => EmptyStr(field),
-        }, {
+        },
+        {
           label: '国家地区',
-          field: 'email',
-          render: (_row, field) => EmptyStr(field),
-        }, {
+          field: 'countryRegion',
+          align: 'left',
+          width: '240',
+          render: (row, field, scope) => {
+            const {rowId, fieldName, showEditIcon} = this.tableCell
+            const propName = scope.column.property
+            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+                showForm={isShowForm}
+                type="country"
+                curValue={field}
+                text={field}
+                visible={isShow}
+                on={{
+                  onEdit: () => this.onCellEdit(row?.id, propName),
+                  click: () => this.onCellClick(row),
+                  onBlur: () => this.onBlur(),
+                }}
+            >
+            </CellOperate>
+          }
+        },
+        {
           label: '客户类型',
           field: 'phone',
           render: (_row, field) => EmptyStr(field),
-        }, {
+        },
+        {
           label: '客户评分',
-          field: 'telOrigin',
+          field: 'rating',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近联系时间',
-          field: 'area',
+          field: 'lastContactedAt',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '时区',
-          field: 'followMan',
+          field: 'timezone',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '社交平台',
-          field: 'department',
+          field: 'contact',
           render: (_row, field) => EmptyStr(field),
         }
       ],
@@ -120,6 +161,13 @@ export default {
         currentPage: 1,
         pageSize: 20,
         pageSizes: [10, 20, 50, 100]
+      },
+      // 行内容编辑
+      tableCell: {
+        rowId: '',
+        showEditIcon: false,
+        tempValue: '',
+        fieldName: '',
       },
       menuOptions: [],
       searchQuery: {
@@ -152,7 +200,8 @@ export default {
           this.tableLoading = false
         })
         if (res.code === 200) {
-          this.list = res.data
+          this.list = res.rows
+          this.paginateOption.total = res.total
         }
       } catch {
       }
@@ -184,6 +233,33 @@ export default {
       } catch {
       }
     },
+    async onCollageIcon(id, scope) {
+      try {
+        const res = await editFocusFlagCustomer({id})
+        if (res.code === 200) {
+          const focusFlog = !this.list[scope.$index].focusFlag
+          this.$message.success(focusFlog ? '关注成功' : '取消关注成功')
+          this.$set(this.list, scope.$index, {...scope.row, focusFlag: focusFlog})
+        }
+      } catch {
+      }
+
+    },
+    onCellClick(row) {
+      this.rowDrawerData = row
+      this.rowDrawerVisible = true
+    },
+    onCellEdit(rowId, field) {
+      this.tableCell.tempValue = this.list.find(val => val.id === rowId)[field]
+      this.tableCell.fieldName = field
+      this.curEditId = rowId
+    },
+    onBlur() {
+      this.confirmInput()
+    },
+    onInput(value, scope, field) {
+      this.$set(this.list, scope.$index, {...scope.row, [field]: value})
+    },
     onShowDrawer() {
       this.publicDrawerVisible = true
     },
@@ -200,6 +276,28 @@ export default {
 .page-customer-public {
   .line {
     border-bottom: 1px solid #e6e6e6;
+  }
+
+  .table-list {
+    ::v-deep .follow-cell {
+      > .cell {
+        padding: 0;
+      }
+
+      .follow-icon > i {
+        &:hover {
+          color: red;
+        }
+      }
+
+      .follow-icon-active > svg {
+        color: red;
+
+        &:hover {
+          color: unset;
+        }
+      }
+    }
   }
 
   ::v-deep .el-dropdown {

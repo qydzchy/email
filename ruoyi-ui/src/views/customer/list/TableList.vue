@@ -18,7 +18,8 @@
             :columns="columns"
             :extra-option="extraOption"
             :extra-event="extraEvent"
-            :paginate-option="paginateOption"/>
+            :paginate-option="paginateOption"
+            :paginate-event="paginateEvent"/>
       </div>
       <TableRowDrawer
           :row="rowDrawerData"
@@ -73,6 +74,10 @@ export default {
         currentPage: 1,
         pageSize: 10,
         pageSizes: [10, 20, 50, 100],
+      },
+      paginateEvent: {
+        'size-change': (value) => this.handlePagination('size', value),
+        'current-change': (value) => this.handlePagination('current', value)
       },
       list: [],
       columns: [
@@ -181,7 +186,8 @@ export default {
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
-        }, {
+        },
+        {
           label: '国家地区',
           field: 'countryRegion',
           align: 'left',
@@ -205,13 +211,15 @@ export default {
             >
             </CellOperate>
           }
-        }, {
+        },
+        {
           label: '客户类型',
           field: 'phone',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
-        }, {
+        },
+        {
           label: '客户评分',
           field: 'rating',
           align: 'left',
@@ -345,8 +353,15 @@ export default {
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)
     },
+    handlePagination(type, value) {
+      if (type === 'size') {
+        this.paginateOption = {...this.paginateOption, pageSize: value}
+      } else if (type === 'current') {
+        this.paginateOption = {...this.paginateOption, currentPage: value}
+      }
+      this.getList(this.segmentId)
+    },
     reloadList() {
-      console.log('reload')
       this.getList(this.segmentId)
     }
   }
