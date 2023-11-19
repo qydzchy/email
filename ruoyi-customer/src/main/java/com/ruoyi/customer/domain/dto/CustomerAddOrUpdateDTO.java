@@ -44,16 +44,6 @@ public class CustomerAddOrUpdateDTO {
     /** 阶段ID */
     private Long stageId;
 
-    /**
-     * 标签
-     */
-    private List<Integer> tagIdList;
-
-    /**
-     * 来源
-     */
-    private List<Integer> sourceIdList;
-
     /** 客户星级 */
     private Integer rating;
 

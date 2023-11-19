@@ -206,5 +206,5 @@ public interface ICustomerService
      * @param file
      * @return
      */
-    boolean importCustomer(MultipartFile file);
+    boolean importCustomer(Integer importType, MultipartFile file);
 }

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.customer.mapper.CustomerImportMapper">
+
+    <resultMap type="CustomerImport" id="CustomerImportResult">
+        <result property="id"    column="id"    />
+        <result property="importType"    column="import_type"    />
+        <result property="importStatus"    column="import_status"    />
+        <result property="expectedImportCount"    column="expected_import_count"    />
+        <result property="successImportCount"    column="success_import_count"    />
+        <result property="failedImportCount"    column="failed_import_count"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCustomerImportVo">
+        select id, import_type, import_status, expected_import_count, success_import_count, failed_import_count, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_import
+    </sql>
+
+    <select id="selectCustomerImportList" parameterType="CustomerImport" resultMap="CustomerImportResult">
+        <include refid="selectCustomerImportVo"/>
+        <where>
+            <if test="importType != null "> and import_type = #{importType}</if>
+            <if test="importStatus != null "> and import_status = #{importStatus}</if>
+            <if test="expectedImportCount != null "> and expected_import_count = #{expectedImportCount}</if>
+            <if test="successImportCount != null "> and success_import_count = #{successImportCount}</if>
+            <if test="failedImportCount != null "> and failed_import_count = #{failedImportCount}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+
+    <select id="selectCustomerImportById" parameterType="Long" resultMap="CustomerImportResult">
+        <include refid="selectCustomerImportVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from customer_customer_import
+    </select>
+
+    <select id="list" resultType="com.ruoyi.customer.domain.vo.CustomerImportListVO">
+        select id, import_type as importType, import_status as importStatus, expected_import_count as expectedImportCount, success_import_count as successImportCount, failed_import_count as failedImportCount, create_id as createId, create_by as createBy from customer_customer_import
+        order by create_time desc
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <insert id="insertCustomerImport" parameterType="CustomerImport" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_customer_import
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="importType != null">import_type,</if>
+            <if test="importStatus != null">import_status,</if>
+            <if test="expectedImportCount != null">expected_import_count,</if>
+            <if test="successImportCount != null">success_import_count,</if>
+            <if test="failedImportCount != null">failed_import_count,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="importType != null">#{importType},</if>
+            <if test="importStatus != null">#{importStatus},</if>
+            <if test="expectedImportCount != null">#{expectedImportCount},</if>
+            <if test="successImportCount != null">#{successImportCount},</if>
+            <if test="failedImportCount != null">#{failedImportCount},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomerImport" parameterType="CustomerImport">
+        update customer_customer_import
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="importType != null">import_type = #{importType},</if>
+            <if test="importStatus != null">import_status = #{importStatus},</if>
+            <if test="expectedImportCount != null">expected_import_count = #{expectedImportCount},</if>
+            <if test="successImportCount != null">success_import_count = #{successImportCount},</if>
+            <if test="failedImportCount != null">failed_import_count = #{failedImportCount},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomerImportById" parameterType="Long">
+        delete from customer_customer_import where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerImportByIds" parameterType="String">
+        delete from customer_customer_import where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

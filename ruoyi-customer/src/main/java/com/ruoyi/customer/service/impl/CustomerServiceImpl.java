@@ -5,8 +5,11 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -82,6 +85,8 @@ public class CustomerServiceImpl implements ICustomerService
     private PublicleadsClaimLimitMapper publicleadsClaimLimitMapper;
     @Resource
     private LimitsMapper limitsMapper;
+    @Resource
+    private CustomerImportMapper customerImportMapper;
     @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
@@ -1142,11 +1147,27 @@ public class CustomerServiceImpl implements ICustomerService
     }
 
     @Override
-    public boolean importCustomer(MultipartFile file) {
-        List<CustomerAddOrUpdateDTO> customerAddOrUpdateDTOList = new ArrayList<>();
+    public boolean importCustomer(Integer importType, MultipartFile file) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        CustomerImport customerImport = new CustomerImport();
+        customerImport.setImportType(importType);
+        customerImport.setImportStatus(CustomerImportStatusEnum.IN_PROGRESS.getStatus());
+        customerImport.setExpectedImportCount(0);
+        customerImport.setSuccessImportCount(0);
+        customerImport.setFailedImportCount(0);
+        customerImport.setCreateId(userId);
+        customerImport.setCreateBy(username);
+        customerImport.setCreateTime(DateUtils.getNowDate());
+        customerImport.setUpdateId(userId);
+        customerImport.setUpdateBy(username);
+        customerImport.setUpdateTime(DateUtils.getNowDate());
+        customerImportMapper.insertCustomerImport(customerImport);
+
         List<Map<String, Object>> mapList = new ArrayList<>();
-
-
+        int importStatus = CustomerImportStatusEnum.FAILURE.getStatus();
         boolean isFirstRow = true; // 标志，判断是否是第一行
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
@@ -1167,22 +1188,172 @@ public class CustomerServiceImpl implements ICustomerService
 
             // 查询存在的标签ID
             Map<String, Long> tagMap = getTagMap(mapList);
-            // 查询存在的客户来源ID
-            Map<String, Long> sourceMap = getSourceMap(mapList);
             // 查询存在的客户阶段
             Map<String, Long> stageMap = getStageMap(mapList);
+            // 查询存在的客户来源ID
+            Map<String, Long> sourceMap = getSourceMap(mapList);
 
             Map<Object, List<Map<String, Object>>> companyNameMap = mapList.stream().filter(map -> map.get("companyName") != null && !map.get("companyName").toString().equals("")).collect(Collectors.groupingBy(map -> map.get("companyName").toString()));
 
-            companyNameMap.forEach((companyName, contact) -> {
-
+            AtomicInteger expectedImportCount = new AtomicInteger();
+            AtomicInteger successImportCount = new AtomicInteger();
+            AtomicInteger failedImportCount = new AtomicInteger();
+            companyNameMap.forEach((companyName, contactMapList) -> {
+                CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(tagMap, stageMap, sourceMap, contactMapList);
+                try {
+                    insertCustomer(customerAddOrUpdateDTO);
+                    successImportCount.getAndIncrement();
+                } catch (Exception e) {
+                    failedImportCount.getAndIncrement();
+                }
+                expectedImportCount.getAndIncrement();
             });
 
+            importStatus = CustomerImportStatusEnum.SUCCESS.getStatus();
         } catch (IOException e) {
             log.error("获取excel数据异常{}", e);
         }
 
+        // 更新状态
+        customerImport.setImportStatus(importStatus);
+        customerImportMapper.updateCustomerImport(customerImport);
         return true;
+    }
+
+    /**
+     * 生成CustomerAddOrUpdateDTO对象
+     * @param contactMapList
+     * @return
+     */
+    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList) {
+        Map<String, Object> map = contactMapList.get(0);
+        String companyName = map.get("companyName") != null ? String.valueOf(map.get("companyName")) : null;
+        String shortName = map.get("shortName") != null ? String.valueOf(map.get("shortName")) : null;
+        String countryRegion = map.get("countryRegion") != null ? String.valueOf(map.get("countryRegion")) : null;
+        String tag = map.get("tag") != null ? String.valueOf(map.get("tag")) : null;
+        List<Long> tagIds = null;
+        if (StringUtils.isNotBlank(tag)) {
+            tagIds = new ArrayList<>();
+            String[] tagArr = tag.split(";");
+            for (String tagStr : tagArr) {
+                if (tagMap.containsKey(tagStr)) {
+                    Long tagId = tagMap.get(tagStr);
+                    tagIds.add(tagId);
+                }
+            }
+        }
+
+        Long stageId = null;
+        String stageName = map.get("stage") != null ? String.valueOf(map.get("stage")) : null;
+        if (StringUtils.isNotBlank(stageName)) {
+            stageId = stageMap.get(stageName);
+        }
+
+        List<Long> sourceIds = null;
+        String source = map.get("source") != null ? String.valueOf(map.get("source")) : null;
+        if (StringUtils.isNotBlank(source)) {
+            sourceIds = new ArrayList<>();
+            String[] sourceArr = source.split(";");
+            for (String sourceStr : sourceArr) {
+                if (sourceMap.containsKey(sourceStr)) {
+                    Long sourceId = sourceMap.get(sourceStr);
+                    sourceIds.add(sourceId);
+                }
+            }
+        }
+
+        String companyWebsite = map.get("companyWebsite") != null ? String.valueOf(map.get("companyWebsite")) : null;
+        String phonePrefix = null;
+        String phone = null;
+        String phoneStr = map.get("phone") != null ? String.valueOf(map.get("phone")) : null;
+        if (StringUtils.isBlank(phoneStr)) {
+            String[] split = phoneStr.split("-");
+            if (split.length == 2) {
+                phonePrefix = split[0];
+                phone = split[1];
+            } else {
+                phone = phoneStr;
+            }
+        }
+
+        String address = map.get("address") != null ? String.valueOf(map.get("address")) : null;
+        String companyRemarks = map.get("companyRemarks") != null ? String.valueOf(map.get("companyRemarks")) : null;
+
+        List<CustomerContactAddOrUpdateDTO> contactList = new ArrayList<>();
+        contactMapList.stream().forEach(contactMap -> {
+            String contactNickName = contactMap.get("contactNickName") != null ? String.valueOf(contactMap.get("contactNickName")) : null;
+            String contactEmail = contactMap.get("contactEmail") != null ? String.valueOf(contactMap.get("contactEmail")) : null;
+            String contactPhone = contactMap.get("contactPhone") != null ? String.valueOf(contactMap.get("contactPhone")) : null;
+            String facebook = contactMap.get("facebook") != null ? String.valueOf(contactMap.get("facebook")) : null;
+            String twitter = contactMap.get("twitter") != null ? String.valueOf(contactMap.get("twitter")) : null;
+            String linkedIn = contactMap.get("linkedIn") != null ? String.valueOf(contactMap.get("linkedIn")) : null;
+
+            JSONArray contactPhoneJsonArr = new JSONArray();
+            String[] contactPhoneArr = contactPhone.split(";");
+            for (String contactPhoneStr : contactPhoneArr) {
+                String[] arr = contactPhoneStr.split("-");
+                JSONObject jsonObj = new JSONObject();
+                if (arr.length == 2) {
+                    jsonObj.put("phone_prefix", arr[0]);
+                    jsonObj.put("phone", arr[1]);
+                } else {
+                    jsonObj.put("phone", arr[0]);
+                }
+                contactPhoneJsonArr.add(jsonObj);
+            }
+
+            JSONArray socialPlatformJsonArr = new JSONArray();
+            if (StringUtils.isNotBlank("facebook")) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("facebook", facebook);
+                socialPlatformJsonArr.add(jsonObj);
+            }
+
+            if (StringUtils.isNotBlank("twitter")) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("twitter", twitter);
+                socialPlatformJsonArr.add(jsonObj);
+            }
+
+            if (StringUtils.isNotBlank("linkedIn")) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("linkedIn", linkedIn);
+                socialPlatformJsonArr.add(jsonObj);
+            }
+            // 社交平台
+            String socialPlatform = !socialPlatformJsonArr.isEmpty() ? JSONObject.toJSONString(socialPlatformJsonArr) : null;
+            // 手机号码
+            String cPhone = !contactPhoneJsonArr.isEmpty() ? JSONObject.toJSONString(contactPhoneJsonArr) : null;
+            String position = contactMap.get("position") != null ? String.valueOf(contactMap.get("position")) : null;
+            Integer sex = contactMap.get("sex") != null ? Integer.parseInt(String.valueOf(contactMap.get("sex"))) : null;
+            String contactRemarks = contactMap.get("contactRemarks") != null ? String.valueOf(contactMap.get("contactRemarks")) : null;
+
+            CustomerContactAddOrUpdateDTO contact = new CustomerContactAddOrUpdateDTO();
+            contact.setNickName(contactNickName);
+            contact.setEmail(contactEmail);
+            contact.setSocialPlatform(socialPlatform);
+            contact.setPhone(cPhone);
+            contact.setPosition(position);
+            contact.setSex(sex);
+            contact.setContactRemarks(contactRemarks);
+            contactList.add(contact);
+        });
+
+        CustomerAddOrUpdateDTO customerAddOrUpdateDTO = new CustomerAddOrUpdateDTO();
+        customerAddOrUpdateDTO.setCompanyName(companyName);
+        customerAddOrUpdateDTO.setShortName(shortName);
+        customerAddOrUpdateDTO.setCountryRegion(countryRegion);
+        customerAddOrUpdateDTO.setTagIds(tagIds);
+        customerAddOrUpdateDTO.setStageId(stageId);
+        customerAddOrUpdateDTO.setSourceIds(sourceIds);
+        customerAddOrUpdateDTO.setCompanyWebsite(companyWebsite);
+        customerAddOrUpdateDTO.setPhonePrefix(phonePrefix);
+        customerAddOrUpdateDTO.setPhone(phone);
+        customerAddOrUpdateDTO.setAddress(address);
+        customerAddOrUpdateDTO.setCompanyRemarks(companyRemarks);
+        customerAddOrUpdateDTO.setContactList(contactList);
+
+        return customerAddOrUpdateDTO;
     }
 
     /**
