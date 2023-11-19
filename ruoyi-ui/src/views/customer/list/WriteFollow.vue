@@ -444,6 +444,7 @@ export default {
       this.$emit('onCancel')
     },
     async onConfirm() {
+      console.log(this.formData)
       const {
         id,
         followUpType,

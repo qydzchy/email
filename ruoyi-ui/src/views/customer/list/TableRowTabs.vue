@@ -5,6 +5,11 @@
         <component :row="row" :options="options" :is="tab.is" @reload="reload"/>
       </el-tab-pane>
     </el-tabs>
+    <div class="operate-history flex-middle pointer" @click="operateHistoryVisible=true">
+      <i class="el-icon-time fs-13"></i>
+      <span class="fs-12 pl-6">操作历史</span>
+    </div>
+    <CustomerOperateHistoryDrawer :visible.sync="operateHistoryVisible"/>
   </div>
 </template>
 
@@ -14,6 +19,7 @@ import TableRowDatumTab from "./TableRowDatumTab.vue";
 import TableRowTradeTab from "./TableRowTradeTab.vue";
 import TableRowTipsTab from "./TableRowTipsTab.vue";
 import TableRowDocTab from "./TableRowDocTab.vue";
+import CustomerOperateHistoryDrawer from "./CustomerOperateHistoryDrawer.vue";
 
 export default {
   props: {
@@ -38,7 +44,8 @@ export default {
     TableRowDatumTab,
     TableRowTradeTab,
     TableRowTipsTab,
-    TableRowDocTab
+    TableRowDocTab,
+    CustomerOperateHistoryDrawer
   },
   data() {
     return {
@@ -71,10 +78,11 @@ export default {
         },
       ],
       cardLoading: false,
+      operateHistoryVisible: false,
     }
   },
   methods: {
-    reload(){
+    reload() {
       this.$emit('reload')
     }
   },
@@ -83,6 +91,20 @@ export default {
 
 <style lang="scss" scoped>
 .row-tabs {
+  position: relative;
+
+  .operate-history {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    padding: 2px 6px;
+
+    &:hover {
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+  }
+
   ::v-deep .el-tabs__header {
     margin: 0 30px;
   }
