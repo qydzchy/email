@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="tabs mt-10">
-            <TableRowTabs :row="rowData" :options="options"/>
+            <TableRowTabs :row="rowData" :options="options" @reload="getDetailData"/>
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
@@ -141,6 +141,7 @@ export default {
         if (res.code === 200) {
           this.rowData = res.data
           this.rowData.customerId = this.rowData.id
+          this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
         }
       } catch (e) {
         console.error(e)
@@ -169,6 +170,16 @@ export default {
         this.getDetailData()
         this.$emit('load')
       }, 400)
+    },
+    generateContactList(arr) {
+      if (arr && !arr.length) {
+        return []
+      }
+      return arr.map(val => {
+        val.phone = val.phone ? JSON?.parse(val.phone) : []
+        val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
+        return val
+      })
     },
   }
 

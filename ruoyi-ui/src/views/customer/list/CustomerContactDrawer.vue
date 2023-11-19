@@ -47,7 +47,7 @@ export default {
           contactList: []
         }
       },
-      required: true,
+      required: false,
     }
   },
   components: {
@@ -84,7 +84,7 @@ export default {
         return val
       })
       let config = {
-        ...this.rowData,
+        id: this.rowData.id,
         contactList
       }
       this.editCustomerPrivate(config)

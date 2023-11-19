@@ -280,7 +280,6 @@ export default {
       }
       return arr.map(val => {
         val.phone = val.phone ? JSON?.parse(val.phone) : []
-        console.log(val.phone)
         val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
         return val
       })
