@@ -30,7 +30,9 @@
             </el-row>
             <el-button round size="small" slot="reference">选择模板</el-button>
           </el-popover>
-          <el-button v-if="!scheduleList.length && options.isShowSchedule" round size="small" @click="dialogSchedule=true">添加日程</el-button>
+          <el-button v-if="!scheduleList.length && options.isShowSchedule" round size="small"
+                     @click="dialogSchedule=true">添加日程
+          </el-button>
         </div>
 
       </div>
@@ -43,7 +45,7 @@
       </el-input>
     </div>
     <div class="mt-20" v-else>
-      <WriteFollow :row="row" :echoData="templateData" show-full-screen-icon @onFullScreen="templateVisible=true"
+      <WriteFollow :row="rowData" :echoData="templateData" show-full-screen-icon @onFullScreen="templateVisible=true"
                    @onCancel="onCancelWriteFollow" @onConfirm="onConfirmWriteFollow">
         <template #right>
           <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
@@ -304,7 +306,8 @@ export default {
         3: '会面',
         4: '社交平台',
       },
-      onceReq:true
+      rowData: {},
+      onceReq: true
     }
   },
   mounted() {
@@ -319,6 +322,12 @@ export default {
           this.getFollowPerson()
           this.onceReq = false
         }
+        let rowData = {
+          ...newVal,
+          rowId: newVal?.id
+        }
+        delete rowData.id
+        this.rowData = rowData
       },
       deep: true,
       immediate: true

@@ -120,7 +120,7 @@
 
     </el-row>
     <el-row class="py-10 bottom-line">
-      <CollapseWrap isCollapse :height="450">
+      <CollapseWrap isCollapse :height="360">
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">公司其他信息</div>
@@ -368,22 +368,22 @@ export default {
         },
       ],
       otherInfo: [
-        {
-          field: 'product',
-          label: '主营产品',
-        },
-        {
-          field: 'type',
-          label: '客户类型',
-        },
-        {
-          field: 'year',
-          label: '年采购额',
-        },
-        {
-          field: 'yx',
-          label: '采购意向',
-        },
+        // {
+        //   field: 'product',
+        //   label: '主营产品',
+        // },
+        // {
+        //   field: 'type',
+        //   label: '客户类型',
+        // },
+        // {
+        //   field: 'year',
+        //   label: '年采购额',
+        // },
+        // {
+        //   field: 'yx',
+        //   label: '采购意向',
+        // },
         {
           field: 'timezone',
           label: '时区',

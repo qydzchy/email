@@ -26,7 +26,6 @@
 
 <script>
 import {province, countryList} from '@/assets/data/countryData'
-import SvgIcon from '@/components/SvgIcon'
 
 export default {
   props: {
@@ -65,7 +64,7 @@ export default {
       return <div>
         {data.type !== 'parent'
             ? <div>
-              {data.svg && <SvgIcon icon-class={data.svg}/>}
+              {data.svg && <svg-icon icon-class={data.svg}/>}
               <span class="pl-4">{data.label}</span>
             </div>
             : <div>{data.label}</div>}
