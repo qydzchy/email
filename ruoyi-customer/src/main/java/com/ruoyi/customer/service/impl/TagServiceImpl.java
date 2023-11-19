@@ -49,6 +49,9 @@ public class TagServiceImpl implements ITagService
     @Override
     public List<Tag> selectTagList(Tag tag)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        tag.setCreateId(userId);
         return tagMapper.selectTagList(tag);
     }
 
@@ -130,6 +133,7 @@ public class TagServiceImpl implements ITagService
     public List<TagListVO> list(Integer type) {
         Tag tagParam = new Tag();
         tagParam.setType(type);
+        tagParam.setCreateId(SecurityUtils.getLoginUser().getUserId());
         tagParam.setDelFlag("0");
         List<Tag> tagList = tagMapper.selectTagList(tagParam);
 

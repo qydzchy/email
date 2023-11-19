@@ -24,13 +24,13 @@
 
     <select id="selectTagList" parameterType="Tag" resultMap="TagResult">
         <include refid="selectTagVo"/>
-        <where>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="color != null  and color != ''"> and color = #{color}</if>
-            <if test="type != null "> and type = #{type}</if>
-            <if test="createId != null "> and create_id = #{createId}</if>
-            <if test="updateId != null "> and update_id = #{updateId}</if>
-        </where>
+        where del_flag = '0'
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        <if test="type == null">
+            and (type = 1 or (type = 2 and create_id = #{createId}))
+        </if>
     </select>
 
     <select id="selectTagById" parameterType="Long" resultMap="TagResult">
