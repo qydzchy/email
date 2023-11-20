@@ -2,17 +2,17 @@
   <div>
     <div class="flex-middle space-between">
       <div class="fs-14 gray-text">
-        <span>我的客户数：8/100 (上限)</span>
-        <el-tooltip>
-          <template #content>
-            <div>
-              <p class="lineH-12">共享：0</p>
-              <p class="lineH-12">未共享：8</p>
-              <p class="lineH-12">(共享客户占0.5个名额，未共享客户占1个名额; 实际占客户上限数8个名额)</p>
-            </div>
-          </template>
-          <i class="el-icon-warning-outline ml-4"/>
-        </el-tooltip>
+        <span>我的客户数：{{ rowData.customerCount }}/{{ isCustomerLimit }}</span>
+<!--        <el-tooltip>-->
+<!--          <template #content>-->
+<!--            <div>-->
+<!--              <p class="lineH-12">共享：0</p>-->
+<!--              <p class="lineH-12">未共享：8</p>-->
+<!--              <p class="lineH-12">(共享客户占0.5个名额，未共享客户占1个名额; 实际占客户上限数8个名额)</p>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          <i class="el-icon-warning-outline ml-4"/>-->
+<!--        </el-tooltip>-->
       </div>
       <div class="flex-column middle-end">
         <div class="fs-15 gray-text">
@@ -70,8 +70,8 @@
         </div>
       </div>
     </div>
-    <div class="container px-24 py-24 gap-24">
-      <div class="card" v-for="(item,index) in dataList" :key="index">
+    <div class="container px-24 py-24 gap-24" v-if="rowData.customerPublicleadsRulesList.length">
+      <div class="card" v-for="(item,index) in rowData.customerPublicleadsRulesList" :key="index">
         <span class="bold">{{ item.title }}</span>
         <div class="flex-column gap-12 mt-12">
           <div class="fs-14">
@@ -87,7 +87,7 @@
               <div>
                 <div class="fs-16 white-color bold">生效客群：</div>
                 <ul class="tooltip-ul">
-                  <li v-for="(item,key) in item.group" :key="key">{{item}}</li>
+                  <li v-for="(item,key) in item.group" :key="key">{{ item }}</li>
                 </ul>
               </div>
             </template>
@@ -101,38 +101,44 @@
         </div>
       </div>
     </div>
+    <el-empty class="mt-50" v-else :image-size="100"/>
   </div>
 </template>
 
 <script>
+import {getPoolRuleList} from "@/api/customer/config";
+
 export default {
 
   data() {
     return {
-      dataList: [
-        {
-          title: '首次RFQ45天至少跟进一次', move: '45 天 未联系',
-          time: '2022-09-04',
-          group: ['首次RFQ客户', '样单客户',]
-        },
-        {
-          title: '首次RFQ45天至少跟进一次', move: '45 天 未联系',
-          time: '2022-09-04',
-          group: ['首次RFQ客户', '样单客户',]
-        },
-        {
-          title: '首次RFQ45天至少跟进一次', move: '45 天 未联系',
-          time: '2022-09-04',
-          group: ['首次RFQ客户', '样单客户',]
-        },
-        {
-          title: '首次RFQ45天至少跟进一次', move: '45 天 未联系',
-          time: '2022-09-04',
-          group: ['首次RFQ客户', '样单客户',]
-        },
-      ]
+      rowData: {
+        customerCount: 0,
+        type: null,
+        limits: null,
+        customerPublicleadsRulesList: []
+      },
     }
-  }
+  },
+  computed: {
+    isCustomerLimit() {
+      return this.rowData.type === 1 ? '无上限' :(this.rowData.limits && `${this.rowData.limits} (上限)` || 0)
+    }
+  },
+  mounted() {
+    this.getList()
+  },
+  methods: {
+    async getList() {
+      try {
+        const res = await getPoolRuleList()
+        if (res.code == 200) {
+          this.rowData = res.data
+        }
+      } catch {
+      }
+    }
+  },
 }
 </script>
 

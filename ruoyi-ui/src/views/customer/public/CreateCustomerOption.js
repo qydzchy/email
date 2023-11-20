@@ -130,10 +130,7 @@ const UsuallyInfoRule = [
         type: 'select',
         field: 'poolGroup',
         value: 1,
-        options: [
-            {value: 1, label: '公共公海分组'},
-            {value: 2, label: '公海2组'},
-        ],
+        options: [],
         validate: [
             {
                 required: true,
@@ -217,26 +214,26 @@ const UsuallyInfoRule = [
 ]
 
 const OtherInfoRule = [
-    {
-        title: '主营产品',
-        type: 'cascader',
-        field: 'product',
-    },
-    {
-        title: '客户类型',
-        type: 'select',
-        field: 'type',
-    },
-    {
-        title: '年采购额',
-        type: 'select',
-        field: 'year',
-    },
-    {
-        title: '采购意向',
-        type: 'select',
-        field: 'yx',
-    },
+    // {
+    //     title: '主营产品',
+    //     type: 'cascader',
+    //     field: 'product',
+    // },
+    // {
+    //     title: '客户类型',
+    //     type: 'select',
+    //     field: 'type',
+    // },
+    // {
+    //     title: '年采购额',
+    //     type: 'select',
+    //     field: 'year',
+    // },
+    // {
+    //     title: '采购意向',
+    //     type: 'select',
+    //     field: 'yx',
+    // },
     {
         title: '时区',
         type: 'select',

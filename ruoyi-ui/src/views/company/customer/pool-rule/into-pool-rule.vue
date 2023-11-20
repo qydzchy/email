@@ -54,14 +54,17 @@
         </el-form-item>
         <el-form-item label="生效客群">
           <div class="form-item">
-            <TreeSelectNext
-                :default-props="defaultProps"
-                :tree-data="memberOption"
-                :echo-data.sync="poolRuleFormSecond.segmentIdList"
-                :disabled-list="disabledList"
-                :disabled-key="disabledKey"
-                echo-name="nickName"
-            />
+            <el-select-tree
+                style="width: 100%"
+                v-model="poolRuleFormSecond.segmentIdList"
+                multiple
+                clearable
+                filterable
+                show-checkbox
+                collapse-tags
+                :data="segmentOption"
+                :props="defaultProps"
+                :default-expand-all="true"/>
           </div>
         </el-form-item>
         <el-form-item label="客户状态" required>
@@ -110,15 +113,15 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
 import TableNext from "@/components/TableNext/index.vue";
-import {EmptyStr} from "@/utils/tools";
 import DelPopover from "@/views/company/customer/DelPopover.vue";
-import {rulesAdd, rulesDelete, rulesEdit, rulesList} from "@/api/company/poolRule";
 import TreeSelect from "@riophae/vue-treeselect";
 import TreeSelectNext from "@/components/TreeSelectNext/index.vue";
-import {listDeptUsersTree} from "@/api/system/dept";
-import {mapState} from "vuex";
+import {EmptyStr} from "@/utils/tools";
 import {deepClone} from "@/utils";
+import {getSegmentList} from "@/api/customer/segment";
+import {rulesAdd, rulesDelete, rulesEdit, rulesList} from "@/api/company/poolRule";
 
 const initPoolRuleForm2 = {
   id: '',
@@ -165,11 +168,7 @@ export default {
           label: '生效客群',
           field: 'segmentNames',
           showOverflowTooltip: true,
-          render: (_row, field) => {
-            return field?.length ?
-                <div>{field.join(',')}</div>
-                : '---'
-          },
+          render: (_row, field) => EmptyStr(field)
         },
         {
           label: '开始时间',
@@ -223,11 +222,10 @@ export default {
       },
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        value: 'id'
       },
-      memberOption: [],
-      disabledList: [],
-      disabledKey: 'id',
+      segmentOption: [],
       tableLoading: false,
       btnLoading: false,
     }
@@ -239,7 +237,7 @@ export default {
   },
   mounted() {
     this.getList()
-    this.getCommonTree()
+    this.getPoolRuleSegmentList()
     this.$watch('settings', (newVal) => {
       const {advanceDays, advanceFlag} = newVal
       this.poolRuleForm = {
@@ -256,22 +254,17 @@ export default {
           this.tableLoading = false
         })
         if (res.code === 200) {
-          let disabledList = []
           this.poolRuleList = res.data
-          this.poolRuleList.forEach(val => {
-            disabledList.push(val.userId)
-          })
-          this.disabledList = disabledList
         }
       } catch {
         this.tableLoading = false
       }
     },
-    async getCommonTree() {
+    async getPoolRuleSegmentList() {
       try {
-        const res = await listDeptUsersTree()
+        const res = await getSegmentList({createId: 1})
         if (res.code === 200) {
-          this.memberOption = res.data
+          this.segmentOption = res.data
         }
       } catch {
       }

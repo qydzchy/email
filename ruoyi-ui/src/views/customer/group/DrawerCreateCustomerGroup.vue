@@ -250,7 +250,9 @@ export default {
       }
     },
     addSecondCustomer() {
-      this.formData.children.push({...this.generateInitValue()})
+      let data = {...this.generateInitValue()}
+      delete data.visibilityScope
+      this.formData.children.push({...data})
     },
     onUpdate(value) {
       this.formData = Object.assign({}, this.formData, value)

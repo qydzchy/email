@@ -29,7 +29,7 @@
     <div class="table-list mt-20">
       <TableNext :list="list" :columns="columns" :extra-option="{height:'68vh'}" :paginate-option="paginateOption"/>
     </div>
-    <CreatePublicCustomerDrawer :visible.sync="publicDrawerVisible" :index-opt="indexOpt"/>
+    <CreatePublicCustomerDrawer :visible.sync="publicDrawerVisible" :index-opt="indexOpt" @load="reloadList"/>
   </div>
 </template>
 
@@ -40,10 +40,11 @@ import CreatePublicCustomerDrawer from "./CreateCustomerDrawer.vue";
 import CellOperate from './CellOperate.vue'
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
-import {editFocusFlagCustomer, getPublicLeadsList} from "@/api/customer/publicleads";
+import {editFocusFlagCustomer, getPublicLeadsList, searchGroupsCustomer} from "@/api/customer/publicleads";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
+import {reasonList} from "@/api/company/poolRule";
 
 export default {
   components: {TreeSelect, TableNext, CreatePublicCustomerDrawer},
@@ -178,7 +179,9 @@ export default {
       indexOpt: {
         groupOption: [],
         stageOption: [],
-        originOption: []
+        originOption: [],
+        poolGroupOption: [],
+        poolReasonOption: [],
       }
     }
   },
@@ -187,6 +190,8 @@ export default {
     this.getGroupList()
     this.getStageList()
     this.getOriginList()
+    this.getPoolList()
+    this.getPoolReasonList()
   },
   methods: {
     async getList() {
@@ -233,6 +238,27 @@ export default {
       } catch {
       }
     },
+    // 公海分组选项
+    async getPoolList() {
+      try {
+        const res = await searchGroupsCustomer()
+        if (res.code === 200) {
+          this.indexOpt.poolGroupOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 移入公海原因
+    async getPoolReasonList() {
+      try {
+        const res = await reasonList()
+        if (res.code === 200) {
+          this.indexOpt.poolReasonOption = res.data
+        }
+      } catch {
+
+      }
+    },
     async onCollageIcon(id, scope) {
       try {
         const res = await editFocusFlagCustomer({id})
@@ -268,6 +294,9 @@ export default {
         targetBlank('/customer/config/import-operate')
       }
     },
+    reloadList() {
+      this.getList()
+    }
   }
 }
 </script>

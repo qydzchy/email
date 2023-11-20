@@ -5,7 +5,7 @@
     </div>
     <el-card shadow="always" class="my-20">
       <div class="py-10 flex-middle flex-center">
-        <el-select class="custom-select" v-model="querySearch.key" placeholder="请选择">
+        <el-select class="custom-select" v-model="querySearch.columnName" placeholder="请选择">
           <el-option
               v-for="item in options"
               :key="item.columnName"
@@ -16,15 +16,16 @@
         <el-input
             class="custom-input"
             placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
-            v-model="querySearch.value"
+            v-model="querySearch.searchText"
         ></el-input>
-        <el-button class="custom-btn radius-0" type="primary">查询</el-button>
+        <el-button class="custom-btn radius-0" type="primary" :disabled="!querySearch.searchText" @click="searchList">查询</el-button>
       </div>
     </el-card>
     <el-card shadow="always" class="container mb-20">
-      <!--      <TableNext v-if="list.length" :list="list" :columns="columns" :extra-option="{height:'60vh'}"/>-->
       <div v-if="list.length">
-        <TableNext :list="list" :columns="columns" :extra-option="{height:'56vh'}" :paginate-option="paginateOption"/>
+        <TableNext :loading="tableLoading" :list="list" :columns="columns" :extra-option="{height:'56vh'}"
+                   :paginate-option="paginateOption"
+                   :paginate-event="paginateEvent"/>
       </div>
       <div v-else>
         <el-empty
@@ -42,7 +43,7 @@
 <script>
 import TableNext from '@/components/TableNext'
 import {EmptyStr} from "@/utils/tools";
-import {getQueryFieldColumn} from "@/api/customer/query";
+import {getQueryFieldColumn, searchDuplicationQuery} from "@/api/customer/query";
 
 export default {
   components: {
@@ -51,12 +52,10 @@ export default {
   data() {
     return {
       querySearch: {
-        key: 'all',
-        value: ''
+        columnName: 'all',
+        searchText: ''
       },
-      options: [
-
-      ],
+      options: [],
       list: [],
       columns: [
         {
@@ -112,13 +111,18 @@ export default {
           render: (_row, field) => EmptyStr(field),
         },
       ],
+      tableLoading: false,
       paginateOption: {
         total: 0,
+        currentPage: 1,
+        pageSize: 10,
+        pageSizes: [10, 20, 50, 100],
         layout: 'total, sizes, prev, pager, next',
-        pageSize: 20,
-        pageSizes: [10, 20, 50, 100]
       },
-
+      paginateEvent: {
+        'size-change': (value) => this.handlePagination('size', value),
+        'current-change': (value) => this.handlePagination('current', value)
+      },
     }
   },
   mounted() {
@@ -133,6 +137,34 @@ export default {
         }
       } catch {
       }
+    },
+    async searchList() {
+      try {
+        const {columnName, searchText} = this.querySearch
+        const {currentPage, pageSize} = this.paginateOption
+        const data = {
+          columnName,
+          searchText,
+          pageNum: currentPage,
+          pageSize
+        }
+        this.tableLoading = true
+        const res = await searchDuplicationQuery({...data}).finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch {
+      }
+    },
+    handlePagination(type, value) {
+      if (type === 'size') {
+        this.paginateOption = {...this.paginateOption, pageSize: value}
+      } else if (type === 'current') {
+        this.paginateOption = {...this.paginateOption, currentPage: value}
+      }
+      this.searchList()
     },
   },
 }

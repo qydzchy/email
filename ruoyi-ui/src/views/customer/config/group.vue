@@ -1,9 +1,7 @@
 <template>
   <div class="page-origin">
     <div class="my-14 flex-middle space-between">
-      <div class="fs-14 gray-text">一级分组: 45个</div>
-      <el-button class="mr-20" type="primary" round size="medium" :disabled="editStatus" @click="addOrigin">添加来源
-      </el-button>
+      <div class="fs-14 gray-text">一级分组: {{ totalGroup }}个</div>
     </div>
     <div class="table-card">
       <TableNext
@@ -28,8 +26,7 @@
 import TableNext from "@/components/TableNext/index.vue";
 import DelPopover from "@/components/DevPopover/index.vue"
 import {EmptyStr} from "@/utils/tools";
-import {listMenu} from "@/api/system/menu";
-import {debounce} from "@/utils";
+import {getSettingsPacket} from "@/api/customer/config";
 
 export default {
   components: {
@@ -42,20 +39,9 @@ export default {
       originColumns: [
         {
           label: '分组名称',
-          field: 'menuName',
+          field: 'name',
           align: 'left',
-          render: (row, field) => {
-
-            return <div style="width:100%">
-              <span style={{display: row?.isEdit ? 'none' : 'block'}}>{field}</span>
-              <el-input
-                  value={field}
-                  style={{display: row?.isEdit ? 'block' : 'none'}}
-                  onInput={(value) => this.handleOriginNameInput(row, value)}
-                  placeholder="请输入原因">
-              </el-input>
-            </div>
-          },
+          render: (row, field) => EmptyStr(field),
         },
         {
           label: '操作',
@@ -63,28 +49,11 @@ export default {
           width: '200',
           align: 'right',
           fixed: 'right',
-          render: (row) => {
-            const visible = !(+row?.visible)
+          render: (_row) => {
             return (
-                visible ?
-                    <div>
-                      <el-row style={{display: row?.isEdit ? 'none' : 'block'}}>
-                        <el-button type='text' onClick={() => this.onEdit(row?.menuId)}>
-                          编辑
-                        </el-button>
-                        <DelPopover id={row?.id}/>
-                      </el-row>
-                      <el-row style={{display: row?.isEdit ? 'block' : 'none'}}>
-                        <el-button type="text" onClick={() => this.onCancelInput(row?.id)}>取消</el-button>
-                        <el-button type="text" onClick={() => this.onSaveInput(row)}>保存</el-button>
-                      </el-row>
-                    </div>
-                    :
-                    <div>
-                      <el-tooltip placement="top" content="不可编辑和删除">
-                        <i class="el-icon-lock gray-text"></i>
-                      </el-tooltip>
-                    </div>
+                <el-tooltip content="点击隐藏">
+                  <i class="pointer el-icon-view"></i>
+                </el-tooltip>
             );
           },
         },
@@ -95,54 +64,40 @@ export default {
       tableLoading: false,
     }
   },
+  computed: {
+    totalGroup() {
+      let count = 0
+      const deepSearch = () => {
+        this.originList.forEach(val => {
+          if (val.id) {
+            count = count + 1
+          }
+          if (val.children && val.children.length) {
+            deepSearch(val.children)
+          }
+        })
+      }
+      deepSearch()
+      return count
+    },
+  },
   mounted() {
     this.getList()
   },
   methods: {
     /** 获取数据 **/
-    getList() {
-      this.tableLoading = true;
-      listMenu({}).then(response => {
-        this.originList = this.handleTree(response.data, "menuId");
-        console.log(this.originList)
-        this.tableLoading = false;
-      });
-    },
-    addOrigin() {
-      this.originList.unshift({id: -1, menuName: '', isEdit: true})
-      this.editStatus = true
-    },
-    onEdit(id) {
-      const tableIndex = this.originList.findIndex(val => val.menuId === id)
-      this.$set(this.originList, tableIndex, {...this.originList[tableIndex], isEdit: true})
-      this.editStatus = true
-    },
-    onCancelInput(id) {
-      if (id === -1) {
-        this.originList.shift()
-      } else {
-        this.originList.map(val => {
-          if (val.id === id) {
-            val.isEdit = false
-          }
-          return val
+    async getList() {
+      try {
+        this.tableLoading = true;
+        const res = await getSettingsPacket().finally(() => {
+          this.tableLoading = false
         })
+        if (res.code === 200) {
+          this.originList = res.data
+        }
+      } catch {
       }
 
-      this.editStatus = false
-    },
-    onSaveInput(item) {
-      this.tableLoading = true
-      setTimeout(() => {
-        const tableIndex = this.originList.findIndex(val => val.id === item?.id)
-        this.$set(this.originList, tableIndex, {...item, isEdit: false})
-        this.tableLoading = false
-        this.editStatus = false
-      }, 2000)
-    },
-    handleOriginNameInput(item, value) {
-      const tableIndex = this.originList.findIndex(val => val.id === item?.id)
-      this.$set(this.originList, tableIndex, {...item, menuName: value})
     },
   }
 }

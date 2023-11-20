@@ -6,3 +6,11 @@ export function getQueryFieldColumn() {
         method: 'get'
     })
 }
+
+export function searchDuplicationQuery(params) {
+    return request({
+        url: '/customer/customer/duplication/list',
+        method: 'get',
+        params
+    })
+}
