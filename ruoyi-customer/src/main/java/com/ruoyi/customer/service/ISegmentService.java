@@ -6,10 +6,7 @@ import java.util.Map;
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
-import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
-import com.ruoyi.customer.domain.vo.CustomerSegmentListVO;
-import com.ruoyi.customer.domain.vo.SegmentListVO;
-import com.ruoyi.customer.domain.vo.SegmentUserListVO;
+import com.ruoyi.customer.domain.vo.*;
 
 /**
  * 客群Service接口
@@ -98,4 +95,10 @@ public interface ISegmentService
      * @return
      */
     boolean isVisibleConditionMet(List<UserDeptInfoBO> userDeptInfoBOList, Segment segment);
+
+    /**
+     * 客群列表（下拉）
+     * @return
+     */
+    List<SegmentListVO> simpleList();
 }

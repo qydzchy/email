@@ -49,6 +49,17 @@ public class SegmentController extends BaseController
     }
 
     /**
+     * 查询客群列表（下拉）
+     */
+    @PreAuthorize("@ss.hasPermi('customer:segment:simple:list')")
+    @GetMapping("/simple/list")
+    public AjaxResult simpleList()
+    {
+        return success(segmentService.simpleList());
+    }
+
+
+    /**
      * 新增客群
      */
     @PreAuthorize("@ss.hasPermi('customer:segment:add')")

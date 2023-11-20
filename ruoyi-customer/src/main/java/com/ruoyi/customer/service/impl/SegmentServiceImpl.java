@@ -299,9 +299,7 @@ public class SegmentServiceImpl implements ISegmentService
         Long deptId = loginUser.getDeptId();
 
         // 查询所有客群
-        Segment segmentParam = new Segment();
-        segmentParam.setDelFlag("0");
-        List<Segment> segmentList = segmentMapper.selectSegmentList(segmentParam);
+        List<Segment> segmentList = segmentMapper.selectSegmentList(new Segment());
 
         // 不成立的客群ID
         Set<Long> notMetSegmentIdSet = new HashSet<>();
@@ -417,6 +415,22 @@ public class SegmentServiceImpl implements ISegmentService
         }
 
         return false;
+    }
+
+    @Override
+    public List<SegmentListVO> simpleList() {
+        List<Segment> segmentList = segmentMapper.selectSegmentList(new Segment());
+
+        List<SegmentListVO> segmentVOList = new ArrayList<>();
+        for (Segment segment : segmentList) {
+            SegmentListVO segmentVO = new SegmentListVO();
+            segmentVO.setId(segment.getId());
+            segmentVO.setParentId(segment.getParentId());
+            segmentVO.setName(segment.getName());
+            segmentVOList.add(segmentVO);
+        }
+
+        return buildTree(segmentVOList, -1L);
     }
 
 

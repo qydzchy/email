@@ -949,7 +949,6 @@ public class CustomerServiceImpl implements ICustomerService
     private List<Segment> getSencondSegmentList(Long segmentId) {
         Segment segment = new Segment();
         segment.setParentId(segmentId);
-        segment.setDelFlag("0");
         return segmentMapper.selectSegmentList(segment);
     }
 
