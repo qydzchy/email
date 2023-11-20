@@ -120,7 +120,7 @@ import TreeSelect from "@riophae/vue-treeselect";
 import TreeSelectNext from "@/components/TreeSelectNext/index.vue";
 import {EmptyStr} from "@/utils/tools";
 import {deepClone} from "@/utils";
-import {getSegmentList} from "@/api/customer/segment";
+import {getSegmentOption} from "@/api/customer/segment";
 import {rulesAdd, rulesDelete, rulesEdit, rulesList} from "@/api/company/poolRule";
 
 const initPoolRuleForm2 = {
@@ -262,7 +262,7 @@ export default {
     },
     async getPoolRuleSegmentList() {
       try {
-        const res = await getSegmentList({createId: 1})
+        const res = await getSegmentOption()
         if (res.code === 200) {
           this.segmentOption = res.data
         }
