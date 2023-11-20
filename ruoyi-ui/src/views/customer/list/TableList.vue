@@ -41,7 +41,6 @@ import HeaderOperate from "./HeaderOperate.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 import {editFocusFlagCustomer, getPrivateLeadsList} from "@/api/customer/publicleads";
-import {packetList} from "@/api/company/group";
 
 export default {
   props: {

@@ -187,6 +187,7 @@ export default {
   watch: {
     contactList: {
       handler(newVal) {
+        console.log(newVal)
         if (newVal && newVal.length) {
           let list = deepClone(newVal)
           this.formList = list.map(val => {

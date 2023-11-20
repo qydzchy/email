@@ -19,7 +19,7 @@ import TableRowDatumTab from "./TableRowDatumTab.vue";
 import TableRowTradeTab from "./TableRowTradeTab.vue";
 import TableRowTipsTab from "./TableRowTipsTab.vue";
 import TableRowDocTab from "./TableRowDocTab.vue";
-import CustomerOperateHistoryDrawer from "./CustomerOperateHistoryDrawer.vue";
+// import CustomerOperateHistoryDrawer from "./CustomerOperateHistoryDrawer.vue";
 
 export default {
   props: {
@@ -45,7 +45,6 @@ export default {
     TableRowTradeTab,
     TableRowTipsTab,
     TableRowDocTab,
-    CustomerOperateHistoryDrawer
   },
   data() {
     return {

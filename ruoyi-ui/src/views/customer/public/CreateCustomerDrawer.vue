@@ -133,8 +133,7 @@ export default {
           if (newVal?.id) {
             this.customerFormValue = {...deepClone(newVal)}
             this.customerOtherFormValue = {...deepClone(newVal)}
-            let contactList = this.generateContactList(newVal.contactList)
-            this.contactList = deepClone(contactList)
+            this.contactList = deepClone(newVal.contactList)
           }
         } catch (e) {
           console.error(e)
