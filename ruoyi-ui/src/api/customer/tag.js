@@ -57,3 +57,11 @@ export function deleteCompanyTag(data) {
         data
     })
 }
+
+export function setCompanyTag(data) {
+    return request({
+        url: '/customer/tag/set/as/company/tag',
+        method: 'post',
+        data
+    })
+}

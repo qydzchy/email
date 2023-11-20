@@ -7,16 +7,16 @@
       <div class="py-10 flex-middle flex-center">
         <el-select class="custom-select" v-model="querySearch.key" placeholder="请选择">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+              v-for="item in options"
+              :key="item.columnName"
+              :label="item.columnAlias"
+              :value="item.columnName">
           </el-option>
         </el-select>
         <el-input
-          class="custom-input"
-          placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
-          v-model="querySearch.value"
+            class="custom-input"
+            placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
+            v-model="querySearch.value"
         ></el-input>
         <el-button class="custom-btn radius-0" type="primary">查询</el-button>
       </div>
@@ -28,7 +28,7 @@
       </div>
       <div v-else>
         <el-empty
-          >
+        >
           <template #description>
             <p>为了避免销售冲突，可以通过客户查重来查看客户的归属情况</p>
             <p>客户查重是基于全公司所有客户资料的全局查找</p>
@@ -42,6 +42,7 @@
 <script>
 import TableNext from '@/components/TableNext'
 import {EmptyStr} from "@/utils/tools";
+import {getQueryFieldColumn} from "@/api/customer/query";
 
 export default {
   components: {
@@ -54,31 +55,7 @@ export default {
         value: ''
       },
       options: [
-        {
-          value: 'all',
-          label: '全部'
-        }, {
-          value: 'companyName',
-          label: '公司名称/简称'
-        }, {
-          value: 'customerNo',
-          label: '客户编号'
-        }, {
-          value: 'email',
-          label: '邮箱'
-        }, {
-          value: 'emailSuffix',
-          label: '邮箱后缀'
-        }, {
-          value: 'contactName',
-          label: '联系人名称'
-        }, {
-          value: 'contactTel',
-          label: '联系电话'
-        }, {
-          value: 'communityAccount',
-          label: '社交账号'
-        }
+
       ],
       list: [],
       columns: [
@@ -145,8 +122,19 @@ export default {
     }
   },
   mounted() {
-
-  }
+    this.getQueryField()
+  },
+  methods: {
+    async getQueryField() {
+      try {
+        const res = await getQueryFieldColumn()
+        if (res.code === 200) {
+          this.options = res.data
+        }
+      } catch {
+      }
+    },
+  },
 }
 </script>
 
