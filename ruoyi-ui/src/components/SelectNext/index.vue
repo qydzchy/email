@@ -3,9 +3,9 @@
              @visible-change="visibleChange">
     <el-option v-for="(opt,index) in selectOptions.options" :key="index" :label="opt.label" :value="opt.value">
       <span v-if="!opt.bgColor">{{ opt.label }}</span>
-      <span v-else class="white-text px-4 py-4 radius-4" :style="`background-color:${opt.bgColor}`">{{
-          opt.label
-        }}</span>
+      <span v-else class="white-text px-4 py-4 radius-4" :style="`background-color:${opt.bgColor}`">
+        {{ opt.label }}
+      </span>
     </el-option>
   </el-select>
 </template>

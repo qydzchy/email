@@ -113,12 +113,17 @@ export default {
                   {
                     props: {
                       effect: 'dark',
-                      content: <div class="fs-12 lineH-24" style="width:210px">
-                        领取上限按周期计算。譬如：公海客户领取上限为10，周期为每周。即每周最多可从公海领取10个公海客户到私海中。
-                      </div>,
                     },
                   },
                   [
+                    h('div',
+                        {
+                          slot: 'content',
+                          class: 'fs-12 lineH-24',
+                          style: {width: '210px'},
+                        },
+                        '领取上限按周期计算。譬如：公海客户领取上限为10，周期为每周。即每周最多可从公海领取10个公海客户到私海中。'
+                    ),
                     h('i', {
                       class: 'el-icon-question ml-5',
                     }),

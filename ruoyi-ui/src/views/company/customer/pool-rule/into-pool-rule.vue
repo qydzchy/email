@@ -46,7 +46,7 @@
       destroy-on-close
       :title="poolRuleDialogTitle"
       :visible.sync="poolRuleDialog"
-      @close="onCancelPoolRule"
+      @close="onCancelPoolRule"g
     >
       <el-form v-model="poolRuleFormSecond" @submit.native.prevent>
         <el-form-item label="规则名称">

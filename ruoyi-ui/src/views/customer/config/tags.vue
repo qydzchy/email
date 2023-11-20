@@ -11,10 +11,10 @@
                 </template>
               </el-input>
               <SelectNext
-                v-if="curTab==='childTag'"
-                style="width:240px"
-                :value="tagFilterForm.selectDptOrPerson"
-                :select-options="selectOption">
+                  v-if="curTab==='childTag'"
+                  style="width:240px"
+                  :value="tagFilterForm.selectDptOrPerson"
+                  :select-options="selectOption">
               </SelectNext>
             </el-row>
             <el-button v-if="curTab==='companyTag'" type="primary" round @click="onAdd('company')">添加公司标签
@@ -22,8 +22,12 @@
             <el-button v-if="curTab==='myTag'" type="primary" round @click="onAdd('my')">添加个人标签</el-button>
           </div>
 
-          <TableNext :list="list" :columns="columnsMap[tab.name]" :extra-option="{height:'60vh'}"
-                     :paginate-option="curTab==='childTag'?paginateOption:{}"/>
+          <TableNext
+              :list="list"
+              :loading="tableLoading"
+              :columns="columnsMap[tab.name]"
+              :extra-option="{height:'60vh'}"
+              :paginate-option="curTab==='childTag'?paginateOption:{}"/>
         </el-row>
       </el-tab-pane>
     </el-tabs>
@@ -53,6 +57,7 @@ import SelectNext from "@/components/SelectNext/index.vue";
 import {EmptyStr} from "@/utils/tools";
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
 import {customerConfigTagColorMap} from '@/views/components/SelectTagColor/colorMap'
+import {getCustomerTagList} from "@/api/customer/tag";
 
 const initDialogForm = {
   name: '',
@@ -72,6 +77,11 @@ export default {
         {label: '我的标签', name: 'myTag'},
         {label: '下属标签', name: 'childTag'},
       ],
+      tabsMap: {
+        companyTag: '1',
+        myTag: '2',
+        childTag: '',
+      },
       list: [],
       columnsMap: {
         companyTag: [
@@ -129,26 +139,21 @@ export default {
           },
           {
             label: '创建人',
-            field:
-              'creator',
-            width:
-              200,
-            render:
-              (_row, field) => EmptyStr(field),
-          }
-          ,
+            field: 'creator',
+            width: 200,
+            render: (_row, field) => EmptyStr(field),
+          },
           {
             label: '操作',
             field:
-              'operate',
+                'operate',
             width:
-              200,
+                200,
             render:
-              (_row, field) => {
-                return <el-button type="text">设为公司标签</el-button>
-              },
-          }
-          ,
+                (_row, field) => {
+                  return <el-button type="text">设为公司标签</el-button>
+                },
+          },
         ]
       },
       paginateOption: {
@@ -168,6 +173,7 @@ export default {
       dialogTitle: '',
       tagDialog: false,
       btnLoading: false,
+      tableLoading: false,
       tagDialogForm: {...initDialogForm},
       tagRules: {
         name: [
@@ -178,10 +184,26 @@ export default {
     }
   },
   mounted() {
+    this.getList()
   },
   methods: {
+    async getList() {
+      try {
+        this.tableLoading = true
+        const res = await getCustomerTagList(
+            {type: this.tabsMap[this.curTab]}
+        ).finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch {
+      }
+    },
     handleTabs(tab) {
       this.curTab = tab.name
+      this.getList()
     },
     onAdd(type) {
       const typeMap = {

@@ -30,8 +30,11 @@
             </el-row>
             <el-button round size="small" slot="reference">选择模板</el-button>
           </el-popover>
-          <el-button v-if="!scheduleList.length && options.isShowSchedule" round size="small"
-                     @click="dialogSchedule=true">添加日程
+          <el-button
+              v-if="!scheduleList.length && options.isShowSchedule"
+              round
+              size="small"
+              @click="onAddSchedule">添加日程
           </el-button>
         </div>
 
@@ -78,19 +81,12 @@
           <el-button round size="small" @click="dialogSchedule=true">添加日程</el-button>
         </div>
         <ul class="plan-ul">
-          <li class="plan-li pointer" v-for="(schedule,index) in scheduleList" :key="index">
-            <el-popover :append-to-body="false">
-              <template #default>
-                <div style="width: 400px">内容</div>
+          <li class="plan-li pointer py-2" v-for="(schedule,index) in scheduleList" :key="index">
+            <PopoverSchedule :schedule="schedule" @reload="getScheduleList">
+              <template #edit>
+                <el-button type="text" size="mini" @click="onEditSchedule(schedule)">编辑</el-button>
               </template>
-              <template #reference>
-                <div class="flex-middle" style="width: 100%" @click="showScheduleDialog(schedule)">
-                  <div class="circle" :style="{color:schedule.color}"></div>
-                  <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
-                  <span class="content flex1">{{ schedule.scheduleContent }}</span>
-                </div>
-              </template>
-            </el-popover>
+            </PopoverSchedule>
           </li>
         </ul>
       </div>
@@ -239,12 +235,18 @@
     </div>
     <template>
       <DialogTemplateFollow
-          v-if="templateVisible" :visible.sync="templateVisible" :row="templateDrawerRow"
-          @close="templateVisible = false" @onConfirm="onConfirmTemplateFollow"/>
+          v-if="templateVisible"
+          :visible.sync="templateVisible"
+          :row="templateDrawerRow"
+          @close="templateVisible = false"
+          @onConfirm="onConfirmTemplateFollow"/>
     </template>
     <template>
-      <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="scheduleRow"
-                      @onConfirm="onScheduleConfirm"/>
+      <DialogSchedule
+          v-if="dialogSchedule"
+          :visible.sync="dialogSchedule"
+          :formData="scheduleRow"
+          @onConfirm="onScheduleConfirm"/>
     </template>
   </div>
 </template>
@@ -252,13 +254,14 @@
 <script>
 import DialogTemplateFollow from "./DialogTemplateFollow.vue";
 import WriteFollow from "./WriteFollow.vue";
-import DelPopover from "@/views/company/customer/DelPopover.vue";
-import DialogSchedule from "@/views/customer/list/DialogSchedule.vue";
+import DelPopover from "@/components/DevPopover";
+import DialogSchedule from "./DialogSchedule.vue";
+import PopoverSchedule from "./PopoverSchedule.vue";
 import {targetBlank} from '@/utils/tools'
 import {addRecordsComment, deleteRecordsComment, editRecordsComment} from "@/api/customer/comment";
 import {followTextTemplateList} from "@/api/company/followText";
 import {getScheduleList} from "@/api/customer/schedule";
-import {formatDate, formatMonthAndDay} from "@/utils";
+import {formatDate, formatDateSimple, formatMonthAndDay} from "@/utils";
 import {deleteFollowUpRecords, getFollowUpRecordsList} from "@/api/customer/records";
 import {searchFollowerCustomer} from "@/api/customer/publicleads";
 
@@ -284,7 +287,8 @@ export default {
     DialogSchedule,
     DialogTemplateFollow,
     WriteFollow,
-    DelPopover
+    DelPopover,
+    PopoverSchedule
   },
   data() {
     return {
@@ -307,7 +311,7 @@ export default {
         4: '社交平台',
       },
       rowData: {},
-      sxcheduleRow: {},
+      scheduleRow: {},
       onceReq: true
     }
   },
@@ -335,7 +339,7 @@ export default {
     }
   },
   methods: {
-
+    formatDateSimple,
     // 快捷模板
     async getTemplateList() {
       try {
@@ -410,8 +414,22 @@ export default {
       } catch {
       }
     },
-    showScheduleDialog(row) {
-      this.scheduleRow = row
+    onAddSchedule() {
+      this.scheduleRow = {
+        customerId: this.rowData.rowId,
+        companyName: this.rowData.companyName
+      }
+      this.dialogSchedule = true
+    },
+    onEditSchedule(row) {
+      let data = {
+        ...row,
+        scheduleId: row.id,
+        customerId: this.rowData.rowId,
+        companyName: this.rowData.companyName
+      }
+      delete data.id
+      this.scheduleRow = data
       this.dialogSchedule = true
     },
     chooseTemplateText(text) {
@@ -624,28 +642,6 @@ export default {
     display: flex;
     align-items: center;
     font-size: 14px;
-
-    .circle {
-      width: 8px;
-      height: 8px;
-      background: rgb(255, 51, 51);
-      border-radius: 8px;
-      padding: 0 4px;
-    }
-
-    .date {
-      width: 102px;
-      color: #0a6aff;
-      word-wrap: break-word;
-      padding-left: 4px;
-    }
-
-    .content {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      color: rgba(37, 40, 46)
-    }
   }
 
   .sort-caret {
