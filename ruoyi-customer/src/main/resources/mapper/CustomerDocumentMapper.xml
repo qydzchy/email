@@ -123,7 +123,7 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteCustomerDocumentById" parameterType="Long">
+    <delete id="deleteCustomerDocumentById">
         update customer_customer_document set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
     </delete>
 

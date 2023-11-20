@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import com.ruoyi.customer.domain.dto.CustomerDocumentListDTO;
 import com.ruoyi.customer.domain.vo.CustomerDocumentListVO;
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -34,7 +35,7 @@ public interface ICustomerDocumentService
      * @param id
      * @return
      */
-    File download(Long id);
+    Pair<File, String> download(Long id);
 
     /**
      * 删除文档

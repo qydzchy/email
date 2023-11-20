@@ -8,6 +8,7 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.file.FileStreamUtil;
 import com.ruoyi.customer.domain.CustomerDocument;
 import com.ruoyi.customer.domain.dto.CustomerDocumentListDTO;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -67,12 +68,14 @@ public class CustomerDocumentController extends BaseController
             throw new ServiceException("文件ID不能为空");
         }
 
-        File file = customerDocumentService.download(id);
+        Pair<File, String> pair = customerDocumentService.download(id);
+        File file = pair.getFirst();
+        String fileName = pair.getSecond();
         if (file.exists()) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             try {
-                headers.setContentDispositionFormData("attachment", URLEncoder.encode(file.getName(), "UTF-8"));
+                headers.setContentDispositionFormData("attachment", URLEncoder.encode(fileName, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 logger.error("账单附件下载失败", e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

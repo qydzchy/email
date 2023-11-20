@@ -16,6 +16,7 @@ import com.ruoyi.customer.domain.vo.CustomerDocumentListVO;
 import com.ruoyi.customer.service.ICustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.CustomerDocumentMapper;
 import com.ruoyi.customer.domain.CustomerDocument;
@@ -118,13 +119,18 @@ public class CustomerDocumentServiceImpl implements ICustomerDocumentService
      * @return
      */
     @Override
-    public File download(Long id) {
+    public Pair<File, String> download(Long id) {
         CustomerDocument customerDocument = customerDocumentMapper.selectCustomerDocumentById(id);
         if (customerDocument == null) {
             throw new ServiceException("文档不存在");
         }
 
-        return new File(customerDocument.getPath());
+        File file = new File(customerDocument.getPath());
+        if (file != null) {
+            return Pair.of(file, customerDocument.getName());
+        }
+
+        return null;
     }
 
     /**

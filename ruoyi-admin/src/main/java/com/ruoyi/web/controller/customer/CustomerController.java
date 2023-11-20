@@ -333,36 +333,4 @@ public class CustomerController extends BaseController
 
         return toAjax(customerService.moveToPrivateleads(customer.getId()));
     }
-
-    /**
-     * 客户查重筛选字段列表
-     */
-    @PreAuthorize("@ss.hasPermi('customer:customer:duplicate:filter:column:list')")
-    @GetMapping("/duplicate/filter/column/list")
-    public AjaxResult customerDuplicateFilterColumnList() {
-        return success(customerService.customerDuplicateFilterColumnList());
-    }
-
-    /**
-     * 客户查重列表（分页）
-     */
-    @PreAuthorize("@ss.hasPermi('customer:customer:duplicate:list')")
-    @GetMapping("/duplicate/list")
-    public TableDataInfo duplicateList(
-            @NotBlank(message = "字段名称不能为空") String columnName,
-            String searchText,
-            @NotNull(message = "页数不能为空") Integer pageNum,
-            @NotNull(message = "页大小不能为空") Integer pageSize)
-    {
-        Pair<Integer, List<CustomerDuplicateListVO>> pair = customerService.duplicateList(columnName, searchText, pageNum, pageSize);
-        List<CustomerDuplicateListVO> rows = pair.getSecond();
-        long total = pair.getFirst();
-
-        TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(HttpStatus.SUCCESS);
-        rspData.setMsg("查询成功");
-        rspData.setRows(rows);
-        rspData.setTotal(total);
-        return rspData;
-    }
 }

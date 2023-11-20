@@ -805,3 +805,26 @@ CREATE TABLE `customer_customer_import`  (
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件导入\r\n' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for customer_customer_document
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_customer_document`;
+CREATE TABLE `customer_customer_document`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件名称',
+`path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件路径',
+`extension` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件后缀',
+`size` bigint(20) NULL DEFAULT NULL COMMENT '文件大小',
+`type` tinyint(1) NOT NULL COMMENT '关联类型 1.邮件附件 2.手动上传',
+`customer_id` bigint(20) NOT NULL COMMENT '客户ID',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户文档' ROW_FORMAT = Dynamic;
