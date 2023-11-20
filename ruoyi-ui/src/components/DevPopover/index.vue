@@ -16,8 +16,8 @@
         <el-button type="danger" round size="small" @click="confirmDelete">删除</el-button>
       </div>
     </div>
-    <el-button size="mini" type="text" slot="reference" :disabled="btnDisabled">
-      {{ delText}}
+    <el-button :style="{color:textColor}" size="mini" type="text" slot="reference" :disabled="btnDisabled">
+      {{ delText }}
     </el-button>
   </el-popover>
 </template>
@@ -52,6 +52,11 @@ export default {
     delText: {
       type: String,
       default: '删除',
+      required: false
+    },
+    textColor: {
+      type: String,
+      default: '',
       required: false
     },
   },

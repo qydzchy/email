@@ -90,7 +90,7 @@
 
           </el-form-item>
           <el-form-item label="提醒时间">
-            <el-row type="flex" align="middle" v-for="item in reminderTimeList" :key="item.id">
+            <el-row type="flex" align="middle" v-for="(item,index) in reminderTimeList" :key="index">
               <el-col :span="10">
                 <SelectNext
                     :value.sync="item.reminderTimeType"
@@ -285,7 +285,7 @@ export default {
     formData: {
       handler(newVal) {
         if (!this.scheduleForm.scheduleContent) {
-          this.scheduleForm.scheduleContent = `跟进客户：${newVal.companyName}`
+          this.scheduleForm.scheduleContent = newVal.companyName ? `跟进客户：${newVal.companyName}` : ''
         }
       },
       deep: true,
@@ -310,14 +310,41 @@ export default {
         })
         if (res.code === 200) {
           this.followPersonList = res.data
+          if (this.followPersonList && this.followPersonList.length) {
+            this.scheduleForm.userIds = [].concat(this.followPersonList[0].userId)
+          }
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    async addFormSchedule(data) {
+      try {
+        this.btnLoading = true
+        const res = await addSchedule({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加日程成功')
+          this.$emit('onConfirm')
         }
       } catch {
       }
     },
-    async addFormSchedule() {
-      if (!this.formData?.customerId) {
-        return
+    async editFormSchedule(data) {
+      try {
+        this.btnLoading = true
+        const res = await editSchedule({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('编辑日程成功')
+          this.$emit('onConfirm')
+        }
+      } catch {
       }
+    },
+    onConfirm() {
       const {
         dates,
         color,
@@ -330,7 +357,7 @@ export default {
         customCycleType,
         cycleEndTime,
       } = this.scheduleForm
-      const config = {
+      let config = {
         color,
         remark,
         userIds,
@@ -345,38 +372,12 @@ export default {
         scheduleEndTime: allDayFlag ? formatDateSimple(dates[1]) : formatDate(dates[1]),
         reminderTime: this.generateReminderTime(this.reminderTimeList)
       }
-      try {
-        this.btnLoading = true
-        const res = await addSchedule({...config}).finally(() => {
-          this.btnLoading = false
-        })
-        if (res.code === 200) {
-          this.$message.success('添加日程成功')
-          this.$emit('onConfirm')
-        }
-      } catch {
-      }
-    },
-    async editFormSchedule() {
-      try {
-        this.btnLoading = true
-        const res = await editSchedule({
-          ...this.scheduleForm
-        }).finally(() => {
-          this.btnLoading = false
-        })
-        if (res.code === 200) {
-          this.$message.success('编辑日程成功')
-          this.onCancel()
-        }
-      } catch {
-      }
-    },
-    onConfirm() {
       if (!this.formData.scheduleId) {
-        this.addFormSchedule()
+        config = {...config, customerId: this.formData.customerId}
+        this.addFormSchedule(config)
       } else {
-        this.editFormSchedule()
+        config = {...config, id: this.formData.scheduleId}
+        this.editFormSchedule(config)
       }
     },
     onCancel() {

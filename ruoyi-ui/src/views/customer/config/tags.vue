@@ -11,10 +11,10 @@
                 </template>
               </el-input>
               <SelectNext
-                v-if="curTab==='childTag'"
-                style="width:240px"
-                :value="tagFilterForm.selectDptOrPerson"
-                :select-options="selectOption">
+                  v-if="curTab==='childTag'"
+                  style="width:240px"
+                  :value="tagFilterForm.selectDptOrPerson"
+                  :select-options="selectOption">
               </SelectNext>
             </el-row>
             <el-button v-if="curTab==='companyTag'" type="primary" round @click="onAdd('company')">添加公司标签
@@ -22,14 +22,19 @@
             <el-button v-if="curTab==='myTag'" type="primary" round @click="onAdd('my')">添加个人标签</el-button>
           </div>
 
-          <TableNext :list="list" :columns="columnsMap[tab.name]" :extra-option="{height:'60vh'}"
-                     :paginate-option="curTab==='childTag'?paginateOption:{}"/>
+          <TableNext
+              :list="list"
+              :loading="tableLoading"
+              :columns="columnsMap[tab.name]"
+              :extra-option="{height:'60vh'}"
+              :paginate-option="curTab==='childTag'?paginateOption:{}"/>
         </el-row>
       </el-tab-pane>
     </el-tabs>
-    <el-dialog :title="dialogTitle" width="460px" style="margin-top: 25vh"
-               :visible.sync="tagDialog"
-               destroy-on-close>
+    <el-dialog
+        :title="dialogTitle" width="460px" style="margin-top: 25vh"
+        :visible.sync="tagDialog"
+        :close-on-click-modal="false">
       <el-form :model="tagDialogForm" ref="tagFormRef" :rules="tagRules" @submit.native.prevent>
         <el-form-item label="标签名称" prop="name">
           <el-input v-model="tagDialogForm.name" autocomplete="off" placeholder="请输入标签名称"
@@ -50,11 +55,23 @@
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import SelectNext from "@/components/SelectNext/index.vue";
-import {EmptyStr} from "@/utils/tools";
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
 import {customerConfigTagColorMap} from '@/views/components/SelectTagColor/colorMap'
+import DevPopover from "@/components/DevPopover/index.vue";
+import {
+  addCompanyTag,
+  addPersonalTag, deleteCompanyTag, deletePersonalTag,
+  editCompanyTag,
+  editPersonalTag,
+  getCustomerTagList,
+  setCompanyTag
+} from "@/api/customer/tag";
+import {deepClone} from "@/utils";
+import {EmptyStr} from "@/utils/tools";
+import DelPopover from "@/views/company/customer/DelPopover.vue";
 
 const initDialogForm = {
+  id: '',
   name: '',
   color: '#80c463'
 }
@@ -72,6 +89,11 @@ export default {
         {label: '我的标签', name: 'myTag'},
         {label: '下属标签', name: 'childTag'},
       ],
+      tabsMap: {
+        companyTag: '1',
+        myTag: '2',
+        childTag: '',
+      },
       list: [],
       columnsMap: {
         companyTag: [
@@ -85,10 +107,10 @@ export default {
             label: '操作',
             field: 'operate',
             width: 200,
-            render: (_row, field) => {
+            render: (row, _field) => {
               return <el-row>
-                <el-button type="text" onClick={() => this.onModify}>修改</el-button>
-                <el-button type="text">删除</el-button>
+                <el-button type="text" onClick={() => this.onEdit(row)}>修改</el-button>
+                <DevPopover id={row.id} on={{onDelete: (id) => this.onDelete(id)}}/>
               </el-row>
             },
           },
@@ -110,11 +132,11 @@ export default {
             label: '操作',
             field: 'operate',
             width: 200,
-            render: (_row, field) => {
+            render: (row, _field) => {
               return <el-row>
-                <el-button type="text">设为公司标签</el-button>
-                <el-button type="text">修改</el-button>
-                <el-button type="text">删除</el-button>
+                <el-button type="text" onClick={() => this.setCompanyTagReq({id: row.id})}>设为公司标签</el-button>
+                <el-button type="text" onClick={() => this.onEdit(row)}>修改</el-button>
+                <DevPopover id={row.id} on={{onDelete: (id) => this.onDelete(id)}}/>
               </el-row>
             },
           },
@@ -129,26 +151,18 @@ export default {
           },
           {
             label: '创建人',
-            field:
-              'creator',
-            width:
-              200,
-            render:
-              (_row, field) => EmptyStr(field),
-          }
-          ,
+            field: 'creator',
+            width: 200,
+            render: (_row, field) => EmptyStr(field),
+          },
           {
             label: '操作',
-            field:
-              'operate',
-            width:
-              200,
-            render:
-              (_row, field) => {
-                return <el-button type="text">设为公司标签</el-button>
-              },
-          }
-          ,
+            field: 'operate',
+            width: 200,
+            render: (row, _field) => {
+              return <el-button type="text" onClick={() => this.setCompanyTagReq({id: row.id})}>设为公司标签</el-button>
+            },
+          },
         ]
       },
       paginateOption: {
@@ -168,7 +182,8 @@ export default {
       dialogTitle: '',
       tagDialog: false,
       btnLoading: false,
-      tagDialogForm: {...initDialogForm},
+      tableLoading: false,
+      tagDialogForm: {...deepClone(initDialogForm)},
       tagRules: {
         name: [
           {required: true, message: '请输入名称', trigger: 'blur'}
@@ -178,10 +193,26 @@ export default {
     }
   },
   mounted() {
+    this.getList()
   },
   methods: {
+    async getList() {
+      try {
+        this.tableLoading = true
+        const res = await getCustomerTagList(
+            {type: this.tabsMap[this.curTab]}
+        ).finally(() => {
+          this.tableLoading = false
+        })
+        if (res.code === 200) {
+          this.list = res.data
+        }
+      } catch {
+      }
+    },
     handleTabs(tab) {
       this.curTab = tab.name
+      this.getList()
     },
     onAdd(type) {
       const typeMap = {
@@ -191,18 +222,123 @@ export default {
       this.dialogTitle = typeMap[type]
       this.tagDialog = true
     },
-    onModify(type) {
+    onEdit(row) {
       const typeMap = {
         company: '修改公司标签',
         my: '修改个人标签'
       }
-      this.dialogTitle = typeMap[type]
+      this.dialogTitle = typeMap[this.curTab]
+      this.tagDialogForm = {
+        ...this.tagDialogForm,
+        ...row
+      }
       this.tagDialog = true
+    },
+    async addCompanyTagReq(data) {
+      try {
+        this.btnLoading = true
+        const res = await addCompanyTag({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加公司标签成功')
+          await this.getList()
+          this.tagDialog = false
+        }
+      } catch {
+      }
+    },
+    async editCompanyTagReq(data) {
+      try {
+        this.btnLoading = true
+        const res = await editCompanyTag({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('修改公司标签成功')
+          await this.getList()
+          this.tagDialog = false
+        }
+      } catch {
+      }
+    },
+    async addPersonalTagReq(data) {
+      try {
+        this.btnLoading = true
+        const res = await addPersonalTag({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加个人标签成功')
+          await this.getList()
+          this.tagDialog = false
+        }
+      } catch {
+      }
+    },
+    async editPersonalTagReq(data) {
+      try {
+        this.btnLoading = true
+        const res = await editPersonalTag({...data}).finally(() => {
+          this.btnLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('添加个人标签成功')
+          await this.getList()
+          this.tagDialog = false
+        }
+      } catch {
+      }
+    },
+    async setCompanyTagReq(data) {
+      try {
+        const res = await setCompanyTag({...data})
+        if (res.code === 200) {
+          this.$message.success('设置公司标签成功')
+          await this.getList()
+        }
+      } catch {
+      }
+    },
+    async onDelete(id) {
+      try {
+        if (this.curTab === 'companyTag') {
+          const res = await deleteCompanyTag({id})
+          if (res.code === 200) {
+            this.$message.success('删除公司标签成功')
+            await this.getList()
+          }
+        } else if (this.curTab === 'myTag') {
+          const res = await deletePersonalTag({id})
+          if (res.code === 200) {
+            this.$message.success('删除个人标签成功')
+            await this.getList()
+          }
+        }
+      } catch {
+      }
     },
     onConfirm() {
       this.$refs['tagFormRef'].validate((valid) => {
-        if (valid) {
-          // this.btnLoading = true
+        if (!valid) {
+          return
+        }
+        let data = {...this.tagDialogForm}
+        if (this.curTab === 'companyTag') {
+          if (!data.id) {
+            delete data.id
+            this.addCompanyTagReq(data)
+          } else {
+            this.editCompanyTagReq(data)
+          }
+
+        } else if (this.curTab === 'myTag') {
+          if (!data.id) {
+            delete data.id
+            this.addPersonalTagReq(data)
+          } else {
+            this.editPersonalTagReq(data)
+          }
         }
       });
     },
@@ -211,7 +347,7 @@ export default {
         return
       }
       this.dialogTitle = ''
-      this.tagDialogForm = {...initDialogForm}
+      this.tagDialogForm = {...deepClone(initDialogForm)}
       this.tagDialog = false
     },
   }
