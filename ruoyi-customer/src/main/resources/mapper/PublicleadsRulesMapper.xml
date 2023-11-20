@@ -43,10 +43,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="list" resultType="com.ruoyi.customer.domain.vo.PublicleadsRulesListVO">
-        select cpr.id, cpr.name, cpr.days, cpr.type, cpr.status, cpr.start_time as startTime, cpr.create_id as createId, cpr.create_time as createTime, GROUP_CONCAT(cprs.segment_id) as segmentIds
+        select cpr.id, cpr.name, cpr.days, cpr.type, cpr.status, cpr.start_time as startTime, cpr.create_id as createId, cpr.create_time as createTime, GROUP_CONCAT(cs.id) as segmentIds, GROUP_CONCAT(cs.name) as segmentNames
         from customer_publicleads_rules cpr
         left join customer_publicleads_rules_segment cprs on cprs.publicleads_rules_id = cpr.id
+        left join customer_segment cs on cs.id = cprs.segment_id and cs.del_flag = '0'
         where cpr.del_flag = '0'
+        GROUP BY cpr.id
     </select>
 
     <select id="enableSegmentList" resultType="com.ruoyi.customer.domain.vo.CustomerPublicleadsRulesVO">

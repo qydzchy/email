@@ -34,7 +34,7 @@ public class CustomerDuplicationController extends BaseController {
     }
 
     /**
-     * 客户查重列表（分页）
+     * 客户查重列表（分页）todo 筛选参数中有参数需要优化，返回的参数也是
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:duplicate:list')")
     @GetMapping("/list")

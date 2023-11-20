@@ -23,7 +23,7 @@ public class SegmentListVO {
     private Integer usageScope;
 
     /** 可见范围 */
-    private Integer visibilityScope;
+    private String visibilityScope;
 
     /** 条件规则 1.满足全部条件 2.满足任一条件 3.自定义 */
     private Integer conditionRuleType;

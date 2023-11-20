@@ -23,6 +23,11 @@ public class PublicleadsRulesListVO {
     /** 客群ID */
     private String segmentIds;
 
+    /**
+     * 客群名称
+     */
+    private String segmentNames;
+
     /** 客户状态-天数 */
     private Long days;
 
