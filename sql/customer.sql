@@ -592,7 +592,7 @@ CREATE TABLE `customer_stage`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_tag`;
 CREATE TABLE `customer_tag`  (
-`id` bigint(20) NOT NULL COMMENT '主键',
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标签名称',
 `color` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标签颜色',
 `type` tinyint(1) NOT NULL COMMENT '类型 1.公司 2.个人',
@@ -604,7 +604,7 @@ CREATE TABLE `customer_tag`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户标签' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户标签' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_tag

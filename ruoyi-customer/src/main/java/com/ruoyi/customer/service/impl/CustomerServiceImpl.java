@@ -18,6 +18,7 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.customer.CustomerShuffleThreadPoolUtil;
 import com.ruoyi.customer.domain.*;
 import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.dto.*;
@@ -227,6 +228,9 @@ public class CustomerServiceImpl implements ICustomerService
 
         // 批量新增客户联系人
         batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
+
+        // 洗牌
+        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> shuffle(id, null));
         return true;
     }
 
@@ -380,6 +384,9 @@ public class CustomerServiceImpl implements ICustomerService
 
         // 编辑客户事件
         customerFollowUpRulesHandler(id, FollowUpRulesTypeEnum.EDIT_CUSTOMER);
+
+        // 洗牌
+        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> shuffle(id, null));
         return true;
     }
 

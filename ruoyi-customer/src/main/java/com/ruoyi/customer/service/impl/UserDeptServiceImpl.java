@@ -2,6 +2,7 @@ package com.ruoyi.customer.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeBO;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
@@ -28,6 +29,8 @@ public class UserDeptServiceImpl implements IUserDeptService {
      */
     @Override
     public boolean userDeptVerify(List<UserDeptInfoBO> userDeptInfoList, String content) {
+        if (StringUtils.isBlank(content)) return false;
+
         ObjectMapper objectMapper = new ObjectMapper();
         // 将 JSON 字符串转换为 Java 对象
         try {

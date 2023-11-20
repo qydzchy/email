@@ -1,7 +1,6 @@
 package com.ruoyi.web.controller.customer;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.ruoyi.common.constant.HttpStatus;
@@ -9,7 +8,6 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.dto.*;
-import com.ruoyi.customer.domain.vo.CustomerDuplicateListVO;
 import com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO;
 import com.ruoyi.customer.domain.vo.PublicleadsCustomerSimpleListVO;
 import com.ruoyi.customer.service.ISegmentService;

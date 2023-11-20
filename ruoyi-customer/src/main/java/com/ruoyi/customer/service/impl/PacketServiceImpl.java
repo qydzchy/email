@@ -114,8 +114,13 @@ public class PacketServiceImpl implements IPacketService
                 continue;
             }
 
-            String designatedMember = packetVO.getDesignatedMember();
-            boolean isMet = userDeptService.userDeptVerify(Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build()), designatedMember);
+            Integer availableMember = packetVO.getAvailableMember();
+            boolean isMet = true;
+            if (availableMember.intValue() == 2) {
+                String designatedMember = packetVO.getDesignatedMember();
+                isMet = userDeptService.userDeptVerify(Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build()), designatedMember);
+            }
+
             if (!isMet) {
                 iterator.remove();
             }

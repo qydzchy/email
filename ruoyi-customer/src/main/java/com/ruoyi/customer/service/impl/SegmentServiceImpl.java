@@ -9,12 +9,13 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.common.utils.customer.CustomerShuffleThreadPoolUtil;
 import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
-import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
 import com.ruoyi.customer.domain.vo.CustomerSegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
 import com.ruoyi.customer.domain.vo.SegmentUserListVO;
+import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.customer.service.IUserDeptService;
 import org.springframework.stereotype.Service;
 import com.ruoyi.customer.mapper.SegmentMapper;
@@ -37,6 +38,8 @@ public class SegmentServiceImpl implements ISegmentService
     private SegmentMapper segmentMapper;
     @Resource
     private IUserDeptService userDeptService;
+    @Resource
+    private ICustomerService customerService;
 
     /**
      * 查询客群
@@ -108,6 +111,8 @@ public class SegmentServiceImpl implements ISegmentService
             segmentMapper.batchInsertSegment(segmentList);
         }
 
+        // 洗牌
+        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
         return true;
     }
 
@@ -133,7 +138,8 @@ public class SegmentServiceImpl implements ISegmentService
         segmentMapper.updateSegment(segment);
 
         // 删除子客群
-        segmentMapper.deleteSegmentByParentId(segment.getId());
+        Long id = segment.getId();
+        segmentMapper.deleteSegmentByParentId(id);
 
         List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
         if (subGroupList != null && !subGroupList.isEmpty()) {
@@ -156,6 +162,8 @@ public class SegmentServiceImpl implements ISegmentService
             segmentMapper.batchInsertSegment(segmentList);
         }
 
+        // 洗牌
+        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
         return true;
     }
 
