@@ -106,8 +106,9 @@ export default {
           align: 'left',
           width: '200',
           render: (_row, field) => {
-            const {name = '', color = ''} = this.formatStage(field)
-            return <span class="px-6 py-6 radius-8" style={{backgroundColor: color, color: '#fff'}}>{name}</span>
+            const {name, color} = this.formatStage(field)
+            return <span class="px-6 py-6 radius-8"
+                         style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}>{name || '无'}</span>
           }
         },
         {
