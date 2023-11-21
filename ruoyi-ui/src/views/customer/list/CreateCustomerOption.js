@@ -50,7 +50,7 @@ const UsuallyInfoRule = [
     {
         title: '客户来源',
         type: 'el-select-tree',
-        field: 'origin',
+        field: 'sourceIds',
         value: '',
         props: {
             data: [],
@@ -68,6 +68,9 @@ const UsuallyInfoRule = [
         title: '客户标签',
         type: 'select',
         field: 'tagIds',
+        props: {
+            multiple: true
+        },
     },
     {
         title: '分组',

@@ -88,7 +88,7 @@ export default {
       tabsList: [
         {label: '公司标签', name: 'companyTag'},
         {label: '我的标签', name: 'myTag'},
-        {label: '下属标签', name: 'childTag'},
+        // {label: '下属标签', name: 'childTag'},
       ],
       tabsMap: {
         companyTag: '1',
@@ -133,9 +133,15 @@ export default {
           },
           {
             label: '属性',
-            field: 'prop',
+            field: 'type',
             align: 'left',
-            render: (_row, field) => EmptyStr(field),
+            render: (_row, field) => {
+              const mapType = {
+                1: '公司',
+                2: '个人'
+              }
+              return <span>{mapType[field]}</span>
+            },
           },
           {
             label: '操作',
@@ -232,6 +238,7 @@ export default {
         my: '新增个人标签'
       }
       this.dialogTitle = typeMap[type]
+      this.tagDialogForm = {...deepClone(initDialogForm)}
       this.tagDialog = true
     },
     onEdit(row) {

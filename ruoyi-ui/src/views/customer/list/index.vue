@@ -111,6 +111,7 @@ import {getOriginList} from "@/api/company/origin";
 import {reasonList} from "@/api/company/poolRule";
 import {getPrivateSegmentMenu, searchGroupsCustomer} from "@/api/customer/publicleads";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
+import {getCustomerTagList} from "@/api/customer/config";
 
 export default {
   components: {
@@ -137,6 +138,7 @@ export default {
         originOption: [],
         poolGroupOption: [],
         poolReasonOption: [],
+        tagOption: [],
       }
 
     }
@@ -148,6 +150,7 @@ export default {
     this.getOriginList()
     this.getPoolList()
     this.getPoolReasonList()
+    this.getTagList()
   },
   methods: {
     // 菜单列表
@@ -212,6 +215,16 @@ export default {
         }
       } catch {
 
+      }
+    },
+    // 客户标签选项
+    async getTagList() {
+      try {
+        const res = await getCustomerTagList()
+        if (res.code === 200) {
+          this.indexOpt.tagOption = res.data
+        }
+      } catch {
       }
     },
     onShowDrawer() {

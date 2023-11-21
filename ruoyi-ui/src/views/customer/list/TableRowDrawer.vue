@@ -43,16 +43,16 @@
             <el-avatar shape="square" :src="rowData.companyLogo"></el-avatar>
 
             <div class="pl-10 fs-14">
-              <label>{{ rowData.companyName }}</label>
-              <div class="my-10">
-                <span>11248</span>
-                <span class="ml-10">冰岛</span>
+              <label>{{ rowData.companyName || '---' }}</label>
+              <div class="my-10 flex-middle">
+                <span>{{ rowData.customerNoType || '---' }}</span>
+                <span class="ml-10">
+                  <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
+                               :show-edit-icon="false"></CellOperate>
+                </span>
               </div>
-              <div class="mb-10">跟进入: admin</div>
-              <div class="flex-middle">
-                <el-tag class="customer-tag" closable>标签1</el-tag>
-                <el-button class="ml-10" size="mini" icon="el-icon-plus"></el-button>
-              </div>
+              <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
+              <TableRowTags :detail-id="row.id" :tag-list="rowData.tagList" @onClose="confirmRemoveTag"/>
             </div>
           </div>
           <div class="tabs mt-10">
@@ -69,9 +69,12 @@
 
 <script>
 import TableRowTabs from './TableRowTabs.vue'
+import TableRowTags from "./TableRowTags.vue";
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
+import CellOperate from "@/views/customer/list/CellOperate.vue";
 import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
+import {deepClone} from "@/utils";
 
 export default {
   props: {
@@ -79,6 +82,7 @@ export default {
       type: Object,
       default: () => {
         return {
+          id: '',
           focusFlag: false
         }
       },
@@ -101,8 +105,10 @@ export default {
   },
   components: {
     TableRowTabs,
+    TableRowTags,
+    CollageIcon,
+    CellOperate,
     CreateCustomerDrawer,
-    CollageIcon
   },
   data() {
     return {
@@ -115,19 +121,28 @@ export default {
       },
       focusFlag: false,
       rowData: {
+        followPerson: '',
         companyName: '',
-        companyLogo: ''
+        customerNoType: '',
+        companyLogo: '',
+        followUpPersonnelList: [],
+        sourceIds: [],
+        sourceList: [],
+        tagIds: [],
+        tagList: [],
+        stageId: '',
+        stage: [],
+        packetId: '',
+        packet: [],
       }
     }
   },
   watch: {
-    visible: {
+    row: {
       handler(newVal) {
-        if (newVal) {
-          if (this.row?.id) {
-            this.focusFlag = Boolean(this.row.focusFlag)
-            this.getDetailData()
-          }
+        this.focusFlag = Boolean(newVal.focusFlag)
+        if (newVal?.id) {
+          this.getDetailData()
         }
       },
       immediate: true,
@@ -143,6 +158,14 @@ export default {
           this.rowData = res.data
           this.rowData.countryRegion = this.rowData.countryRegion?.split('/') || []
           this.rowData.customerId = this.rowData.id
+          let sourceList = deepClone(this.rowData.sourceList)
+          this.rowData.sourceIds = sourceList?.map(val => val.id)
+          let tagList = deepClone(this.rowData.tagList)
+          this.rowData.tagIds = tagList?.map(val => val.id)
+          this.rowData.stageId = this.rowData.stage?.id
+          this.rowData.packetId = this.rowData.packet?.id
+          this.rowData.timezone = +this.rowData.timezone
+          this.rowData.followPerson = this.rowData.followUpPersonnelList?.[0]?.nickName
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
         }
       } catch (e) {
@@ -161,6 +184,10 @@ export default {
         }
       } catch {
       }
+    },
+    confirmRemoveTag() {
+      this.getDetailData()
+      this.$emit('load')
     },
     onHideDrawer() {
       this.rowData = {}

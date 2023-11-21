@@ -81,7 +81,7 @@
               {{ generateTelValue }}
             </span>
             <span v-else-if="type==='country'" class="flex-middle">
-              <svg-icon v-if="generateCountryValue.svg" class="pr-4" :icon-class="generateCountryValue.svg"/>
+              <svg-icon v-if="generateCountryValue.svg" class="pr-4 fs-20" :icon-class="generateCountryValue.svg"/>
               {{ generateCountryValue.value }}
             </span>
             <span v-else>

@@ -24,6 +24,7 @@
       <TableRowDrawer
           :row="rowDrawerData"
           :visible.sync="rowDrawerVisible"
+          @update:visible="onUpdateTableRowDrawer"
           :externalOpt="{groupOption:indexOpt.groupOption}"
           @load="reloadList"
       />
@@ -135,7 +136,7 @@ export default {
           label: '简称',
           field: 'shortName',
           align: 'left',
-          width: '200',
+          width: '120',
           render: (_row, field) => EmptyStr(field),
         },
         {
@@ -143,7 +144,24 @@ export default {
           field: 'tagList',
           align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
+          render: (_row, field) => {
+            const wrap = () => {
+              return field && field.length ? field?.map((val, idx) => {
+                const colorOpacity = val.color ? val.color + '4d' : ''
+                return val.name ?
+                    <span key={idx} class="px-6 py-6 mx-2"
+                          style={{color: val.color, backgroundColor: colorOpacity}}>
+                    {val.name}
+                  </span> : '---'
+              }) : '---'
+            }
+            return <el-popover trigger="hover">
+              <template slot="default">
+                {wrap()}
+              </template>
+              <div slot="reference" class="line-clamp1">{wrap()}</div>
+            </el-popover>
+          },
         },
         {
           label: '客户分组',
@@ -371,6 +389,11 @@ export default {
         fieldName: '',
       }
     },
+    onUpdateTableRowDrawer(bool) {
+      if (!bool) {
+        this.rowDrawerData = {}
+      }
+    },
     jumpPersonalDetail(e, id) {
       e.stopPropagation()
       targetBlank('/customer/personal/' + id)
@@ -432,6 +455,16 @@ export default {
         color: unset;
       }
     }
+  }
+
+  ::v-deep .line-clamp1 {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
   }
 }
 
