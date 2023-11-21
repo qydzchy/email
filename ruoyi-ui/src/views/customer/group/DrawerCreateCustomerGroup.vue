@@ -296,8 +296,9 @@ export default {
     generateChildListSetRuleId(arr) {
       return arr.map((val, index) => {
         val.ruleId = index
-        let ruleContentChild = JSON.parse(val.conditionRuleContent || '[]')
-        ruleContentChild && !ruleContentChild?.length ? this.generateRuleContentDefault(ruleContentChild) : this.generateRuleContentSetRuleId(ruleContentChild)
+        let ruleContentChild = val.conditionRuleContent || '[]'
+        ruleContentChild = JSON.parse(ruleContentChild)
+        val.conditionRuleContent = (ruleContentChild && !ruleContentChild?.length) ? this.generateRuleContentDefault(ruleContentChild) : this.generateRuleContentSetRuleId(ruleContentChild)
         return val
       })
     },

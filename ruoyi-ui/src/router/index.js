@@ -154,6 +154,12 @@ export const constantRoutes = [
             component: () => import('@/views/customer/public/index.vue'),
           },
           {
+            path:'public/personal/:id',
+            name:'PublicCustomerDetail',
+            meta: {title: '公海客户信息', is: 'public', dontAnimate: true},
+            component: () => import('@/views/customer/public/detail/index.vue'),
+          },
+          {
             path: 'query',
             name: 'CustomerQuery',
             meta: {title: '客户查重', is: 'query', dontAnimate: true,},

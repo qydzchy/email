@@ -185,7 +185,6 @@ export default {
       return
     }
     this.getDetailData()
-    this.getFollowUpRecordList()
   },
   methods: {
     async getDetailData() {

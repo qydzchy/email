@@ -62,8 +62,19 @@ export default {
           field: 'companyName',
           fixed: 'left',
           align: 'left',
+          width: '160',
           render: (row, field) => {
-            return <div className="pointer" onClick={() => this.onShowTableRowDrawer(row)}>{field || '---'}</div>
+            return <div class="flex-start" style="width:100%;" onClick={() => this.onShowTableRowDrawer(row)}>
+              <span
+                  class="pointer highlight"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.jumpDetail(row.id)
+                  }}>
+                {field || '---'}
+                <i class="link-icon el-icon-link pl-6"></i>
+              </span>
+            </div>
           }
         },
         {
@@ -88,22 +99,13 @@ export default {
           field: 'countryRegion',
           align: 'left',
           width: '240',
-          render: (row, field, scope) => {
-            const {rowId, fieldName, showEditIcon} = this.tableCell
-            const propName = scope.column.property
-            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
-            const isShowForm = this.curEditId === row?.id && fieldName === propName
+          render: (_row, field) => {
             return <CellOperate
-                showForm={isShowForm}
                 type="country"
                 curValue={field}
                 text={field}
-                visible={isShow}
-                on={{
-                  onEdit: () => this.onCellEdit(row?.id, propName),
-                  click: () => this.onCellClick(row),
-                  onBlur: () => this.onBlur(),
-                }}
+                showEditIcon={false}
+                showCopyIcon={false}
             >
             </CellOperate>
           }
@@ -121,6 +123,7 @@ export default {
         {
           label: '最近联系时间',
           field: 'lastContactedAt',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
         }, {
           label: '时区',
@@ -166,7 +169,10 @@ export default {
           this.tableLoading = false
         })
         if (res.code === 200) {
-          this.list = res.rows
+          this.list = res.rows.map((val) => {
+            val.countryRegion = val.countryRegion?.split('/') || []
+            return val
+          })
           this.paginateOption.total = res.total
         }
       } catch {
@@ -175,6 +181,10 @@ export default {
     onShowTableRowDrawer(row) {
       this.rowDrawerData = {...row}
       this.rowDrawerVisible = true
+    },
+    jumpDetail(id) {
+      console.log(id)
+      this.$router.push('/customer/public/personal/' + id)
     },
     reloadList() {
       this.getList()
@@ -202,6 +212,24 @@ export default {
 
       &:hover {
         color: unset;
+      }
+    }
+  }
+
+  ::v-deep .highlight {
+    display: flex;
+    align-items: center;
+    width: max-content;
+
+    .link-icon {
+      display: none;
+    }
+
+    &:hover {
+      color: #0a6aff;
+
+      .link-icon {
+        display: block;
       }
     }
   }

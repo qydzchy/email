@@ -140,6 +140,7 @@ export default {
         })
         if (res.code === 200) {
           this.rowData = res.data
+          this.rowData.countryRegion = this.rowData.countryRegion?.split('/') || []
           this.rowData.customerId = this.rowData.id
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
         }
