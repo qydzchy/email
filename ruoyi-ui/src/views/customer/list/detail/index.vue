@@ -156,7 +156,7 @@ import CellOperate from "../CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
 import {getScheduleList} from "@/api/customer/schedule";
-import {formatMonthAndDay} from "@/utils";
+import {deepClone, formatMonthAndDay} from "@/utils";
 import {getCustomerDetail} from "@/api/customer/publicleads";
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
@@ -219,6 +219,15 @@ export default {
         })
         if (res.code === 200) {
           this.rowData = res.data
+          this.rowData.countryRegion = this.rowData.countryRegion?.split('/') || []
+          this.rowData.customerId = this.rowData.id
+          let sourceList = deepClone(this.rowData.sourceList)
+          this.rowData.sourceIds = sourceList?.map(val => val.id)
+          let tagList = deepClone(this.rowData.tagList)
+          this.rowData.tagIds = tagList?.map(val => val.id)
+          this.rowData.stageId = this.rowData.stage?.id
+          this.rowData.packetId = this.rowData.packet?.id
+          this.rowData.timezone = +this.rowData.timezone
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
           this.contactList = this.rowData.contactList
         }

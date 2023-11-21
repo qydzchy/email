@@ -90,6 +90,7 @@ export default {
           stageOption: [],
           originOption: [],
           poolGroupOption: [],
+          tagOption: [],
         }
       },
       required: false
@@ -166,7 +167,7 @@ export default {
                 }
               }
             })
-          } else if (val.field === 'origin') {
+          } else if (val.field === 'sourceIds') {
             val.props.data = newVal.originOption || []
           } else if (val.field === 'poolGroup') {
             const valid = !newVal.poolGroupOption && !newVal.poolGroupOption.length
@@ -178,6 +179,27 @@ export default {
               return {
                 value: val.id,
                 label: val.name
+              }
+            })
+          } else if (val.field === 'tagIds') {
+            const valid = !newVal.tagOption && !newVal.tagOption.length
+            if (valid) {
+              return
+            }
+            val.options = newVal.tagOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name,
+                'slot': function ($h) {
+                  return $h('span', {
+                    style: {
+                      backgroundColor: val.color ? val.color + '4d' : '',
+                      color: val.color,
+                      borderRadius: '4px',
+                      padding:'2px 6px'
+                    }
+                  }, [val.name])
+                }
               }
             })
           }
