@@ -613,7 +613,7 @@ PRIMARY KEY (`id`) USING BTREE
 -- ----------------------------
 -- Table structure for customer_customer_follow_up_personnel
 -- ----------------------------
-DROP TABLE IF EXISTS `customer_customer_follow_up_personnel`;
+DROP TABLE IF EXISTS `customer_customer_follow_up_personnel`触达
 CREATE TABLE `customer_customer_follow_up_personnel`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `customer_id` bigint(20) NOT NULL COMMENT '客户ID',

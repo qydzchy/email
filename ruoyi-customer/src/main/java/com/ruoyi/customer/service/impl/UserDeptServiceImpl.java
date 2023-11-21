@@ -65,7 +65,7 @@ public class UserDeptServiceImpl implements IUserDeptService {
                     if (deptContainsAny) return true;
                 }
             }
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             return false;
         }
 
