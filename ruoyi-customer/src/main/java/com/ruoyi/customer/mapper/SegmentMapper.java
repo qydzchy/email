@@ -100,7 +100,7 @@ public interface SegmentMapper
      * @param userId
      * @return
      */
-    Map<Long, Integer> selectSegmentCustomerCountByUserId(@Param("userId") Long userId);
+    List<Map<String, Object>> selectSegmentCustomerCountByUserId(@Param("userId") Long userId);
 
     /**
      * 根据跟进人统计客户数

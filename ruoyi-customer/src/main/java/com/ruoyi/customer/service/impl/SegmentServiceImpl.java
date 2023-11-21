@@ -204,13 +204,16 @@ public class SegmentServiceImpl implements ISegmentService
      */
     @Override
     public List<SegmentListVO> getSegmentTree(Long createId) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
         // 生成基础客群
         List<SegmentListVO> allSegmentVOList = new ArrayList<>();
-        allSegmentVOList.addAll(initBasicSegment());
+        if (userId.longValue() == createId.longValue()) {
+            allSegmentVOList.addAll(initBasicSegment());
+        }
 
         List<SegmentListVO> segmentVOList = segmentMapper.list(createId);
         allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
-
         return allSegmentVOList;
     }
 
@@ -322,7 +325,10 @@ public class SegmentServiceImpl implements ISegmentService
         }
 
         // 查询当前用户的客群客户数
-        Map<Long, Integer> segmentCustomerCountMap = segmentMapper.selectSegmentCustomerCountByUserId(userId);
+        List<Map<String, Object>> segmentCustomerCountMapList = segmentMapper.selectSegmentCustomerCountByUserId(userId);
+        Map<Long, Integer> segmentCustomerCountMap = segmentCustomerCountMapList.stream().collect(Collectors.toMap(
+                map -> Long.parseLong(String.valueOf(map.get("segmentId"))),
+                map -> Integer.parseInt(String.valueOf(map.get("customerCount")))));
 
         List<CustomerSegmentListVO> customerSegmentVOList = new ArrayList<>();
         for (Segment segment : segmentList) {

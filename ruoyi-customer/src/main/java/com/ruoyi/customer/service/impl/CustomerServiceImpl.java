@@ -10,8 +10,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.exception.ServiceException;
@@ -48,8 +47,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Service
-public class CustomerServiceImpl implements ICustomerService 
-{
+public class CustomerServiceImpl implements ICustomerService {
     @Resource
     private CustomerMapper customerMapper;
     @Resource
@@ -94,12 +92,14 @@ public class CustomerServiceImpl implements ICustomerService
     private IPublicleadsGroupsService publicleadsGroupsService;
     @Resource
     private ISegmentService segmentService;
+    @Resource
+    private ColumnContext columnContext;
 
     private static final Executor executor = Executors.newFixedThreadPool(3);
 
     /**
      * 查询客户详情
-     * 
+     *
      * @param id 客户详情主键
      * @return 客户详情
      */
@@ -175,26 +175,24 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 查询客户详情列表
-     * 
+     *
      * @param customer 客户详情
      * @return 客户详情
      */
     @Override
-    public List<Customer> selectCustomerList(Customer customer)
-    {
+    public List<Customer> selectCustomerList(Customer customer) {
         return customerMapper.selectCustomerList(customer);
     }
 
     /**
      * 新增客户详情
-     * 
+     *
      * @param customerAddOrUpdateDTO 客户详情
      * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertCustomer(CustomerAddOrUpdateDTO customerAddOrUpdateDTO)
-    {
+    public boolean insertCustomer(CustomerAddOrUpdateDTO customerAddOrUpdateDTO) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
@@ -236,6 +234,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 新增客户跟进人
+     *
      * @param id
      * @param userId
      */
@@ -255,6 +254,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 批量新增客户标签
+     *
      * @param id
      * @param tagIds
      */
@@ -277,6 +277,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 批量新增客户来源
+     *
      * @param id
      * @param sourceIds
      */
@@ -297,6 +298,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 批量新增客户联系人
+     *
      * @param contactDtoList
      * @param userId
      * @param username
@@ -327,14 +329,13 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 修改客户详情
-     * 
+     *
      * @param customerAddOrUpdateDTO 客户详情
      * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateCustomer(CustomerAddOrUpdateDTO customerAddOrUpdateDTO)
-    {
+    public boolean updateCustomer(CustomerAddOrUpdateDTO customerAddOrUpdateDTO) {
         Long id = customerAddOrUpdateDTO.getId();
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
@@ -392,25 +393,23 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 批量删除客户详情
-     * 
+     *
      * @param ids 需要删除的客户详情主键
      * @return 结果
      */
     @Override
-    public int deleteCustomerByIds(Long[] ids)
-    {
+    public int deleteCustomerByIds(Long[] ids) {
         return customerMapper.deleteCustomerByIds(ids);
     }
 
     /**
      * 删除客户详情信息
-     * 
+     *
      * @param id 客户详情主键
      * @return 结果
      */
     @Override
-    public int deleteCustomerById(Long id)
-    {
+    public int deleteCustomerById(Long id) {
         return customerMapper.deleteCustomerById(id);
     }
 
@@ -459,6 +458,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 转移给
+     *
      * @param transferredToDTO
      * @return
      */
@@ -489,6 +489,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 共享给
+     *
      * @param shareToDTO
      * @return
      */
@@ -539,6 +540,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 取消跟进
+     *
      * @param id
      * @return
      */
@@ -568,6 +570,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 移入公海
+     *
      * @param moveToPublicleadsDTO
      * @return
      */
@@ -645,6 +648,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 查询客户跟进人列表
+     *
      * @param id
      * @return
      */
@@ -655,6 +659,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 修改重点客户
+     *
      * @param id
      * @return
      */
@@ -681,6 +686,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 变更公海分组
+     *
      * @param id
      * @param publicleadsGroupsId
      * @return
@@ -704,6 +710,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 移入私海
+     *
      * @param id
      * @return
      */
@@ -713,7 +720,7 @@ public class CustomerServiceImpl implements ICustomerService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
-        
+
         // 校验公海领取规则
         /*isClaimCountValid(id, userId);
         // 校验领取上限
@@ -752,6 +759,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 校验客户上限
+     *
      * @param userId
      */
     private void isCustomerLimitsValid(Long userId) {
@@ -776,6 +784,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 公海领取上限校验
+     *
      * @param userId
      */
     private void isPublicleadsClaimLimitValid(Long userId) {
@@ -801,6 +810,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 获取周期时间区间
+     *
      * @param claimPeriod
      * @return
      */
@@ -836,6 +846,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 领取数量限制是否成立
+     *
      * @param customerId
      * @param userId
      * @return
@@ -846,7 +857,7 @@ public class CustomerServiceImpl implements ICustomerService
 
         Settings settings = settingsList.get(0);
         if (settings.getClaimLimitFlag() != null && settings.getClaimLimitFlag().intValue() == 1
-            && settings.getClaimLimitDays() != null) {
+                && settings.getClaimLimitDays() != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
 
@@ -919,11 +930,12 @@ public class CustomerServiceImpl implements ICustomerService
             batchSaveCustomerSegment(customerId, segmentIdList);
         });
 
-        return false;
+        return true;
     }
 
     /**
      * 批量保存客户和客群的关系
+     *
      * @param customerId
      * @param segmentIdList
      */
@@ -943,6 +955,7 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 查询二级客群列表
+     *
      * @param segmentId
      * @return
      */
@@ -954,26 +967,25 @@ public class CustomerServiceImpl implements ICustomerService
 
     /**
      * 判断该客户是否满足客群条件
+     *
      * @param customerDetail
      * @param segment
      * @return
      */
     private boolean isSegmentConditionMet(CustomerDetailVO customerDetail, Segment segment) {
         String conditionRuleContent = segment.getConditionRuleContent();
-        ObjectMapper objectMapper = new ObjectMapper();
         List<SegmentConditionRuleBO> segmentConditionRuleBOList = null;
+        Gson gson = new Gson();
         try {
-            segmentConditionRuleBOList = objectMapper.readValue(conditionRuleContent, List.class);
-            // 判断父客群是否成立，成立则判断是否有二级客群
+            segmentConditionRuleBOList = Arrays.asList(gson.fromJson(conditionRuleContent, SegmentConditionRuleBO[].class));
 
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             log.error("客群条件规则转换异常 客群ID：{}" +
                     "\n原因：{}", segment.getId(), e);
             return false;
         }
 
         for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
-            ColumnContext columnContext = new ColumnContext();
             boolean isConditionMet = columnContext.handler(customerDetail, segmentConditionRuleBO);
             if (!isConditionMet) return false;
 
@@ -984,6 +996,7 @@ public class CustomerServiceImpl implements ICustomerService
 
         return true;
     }
+
 
     @Override
     public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long publicleadsGroupsId, Long packetId, Integer pageNum, Integer pageSize) {
