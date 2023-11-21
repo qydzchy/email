@@ -1,6 +1,5 @@
 package com.ruoyi.common.enums.email;
 
-import com.ruoyi.common.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
