@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSegmentLog;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户关联客群日志Mapper接口
@@ -58,4 +59,10 @@ public interface CustomerSegmentLogMapper
      * @return 结果
      */
     public int deleteCustomerSegmentLogByIds(Long[] ids);
+
+    /**
+     * 批量插入客户关联客群日志
+     * @param customerSegmentLogList
+     */
+    void batchInsertCustomerSegmentLog(@Param("customerSegmentLogList") List<CustomerSegmentLog> customerSegmentLogList);
 }

@@ -42,6 +42,14 @@
         </trim>
     </insert>
 
+    <insert id="batchInsertCustomerSegmentLog">
+        insert into customer_customer_segment_log (customer_id, segment_id, create_time)
+        values
+        <foreach collection="customerSegmentLogList" item="item" index="index" separator=",">
+            (#{item.customerId}, #{item.segmentId}, #{item.createTime})
+        </foreach>
+    </insert>
+
     <update id="updateCustomerSegmentLog" parameterType="CustomerSegmentLog">
         update customer_customer_segment_log
         <trim prefix="SET" suffixOverrides=",">

@@ -87,6 +87,8 @@ public class CustomerServiceImpl implements ICustomerService {
     @Resource
     private CustomerImportMapper customerImportMapper;
     @Resource
+    private CustomerSegmentLogMapper customerSegmentLogMapper;
+    @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
     private IPublicleadsGroupsService publicleadsGroupsService;
@@ -928,9 +930,31 @@ public class CustomerServiceImpl implements ICustomerService {
             customerSegmentMapper.deleteCustomerSegmentByCustomerId(customerId);
             // 批量保存客户和客群的关系
             batchSaveCustomerSegment(customerId, segmentIdList);
+            // 批量保存客户和客群的关系日志
+            batchSaveCustomerSegmentLog(customerId, segmentIdList);
         });
 
         return true;
+    }
+
+    /**
+     * 批量保存客户和客群的关系日志
+     * @param customerId
+     * @param segmentIdList
+     */
+    private void batchSaveCustomerSegmentLog(Long customerId, List<Long> segmentIdList) {
+        if (segmentIdList == null || segmentIdList.isEmpty()) return;
+
+        List<CustomerSegmentLog> customerSegmentLogList = new ArrayList<>();
+        segmentIdList.stream().forEach(segmentId -> {
+            CustomerSegmentLog customerSegmentLog = new CustomerSegmentLog();
+            customerSegmentLog.setCustomerId(customerId);
+            customerSegmentLog.setSegmentId(segmentId);
+            customerSegmentLog.setCreateTime(DateUtils.getNowDate());
+            customerSegmentLogList.add(customerSegmentLog);
+        });
+
+        customerSegmentLogMapper.batchInsertCustomerSegmentLog(customerSegmentLogList);
     }
 
     /**
