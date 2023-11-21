@@ -21,12 +21,12 @@
         :title="poolGroupDialogTitle"
         destroy-on-close
     >
-      <el-form :model="poolGroupFrom">
-        <el-form-item label="分组名称" props="name">
+      <el-form ref="poolGroupRef" :model="poolGroupFrom" :rules="poolGroupFromRule">
+        <el-form-item label="分组名称" prop="name">
           <el-input :disabled="poolGroupFrom.isView" v-model="poolGroupFrom.name"
                     placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item label="分组成员" props="userIds">
+        <el-form-item label="分组成员" prop="userIds">
           <div class="form-item">
             <TreeSelectNext
                 v-if="!poolGroupFrom.isView"
@@ -137,6 +137,14 @@ export default {
         },
       ],
       poolGroupFrom: {...initPoolGroupFrom},
+      poolGroupFromRule: {
+        name: [
+          {required: true, message: '请输入分组名称', trigger: 'blur'}
+        ],
+        userIds: [
+          {required: true, message: '请选择分组成员', trigger: 'change'}
+        ],
+      },
       poolGroupDialog: false,
       poolGroupDialogTitle: '新建公海分组',
       emptyOption: [],
@@ -271,16 +279,20 @@ export default {
       }
     },
     onConfirm() {
-      this.btnLoading = true
-      const formData = this.poolGroupFrom
-      if (!formData.id) {
-        this.groupsAddReq(formData)
-      } else {
-        this.groupsEditReq(formData)
-      }
+      this.$refs.poolGroupRef.validate(valid => {
+        if (valid) {
+          this.btnLoading = true
+          const formData = this.poolGroupFrom
+          if (!formData.id) {
+            this.groupsAddReq(formData)
+          } else {
+            this.groupsEditReq(formData)
+          }
+        }
+      })
+
     },
     onCancel() {
-      console.log(this.poolGroupFrom)
       this.poolGroupDialogTitle = '添加公海分组'
       this.poolGroupFrom = initPoolGroupFrom
       this.poolGroupDialog = false

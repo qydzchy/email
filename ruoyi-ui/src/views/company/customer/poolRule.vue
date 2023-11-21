@@ -1,7 +1,7 @@
 <template>
   <div class="pool-rule">
     <!--  移入公海规则  -->
-    <IntoPoolRule/>
+    <IntoPoolRule />
     <!-- 移入公海白名单 -->
     <IntoPoolWhitelist/>
     <!--  公海领取规则  -->
@@ -36,6 +36,12 @@ export default {
     PoolGroup,
     PoolReason
   },
+  mounted() {
+
+  },
+  methods: {
+
+  },
 }
 </script>
 
@@ -44,6 +50,7 @@ export default {
   color: #0064ff;
   border-color: #0064ff;
 }
+
 .form-item {
   width: 100%;
   display: inline-block;

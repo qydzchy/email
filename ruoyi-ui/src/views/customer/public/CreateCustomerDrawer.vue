@@ -5,19 +5,19 @@
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
-            {{ formData.id ? '编辑' : '新建' }}客户
+            {{ row.id ? '编辑' : '新建' }}客户
           </div>
           <el-row class="flex-middle">
             <el-row class="flex-middle gap-16">
-              <el-tooltip placement="top" content="关注">
-                <svg-icon icon-class="like"/>
+              <el-tooltip placement="top" content="关注" v-if="row && row.id">
+                <svg-icon class="pointer" icon-class="like"/>
               </el-tooltip>
               <i class="el-icon-close pointer fs-16" @click="onHideDrawer"></i>
             </el-row>
           </el-row>
         </div>
       </template>
-      <div class="container">
+      <div class="container" v-loading="containerLoading">
         <el-row type="flex">
           <!--    常用信息     -->
           <el-col :span="10">
@@ -25,13 +25,15 @@
               <div class="fs-16 bold my-10">
                 <span>公司常用信息</span>
               </div>
-              <formCreate v-model="customerForm" :rule="rule" :option="option" @change="handleCountry"/>
+              <formCreate v-model="customerForm" :value.sync="customerFormValue" :rule="rule" :option="option"
+                          @change="handleCountry"/>
             </div>
             <div v-show="showOtherForm">
               <div class="fs-16 bold my-10">
                 <span>公司其他信息</span>
               </div>
-              <formCreate v-model="customerOtherForm" :rule="otherRule" :option="option"/>
+              <formCreate v-model="customerOtherForm" :value.sync="customerOtherFormValue" :rule="otherRule"
+                          :option="option"/>
             </div>
             <div>
               <div class="collapse flex-middle flex-center fs-12 mt-10 pointer" @click="showOtherForm = !showOtherForm">
@@ -42,7 +44,7 @@
           </el-col>
           <!--    联系人     -->
           <el-col :span="14" class="px-16">
-            <ContactCard ref="contact-card" :contact-list="[]"/>
+            <ContactCard ref="contact-card" :contact-list="contactList"/>
           </el-col>
         </el-row>
       </div>
@@ -61,7 +63,8 @@
 import {UsuallyInfoRule, OtherInfoRule} from './CreateCustomerOption'
 import {formOption} from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
-import {addCustomer} from "@/api/customer/publicleads";
+import {addCustomer, editCustomer} from "@/api/customer/publicleads";
+import {deepClone} from "@/utils";
 
 export default {
   props: {
@@ -73,6 +76,9 @@ export default {
     row: {
       type: Object,
       default: () => {
+        return {
+          id: ''
+        }
       },
       required: false
     },
@@ -83,6 +89,7 @@ export default {
           groupOption: [],
           stageOption: [],
           originOption: [],
+          poolGroupOption: [],
         }
       },
       required: false
@@ -94,12 +101,11 @@ export default {
   data() {
     return {
       customerVisible: false,
-      formData: {
-        id: ''
-      },
       customerForm: {},
+      customerFormValue: {},
       rule: [...UsuallyInfoRule],
       customerOtherForm: {},
+      customerOtherFormValue: {},
       otherRule: [...OtherInfoRule],
       option: {
         ...formOption,
@@ -110,6 +116,8 @@ export default {
       },
       showOtherForm: false,
       btnLoading: false,
+      containerLoading: false,
+      contactList: [],
     }
   },
   watch: {
@@ -121,9 +129,14 @@ export default {
     },
     row: {
       handler(newVal) {
-        this.formData = {
-          ...this.formData,
-          ...newVal
+        try {
+          if (newVal?.id) {
+            this.customerFormValue = {...deepClone(newVal)}
+            this.customerOtherFormValue = {...deepClone(newVal)}
+            this.contactList = deepClone(newVal.contactList)
+          }
+        } catch (e) {
+          console.error(e)
         }
       },
       deep: true,
@@ -154,6 +167,18 @@ export default {
             })
           } else if (val.field === 'origin') {
             val.props.data = newVal.originOption || []
+          } else if (val.field === 'poolGroup') {
+            const valid = !newVal.poolGroupOption && !newVal.poolGroupOption.length
+            if (valid) {
+              return
+            }
+            val.value = newVal.poolGroupOption[0]?.id
+            val.options = newVal.poolGroupOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name
+              }
+            })
           }
           return val
         })
@@ -165,11 +190,29 @@ export default {
     async addCustomerPrivate(data) {
       try {
         this.btnLoading = true
+        this.containerLoading = true
         const res = await addCustomer({...data}).finally(() => {
           this.btnLoading = false
+          this.containerLoading = false
         })
         if (res.code === 200) {
-          console.log(res)
+          this.$message.success('添加成功')
+          this.$emit('load')
+        }
+      } catch {
+      }
+    },
+    async editCustomerPrivate(data) {
+      this.btnLoading = true
+      this.containerLoading = true
+      try {
+        const res = await editCustomer({...data}).finally(() => {
+          this.btnLoading = false
+          this.containerLoading = false
+        })
+        if (res.code === 200) {
+          this.$message.success('修改成功')
+          this.$emit('load')
         }
       } catch {
       }
@@ -177,22 +220,39 @@ export default {
     onConfirm() {
       this.customerForm.validate(val => {
         if (val) {
-          const contactList = this.$refs['contact-card'].getInnerData()
+          let contactList = this.$refs['contact-card'].getInnerData()
+          contactList = contactList.map(val => {
+            delete val.show
+            val.primaryContactFlag = +val.primaryContactFlag
+            return val
+          })
           const customerForm = this.customerForm.formData()
           const otherForm = this.customerOtherForm.formData()
-          const data = {
+          let data = {
             ...customerForm,
             ...otherForm,
             contactList,
-            seaType: 1,
-            customerNoType: 1,
+            seaType: 2,
+            rating: +customerForm.rating,
+            countryRegion: customerForm.countryRegion?.join('/') || undefined
           }
-          this.addCustomerPrivate(data)
+          if (!this.row.id) {
+            data.contactList = data.contactList.map(val => {
+              delete val.id
+              return val
+            })
+            this.addCustomerPrivate(data)
+          } else {
+            this.editCustomerPrivate(data)
+          }
+
         }
       })
 
     },
     onHideDrawer() {
+      this.customerFormValue = {}
+      this.customerOtherFormValue = {}
       this.$emit('update:visible', false)
     },
     handleCountry(filed, value) {
@@ -212,7 +272,17 @@ export default {
       } else {
         this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})
       }
-    }
+    },
+    generateContactList(arr) {
+      if (arr && !arr.length) {
+        return []
+      }
+      return arr.map(val => {
+        val.phone = val.phone ? JSON?.parse(val.phone) : []
+        val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
+        return val
+      })
+    },
   }
 }
 </script>

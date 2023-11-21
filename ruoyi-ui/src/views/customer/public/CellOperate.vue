@@ -15,7 +15,7 @@
         />
       </template>
       <!--   select   -->
-      <template v-if="type==='select'">
+      <template v-else-if="type==='select'">
         <SelectNext
             :value.sync="curValue"
             :selectOptions="formOption"
@@ -23,7 +23,7 @@
             @visibleChange="visibleChange"/>
       </template>
       <!--   tree   -->
-      <template v-if="type==='tree'">
+      <template v-else-if="type==='tree'">
         <el-select-tree
             style="width:100%"
             ref="select-tree"
@@ -35,11 +35,11 @@
         </el-select-tree>
       </template>
       <!--   rate   -->
-      <template v-if="type==='rate'">
+      <template v-else-if="type==='rate'">
         <el-rate :value.sync="curValue" v-bind="formOption" @change="handleChange"></el-rate>
       </template>
       <!--   tel   -->
-      <template v-if="type==='tel'">
+      <template v-else-if="type==='tel'">
         <el-row type="flex" :gutter="4">
           <el-col :span="8">
             <SelectNext
@@ -58,6 +58,10 @@
           </el-col>
         </el-row>
       </template>
+      <!--   country   -->
+      <template v-else-if="type==='country'">
+        <select-country :value.sync="curValue"></select-country>
+      </template>
       <!--   picture   -->
       <template v-if="type==='picture'">
         <el-image v-bind="formOption"/>
@@ -65,7 +69,7 @@
     </template>
     <!--   展示字段数据   -->
     <div class="wrap flex-middle space-between" v-else @click="onClick">
-      <span class="span-style" :title="content">
+      <span class="span-style" :title="generateTitle">
           <slot name="content">
             <span v-if="type==='select'">
               {{ generateSelectValue }}
@@ -75,6 +79,10 @@
             </span>
             <span v-else-if="type==='tel'">
               {{ generateTelValue }}
+            </span>
+            <span v-else-if="type==='country'" class="flex-middle">
+              <svg-icon v-if="generateCountryValue.svg" class="pr-4" :icon-class="generateCountryValue.svg"/>
+              {{ generateCountryValue.value }}
             </span>
             <span v-else>
                {{ content || '---' }}
@@ -97,7 +105,8 @@
 <script>
 import SelectNext from "@/components/SelectNext/index.vue";
 import {generatePhone} from "@/utils/tools";
-import {value} from "dom7";
+import {countryList} from '@/assets/data/countryData'
+
 
 export default {
   props: {
@@ -115,7 +124,7 @@ export default {
       required: false
     },
     type: {
-      type: "input" | "select" | "rate" | "tel",
+      type: "input" | "select" | "rate" | "tel" | "country" | "picture",
       default: "",
       required: false
     },
@@ -170,6 +179,15 @@ export default {
     },
   },
   computed: {
+    generateTitle() {
+      let echoTitle = ''
+      if (this.type === 'country') {
+        echoTitle = this.generateCountryValue.value
+      } else {
+        echoTitle = this.content
+      }
+      return echoTitle
+    },
     generateSelectValue() {
       return this.formOption.options?.find(val => val.value === this.content)?.label || '---'
     },
@@ -191,13 +209,39 @@ export default {
     generateTelValue() {
       const phonePrefix = this.content?.phone_prefix
       const phone = this.content?.phone
-      return (phonePrefix || phone) ? `${phonePrefix}-${phone}` : '---'
+      return (phonePrefix || phone) ? `${phonePrefix} - ${phone}` : '---'
+    },
+    generateCountryValue() {
+      if (!this.content?.length) {
+        return {
+          value: '---'
+        }
+      }
+      let country = this.content[0] || ''
+      let countrySvg = ''
+      const province = this.content[1] || ''
+      const city = this.content[2] || ''
+      const deepSearch = arr => {
+        arr.forEach(val => {
+          if (val.value === country) {
+            country = val.label
+            countrySvg = val.svg
+          }
+          if (val.children && val.children?.length) {
+            deepSearch(val.children)
+          }
+        })
+      }
+      deepSearch(countryList)
+      return {
+        value: `${country} ${province} ${city}`,
+        svg: countrySvg
+      }
     },
   },
   mounted() {
   },
   methods: {
-    value,
     onCopy() {
       if (!this.content) {
         this.$message.info('复制内容不能为空')

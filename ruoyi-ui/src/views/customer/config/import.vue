@@ -15,7 +15,8 @@
 
 <script>
 import TableNext from "@/components/TableNext/index.vue";
-import {EmptyStr,targetBlank} from "@/utils/tools";
+import {EmptyStr, targetBlank} from "@/utils/tools";
+import {getImportDocumentList} from "@/api/customer/config";
 
 export default {
   components: {
@@ -27,7 +28,7 @@ export default {
       columns: [
         {
           label: '导入时间',
-          field: 'time',
+          field: 'createTime',
           fixed: 'left',
           render: (_row, field) => EmptyStr(field),
         },
@@ -88,8 +89,15 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
-      console.log('test')
+    async getList() {
+      try {
+        const res = await getImportDocumentList()
+        if (res.code === 200) {
+          this.list = res.data
+          this.paginationOption.total = res.total
+        }
+      } catch {
+      }
     },
     onRefresh() {
       this.tableLoading = true

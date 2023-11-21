@@ -56,19 +56,20 @@
 import TableNext from "@/components/TableNext/index.vue";
 import SelectNext from "@/components/SelectNext/index.vue";
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
-import {customerConfigTagColorMap} from '@/views/components/SelectTagColor/colorMap'
 import DevPopover from "@/components/DevPopover/index.vue";
+import {customerConfigTagColorMap} from '@/views/components/SelectTagColor/colorMap'
 import {
   addCompanyTag,
-  addPersonalTag, deleteCompanyTag, deletePersonalTag,
+  addPersonalTag,
+  deleteCompanyTag,
+  deletePersonalTag,
   editCompanyTag,
   editPersonalTag,
   getCustomerTagList,
   setCompanyTag
-} from "@/api/customer/tag";
+} from "@/api/customer/config";
 import {deepClone} from "@/utils";
 import {EmptyStr} from "@/utils/tools";
-import DelPopover from "@/views/company/customer/DelPopover.vue";
 
 const initDialogForm = {
   id: '',
@@ -99,9 +100,13 @@ export default {
         companyTag: [
           {
             label: '标签名称',
-            field: 'tagName',
+            field: 'name',
             align: 'left',
-            render: (_row, field) => EmptyStr(field),
+            render: (row, field) => {
+              const colorOpacity = row.color ? row.color + '4d' : ''
+              return field ? <span class="px-6 py-6"
+                                   style={{color: row.color, backgroundColor: colorOpacity}}>{field}</span> : '---'
+            }
           },
           {
             label: '操作',
@@ -118,9 +123,13 @@ export default {
         myTag: [
           {
             label: '标签名称',
-            field: 'tagName',
+            field: 'name',
             align: 'left',
-            render: (_row, field) => EmptyStr(field),
+            render: (row, field) => {
+              const colorOpacity = row.color ? row.color + '4d' : ''
+              return field ? <span class="px-6 py-6"
+                                   style={{color: row.color, backgroundColor: colorOpacity}}>{field}</span> : '---'
+            }
           },
           {
             label: '属性',
@@ -144,10 +153,13 @@ export default {
         childTag: [
           {
             label: '标签名称',
-            field: 'tagName',
+            field: 'name',
             align: 'left',
-            sortable: true,
-            render: (_row, field) => EmptyStr(field),
+            render: (row, field) => {
+              const colorOpacity = row.color ? row.color + '4d' : ''
+              return field ? <span class="px-6 py-6"
+                                   style={{color: row.color, backgroundColor: colorOpacity}}>{field}</span> : '---'
+            }
           },
           {
             label: '创建人',
