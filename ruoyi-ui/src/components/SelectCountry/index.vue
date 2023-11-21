@@ -72,6 +72,9 @@ export default {
 
     },
     handleValue() {
+      if (this.country !== 'CN') {
+        this.provinceAndCity = []
+      }
       this.$emit('input', [this.country, ...this.provinceAndCity]);
     },
   }

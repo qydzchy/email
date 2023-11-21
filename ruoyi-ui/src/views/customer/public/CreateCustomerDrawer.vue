@@ -5,7 +5,7 @@
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
-            {{ row.id ? '编辑' : '新建' }}客户
+            {{ row.id ? '编辑' : '新建' }}公海客户
           </div>
           <el-row class="flex-middle">
             <el-row class="flex-middle gap-16">

@@ -45,7 +45,7 @@ const UsuallyInfoRule = [
         type: 'select-country',
         field: 'countryRegion',
         emit: ['on-change', 'blur'],
-        emitPrefix: 'country'
+        emitPrefix: 'country',
     },
     {
         title: '客户来源',

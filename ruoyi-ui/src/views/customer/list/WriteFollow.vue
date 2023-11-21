@@ -444,7 +444,6 @@ export default {
       this.$emit('onCancel')
     },
     async onConfirm() {
-      console.log(this.formData)
       const {
         id,
         followUpType,
@@ -486,7 +485,8 @@ export default {
           this.$message.success("添加成功")
           this.$emit('onConfirm')
         }
-      } catch {
+      } catch(e) {
+        console.error(e)
       }
     },
     async editFollowUp(config) {
@@ -496,7 +496,8 @@ export default {
           this.$message.success("修改成功")
           this.$emit('onConfirm')
         }
-      } catch {
+      } catch(e) {
+        console.error(e)
       }
     },
     targetBlank

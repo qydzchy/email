@@ -42,7 +42,7 @@
       <el-input class="mt-10" placeholder="点击这里记录跟进细节，同步最新进展。" @focus="showWriteFollow=true">
         <template #suffix>
           <el-tooltip placement="top" content="展开">
-            <i class="el-icon-full-screen pointer mr-6" @click.stop="templateVisible=true"></i>
+            <i class="el-icon-full-screen pointer mr-6" @click.stop="onFullScreenWrite"></i>
           </el-tooltip>
         </template>
       </el-input>
@@ -153,12 +153,12 @@
                     <el-row type="flex" :gutter="10" v-if="item.editable">
                       <el-col>
                         <el-tooltip placement="top" content="可删除24小时内您发布的跟进">
-                          <DelPopover self-slot :id="item.id" @onDelete="onDeleteRecord">
+                          <DelPopover self-slot :id="item.id" text-color="#000" @onDelete="onDeleteRecord">
                             <i class="el-icon-delete pointer fs-12"></i>
                           </DelPopover>
                         </el-tooltip>
                       </el-col>
-                      <el-col>
+                      <el-col class="flex-middle">
                         <el-tooltip placement="top" content="编辑评论">
                           <i class="el-icon-edit pointer fs-12" @click="onEditTemplate(item)"></i>
                         </el-tooltip>
@@ -491,6 +491,10 @@ export default {
         return
       }
       this.$set(this.timeLineList, target, {...this.timeLineList[target], add: false, newComment: ''})
+    },
+    onFullScreenWrite() {
+      this.templateDrawerRow = {}
+      this.templateVisible = true
     },
     // 修改写跟进
     onEditTemplate(item) {

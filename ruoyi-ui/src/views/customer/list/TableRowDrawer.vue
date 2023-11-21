@@ -121,16 +121,17 @@ export default {
     }
   },
   watch: {
-    row: {
+    visible: {
       handler(newVal) {
-        this.focusFlag = Boolean(newVal.focusFlag)
-        if (newVal?.id) {
-          this.getDetailData()
+        if (newVal) {
+          if (this.row?.id) {
+            this.focusFlag = Boolean(this.row.focusFlag)
+            this.getDetailData()
+          }
         }
       },
-      deep: true,
       immediate: true,
-    }
+    },
   },
   methods: {
     async getDetailData() {
@@ -140,6 +141,7 @@ export default {
         })
         if (res.code === 200) {
           this.rowData = res.data
+          this.rowData.countryRegion = this.rowData.countryRegion?.split('/') || []
           this.rowData.customerId = this.rowData.id
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
         }

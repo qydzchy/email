@@ -142,7 +142,7 @@ export default {
     // 创建客户回调
     reloadList() {
       this.$refs.tableListRef.reloadList()
-      this.customerVisible = false
+      this.publicDrawerVisible = false
     },
   }
 }

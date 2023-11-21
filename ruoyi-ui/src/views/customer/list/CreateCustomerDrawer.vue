@@ -256,22 +256,25 @@ export default {
       this.customerOtherFormValue = {}
       this.$emit('update:visible', false)
     },
-    handleCountry(filed, value) {
-      const country = value || []
-      if (!this.customerOtherForm.formData) {
-        return
-      }
-      const mapTimeZone = {
-        'CN': 8
-      }
-      const tempOpt = this.customerOtherForm.getRule('timezone').tempOptions
-      if (country[0]) {
-        this.customerOtherForm.updateRule('timezone', {
-          options: tempOpt.filter(val => val.value === mapTimeZone[country]),
-          value: mapTimeZone[country]
-        })
-      } else {
-        this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})
+    handleCountry(field, value) {
+      switch (field) {
+        case 'countryRegion':
+          const country = value || []
+          if (!this.customerOtherForm.formData) {
+            return
+          }
+          const mapTimeZone = {
+            'CN': 8
+          }
+          const tempOpt = this.customerOtherForm.getRule('timezone').tempOptions
+          if (country[0]) {
+            const options = tempOpt.filter(val => val.value === mapTimeZone[country[0]])
+            const value = mapTimeZone[country[0]]
+            this.customerOtherForm.updateRule('timezone', {options, value})
+          } else {
+            this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})
+          }
+          break;
       }
     },
     generateContactList(arr) {

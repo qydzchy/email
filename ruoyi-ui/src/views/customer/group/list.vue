@@ -41,8 +41,11 @@
           :paginate-option="paginateOption"
       />
     </div>
-    <DrawerCreateCustomerGroup :visible.sync="drawerVisible" :row="createCustomerRow" @onConfirm="onConfirm"
-                               @onCancel="onCancel"/>
+    <DrawerCreateCustomerGroup
+        :visible.sync="drawerVisible"
+        :row="createCustomerRow"
+        @onConfirm="onConfirm"
+        @onCancel="onCancel"/>
   </div>
 </template>
 
@@ -218,7 +221,6 @@ export default {
           break;
         case "company":
           this.list = this.companyShareList
-          console.log(this.list)
           break;
         case "personal":
           this.list = this.myUseList
@@ -229,13 +231,15 @@ export default {
       if (type === 'copy') {
         delete row.id
       }
-      this.drawerVisible = true
       this.createCustomerRow = deepClone(row)
+      this.drawerVisible = true
+
     },
     async onDelete(id) {
       try {
         const res = await deleteSegment({id})
         if (res.code === 200) {
+          this.$message.success('解散成功')
           await this.getList({
             createId: this.curMenuActive,
           })
