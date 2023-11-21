@@ -47,7 +47,7 @@
     </select>
 
     <select id="list" resultType="com.ruoyi.customer.domain.vo.CustomerImportListVO">
-        select id, import_type as importType, import_status as importStatus, expected_import_count as expectedImportCount, success_import_count as successImportCount, failed_import_count as failedImportCount, create_id as createId, create_by as createBy from customer_customer_import
+        select id, import_type as importType, import_status as importStatus, expected_import_count as expectedImportCount, success_import_count as successImportCount, failed_import_count as failedImportCount, create_id as createId, create_by as createBy, create_time as createTime from customer_customer_import
         order by create_time desc
         LIMIT #{offset}, #{limit}
     </select>

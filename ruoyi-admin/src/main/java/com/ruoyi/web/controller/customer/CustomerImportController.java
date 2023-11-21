@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -56,7 +58,8 @@ public class CustomerImportController extends BaseController {
 
         // 设置响应的Content-Type和头部信息
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename());
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(resource.getFilename(), StandardCharsets.UTF_8.toString()));
+
 
         // 将资源的输入流复制到响应的输出流中
         try (InputStream inputStream = resource.getInputStream()) {
@@ -76,7 +79,7 @@ public class CustomerImportController extends BaseController {
     @PreAuthorize("@ss.hasPermi('customer:customer:import')")
     @Log(title = "导入客户", businessType = BusinessType.IMPORT)
     @PostMapping("/add")
-    public AjaxResult add(@NotNull(message = "导入类型不能为空") Integer importType, @RequestParam("file") MultipartFile file)
+    public AjaxResult add(@NotNull(message = "导入类型不能为空") Integer importType, @NotNull(message = "是否更新数据不能为空") Boolean updateFlag, @RequestParam("file") MultipartFile file)
     {
         // 检查文件类型是否是Excel
         if (!file.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
