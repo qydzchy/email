@@ -132,6 +132,13 @@ export default {
           }
         },
         {
+          label: '简称',
+          field: 'shortName',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
           label: '客户标签',
           field: 'tagList',
           align: 'left',
@@ -143,14 +150,19 @@ export default {
           field: 'packetId',
           align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
+          render: (_row, field) => {
+            return this.formatGroup(field) || '---'
+          }
         },
         {
           label: '客户阶段',
           field: 'stageId',
           align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
+          render: (_row, field) => {
+            const {name = '', color = ''} = this.formatStage(field)
+            return <span class="px-6 py-6 radius-8" style={{backgroundColor: color, color: '#fff'}}>{name}</span>
+          }
         },
         {
           label: '主要联系人',
@@ -184,7 +196,12 @@ export default {
           field: 'contactName',
           align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
+          render: (row, _field) => {
+            let operate = row?.recentActivity?.operator || '---'
+            return <div>
+              {operate}
+            </div>
+          },
         },
         {
           label: '国家地区',
@@ -202,6 +219,8 @@ export default {
                 curValue={field}
                 text={field}
                 visible={isShow}
+                showEditIcon={false}
+                showCopyIcon={false}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
                   click: () => this.onCellClick(row),
@@ -212,38 +231,46 @@ export default {
           }
         },
         {
-          label: '客户类型',
-          field: 'phone',
+          label: '客户编号',
+          field: 'customerNo',
           align: 'left',
-          width: '200',
+          width: '160',
           render: (_row, field) => EmptyStr(field),
         },
-        {
-          label: '客户评分',
-          field: 'rating',
-          align: 'left',
-          width: '200',
-          render: (_row, field) => EmptyStr(field),
-        },
+        // {
+        //   label: '客户评分',
+        //   field: 'rating',
+        //   align: 'left',
+        //   width: '200',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
         {
           label: '最近联系时间',
           field: 'lastContactedAt',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
-        }, {
-          label: '时区',
-          field: 'timeZone',
+        },
+        {
+          label: '创建时间',
+          field: 'createTime',
           align: 'left',
           width: '200',
           render: (_row, field) => EmptyStr(field),
         },
-        {
-          label: '社交平台',
-          field: 'socialPlatform',
-          align: 'left',
-          render: (_row, field) => EmptyStr(field),
-        },
+        // {
+        //   label: '时区',
+        //   field: 'timeZone',
+        //   align: 'left',
+        //   width: '200',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
+        // {
+        //   label: '社交平台',
+        //   field: 'socialPlatform',
+        //   align: 'left',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
         {
           label: '操作',
           field: 'operate',
@@ -277,8 +304,6 @@ export default {
         }
       }
     }
-  },
-  mounted() {
   },
   methods: {
     async getList(segmentId) {
@@ -359,6 +384,24 @@ export default {
         this.paginateOption = {...this.paginateOption, currentPage: value}
       }
       this.getList(this.segmentId)
+    },
+    formatGroup(id) {
+      let groupName = ''
+      this.indexOpt.groupOption.forEach(val => {
+        if (val.id === id) {
+          groupName = val.name
+        }
+      })
+      return groupName
+    },
+    formatStage(id) {
+      let stageRow = {}
+      this.indexOpt.stageOption.forEach(val => {
+        if (val.id === id) {
+          stageRow = val
+        }
+      })
+      return stageRow
     },
     reloadList() {
       this.getList(this.segmentId)

@@ -78,21 +78,73 @@ export default {
           }
         },
         {
-          label: '最近跟进',
-          field: 'originalFollowUp',
+          label: '简称',
+          field: 'shortName',
           align: 'left',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
-        }, {
+        },
+        {
+          label: '客户标签',
+          field: 'tagList',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '客户分组',
+          field: 'packetId',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => {
+            return this.formatGroup(field) || '---'
+          }
+        },
+        {
+          label: '客户阶段',
+          field: 'stageId',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => {
+            const {name = '', color = ''} = this.formatStage(field)
+            return <span class="px-6 py-6 radius-8" style={{backgroundColor: color, color: '#fff'}}>{name}</span>
+          }
+        },
+        {
+          label: '主要联系人',
+          field: 'primaryContact',
+          align: 'left',
+          width: '200',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
           label: '最近动态',
           field: 'recentActivity',
           align: 'left',
+          width: '200',
           render: (row, field, _scope) => {
-            return EmptyStr(field)
+            return <CellOperate
+                text={field?.followUpContent}
+                showEditIcon={false}
+                showCopyIcon={false}
+            >
+              <div slot="content" class="pointer">
+                {field?.followUpContent || '---'}
+              </div>
+            </CellOperate>
           }
-        }, {
+        },
+        {
           label: '原跟进人',
-          field: 'originalFollowUp',
-          render: (_row, field) => EmptyStr(field),
+          field: 'contactName',
+          align: 'left',
+          width: '200',
+          render: (row, _field) => {
+            let operate = row?.recentActivity?.operator || '---'
+            return <div>
+              {operate}
+            </div>
+          },
         },
         {
           label: '国家地区',
@@ -111,30 +163,46 @@ export default {
           }
         },
         {
-          label: '客户类型',
-          field: 'phone',
-          render: (_row, field) => EmptyStr(field),
-        },
-        {
-          label: '客户评分',
-          field: 'rating',
+          label: '客户编号',
+          field: 'customerNo',
+          align: 'left',
+          width: '160',
           render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近联系时间',
           field: 'lastContactedAt',
+          align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
-        }, {
-          label: '时区',
-          field: 'timezone',
           render: (_row, field) => EmptyStr(field),
         },
         {
-          label: '社交平台',
-          field: 'contact',
+          label: '创建时间',
+          field: 'createTime',
+          align: 'left',
+          width: '200',
           render: (_row, field) => EmptyStr(field),
-        }
+        },
+        // {
+        //   label: '客户类型',
+        //   field: 'phone',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
+        // {
+        //   label: '客户评分',
+        //   field: 'rating',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
+        // {
+        //    label: '时区',
+        //    field: 'timezone',
+        //    render: (_row, field) => EmptyStr(field),
+        //  },
+        //  {
+        //    label: '社交平台',
+        //    field: 'contact',
+        //    render: (_row, field) => EmptyStr(field),
+        //  }
       ],
       paginateOption: {
         total: 0,
@@ -185,6 +253,24 @@ export default {
     jumpDetail(id) {
       console.log(id)
       this.$router.push('/customer/public/personal/' + id)
+    },
+    formatGroup(id) {
+      let groupName = ''
+      this.indexOpt.groupOption.forEach(val => {
+        if (val.id === id) {
+          groupName = val.name
+        }
+      })
+      return groupName
+    },
+    formatStage(id) {
+      let stageRow = {}
+      this.indexOpt.stageOption.forEach(val => {
+        if (val.id === id) {
+          stageRow = val
+        }
+      })
+      return stageRow
     },
     reloadList() {
       this.getList()
