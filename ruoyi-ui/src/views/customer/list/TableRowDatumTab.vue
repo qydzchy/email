@@ -109,7 +109,7 @@
                   :form-option="usually.options"
                   @onInput="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
                   @onChange="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
-                  @onEnter="onShowForm('usuallyInfo',usually.field,false)"
+                  @onEnter="handleEnter('usuallyInfo',usually.field,false)"
                   @onBlur="onShowForm('usuallyInfo',usually.field,false)"
                   @onEdit="onShowForm('usuallyInfo',usually.field,true)">
               </CellOperate>
@@ -139,7 +139,7 @@
                   :form-option="other.options"
                   @onInput="(val)=>handleSetValue('otherInfo',other.field,val)"
                   @onChange="(val)=>handleSetValue('otherInfo',other.field,val)"
-                  @onEnter="onShowForm('otherInfo',other.field,false)"
+                  @onEnter="handleEnter('otherInfo',other.field,false)"
                   @onBlur="onShowForm('otherInfo',other.field,false)"
                   @onEdit="onShowForm('otherInfo',other.field,true)">
               </CellOperate>
@@ -210,6 +210,8 @@ import CollapseWrap from "@/components/CollapseWrap";
 import Vue from 'vue'
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
+import {editCustomer} from "@/api/customer/publicleads";
+import {timeZoneList} from "@/assets/data/countryData";
 
 export default {
   props: {
@@ -387,22 +389,52 @@ export default {
         {
           field: 'timezone',
           label: '时区',
+          type: 'select',
+          value: '',
+          show: false,
+          options: {
+            options: timeZoneList,
+            props: {
+              filterable: true,
+              clearable: true
+            }
+          },
         },
         {
           field: 'scale',
           label: '规模',
+          type: 'select',
+          value: '',
+          options: {
+            options: [
+              {value: 1, label: '少于59人'},
+              {value: 2, label: '60-149人'},
+              {value: 3, label: '150-499人'},
+              {value: 4, label: '500-999人'},
+              {value: 5, label: '1000-4999人'},
+              {value: 6, label: '5000人以上'},
+            ]
+          }
         },
-        {
-          field: 'productGroup',
-          label: '产品分组',
-        },
+        // {
+        //   field: 'productGroup',
+        //   label: '产品分组',
+        // },
         {
           field: 'fax',
           label: '传真',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
           field: 'address',
           label: '详细地址',
+          type: 'input',
+          show: false,
+          value: '',
+          options: {},
         },
         {
           field: 'companyRemarks',
@@ -541,13 +573,14 @@ export default {
   watch: {
     row: {
       handler(newVal) {
-        if (!newVal?.id) {
+        if (!newVal?.customerId) {
           return
         }
         this.usuallyInfo.map(val => {
           if (val.field === 'tel') {
             val.value = {
               phonePrefix: newVal?.phonePrefix || '',
+              phone_prefix: newVal?.phonePrefix || '',
               phone: newVal?.phone || '',
             }
           } else {
@@ -569,18 +602,73 @@ export default {
     }
   },
   methods: {
-    onShowForm(listType, field, bool) {
-      this[listType].map(val => {
-        if (val.field === field) {
-          val.show = bool
+    editCustomer(data) {
+      return new Promise(async resolve => {
+        try {
+          const res = await editCustomer({...data})
+          if (res.code === 200) {
+            this.$message.success('修改成功')
+            resolve(true)
+          }
+        } catch {
         }
-        return val
       })
     },
-    handleSetValue(listType, field, value) {
+    onShowForm(listType, field, bool) {
       this[listType].forEach((val, index) => {
         if (val.field === field) {
-          this.$set(this[listType], index, {...val, value})
+          this.$set(this[listType], index, {...val, show: bool})
+        }
+      })
+    },
+    handleEnter(listType, field, bool) {
+      this[listType].forEach((val, index) => {
+        if (val.field === field) {
+          let data = {
+            id: this.row.customerId,
+            [field]: val.value
+          }
+          if (field === 'tel') {
+            delete data[field]
+            data = {
+              ...data,
+              phone: val.value.phone,
+              phonePrefix: val.value.phone_prefix
+            }
+          }
+          this.editCustomer(data).then(res => {
+            if (res) {
+              this.$set(this[listType], index, {...val, show: bool})
+            }
+          })
+        }
+      })
+
+    },
+    handleSetValue(listType, field, value) {
+      const validList = ['companyWebsite', 'shortName', 'companyName', 'tel', 'address', 'fax', 'companyRemarks']
+      if (validList.includes(field)) {
+        this[listType].forEach((val, index) => {
+          if (val.field === field) {
+            this.$set(this[listType], index, {...val, value})
+          }
+        })
+        return
+      }
+      this.confirmSetValue(listType, field, value)
+    },
+    confirmSetValue(listType, field, value) {
+      const data = {
+        id: this.row.customerId,
+        [field]: value
+      }
+      this.editCustomer(data).then(res => {
+        if (res) {
+          this[listType].forEach((val, index) => {
+            if (val.field === field) {
+              this.$set(this[listType], index, {...val, value})
+            }
+          })
         }
       })
     },

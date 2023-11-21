@@ -19,7 +19,7 @@
         <SelectNext
             :value.sync="curValue"
             :selectOptions="formOption"
-            @change="handleChange"
+            @update:value="handleChange"
             @visibleChange="visibleChange"/>
       </template>
       <!--   tree   -->

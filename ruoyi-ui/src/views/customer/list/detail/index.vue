@@ -3,20 +3,17 @@
     <div class="fs-20">客户详情</div>
     <div class="card-bg px-20 py-16 mt-20">
       <div class="base-info flex-start">
-        <el-avatar :size="110" shape="square"></el-avatar>
+        <el-avatar :size="110" shape="square" :src="rowData.companyLogo"></el-avatar>
 
         <el-row class="pl-10 fs-14">
-          <div class="fs-20 bold">测试公司</div>
+          <div class="fs-20 bold">{{ rowData.companyName || '---' }}</div>
           <div class="my-10 flex-middle gap-10">
-            <span>11248</span>
-            <span>冰岛</span>
-            <span>15:39 UTC+2</span>
+            <span>{{ rowData.customerNoType || '---' }}</span>
+            <span> <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
+                                :show-edit-icon="false"></CellOperate></span>
           </div>
-          <div class="mb-10">跟进入: admin</div>
-          <div class="flex-middle">
-            <el-tag class="customer-tag" closable>标签1</el-tag>
-            <el-button class="ml-10" size="mini" icon="el-icon-plus"></el-button>
-          </div>
+          <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
+          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" @onClose="getDetailData"/>
         </el-row>
       </div>
       <div class="info-wrap">
@@ -29,7 +26,7 @@
     </div>
     <el-row type="flex">
       <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
-        <TableRowTabs :options="options" :row="{customerId:customerId}"/>
+        <TableRowTabs :options="options" :row="rowData"/>
       </el-col>
       <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
@@ -155,6 +152,7 @@ import CustomerContactDrawer from "../CustomerContactDrawer.vue";
 import CellOperate from "../CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
+import TableRowTags from "@/views/customer/list/TableRowTags.vue";
 import {getScheduleList} from "@/api/customer/schedule";
 import {deepClone, formatMonthAndDay} from "@/utils";
 import {getCustomerDetail} from "@/api/customer/publicleads";
@@ -163,6 +161,7 @@ import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 
 export default {
   components: {
+    TableRowTags,
     TableNext,
     CustomerContactDrawer,
     DialogSchedule,
@@ -228,6 +227,7 @@ export default {
           this.rowData.stageId = this.rowData.stage?.id
           this.rowData.packetId = this.rowData.packet?.id
           this.rowData.timezone = +this.rowData.timezone
+          this.rowData.followPerson = this.rowData.followUpPersonnelList?.[0]?.nickName
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
           this.contactList = this.rowData.contactList
         }
@@ -313,6 +313,7 @@ export default {
   .wrap {
     width: max-content;
     box-sizing: border-box;
+    margin: 6px 0;
     padding: 6px 12px;
 
     &:hover {

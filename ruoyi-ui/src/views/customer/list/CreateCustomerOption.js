@@ -51,7 +51,7 @@ const UsuallyInfoRule = [
         title: '客户来源',
         type: 'el-select-tree',
         field: 'sourceIds',
-        value: '',
+        value: [],
         props: {
             data: [],
             props: {
@@ -263,11 +263,11 @@ const OtherInfoRule = [
             {value: 6, label: '5000人以上'},
         ]
     },
-    {
-        title: '产品分组',
-        type: 'select',
-        field: 'productGroup'
-    },
+    // {
+    //     title: '产品分组',
+    //     type: 'select',
+    //     field: 'productGroup'
+    // },
     {
         title: '传真',
         type: 'input',
