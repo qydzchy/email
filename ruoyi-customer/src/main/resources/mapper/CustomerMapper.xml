@@ -188,11 +188,11 @@
     </select>
 
     <select id="countCustomerDuplicate" resultType="java.lang.Integer">
-        select count(cc.id) from customer_customer cc
+        select count(distinct(cc.id)) from customer_customer cc
         left join customer_customer_contact ccc on cc.id = ccc.customer_id and ccc.del_flag = '0'
         where cc.del_flag = '0'
         <if test="columnName == 'all'">
-            and (cc.company_name like CONCAT('%', #{searchText}, '%') or cc.short_name like CONCAT('%', #{searchText}, '%') or cc.customer_no = #{searchText} or ccc.email = #{searchText} or ccc.nick_name = #{searchText} or ccc.phone like concat('%', #{searchText}, '%'} or ccc.social_platform like concat('%', #{searchText}, '%'})
+            and (cc.company_name like CONCAT('%', #{searchText}, '%') or cc.short_name like CONCAT('%', #{searchText}, '%') or cc.customer_no = #{searchText} or ccc.email like concat('%', #{searchText}) or ccc.nick_name = #{searchText} or ccc.phone like concat('%', #{searchText}, '%') or ccc.social_platform like concat('%', #{searchText}, '%'))
         </if>
         <if test="columnName == 'company_name'">
             and (cc.company_name like CONCAT('%', #{searchText}, '%') or cc.short_name like CONCAT('%', #{searchText}, '%'))
@@ -210,10 +210,10 @@
             and ccc.nick_name = #{searchText}
         </if>
         <if test="columnName == 'phone_number'">
-            and ccc.phone like concat('%', #{searchText}, '%'}
+            and ccc.phone like CONCAT('%', #{searchText}, '%')
         </if>
         <if test="columnName == 'social_media_account'">
-            and ccc.social_platform like concat('%', #{searchText}, '%'}
+            and ccc.social_platform like CONCAT('%', #{searchText}, '%')
         </if>
     </select>
 
@@ -244,7 +244,7 @@
         WHERE
         cc.del_flag = '0'
         <if test="columnName == 'all'">
-            AND (cc.company_name LIKE CONCAT('%', #{searchText}, '%') OR cc.short_name LIKE CONCAT('%', #{searchText}, '%') OR cc.customer_no = #{searchText} OR ccc.email = #{searchText} OR ccc.nick_name = #{searchText} OR ccc.phone LIKE CONCAT('%', #{searchText}, '%') OR ccc.social_platform LIKE CONCAT('%', #{searchText}, '%'))
+            AND (cc.company_name LIKE CONCAT('%', #{searchText}, '%') OR cc.short_name LIKE CONCAT('%', #{searchText}, '%') OR cc.customer_no = #{searchText} OR ccc.email LIKE CONCAT('%', #{searchText}, '%') OR ccc.nick_name = #{searchText} OR ccc.phone LIKE CONCAT('%', #{searchText}, '%') OR ccc.social_platform LIKE CONCAT('%', #{searchText}, '%'))
         </if>
         <if test="columnName == 'company_name'">
             AND (cc.company_name LIKE CONCAT('%', #{searchText}, '%') OR cc.short_name LIKE CONCAT('%', #{searchText}, '%'))
@@ -256,7 +256,7 @@
             AND ccc.email = #{searchText}
         </if>
         <if test="columnName == 'email_suffix'">
-            AND ccc.email LIKE CONCAT('%', #{searchText})
+            AND ccc.email LIKE CONCAT('%', #{searchText}, '%')
         </if>
         <if test="columnName == 'contact_name'">
             AND ccc.nick_name = #{searchText}
