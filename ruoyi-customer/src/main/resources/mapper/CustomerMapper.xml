@@ -77,7 +77,7 @@
     </select>
 
     <select id="countPrivateleadsCustomer" resultType="java.lang.Integer">
-        SELECT COUNT(*)
+        SELECT COUNT(DISTINCT (c.id))
         FROM customer_customer c
         LEFT JOIN customer_customer_segment cs ON c.id = cs.customer_id
         LEFT JOIN customer_customer_follow_up_personnel fup ON c.id = fup.customer_id AND fup.del_flag = '0'
@@ -136,6 +136,7 @@
               (#{segmentId} = -1 AND customer.focus_flag = 1) OR
               (#{segmentId} > 0 AND customerSegment.segment_id = #{segmentId})
             )
+        GROUP BY customer.id
         ORDER BY customer.create_time DESC
             LIMIT #{offset}, #{limit}
     </select>

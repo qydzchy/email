@@ -101,21 +101,21 @@
     <select id="selectSegmentCustomerCountByUserId" resultType="java.util.Map">
         SELECT
             cs.segment_id AS segmentId,
-            count( c.id ) AS customerCount
+            count( DISTINCT (c.id) ) AS customerCount
         FROM
-            customer_customer c
-            LEFT JOIN customer_customer_segment cs ON c.id = cs.customer_id
-            LEFT JOIN customer_customer_follow_up_personnel fup ON c.id = fup.customer_id AND fup.del_flag = '0'
+            customer_customer_segment cs
+            LEFT JOIN customer_customer c ON c.id = cs.customer_id and c.del_flag = '0' and c.sea_type = 1
+            LEFT JOIN customer_customer_follow_up_personnel fup ON c.id = fup.customer_id
+            AND fup.del_flag = '0'
         WHERE
-            c.sea_type = 1
-          AND c.del_flag = '0'
-          AND fup.user_id = #{userId}
-        GROUP BY cs.segment_id
+            fup.user_id = #{userId}
+        GROUP BY
+            cs.segment_id
     </select>
 
     <select id="countCustomerCountByUserId" resultType="java.lang.Integer">
         SELECT
-            count( c.id ) AS customerCount
+            count( DISTINCT (c.id) ) AS customerCount
         FROM
             customer_customer c
             LEFT JOIN customer_customer_segment cs ON c.id = cs.customer_id

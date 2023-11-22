@@ -1212,6 +1212,9 @@ public class CustomerServiceImpl implements ICustomerService {
         List<Map<String, Object>> mapList = new ArrayList<>();
         int importStatus = CustomerImportStatusEnum.FAILURE.getStatus();
         boolean isFirstRow = true; // 标志，判断是否是第一行
+        AtomicInteger expectedImportCount = new AtomicInteger();
+        AtomicInteger successImportCount = new AtomicInteger();
+        AtomicInteger failedImportCount = new AtomicInteger();
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -1238,15 +1241,13 @@ public class CustomerServiceImpl implements ICustomerService {
 
             Map<Object, List<Map<String, Object>>> companyNameMap = mapList.stream().filter(map -> map.get("companyName") != null && !map.get("companyName").toString().equals("")).collect(Collectors.groupingBy(map -> map.get("companyName").toString()));
 
-            AtomicInteger expectedImportCount = new AtomicInteger();
-            AtomicInteger successImportCount = new AtomicInteger();
-            AtomicInteger failedImportCount = new AtomicInteger();
             companyNameMap.forEach((companyName, contactMapList) -> {
-                CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(tagMap, stageMap, sourceMap, contactMapList);
+                CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(tagMap, stageMap, sourceMap, contactMapList, importType);
                 try {
                     insertCustomer(customerAddOrUpdateDTO);
                     successImportCount.getAndIncrement();
                 } catch (Exception e) {
+                    log.error("新增客户异常：{}", e);
                     failedImportCount.getAndIncrement();
                 }
                 expectedImportCount.getAndIncrement();
@@ -1258,6 +1259,9 @@ public class CustomerServiceImpl implements ICustomerService {
         }
 
         // 更新状态
+        customerImport.setExpectedImportCount(expectedImportCount.get());
+        customerImport.setSuccessImportCount(successImportCount.get());
+        customerImport.setFailedImportCount(failedImportCount.get());
         customerImport.setImportStatus(importStatus);
         customerImportMapper.updateCustomerImport(customerImport);
         return true;
@@ -1268,7 +1272,7 @@ public class CustomerServiceImpl implements ICustomerService {
      * @param contactMapList
      * @return
      */
-    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList) {
+    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
         Map<String, Object> map = contactMapList.get(0);
         String companyName = map.get("companyName") != null ? String.valueOf(map.get("companyName")) : null;
         String shortName = map.get("shortName") != null ? String.valueOf(map.get("shortName")) : null;
@@ -1321,6 +1325,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
         String address = map.get("address") != null ? String.valueOf(map.get("address")) : null;
         String companyRemarks = map.get("companyRemarks") != null ? String.valueOf(map.get("companyRemarks")) : null;
+        String customerNo = map.get("customerNo") != null ? String.valueOf(map.get("customerNo")) : null;
 
         List<CustomerContactAddOrUpdateDTO> contactList = new ArrayList<>();
         contactMapList.stream().forEach(contactMap -> {
@@ -1368,7 +1373,16 @@ public class CustomerServiceImpl implements ICustomerService {
             // 手机号码
             String cPhone = !contactPhoneJsonArr.isEmpty() ? JSONObject.toJSONString(contactPhoneJsonArr) : null;
             String position = contactMap.get("position") != null ? String.valueOf(contactMap.get("position")) : null;
-            Integer sex = contactMap.get("sex") != null ? Integer.parseInt(String.valueOf(contactMap.get("sex"))) : null;
+            // 性别 1.不设置 2.男 3.女
+            Integer sex = 1;
+            if (contactMap.containsKey("sex") && StringUtils.isNotBlank(contactMap.get("sex").toString())) {
+                String sexStr = String.valueOf(contactMap.get("sex"));
+                if (sexStr.equals("男")) {
+                    sex = 2;
+                } else if (sexStr.equals("女")) {
+                    sex = 3;
+                }
+            }
             String contactRemarks = contactMap.get("contactRemarks") != null ? String.valueOf(contactMap.get("contactRemarks")) : null;
 
             CustomerContactAddOrUpdateDTO contact = new CustomerContactAddOrUpdateDTO();
@@ -1385,6 +1399,9 @@ public class CustomerServiceImpl implements ICustomerService {
         CustomerAddOrUpdateDTO customerAddOrUpdateDTO = new CustomerAddOrUpdateDTO();
         customerAddOrUpdateDTO.setCompanyName(companyName);
         customerAddOrUpdateDTO.setShortName(shortName);
+        customerAddOrUpdateDTO.setSeaType(importType);
+        customerAddOrUpdateDTO.setCustomerNo(customerNo);
+        customerAddOrUpdateDTO.setCustomerNoType(StringUtils.isBlank(customerNo) ? 1 : 2);
         customerAddOrUpdateDTO.setCountryRegion(countryRegion);
         customerAddOrUpdateDTO.setTagIds(tagIds);
         customerAddOrUpdateDTO.setStageId(stageId);
@@ -1459,108 +1476,46 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return
      */
     private Map<String, Object> getExcelData(Row row) {
-        // 公司名称
-        Cell companyNameCell = row.createCell(0);
-        String companyName = companyNameCell.getStringCellValue();
-
-        // 联系人昵称
-        Cell contactNickNameCell = row.createCell(1);
-        String contactNickName = contactNickNameCell.getStringCellValue();
-
-        //联系人邮箱
-        Cell contactEmailCell = row.createCell(1);
-        String contactEmail = contactEmailCell.getStringCellValue();
-
-        // 公司简称
-        Cell shortNameCell = row.createCell(2);
-        String shortName = shortNameCell.getStringCellValue();
-
-        // 国家地区
-        Cell countryRegionCell = row.createCell(3);
-        String countryRegion = countryRegionCell.getStringCellValue();
-
-        // 标签
-        Cell tagCell = row.createCell(4);
-        String tag = tagCell.getStringCellValue();
-
-        // 客户阶段
-        Cell stageCell = row.createCell(5);
-        String stage = stageCell.getStringCellValue();
-
-        // 客户来源
-        Cell sourceCell = row.createCell(6);
-        String source = sourceCell.getStringCellValue();
-
-        // 公司网址
-        Cell companyWebsiteCell = row.createCell(6);
-        String companyWebsite = companyWebsiteCell.getStringCellValue();
-
-        // 座机
-        Cell phoneCell = row.createCell(7);
-        String phone = phoneCell.getStringCellValue();
-
-        // 详细地址
-        Cell addressCell = row.createCell(8);
-        String address = addressCell.getStringCellValue();
-
-        // 公司备注
-        Cell companyRemarksCell = row.createCell(9);
-        String companyRemarks = companyRemarksCell.getStringCellValue();
-
-        // 客户编号
-        Cell customerNoCell = row.createCell(10);
-        String customerNo = customerNoCell.getStringCellValue();
-
-        // 联系人电话
-        Cell contactPhoneCell = row.createCell(11);
-        String contactPhone = contactPhoneCell.getStringCellValue();
-
-        // Facebook
-        Cell facebookCell = row.createCell(12);
-        String facebook = facebookCell.getStringCellValue();
-
-        // Twitter
-        Cell twitterCell = row.createCell(12);
-        String twitter = twitterCell.getStringCellValue();
-
-        // LinkedIn
-        Cell linkedInCell = row.createCell(13);
-        String linkedIn = linkedInCell.getStringCellValue();
-
-        // 职位
-        Cell positionCell = row.createCell(14);
-        String position = positionCell.getStringCellValue();
-
-        // 性别 1.不设置 2.男 3.女
-        Cell sexCell = row.createCell(15);
-        String sex = sexCell.getStringCellValue();
-
-        // 联系人备注
-        Cell contactRemarksCell = row.createCell(16);
-        String contactRemarks = contactRemarksCell.getStringCellValue();
-
-
         Map<String, Object> map = new HashMap<>();
-        map.put("companyName", companyName);
-        map.put("contactNickName", contactNickName);
-        map.put("contactEmail", contactEmail);
-        map.put("shortName", shortName);
-        map.put("countryRegion", countryRegion);
-        map.put("tag", tag);
-        map.put("stage", stage);
-        map.put("source", source);
-        map.put("companyWebsite", companyWebsite);
-        map.put("phone", phone);
-        map.put("address", address);
-        map.put("companyRemarks", companyRemarks);
-        map.put("customerNo", customerNo);
-        map.put("contactPhone", contactPhone);
-        map.put("facebook", facebook);
-        map.put("twitter", twitter);
-        map.put("linkedIn", linkedIn);
-        map.put("position", position);
-        map.put("sex", sex);
-        map.put("contactRemarks", contactRemarks);
+
+        map.put("companyName", getStringValue(row.getCell(0)));
+        map.put("contactNickName", getStringValue(row.getCell(1)));
+        map.put("contactEmail", getStringValue(row.getCell(2)));
+        map.put("shortName", getStringValue(row.getCell(3)));
+        map.put("countryRegion", getStringValue(row.getCell(4)));
+        map.put("tag", getStringValue(row.getCell(5)));
+        map.put("stage", getStringValue(row.getCell(6)));
+        map.put("source", getStringValue(row.getCell(7)));
+        map.put("companyWebsite", getStringValue(row.getCell(8)));
+        map.put("phone", getStringValue(row.getCell(9)));
+        map.put("address", getStringValue(row.getCell(10)));
+        map.put("companyRemarks", getStringValue(row.getCell(11)));
+        map.put("customerNo", getStringValue(row.getCell(12)));
+        map.put("contactPhone", getStringValue(row.getCell(13)));
+        map.put("facebook", getStringValue(row.getCell(14)));
+        map.put("twitter", getStringValue(row.getCell(15)));
+        map.put("linkedIn", getStringValue(row.getCell(16)));
+        map.put("position", getStringValue(row.getCell(17)));
+        map.put("sex", getStringValue(row.getCell(18)));
+        map.put("contactRemarks", getStringValue(row.getCell(19)));
+
         return map;
+    }
+
+    private String getStringValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            default:
+                return null;
+        }
     }
 }

@@ -10,8 +10,8 @@
     >
       {{ tag.name }}
     </el-tag>
-    <el-button class="ml-10" size="mini" icon="el-icon-plus"
-               @click="$router.push('/customer/config?tab=tags')"></el-button>
+    <!--    <el-button class="ml-10" size="mini" icon="el-icon-plus"-->
+    <!--               @click="$router.push('/customer/config?tab=tags')"></el-button>-->
     <!--    <el-popover>-->
     <!--      <template #default>-->
 
@@ -41,8 +41,18 @@ export default {
     }
   },
   methods: {
+    async editCustomer(data) {
+      try {
+        const res = await editCustomer({...data})
+        if (res.code === 200) {
+          this.$emit('onClose')
+          this.$message.success('删除成功')
+        }
+      } catch {
+      }
+    },
     // 删除标签
-    async removeTag(id) {
+    removeTag(id) {
       let tagIds = []
       this.tagList.forEach(val => {
         if (val.id !== id) {
@@ -53,14 +63,7 @@ export default {
         id: this.detailId,
         tagIds: tagIds
       }
-      try {
-        const res = await editCustomer({...data})
-        if (res.code === 200) {
-          this.$emit('onClose')
-          this.$message.success('删除成功')
-        }
-      } catch {
-      }
+      this.editCustomer(data)
     },
   }
 }

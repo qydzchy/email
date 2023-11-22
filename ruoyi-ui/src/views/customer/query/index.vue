@@ -18,7 +18,9 @@
             placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
             v-model="querySearch.searchText"
         ></el-input>
-        <el-button class="custom-btn radius-0" type="primary" :disabled="!querySearch.searchText" @click="searchList">查询</el-button>
+        <el-button class="custom-btn radius-0" type="primary" :disabled="!querySearch.searchText" @click="searchList">
+          查询
+        </el-button>
       </div>
     </el-card>
     <el-card shadow="always" class="container mb-20">
@@ -52,7 +54,7 @@ export default {
   data() {
     return {
       querySearch: {
-        columnName: 'all',
+        columnName: '',
         searchText: ''
       },
       options: [],
@@ -134,6 +136,10 @@ export default {
         const res = await getQueryFieldColumn()
         if (res.code === 200) {
           this.options = res.data
+          if (this.options && this.options.length) {
+            this.querySearch.columnName = this.options[0].columnName
+          }
+
         }
       } catch {
       }
