@@ -148,10 +148,9 @@ public interface ICustomerService
 
     /**
      * 公海分组列表
-     * @param customerId
      * @return
      */
-    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(Long customerId);
+    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList();
 
     /**
      * 移入私海

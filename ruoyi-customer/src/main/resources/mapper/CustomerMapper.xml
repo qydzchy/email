@@ -93,9 +93,15 @@
     </select>
 
     <select id="publicleadsGroupsList" resultType="com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO">
-        select pg.id, pg.name from customer_publicleads_groups pg
-        left join customer_publicleads_groups_user pgu on pg.id = pgu.publicleads_groups_id
-        where pg.del_flag = '0'
+        SELECT
+            pg.id,
+            pg.NAME
+        FROM
+            customer_publicleads_groups pg
+            LEFT JOIN customer_publicleads_groups_user pgu ON pg.id = pgu.publicleads_groups_id
+        WHERE
+            pgu.user_id = #{userId} and pg.del_flag = '0'
+        GROUP BY pg.id
     </select>
 
     <select id="selectPrivateleadsCustomerPage"

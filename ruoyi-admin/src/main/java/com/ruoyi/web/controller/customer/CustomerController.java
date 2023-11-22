@@ -294,9 +294,9 @@ public class CustomerController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:groups:list')")
     @GetMapping("/publicleads/groups/list")
-    public AjaxResult publicleadsGroupsList(Long customerId)
+    public AjaxResult publicleadsGroupsList()
     {
-        return success(customerService.publicleadsGroupsList(customerId));
+        return success(customerService.publicleadsGroupsList());
     }
 
     /**
