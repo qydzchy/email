@@ -206,4 +206,9 @@ public interface ICustomerService
      * @return
      */
     boolean importCustomer(Integer importType, MultipartFile file);
+
+    /**
+     * 移入公海规则处理
+     */
+    boolean movePublicleadsRulesHandler();
 }

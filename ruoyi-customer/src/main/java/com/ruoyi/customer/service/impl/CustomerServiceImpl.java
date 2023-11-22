@@ -89,6 +89,10 @@ public class CustomerServiceImpl implements ICustomerService {
     @Resource
     private CustomerSegmentLogMapper customerSegmentLogMapper;
     @Resource
+    private PublicleadsRulesMapper publicleadsRulesMapper;
+    @Resource
+    private PublicleadsWhiteListMapper publicleadsWhiteListMapper;
+    @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
     private IPublicleadsGroupsService publicleadsGroupsService;
@@ -1265,6 +1269,30 @@ public class CustomerServiceImpl implements ICustomerService {
         customerImport.setImportStatus(importStatus);
         customerImportMapper.updateCustomerImport(customerImport);
         return true;
+    }
+
+    /**
+     * 移入公海规则处理
+     * @return
+     */
+    @Override
+    public boolean movePublicleadsRulesHandler() {
+        // 查询所有开启状态和已经开始规则的客群天数
+        List<PublicleadsRulesSegmentIdDaysBO> segmentIdDaysBOList = publicleadsRulesMapper.getSegmentIdAndDays();
+        if (segmentIdDaysBOList == null || segmentIdDaysBOList.isEmpty()) return true;
+
+        // 获取白名单用户
+        List<PublicleadsWhiteList> publicleadsWhiteListList = publicleadsWhiteListMapper.selectPublicleadsWhiteListList(new PublicleadsWhiteList());
+        Set<Long> userIdSet = publicleadsWhiteListList.stream().map(PublicleadsWhiteList::getUserId).collect(Collectors.toSet());
+
+        segmentIdDaysBOList.stream().forEach(segmentIdDaysBO -> {
+            Long segmentId = segmentIdDaysBO.getSegmentId();
+            Integer days = segmentIdDaysBO.getDays();
+
+            // 查询客户信息
+
+        });
+        return false;
     }
 
     /**

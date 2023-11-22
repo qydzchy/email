@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsRules;
+import com.ruoyi.customer.domain.bo.PublicleadsRulesSegmentIdDaysBO;
 import com.ruoyi.customer.domain.vo.CustomerPublicleadsRulesVO;
 import com.ruoyi.customer.domain.vo.PublicleadsRulesListVO;
 import org.apache.ibatis.annotations.Param;
@@ -73,4 +74,10 @@ public interface PublicleadsRulesMapper
      * @return
      */
     List<CustomerPublicleadsRulesVO> enableSegmentList();
+
+    /**
+     * 获取公海规则客群ID和天数
+     * @return
+     */
+    List<PublicleadsRulesSegmentIdDaysBO> getSegmentIdAndDays();
 }
