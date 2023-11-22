@@ -461,11 +461,6 @@ PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '移入公海规则表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of customer_publicleads_rules
--- ----------------------------
-INSERT INTO `customer_publicleads_rules` VALUES (1, '规则名称测试01', 1, 1, 1, 0, '2023-10-31 23:59:59', '0', 1, 'admin', '2023-11-01 14:23:21', 1, 'admin', '2023-11-01 14:28:31');
-
--- ----------------------------
 -- Table structure for customer_publicleads_white_list
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_white_list`;

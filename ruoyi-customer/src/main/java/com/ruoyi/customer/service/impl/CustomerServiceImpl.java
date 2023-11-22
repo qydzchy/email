@@ -704,10 +704,10 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(Long customerId) {
+    public List<CustomerPublicleadsGroupListVO> publicleadsGroupsList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        return customerMapper.publicleadsGroupsList(customerId, userId);
+        return customerMapper.publicleadsGroupsList(userId);
     }
 
     /**

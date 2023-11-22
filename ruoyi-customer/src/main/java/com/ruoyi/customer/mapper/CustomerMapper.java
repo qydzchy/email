@@ -98,11 +98,10 @@ public interface CustomerMapper
 
     /**
      * 查询公海分组列表
-     * @param customerId
      * @param userId
      * @return
      */
-    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(Long customerId, Long userId);
+    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(@Param("userId") Long userId);
 
     /**
      * 将客户移入私海
