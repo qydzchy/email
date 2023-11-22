@@ -30,7 +30,7 @@ import {province, countryList} from '@/assets/data/countryData'
 export default {
   props: {
     value: {
-      type: Array,
+      type: Array | String,
       default: () => [],
       required: false
     }

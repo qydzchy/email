@@ -333,7 +333,7 @@ export default {
           options: {},
         },
         {
-          field: 'customerNoType',
+          field: 'customerNo',
           label: '客户编号',
           type: 'input',
           show: false,

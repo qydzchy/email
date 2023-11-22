@@ -92,7 +92,11 @@
                     :options="customerRuleOption"
                     :props="{value:'columnName',label:'nickName',children:'children'}"
                     :checkStrictly="true"
-                    @change="(value)=>handleRuleContent(item.ruleId,'columnName',value)"
+                    @change="(value)=>{
+                      item.conditionType =''
+                      item.value=''
+                      handleRuleContent(item.ruleId,'columnName',value)
+                    }"
                 >
                 </el-cascader>
               </el-col>
@@ -101,7 +105,10 @@
                 <el-select
                     placeholder="运算"
                     :value.sync="item.conditionType"
-                    @change="(value)=>handleRuleContent(item.ruleId,'conditionType',value)">
+                    @change="(value)=>{
+                      item.value = ''
+                      handleRuleContent(item.ruleId,'conditionType',value)
+                    }">
                   <el-option
                       :key="index"
                       v-for="(opt,index) in filterConditionTypeOption(item.columnName)"
@@ -112,11 +119,26 @@
                 </el-select>
               </el-col>
               <template v-if="item.conditionType && ![3,4].includes(item.conditionType)">
-                <!--      日期类型        -->
+                <!--        选项        -->
                 <el-col>
-                  <el-select :value.sync="item.dateType" placeholder="选项">
+                  <template v-if="filterConditionSecondType(item.columnName) ==='select'">
+                    <el-select :value.sync="item.value" placeholder="选项"
+                               @change="(value)=>handleRuleContent(item.ruleId,'value',value)">
+                      <el-option v-for="(opt,index) in filterConditionSecondOption(item.columnName)" :key="index"
+                                 :label="opt.label"
+                                 :value="opt.value">
+                      </el-option>
+                    </el-select>
+                  </template>
+                  <template v-else-if="filterConditionSecondType(item.columnName) ==='country'">
+                    <SelectCountry :value.sync="item.value"
+                                   @input="(value)=>handleRuleContent(item.ruleId,'value',value)"/>
+                  </template>
+                  <template v-else>
+                    <el-input :value.sync="item.value" placeholder="请输入"
+                              @input="(value)=>handleRuleContent(item.ruleId,'value',value)"/>
+                  </template>
 
-                  </el-select>
                 </el-col>
                 <!--       时间范围       -->
                 <!--              <el-col style="width: 140px">-->
@@ -193,6 +215,8 @@
 
 <script>
 import CustomerOperateData from '@/assets/data/customer-operate.json'
+import {timeZoneList} from "@/assets/data/countryData";
+import SelectCountry from "@/components/SelectCountry/index.vue";
 
 export default {
   props: {
@@ -221,6 +245,23 @@ export default {
       default: () => [],
       required: false
     },
+    indexOpt: {
+      type: Object,
+      default: () => {
+        return {
+          groupOption: [],
+          stageOption: [],
+          originOption: [],
+          poolGroupOption: [],
+          poolReasonOption: [],
+          tagOption: [],
+        }
+      },
+      required: false,
+    },
+  },
+  components: {
+    SelectCountry
   },
   data() {
     return {
@@ -248,7 +289,60 @@ export default {
       },
       deep: true,
       immediate: true,
+    },
+    indexOpt: {
+      handler(newVal) {
+        console.log(newVal)
+        this.CustomerOperateData.fieldList.map(val => {
+          if (val['field_type'] === 'customer_packet') {
+            val.options = newVal.groupOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name,
+              }
+            })
+          } else if (val['field_type'] === 'customer_stage') {
+            val.options = newVal.stageOption
+          } else if (val['field_type'] === 'customer_source') {
+            val.options = newVal.originOption || []
+          } else if (val['field_type'] === 'publicleads_groups') {
+            const valid = !newVal.poolGroupOption && !newVal.poolGroupOption.length
+            if (valid) {
+              return
+            }
+            val.value = newVal.poolGroupOption[0]?.id
+            val.options = newVal.poolGroupOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name
+              }
+            })
+          } else if (val['field_type'] === 'customer_tag') {
+            const valid = !newVal.tagOption && !newVal.tagOption.length
+            if (valid) {
+              return
+            }
+            val.options = newVal.tagOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name,
+              }
+            })
+          }
+
+          return val
+        })
+      },
+      deep: true,
+      immediate: true,
     }
+  },
+  created() {
+    this.CustomerOperateData.fieldList.map(val => {
+      if (val['field_type'] === 'timezone') {
+        val.options = timeZoneList
+      }
+    })
   },
   methods: {
     onInput(field, value) {
@@ -293,14 +387,8 @@ export default {
       this.specialList = this.specialList.filter(val => val.ruleId !== id)
     },
     filterConditionTypeOption(value) {
-
-      let targetValue = ''
-      if (Array.isArray(value)) {
-        targetValue = value[value?.length - 1] || ''
-      } else {
-        targetValue = value
-      }
-      if (!targetValue) {
+      const targetValue = this.generateConditionValue(value)
+      if (!targetValue.length) {
         return []
       }
       const filterType = this.CustomerOperateData['fieldList'].filter(val => val.field_type === targetValue)[0]?.conditionType
@@ -317,6 +405,37 @@ export default {
       })
       return conditionOption
     },
+    filterConditionSecondOption(value) {
+      const targetValue = this.generateConditionValue(value)
+      const filterOption = this.CustomerOperateData['fieldList'].filter(val => val.field_type === targetValue)[0]?.options
+      if (!filterOption?.length) {
+        return []
+      }
+      return filterOption
+    },
+    filterConditionSecondType(value) {
+      const targetValue = this.generateConditionValue(value)
+      if (!targetValue.length) {
+        return []
+      }
+      const filterType = this.CustomerOperateData['fieldList'].filter(val => val.field_type === targetValue)[0]?.type
+      if (!filterType) {
+        return 'input'
+      }
+      return filterType
+    },
+    generateConditionValue(value) {
+      let targetValue = ''
+      if (Array.isArray(value)) {
+        targetValue = value[value?.length - 1] || ''
+      } else {
+        targetValue = value
+      }
+      if (!targetValue) {
+        return []
+      }
+      return targetValue
+    }
   }
 }
 </script>

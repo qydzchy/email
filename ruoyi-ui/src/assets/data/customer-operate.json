@@ -2,129 +2,404 @@
   "fieldList": [
     {
       "field_type": "company_name",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "short_name",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "customer_no",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "customer_tag",
-      "conditionType": [1, 2, 5, 6, 3, 4],
+      "conditionType": [
+        1,
+        2,
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "select"
     },
     {
       "field_type": "country_region",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "country"
     },
     {
       "field_type": "timezone",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "select"
     },
     {
       "field_type": "customer_stage",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "select"
     },
     {
       "field_type": "customer_source",
-      "conditionType": [3, 4, 5, 6, 1, 2],
+      "conditionType": [
+        3,
+        4,
+        5,
+        6,
+        1,
+        2
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "select"
     },
     {
       "field_type": "customer_packet",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "select"
     },
     {
       "field_type": "publicleads_groups",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [],
+      "type": "select"
     },
     {
       "field_type": "customer_rating",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [
+        {
+          "value": 0,
+          "label": "0星"
+        },
+        {
+          "value": 1,
+          "label": "1星"
+        },
+        {
+          "value": 2,
+          "label": "2星"
+        },
+        {
+          "value": 3,
+          "label": "3星"
+        },
+        {
+          "value": 4,
+          "label": "4星"
+        },
+        {
+          "value": 5,
+          "label": "5星"
+        }
+      ],
+      "type": "select"
     },
     {
       "field_type": "scale",
-      "conditionType": [5, 6, 3, 4],
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": [
+        {
+          "value": 1,
+          "label": "少于59人"
+        },
+        {
+          "value": 2,
+          "label": "60-149人"
+        },
+        {
+          "value": 3,
+          "label": "150-499人"
+        },
+        {
+          "value": 4,
+          "label": "500-999人"
+        },
+        {
+          "value": 5,
+          "label": "1000-4999人"
+        },
+        {
+          "value": 6,
+          "label": "5000人以上"
+        }
+      ],
+      "type": "select"
     },
     {
       "field_type": "company_website",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "fax",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "special_plane",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "address",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "company_remarks",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "follow_up_personnel",
-      "conditionType": [3, 4, 5, 6, 1, 2],
+      "conditionType": [
+        3,
+        4,
+        5,
+        6,
+        1,
+        2
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "creator",
-      "conditionType": [ 5, 6, 1, 2],
+      "conditionType": [
+        5,
+        6,
+        1,
+        2
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "last_modified_by",
-      "conditionType": [ 5, 6, 1, 2],
+      "conditionType": [
+        5,
+        6,
+        1,
+        2
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
     },
     {
       "field_type": "follow_up_number",
-      "conditionType": [3, 4],
+      "conditionType": [
+        3,
+        4
+      ],
       "dateType": [],
-      "timeRange": []
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "nick_name",
+      "conditionType": [
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "email",
+      "conditionType": [
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "rank",
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": [
+        {
+          "value": 1,
+          "label": "普通职员"
+        },
+        {
+          "value": 2,
+          "label": "中层管理"
+        },
+        {
+          "value": 3,
+          "label": "高层"
+        }
+      ],
+      "type": "select"
+    },
+    {
+      "field_type": "phone",
+      "conditionType": [
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "social_platform",
+      "conditionType": [
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "sex",
+      "conditionType": [
+        5,
+        6,
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": [
+        {
+          "value": 1,
+          "label": "不设置"
+        },
+        {
+          "value": 2,
+          "label": "男"
+        },
+        {
+          "value": 3,
+          "label": "女"
+        }
+      ],
+      "type": "select"
+    },
+    {
+      "field_type": "contact_remarks",
+      "conditionType": [
+        3,
+        4
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
     }
   ],
   "conditionTypeOption": [

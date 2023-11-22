@@ -44,6 +44,7 @@
     <DrawerCreateCustomerGroup
         :visible.sync="drawerVisible"
         :row="createCustomerRow"
+        :index-opt.sync="indexOpt"
         @onConfirm="onConfirm"
         @onCancel="onCancel"/>
   </div>
@@ -55,6 +56,12 @@ import DrawerCreateCustomerGroup from "./DrawerCreateCustomerGroup.vue";
 import DelPopover from "@/components/DevPopover";
 import {deleteSegment, getSegmentList, getSegmentUserList} from "@/api/customer/segment";
 import {deepClone} from "@/utils";
+import {packetList} from "@/api/company/group";
+import {stageList} from "@/api/company/status";
+import {getOriginList} from "@/api/company/origin";
+import {searchGroupsCustomer} from "@/api/customer/publicleads";
+import {reasonList} from "@/api/company/poolRule";
+import {getCustomerTagList} from "@/api/customer/config";
 
 export default {
   components: {
@@ -151,6 +158,14 @@ export default {
       ],
       drawerVisible: false,
       createCustomerRow: {},
+      indexOpt: {
+        groupOption: [],
+        stageOption: [],
+        originOption: [],
+        poolGroupOption: [],
+        poolReasonOption: [],
+        tagOption: [],
+      }
     }
   },
   computed: {
@@ -167,6 +182,12 @@ export default {
   },
   mounted() {
     this.getMenuList()
+    this.getGroupList()
+    this.getStageList()
+    this.getOriginList()
+    this.getPoolList()
+    this.getPoolReasonList()
+    this.getTagList()
   },
   methods: {
     async getList(params) {
@@ -206,6 +227,67 @@ export default {
         }
       } catch {
 
+      }
+    },
+    // 分组选项
+    async getGroupList() {
+      try {
+        const res = await packetList()
+        if (res.code === 200) {
+          this.indexOpt.groupOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 阶段选项
+    async getStageList() {
+      try {
+        const res = await stageList()
+        if (res.code === 200) {
+          this.indexOpt.stageOption = res.data
+        }
+      } catch (e) {
+      }
+    },
+    // 来源选项
+    async getOriginList() {
+      try {
+        const res = await getOriginList()
+        if (res.code === 200) {
+          this.indexOpt.originOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 公海分组选项
+    async getPoolList() {
+      try {
+        const res = await searchGroupsCustomer()
+        if (res.code === 200) {
+          this.indexOpt.poolGroupOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 移入公海原因
+    async getPoolReasonList() {
+      try {
+        const res = await reasonList()
+        if (res.code === 200) {
+          this.indexOpt.poolReasonOption = res.data
+        }
+      } catch {
+
+      }
+    },
+    // 客户标签选项
+    async getTagList() {
+      try {
+        const res = await getCustomerTagList()
+        if (res.code === 200) {
+          this.indexOpt.tagOption = res.data
+        }
+      } catch {
       }
     },
     changeMenu(id) {
