@@ -65,6 +65,7 @@ import {formOption} from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
 import {addCustomer, editCustomer} from "@/api/customer/publicleads";
 import {deepClone} from "@/utils";
+import {mapTimezone} from "@/assets/data/countryData";
 
 export default {
   props: {
@@ -290,13 +291,10 @@ export default {
           if (!this.customerOtherForm.formData) {
             return
           }
-          const mapTimeZone = {
-            'CN': 8
-          }
           const tempOpt = this.customerOtherForm.getRule('timezone').tempOptions
           if (country[0]) {
-            const options = tempOpt.filter(val => val.value === mapTimeZone[country[0]])
-            const value = mapTimeZone[country[0]]
+            const options = tempOpt.filter(val => val.value === mapTimezone[country[0]])
+            const value = mapTimezone[country[0]]
             this.customerOtherForm.updateRule('timezone', {options, value})
           } else {
             this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})

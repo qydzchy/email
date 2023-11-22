@@ -451,6 +451,7 @@ export default {
         {
           field: 'companyLogo',
           label: '公司logo',
+          type: 'picture',
           otherEcho: true,
           slot: '111'
         },
@@ -717,7 +718,6 @@ export default {
     .wrap {
       width: 50%;
       padding-top: 10px;
-
       .copy-text {
         cursor: pointer;
 
@@ -739,6 +739,7 @@ export default {
   .info-card {
     .wrap {
       width: 50%;
+      height: 100%;
       padding: 6px 10px !important;
       cursor: pointer;
       border-radius: 4px;
