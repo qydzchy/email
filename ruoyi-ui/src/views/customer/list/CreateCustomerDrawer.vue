@@ -134,8 +134,8 @@ export default {
           if (newVal?.id) {
             this.customerFormValue = {...deepClone(newVal)}
             this.customerOtherFormValue = {...deepClone(newVal)}
-            let contactList = this.generateContactList(newVal.contactList)
-            this.contactList = deepClone(contactList)
+            // let contactList = this.generateContactList(newVal.contactList)
+            this.contactList = deepClone(newVal.contactList)
           }
         } catch (e) {
           console.error(e)
@@ -196,7 +196,7 @@ export default {
                       backgroundColor: val.color ? val.color + '4d' : '',
                       color: val.color,
                       borderRadius: '4px',
-                      padding:'2px 6px'
+                      padding: '2px 6px'
                     }
                   }, [val.name])
                 }
@@ -244,6 +244,9 @@ export default {
       this.customerForm.validate(val => {
         if (val) {
           let contactList = this.$refs['contact-card'].getInnerData()
+          if (!contactList) {
+            return
+          }
           contactList = contactList.map(val => {
             delete val.show
             val.primaryContactFlag = +val.primaryContactFlag
@@ -251,6 +254,7 @@ export default {
           })
           const customerForm = this.customerForm.formData()
           const otherForm = this.customerOtherForm.formData()
+          console.log(otherForm)
           let data = {
             ...customerForm,
             ...otherForm,
@@ -299,16 +303,17 @@ export default {
           break;
       }
     },
-    generateContactList(arr) {
-      if (arr && !arr.length) {
-        return []
-      }
-      return arr.map(val => {
-        val.phone = val.phone ? JSON?.parse(val.phone) : []
-        val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
-        return val
-      })
-    },
+    // generateContactList(arr) {
+    //   if (arr && !arr.length) {
+    //     return []
+    //   }
+    //   console.log(arr)
+    //   return arr.map(val => {
+    //     val.phone = val.phone ? JSON?.parse(val.phone) : []
+    //     val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
+    //     return val
+    //   })
+    // },
   }
 }
 </script>

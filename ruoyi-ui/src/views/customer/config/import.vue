@@ -16,7 +16,7 @@
 <script>
 import TableNext from "@/components/TableNext/index.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
-import {getImportDocumentList} from "@/api/customer/config";
+import {getImportCustomerList} from "@/api/customer/config";
 
 export default {
   components: {
@@ -66,7 +66,7 @@ export default {
       paginationOption: {
         total: 0,
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         pageSizes: [10, 20, 50, 100],
         layout: 'total,prev,pager,next,sizes'
       },
@@ -78,8 +78,7 @@ export default {
     }
   },
   mounted() {
-    const {current = 1, pageSize = 20} = this.$route.query
-    console.log(this.$route.query)
+    const {current = 1, pageSize = 10} = this.$route.query
     this.generateRoute(current, pageSize)
     this.paginationOption = {
       ...this.paginationOption,
@@ -91,26 +90,26 @@ export default {
   methods: {
     async getList() {
       try {
-        const res = await getImportDocumentList()
+        const {currentPage, pageSize} = this.paginationOption
+        const res = await getImportCustomerList({
+          pageNum: currentPage,
+          pageSize
+        })
         if (res.code === 200) {
-          this.list = res.data
+          this.list = res.rows
           this.paginationOption.total = res.total
         }
       } catch {
       }
     },
     onRefresh() {
-      this.tableLoading = true
-      setTimeout(() => {
-        this.tableLoading = false
-      }, 2000)
+      this.getList()
     },
     handleSizeChange(value) {
       this.paginationOption.pageSize = value
       this.generateRoute(this.paginationOption.currentPage, value)
     },
     handleCurrentChange(value) {
-      console.log(this.paginationOption)
       this.paginationOption.currentPage = value
       this.generateRoute(value, this.paginationOption.pageSize)
     },

@@ -5,55 +5,67 @@
       <slot></slot>
     </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item
-          v-for="(item) in itemList"
-          :key="item.command"
-          :command="item.command">
-          {{ item.label }}
-        </el-dropdown-item>
+        <template v-for="(item) in itemList">
+          <el-dropdown-item
+              v-if="commandList.includes(item.command)"
+              :key="item.command"
+              :command="item.command">
+            {{ item.label }}
+          </el-dropdown-item>
+        </template>
+
       </el-dropdown-menu>
     </el-dropdown>
-    <DialogSchedule
-      v-if="scheduleVisible"
-      :visible.sync="scheduleVisible"
-      :formData="row"
+    <!--  写跟进  -->
+    <DialogTemplateFollow
+        v-if="templateVisible"
+        :visible.sync="templateVisible"
+        :row="row"
+        @close="hideTemplateDialog"
+        @onConfirm="hideTemplateDialog"
     />
-    <!--    -->
+    <!--  日程  -->
+    <DialogSchedule
+        v-if="scheduleVisible"
+        :visible.sync="scheduleVisible"
+        :formData="row"
+    />
+    <!--  移动至分组  -->
     <DialogMoveToGroup
-      v-if="moveGroupVisible"
-      :visible.sync="moveGroupVisible"
-      :row="row"
-      :groupOption="indexOpt.groupOption"/>
-    <!--    -->
+        v-if="moveGroupVisible"
+        :visible.sync="moveGroupVisible"
+        :row="row"
+        :groupOption="indexOpt.groupOption"/>
+    <!--  合并  -->
     <DialogMergeCustomer
-      v-if="mergeVisible"
-      :visible.sync="mergeVisible"/>
+        v-if="mergeVisible"
+        :visible.sync="mergeVisible"/>
     <!--  公共弹框：转移给、共享、重新分配  -->
     <DialogCommonOperate
-      v-if="commonVisible"
-      :cur-type="commonType"
-      :row="row"
-      :visible.sync="commonVisible"
-      @onHideDialog="onHideCommonDialog"/>
-    <!--    -->
+        v-if="commonVisible"
+        :cur-type="commonType"
+        :row="row"
+        :visible.sync="commonVisible"
+        @onHideDialog="onHideCommonDialog"/>
+    <!--  移除  -->
     <DialogRemoveFollow
-      v-if="followVisible"
-      :row="row"
-      :visible.sync="followVisible"/>
+        v-if="followVisible"
+        :row="row"
+        :visible.sync="followVisible"/>
     <!--  移入公海  -->
     <DialogMoveToPool
-      v-if="moveToPoolVisible"
-      :row="row"
-      :visible.sync="moveToPoolVisible"
-      :poolOption="indexOpt.poolGroupOption"
-      :reasonOption="indexOpt.poolReasonOption"
+        v-if="moveToPoolVisible"
+        :row="row"
+        :visible.sync="moveToPoolVisible"
+        :poolOption="indexOpt.poolGroupOption"
+        :reasonOption="indexOpt.poolReasonOption"
     />
     <!--  改变公海分组  -->
     <DialogChangePoolGroup
-      v-if="changePoolVisible"
-      :row="row"
-      :visible.sync="changePoolVisible"
-      :poolOption="indexOpt.poolGroupOption"
+        v-if="changePoolVisible"
+        :row="row"
+        :visible.sync="changePoolVisible"
+        :poolOption="indexOpt.poolGroupOption"
     />
   </div>
 </template>
@@ -66,6 +78,7 @@ import DialogRemoveFollow from "./DialogRemoveFollow.vue";
 import DialogMoveToPool from "./DialogMoveToPool.vue";
 import DialogChangePoolGroup from "./DialogChangePoolGroup.vue";
 import DialogCommonOperate from "./DialogCommonOperate.vue";
+import DialogTemplateFollow from "./DialogTemplateFollow.vue"
 import {followCancelCustomer} from "@/api/customer/publicleads";
 
 export default {
@@ -82,16 +95,25 @@ export default {
         return {}
       },
       required: false
-    }
+    },
+    commandList: {
+      type: Array,
+      default: () => {
+        return ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'transfer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
+      },
+      required: false
+    },
+
   },
   components: {
+    DialogTemplateFollow,
     DialogSchedule,
     DialogMoveToGroup,
     DialogMergeCustomer,
     DialogRemoveFollow,
     DialogMoveToPool,
     DialogChangePoolGroup,
-    DialogCommonOperate
+    DialogCommonOperate,
   },
   data() {
     return {
@@ -145,6 +167,7 @@ export default {
           label: '变更公海分组'
         },
       ],
+      templateVisible: false,
       scheduleVisible: false,
       moveGroupVisible: false,
       mergeVisible: false,
@@ -158,6 +181,9 @@ export default {
   methods: {
     handleCommand(value) {
       switch (value) {
+        case "follow":
+          this.templateVisible = true
+          break;
         case "schedule":
           this.scheduleVisible = true
           break;
@@ -217,6 +243,9 @@ export default {
           this.commonVisible = true
           break;
       }
+    },
+    hideTemplateDialog() {
+      this.templateVisible = false
     },
     onHideCommonDialog() {
       this.commonType = ''

@@ -8,7 +8,7 @@
         <el-row class="pl-10 fs-14">
           <div class="fs-20 bold">{{ rowData.companyName || '---' }}</div>
           <div class="my-10 flex-middle gap-10">
-            <span>{{ rowData.customerNoType || '---' }}</span>
+            <span>{{ rowData.customerNo || '---' }}</span>
             <span> <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
                                 :show-edit-icon="false"></CellOperate></span>
           </div>

@@ -299,15 +299,24 @@ const OtherInfoRule = [
         title: '公司logo',
         type: 'upload',
         field: 'companyLogo',
+        value: '',
         props: {
             action: process.env.VUE_APP_BASE_API + "/common/upload",
+            fileList: [],
             multiple: false,
             limit: 1,
-            uploadType: 'image*/',
+            uploadType: "image",
+            accept: "image/*",
             name: 'file',
             withCredentials: true,
             headers: {
                 Authorization: 'Bearer ' + getToken()
+            },
+            onPreview:(file)=>{
+                console.log(file)
+            },
+            onSuccess: (res, file) => {
+                file.url = res.fileName
             }
         },
     }

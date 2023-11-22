@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request, {download} from "@/utils/request";
 
 
 /*
@@ -124,13 +124,41 @@ export function uploadMultipleDocument(data) {
 export function downloadImportDocument(id) {
     return request({
         url: '/customer/customer/document/download/' + id,
-        method: 'get'
+        method: 'get',
+        responseType:'blob'
     })
 }
 
 export function deleteImportDocument(data) {
     return request({
         url: '/customer/customer/document/delete',
+        method: 'post',
+        data
+    })
+}
+
+// 导入客户列表
+export function getImportCustomerList(params) {
+    return request({
+        url: '/customer/customer/import/list',
+        method: 'get',
+        params
+    })
+}
+
+// 下载模板
+export function downloadTemplate() {
+    return request({
+        url: '/customer/customer/import/template/download',
+        method: 'get',
+        responseType:'blob'
+    })
+}
+
+// 导入客户
+export function importCustomer(data) {
+    return request({
+        url: '/customer/customer/import/add',
         method: 'post',
         data
     })

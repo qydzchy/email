@@ -18,9 +18,9 @@
         </template>
         <el-col class="mt-10 doc-form">
           <formCreate
-            v-model="fApi"
-            :rule="rule"
-            :option="option"/>
+              v-model="fApi"
+              :rule="rule"
+              :option="option"/>
         </el-col>
         <TableNext :list="tradeList" :columns="tradeColumns" :extra-option="extraOption"/>
       </CollapseWrap>
@@ -34,8 +34,24 @@
 import TableNext from "@/components/TableNext/index.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import {formOption} from "@/constant/form"
+import {saveAs} from 'file-saver'
+import {
+  deleteImportDocument,
+  downloadImportDocument,
+  getImportDocumentList,
+  uploadMultipleDocument
+} from "@/api/customer/config";
+import {EmptyStr} from "@/utils/tools";
 
 export default {
+  props: {
+    row: {
+      type: Object,
+      default: () => {
+      },
+      required: false
+    }
+  },
   components: {TableNext, CollapseWrap},
   data() {
     return {
@@ -156,37 +172,125 @@ export default {
           }]
       }],
       option: {...formOption},
-      tradeList: [],
+      tradeList: [{name: '1'}],
       tradeColumns: [
         {
           label: '文件名称',
           field: 'name',
           width: 200,
+          render: (_row, field) => EmptyStr(field)
         },
         {
           label: '关联类型',
           field: 'type',
           width: 200,
+          render: (_row, field) => {
+            const mapType = {
+              1: '邮件附件',
+              2: '手动上传',
+            }
+            return <div>{mapType[field] || '---'}</div>
+          }
         },
         {
           label: '文件大小',
           field: 'size',
+          render: (_row, field) => EmptyStr(field)
         },
         {
           label: '添加人',
-          field: 'person',
+          field: 'createBy',
+          render: (_row, field) => EmptyStr(field)
         },
         {
           label: '操作',
           field: 'operate',
           fixed: 'right',
           width: 60,
+          render: (row, _field) => {
+            return <el-dropdown
+                trigger="click"
+                on={{
+                  command: (value) => this.handleCommand(value, row)
+                }}>
+              <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="send">发送邮件</el-dropdown-item>
+                <el-dropdown-item command="download">下载附件</el-dropdown-item>
+                <el-dropdown-item command="upload">上传云盘</el-dropdown-item>
+                <el-dropdown-item command="delete">删除文档</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          }
         },
       ],
       extraOption: {}
     }
   },
+  watch: {
+    row: {
+      handler(newVal) {
+        if (newVal.id) {
+          this.$nextTick(() => {
+            // this.getList()
+          })
+        }
+      },
+      deep: true,
+    }
+  },
   methods: {
+    async getList() {
+      try {
+        const res = await getImportDocumentList()
+        if (res.code === 200) {
+          this.tradeList = res.data
+        }
+      } catch {
+      }
+    },
+    handleCommand(value, row) {
+      console.log(value)
+      switch (value) {
+        case 'send':
+          break;
+        case 'download':
+          break;
+        case 'upload':
+          break;
+        case 'delete':
+          this.deleteImportDoc(row.id)
+          break;
+      }
+    },
+    async confirmImportDoc() {
+      try {
+        const res = await uploadMultipleDocument()
+        if (res.code === 200) {
+
+        }
+      } catch {
+      }
+    },
+    async deleteImportDoc(id) {
+      try {
+        const res = await deleteImportDocument({id})
+        if (res.code === 200) {
+          this.$message.success('删除成功')
+        }
+      } catch {
+      }
+    },
+    async downloadDocFile() {
+      try {
+        // const res = await downloadImportDocument()
+        // if (res.code === 200) {
+        //   const blob = new Blob([res])
+        //   saveAs(blob, 'file.xlsx')
+        // }
+      } catch {
+      }
+    },
     onSearch() {
       console.log(this.fApi.formData())
     }

@@ -256,6 +256,7 @@ export default {
     },
     // 创建客户回调
     reloadList() {
+      this.getMenuList()
       this.$refs.tableListRef.reloadList()
       this.customerVisible = false
     },

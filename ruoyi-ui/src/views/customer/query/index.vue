@@ -30,8 +30,7 @@
                    :paginate-event="paginateEvent"/>
       </div>
       <div v-else>
-        <el-empty
-        >
+        <el-empty v-loading="tableLoading">
           <template #description>
             <p>为了避免销售冲突，可以通过客户查重来查看客户的归属情况</p>
             <p>客户查重是基于全公司所有客户资料的全局查找</p>
@@ -136,7 +135,7 @@ export default {
         const res = await getQueryFieldColumn()
         if (res.code === 200) {
           this.options = res.data
-          if (this.options && this.options.length) {
+          if (this.options && this.options?.length) {
             this.querySearch.columnName = this.options[0].columnName
           }
 
@@ -159,7 +158,7 @@ export default {
           this.tableLoading = false
         })
         if (res.code === 200) {
-          this.list = res.data
+          this.list = res.rows
         }
       } catch {
       }

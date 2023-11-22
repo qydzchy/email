@@ -120,7 +120,7 @@
 
     </el-row>
     <el-row class="py-10 bottom-line">
-      <CollapseWrap isCollapse :height="360">
+      <CollapseWrap isCollapse :height="260">
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">公司其他信息</div>

@@ -78,6 +78,9 @@ export default {
     },
     onConfirm() {
       let contactList = this.$refs['contact-card'].getInnerData()
+      if (!contactList) {
+        return
+      }
       contactList = contactList.map(val => {
         delete val.show
         val.primaryContactFlag = +val.primaryContactFlag
