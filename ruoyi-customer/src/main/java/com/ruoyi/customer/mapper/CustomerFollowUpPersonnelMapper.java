@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerFollowUpPersonnel;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpPersonnelListVO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -96,4 +97,10 @@ public interface CustomerFollowUpPersonnelMapper
      * @param updateBy
      */
     void deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(@Param("customerId") Long customerId, @Param("currentFollowerId") Long currentFollowerId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 查询客户跟进人列表
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCustomerFollowUpPersonnelSimpleInfo();
 }

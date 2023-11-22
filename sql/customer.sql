@@ -489,12 +489,13 @@ CREATE TABLE `customer_segment`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `parent_id` bigint(20) NOT NULL COMMENT '父ID 第一级为-1',
 `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客群名称',
-`usage_scope` tinyint(1) NULL DEFAULT NULL COMMENT '使用范围 1.公司共享 2.个人使用',
-`visibility_scope` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '可见范围-内容\r\n{\r\n\"dept\":{ //部门\r\n \"allFlag\": true, // true所有部门 false指定部门\r\n \"deptIds\": [] //指定部门ID\r\n},\r\n\"user\": { //用户\r\n \"allFlag\": true, //true所有用户 false指定用户\r\n \"userIds\": [] //指定用户ID\r\n}\r\n}',
+`usage_scope` tinyint(1) NOT NULL COMMENT '使用范围 1.公司共享 2.个人使用',
+`visibility_scope` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '可见范围',
 `condition_rule_type` tinyint(1) NOT NULL COMMENT '条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件',
 `condition_rule_content` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '条件规则内容',
-`subgroup_flag` tinyint(1) NULL DEFAULT NULL COMMENT '添加二级客群 0.未选 1.选中',
+`subgroup_flag` tinyint(1) NOT NULL COMMENT '添加二级客群 0.未选 1.选中',
 `addition_rule` tinyint(1) NULL DEFAULT NULL COMMENT '添加规则 1.自动生成 2.手动添加',
+`sub_group_column` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '二级分群字段',
 `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
 `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
 `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
@@ -503,7 +504,7 @@ CREATE TABLE `customer_segment`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客群表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客群表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_segment
@@ -532,7 +533,7 @@ CREATE TABLE `customer_settings`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户设置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of customer_settings

@@ -63,6 +63,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             pg.del_flag = '0'
             AND cc.id = #{customerId}
     </select>
+    <select id="selectCustomerPublicleadsGroupsSimpleInfo"
+            resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
+        select id, name from customer_publicleads_groups where del_flag = '0'
+    </select>
 
     <insert id="insertPublicleadsGroups" parameterType="PublicleadsGroups" useGeneratedKeys="true" keyProperty="id">
         insert into customer_publicleads_groups

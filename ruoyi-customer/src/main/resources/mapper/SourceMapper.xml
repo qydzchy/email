@@ -43,6 +43,10 @@
             </foreach>
     </select>
 
+    <select id="selectCustomerSourceSimpleInfo" resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
+        select id, name from customer_source where del_flag = '0'
+    </select>
+
     <insert id="insertSource" parameterType="Source" useGeneratedKeys="true" keyProperty="id">
         insert into customer_source
         <trim prefix="(" suffix=")" suffixOverrides=",">

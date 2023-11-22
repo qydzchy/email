@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.customer.domain.Packet;
 import com.ruoyi.customer.domain.vo.PacketListVO;
 import com.ruoyi.customer.domain.vo.SimplePacketVO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -74,4 +75,10 @@ public interface PacketMapper
      * @return
      */
     SimplePacketVO selectSimplePacketByCustomerId(@Param("customerId") Long id);
+
+    /**
+     * 查询客户分组简单信息
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCustomerPacketSimpleInfo();
 }

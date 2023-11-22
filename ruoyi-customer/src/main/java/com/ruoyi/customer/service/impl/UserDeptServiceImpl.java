@@ -7,6 +7,7 @@ import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeBO;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeDeptBO;
 import com.ruoyi.customer.domain.bo.SegmentVisibilityScopeUserBO;
 import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import com.ruoyi.customer.mapper.CustomerMapper;
 import com.ruoyi.customer.service.IUserDeptService;
 import org.springframework.stereotype.Service;

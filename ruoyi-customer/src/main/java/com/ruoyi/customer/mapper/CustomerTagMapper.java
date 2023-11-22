@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerTag;
 import com.ruoyi.customer.domain.vo.CustomerTagListVO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

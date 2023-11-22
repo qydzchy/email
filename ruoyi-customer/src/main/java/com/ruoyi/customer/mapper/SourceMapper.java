@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Source;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -66,4 +67,10 @@ public interface SourceMapper
      * @return
      */
     List<Source> selectByNames(@Param("sourceNameList") List<String> sourceNameList);
+
+    /**
+     * 查询客户来源简单信息
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCustomerSourceSimpleInfo();
 }

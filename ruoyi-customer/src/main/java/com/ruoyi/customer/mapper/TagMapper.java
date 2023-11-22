@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.Tag;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -66,4 +67,10 @@ public interface TagMapper
      * @return
      */
     List<Tag> selectByNames(@Param("tagNameList") List<String> tagNameList);
+
+    /**
+     * 查询客户标签简单信息
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCustomerTagSimpleInfo();
 }
