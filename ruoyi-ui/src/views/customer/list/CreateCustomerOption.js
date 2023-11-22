@@ -309,14 +309,12 @@ const OtherInfoRule = [
             accept: "image/*",
             name: 'file',
             withCredentials: true,
+            modalTitle:'公司logo',
             headers: {
                 Authorization: 'Bearer ' + getToken()
             },
-            onPreview:(file)=>{
-                console.log(file)
-            },
             onSuccess: (res, file) => {
-                file.url = res.fileName
+                file.url = process.env.VUE_APP_BASE_API + res.fileName
             }
         },
     }
