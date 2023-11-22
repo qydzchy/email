@@ -133,10 +133,7 @@ const UsuallyInfoRule = [
         type: 'select',
         field: 'poolGroup',
         value: 1,
-        options: [
-            {value: 1, label: '公共公海分组'},
-            {value: 2, label: '公海2组'},
-        ],
+        options: [],
         validate: [
             {
                 required: true,

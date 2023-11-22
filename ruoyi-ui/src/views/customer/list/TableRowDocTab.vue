@@ -5,12 +5,12 @@
         <template slot="header">
           <el-col class="flex-middle space-between">
             <div>文档</div>
-            <el-dropdown trigger="click">
+            <el-dropdown trigger="click" @command="handleDocCommand">
               <el-tooltip placement="top" content="上传文件">
                 <i class="el-icon-circle-plus-outline pointer" @click.stop></i>
               </el-tooltip>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>本地文件</el-dropdown-item>
+                <el-dropdown-item command="location">本地文件</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
 
@@ -25,7 +25,32 @@
         <TableNext :list="tradeList" :columns="tradeColumns" :extra-option="extraOption"/>
       </CollapseWrap>
 
+      <el-dialog
+          title="上传文件"
+          :visible.sync="uploadVisible"
+          width="500px"
+          :append-to-body="true"
+          :close-on-click-modal="false"
+          @close="uploadClose">
+        <div class="flex-center my-10">
+          <el-upload
+              drag
+              multiple
+              action=""
+              :auto-upload="false"
+              :file-list="fileList"
+              :on-change="handleChange"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          </el-upload>
+        </div>
 
+        <template #footer>
+          <el-button @click="uploadClose">取 消</el-button>
+          <el-button type="primary" @click="confirmSubmit">提 交</el-button>
+        </template>
+      </el-dialog>
     </el-row>
   </div>
 </template>
@@ -34,20 +59,22 @@
 import TableNext from "@/components/TableNext/index.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import {formOption} from "@/constant/form"
-import {saveAs} from 'file-saver'
 import {
   deleteImportDocument,
   downloadImportDocument,
-  getImportDocumentList,
-  uploadMultipleDocument
+  getImportDocumentList, uploadMultipleDocument,
 } from "@/api/customer/config";
-import {EmptyStr} from "@/utils/tools";
+import {EmptyStr, formatFileSize} from "@/utils/tools";
+import {getToken} from "@/utils/auth";
 
 export default {
   props: {
     row: {
       type: Object,
       default: () => {
+        return {
+          customerId: ''
+        }
       },
       required: false
     }
@@ -172,7 +199,7 @@ export default {
           }]
       }],
       option: {...formOption},
-      tradeList: [{name: '1'}],
+      tradeList: [],
       tradeColumns: [
         {
           label: '文件名称',
@@ -195,7 +222,9 @@ export default {
         {
           label: '文件大小',
           field: 'size',
-          render: (_row, field) => EmptyStr(field)
+          render: (_row, field) => {
+            return formatFileSize(field)
+          }
         },
         {
           label: '添加人',
@@ -224,7 +253,12 @@ export default {
           }
         },
       ],
-      extraOption: {}
+      extraOption: {},
+      uploadVisible: false,
+      uploadData: {
+        customerId: ''
+      },
+      fileList: [],
     }
   },
   watch: {
@@ -232,7 +266,8 @@ export default {
       handler(newVal) {
         if (newVal.id) {
           this.$nextTick(() => {
-            // this.getList()
+            this.uploadData.customerId = this.row.id
+            this.getList()
           })
         }
       },
@@ -242,7 +277,9 @@ export default {
   methods: {
     async getList() {
       try {
-        const res = await getImportDocumentList()
+        const res = await getImportDocumentList({
+          customerId: this.row.id
+        })
         if (res.code === 200) {
           this.tradeList = res.data
         }
@@ -250,11 +287,11 @@ export default {
       }
     },
     handleCommand(value, row) {
-      console.log(value)
       switch (value) {
         case 'send':
           break;
         case 'download':
+          this.downloadDocFile(row.name, row.id)
           break;
         case 'upload':
           break;
@@ -263,33 +300,74 @@ export default {
           break;
       }
     },
-    async confirmImportDoc() {
-      try {
-        const res = await uploadMultipleDocument()
-        if (res.code === 200) {
-
-        }
-      } catch {
-      }
-    },
     async deleteImportDoc(id) {
       try {
         const res = await deleteImportDocument({id})
         if (res.code === 200) {
           this.$message.success('删除成功')
+          await this.getList()
         }
       } catch {
       }
     },
-    async downloadDocFile() {
+    async downloadDocFile(name, id) {
+      console.log(name, id)
       try {
-        // const res = await downloadImportDocument()
-        // if (res.code === 200) {
-        //   const blob = new Blob([res])
-        //   saveAs(blob, 'file.xlsx')
-        // }
+        const res = await downloadImportDocument(id)
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', name);
+        document.body.appendChild(link);
+        link.click();
       } catch {
       }
+    },
+    handleDocCommand(value) {
+      switch (value) {
+        case "location":
+          this.uploadVisible = true
+          break;
+      }
+    },
+    handleChange(file, fileList) {
+      let existFile = fileList.slice(0, fileList.length - 1).find(f => f.name === file.name);
+      if (existFile) {
+        this.$message.error('当前文件已经存在!');
+        fileList.pop();
+      }
+      this.fileList = fileList;
+    },
+
+    // 删除图片
+    handleDelete(file) {
+      const fIndex = this.fileList.map(f => f.name).indexOf(file.name);
+      if (fIndex > -1) {
+        this.fileList.splice(fIndex, 1);
+      }
+    },
+    async confirmSubmit() {
+      if (!this.fileList.length) {
+        this.$message.warning('请选择文件')
+        return
+      }
+      let formData = new FormData()
+      this.fileList.forEach(item => {
+        formData.append('files', item.raw)
+      })
+      formData.append('customerId', this.row.id)
+      try {
+        const res = await uploadMultipleDocument(formData)
+        if (res.code === 200) {
+          this.$message.success('上传成功')
+          this.uploadClose()
+          await this.getList()
+        }
+      } catch {
+      }
+    },
+    uploadClose() {
+      this.uploadVisible = false
     },
     onSearch() {
       console.log(this.fApi.formData())

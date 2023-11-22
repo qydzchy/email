@@ -53,16 +53,18 @@
                   <div class="okki-form-item-control-input-content">
                     <div class="okki-radio-group okki-radio-group-outline okki-radio-group-default">
                       <label class="okki-radio-wrapper text-text-2"
-                             :class="{'okki-radio-wrapper-checked':importType===1}" @click="importType=1">
-                        <span class="okki-radio" :class="{'okki-radio-checked':importType===1}">
+                             :class="{'okki-radio-wrapper-checked':updateData.importType===1}"
+                             @click="updateData.importType=1">
+                        <span class="okki-radio" :class="{'okki-radio-checked':updateData.importType===1}">
                           <input type="radio" class="okki-radio-input" autofocus="" value="1"/>
                           <span class="okki-radio-inner"></span>
                         </span>
                         <span>客户列表</span>
                       </label>
                       <label class="okki-radio-wrapper mx-6 text-text-2"
-                             :class="{'okki-radio-wrapper-checked':importType===2}" @click="importType=2">
-                      <span class="okki-radio" :class="{'okki-radio-checked':importType===2}">
+                             :class="{'okki-radio-wrapper-checked':updateData.importType===2}"
+                             @click="updateData.importType=2">
+                      <span class="okki-radio" :class="{'okki-radio-checked':updateData.importType===2}">
                       <input type="radio" class="okki-radio-input" value="2"/>
                         <span class="okki-radio-inner"></span>
                       </span>
@@ -78,17 +80,19 @@
                 <div class="okki-form-item-control-input">
                   <div class="okki-form-item-control-input-content">
                     <div class="okki-radio-group okki-radio-group-outline okki-radio-group-default">
-                      <label class="okki-radio-wrapper text-text-2" :class="{'okki-radio-wrapper-checked':updateFlag}"
-                             @click="updateFlag=true">
-                         <span class="okki-radio" :class="{'okki-radio-checked':updateFlag}">
+                      <label class="okki-radio-wrapper text-text-2"
+                             :class="{'okki-radio-wrapper-checked':updateData.updateFlag}"
+                             @click="updateData.updateFlag=true">
+                         <span class="okki-radio" :class="{'okki-radio-checked':updateData.updateFlag}">
                           <input type="radio" class="okki-radio-input" value="1"/>
                           <span class="okki-radio-inner"></span>
                          </span>
                         <span>更新数据</span>
                       </label>
                       <label class="okki-radio-wrapper text-text-2 mx-6"
-                             :class="{'okki-radio-wrapper-checked':!updateFlag}" @click="updateFlag=false">
-                        <span class="okki-radio" :class="{'okki-radio-checked':!updateFlag}">
+                             :class="{'okki-radio-wrapper-checked':!updateData.updateFlag}"
+                             @click="updateData.updateFlag=false">
+                        <span class="okki-radio" :class="{'okki-radio-checked':!updateData.updateFlag}">
                            <input type="radio" class="okki-radio-input" value="0"/>
                           <span class="okki-radio-inner"></span>
                         </span>
@@ -106,10 +110,13 @@
                         <el-upload
                             :file-list="fileList"
                             :limit="1"
+                            name="file"
                             accept=".xls,.xlsx,.csv"
                             ref="uploadFile"
                             :action="uploadAction"
+                            :auto-upload="false"
                             :headers="headers"
+                            :data="updateData"
                             :on-error="handleUploadError"
                             :on-success="handleUploadSuccess"
                             :before-upload="handleBeforeUpload"
@@ -136,7 +143,7 @@
 <script>
 import "@/static/scss/xiaoman/windi.f61bb6b4.css"
 import "@/static/scss/xiaoman/5261.43952d38.css"
-import {downloadTemplate, importCustomer} from "@/api/customer/config";
+import {downloadTemplate} from "@/api/customer/config";
 import {getToken} from "@/utils/auth";
 import {saveAs} from 'file-saver';
 import formatImport from '@/assets/pdf/formatImportant.pdf'
@@ -147,13 +154,15 @@ export default {
       curStep: 0,
       activeClass: '',
       awaitClass: '',
-      importType: 1,
-      updateFlag: false,
       uploadList: [],
       fileList: [],
-      uploadAction: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      uploadAction: process.env.VUE_APP_BASE_API + "/customer/customer/import/add", // 上传的图片服务器地址
       headers: {
         Authorization: "Bearer " + getToken(),
+      },
+      updateData: {
+        importType: 1,
+        updateFlag: false,
       },
       formatImport
     }
@@ -173,13 +182,16 @@ export default {
       this.$modal.closeLoading();
     },
     handleBeforeUpload() {
-      this.$modal.loading("正在上传图片，请稍候...");
+      this.$modal.loading("正在上传，请稍候...");
     },
     // 上传成功回调
     handleUploadSuccess(res, file) {
       if (res.code === 200) {
-        this.uploadList.push({name: res.newFileName, url: res.fileName});
+        this.uploadList.push({ name: res.filename, url: res.url });
         this.uploadedSuccessfully();
+        setTimeout(() => {
+          this.$router.push('/customer/config?tab=import')
+        }, 400)
       } else {
         this.$modal.closeLoading();
         this.$modal.msgError(res.msg);
@@ -202,20 +214,9 @@ export default {
         this.fileList.splice(findex, 1);
       }
     },
-    async submitImport() {
-      try {
-        const file = this.fileList?.[0].url
-        const res = importCustomer({
-          updateFlag: this.updateFlag,
-          importType: this.importType,
-          file: file
-        })
-        if (res.code === 200) {
-          this.$router.push('/customer/config?tab=import')
-        }
-      } catch {
-      }
-    },
+    submitImport() {
+      this.$refs.uploadFile.submit()
+    }
   }
 }
 </script>

@@ -639,6 +639,7 @@ export default {
           this.editCustomer(data).then(res => {
             if (res) {
               this.$set(this[listType], index, {...val, show: bool})
+              this.$emit('reload')
             }
           })
         }

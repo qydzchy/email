@@ -285,6 +285,10 @@ const timeZoneList = [
     {value: 22, label: '西二区：协调世界时'},
     {value: 23, label: '西一区：佛得角群岛'},
 ]
+
+const mapTimezone = {
+
+}
 export {
     country,
     province,

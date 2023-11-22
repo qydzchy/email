@@ -33,33 +33,46 @@ export default {
           render: (_row, field) => EmptyStr(field),
         },
         {
-          label: '导入至',
-          field: 'into',
-          render: (_row, field) => EmptyStr(field),
+          label: '导入类型',
+          field: 'importType',
+          render: (_row, field) => {
+            const mapImportType = {
+              1: '客户列表',
+              2: '公海客户',
+            }
+            return <div>{mapImportType[field] || '---'}</div>
+          },
         },
         {
           label: '导入状态',
-          field: 'status',
-          render: (_row, field) => EmptyStr(field),
+          field: 'importStatus',
+          render: (_row, field) => {
+            const mapImportStatus = {
+              1: '进行中',
+              2: '成功',
+              3: '失败',
+            }
+            return <div>{mapImportStatus[field] || '---'}</div>
+          },
         },
         {
           label: '预计导入数',
-          field: 'count',
-          render: (_row, field) => EmptyStr(field),
+          field: 'expectedImportCount',
+          render: (_row, field) => <div>{field}</div>,
         },
         {
           label: '导入成功数',
-          field: 'success',
-          render: (_row, field) => EmptyStr(field),
+          field: 'successImportCount',
+          render: (_row, field) => <div>{field}</div>,
         },
         {
           label: '导入失败数',
-          field: 'fail',
-          render: (_row, field) => EmptyStr(field),
+          field: 'failedImportCount',
+          render: (_row, field) => <div>{field}</div>,
         },
         {
           label: '操作人',
-          field: 'operator',
+          field: 'createBy',
           render: (_row, field) => EmptyStr(field),
         },
       ],
@@ -90,10 +103,13 @@ export default {
   methods: {
     async getList() {
       try {
+        this.tableLoading = true
         const {currentPage, pageSize} = this.paginationOption
         const res = await getImportCustomerList({
           pageNum: currentPage,
           pageSize
+        }).finally(() => {
+          this.tableLoading = false
         })
         if (res.code === 200) {
           this.list = res.rows
