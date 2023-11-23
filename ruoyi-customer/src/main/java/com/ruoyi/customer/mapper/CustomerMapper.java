@@ -1,8 +1,9 @@
 package com.ruoyi.customer.mapper;
 
-import java.util.Date;
 import java.util.List;
 import com.ruoyi.customer.domain.Customer;
+import com.ruoyi.customer.domain.bo.CustomerMovePublicleadsRulesInfoBO;
+import com.ruoyi.customer.domain.bo.RoleDeptSimpleInfoVO;
 import com.ruoyi.customer.domain.vo.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -175,4 +176,45 @@ public interface CustomerMapper
      * @return
      */
     List<CustomerDuplicateListVO> customerDuplicateList(@Param("columnName") String columnName, @Param("searchText") String searchText, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 根据客户ID查询客户移入公海规则信息
+     * @param segmentId
+     * @return
+     */
+    List<CustomerMovePublicleadsRulesInfoBO> selectCustomerMovePublicleadsRulesInfoBySegmentId(Long segmentId);
+
+    /**
+     * 批量更新客户的公海/私海类型
+     * @param customerIdList
+     * @param type
+     */
+    void batchUpdateCustomerSeaType(@Param("customerIdList") List<Long> customerIdList, @Param("type") Integer type);
+
+    /**
+     * 查询角色部门简单信息
+     * @param userId
+     * @return
+     */
+    List<RoleDeptSimpleInfoVO> queryRoleDeptSimpleInfo(@Param("userId") Long userId);
+
+    /**
+     * 获取所有用户
+     * @return
+     */
+    List<TeamMembersListVO> getAllUser();
+
+    /**
+     * 根据部门查询用户
+     * @param deptIdList
+     * @return
+     */
+    List<TeamMembersListVO> getUserByDeptIds(@Param("deptIdList") List<Long> deptIdList);
+
+    /**
+     * 查询部门下所有子部门
+     * @param deptId
+     * @return
+     */
+    List<Long> findSubordinateDeptIds(Long deptId);
 }

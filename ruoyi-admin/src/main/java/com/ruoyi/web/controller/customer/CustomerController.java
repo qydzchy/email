@@ -53,6 +53,17 @@ public class CustomerController extends BaseController
         return success(segmentService.segmentList());
     }
 
+
+    /**
+     * 获取团队成员列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:team:members:get')")
+    @GetMapping("/get/team/members")
+    public AjaxResult getTeamMembers()
+    {
+        return success(customerService.getTeamMembers());
+    }
+
     /**
      * 查询私海客户列表
      */

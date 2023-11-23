@@ -77,4 +77,10 @@ public interface CustomerSeaLogMapper
      * @return
      */
     int countCustomerSeaByUserIdAndCreateTime(@Param("createId") Long createId, @Param("startTime") String startTime, @Param("endTime") String endTime);
+
+    /**
+     * 批量新增客户私海/公海日志
+     * @param customerSeaLogList
+     */
+    void batchInsertCustomerSeaLog(@Param("customerSeaLogList") List<CustomerSeaLog> customerSeaLogList);
 }
