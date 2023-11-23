@@ -423,19 +423,35 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
+    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer type, Long teamMemberId, Integer pageNum, Integer pageSize) {
+        List<Long> userIdList = new ArrayList<>();
+        if (type.intValue() == 1) {
+            LoginUser loginUser = SecurityUtils.getLoginUser();
+            Long userId = loginUser.getUserId();
+            userIdList.add(userId);
+        } else if (type.intValue() == 2) {
+            List<TeamMembersListVO> teamMembers = getTeamMembers();
+            List<Long> teamMembersIdList = teamMembers.stream().map(TeamMembersListVO::getUserId).collect(Collectors.toList());
+            if (teamMemberId != null && teamMembersIdList.contains(teamMemberId)) {
+                userIdList.add(teamMemberId);
+            } else if (teamMemberId == null) {
+                userIdList.addAll(teamMembersIdList);
+            }
+        }
+
+        if (userIdList.isEmpty()) {
+            return Pair.of(0, new ArrayList<>());
+        }
 
         try {
-            int count = customerMapper.countPrivateleadsCustomer(userId, segmentId);
+            int count = customerMapper.countPrivateleadsCustomer(userIdList, segmentId);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(userId, segmentId, offset, limit);
+            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(userIdList, segmentId, offset, limit);
             if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }
