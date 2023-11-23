@@ -3,27 +3,30 @@
     <div class="fs-20">公海客户详情</div>
     <div class="card-bg px-20 py-16 mt-20">
       <div class="base-info flex-start">
-        <el-avatar :size="110" shape="square"></el-avatar>
+        <el-avatar :size="110" shape="square" :src="rowData.companyLogo"></el-avatar>
 
         <el-row class="pl-10 fs-14">
-          <div class="fs-20 bold">测试公司</div>
+          <div class="fs-20 bold">{{ rowData.companyName || '---' }}</div>
           <div class="my-10 flex-middle gap-10">
-            <span>11248</span>
-            <span>冰岛</span>
-            <span>15:39 UTC+2</span>
+            <span>{{ rowData.customerNo || '---' }}</span>
+            <span> <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
+                                :show-edit-icon="false"></CellOperate></span>
           </div>
-          <div class="mb-10">跟进入: admin</div>
-          <div class="flex-middle">
-            <el-tag class="customer-tag" closable>标签1</el-tag>
-            <el-button class="ml-10" size="mini" icon="el-icon-plus"></el-button>
-          </div>
+          <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
+          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" @onClose="getDetailData"/>
         </el-row>
       </div>
-      <div class="info-wrap">
-        <div class="wrap flex-middle" v-for="item in infoRowList" :key="item.id">
+      <div class="info-wrap flex-middle">
+        <div class="cell-wrap flex-middle" v-for="item in infoRowList" :key="item.id">
           <span class="fs-14 mr-6">{{ item.label }}</span>
-          <CellOperate :value.sync="item.value" :type="item.type" :show-form="item.show" :show-copy-icon="false"
-                       @onEdit="onEdit(item.id)"/>
+          <CellOperate
+              :text="item.value"
+              :value.sync="item.value"
+              :type="item.type"
+              :show-form="item.show"
+              :show-copy-icon="false"
+              :show-edit-icon="false"
+              @onEdit="onEdit(item.id)"/>
         </div>
       </div>
     </div>
@@ -138,9 +141,11 @@ import {formatMonthAndDay} from "@/utils";
 import {getCustomerDetail} from "@/api/customer/publicleads";
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
+import TableRowTags from "@/views/customer/list/TableRowTags.vue";
 
 export default {
   components: {
+    TableRowTags,
     TableNext,
     CustomerContactDrawer,
     TableRowTabs,
@@ -263,9 +268,9 @@ export default {
 .info-wrap {
   width: 100%;
 
-  .wrap {
-    width: max-content;
+  .cell-wrap {
     box-sizing: border-box;
+    margin: 6px 0;
     padding: 6px 12px;
 
     &:hover {

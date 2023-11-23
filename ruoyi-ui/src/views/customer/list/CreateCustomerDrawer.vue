@@ -222,6 +222,7 @@ export default {
         })
         if (res.code === 200) {
           this.$message.success('添加成功')
+          this.confirmResetValue()
           this.$emit('load')
         }
       } catch {
@@ -237,6 +238,7 @@ export default {
         })
         if (res.code === 200) {
           this.$message.success('修改成功')
+          this.confirmResetValue()
           this.$emit('load')
         }
       } catch {
@@ -256,7 +258,6 @@ export default {
           })
           const customerForm = this.customerForm.formData()
           const otherForm = this.customerOtherForm.formData()
-          console.log(otherForm)
           let data = {
             ...customerForm,
             ...otherForm,
@@ -278,6 +279,10 @@ export default {
         }
       })
 
+    },
+    confirmResetValue(){
+      this.customerFormValue = {}
+      this.customerOtherFormValue = {}
     },
     onHideDrawer() {
       this.customerFormValue = {}

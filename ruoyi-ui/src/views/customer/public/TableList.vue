@@ -9,7 +9,7 @@
     <TableRowDrawer
         :row="rowDrawerData"
         :visible.sync="rowDrawerVisible"
-        :externalOpt="{groupOption:indexOpt.groupOption}"
+        :indexOpt="indexOpt"
         @load="reloadList"
     />
   </div>

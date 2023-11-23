@@ -207,7 +207,6 @@ import TableNext from "@/components/TableNext/index.vue";
 import CustomerContactDrawer from "./CustomerContactDrawer.vue";
 import CellOperate from "./CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap";
-import Vue from 'vue'
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 import {editCustomer} from "@/api/customer/publicleads";

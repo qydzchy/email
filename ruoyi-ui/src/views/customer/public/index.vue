@@ -27,6 +27,7 @@ import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
 import {reasonList} from "@/api/company/poolRule";
+import {getCustomerTagList} from "@/api/customer/config";
 
 export default {
   components: {TableRowDrawer, CreatePublicCustomerDrawer, TableList},
@@ -54,6 +55,7 @@ export default {
     this.getOriginList()
     this.getPoolList()
     this.getPoolReasonList()
+    this.getTagList()
   },
   methods: {
     async getGroupList() {
@@ -102,6 +104,16 @@ export default {
         }
       } catch {
 
+      }
+    },
+    // 客户标签选项
+    async getTagList() {
+      try {
+        const res = await getCustomerTagList()
+        if (res.code === 200) {
+          this.indexOpt.tagOption = res.data
+        }
+      } catch {
       }
     },
     async onCollageIcon(id, scope) {

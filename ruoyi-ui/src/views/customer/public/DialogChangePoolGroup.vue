@@ -7,40 +7,30 @@
         :close-on-click-modal="false"
         :append-to-body="true"
         :title="title"
-        @close="$emit('update:visible',false)">
-      <el-form label-position="top">
-        <el-form-item label="公海分组" required>
-          <el-select v-model="movePoolGroup" style="width: 100%" filterable>
+        @close="onCancel">
+      <el-form class="py-20" style="height: 100px;">
+        <el-form-item>
+          <el-select v-model="changePoolValue" filterable style="width: 100%">
             <el-option
-                v-for="(pool,index) in poolOption"
+                v-for="(item,index) in poolOption"
                 :key="index"
-                :label="pool.name"
-                :value="pool.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="移入公海原因">
-          <el-select v-model="movePoolReason" style="width: 100%" filterable>
-            <el-option
-                v-for="(reason,index) in reasonOption"
-                :key="index"
-                :label="reason.reason"
-                :value="reason.id">
+                :label="item.name"
+                :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button round :loading="btnLoading" @click="onCancel">取 消</el-button>
-        <el-button type="primary" round :loading="btnLoading" :disabled="!movePoolGroup" @click="onConfirm">确 定
+        <el-button type="primary" :loading="btnLoading" :disabled="!changePoolValue" round @click="onConfirm">确 定
         </el-button>
-      </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {moveToPublicLeads} from "@/api/customer/publicleads";
+import {changeGroupsCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -53,14 +43,9 @@ export default {
     visible: {
       type: Boolean,
       default: false,
-      required: true
-    },
-    poolOption: {
-      type: Array,
-      default: () => [],
       required: false
     },
-    reasonOption: {
+    poolOption: {
       type: Array,
       default: () => [],
       required: false
@@ -70,8 +55,7 @@ export default {
     return {
       groupDialog: false,
       title: '',
-      movePoolGroup: '',
-      movePoolReason: '',
+      changePoolValue: '',
       btnLoading: false
     }
   },
@@ -84,7 +68,7 @@ export default {
     },
     row: {
       handler(newVal) {
-        this.title = newVal?.companyName ? `是否将【${newVal?.companyName}】移入公海` : '移入公海'
+        this.title = newVal?.companyName ? `将【${newVal?.companyName}】移动至公海分组` : '移动至公海分组'
       },
       immediate: true,
       deep: true,
@@ -94,17 +78,15 @@ export default {
     async onConfirm() {
       try {
         this.btnLoading = true
-        const res = await moveToPublicLeads({
+        const res = await changeGroupsCustomer({
           id: this.row?.id,
-          publicleadsGroupsId: this.movePoolGroup,
-          publicleadsReasonId: this.movePoolReason,
+          publicleadsGroupsId: this.changePoolValue
         }).finally(() => {
           this.btnLoading = false
         })
         if (res.code === 200) {
-          this.$message.success("移入公海成功")
+          this.$message.success("变更公海分组成功")
           this.onCancel()
-          this.$emit('onConfirm')
         }
       } catch (e) {
         console.error(e)
@@ -112,11 +94,10 @@ export default {
     },
     onCancel() {
       this.title = ''
-      this.movePoolGroup = ''
-      this.movePoolReason = ''
+      this.changePoolValue = ''
       this.$emit('update:visible', false)
     }
-  },
+  }
 }
 </script>
 

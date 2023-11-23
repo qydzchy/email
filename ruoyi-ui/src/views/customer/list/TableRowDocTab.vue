@@ -367,6 +367,7 @@ export default {
       }
     },
     uploadClose() {
+      this.fileList = []
       this.uploadVisible = false
     },
     onSearch() {
