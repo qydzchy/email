@@ -400,6 +400,79 @@
       "dateType": [],
       "timeRange": [],
       "options": []
+    },
+    {
+      "field_type": "create_time",
+      "conditionType": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8
+      ],
+      "dateType": [
+        1,
+        2
+      ],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "data_update_time",
+      "conditionType": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "last_contacted_at",
+      "conditionType": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "last_followup_at",
+      "conditionType": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
+    },
+    {
+      "field_type": "last_follow_up_date",
+      "conditionType": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8
+      ],
+      "dateType": [],
+      "timeRange": [],
+      "options": []
     }
   ],
   "conditionTypeOption": [
