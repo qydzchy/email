@@ -81,7 +81,8 @@
               {{ generateCountryValue.value }}
             </span>
             <span v-else-if="type==='picture'">
-                <el-avatar shape="square" :src="content"></el-avatar>
+                <el-avatar v-if="content" shape="square" :src="content"></el-avatar>
+                <span v-else>---</span>
             </span>
             <span v-else>
                {{ content || '---' }}

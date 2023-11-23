@@ -19,22 +19,11 @@
                 </el-tooltip>
               </el-row>
 
-              <el-dropdown trigger="click" class="ml-10">
-             <span>
-               <el-tooltip placement="left" content="更多操作">
-                <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
-              </el-tooltip>
-
-            </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>取消跟进</el-dropdown-item>
-                  <el-dropdown-item>移入公海</el-dropdown-item>
-                  <el-dropdown-item>重新分配</el-dropdown-item>
-                  <el-dropdown-item>共享客户</el-dropdown-item>
-                  <el-dropdown-item>合并客户</el-dropdown-item>
-                  <!--                  <el-dropdown-item>新增报价单</el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
+              <OperateMenu :row="row" :indexOpt="indexOpt" :commandList="commandList">
+                <el-tooltip placement="left" content="更多操作">
+                  <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
+                </el-tooltip>
+              </OperateMenu>
             </el-row>
           </div>
         </template>
@@ -43,16 +32,16 @@
             <el-avatar shape="square" :src="rowData.companyLogo"></el-avatar>
 
             <div class="pl-10 fs-14">
-              <label>{{ rowData.companyName }}</label>
-              <div class="my-10">
-                <span>11248</span>
-                <span class="ml-10">冰岛</span>
+              <label>{{ rowData.companyName || '---' }}</label>
+              <div class="my-10 flex-middle">
+                <span>{{ rowData.customerNo || '---' }}</span>
+                <span class="ml-10">
+                  <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
+                               :show-edit-icon="false"></CellOperate>
+                </span>
               </div>
-              <div class="mb-10">跟进入: admin</div>
-              <div class="flex-middle">
-                <el-tag class="customer-tag" closable>标签1</el-tag>
-                <el-button class="ml-10" size="mini" icon="el-icon-plus"></el-button>
-              </div>
+              <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
+              <TableRowTags :detail-id="row.id" :tag-list="rowData.tagList" @onClose="confirmRemoveTag"/>
             </div>
           </div>
           <div class="tabs mt-10">
@@ -71,7 +60,10 @@
 import TableRowTabs from './TableRowTabs.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
+import TableRowTags from "./TableRowTags.vue";
+import CellOperate from "./CellOperate.vue";
 import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
+import OperateMenu from "@/views/customer/list/OperateMenu.vue";
 
 export default {
   props: {
@@ -89,7 +81,7 @@ export default {
       default: false,
       required: false,
     },
-    externalOpt: {
+    indexOpt: {
       type: Object,
       default: () => {
         return {
@@ -100,6 +92,8 @@ export default {
     },
   },
   components: {
+    OperateMenu,
+    CellOperate, TableRowTags,
     TableRowTabs,
     CreateCustomerDrawer,
     CollageIcon
@@ -111,13 +105,14 @@ export default {
         isShowSchedule: true,
         isTabSetHeight: true,
         isShowInfo: true,
-        groupOption: this.externalOpt.groupOption
+        groupOption: this.indexOpt.groupOption
       },
       focusFlag: false,
       rowData: {
         companyName: '',
         companyLogo: ''
-      }
+      },
+      commandList: ['moveGroup', 'changePoolGroup'],
     }
   },
   watch: {
@@ -160,6 +155,10 @@ export default {
         }
       } catch {
       }
+    },
+    confirmRemoveTag() {
+      this.getDetailData()
+      this.$emit('load')
     },
     onHideDrawer() {
       this.rowData = {}

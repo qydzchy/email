@@ -5,11 +5,11 @@
         <component :row="row" :options="options" :is="tab.is" @reload="reload"/>
       </el-tab-pane>
     </el-tabs>
-<!--    <div class="operate-history flex-middle pointer" @click="operateHistoryVisible=true">-->
-<!--      <i class="el-icon-time fs-13"></i>-->
-<!--      <span class="fs-12 pl-6">操作历史</span>-->
-<!--    </div>-->
-<!--    <CustomerOperateHistoryDrawer :visible.sync="operateHistoryVisible"/>-->
+    <!--    <div class="operate-history flex-middle pointer" @click="operateHistoryVisible=true">-->
+    <!--      <i class="el-icon-time fs-13"></i>-->
+    <!--      <span class="fs-12 pl-6">操作历史</span>-->
+    <!--    </div>-->
+    <!--    <CustomerOperateHistoryDrawer :visible.sync="operateHistoryVisible"/>-->
   </div>
 </template>
 
@@ -61,20 +61,21 @@ export default {
           is: 'TableRowDatumTab',
         },
         {
-          label: '商机&交易',
-          name: '3',
-          is: 'TableRowTradeTab',
-        },
-        {
           label: 'Tips',
           name: '4',
           is: 'TableRowTipsTab',
         },
         {
-          label: '文档',
-          name: '5',
-          is: 'TableRowDocTab',
+          label: '相关',
+          name: '3',
+          is: 'TableRowTradeTab',
         },
+
+        // {
+        //   label: '文档',
+        //   name: '5',
+        //   is: 'TableRowDocTab',
+        // },
       ],
       cardLoading: false,
       operateHistoryVisible: false,

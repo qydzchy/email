@@ -38,8 +38,18 @@
               <el-form-item label="二级分群字段">
                 <el-select v-model="formData.secondChildField">
                   <el-option v-for="(sub,index) in secondChildFieldOption" :key="index" :value="sub.columnName"
+                             :disabled="['country_region','customer_tag'].includes(sub.columnName)"
                              :label="sub.nickName"></el-option>
                 </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-row v-if="secondChildFieldList.length">
+                  <el-col>根据「关注人」的选项，共生成 {{ secondChildFieldList.length }} 个二级客群，客户数为 0 时不显示
+                  </el-col>
+                  <el-col v-for="group in secondChildFieldList" :key="group.id">
+                    {{ group.name }}
+                  </el-col>
+                </el-row>
               </el-form-item>
             </div>
             <div v-show="formData.additionRule===2">
@@ -67,7 +77,7 @@
         <div class="wrap flex-middle space-between">
           <div>
             <el-button type="text" round plain>计算客群数</el-button>
-            <el-button :disabled="true" type="text" round>0个</el-button>
+            <el-button :disabled="true" type="text" round>{{ formData.customerCount }}个</el-button>
           </div>
           <div>
             <el-button round :loading="btnLoading" @click="onHideDrawer">取消</el-button>
@@ -84,6 +94,7 @@ import ListCreateCustomerForm from "./ListCreateCustomerForm.vue";
 import {addSegment, editSegment, getRuleField, getSubgroupColumn, getSubgroupColumnList} from "@/api/customer/segment";
 import {deepClone} from "@/utils";
 import {listDeptUsersTree} from "@/api/system/dept";
+import {timeZoneList} from "@/assets/data/countryData";
 
 const initFormData = {
   name: '',//客群名称
@@ -139,7 +150,7 @@ export default {
       btnLoading: false,
       defaultChooseIds: [],
       secondChildFieldOption: [],
-      secondChildFieldList: []
+      secondChildFieldList: [],//生成客群列表
     }
   },
   watch: {
@@ -223,6 +234,15 @@ export default {
       }
     },
     async getSubGroupList() {
+      if (this.formData.secondChildField === 'timezone') {
+        this.secondChildFieldList = timeZoneList.map(val => {
+          return {
+            id: val.value,
+            name: val.label
+          }
+        })
+        return
+      }
       try {
         const res = await getSubgroupColumnList({
           columnName: this.formData.secondChildField
