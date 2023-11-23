@@ -44,6 +44,10 @@ public class CustomerDocumentController extends BaseController
     @GetMapping("/list")
     public AjaxResult list(CustomerDocumentListDTO customerDocumentListDTO)
     {
+        if (customerDocumentListDTO.getCustomerId() == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
+
         return success(customerDocumentService.list(customerDocumentListDTO));
     }
 

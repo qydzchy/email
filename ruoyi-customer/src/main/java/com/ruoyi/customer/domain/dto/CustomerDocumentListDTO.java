@@ -6,6 +6,11 @@ import lombok.Data;
 public class CustomerDocumentListDTO {
 
     /**
+     * 客户ID
+     */
+    private Long customerId;
+
+    /**
      * 文档名称
      */
     private String name;
