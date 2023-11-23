@@ -89,6 +89,13 @@ module.exports = {
         symbolId: 'icon-[name]'
       })
       .end()
+    config.module.rule('pdf')
+        .test(/\.(pdf)(\?.*)?$/)
+        .use('file-loader')
+        .loader('file-loader')
+        .options({
+          name: 'pdf/[name].[hash:8].[ext]'
+        })
 
     config.when(process.env.NODE_ENV !== 'development', config => {
           config

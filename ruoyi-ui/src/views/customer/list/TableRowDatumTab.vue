@@ -120,7 +120,7 @@
 
     </el-row>
     <el-row class="py-10 bottom-line">
-      <CollapseWrap isCollapse :height="360">
+      <CollapseWrap isCollapse :height="260">
         <template #header>
           <div class="flex-middle space-between">
             <div class="bold">公司其他信息</div>
@@ -333,7 +333,7 @@ export default {
           options: {},
         },
         {
-          field: 'customerNoType',
+          field: 'customerNo',
           label: '客户编号',
           type: 'input',
           show: false,
@@ -451,6 +451,7 @@ export default {
         {
           field: 'companyLogo',
           label: '公司logo',
+          type: 'picture',
           otherEcho: true,
           slot: '111'
         },
@@ -639,6 +640,7 @@ export default {
           this.editCustomer(data).then(res => {
             if (res) {
               this.$set(this[listType], index, {...val, show: bool})
+              this.$emit('reload')
             }
           })
         }
@@ -716,7 +718,6 @@ export default {
     .wrap {
       width: 50%;
       padding-top: 10px;
-
       .copy-text {
         cursor: pointer;
 
@@ -738,6 +739,7 @@ export default {
   .info-card {
     .wrap {
       width: 50%;
+      height: 100%;
       padding: 6px 10px !important;
       cursor: pointer;
       border-radius: 4px;

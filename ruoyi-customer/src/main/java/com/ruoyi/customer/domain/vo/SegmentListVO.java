@@ -37,6 +37,11 @@ public class SegmentListVO {
     /** 添加规则 1.自动生成 2.手动添加 */
     private Integer additionRule;
 
+    /**
+     * 二级分群字段
+     */
+    private String subGroupColumn;
+
     /** 二级客群内容 */
     private String subgroupSegmentContent;
 

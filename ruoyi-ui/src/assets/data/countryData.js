@@ -285,9 +285,37 @@ const timeZoneList = [
     {value: 22, label: '西二区：协调世界时'},
     {value: 23, label: '西一区：佛得角群岛'},
 ]
+
+const mapTimezone = {
+    GB:0,
+    RO:1,
+    FR:1,
+    GR:2,
+    IL:2,
+    RU:3,
+    KW:3,
+    AF:4,
+    PK:5,
+    KZ:6,
+    LK:6,
+    ID:7,
+    TH:7,
+    CN:8,
+    TW:8,
+    HK:8,
+    JP:9,
+    AU:10,
+    SB:11,
+    NZ:12,
+    US:16,
+    CA:20,
+    BR:21,
+    EG:23,
+}
 export {
     country,
     province,
     countryList,
-    timeZoneList
+    timeZoneList,
+    mapTimezone
 }

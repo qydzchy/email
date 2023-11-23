@@ -56,3 +56,20 @@ export function getSegmentOption() {
         method: 'get'
     })
 }
+
+// 二级分群字段
+export function getSubgroupColumn() {
+    return request({
+        url: '/customer/segment/subgroup/column',
+        method: 'get'
+    })
+}
+
+// 二级分群字段列表
+export function getSubgroupColumnList(params) {
+    return request({
+        url: '/customer/segment/subgroup/column/list',
+        method: 'get',
+        params
+    })
+}

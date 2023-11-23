@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.customer;
 
 import java.util.List;
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
@@ -125,5 +126,25 @@ public class SegmentController extends BaseController
     public AjaxResult userList()
     {
         return success(segmentService.userList());
+    }
+
+    /**
+     * 二级分群字段
+     */
+    @PreAuthorize("@ss.hasPermi('customer:segment:subgroup:column')")
+    @GetMapping("/subgroup/column")
+    public AjaxResult subgroupColumn()
+    {
+        return success(segmentService.subgroupColumn());
+    }
+
+    /**
+     * 二级分群字段列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:segment:subgroup:column:list')")
+    @GetMapping("/subgroup/column/list")
+    public AjaxResult subgroupColumnList(@NotNull(message = "字段名称不能为空") String columnName)
+    {
+        return success(segmentService.subgroupColumnList(columnName));
     }
 }

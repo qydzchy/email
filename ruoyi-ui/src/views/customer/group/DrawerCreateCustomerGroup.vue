@@ -16,9 +16,10 @@
             key="single"
             :showRange="true"
             :customer-form="formData"
-            @update:customerForm="onUpdate"
             :rule-option="customerRuleOption"
             :visibility-option="visibilityScopeOption"
+            :index-opt="indexOpt"
+            @update:customerForm="onUpdate"
         />
         <div>
           <el-checkbox v-model="formData.subgroupFlag">添加二级客群</el-checkbox>
@@ -35,17 +36,21 @@
             </el-form-item>
             <div v-show="formData.additionRule===1">
               <el-form-item label="二级分群字段">
-                <el-select v-model="formData.secondChildField"></el-select>
+                <el-select v-model="formData.secondChildField">
+                  <el-option v-for="(sub,index) in secondChildFieldOption" :key="index" :value="sub.columnName"
+                             :label="sub.nickName"></el-option>
+                </el-select>
               </el-form-item>
             </div>
             <div v-show="formData.additionRule===2">
               <el-row class="second-card mb-20" v-for="(item,index) in formData.children" :key="index">
                 <div class="fs-15 mb-10">二级客群{{ index + 1 }}</div>
                 <ListCreateCustomerForm
-                    key="mulitiple"
+                    :key="'multiple'+index"
                     :customer-form="item"
                     :rule-option="customerRuleOption"
                     :visibility-option="visibilityScopeOption"
+                    :index-opt.sync="indexOpt"
                     @update:customerForm="(value)=>onUpdateChild(item.ruleId,value)"
                 />
                 <el-tooltip placement="top" content="删除">
@@ -59,9 +64,15 @@
       </div>
       <!--   operate     -->
       <div class="drawer-operate">
-        <div class="wrap flex-middle flex-end">
-          <el-button round :loading="btnLoading" @click="onHideDrawer">取消</el-button>
-          <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确认</el-button>
+        <div class="wrap flex-middle space-between">
+          <div>
+            <el-button type="text" round plain>计算客群数</el-button>
+            <el-button :disabled="true" type="text" round>0个</el-button>
+          </div>
+          <div>
+            <el-button round :loading="btnLoading" @click="onHideDrawer">取消</el-button>
+            <el-button type="primary" round :loading="btnLoading" @click="onConfirm">确认</el-button>
+          </div>
         </div>
       </div>
     </el-drawer>
@@ -70,7 +81,7 @@
 
 <script>
 import ListCreateCustomerForm from "./ListCreateCustomerForm.vue";
-import {addSegment, editSegment, getRuleField} from "@/api/customer/segment";
+import {addSegment, editSegment, getRuleField, getSubgroupColumn, getSubgroupColumnList} from "@/api/customer/segment";
 import {deepClone} from "@/utils";
 import {listDeptUsersTree} from "@/api/system/dept";
 
@@ -80,8 +91,9 @@ const initFormData = {
   visibilityScope: null, //可见范围
   conditionRuleType: 1,//条件规则类型 1.满足全部条件 2.满足任一条件 3.自定义条件
   subgroupFlag: false,  //添加二级客群 0.未选 1.选中
-  conditionRuleContent: [],
+  conditionRuleContent: [],//条件规则内容
   additionRule: 1, //添加规则 1.自动生成 2.手动添加
+  customerCount: 0,//客户数量
   secondChildField: '',
   mode: 'simple'
 }
@@ -97,7 +109,21 @@ export default {
       default: () => {
       },
       required: false
-    }
+    },
+    indexOpt: {
+      type: Object,
+      default: () => {
+        return {
+          groupOption: [],
+          stageOption: [],
+          originOption: [],
+          poolGroupOption: [],
+          poolReasonOption: [],
+          tagOption: [],
+        }
+      },
+      required: false,
+    },
   },
   components: {
     ListCreateCustomerForm
@@ -111,7 +137,9 @@ export default {
       tempAllDept: [],
       tempAllUser: [],
       btnLoading: false,
-      defaultChooseIds: []
+      defaultChooseIds: [],
+      secondChildFieldOption: [],
+      secondChildFieldList: []
     }
   },
   watch: {
@@ -149,10 +177,18 @@ export default {
       deep: true,
       immediate: true
     },
+    "formData.secondChildField": {
+      handler(newVal) {
+        if (newVal) {
+          this.getSubGroupList()
+        }
+      },
+    }
   },
   mounted() {
     this.getRuleColumn()
     this.getCommonTree()
+    this.getSubGroup()
   },
   methods: {
     // 获取规则
@@ -172,6 +208,27 @@ export default {
         const res = await listDeptUsersTree()
         if (res.code === 200) {
           this.visibilityScopeOption = this.generateVisibilityScopeOption(res.data)
+        }
+      } catch {
+      }
+    },
+    // 获取二级分群字段
+    async getSubGroup() {
+      try {
+        const res = await getSubgroupColumn()
+        if (res.code === 200) {
+          this.secondChildFieldOption = res.data
+        }
+      } catch {
+      }
+    },
+    async getSubGroupList() {
+      try {
+        const res = await getSubgroupColumnList({
+          columnName: this.formData.secondChildField
+        })
+        if (res.code === 200) {
+          this.secondChildFieldList = res.data
         }
       } catch {
       }
@@ -212,11 +269,13 @@ export default {
         conditionRuleContent,
         additionRule,
         children,
+        customerCount,
       } = this.formData
       let config = {
         name,
         usageScope,
         conditionRuleType,
+        customerCount,
         visibilityScope: this.generateVisibilityScopeFormat(visibilityScope),
         subgroupFlag: Number(subgroupFlag),
         conditionRuleContent: this.generateConditionRuleContent(conditionRuleContent, conditionRuleType),

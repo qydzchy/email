@@ -45,6 +45,11 @@
         left join sys_user u on fup.user_id = u.user_id and u.del_flag = '0'
         where fup.customer_id = #{customerId} and fup.del_flag = '0'
     </select>
+    <select id="selectCustomerFollowUpPersonnelSimpleInfo"
+            resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
+        select su.user_id as id, su.nick_name as name from customer_customer_follow_up_personnel cfup
+        left join sys_user su on cfup.user_id = su.user_id and su.del_flag = '0'
+    </select>
 
     <insert id="insertCustomerFollowUpPersonnel" parameterType="CustomerFollowUpPersonnel" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_follow_up_personnel

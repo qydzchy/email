@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.Stage;
 import com.ruoyi.customer.domain.vo.StageListVO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -74,4 +75,10 @@ public interface StageMapper
      * @return
      */
     List<Stage> selectByNames(@Param("stageNameList") List<String> stageNameList);
+
+    /**
+     * 查询客户阶段简单信息
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCustomerStageSimpleInfo();
 }

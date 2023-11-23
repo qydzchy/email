@@ -47,6 +47,10 @@
             </foreach>
     </select>
 
+    <select id="selectCustomerTagSimpleInfo" resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
+        select id, name from customer_tag where del_flag = '0'
+    </select>
+
     <insert id="insertTag" parameterType="Tag">
         insert into customer_tag
         <trim prefix="(" suffix=")" suffixOverrides=",">

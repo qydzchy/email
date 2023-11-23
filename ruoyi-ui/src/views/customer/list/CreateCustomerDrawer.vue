@@ -65,6 +65,7 @@ import {formOption} from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
 import {addCustomer, editCustomer} from "@/api/customer/publicleads";
 import {deepClone} from "@/utils";
+import {mapTimezone} from "@/assets/data/countryData";
 
 export default {
   props: {
@@ -134,8 +135,8 @@ export default {
           if (newVal?.id) {
             this.customerFormValue = {...deepClone(newVal)}
             this.customerOtherFormValue = {...deepClone(newVal)}
-            let contactList = this.generateContactList(newVal.contactList)
-            this.contactList = deepClone(contactList)
+            // let contactList = this.generateContactList(newVal.contactList)
+            this.contactList = deepClone(newVal.contactList)
           }
         } catch (e) {
           console.error(e)
@@ -196,13 +197,14 @@ export default {
                       backgroundColor: val.color ? val.color + '4d' : '',
                       color: val.color,
                       borderRadius: '4px',
-                      padding:'2px 6px'
+                      padding: '2px 6px'
                     }
                   }, [val.name])
                 }
               }
             })
           }
+
           return val
         })
       },
@@ -244,6 +246,9 @@ export default {
       this.customerForm.validate(val => {
         if (val) {
           let contactList = this.$refs['contact-card'].getInnerData()
+          if (!contactList) {
+            return
+          }
           contactList = contactList.map(val => {
             delete val.show
             val.primaryContactFlag = +val.primaryContactFlag
@@ -251,6 +256,7 @@ export default {
           })
           const customerForm = this.customerForm.formData()
           const otherForm = this.customerOtherForm.formData()
+          console.log(otherForm)
           let data = {
             ...customerForm,
             ...otherForm,
@@ -285,13 +291,10 @@ export default {
           if (!this.customerOtherForm.formData) {
             return
           }
-          const mapTimeZone = {
-            'CN': 8
-          }
           const tempOpt = this.customerOtherForm.getRule('timezone').tempOptions
           if (country[0]) {
-            const options = tempOpt.filter(val => val.value === mapTimeZone[country[0]])
-            const value = mapTimeZone[country[0]]
+            const options = tempOpt.filter(val => val.value === mapTimezone[country[0]])
+            const value = mapTimezone[country[0]]
             this.customerOtherForm.updateRule('timezone', {options, value})
           } else {
             this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})
@@ -299,16 +302,17 @@ export default {
           break;
       }
     },
-    generateContactList(arr) {
-      if (arr && !arr.length) {
-        return []
-      }
-      return arr.map(val => {
-        val.phone = val.phone ? JSON?.parse(val.phone) : []
-        val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
-        return val
-      })
-    },
+    // generateContactList(arr) {
+    //   if (arr && !arr.length) {
+    //     return []
+    //   }
+    //   console.log(arr)
+    //   return arr.map(val => {
+    //     val.phone = val.phone ? JSON?.parse(val.phone) : []
+    //     val.socialPlatform = val.socialPlatform ? JSON?.parse(val.socialPlatform) : []
+    //     return val
+    //   })
+    // },
   }
 }
 </script>

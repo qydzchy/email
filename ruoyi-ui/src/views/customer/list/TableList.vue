@@ -25,7 +25,7 @@
           :row="rowDrawerData"
           :visible.sync="rowDrawerVisible"
           @update:visible="onUpdateTableRowDrawer"
-          :externalOpt="{groupOption:indexOpt.groupOption}"
+          :indexOpt="indexOpt"
           @load="reloadList"
       />
     </div>

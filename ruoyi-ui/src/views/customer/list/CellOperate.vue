@@ -62,10 +62,6 @@
       <template v-else-if="type==='country'">
         <select-country :value.sync="curValue"></select-country>
       </template>
-      <!--   picture   -->
-      <template v-if="type==='picture'">
-        <el-image v-bind="formOption"/>
-      </template>
     </template>
     <!--   展示字段数据   -->
     <div class="wrap flex-middle space-between" v-else @click="onClick">
@@ -83,6 +79,9 @@
             <span v-else-if="type==='country'" class="flex-middle">
               <svg-icon v-if="generateCountryValue.svg" class="pr-4 fs-20" :icon-class="generateCountryValue.svg"/>
               {{ generateCountryValue.value }}
+            </span>
+            <span v-else-if="type==='picture'">
+                <el-avatar shape="square" :src="content"></el-avatar>
             </span>
             <span v-else>
                {{ content || '---' }}
@@ -285,7 +284,7 @@ export default {
 <style lang="scss" scoped>
 .cell {
   .wrap {
-    height: 32px;
+    min-height: 32px;
   }
 
   &:hover .right-icon > i {

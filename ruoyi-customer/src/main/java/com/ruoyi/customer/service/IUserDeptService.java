@@ -1,6 +1,7 @@
 package com.ruoyi.customer.service;
 
 import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 
 import java.util.List;
 

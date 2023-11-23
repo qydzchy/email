@@ -18,23 +18,14 @@
                   <i class="el-icon-edit pointer" @click="editVisible = true"></i>
                 </el-tooltip>
               </el-row>
+              <el-row class="ml-10">
+                <OperateMenu :row="row" :indexOpt="indexOpt" :commandList="commandList">
+                  <el-tooltip placement="left" content="更多操作">
+                    <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
+                  </el-tooltip>
+                </OperateMenu>
+              </el-row>
 
-              <el-dropdown trigger="click" class="ml-10">
-             <span>
-               <el-tooltip placement="left" content="更多操作">
-                <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
-              </el-tooltip>
-
-            </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>取消跟进</el-dropdown-item>
-                  <el-dropdown-item>移入公海</el-dropdown-item>
-                  <el-dropdown-item>重新分配</el-dropdown-item>
-                  <el-dropdown-item>共享客户</el-dropdown-item>
-                  <el-dropdown-item>合并客户</el-dropdown-item>
-                  <!--                  <el-dropdown-item>新增报价单</el-dropdown-item>-->
-                </el-dropdown-menu>
-              </el-dropdown>
             </el-row>
           </div>
         </template>
@@ -45,7 +36,7 @@
             <div class="pl-10 fs-14">
               <label>{{ rowData.companyName || '---' }}</label>
               <div class="my-10 flex-middle">
-                <span>{{ rowData.customerNoType || '---' }}</span>
+                <span>{{ rowData.customerNo || '---' }}</span>
                 <span class="ml-10">
                   <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
                                :show-edit-icon="false"></CellOperate>
@@ -75,6 +66,7 @@ import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import CellOperate from "@/views/customer/list/CellOperate.vue";
 import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
 import {deepClone} from "@/utils";
+import OperateMenu from "@/views/customer/list/OperateMenu.vue";
 
 export default {
   props: {
@@ -93,17 +85,17 @@ export default {
       default: false,
       required: false,
     },
-    externalOpt: {
+    indexOpt: {
       type: Object,
       default: () => {
         return {
           groupOption: [],
-
         }
       }
     },
   },
   components: {
+    OperateMenu,
     TableRowTabs,
     TableRowTags,
     CollageIcon,
@@ -117,8 +109,9 @@ export default {
         isShowSchedule: true,
         isTabSetHeight: true,
         isShowInfo: true,
-        groupOption: this.externalOpt.groupOption
+        groupOption: this.indexOpt.groupOption
       },
+      commandList: ['transfer', 'share', 'cancel', 'movePool', 'reassign'],
       focusFlag: false,
       rowData: {
         followPerson: '',
@@ -134,7 +127,7 @@ export default {
         stage: [],
         packetId: '',
         packet: [],
-      }
+      },
     }
   },
   watch: {

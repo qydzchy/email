@@ -12,13 +12,11 @@ import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.customer.CustomerShuffleThreadPoolUtil;
 import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
-import com.ruoyi.customer.domain.vo.CustomerSegmentListVO;
-import com.ruoyi.customer.domain.vo.SegmentListVO;
-import com.ruoyi.customer.domain.vo.SegmentUserListVO;
+import com.ruoyi.customer.domain.vo.*;
+import com.ruoyi.customer.mapper.*;
 import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.customer.service.IUserDeptService;
 import org.springframework.stereotype.Service;
-import com.ruoyi.customer.mapper.SegmentMapper;
 import com.ruoyi.customer.domain.Segment;
 import com.ruoyi.customer.service.ISegmentService;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +38,18 @@ public class SegmentServiceImpl implements ISegmentService
     private IUserDeptService userDeptService;
     @Resource
     private ICustomerService customerService;
-
+    @Resource
+    private TagMapper tagMapper;
+    @Resource
+    private StageMapper stageMapper;
+    @Resource
+    private SourceMapper sourceMapper;
+    @Resource
+    private PacketMapper packetMapper;
+    @Resource
+    private PublicleadsGroupsMapper publicleadsGroupsMapper;
+    @Resource
+    private CustomerFollowUpPersonnelMapper customerFollowUpPersonnelMapper;
     /**
      * 查询客群
      * 
@@ -437,6 +446,116 @@ public class SegmentServiceImpl implements ISegmentService
         }
 
         return buildTree(segmentVOList, -1L);
+    }
+
+    /**
+     * 二级客群字段
+     * @return
+     */
+    @Override
+    public List<SubgroupColumnVO> subgroupColumn() {
+        List<SubgroupColumnVO> subgroupColumnList = new ArrayList<>();
+
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.CUSTOMER_TAG.getColumnName()).nickName(CustomerColumnEnum.CUSTOMER_TAG.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.COUNTRY_REGION.getColumnName()).nickName(CustomerColumnEnum.COUNTRY_REGION.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.TIMEZONE.getColumnName()).nickName(CustomerColumnEnum.TIMEZONE.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.CUSTOMER_STAGE.getColumnName()).nickName(CustomerColumnEnum.CUSTOMER_STAGE.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.CUSTOMER_SOURCE.getColumnName()).nickName(CustomerColumnEnum.CUSTOMER_SOURCE.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.PACKET.getColumnName()).nickName(CustomerColumnEnum.PACKET.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.PUBLICLEADS_GROUPS.getColumnName()).nickName(CustomerColumnEnum.PUBLICLEADS_GROUPS.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.CUSTOMER_RATING.getColumnName()).nickName(CustomerColumnEnum.CUSTOMER_RATING.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.SCALE.getColumnName()).nickName(CustomerColumnEnum.SCALE.getNickName()).build());
+        subgroupColumnList.add(SubgroupColumnVO.builder().columnName(CustomerColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName()).nickName(CustomerColumnEnum.FOLLOW_UP_PERSONNEL.getNickName()).build());
+        return subgroupColumnList;
+    }
+
+    /**
+     * 二级分群字段列表
+     * @return
+     */
+    @Override
+    public List<SubgroupColumnListVO> subgroupColumnList(String columnName) {
+        CustomerColumnEnum customerColumnEnum = CustomerColumnEnum.getEnum(columnName);
+        List<SubgroupColumnListVO> subgroupColumnVOList = new ArrayList<>();
+        switch (customerColumnEnum) {
+            case CUSTOMER_TAG:
+                subgroupColumnVOList = tagMapper.selectCustomerTagSimpleInfo();
+                break;
+            case CUSTOMER_STAGE:
+                subgroupColumnVOList = stageMapper.selectCustomerStageSimpleInfo();
+                break;
+            case CUSTOMER_SOURCE:
+                subgroupColumnVOList = sourceMapper.selectCustomerSourceSimpleInfo();
+                break;
+            case PACKET:
+                subgroupColumnVOList = packetMapper.selectCustomerPacketSimpleInfo();
+                break;
+            case PUBLICLEADS_GROUPS:
+                subgroupColumnVOList = publicleadsGroupsMapper.selectCustomerPublicleadsGroupsSimpleInfo();
+                break;
+            case CUSTOMER_RATING:
+                subgroupColumnVOList = generateCustomerRating();
+                break;
+            case SCALE:
+                subgroupColumnVOList = generateScale();
+                break;
+            case FOLLOW_UP_PERSONNEL:
+                subgroupColumnVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelSimpleInfo();
+                break;
+        }
+
+        return subgroupColumnVOList;
+    }
+
+    /**
+     * 生成规模
+     * @return
+     */
+    private List<SubgroupColumnListVO> generateScale() {
+        // 规模 1.少于59人 2.60-149人 3.150-499人 4.500-999人 5.1000-4999人 6.5000人以上
+        List<SubgroupColumnListVO> subgroupColumnVOList = new ArrayList<>();
+        for (long scale = 1; scale <= 6; scale++) {
+            SubgroupColumnListVO subgroupColumnVO = new SubgroupColumnListVO();
+            subgroupColumnVO.setId(scale);
+            switch ((int) scale) {
+                case 1:
+                    subgroupColumnVO.setName("少于59人");
+                    break;
+                case 2:
+                    subgroupColumnVO.setName("60-149人");
+                    break;
+                case 3:
+                    subgroupColumnVO.setName("150-499人");
+                    break;
+                case 4:
+                    subgroupColumnVO.setName("500-999人");
+                    break;
+                case 5:
+                    subgroupColumnVO.setName("1000-4999人");
+                    break;
+                case 6:
+                    subgroupColumnVO.setName("5000人以上");
+                    break;
+            }
+            subgroupColumnVOList.add(subgroupColumnVO);
+        }
+
+        return subgroupColumnVOList;
+    }
+
+    /**
+     * 生成客户星级
+     * @return
+     */
+    private List<SubgroupColumnListVO> generateCustomerRating() {
+        List<SubgroupColumnListVO> subgroupColumnVOList = new ArrayList<>();
+        for (long rating = 0; rating <= 5; rating++) {
+            SubgroupColumnListVO subgroupColumnVO = new SubgroupColumnListVO();
+            subgroupColumnVO.setId(rating);
+            subgroupColumnVO.setName(rating + "星");
+            subgroupColumnVOList.add(subgroupColumnVO);
+        }
+        return subgroupColumnVOList;
     }
 
 

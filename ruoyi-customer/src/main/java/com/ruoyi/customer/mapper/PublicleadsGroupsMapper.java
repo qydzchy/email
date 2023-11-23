@@ -3,6 +3,7 @@ package com.ruoyi.customer.mapper;
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsGroups;
 import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
+import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -73,4 +74,10 @@ public interface PublicleadsGroupsMapper
      * @return
      */
     List<PublicleadsGroupsListBO> selectPublicleadsGroupsByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * 查询客户公海分组简单信息
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCustomerPublicleadsGroupsSimpleInfo();
 }

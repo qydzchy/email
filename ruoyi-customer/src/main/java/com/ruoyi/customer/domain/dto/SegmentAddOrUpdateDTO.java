@@ -42,7 +42,7 @@ public class SegmentAddOrUpdateDTO {
     /**
      * 二级客群字段
      */
-    private Long secondarySegmentColumnId;
+    private String subGroupColumn;
 
     /**
      * 二级客群

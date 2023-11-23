@@ -101,4 +101,16 @@ public interface ISegmentService
      * @return
      */
     List<SegmentListVO> simpleList();
+
+    /**
+     * 二级客群字段
+     * @return
+     */
+    List<SubgroupColumnVO> subgroupColumn();
+
+    /**
+     * 二级客群字段列表
+     * @return
+     */
+    List<SubgroupColumnListVO> subgroupColumnList(String columnName);
 }

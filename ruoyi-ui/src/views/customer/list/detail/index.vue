@@ -8,7 +8,7 @@
         <el-row class="pl-10 fs-14">
           <div class="fs-20 bold">{{ rowData.companyName || '---' }}</div>
           <div class="my-10 flex-middle gap-10">
-            <span>{{ rowData.customerNoType || '---' }}</span>
+            <span>{{ rowData.customerNo || '---' }}</span>
             <span> <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
                                 :show-edit-icon="false"></CellOperate></span>
           </div>
@@ -16,17 +16,23 @@
           <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" @onClose="getDetailData"/>
         </el-row>
       </div>
-      <div class="info-wrap">
-        <div class="wrap flex-middle" v-for="item in infoRowList" :key="item.id">
+      <div class="info-wrap flex-middle">
+        <div class="cell-wrap flex-middle" v-for="item in infoRowList" :key="item.id">
           <span class="fs-14 mr-6">{{ item.label }}</span>
-          <CellOperate :value.sync="item.value" :type="item.type" :show-form="item.show" :show-copy-icon="false"
-                       @onEdit="onEdit(item.id)"/>
+          <CellOperate
+              :text="item.value"
+              :value.sync="item.value"
+              :type="item.type"
+              :show-form="item.show"
+              :show-copy-icon="false"
+              :show-edit-icon="false"
+              @onEdit="onEdit(item.id)"/>
         </div>
       </div>
     </div>
     <el-row type="flex">
       <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
-        <TableRowTabs :options="options" :row="rowData"/>
+        <TableRowTabs :options="options" :row="rowData" @reload="getDetailData"/>
       </el-col>
       <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
@@ -177,6 +183,31 @@ export default {
         {
           id: 1,
           label: '分组',
+          field: 'packetId',
+          value: '',
+          type: 'input',
+          show: false
+        },
+        {
+          id: 2,
+          label: '公海分组',
+          field: 'poolGroup',
+          value: '',
+          type: 'select',
+          show: false
+        },
+        {
+          id: 3,
+          label: '客户星级',
+          field: 'rating',
+          value: '',
+          type: 'rate',
+          show: false
+        },
+        {
+          id: 4,
+          label: '公司网址',
+          field: 'companyWebsite',
           value: '',
           type: 'input',
           show: false
@@ -230,6 +261,10 @@ export default {
           this.rowData.followPerson = this.rowData.followUpPersonnelList?.[0]?.nickName
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
           this.contactList = this.rowData.contactList
+          this.infoRowList.map(val => {
+            val.value = res.data[val.field]
+            return val
+          })
         }
       } catch {
       }
@@ -310,8 +345,7 @@ export default {
 .info-wrap {
   width: 100%;
 
-  .wrap {
-    width: max-content;
+  .cell-wrap {
     box-sizing: border-box;
     margin: 6px 0;
     padding: 6px 12px;

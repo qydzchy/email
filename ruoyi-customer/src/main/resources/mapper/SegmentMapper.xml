@@ -14,6 +14,7 @@
         <result property="conditionRuleContent"    column="condition_rule_content"    />
         <result property="subgroupFlag"    column="subgroup_flag"    />
         <result property="additionRule"    column="addition_rule"    />
+        <result property="subGroupColumn"    column="sub_group_column"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
@@ -24,7 +25,7 @@
     </resultMap>
 
     <sql id="selectSegmentVo">
-        select id, parent_id, name, usage_scope, visibility_scope, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
+        select id, parent_id, name, usage_scope, visibility_scope, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, sub_group_column, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_segment
     </sql>
 
     <select id="selectSegmentList" parameterType="Segment" resultMap="SegmentResult">
@@ -38,6 +39,7 @@
             <if test="conditionRuleContent != null  and conditionRuleContent != ''"> and condition_rule_content = #{conditionRuleContent}</if>
             <if test="subgroupFlag != null "> and subgroup_flag = #{subgroupFlag}</if>
             <if test="additionRule != null "> and addition_rule = #{additionRule}</if>
+            <if test="subGroupColumn != null "> and sub_group_column = #{subGroupColumn}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
             and del_flag = '0'
@@ -60,6 +62,7 @@
         s.condition_rule_content AS conditionRuleContent,
         s.subgroup_flag AS subgroupFlag,
         s.addition_rule AS additionRule,
+        s.sub_group_column AS subGroupColumn,
         COUNT( c.id ) AS customerCount
         FROM
         customer_segment s
@@ -138,6 +141,7 @@
             <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content,</if>
             <if test="subgroupFlag != null">subgroup_flag,</if>
             <if test="additionRule != null">addition_rule,</if>
+            <if test="subGroupColumn != null">sub_group_column,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -155,6 +159,7 @@
             <if test="conditionRuleContent != null and conditionRuleContent != ''">#{conditionRuleContent},</if>
             <if test="subgroupFlag != null">#{subgroupFlag},</if>
             <if test="additionRule != null">#{additionRule},</if>
+            <if test="subGroupColumn != null">#{subGroupColumn},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -166,10 +171,10 @@
     </insert>
 
     <insert id="batchInsertSegment">
-        insert into customer_segment(parent_id, name, usage_scope, visibility_scope, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        insert into customer_segment(parent_id, name, usage_scope, visibility_scope, condition_rule_type, condition_rule_content, subgroup_flag, addition_rule, sub_group_column, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
         values
         <foreach collection="segmentList" item="item" index="index" separator=",">
-            (#{item.parentId}, #{item.name}, #{item.usageScope}, #{item.visibilityScope}, #{item.conditionRuleType}, #{item.conditionRuleContent}, #{item.subgroupFlag}, #{item.additionRule}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+            (#{item.parentId}, #{item.name}, #{item.usageScope}, #{item.visibilityScope}, #{item.conditionRuleType}, #{item.conditionRuleContent}, #{item.subgroupFlag}, #{item.additionRule}, #{item.subGroupColumn}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
         </foreach>
     </insert>
 
@@ -184,6 +189,7 @@
             <if test="conditionRuleContent != null and conditionRuleContent != ''">condition_rule_content = #{conditionRuleContent},</if>
             <if test="subgroupFlag != null">subgroup_flag = #{subgroupFlag},</if>
             <if test="additionRule != null">addition_rule = #{additionRule},</if>
+            <if test="subGroupColumn != null">sub_group_column = #{subGroupColumn},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

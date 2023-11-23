@@ -20,8 +20,8 @@
           </div>
         </div>
 
-        <el-form>
-          <el-form-item label="昵称">
+        <el-form :ref="`contactRef-${index}`" :model="item" :rules="contactRule">
+          <el-form-item label="昵称" prop="nickName">
             <el-input v-model="item.nickName" placeholder="请输入"/>
           </el-form-item>
           <el-form-item label="邮箱">
@@ -178,6 +178,11 @@ export default {
       formList: [
         {...deepClone(addConstruct)}
       ],
+      contactRule: {
+        nickName: [
+          {required: true, message: '请填写昵称', trigger: 'blur'}
+        ]
+      },
       phonePrefixList: generatePhone(),
       platformOption,
       rankOption,
@@ -243,6 +248,15 @@ export default {
       })
     },
     getInnerData() {
+      let valid = []
+      this.formList.forEach((val, index) => {
+        this.$refs[`contactRef-${index}`][0].validate(res => {
+          valid.push(res)
+        })
+      })
+      if (!valid.every(val => val)) {
+        return false
+      }
       let innerData = JSON.parse(JSON.stringify(this.formList))
       innerData.map(val => {
         delete val.id

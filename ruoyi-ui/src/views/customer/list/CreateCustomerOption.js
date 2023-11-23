@@ -133,10 +133,7 @@ const UsuallyInfoRule = [
         type: 'select',
         field: 'poolGroup',
         value: 1,
-        options: [
-            {value: 1, label: '公共公海分组'},
-            {value: 2, label: '公海2组'},
-        ],
+        options: [],
         validate: [
             {
                 required: true,
@@ -299,15 +296,22 @@ const OtherInfoRule = [
         title: '公司logo',
         type: 'upload',
         field: 'companyLogo',
+        value: '',
         props: {
             action: process.env.VUE_APP_BASE_API + "/common/upload",
+            fileList: [],
             multiple: false,
             limit: 1,
-            uploadType: 'image*/',
+            uploadType: "image",
+            accept: "image/*",
             name: 'file',
             withCredentials: true,
+            modalTitle:'公司logo',
             headers: {
                 Authorization: 'Bearer ' + getToken()
+            },
+            onSuccess: (res, file) => {
+                file.url = process.env.VUE_APP_BASE_API + res.fileName
             }
         },
     }

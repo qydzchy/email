@@ -50,6 +50,11 @@ public class Segment extends BaseEntity
     @Excel(name = "添加规则 1.自动生成 2.手动添加")
     private Integer additionRule;
 
+    /**
+     * 二级分群字段
+     */
+    private String subGroupColumn;
+
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
@@ -142,6 +147,15 @@ public class Segment extends BaseEntity
     {
         return additionRule;
     }
+
+    public String getSubGroupColumn() {
+        return subGroupColumn;
+    }
+
+    public void setSubGroupColumn(String subGroupColumn) {
+        this.subGroupColumn = subGroupColumn;
+    }
+
     public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
