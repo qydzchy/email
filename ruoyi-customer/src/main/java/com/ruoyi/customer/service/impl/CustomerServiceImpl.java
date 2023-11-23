@@ -5,12 +5,15 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.*;
 import com.ruoyi.common.exception.ServiceException;
@@ -420,19 +423,35 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
+    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer type, Long teamMemberId, Integer pageNum, Integer pageSize) {
+        List<Long> userIdList = new ArrayList<>();
+        if (type.intValue() == 1) {
+            LoginUser loginUser = SecurityUtils.getLoginUser();
+            Long userId = loginUser.getUserId();
+            userIdList.add(userId);
+        } else if (type.intValue() == 2) {
+            List<TeamMembersListVO> teamMembers = getTeamMembers();
+            List<Long> teamMembersIdList = teamMembers.stream().map(TeamMembersListVO::getUserId).collect(Collectors.toList());
+            if (teamMemberId != null && teamMembersIdList.contains(teamMemberId)) {
+                userIdList.add(teamMemberId);
+            } else if (teamMemberId == null) {
+                userIdList.addAll(teamMembersIdList);
+            }
+        }
+
+        if (userIdList.isEmpty()) {
+            return Pair.of(0, new ArrayList<>());
+        }
 
         try {
-            int count = customerMapper.countPrivateleadsCustomer(userId, segmentId);
+            int count = customerMapper.countPrivateleadsCustomer(userIdList, segmentId);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(userId, segmentId, offset, limit);
+            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(userIdList, segmentId, offset, limit);
             if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }
@@ -567,7 +586,7 @@ public class CustomerServiceImpl implements ICustomerService {
             customerMapper.updateCustomerSeaType(id, type, userId, username);
 
             // 客户移入公海规则处理
-            customerMoveToSeaHandler(id, type, userId, CustomerSeaLogTypeEnum.AUTO);
+            customerMoveToSeaHandler(Arrays.asList(id), type, userId, CustomerSeaLogTypeEnum.AUTO);
         }
 
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(id, userId, userId, username);
@@ -608,7 +627,7 @@ public class CustomerServiceImpl implements ICustomerService {
         customer.setUpdateTime(DateUtils.getNowDate());
         customerMapper.updateCustomer(customer);
 
-        customerMoveToSeaHandler(moveToPublicleadsDTO.getId(), type, userId, CustomerSeaLogTypeEnum.MANUAL);
+        customerMoveToSeaHandler(Arrays.asList(moveToPublicleadsDTO.getId()), type, userId, CustomerSeaLogTypeEnum.MANUAL);
         return true;
     }
 
@@ -743,7 +762,7 @@ public class CustomerServiceImpl implements ICustomerService {
         customerMapper.updateCustomer(customer);
 
         // 客户移入私海处理
-        customerMoveToSeaHandler(id, type, userId, CustomerSeaLogTypeEnum.MANUAL);
+        customerMoveToSeaHandler(Arrays.asList(id), type, userId, CustomerSeaLogTypeEnum.MANUAL);
 
         // 删除跟进人
         customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(id, userId, username);
@@ -1144,20 +1163,25 @@ public class CustomerServiceImpl implements ICustomerService {
 
     /**
      * 客户移入公海规则处理
-     * @param customerId
+     * @param customerIdList
      * @param seaType
      * @param customerSeaLogTypeEnum
      */
     @Override
-    public void customerMoveToSeaHandler(Long customerId, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum) {
-        // 写入到日志
-        CustomerSeaLog customerSeaLog = new CustomerSeaLog();
-        customerSeaLog.setCustomerId(customerId);
-        customerSeaLog.setSeaType(seaType);
-        customerSeaLog.setType(customerSeaLogTypeEnum.getType());
-        customerSeaLog.setCreateTime(DateUtils.getNowDate());
-        customerSeaLog.setCreateId(createId);
-        customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
+    public void customerMoveToSeaHandler(List<Long> customerIdList, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum) {
+        List<CustomerSeaLog> customerSeaLogList = new ArrayList<>();
+        for (Long customerId : customerIdList) {
+            // 写入到日志
+            CustomerSeaLog customerSeaLog = new CustomerSeaLog();
+            customerSeaLog.setCustomerId(customerId);
+            customerSeaLog.setSeaType(seaType);
+            customerSeaLog.setType(customerSeaLogTypeEnum.getType());
+            customerSeaLog.setCreateTime(DateUtils.getNowDate());
+            customerSeaLog.setCreateId(createId);
+            customerSeaLogList.add(customerSeaLog);
+        }
+
+        customerSeaLogMapper.batchInsertCustomerSeaLog(customerSeaLogList);
     }
 
     /**
@@ -1283,16 +1307,145 @@ public class CustomerServiceImpl implements ICustomerService {
 
         // 获取白名单用户
         List<PublicleadsWhiteList> publicleadsWhiteListList = publicleadsWhiteListMapper.selectPublicleadsWhiteListList(new PublicleadsWhiteList());
-        Set<Long> userIdSet = publicleadsWhiteListList.stream().map(PublicleadsWhiteList::getUserId).collect(Collectors.toSet());
+        Set<Long> whiteListUserIdSet = publicleadsWhiteListList.stream().map(PublicleadsWhiteList::getUserId).collect(Collectors.toSet());
+
+        // 即将移入公海的客户ID集合
+        Set<Long> movePublicleadsCustomerIdSet = new HashSet<>();
 
         segmentIdDaysBOList.stream().forEach(segmentIdDaysBO -> {
             Long segmentId = segmentIdDaysBO.getSegmentId();
             Integer days = segmentIdDaysBO.getDays();
 
-            // 查询客户信息
+            // 查询所关联该客群的客户信息
+            List<CustomerMovePublicleadsRulesInfoBO> customerMovePublicleadsRulesInfoBOList = customerMapper.selectCustomerMovePublicleadsRulesInfoBySegmentId(segmentId);
+            Map<Long, List<CustomerMovePublicleadsRulesInfoBO>> customerMovePublicleadsRulesMap = customerMovePublicleadsRulesInfoBOList.stream().collect(Collectors.groupingBy(CustomerMovePublicleadsRulesInfoBO::getId));
+            customerMovePublicleadsRulesMap.forEach((customerId, customerMovePublicleadsRulesInfoList) -> {
+                // 是否移入公海
+                boolean isMovePublicleads = false;
+                // 当前时间
+                Date currentDate = new Date();
+                // 获取最近联系时间
+                Date lastContactedAt = customerMovePublicleadsRulesInfoList.get(0).getLastContactedAt();
 
+                Set<Long> userIdSet = customerMovePublicleadsRulesInfoList.stream().map(CustomerMovePublicleadsRulesInfoBO::getUserId).filter(userId -> userId != null).collect(Collectors.toSet());
+                // 如果该客户在私海里面没有跟进记录，则移入公海
+                if (userIdSet == null || userIdSet.isEmpty()) {
+                    isMovePublicleads = true;
+                // 如果存在的跟进人存在不在白名单里面的，则移入公海
+                } else if (!whiteListUserIdSet.containsAll(userIdSet)) {
+                    isMovePublicleads = true;
+                }
+
+                // 计算两个日期之间的天数差距
+                long diffInMillies = Math.abs(lastContactedAt.getTime() - currentDate.getTime());
+                long daysDifference = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (daysDifference >= days.longValue()) {
+                    isMovePublicleads = true;
+                }
+
+                if (isMovePublicleads) {
+                    movePublicleadsCustomerIdSet.add(customerId);
+                }
+            });
         });
-        return false;
+
+        // 移入公海
+        if (movePublicleadsCustomerIdSet.isEmpty()) {
+            //
+            List<Long> movePublicleadsCustomerIdList = new ArrayList<>(movePublicleadsCustomerIdSet);
+            List<List<Long>> customerIdListPartition = Lists.partition(movePublicleadsCustomerIdList, 200);
+
+            for (List<Long> customerIdList : customerIdListPartition) {
+                // 批量更新客户为公海类型
+                int seaType = CustomerSeaTypeEnum.PUBLIC_LEADS.getType();
+                customerMapper.batchUpdateCustomerSeaType(customerIdList, seaType);
+                // 记录移入公海的日志
+                customerMoveToSeaHandler(customerIdList, seaType, null, CustomerSeaLogTypeEnum.AUTO);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 获取团队成员
+     * @return
+     */
+    @Override
+    public List<TeamMembersListVO> getTeamMembers() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Long deptId = loginUser.getDeptId();
+        SysUser user = loginUser.getUser();
+        String nickName = user.getNickName();
+
+        List<TeamMembersListVO> teamMembersListVOList = new ArrayList<>();
+
+        // 查询角色信息
+        List<RoleDeptSimpleInfoVO> roleDeptSimpleInfoVOList = customerMapper.queryRoleDeptSimpleInfo(userId);
+        Map<Long, List<RoleDeptSimpleInfoVO>> roleIdRoleDeptSimpleInfoMap = roleDeptSimpleInfoVOList.stream().collect(Collectors.groupingBy(roleDeptSimpleInfoVO -> roleDeptSimpleInfoVO.getRoleId()));
+
+        for (Map.Entry<Long, List<RoleDeptSimpleInfoVO>> entry : roleIdRoleDeptSimpleInfoMap.entrySet()) {
+            List<RoleDeptSimpleInfoVO> roleDeptInfoVOList = entry.getValue();
+
+            RoleDeptSimpleInfoVO firstRoleDeptSimpleInfoVO = roleDeptInfoVOList.get(0);
+            DataScopeEnum dataScopeEnum = DataScopeEnum.getByCode(firstRoleDeptSimpleInfoVO.getDataScope());
+
+            // 获取角色部门ID集合
+            List<Long> roleDeptIdList = roleDeptInfoVOList.stream().filter(roleDeptInfoVO -> roleDeptInfoVO.getRoleDeptId() != null).map(roleDeptInfoVO -> roleDeptInfoVO.getRoleDeptId()).collect(Collectors.toList());
+            if (dataScopeEnum != null) {
+                switch (dataScopeEnum) {
+                    case ALL:
+                        teamMembersListVOList.addAll(customerMapper.getAllUser());
+                        break;
+                    case CUSTOM:
+                        if (roleDeptIdList != null && !roleDeptIdList.isEmpty()) {
+                            teamMembersListVOList.addAll(customerMapper.getUserByDeptIds(roleDeptIdList));
+                        }
+                        break;
+                    case DEPARTMENT:
+                        if (deptId != null) {
+                            teamMembersListVOList.addAll(customerMapper.getUserByDeptIds(Arrays.asList(deptId)));
+                        }
+                        break;
+                    case DEPARTMENT_AND_BELOW:
+                        if (deptId != null) {
+                            List<Long> subordinateDeptIds = getSubordinateDeptIds(deptId);
+                            teamMembersListVOList.addAll(customerMapper.getUserByDeptIds(subordinateDeptIds));
+                        }
+                        break;
+                }
+            }
+        }
+
+        // 把自己加入到团队成员中
+        teamMembersListVOList.add(TeamMembersListVO.builder().userId(userId).nickName(nickName).build());
+        return deduplicateById(teamMembersListVOList);
+    }
+
+    /**
+     * 去重
+     * @param list
+     * @return
+     */
+    private List<TeamMembersListVO> deduplicateById(List<TeamMembersListVO> list) {
+        Set<TeamMembersListVO> set = new HashSet<>(list);
+        return new ArrayList<>(set);
+    }
+
+    public List<Long> getSubordinateDeptIds(Long deptId) {
+        List<Long> result = new ArrayList<>();
+        findSubordinateDeptIds(deptId, result);
+        return result;
+    }
+
+    private void findSubordinateDeptIds(Long deptId, List<Long> result) {
+        List<Long> subDepartments = customerMapper.findSubordinateDeptIds(deptId);
+        for (Long subDeptId : subDepartments) {
+            result.add(subDeptId);
+            // 递归查询下属部门
+            findSubordinateDeptIds(subDeptId, result);
+        }
     }
 
     /**

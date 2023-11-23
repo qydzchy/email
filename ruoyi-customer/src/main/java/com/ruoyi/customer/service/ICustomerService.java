@@ -73,7 +73,7 @@ public interface ICustomerService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer type, Long teamMemberId, Integer pageNum, Integer pageSize);
 
     /**
      * 移入客户至分组
@@ -182,7 +182,7 @@ public interface ICustomerService
     /**
      * 移入公海或私海
      */
-    void customerMoveToSeaHandler(Long customerId, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum);
+    void customerMoveToSeaHandler(List<Long> customerIdList, Integer seaType, Long createId, CustomerSeaLogTypeEnum customerSeaLogTypeEnum);
 
     /**
      * 客户查重筛选字段列表
@@ -211,4 +211,10 @@ public interface ICustomerService
      * 移入公海规则处理
      */
     boolean movePublicleadsRulesHandler();
+
+    /**
+     * 获取团队成员
+     * @return
+     */
+    List<TeamMembersListVO> getTeamMembers();
 }

@@ -53,6 +53,17 @@ public class CustomerController extends BaseController
         return success(segmentService.segmentList());
     }
 
+
+    /**
+     * 获取团队成员列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:team:members:get')")
+    @GetMapping("/get/team/members")
+    public AjaxResult getTeamMembers()
+    {
+        return success(customerService.getTeamMembers());
+    }
+
     /**
      * 查询私海客户列表
      */
@@ -60,10 +71,12 @@ public class CustomerController extends BaseController
     @GetMapping("/privateleads/list")
     public TableDataInfo privateleadsList(
             @NotNull(message = "客群不能为空") Long segmentId,
+            @NotNull(message = "类型不能为空") Integer type,
+            Long teamMemberId,
             @NotNull(message = "页数不能为空") Integer pageNum,
             @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> pair = customerService.privateleadsList(segmentId, pageNum, pageSize);
+        Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> pair = customerService.privateleadsList(segmentId, type, teamMemberId, pageNum, pageSize);
         List<PrivateleadsCustomerSimpleListVO> rows = pair.getSecond();
         long total = pair.getFirst();
 

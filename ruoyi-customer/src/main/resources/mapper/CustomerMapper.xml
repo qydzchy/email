@@ -84,7 +84,10 @@
         WHERE
             c.sea_type = 1
           AND c.del_flag = '0'
-          AND fup.user_id = #{userId}
+          AND fup.user_id in
+            <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
           AND (
             #{segmentId} = -2 OR
             (#{segmentId} = -1 AND c.focus_flag = 1) OR
@@ -130,7 +133,10 @@
         WHERE
             customer.sea_type = 1
             AND customer.del_flag = '0'
-            AND fup.user_id = #{userId}
+            AND fup.user_id IN
+            <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
             AND (
               #{segmentId} = -2 OR
               (#{segmentId} = -1 AND customer.focus_flag = 1) OR
@@ -286,6 +292,50 @@
         LIMIT #{offset}, #{limit};
     </select>
 
+    <select id="selectCustomerMovePublicleadsRulesInfoBySegmentId"
+            resultType="com.ruoyi.customer.domain.bo.CustomerMovePublicleadsRulesInfoBO">
+        SELECT
+            c.id,
+            c.last_contacted_at AS lastContactedAt,
+            cfup.user_id AS userId
+        FROM
+            customer_customer c
+            LEFT JOIN customer_customer_follow_up_personnel cfup ON cfup.customer_id = c.id
+            LEFT JOIN customer_customer_segment cs ON cs.customer_id = c.id
+            LEFT JOIN customer_segment s ON s.id = cs.segment_id
+        WHERE
+            cs.segment_id = #{segmentId} and c.sea_type = 1
+    </select>
+
+    <select id="queryRoleDeptSimpleInfo" resultType="com.ruoyi.customer.domain.bo.RoleDeptSimpleInfoVO">
+        SELECT
+            r.role_id AS roleId,
+            r.data_scope AS dataScope,
+            rd.dept_id AS roleDeptId
+        FROM
+            sys_role r
+            LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
+            LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id
+        WHERE
+            ur.user_id = #{userId}
+    </select>
+
+    <select id="getAllUser" resultType="com.ruoyi.customer.domain.vo.TeamMembersListVO">
+        select user_id as userId, nick_name as nickName from sys_user where status = 0 and del_flag = '0'
+    </select>
+
+    <select id="getUserByDeptIds" resultType="com.ruoyi.customer.domain.vo.TeamMembersListVO">
+        select user_id as userId, nick_name as nickName from sys_user where dept_id in
+        <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        and status = 0 and del_flag = '0'
+    </select>
+
+    <select id="findSubordinateDeptIds" resultType="java.lang.Long">
+        select id from sys_dept where del_flag = '0' and parent_id = #{deptId}
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -406,6 +456,16 @@
 
     <update id="updateCustomerSeaType">
         update customer_customer set sea_type = #{seaType}, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id} and del_flag = '0'
+    </update>
+
+    <update id="batchUpdateCustomerSeaType">
+        update customer_customer set sea_type = #{seaType}
+        <where>
+            id in
+            <foreach item="id" collection="customerIdList" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
     </update>
 
     <delete id="deleteCustomerById" parameterType="Long">
