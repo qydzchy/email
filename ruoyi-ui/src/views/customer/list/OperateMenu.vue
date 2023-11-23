@@ -57,7 +57,7 @@
         v-if="moveToPoolVisible"
         :row="row"
         :visible.sync="moveToPoolVisible"
-        :poolOption="indexOpt.poolGroupOption"
+        :privateOption="indexOpt.privateOption"
         :reasonOption="indexOpt.poolReasonOption"
         @onConfirm="onMoveToPollConfirm"
     />

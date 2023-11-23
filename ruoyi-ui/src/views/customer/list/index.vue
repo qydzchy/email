@@ -5,8 +5,8 @@
         <span>客户列表</span>
         <div class="line mx-10"></div>
         <el-radio-group v-model="listType">
-          <el-radio-button :label="0">我的客户</el-radio-button>
-          <el-radio-button :label="1">团队客户</el-radio-button>
+          <el-radio-button :label="1">我的客户</el-radio-button>
+          <el-radio-button :label="2">团队客户</el-radio-button>
         </el-radio-group>
         <!--        <el-select class="ml-6"></el-select>-->
       </div>
@@ -87,7 +87,10 @@
         </template>
         <template #paneR>
           <div class="right-wrap">
-            <TableList ref="tableListRef" :segmentId="curMenuActive" :index-opt="indexOpt"/>
+            <TableList
+                ref="tableListRef"
+                :params="{listType:listType,segmentId:curMenuActive}"
+                :index-opt="indexOpt"/>
           </div>
 
         </template>
@@ -124,7 +127,7 @@ export default {
   },
   data() {
     return {
-      listType: 0,
+      listType: 1,
       collapsed: false,
       percent: 16,
       curMenuActive: null,

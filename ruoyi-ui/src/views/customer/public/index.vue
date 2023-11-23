@@ -11,7 +11,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <TableList ref="tableListRef" :index-opt="indexOpt" />
+    <TableList ref="tableListRef" :index-opt="indexOpt"/>
     <CreatePublicCustomerDrawer :visible.sync="publicDrawerVisible" :index-opt="indexOpt" @load="reloadList"/>
 
   </div>
@@ -22,7 +22,7 @@ import CreatePublicCustomerDrawer from "./CreateCustomerDrawer.vue";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 import TableList from './TableList.vue'
 import {targetBlank} from "@/utils/tools";
-import {editFocusFlagCustomer, searchGroupsCustomer} from "@/api/customer/publicleads";
+import {editFocusFlagCustomer, getPrivateSegmentMenu, searchGroupsCustomer} from "@/api/customer/publicleads";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
@@ -45,6 +45,7 @@ export default {
         originOption: [],
         poolGroupOption: [],
         poolReasonOption: [],
+        privateOption: [],
       },
 
     }
@@ -56,6 +57,7 @@ export default {
     this.getPoolList()
     this.getPoolReasonList()
     this.getTagList()
+    this.getMenuList()
   },
   methods: {
     async getGroupList() {
@@ -104,6 +106,16 @@ export default {
         }
       } catch {
 
+      }
+    },
+    // 私海菜单列表
+    async getMenuList() {
+      try {
+        const res = await getPrivateSegmentMenu()
+        if (res.code === 200) {
+          this.indexOpt.privateOption = res.data
+        }
+      } catch {
       }
     },
     // 客户标签选项
