@@ -217,4 +217,10 @@ public interface ICustomerService
      * @return
      */
     List<TeamMembersListVO> getTeamMembers();
+
+    /**
+     * 查询所有用户
+     * @return
+     */
+    List<TeamMembersListVO> getAllUsers();
 }

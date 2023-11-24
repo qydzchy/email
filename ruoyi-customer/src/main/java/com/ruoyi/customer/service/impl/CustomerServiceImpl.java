@@ -1464,6 +1464,15 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 查询所有用户
+     * @return
+     */
+    @Override
+    public List<TeamMembersListVO> getAllUsers() {
+        return customerMapper.getAllUser();
+    }
+
+    /**
      * 去重
      * @param list
      * @return
