@@ -35,6 +35,16 @@ public class CustomerScheduleController extends BaseController
     private ICustomerScheduleService customerScheduleService;
 
 
+    /**
+     * 客户日程列表
+     * @param customerId
+     * @param startTime
+     * @param endTime
+     * @param userIds
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @PreAuthorize("@ss.hasPermi('customer:customer:schedule:list')")
     @GetMapping("/list")
     public TableDataInfo list(

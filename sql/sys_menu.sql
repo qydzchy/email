@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 24/11/2023 16:32:29
+ Date: 24/11/2023 17:43:01
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2161 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2181 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -288,5 +288,25 @@ INSERT INTO `sys_menu` VALUES (2157, '修改客户来源', 2154, 3, '', NULL, NU
 INSERT INTO `sys_menu` VALUES (2158, '删除客户来源', 2154, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:source:delete', '#', 'admin', '2023-11-24 16:16:57', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2159, '获取部门和用户信息', 2035, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'system:user:list', '#', 'admin', '2023-11-24 16:25:46', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2160, '获取部门和用户信息', 2036, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'system:user:list', '#', 'admin', '2023-11-24 16:25:58', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2161, '客户写跟进', 2129, 20, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-11-24 17:35:42', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2162, '客户写跟进列表', 2161, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:list', '#', 'admin', '2023-11-24 17:36:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2163, '新增客户写跟进', 2161, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:add', '#', 'admin', '2023-11-24 17:36:22', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2164, '修改客户写跟进', 2161, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:edit', '#', 'admin', '2023-11-24 17:36:36', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2165, '删除客户写跟进', 2161, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:delete', '#', 'admin', '2023-11-24 17:36:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2166, '写跟进评论', 2129, 21, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-11-24 17:37:07', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2167, '新增写跟进评论', 2166, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:comment:add', '#', 'admin', '2023-11-24 17:37:55', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2168, '修改写跟进评论', 2166, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:comment:edit', '#', 'admin', '2023-11-24 17:38:09', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2169, '删除写跟进评论', 2166, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:comment:delete', '#', 'admin', '2023-11-24 17:38:23', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2170, '客户日程', 2129, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-11-24 17:38:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2171, '客户日程列表', 2170, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:schedule:list', '#', 'admin', '2023-11-24 17:39:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2172, '新增客户日程', 2170, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:schedule:add', '#', 'admin', '2023-11-24 17:39:59', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2173, '修改客户日程', 2170, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:schedule:edit', '#', 'admin', '2023-11-24 17:40:14', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2174, '删除客户日程', 2170, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:schedule:delete', '#', 'admin', '2023-11-24 17:40:29', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2175, '修改客户日程重点关注', 2170, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:schedule:edit:focusFlag', '#', 'admin', '2023-11-24 17:40:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2176, '客户文档', 2129, 23, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-11-24 17:41:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2177, '客户文档列表', 2176, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:list', '#', 'admin', '2023-11-24 17:41:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2178, '上传文档', 2176, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:upload:multiple', '#', 'admin', '2023-11-24 17:42:07', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2179, '下载文档', 2176, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:download', '#', 'admin', '2023-11-24 17:42:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2180, '删除文档', 2176, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:delete', '#', 'admin', '2023-11-24 17:42:41', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;
