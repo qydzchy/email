@@ -1195,7 +1195,9 @@ public class CustomerServiceImpl implements ICustomerService {
         customer.setId(customerId);
         customer.setLastContactedAt(lastContactedAt);
         customer.setLastFollowupAt(lastFollowUpAt);
-        customerMapper.updateCustomer(customer);
+        if (lastContactedAt != null || lastFollowUpAt != null) {
+            customerMapper.updateCustomer(customer);
+        }
     }
 
     /**
