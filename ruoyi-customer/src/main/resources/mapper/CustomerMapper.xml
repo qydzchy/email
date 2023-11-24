@@ -337,9 +337,9 @@
     </select>
 
     <select id="getMaxCustomerNo" resultType="java.lang.Long">
-        SELECT MAX(CAST(SUBSTRING(CONVERT(code, SIGNED), 1, LENGTH(code)) AS UNSIGNED))
-        FROM test
-        WHERE code REGEXP '^[0-9]+$';
+        SELECT MAX(CAST(SUBSTRING(CONVERT(customer_no, SIGNED), 1, LENGTH(customer_no)) AS UNSIGNED))
+        FROM customer_customer
+        WHERE customer_no REGEXP '^[0-9]+$';
     </select>
 
     <select id="countByCustomerNo" resultType="java.lang.Integer">
