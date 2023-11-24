@@ -209,7 +209,22 @@ public class CustomerServiceImpl implements ICustomerService {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
 
-        String customerNo = System.currentTimeMillis() + "";
+        Integer customerNoType = customerAddOrUpdateDTO.getCustomerNoType();
+        String customerNo = null;
+        // 客户编号类型：1-自动生成；2-自定义
+        if (customerNoType.intValue() == 1) {
+            customerNo = generateCustomerNo();
+        } else if (customerNoType.intValue() == 2) {
+            if (StringUtils.isBlank(customerAddOrUpdateDTO.getCustomerNo())) {
+                throw new ServiceException("客户编号不能为空");
+            }
+            customerNo = customerAddOrUpdateDTO.getCustomerNo();
+            // 判断客户编号是否已存在
+            Integer count = customerMapper.countByCustomerNo(customerNo);
+            if (count > 0) {
+                throw new ServiceException("客户编号已存在");
+            }
+        }
 
         customer.setCustomerNo(customerNo);
         customer.setLastContactedAt(DateUtils.getNowDate());
@@ -239,6 +254,23 @@ public class CustomerServiceImpl implements ICustomerService {
         // 洗牌
         CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> shuffle(id, null));
         return true;
+    }
+
+    /**
+     * 自动生成客户编号
+     * @return
+     */
+    private String generateCustomerNo() {
+        // 从数据库中获取最大的客户编号
+        Long maxId = customerMapper.getMaxCustomerNo();
+
+        // 如果数据库中没有客户编号，从10000开始
+        if (maxId == null) {
+            maxId = 9999L;
+        }
+
+        // 返回下一个递增的编号
+        return String.valueOf(maxId + 1);
     }
 
     /**
@@ -353,6 +385,8 @@ public class CustomerServiceImpl implements ICustomerService {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
 
+        // 不能修改客户编号
+        customerAddOrUpdateDTO.setCustomerNo(null);
         customer.setUpdateId(userId);
         customer.setUpdateBy(username);
         customer.setUpdateTime(DateUtils.getNowDate());

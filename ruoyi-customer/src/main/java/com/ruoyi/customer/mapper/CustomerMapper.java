@@ -217,4 +217,17 @@ public interface CustomerMapper
      * @return
      */
     List<Long> findSubordinateDeptIds(Long deptId);
+
+    /**
+     * 获取最大的客户编号
+     * @return
+     */
+    Long getMaxCustomerNo();
+
+    /**
+     * 根据客户编号查询客户数量
+     * @param customerNo
+     * @return
+     */
+    Integer countByCustomerNo(@Param("customerNo") String customerNo);
 }

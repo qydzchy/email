@@ -330,6 +330,16 @@
         select id from sys_dept where del_flag = '0' and parent_id = #{deptId}
     </select>
 
+    <select id="getMaxCustomerNo" resultType="java.lang.Long">
+        SELECT MAX(CAST(SUBSTRING(CONVERT(code, SIGNED), 1, LENGTH(code)) AS UNSIGNED))
+        FROM test
+        WHERE code REGEXP '^[0-9]+$';
+    </select>
+
+    <select id="countByCustomerNo" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM customer_customer WHERE customer_no = #{customerNo} AND del_flag = '0'
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
