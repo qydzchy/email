@@ -5,7 +5,7 @@
         <span class="bold">全部客户</span>
         <span class="gray-text ml-2">{{ paginateOption.total }} 个客户</span>
       </div>
-      <!--              <HeaderFilter/>-->
+      <HeaderFilter :index-opt="indexOpt" :query="searchQuery" @handleSearch="handleSearch"/>
     </div>
     <div class="table-list mt-20">
       <div class="mt-16" v-show="ids.length">
@@ -39,6 +39,7 @@ import TableRowDrawer from "./TableRowDrawer.vue";
 import OperateMenu from './OperateMenu.vue'
 import CellOperate from './CellOperate.vue'
 import HeaderOperate from "./HeaderOperate.vue";
+import HeaderFilter from "./HeaderFilter.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 import {editFocusFlagCustomer, getPrivateLeadsList} from "@/api/customer/publicleads";
@@ -63,7 +64,7 @@ export default {
       required: false
     }
   },
-  components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon},
+  components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon, HeaderFilter},
   data() {
     return {
       extraOption: {
@@ -319,6 +320,10 @@ export default {
       rowDrawerVisible: false, //点击显示详情抽屉
       rowDrawerData: {},//抽屉回显的数据
       ids: [],
+      searchQuery: {
+        columnName: 'userId',
+        value: ''
+      },
     }
   },
   watch: {
@@ -338,6 +343,7 @@ export default {
         const res = await getPrivateLeadsList({
           segmentId: this.params.segmentId,
           type: this.params.listType,
+          [this.searchQuery.columnName]: this.searchQuery.value,
           pageNum: currentPage,
           pageSize: pageSize
         }).finally(() => {
@@ -353,6 +359,11 @@ export default {
         }
       } catch {
       }
+    },
+    handleSearch(value) {
+      console.log(value)
+      this.searchQuery = value
+      this.getList()
     },
     async onCollageIcon(id, scope) {
       try {
@@ -406,7 +417,7 @@ export default {
       targetBlank('/customer/personal/' + id)
     },
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.postId)
+      this.ids = selection.map(item => item.id)
     },
     handlePagination(type, value) {
       if (type === 'size') {

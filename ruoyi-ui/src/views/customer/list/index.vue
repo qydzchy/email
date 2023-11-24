@@ -112,7 +112,7 @@ import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
 import {reasonList} from "@/api/company/poolRule";
-import {getPrivateSegmentMenu, searchGroupsCustomer} from "@/api/customer/publicleads";
+import {getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer} from "@/api/customer/publicleads";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 import {getCustomerTagList} from "@/api/customer/config";
 
@@ -142,6 +142,7 @@ export default {
         poolGroupOption: [],
         poolReasonOption: [],
         tagOption: [],
+        teamMemberOption: [],
       }
 
     }
@@ -154,6 +155,7 @@ export default {
     this.getPoolList()
     this.getPoolReasonList()
     this.getTagList()
+    this.getMemberList()
   },
   methods: {
     // 菜单列表
@@ -226,6 +228,16 @@ export default {
         const res = await getCustomerTagList()
         if (res.code === 200) {
           this.indexOpt.tagOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 获取选择的成员
+    async getMemberList() {
+      try {
+        const res = await getTeamMembers()
+        if (res.code === 200) {
+          this.indexOpt.teamMemberOption = res.data
         }
       } catch {
       }
