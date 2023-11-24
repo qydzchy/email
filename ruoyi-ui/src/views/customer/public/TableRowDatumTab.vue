@@ -210,6 +210,7 @@ import CollapseWrap from "@/components/CollapseWrap";
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 import {timeZoneList} from "@/assets/data/countryData";
+import {editCustomer} from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -231,7 +232,7 @@ export default {
         }
       },
       required: false
-    }
+    },
   },
   components: {TableNext, CustomerContactDrawer, CollapseWrap, CellOperate},
   data() {
@@ -294,10 +295,20 @@ export default {
         {
           field: 'origin',
           label: '客户来源',
-          type: 'input',
+          type: 'select',
           show: false,
           value: '',
-          options: {},
+          options: {
+            data: [],
+            props: {
+              value: 'id',
+              label: 'name',
+            },
+            showCheckbox: true,
+            checkStrictly: true,
+            multiple: true,
+            collapseTags: true,
+          },
         },
         {
           field: 'packetId',
@@ -309,7 +320,11 @@ export default {
             size: 'small',
             filterable: true,
             clearable: true,
-            data: this.options.groupOption
+            data: [],
+            props: {
+              value: 'id',
+              label: 'name',
+            },
           },
         },
         {
@@ -336,12 +351,6 @@ export default {
           type: 'input',
           show: false,
           value: '',
-          options: {
-            options: [
-              {value: 1, label: "自动生成"},
-              {value: 2, label: "自定义"},
-            ]
-          },
         },
         {
           field: 'poolGroup',
@@ -598,6 +607,36 @@ export default {
       },
       deep: true,
       immediate: true,
+    },
+    options: {
+      handler(newVal) {
+        const {indexOpt} = newVal
+        this.usuallyInfo.map(val => {
+          if (val.field === 'packetId') {
+            val.options.data = indexOpt.groupOption || []
+          } else if (val.field === 'stageId') {
+            val.options.options = indexOpt.stageOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name,
+              }
+            })
+          } else if (val.field === 'origin') {
+            val.options.data = indexOpt.originOption || []
+          } else if (val.field === 'poolGroup') {
+            val.options.options = indexOpt.poolGroupOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name
+              }
+            })
+          }
+          return val
+        })
+
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -665,9 +704,12 @@ export default {
       this.editCustomer(data).then(res => {
         if (res) {
           this[listType].forEach((val, index) => {
-            if (val.field === field) {
-              this.$set(this[listType], index, {...val, value})
+            let newValue = value
+            if (field === 'countryRegion') {
+              newValue = value.split('/')
             }
+            this.$set(this[listType], index, {...val, show: false, value: newValue})
+            this.$emit('reload')
           })
         }
       })
@@ -716,6 +758,7 @@ export default {
     .wrap {
       width: 50%;
       padding-top: 10px;
+
       .copy-text {
         cursor: pointer;
 

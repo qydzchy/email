@@ -41,11 +41,11 @@
                 </span>
               </div>
               <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-              <TableRowTags :detail-id="row.id" :tag-list="rowData.tagList" @onClose="confirmRemoveTag"/>
+              <TableRowTags :detail-id="row.id" :tag-list="rowData.tagList" @reload="reload"/>
             </div>
           </div>
           <div class="tabs mt-10">
-            <TableRowTabs :row="rowData" :options="options" @reload="getDetailData"/>
+            <TableRowTabs :row="rowData" :options="options"  @reload="reload"/>
           </div>
         </div>
         <el-backtop target=".el-tabs__content" :visibility-height="100"/>
@@ -86,7 +86,11 @@ export default {
       default: () => {
         return {
           groupOption: [],
-
+          stageOption: [],
+          originOption: [],
+          poolGroupOption: [],
+          poolReasonOption: [],
+          privateOption: [],
         }
       }
     },
@@ -105,7 +109,7 @@ export default {
         isShowSchedule: true,
         isTabSetHeight: true,
         isShowInfo: true,
-        groupOption: this.indexOpt.groupOption
+        indexOpt: this.indexOpt
       },
       focusFlag: false,
       rowData: {
@@ -156,7 +160,7 @@ export default {
       } catch {
       }
     },
-    confirmRemoveTag() {
+    reload() {
       this.getDetailData()
       this.$emit('load')
     },

@@ -5,7 +5,7 @@
         <span class="bold">全部客户</span>
         <span class="gray-text ml-2">{{ paginateOption.total }} 个客户</span>
       </div>
-<!--      <HeaderFilter :index-opt="indexOpt" :query="searchQuery" @handleSearch="handleSearch"/>-->
+      <!--      <HeaderFilter :index-opt="indexOpt" :query="searchQuery" @handleSearch="handleSearch"/>-->
     </div>
     <div class="table-list mt-20">
       <div class="mt-16" v-show="ids.length">
@@ -115,6 +115,7 @@ export default {
           align: 'left',
           width: '200',
           sortable: true,
+          className: 'text-hover',
           render: (row, field, scope) => {
             const {rowId, fieldName, showEditIcon} = this.tableCell
             const propName = scope.column.property
@@ -477,6 +478,14 @@ export default {
     }
   }
 
+  ::v-deep .text-hover {
+    > .cell {
+      .span-style:hover {
+        color: #0a6aff;
+      }
+    }
+  }
+
   ::v-deep .line-clamp1 {
     display: block;
     overflow: hidden;
@@ -486,6 +495,7 @@ export default {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
   }
+
 }
 
 ::v-deep .el-table__body {

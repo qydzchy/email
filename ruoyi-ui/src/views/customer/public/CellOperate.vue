@@ -36,7 +36,7 @@
       </template>
       <!--   rate   -->
       <template v-else-if="type==='rate'">
-        <el-rate :value.sync="curValue" v-bind="formOption" @change="handleChange"></el-rate>
+        <el-rate :value.sync="curValue" v-bind="formOption" :disabled="!showEditIcon" @change="handleChange"></el-rate>
       </template>
       <!--   tel   -->
       <template v-else-if="type==='tel'">
@@ -60,7 +60,7 @@
       </template>
       <!--   country   -->
       <template v-else-if="type==='country'">
-        <select-country :value.sync="curValue"></select-country>
+        <select-country :value.sync="curValue" @input="handleInputCountry"></select-country>
       </template>
       <!--   picture   -->
       <template v-if="type==='picture'">
@@ -193,10 +193,12 @@ export default {
     },
     generateTreeValue() {
       let res = ''
+      const propsLabel = this.formOption.props.label
+      const propsValue = this.formOption.props.value
       const deepSearch = (arr, value) => {
         return arr?.filter(val => {
-          if (val.value === value) {
-            res = val.label
+          if (val[propsValue] === value) {
+            res = val[propsLabel]
           }
           if (val.children && val.children.length) {
             deepSearch(val.children, value)
@@ -262,6 +264,9 @@ export default {
     },
     handleChangeTel(value) {
       this.$emit('onChange', {...this.curValue, phone_prefix: value})
+    },
+    handleInputCountry(value) {
+      this.$emit('onChange', value.join('/'))
     },
     handleInputTel(value) {
       this.$emit('onInput', {...this.curValue, phone: value})

@@ -21,7 +21,7 @@
           <span class="fs-14 mr-6">{{ item.label }}</span>
           <CellOperate
               :text="item.value"
-              :value.sync="item.value"
+              :curValue.sync="item.value"
               :type="item.type"
               :show-form="item.show"
               :show-copy-icon="false"
@@ -138,10 +138,15 @@ import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
 import {getScheduleList} from "@/api/customer/schedule";
 import {formatMonthAndDay} from "@/utils";
-import {getCustomerDetail} from "@/api/customer/publicleads";
+import {getCustomerDetail, searchGroupsCustomer} from "@/api/customer/publicleads";
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 import TableRowTags from "@/views/customer/list/TableRowTags.vue";
+import {packetList} from "@/api/company/group";
+import {stageList} from "@/api/company/status";
+import {getOriginList} from "@/api/company/origin";
+import {reasonList} from "@/api/company/poolRule";
+import {getCustomerTagList} from "@/api/customer/config";
 
 export default {
   components: {
@@ -155,14 +160,65 @@ export default {
   data() {
     return {
       customerId: null,
-      options: {},
+      options: {
+        indexOpt: {
+          groupOption: [],
+          stageOption: [],
+          originOption: [],
+          poolGroupOption: [],
+          poolReasonOption: [],
+          tagOption: [],
+          teamMemberOption: [],
+        }
+      },
       infoRowList: [
         {
           id: 1,
           label: '分组',
+          field: 'packetId',
+          value: '',
+          type: 'tree',
+          show: false,
+          formOption: {
+            size: 'small',
+            filterable: true,
+            clearable: true,
+            data: [],
+            props: {
+              value: 'id',
+              label: 'name',
+            },
+          },
+        },
+        {
+          id: 2,
+          label: '公海分组',
+          field: 'poolGroup',
+          value: '',
+          type: 'select',
+          show: false,
+          formOption: {
+            clearable: true,
+            options: []
+          },
+        },
+        {
+          id: 3,
+          label: '客户星级',
+          field: 'rating',
+          value: null,
+          type: 'rate',
+          show: true,
+          formOption: {},
+        },
+        {
+          id: 4,
+          label: '公司网址',
+          field: 'companyWebsite',
           value: '',
           type: 'input',
-          show: false
+          show: false,
+          formOption: {},
         }
       ],
       contactList: [],
@@ -184,12 +240,48 @@ export default {
       rowData: {},
     }
   },
+  watch: {
+    options: {
+      handler(newVal) {
+        const {indexOpt} = newVal
+        this.infoRowList.map(val => {
+          if (val.field === 'packetId') {
+            val.formOption.data = indexOpt.groupOption || []
+          } else if (val.field === 'stageId') {
+            val.formOption.options = indexOpt.stageOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name,
+              }
+            })
+          } else if (val.field === 'origin') {
+            val.formOption.data = indexOpt.originOption || []
+          } else if (val.field === 'poolGroup') {
+            val.formOption.options = indexOpt.poolGroupOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name
+              }
+            })
+          }
+          return val
+        })
+      },
+      deep: true,
+    },
+  },
   mounted() {
     this.customerId = this.$route.params?.id
     if (!this.customerId) {
       return
     }
     this.getDetailData()
+    this.getGroupList()
+    this.getStageList()
+    this.getOriginList()
+    this.getPoolList()
+    this.getPoolReasonList()
+    this.getTagList()
   },
   methods: {
     async getDetailData() {
@@ -212,6 +304,67 @@ export default {
         }
         return val
       })
+    },
+    // 分组选项
+    async getGroupList() {
+      try {
+        const res = await packetList()
+        if (res.code === 200) {
+          this.options.indexOpt.groupOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 阶段选项
+    async getStageList() {
+      try {
+        const res = await stageList()
+        if (res.code === 200) {
+          this.options.indexOpt.stageOption = res.data
+        }
+      } catch (e) {
+      }
+    },
+    // 来源选项
+    async getOriginList() {
+      try {
+        const res = await getOriginList()
+        if (res.code === 200) {
+          this.options.indexOpt.originOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 公海分组选项
+    async getPoolList() {
+      try {
+        const res = await searchGroupsCustomer()
+        if (res.code === 200) {
+          this.options.indexOpt.poolGroupOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 移入公海原因
+    async getPoolReasonList() {
+      try {
+        const res = await reasonList()
+        if (res.code === 200) {
+          this.options.indexOpt.poolReasonOption = res.data
+        }
+      } catch {
+
+      }
+    },
+    // 客户标签选项
+    async getTagList() {
+      try {
+        const res = await getCustomerTagList()
+        if (res.code === 200) {
+          this.options.indexOpt.tagOption = res.data
+        }
+      } catch {
+      }
     },
     handleBlurSearch() {
       if (!this.contactSearchValue) {
