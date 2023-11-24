@@ -275,15 +275,19 @@ export default {
     if (!this.customerId) {
       return
     }
-    this.getDetailData()
-    this.getGroupList()
-    this.getStageList()
-    this.getOriginList()
-    this.getPoolList()
-    this.getPoolReasonList()
-    this.getTagList()
+    this.init()
   },
   methods: {
+    init() {
+      this.getDetailData()
+      this.getGroupList()
+      this.getStageList()
+      this.getOriginList()
+      this.getPoolList()
+      this.getPoolReasonList()
+      this.getTagList()
+      this.getCommonTree()
+    },
     async getDetailData() {
       try {
         const res = await getCustomerDetail({
@@ -362,6 +366,16 @@ export default {
         const res = await getCustomerTagList()
         if (res.code === 200) {
           this.options.indexOpt.tagOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 获取用户列表
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.indexOpt.memberOption = res.data
         }
       } catch {
       }

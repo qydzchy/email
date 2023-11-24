@@ -28,6 +28,7 @@ import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
 import {reasonList} from "@/api/company/poolRule";
 import {getCustomerTagList} from "@/api/customer/config";
+import {listDeptUsersTree} from "@/api/system/dept";
 
 export default {
   components: {TableRowDrawer, CreatePublicCustomerDrawer, TableList},
@@ -51,15 +52,19 @@ export default {
     }
   },
   mounted() {
-    this.getGroupList()
-    this.getStageList()
-    this.getOriginList()
-    this.getPoolList()
-    this.getPoolReasonList()
-    this.getTagList()
-    // this.getMenuList()
+    this.init()
   },
   methods: {
+    init() {
+      this.getGroupList()
+      this.getStageList()
+      this.getOriginList()
+      this.getPoolList()
+      this.getPoolReasonList()
+      this.getTagList()
+      // this.getMenuList()
+      this.getCommonTree()
+    },
     async getGroupList() {
       try {
         const res = await packetList()
@@ -124,6 +129,16 @@ export default {
         const res = await getCustomerTagList()
         if (res.code === 200) {
           this.indexOpt.tagOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 获取用户列表
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.indexOpt.memberOption = res.data
         }
       } catch {
       }

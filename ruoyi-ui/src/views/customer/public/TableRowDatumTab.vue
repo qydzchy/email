@@ -166,7 +166,7 @@
                 </el-tooltip>
               </div>
               <div class="flex-middle space-between py-5">
-                <span>--</span>
+                <span>{{ row[follow.field] || '---'}}</span>
               </div>
             </el-col>
           </el-row>
@@ -190,8 +190,11 @@
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </div>
-              <div class="flex-middle space-between py-5">
-                <span>--</span>
+              <div class="flex-middle space-between py-5"  v-if="!['createId','updateId'].includes(sys.field)">
+                <span>{{ row[sys.field] || '---' }}</span>
+              </div>
+              <div v-else class="flex-middle space-between py-5" >
+                <span>{{ generateMember(row[sys.field]) || '---' }}</span>
               </div>
             </el-col>
           </el-row>
@@ -465,11 +468,11 @@ export default {
       ],
       followInfo: [
         {
-          field: '',
+          field: 'lastContactedAt',
           label: '最近联系时间',
         },
         {
-          field: '',
+          field: 'lastFollowupAt',
           label: '最近跟进时间',
         },
         {
@@ -531,19 +534,19 @@ export default {
       ],
       sysInfo: [
         {
-          field: '',
+          field: 'createId',
           label: '创建人',
         },
         {
-          field: '',
+          field: 'createTime',
           label: '创建时间',
         },
         {
-          field: '',
+          field: 'updateId',
           label: '最近修改人',
         },
         {
-          field: '',
+          field: 'updateTime',
           label: '资料更新时间',
         },
         {
@@ -733,6 +736,26 @@ export default {
       }
       return secondVal
     },
+    generateMember(id) {
+      let name = ''
+      try {
+        const memberOption = this.options.indexOpt.memberOption
+        const deepSearch = (arr) => arr.forEach(val => {
+          if (val.id === id) {
+            name = val.name
+            // 跳出
+            throw new Error('return false');
+          }
+          if (val.children && val.children.length) {
+            deepSearch(val.children)
+          }
+        })
+        deepSearch(memberOption)
+      } catch (e) {
+        return name
+      }
+      return name
+    }
   }
 
 }

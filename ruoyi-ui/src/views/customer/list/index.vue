@@ -126,6 +126,7 @@ import {reasonList} from "@/api/company/poolRule";
 import {getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer} from "@/api/customer/publicleads";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 import {getCustomerTagList} from "@/api/customer/config";
+import {listDeptUsersTree} from "@/api/system/dept";
 
 export default {
   components: {
@@ -160,16 +161,20 @@ export default {
     }
   },
   mounted() {
-    this.getMenuList()
-    this.getGroupList()
-    this.getStageList()
-    this.getOriginList()
-    this.getPoolList()
-    this.getPoolReasonList()
-    this.getTagList()
-    this.getMemberList()
+    this.init()
   },
   methods: {
+    init() {
+      this.getMenuList()
+      this.getGroupList()
+      this.getStageList()
+      this.getOriginList()
+      this.getPoolList()
+      this.getPoolReasonList()
+      this.getTagList()
+      this.getMemberList()
+      this.getCommonTree()
+    },
     // 菜单列表
     async getMenuList() {
       try {
@@ -250,6 +255,16 @@ export default {
         const res = await getTeamMembers()
         if (res.code === 200) {
           this.indexOpt.teamMemberOption = res.data
+        }
+      } catch {
+      }
+    },
+    // 获取用户列表
+    async getCommonTree() {
+      try {
+        const res = await listDeptUsersTree()
+        if (res.code === 200) {
+          this.indexOpt.memberOption = res.data
         }
       } catch {
       }
