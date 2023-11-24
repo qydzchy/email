@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 24/11/2023 16:17:42
+ Date: 24/11/2023 16:32:29
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2159 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2161 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -286,5 +286,7 @@ INSERT INTO `sys_menu` VALUES (2155, '客户来源列表', 2154, 1, '', NULL, NU
 INSERT INTO `sys_menu` VALUES (2156, '新增客户来源', 2154, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:source:add', '#', 'admin', '2023-11-24 16:16:29', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2157, '修改客户来源', 2154, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:source:edit', '#', 'admin', '2023-11-24 16:16:45', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2158, '删除客户来源', 2154, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:source:delete', '#', 'admin', '2023-11-24 16:16:57', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2159, '获取部门和用户信息', 2035, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'system:user:list', '#', 'admin', '2023-11-24 16:25:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2160, '获取部门和用户信息', 2036, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'system:user:list', '#', 'admin', '2023-11-24 16:25:58', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;
