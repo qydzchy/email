@@ -42,6 +42,7 @@
 
 <script>
 import {
+  getAllUser,
   reassignToCustomer,
   searchFollowerCustomer,
   shareToCustomer,
@@ -103,15 +104,13 @@ export default {
     }
   },
   mounted() {
-    this.getFollowPerson()
+    this.getAllUserList()
   },
   methods: {
-    async getFollowPerson() {
+    async getAllUserList() {
       if (!this.row.id) return
       try {
-        const res = await searchFollowerCustomer({
-          id: this.row.id,
-        })
+        const res = await getAllUser()
         if (res.code === 200) {
           this.followPersonList = res.data
         }

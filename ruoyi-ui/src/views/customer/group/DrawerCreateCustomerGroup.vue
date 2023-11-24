@@ -305,6 +305,9 @@ export default {
         let newChildren = deepClone([...children])
         newChildren.map(val => {
           delete val.ruleId
+          delete val.mode
+          delete val.secondChildField
+          delete val.customerCount
           val.subgroupFlag = Number(val.subgroupFlag)
           val.conditionRuleContent = this.generateConditionRuleContent(val.conditionRuleContent, val.conditionRuleType)
           return val
@@ -408,7 +411,7 @@ export default {
       arr.forEach(val => {
         delete val.ruleId
         val.andOr = mapType[type]
-        if (val.columnName?.length) {
+        if (Array.isArray(val.columnName)) {
           val.columnName = val.columnName[val.columnName.length - 1]
         }
         newArr.push(val)
