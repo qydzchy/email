@@ -165,3 +165,11 @@ export function getTeamMembers() {
         method: 'get',
     })
 }
+
+// 获取所有用户
+export function getAllUser() {
+    return request({
+        url: '/customer/customer/get/all/users',
+        method: 'get'
+    })
+}

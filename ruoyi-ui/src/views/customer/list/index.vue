@@ -100,7 +100,7 @@
           <div class="right-wrap">
             <TableList
                 ref="tableListRef"
-                :params="{listType:listType,segmentId:curMenuActive}"
+                :params="{listType:listType,segmentId:curMenuActive,userId:userId}"
                 :index-opt="indexOpt"/>
           </div>
 
