@@ -5,7 +5,7 @@
         <span class="bold">全部客户</span>
         <span class="gray-text ml-2">{{ paginateOption.total }} 个客户</span>
       </div>
-      <HeaderFilter :index-opt="indexOpt" :query="searchQuery" @handleSearch="handleSearch"/>
+<!--      <HeaderFilter :index-opt="indexOpt" :query="searchQuery" @handleSearch="handleSearch"/>-->
     </div>
     <div class="table-list mt-20">
       <div class="mt-16" v-show="ids.length">
@@ -52,6 +52,7 @@ export default {
         return {
           segmentId: null,
           listType: null,
+          userId: null,
         }
       },
       required: true,
@@ -321,7 +322,7 @@ export default {
       rowDrawerData: {},//抽屉回显的数据
       ids: [],
       searchQuery: {
-        columnName: 'userId',
+        columnName: '',
         value: ''
       },
     }
@@ -343,6 +344,7 @@ export default {
         const res = await getPrivateLeadsList({
           segmentId: this.params.segmentId,
           type: this.params.listType,
+          userId: this.params.userId,
           [this.searchQuery.columnName]: this.searchQuery.value,
           pageNum: currentPage,
           pageSize: pageSize

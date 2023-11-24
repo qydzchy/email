@@ -8,6 +8,17 @@
           <el-radio-button :label="1">我的客户</el-radio-button>
           <el-radio-button :label="2">团队客户</el-radio-button>
         </el-radio-group>
+        <template v-if="listType===2">
+          <el-select class="ml-10" v-model="userId" placeholder="选择部门或业务员" clearable>
+            <el-option
+                v-for="item in indexOpt.teamMemberOption"
+                :key="item.userId"
+                :value="item.userId"
+                :label="item.nickName">
+
+            </el-option>
+          </el-select>
+        </template>
         <!--        <el-select class="ml-6"></el-select>-->
       </div>
       <div>
@@ -128,6 +139,7 @@ export default {
   data() {
     return {
       listType: 1,
+      userId: null,
       collapsed: false,
       percent: 16,
       curMenuActive: null,

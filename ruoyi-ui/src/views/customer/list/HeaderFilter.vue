@@ -71,7 +71,6 @@ export default {
   data() {
     return {
       filterOption: [
-        {columnName: 'userId', nickName: '成员'},
         {columnName: 'company_name', nickName: '公司名称'},
         {columnName: 'email', nickName: '邮箱'},
         {columnName: 'customer_tag', nickName: '客户标签'},
@@ -86,14 +85,6 @@ export default {
         {columnName: 'follow_up_personnel', nickName: '跟进人'},
       ],
       filterSecondOption: {
-        userId: {
-          type: 'select',
-          props: {
-            value: 'userId',
-            label: 'nickName',
-          },
-          options: [],
-        },
         company_name: {
           type: 'input',
         },
@@ -186,7 +177,6 @@ export default {
   watch: {
     indexOpt: {
       handler(newVal) {
-        this.filterSecondOption.userId.options = newVal.teamMemberOption
       },
       deep: true,
       immediate: true,
