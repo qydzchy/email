@@ -170,6 +170,15 @@ public class CustomerController extends BaseController
      * 合并客户
      */
 
+    /**
+     * 查询所有用户
+     */
+    @PreAuthorize("@ss.hasPermi('customer:customer:get:all:users')")
+    @GetMapping(value = "/get/all/users")
+    public AjaxResult getAllUsers()
+    {
+        return success(customerService.getAllUsers());
+    }
 
     /**
      * 转移给
