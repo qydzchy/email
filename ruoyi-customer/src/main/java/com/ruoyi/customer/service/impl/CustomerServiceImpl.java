@@ -1448,6 +1448,7 @@ public class CustomerServiceImpl implements ICustomerService {
                     case DEPARTMENT_AND_BELOW:
                         if (deptId != null) {
                             List<Long> subordinateDeptIds = getSubordinateDeptIds(deptId);
+                            subordinateDeptIds.add(deptId);
                             teamMembersListVOList.addAll(customerMapper.getUserByDeptIds(subordinateDeptIds));
                         }
                         break;
