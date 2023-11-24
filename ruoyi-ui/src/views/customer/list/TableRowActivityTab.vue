@@ -48,7 +48,7 @@
       </el-input>
     </div>
     <div class="mt-20" v-else>
-      <WriteFollow :row="rowData" :echoData="templateData" show-full-screen-icon @onFullScreen="templateVisible=true"
+      <WriteFollow :row="rowData" :echoData="templateData" show-full-screen-icon @onFullScreen="onFullScreenWrite"
                    @onCancel="onCancelWriteFollow" @onConfirm="onConfirmWriteFollow">
         <template #right>
           <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
@@ -493,7 +493,9 @@ export default {
       this.$set(this.timeLineList, target, {...this.timeLineList[target], add: false, newComment: ''})
     },
     onFullScreenWrite() {
-      this.templateDrawerRow = {}
+      this.templateDrawerRow = {
+        customerId: this.row?.customerId,
+      }
       this.templateVisible = true
     },
     // 修改写跟进

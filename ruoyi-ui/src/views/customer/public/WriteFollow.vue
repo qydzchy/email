@@ -256,9 +256,7 @@ export default {
           label: '社交平台',
         },
       ],
-      followContactList: [
-        {value: '测试', label: '测试'}
-      ],
+      followContactList: [],
       submissionPickerOptions: {
         disabledDate: this.disabledDate
       },

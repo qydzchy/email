@@ -36,13 +36,13 @@
       <el-input class="mt-10" placeholder="点击这里记录跟进细节，同步最新进展。" @focus="showWriteFollow=true">
         <template #suffix>
           <el-tooltip placement="top" content="展开">
-            <i class="el-icon-full-screen pointer mr-6" @click.stop="templateVisible=true"></i>
+            <i class="el-icon-full-screen pointer mr-6" @click.stop="onFullScreenWrite"></i>
           </el-tooltip>
         </template>
       </el-input>
     </div>
     <div class="mt-20" v-else>
-      <WriteFollow :row="rowData" :echoData="templateData" show-full-screen-icon @onFullScreen="templateVisible=true"
+      <WriteFollow :row="rowData" :echoData="templateData" show-full-screen-icon @onFullScreen="onFullScreenWrite"
                    @onCancel="onCancelWriteFollow" @onConfirm="onConfirmWriteFollow">
         <template #right>
           <el-popover v-model="showTemplatePopover" width="280" trigger="click" placement="bottom-end"
@@ -415,6 +415,12 @@ export default {
         return
       }
       this.$set(this.timeLineList, target, {...this.timeLineList[target], add: false, newComment: ''})
+    },
+    onFullScreenWrite() {
+      this.templateDrawerRow = {
+        customerId: this.row?.customerId,
+      }
+      this.templateVisible = true
     },
     // 修改写跟进
     onEditTemplate(item) {
