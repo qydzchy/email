@@ -45,9 +45,15 @@ import {editFocusFlagCustomer, getPrivateLeadsList} from "@/api/customer/publicl
 
 export default {
   props: {
-    segmentId: {
-      type: Number | null,
-      required: true
+    params: {
+      type: Object,
+      default: () => {
+        return {
+          segmentId: null,
+          listType: null,
+        }
+      },
+      required: true,
     },
     indexOpt: {
       type: Object,
@@ -316,21 +322,22 @@ export default {
     }
   },
   watch: {
-    segmentId: {
+    params: {
       handler(newVal) {
-        if (newVal) {
-          this.getList(newVal)
+        if (newVal.segmentId) {
+          this.getList()
         }
       }
     }
   },
   methods: {
-    async getList(segmentId) {
+    async getList() {
       this.tableLoading = true
       try {
         const {currentPage, pageSize} = this.paginateOption
         const res = await getPrivateLeadsList({
-          segmentId: segmentId,
+          segmentId: this.params.segmentId,
+          type: this.params.listType,
           pageNum: currentPage,
           pageSize: pageSize
         }).finally(() => {
@@ -407,7 +414,7 @@ export default {
       } else if (type === 'current') {
         this.paginateOption = {...this.paginateOption, currentPage: value}
       }
-      this.getList(this.segmentId)
+      this.getList()
     },
     formatGroup(id) {
       let groupName = ''
@@ -428,7 +435,7 @@ export default {
       return stageRow
     },
     reloadList() {
-      this.getList(this.segmentId)
+      this.getList()
     }
   }
 }

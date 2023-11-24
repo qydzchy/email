@@ -68,7 +68,7 @@ public interface CustomerMapper
      * @param segmentId
      * @return
      */
-    int countPrivateleadsCustomer(@Param("userId") Long userId, @Param("segmentId") Long segmentId);
+    int countPrivateleadsCustomer(@Param("userIdList") List<Long> userIdList, @Param("segmentId") Long segmentId);
 
     /**
      * 移动客户到分组
@@ -114,7 +114,7 @@ public interface CustomerMapper
      * @param limit
      * @return
      */
-    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("userId") Long userId, @Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
+    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("userIdList") List<Long> userIdList, @Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 统计公海客户数量

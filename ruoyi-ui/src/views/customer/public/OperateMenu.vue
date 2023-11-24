@@ -52,12 +52,12 @@
         v-if="followVisible"
         :row="row"
         :visible.sync="followVisible"/>
-    <!--  移入公海  -->
-    <DialogMoveToPool
-        v-if="moveToPoolVisible"
+    <!--  移入私海  -->
+    <DialogMoveToPrivateLeads
+        v-if="moveToPrivateLeadsVisible"
         :row="row"
-        :visible.sync="moveToPoolVisible"
-        :poolOption="indexOpt.poolGroupOption"
+        :visible.sync="moveToPrivateLeadsVisible"
+        :privateOption="indexOpt.privateOption"
         :reasonOption="indexOpt.poolReasonOption"
         @onConfirm="onMoveToPollConfirm"
     />
@@ -76,7 +76,7 @@ import DialogSchedule from "./DialogSchedule.vue";
 import DialogMoveToGroup from "./DialogMoveToGroup.vue";
 import DialogMergeCustomer from "./DialogMergeCustomer.vue";
 import DialogRemoveFollow from "./DialogRemoveFollow.vue";
-import DialogMoveToPool from "./DialogMoveToPool.vue";
+import DialogMoveToPrivateLeads from "./DialogMoveToPrivateLeads.vue";
 import DialogChangePoolGroup from "./DialogChangePoolGroup.vue";
 import DialogCommonOperate from "./DialogCommonOperate.vue";
 import DialogTemplateFollow from "./DialogTemplateFollow.vue"
@@ -100,7 +100,7 @@ export default {
     commandList: {
       type: Array,
       default: () => {
-        return ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'transfer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
+        return ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'transfer', 'share', 'cancel', 'movePrivateLeads', 'reassign', 'removeAndInto', 'changePoolGroup']
       },
       required: false
     },
@@ -112,7 +112,7 @@ export default {
     DialogMoveToGroup,
     DialogMergeCustomer,
     DialogRemoveFollow,
-    DialogMoveToPool,
+    DialogMoveToPrivateLeads,
     DialogChangePoolGroup,
     DialogCommonOperate,
   },
@@ -152,8 +152,8 @@ export default {
           label: '取消跟进'
         },
         {
-          command: 'movePool',
-          label: '移入公海'
+          command: 'movePrivateLeads',
+          label: '移入私海'
         },
         {
           command: 'reassign',
@@ -173,7 +173,7 @@ export default {
       moveGroupVisible: false,
       mergeVisible: false,
       followVisible: false,
-      moveToPoolVisible: false,
+      moveToPrivateLeadsVisible: false,
       changePoolVisible: false,
       commonVisible: false,
       commonType: ''
@@ -225,8 +225,8 @@ export default {
         case "removeAndInto":
           this.followVisible = true
           break;
-        case "movePool":
-          this.moveToPoolVisible = true
+        case "movePrivateLeads":
+          this.moveToPrivateLeadsVisible = true
           break;
         case "changePoolGroup":
           this.changePoolVisible = true

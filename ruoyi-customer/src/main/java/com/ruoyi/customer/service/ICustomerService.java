@@ -73,7 +73,7 @@ public interface ICustomerService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer type, Long teamMemberId, Integer pageNum, Integer pageSize);
 
     /**
      * 移入客户至分组

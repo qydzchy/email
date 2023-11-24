@@ -107,6 +107,8 @@
                     :value.sync="item.conditionType"
                     @change="(value)=>{
                       item.value = ''
+                      item.dateType =''
+                      item.timeRange =''
                       handleRuleContent(item.ruleId,'conditionType',value)
                     }">
                   <el-option
@@ -120,13 +122,18 @@
               </el-col>
               <template v-if="item.conditionType && ![3,4].includes(item.conditionType)">
                 <!--        选项        -->
-                <el-col>
+                <el-col
+                    v-if="validTimeType(item.columnName)">
                   <template v-if="filterConditionSecondType(item.columnName) ==='select'">
-                    <el-select :value.sync="item.value" placeholder="选项"
-                               @change="(value)=>handleRuleContent(item.ruleId,'value',value)">
-                      <el-option v-for="(opt,index) in filterConditionSecondOption(item.columnName)" :key="index"
-                                 :label="opt.label"
-                                 :value="opt.value">
+                    <el-select
+                        :value.sync="item.value"
+                        placeholder="选项"
+                        @change="(value)=>handleRuleContent(item.ruleId,'value',value)">
+                      <el-option
+                          v-for="(opt,index) in filterConditionSecondOption(item.columnName)"
+                          :key="index"
+                          :label="opt.label"
+                          :value="opt.value">
                       </el-option>
                     </el-select>
                   </template>
@@ -140,16 +147,63 @@
                   </template>
 
                 </el-col>
-                <!--       时间范围       -->
-                <!--              <el-col style="width: 140px">-->
-                <!--                <el-select :value.sync="item.timeRange" placeholder="运算">-->
+                <!--        时间范围       -->
+                <el-col v-else style="width: 120px">
+                  <!--        时间范围时间选项          -->
+                  <template v-if="[1,2].includes(item.conditionType)">
+                    <el-select :value.sync="item.dateType" @change="(value)=>{
+                      item.timeRange = ''
+                      handleRuleContent(item.ruleId,'dateType',value)
+                    }">
+                      <el-option :value="1" label="具体日期范围"></el-option>
+                      <el-option :value="2" label="动态日期范围"></el-option>
+                    </el-select>
+                  </template>
+                  <!--        时间范围时间范围          -->
+                  <template v-if="[7,8].includes(item.conditionType)">
+                    <el-select :value.sync="item.dateType" @change="(value)=>{
+                      item.timeRange = ''
+                      handleRuleContent(item.ruleId,'dateType',value)
+                    }">
+                      <el-option :value="3" label="当天之前"></el-option>
+                      <el-option :value="4" label="当天之后"></el-option>
+                      <el-option :value="5" label="具体日期"></el-option>
+                      <el-option :value="6" label="日期字段"></el-option>
+                    </el-select>
+                  </template>
 
-                <!--                </el-select>-->
-                <!--              </el-col>-->
-                <!--      勾选的值        -->
+                </el-col>
               </template>
+              <template>
+                <el-col :span="10">
+                  <el-date-picker
+                      v-if="item.dateType===1"
+                      :value.sync="item.timeRange"
+                      size="small"
+                      type="daterange"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      clearable
+                      format="yyyy-MM-dd"
+                      value-format="yyyy-MM-dd"
+                      align="left"
+                      @input="(value)=>handleRuleContent(item.ruleId,'timeRange',value)">
+                  </el-date-picker>
+                  <el-select
+                      v-if="item.dateType === 2"
+                      :value.sync="item.timeRange"
+                      @change="(value)=>handleRuleContent(item.ruleId,'timeRange',value)">
+                    <el-option
+                        v-for="(opt,index) in CustomerOperateData.timeRangeOption"
+                        :key="index"
+                        :value="opt.key"
+                        :label="opt.name">
+                    </el-option>
+                  </el-select>
+                </el-col>
 
-
+              </template>
             </el-row>
 
           </div>
@@ -187,8 +241,8 @@
                         size="small"
                         :show-all-levels="false"
                         :options="customerRuleOption"
-                        :props="{value:'columnName',label:'nickName',children:'children'}"></el-cascader>
-
+                        :props="{value:'columnName',label:'nickName',children:'children'}">
+                    </el-cascader>
                   </div>
                 </div>
                 <div>
@@ -292,7 +346,6 @@ export default {
     },
     indexOpt: {
       handler(newVal) {
-        console.log(newVal)
         this.CustomerOperateData.fieldList.map(val => {
           if (val['field_type'] === 'customer_packet') {
             val.options = newVal.groupOption.map(val => {
@@ -423,6 +476,11 @@ export default {
         return 'input'
       }
       return filterType
+    },
+    validTimeType(field) {
+      const validArr = ['create_time', 'data_update_time', 'last_contacted_at', 'last_followup_at', 'last_follow_up_date']
+      const fieldValid = Array.isArray(field) ? field[1] : field
+      return !validArr.includes(fieldValid)
     },
     generateConditionValue(value) {
       let targetValue = ''

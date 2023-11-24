@@ -63,7 +63,7 @@ import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import TableRowTags from "./TableRowTags.vue";
 import CellOperate from "./CellOperate.vue";
 import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
-import OperateMenu from "@/views/customer/list/OperateMenu.vue";
+import OperateMenu from "./OperateMenu.vue";
 
 export default {
   props: {
@@ -112,7 +112,7 @@ export default {
         companyName: '',
         companyLogo: ''
       },
-      commandList: ['moveGroup', 'changePoolGroup'],
+      commandList: ['moveGroup', 'changePoolGroup', 'reassign', 'movePrivateLeads'],
     }
   },
   watch: {
