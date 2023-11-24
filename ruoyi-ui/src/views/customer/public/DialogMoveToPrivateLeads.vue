@@ -91,7 +91,8 @@ export default {
       try {
         this.btnLoading = true
         const res = await moveToPrivateLeads({
-          id: this.row?.id
+          id: this.row?.id,
+          packetId:this.movePrivateGroup
         }).finally(() => {
           this.btnLoading = false
         })

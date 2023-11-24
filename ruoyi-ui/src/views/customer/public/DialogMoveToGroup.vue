@@ -43,7 +43,7 @@ export default {
     visible: {
       type: Boolean,
       default: false,
-      required: false
+      required: true
     },
     groupOption: {
       type: Array,

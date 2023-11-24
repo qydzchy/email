@@ -57,7 +57,7 @@ export default {
     this.getPoolList()
     this.getPoolReasonList()
     this.getTagList()
-    this.getMenuList()
+    // this.getMenuList()
   },
   methods: {
     async getGroupList() {
@@ -109,15 +109,15 @@ export default {
       }
     },
     // 私海菜单列表
-    async getMenuList() {
-      try {
-        const res = await getPrivateSegmentMenu()
-        if (res.code === 200) {
-          this.indexOpt.privateOption = res.data
-        }
-      } catch {
-      }
-    },
+    // async getMenuList() {
+    //   try {
+    //     const res = await getPrivateSegmentMenu()
+    //     if (res.code === 200) {
+    //       this.indexOpt.privateOption = res.data
+    //     }
+    //   } catch {
+    //   }
+    // },
     // 客户标签选项
     async getTagList() {
       try {

@@ -1,10 +1,44 @@
 <template>
   <div>
     <div class="wrap pt-10  px-20 flex-middle space-between">
-      <div>共 {{ paginateOption.total }} 个客户</div>
+      <div>
+        <template v-if="!ids.length">
+          共 {{ paginateOption.total }} 个客户
+        </template>
+        <template v-else>
+          <span>已选择 {{ ids.length }} 个客户</span>
+        </template>
+      </div>
+      <div>
+        <el-select placeholder="全部公海分组" v-model="searchQuery.pool">
+          <el-option
+              v-for="(item,index) in indexOpt.poolGroupOption"
+              :key="index"
+              :value="item.id"
+              :label="item.name">
+          </el-option>
+        </el-select>
+        <el-select-tree
+            class="ml-10"
+            v-model="searchQuery.group"
+            :data="indexOpt.groupOption"
+            :props="{value:'id',label:'name'}"
+            :default-expand-all="true"
+            multiple
+            collapse-tags
+            clearable
+            :check-strictly="true">
+        </el-select-tree>
+        <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
+        <el-button round @click="moveToPrivateLeadsVisible=true">移入私海</el-button>
+      </div>
     </div>
     <div class="table-list mt-20">
-      <TableNext :list="list" :columns="columns" :extra-option="{height:'68vh'}" :paginate-option="paginateOption"/>
+      <TableNext
+          :list="list" :columns="columns"
+          :extra-option="{height:'68vh'}"
+          :extra-event="extraEvent"
+          :paginate-option="paginateOption"/>
     </div>
     <TableRowDrawer
         :row="rowDrawerData"
@@ -12,6 +46,11 @@
         :indexOpt="indexOpt"
         @load="reloadList"
     />
+    <DialogMoveToGroup :visible.sync="moveToGroupVisible" :row="{id:ids}" :groupOption="indexOpt.groupOption"/>
+    <DialogMoveToPrivateLeads
+        :visible.sync="moveToPrivateLeadsVisible"
+        :privateOption="indexOpt.poolGroupOption"
+        :row="{id:ids}" @onConfirm="reloadList"/>
   </div>
 </template>
 
@@ -20,6 +59,8 @@ import TableNext from "@/components/TableNext/index.vue";
 import TableRowDrawer from "./TableRowDrawer.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import CellOperate from './CellOperate.vue'
+import DialogMoveToGroup from "./DialogMoveToGroup.vue";
+import DialogMoveToPrivateLeads from "./DialogMoveToPrivateLeads.vue";
 import {EmptyStr} from "@/utils/tools";
 import {getPublicLeadsList} from "@/api/customer/publicleads";
 
@@ -33,7 +74,7 @@ export default {
       required: false
     }
   },
-  components: {TableRowDrawer, TableNext},
+  components: {TableRowDrawer, TableNext, DialogMoveToGroup, DialogMoveToPrivateLeads},
   data() {
     return {
       list: [],
@@ -205,12 +246,19 @@ export default {
         //    render: (_row, field) => EmptyStr(field),
         //  }
       ],
+      extraEvent: {
+        'selection-change': (value) => this.handleSelectionChange(value)
+      },
       paginateOption: {
         total: 0,
         layout: 'total, sizes, prev, pager, next',
         currentPage: 1,
         pageSize: 20,
         pageSizes: [10, 20, 50, 100]
+      },
+      paginateEvent: {
+        'size-change': (value) => this.handlePagination('size', value),
+        'current-change': (value) => this.handlePagination('current', value)
       },
       // 行内容编辑
       tableCell: {
@@ -221,6 +269,13 @@ export default {
       },
       rowDrawerData: {},//抽屉回显的数据
       rowDrawerVisible: false, //点击显示详情抽屉
+      ids: [],
+      searchQuery: {
+        pool: '',
+        group: ''
+      },
+      moveToGroupVisible: false,
+      moveToPrivateLeadsVisible: false,
     }
   },
   mounted() {
@@ -246,6 +301,17 @@ export default {
         }
       } catch {
       }
+    },
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+    },
+    handlePagination(type, value) {
+      if (type === 'size') {
+        this.paginateOption = {...this.paginateOption, pageSize: value}
+      } else if (type === 'current') {
+        this.paginateOption = {...this.paginateOption, currentPage: value}
+      }
+      this.getList()
     },
     onShowTableRowDrawer(row) {
       this.rowDrawerData = {...row}

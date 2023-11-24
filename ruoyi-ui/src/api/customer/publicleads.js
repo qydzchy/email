@@ -157,3 +157,11 @@ export function getCustomerDetail(params) {
         params
     })
 }
+
+// 获取团队成员
+export function getTeamMembers() {
+    return request({
+        url: '/customer/customer/get/team/members',
+        method: 'get',
+    })
+}
