@@ -725,7 +725,7 @@ public class CustomerServiceImpl implements ICustomerService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean moveToPrivateleads(Long id) {
+    public boolean moveToPrivateleads(Long id, Long packetId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
@@ -740,6 +740,9 @@ public class CustomerServiceImpl implements ICustomerService {
         Integer type = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
         Customer customer = customerMapper.selectCustomerById(id);
         customer.setSeaType(type);
+        if (packetId != null) {
+            customer.setPacketId(packetId);
+        }
         customer.setUpdateId(userId);
         customer.setUpdateBy(username);
         customer.setUpdateTime(DateUtils.getNowDate());

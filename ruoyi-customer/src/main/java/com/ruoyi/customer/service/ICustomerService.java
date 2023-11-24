@@ -157,7 +157,7 @@ public interface ICustomerService
      * @param id
      * @return
      */
-    boolean moveToPrivateleads(Long id);
+    boolean moveToPrivateleads(Long id, Long packetId);
 
     /**
      * 洗牌

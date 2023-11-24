@@ -340,6 +340,6 @@ public class CustomerController extends BaseController
             throw new ServiceException("ID不能为空");
         }
 
-        return toAjax(customerService.moveToPrivateleads(customer.getId()));
+        return toAjax(customerService.moveToPrivateleads(customer.getId(), customer.getPacketId()));
     }
 }
