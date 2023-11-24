@@ -114,7 +114,7 @@ public class CustomerController extends BaseController
     /**
      * 获取客户详情详细信息
      */
-    @PreAuthorize("@ss.hasPermi('customer:customer:query')")
+    @PreAuthorize("@ss.hasPermi('customer:customer:detail')")
     @GetMapping(value = "/detail")
     public AjaxResult getCustomerDetail(Long id)
     {
