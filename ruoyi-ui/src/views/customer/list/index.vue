@@ -9,7 +9,7 @@
           <el-radio-button :label="2">团队客户</el-radio-button>
         </el-radio-group>
         <template v-if="listType===2">
-          <el-select class="ml-10" v-model="userId" clearable>
+          <el-select class="ml-10" v-model="userId" placeholder="选择部门或业务员" clearable>
             <el-option
                 v-for="item in indexOpt.teamMemberOption"
                 :key="item.userId"
