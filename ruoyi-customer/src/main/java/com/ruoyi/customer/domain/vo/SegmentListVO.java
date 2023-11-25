@@ -42,9 +42,6 @@ public class SegmentListVO {
      */
     private String subGroupColumn;
 
-    /** 二级客群内容 */
-    private String subgroupSegmentContent;
-
     /**
      * 客户数量
      */

@@ -76,6 +76,21 @@ public class SegmentController extends BaseController
     }
 
     /**
+     * 客群详情
+     */
+    @PreAuthorize("@ss.hasPermi('customer:segment:detail')")
+    @GetMapping("/detail")
+    public AjaxResult detail(Long id)
+    {
+        if (id == null) {
+            throw new ServiceException("客群ID不能为空");
+        }
+
+        return success(segmentService.detail(id));
+    }
+
+
+    /**
      * 修改客群
      */
     @PreAuthorize("@ss.hasPermi('customer:segment:edit')")

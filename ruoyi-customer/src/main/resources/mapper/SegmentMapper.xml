@@ -49,6 +49,7 @@
     <select id="selectSegmentById" parameterType="Long" resultMap="SegmentResult">
         <include refid="selectSegmentVo"/>
         where id = #{id}
+        and del_flag = '0'
     </select>
 
     <select id="list" resultType="com.ruoyi.customer.domain.vo.SegmentListVO">

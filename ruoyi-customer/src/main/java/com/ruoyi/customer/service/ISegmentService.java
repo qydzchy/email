@@ -113,4 +113,11 @@ public interface ISegmentService
      * @return
      */
     List<SubgroupColumnListVO> subgroupColumnList(String columnName);
+
+    /**
+     * 客群详情
+     * @param id
+     * @return
+     */
+    SegmentListVO detail(Long id);
 }

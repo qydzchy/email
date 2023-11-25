@@ -232,4 +232,16 @@ public interface CustomerMapper
     Integer countByCustomerNo(@Param("customerNo") String customerNo);
 
     void insertBaseCountry(@Param("type") String type, @Param("value") String value, @Param("label") String label);
+
+    /**
+     * 查询国家/地区
+     * @return
+     */
+    List<SubgroupColumnListVO> selectCountryRegion();
+
+    /**
+     * 查询时区
+     * @return
+     */
+    List<SubgroupColumnListVO> selectTimeZone();
 }

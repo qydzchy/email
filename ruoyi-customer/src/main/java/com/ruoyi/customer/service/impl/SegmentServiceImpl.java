@@ -3,8 +3,12 @@ package com.ruoyi.customer.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.*;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -50,6 +54,8 @@ public class SegmentServiceImpl implements ISegmentService
     private PublicleadsGroupsMapper publicleadsGroupsMapper;
     @Resource
     private CustomerFollowUpPersonnelMapper customerFollowUpPersonnelMapper;
+    @Resource
+    private CustomerMapper customerMapper;
     /**
      * 查询客群
      * 
@@ -99,30 +105,91 @@ public class SegmentServiceImpl implements ISegmentService
 
         segmentMapper.insertSegment(segment);
         Long id = segment.getId();
-        List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
-        if (subGroupList != null && !subGroupList.isEmpty()) {
-            List<Segment> segmentList = new ArrayList<>();
-            subGroupList.stream().forEach(subGroup -> {
-                Segment subSegment = new Segment();
-                BeanUtils.copyProperties(subGroup, subSegment);
-                subSegment.setParentId(id);
-                subSegment.setDelFlag("0");
-                subSegment.setCreateId(userId);
-                subSegment.setCreateBy(username);
-                subSegment.setCreateTime(DateUtils.getNowDate());
-                subSegment.setUpdateId(userId);
-                subSegment.setUpdateBy(username);
-                subSegment.setUpdateTime(DateUtils.getNowDate());
-                segmentList.add(subSegment);
+
+        List<Segment> subSegmentList = new ArrayList<>();
+
+        if (segmentAddOrUpdateDTO.getAdditionRule().intValue() == 1) {
+            if (StringUtils.isBlank(segmentAddOrUpdateDTO.getSubGroupColumn())) {
+                throw new ServiceException("二级分群字段不能为空");
+            }
+
+            // 判断二级分群字段列表是否有数据
+            List<SubgroupColumnListVO> subgroupColumnVOList = subgroupColumnList(segmentAddOrUpdateDTO.getSubGroupColumn());
+            if (subgroupColumnVOList == null || subgroupColumnVOList.isEmpty()) {
+                return true;
+            }
+
+            subgroupColumnVOList.stream().forEach(subgroupColumnVO -> {
+                String name = subgroupColumnVO.getName();
+                Integer conditionRuleType = 1;
+                String conditionRuleContent = generateConditionRuleContent(segmentAddOrUpdateDTO.getSubGroupColumn(), subgroupColumnVO.getId());
+                subSegmentList.add(generateSubSegment(id, name, conditionRuleType, conditionRuleContent, userId, username));
             });
 
-            // 批量新增子客群
-            segmentMapper.batchInsertSegment(segmentList);
+        } else if (segmentAddOrUpdateDTO.getAdditionRule().intValue() == 2) {
+            List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
+            if (subGroupList == null || subGroupList.isEmpty()) {
+                return true;
+            }
+
+            subGroupList.stream().forEach(subGroup -> {
+                String name = subGroup.getName();
+                Integer conditionRuleType = subGroup.getConditionRuleType();
+                String conditionRuleContent = subGroup.getConditionRuleContent();
+                subSegmentList.add(generateSubSegment(id, name, conditionRuleType, conditionRuleContent, userId, username));
+            });
+        }
+
+        // 批量新增子客群
+        if (!subSegmentList.isEmpty()) {
+            segmentMapper.batchInsertSegment(subSegmentList);
         }
 
         // 洗牌
         CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
         return true;
+    }
+
+    /**
+     * 生成二级客群对象
+     * @param id
+     * @param name
+     * @param conditionRuleType
+     * @param conditionRuleContent
+     * @param userId
+     * @param username
+     */
+    private Segment generateSubSegment(Long id, String name, Integer conditionRuleType, String conditionRuleContent, Long userId, String username) {
+        Segment subSegment = new Segment();
+        subSegment.setParentId(id);
+        subSegment.setName(name);
+        subSegment.setConditionRuleType(conditionRuleType);
+        subSegment.setConditionRuleContent(conditionRuleContent);
+        subSegment.setDelFlag("0");
+        subSegment.setCreateId(userId);
+        subSegment.setCreateBy(username);
+        subSegment.setCreateTime(DateUtils.getNowDate());
+        subSegment.setUpdateId(userId);
+        subSegment.setUpdateBy(username);
+        subSegment.setUpdateTime(DateUtils.getNowDate());
+        return subSegment;
+    }
+
+    /**
+     * 生成条件规则内容
+     * @param columnName
+     * @param value
+     * @return
+     */
+    private String generateConditionRuleContent(String columnName, String value) {
+        JSONArray jsonA = new JSONArray();
+        JSONObject jsonO = new JSONObject();
+        jsonO.put("columnName", columnName);
+        jsonO.put("andOr", AndOrEnum.AND.getAndOr());
+        jsonO.put("conditionType", 1);
+        jsonO.put("value", value);
+        jsonA.add(jsonO);
+        return JSON.toJSONString(jsonA);
     }
 
     /**
@@ -222,6 +289,19 @@ public class SegmentServiceImpl implements ISegmentService
         }
 
         List<SegmentListVO> segmentVOList = segmentMapper.list(createId);
+        if (segmentVOList == null || segmentVOList.isEmpty()) {
+            return allSegmentVOList;
+        }
+
+        // 去除掉二级客群客户数为0的客群（不包含一级客群）
+        Iterator<SegmentListVO> iterator = segmentVOList.iterator();
+        while (iterator.hasNext()) {
+            SegmentListVO segmentVO = iterator.next();
+            if (segmentVO.getParentId().longValue() != -1L && segmentVO.getCustomerCount() == 0) {
+                iterator.remove();
+            }
+        }
+
         allSegmentVOList.addAll(buildTree(segmentVOList, -1L));
         return allSegmentVOList;
     }
@@ -341,6 +421,11 @@ public class SegmentServiceImpl implements ISegmentService
 
         List<CustomerSegmentListVO> customerSegmentVOList = new ArrayList<>();
         for (Segment segment : segmentList) {
+            // 剔除掉客户数为0的客群，不包含一级客群
+            if (segment.getParentId().longValue() != -1 && segmentCustomerCountMap.get(segment.getId()) == null) {
+                continue;
+            }
+
             CustomerSegmentListVO customerSegmentVO = new CustomerSegmentListVO();
             customerSegmentVO.setId(segment.getId());
             customerSegmentVO.setParentId(segment.getParentId());
@@ -475,8 +560,10 @@ public class SegmentServiceImpl implements ISegmentService
      */
     @Override
     public List<SubgroupColumnListVO> subgroupColumnList(String columnName) {
-        CustomerColumnEnum customerColumnEnum = CustomerColumnEnum.getEnum(columnName);
         List<SubgroupColumnListVO> subgroupColumnVOList = new ArrayList<>();
+        CustomerColumnEnum customerColumnEnum = CustomerColumnEnum.getEnum(columnName);
+        if (customerColumnEnum == null) return subgroupColumnVOList;
+
         switch (customerColumnEnum) {
             case CUSTOMER_TAG:
                 subgroupColumnVOList = tagMapper.selectCustomerTagSimpleInfo();
@@ -502,9 +589,40 @@ public class SegmentServiceImpl implements ISegmentService
             case FOLLOW_UP_PERSONNEL:
                 subgroupColumnVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelSimpleInfo();
                 break;
+            case COUNTRY_REGION:
+                subgroupColumnVOList = customerMapper.selectCountryRegion();
+                break;
+            case TIMEZONE:
+                subgroupColumnVOList = customerMapper.selectTimeZone();
+                break;
         }
 
         return subgroupColumnVOList;
+    }
+
+    /**
+     * 客群详情
+     * @param id
+     * @return
+     */
+    @Override
+    public SegmentListVO detail(Long id) {
+        Segment segment = segmentMapper.selectSegmentById(id);
+        SegmentListVO segmentVO = new SegmentListVO();
+        BeanUtils.copyProperties(segment, segmentVO);
+        List<SegmentListVO> children = new ArrayList<>();
+        if (segment.getAdditionRule() != null && segment.getAdditionRule().intValue() == 2) {
+            Segment segmentParam = new Segment();
+            segmentParam.setParentId(id);
+            List<Segment> subSegmentList = segmentMapper.selectSegmentList(segmentParam);
+            for (Segment subSegment : subSegmentList) {
+                SegmentListVO subSegmentVO = new SegmentListVO();
+                BeanUtils.copyProperties(subSegment, subSegmentVO);
+                children.add(subSegmentVO);
+            }
+        }
+        segmentVO.setChildren(children);
+        return segmentVO;
     }
 
     /**
@@ -516,7 +634,7 @@ public class SegmentServiceImpl implements ISegmentService
         List<SubgroupColumnListVO> subgroupColumnVOList = new ArrayList<>();
         for (long scale = 1; scale <= 6; scale++) {
             SubgroupColumnListVO subgroupColumnVO = new SubgroupColumnListVO();
-            subgroupColumnVO.setId(scale);
+            subgroupColumnVO.setId(scale + "");
             switch ((int) scale) {
                 case 1:
                     subgroupColumnVO.setName("少于59人");
@@ -551,7 +669,7 @@ public class SegmentServiceImpl implements ISegmentService
         List<SubgroupColumnListVO> subgroupColumnVOList = new ArrayList<>();
         for (long rating = 0; rating <= 5; rating++) {
             SubgroupColumnListVO subgroupColumnVO = new SubgroupColumnListVO();
-            subgroupColumnVO.setId(rating);
+            subgroupColumnVO.setId(rating + "");
             subgroupColumnVO.setName(rating + "星");
             subgroupColumnVOList.add(subgroupColumnVO);
         }

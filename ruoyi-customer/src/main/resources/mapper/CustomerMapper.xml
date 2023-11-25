@@ -346,6 +346,14 @@
         SELECT COUNT(1) FROM customer_customer WHERE customer_no = #{customerNo} AND del_flag = '0'
     </select>
 
+    <select id="selectCountryRegion" resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
+        select value as id, label as name from base_country
+    </select>
+
+    <select id="selectTimeZone" resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
+        select value as id, label as name from base_timezone
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">

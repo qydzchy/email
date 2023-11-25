@@ -6,12 +6,12 @@ import lombok.Data;
 public class SubgroupColumnListVO {
 
     /**
-     * id
+     * id(value)
      */
-    private Long id;
+    private String id;
 
     /**
-     * 字段别名
+     * 字段别名(label)
      */
     private String name;
 }
