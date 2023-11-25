@@ -230,4 +230,6 @@ public interface CustomerMapper
      * @return
      */
     Integer countByCustomerNo(@Param("customerNo") String customerNo);
+
+    void insertBaseCountry(@Param("type") String type, @Param("value") String value, @Param("label") String label);
 }

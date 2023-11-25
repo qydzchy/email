@@ -537,7 +537,7 @@ public class CustomerServiceImpl implements ICustomerService {
         Long transferredToFollowerId = transferredToDTO.getUserId();
         if (dbUserIds.contains(transferredToFollowerId)) {
             // 删除当前的跟进人
-            customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(transferredToDTO.getId(), transferredToFollowerId, userId, username);
+            customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(transferredToDTO.getId(), userId, userId, username);
 
         } else {
             customerFollowUpPersonnelMapper.transferredTo(transferredToDTO.getId(), userId, transferredToDTO.getUserId());

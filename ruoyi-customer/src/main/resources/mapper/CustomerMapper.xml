@@ -412,6 +412,11 @@
         </trim>
     </insert>
 
+    <insert id="insertBaseCountry">
+        insert into base_country (type, value, label)
+        values (#{type}, #{value}, #{label})
+    </insert>
+
     <update id="updateCustomer" parameterType="Customer">
         update customer_customer
         <trim prefix="SET" suffixOverrides=",">
