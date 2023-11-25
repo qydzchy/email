@@ -9,7 +9,7 @@
     </div>
     <div class="table-list mt-20">
       <div class="mt-16" v-show="ids.length">
-        <HeaderOperate :ids="ids" @load="reloadList"/>
+        <HeaderOperate :ids="ids"/>
       </div>
       <div class="mt-20">
         <TableNext
@@ -304,7 +304,9 @@ export default {
           field: 'operate',
           fixed: 'right',
           render: (row, _field) => {
-            return <OperateMenu row={row} indexOpt={this.indexOpt} on={{load: () => this.reloadList()}}>
+            let newRow = {...row, customerId: row.id}
+            delete newRow.id
+            return <OperateMenu row={newRow} indexOpt={this.indexOpt} on={{load: () => this.handleOperate()}}>
               <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
             </OperateMenu>
           }
@@ -331,10 +333,12 @@ export default {
   watch: {
     params: {
       handler(newVal) {
+        console.log(newVal)
         if (newVal.segmentId) {
           this.getList()
         }
-      }
+      },
+      deep: true
     }
   },
   methods: {
@@ -367,6 +371,10 @@ export default {
       console.log(value)
       this.searchQuery = value
       this.getList()
+    },
+    handleOperate() {
+      this.reloadList()
+      this.$emit('reloadMenu')
     },
     async onCollageIcon(id, scope) {
       try {
