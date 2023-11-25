@@ -164,3 +164,10 @@ export function downloadTemplate() {
 //         data
 //     })
 // }
+
+export function getCustomerSourceList(){
+    return request({
+        url: '/customer/customer/settings/source/list',
+        method: 'get'
+    })
+}

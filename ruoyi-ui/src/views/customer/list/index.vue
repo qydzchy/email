@@ -190,7 +190,16 @@ export default {
       try {
         const res = await getPrivateSegmentMenu()
         if (res.code === 200) {
-          this.menuList = res.data
+          this.menuList = res.data?.map(val=>{
+            if(val.children && val.children.length){
+              val.children.unshift({
+                name:'全部',
+                id:val.id,
+                customerCount:val.customerCount
+              })
+            }
+            return val
+          })
           if (this.menuList.length) {
             this.curMenuActive = this.menuList[0].id
             let menuIds = []

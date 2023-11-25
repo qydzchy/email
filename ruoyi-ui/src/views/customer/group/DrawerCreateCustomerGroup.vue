@@ -37,9 +37,7 @@
             <div v-show="formData.additionRule===1">
               <el-form-item label="二级分群字段">
                 <el-select v-model="formData.secondChildField">
-                  <el-option v-for="(sub,index) in secondChildFieldOption" :key="index" :value="sub.columnName"
-                             :disabled="['country_region','customer_tag'].includes(sub.columnName)"
-                             :label="sub.nickName"></el-option>
+                  <el-option v-for="(sub,index) in secondChildFieldOption" :key="index" :value="sub.columnName" :label="sub.nickName"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
@@ -314,8 +312,8 @@ export default {
         })
         config = {
           ...config,
-          additionRule,
-          children: newChildren,
+          additionRule,// 1自动添加,2手动添加
+          children: additionRule===2 ? newChildren : [],
         }
       }
       if (!this.row?.id) {

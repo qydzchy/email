@@ -111,7 +111,7 @@ export default {
         isShowInfo: true,
         indexOpt: this.indexOpt
       },
-      commandList: ['transfer', 'share', 'cancel', 'movePool', 'reassign'],
+      commandList: ['share', 'cancel', 'movePool', 'reassign'],
       focusFlag: false,
       rowData: {
         followPerson: '',

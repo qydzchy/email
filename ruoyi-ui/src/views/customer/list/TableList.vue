@@ -44,6 +44,9 @@ import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 import {editFocusFlagCustomer, getPrivateLeadsList} from "@/api/customer/publicleads";
 
+const initCommandList =  ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'transfer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
+const groupCommandList = ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
+
 export default {
   props: {
     params: {
@@ -306,7 +309,7 @@ export default {
           render: (row, _field) => {
             let newRow = {...row, customerId: row.id}
             delete newRow.id
-            return <OperateMenu row={newRow} indexOpt={this.indexOpt} on={{load: () => this.handleOperate()}}>
+            return <OperateMenu row={newRow} indexOpt={this.indexOpt} commandList={this.commandList} on={{load: () => this.handleOperate()}}>
               <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
             </OperateMenu>
           }
@@ -328,15 +331,16 @@ export default {
         columnName: '',
         value: ''
       },
+      commandList: initCommandList,
     }
   },
   watch: {
     params: {
       handler(newVal) {
-        console.log(newVal)
         if (newVal.segmentId) {
           this.getList()
         }
+        this.commandList = newVal.listType === 1 ? initCommandList : groupCommandList
       },
       deep: true
     }
