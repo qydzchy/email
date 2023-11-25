@@ -46,7 +46,7 @@
                         :class="{'active':item.id === curMenuActive}"
                         :key="item.id"
                         v-if="!item.children.length"
-                        @click="curMenuActive = item.id"
+                        @click.stop="curMenuActive = item.id"
                     >
                       <span>{{ item.name }}</span>
                       <span>{{ item.customerCount }}</span>
@@ -66,7 +66,7 @@
                             :class="{'active':subItem.id === curMenuActive}"
                             v-for="subItem in item.children"
                             :key="subItem.id"
-                            @click="curMenuActive = subItem.id">
+                            @click.stop="curMenuActive = subItem.id">
                           <span>{{ subItem.name }}</span>
                           <span>{{ subItem.customerCount }}</span>
                         </div>
@@ -100,8 +100,9 @@
           <div class="right-wrap">
             <TableList
                 ref="tableListRef"
-                :params="{listType:listType,segmentId:curMenuActive,userId:userId}"
-                :index-opt="indexOpt"/>
+                :params="tableListParams"
+                :index-opt="indexOpt"
+                :reloadMenu="getMenuList"/>
           </div>
 
         </template>
@@ -160,6 +161,15 @@ export default {
 
     }
   },
+  computed: {
+    tableListParams() {
+      return {
+        listType: this.listType,
+        segmentId: this.curMenuActive,
+        userId: this.userId
+      }
+    }
+  },
   mounted() {
     this.init()
   },
@@ -180,9 +190,23 @@ export default {
       try {
         const res = await getPrivateSegmentMenu()
         if (res.code === 200) {
-          this.menuList = res.data
+          this.menuList = res.data?.map(val=>{
+            if(val.children && val.children.length){
+              val.children.unshift({
+                name:'全部',
+                id:val.id,
+                customerCount:val.customerCount
+              })
+            }
+            return val
+          })
           if (this.menuList.length) {
             this.curMenuActive = this.menuList[0].id
+            let menuIds = []
+            this.menuList.forEach(val => {
+              menuIds.push(val.id)
+            })
+            this.activeNames = menuIds
           }
         }
       } catch {

@@ -17,6 +17,7 @@
             class="custom-input"
             placeholder="搜索公司名称/简称、客户编号、邮箱地址、邮箱后缀、联系人名称、电话、社交账号"
             v-model="querySearch.searchText"
+            @keydown.enter.native="searchList"
         ></el-input>
         <el-button class="custom-btn radius-0" type="primary" :disabled="!querySearch.searchText" @click="searchList">
           查询
