@@ -36,7 +36,7 @@
             </el-form-item>
             <div v-show="formData.additionRule===1">
               <el-form-item label="二级分群字段">
-                <el-select v-model="formData.secondChildField">
+                <el-select v-model="formData.subGroupColumn">
                   <el-option v-for="(sub,index) in secondChildFieldOption" :key="index" :value="sub.columnName" :label="sub.nickName"></el-option>
                 </el-select>
               </el-form-item>
@@ -103,7 +103,7 @@ const initFormData = {
   conditionRuleContent: [],//条件规则内容
   additionRule: 1, //添加规则 1.自动生成 2.手动添加
   customerCount: 0,//客户数量
-  secondChildField: '',
+  subGroupColumn: '',
   mode: 'simple'
 }
 export default {
@@ -186,7 +186,7 @@ export default {
       deep: true,
       immediate: true
     },
-    "formData.secondChildField": {
+    "formData.subGroupColumn": {
       handler(newVal) {
         if (newVal) {
           this.getSubGroupList()
@@ -232,7 +232,7 @@ export default {
       }
     },
     async getSubGroupList() {
-      if (this.formData.secondChildField === 'timezone') {
+      if (this.formData.subGroupColumn === 'timezone') {
         this.secondChildFieldList = timeZoneList.map(val => {
           return {
             id: val.value,
@@ -243,7 +243,7 @@ export default {
       }
       try {
         const res = await getSubgroupColumnList({
-          columnName: this.formData.secondChildField
+          columnName: this.formData.subGroupColumn
         })
         if (res.code === 200) {
           this.secondChildFieldList = res.data
@@ -304,7 +304,6 @@ export default {
         newChildren.map(val => {
           delete val.ruleId
           delete val.mode
-          delete val.secondChildField
           delete val.customerCount
           val.subgroupFlag = Number(val.subgroupFlag)
           val.conditionRuleContent = this.generateConditionRuleContent(val.conditionRuleContent, val.conditionRuleType)

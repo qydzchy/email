@@ -73,3 +73,12 @@ export function getSubgroupColumnList(params) {
         params
     })
 }
+
+// 客群详情
+export function getSegmentDetail(params) {
+    return request({
+        url: '/customer/segment/detail',
+        method: 'get',
+        params
+    })
+}

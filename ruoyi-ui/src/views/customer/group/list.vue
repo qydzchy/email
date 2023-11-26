@@ -54,7 +54,7 @@
 import TableNext from "@/components/TableNext/index.vue";
 import DrawerCreateCustomerGroup from "./DrawerCreateCustomerGroup.vue";
 import DelPopover from "@/components/DevPopover";
-import {deleteSegment, getSegmentList, getSegmentUserList} from "@/api/customer/segment";
+import {deleteSegment, getSegmentList, getSegmentUserList, getSegmentDetail} from "@/api/customer/segment";
 import {deepClone} from "@/utils";
 import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
@@ -309,13 +309,22 @@ export default {
           break;
       }
     },
-    onCommOperate(row, type) {
-      if (type === 'copy') {
-        delete row.id
+    async onCommOperate(row, type) {
+      try{
+        const res = await getSegmentDetail({id:row.id})
+        if(res.code === 200){
+          let data = res.data
+          if (type === 'copy') {
+            delete data.id
+          }
+          this.createCustomerRow = deepClone(row)
+          this.drawerVisible = true
+        }
+        
+      }catch(e){
+        console.error(e);
       }
-      this.createCustomerRow = deepClone(row)
-      this.drawerVisible = true
-
+      
     },
     async onDelete(id) {
       try {
