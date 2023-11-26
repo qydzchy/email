@@ -1370,20 +1370,18 @@ public class CustomerServiceImpl implements ICustomerService {
                 // 如果该客户在私海里面没有跟进记录，则移入公海
                 if (userIdSet == null || userIdSet.isEmpty()) {
                     isMovePublicleads = true;
-                // 如果存在的跟进人存在不在白名单里面的，则移入公海
+                // 如果存在的跟进人存在不在白名单里面的，则进行移入公海规则判断
                 } else if (!whiteListUserIdSet.containsAll(userIdSet)) {
-                    isMovePublicleads = true;
-                }
+                    // 计算两个日期之间的天数差距
+                    long diffInMillies = Math.abs(lastContactedAt.getTime() - currentDate.getTime());
+                    long daysDifference = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    if (daysDifference >= days.longValue()) {
+                        isMovePublicleads = true;
+                    }
 
-                // 计算两个日期之间的天数差距
-                long diffInMillies = Math.abs(lastContactedAt.getTime() - currentDate.getTime());
-                long daysDifference = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                if (daysDifference >= days.longValue()) {
-                    isMovePublicleads = true;
-                }
-
-                if (isMovePublicleads) {
-                    movePublicleadsCustomerIdSet.add(customerId);
+                    if (isMovePublicleads) {
+                        movePublicleadsCustomerIdSet.add(customerId);
+                    }
                 }
             });
         });

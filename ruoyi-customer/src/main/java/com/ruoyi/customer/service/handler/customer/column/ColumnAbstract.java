@@ -88,6 +88,14 @@ public class ColumnAbstract {
             case NOT_NULL:
                 return StringUtils.isNotBlank(name);
 
+            case EQUALS:
+                if (StringUtils.isBlank(name)) return false;
+                return name.startsWith(String.valueOf(value));
+
+            case NOT_EQUALS:
+                if (StringUtils.isBlank(name)) return false;
+                return !name.startsWith(String.valueOf(value));
+
             case IN:
                 if (StringUtils.isBlank(name)) return false;
                 List<String> selectNames = ColumnUtils.objectToList(value, String.class);
