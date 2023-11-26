@@ -93,8 +93,8 @@
                     :props="{value:'columnName',label:'nickName',children:'children'}"
                     :checkStrictly="true"
                     @change="(value)=>{
-                      item.conditionType =''
-                      item.value=''
+                      item.conditionType = null
+                      item.value= null
                       handleRuleContent(item.ruleId,'columnName',value)
                     }"
                 >
@@ -106,9 +106,9 @@
                     placeholder="运算"
                     :value.sync="item.conditionType"
                     @change="(value)=>{
-                      item.value = ''
-                      item.dateType =''
-                      item.timeRange =''
+                      item.value = null
+                      item.dateType = null
+                      item.timeRange = null
                       handleRuleContent(item.ruleId,'conditionType',value)
                     }">
                   <el-option
@@ -128,6 +128,8 @@
                     <el-select
                         :value.sync="item.value"
                         placeholder="选项"
+                        :multiple="[5,6].includes(item.conditionType) ? true : false"
+                        :collapse-tags="[5,6].includes(item.conditionType) ? true : false"
                         @change="(value)=>handleRuleContent(item.ruleId,'value',value)">
                       <el-option
                           v-for="(opt,index) in filterConditionSecondOption(item.columnName)"
@@ -152,7 +154,7 @@
                   <!--        时间范围时间选项          -->
                   <template v-if="[1,2].includes(item.conditionType)">
                     <el-select :value.sync="item.dateType" @change="(value)=>{
-                      item.timeRange = ''
+                      item.timeRange = null
                       handleRuleContent(item.ruleId,'dateType',value)
                     }">
                       <el-option :value="1" label="具体日期范围"></el-option>
@@ -162,7 +164,7 @@
                   <!--        时间范围时间范围          -->
                   <template v-if="[7,8].includes(item.conditionType)">
                     <el-select :value.sync="item.dateType" @change="(value)=>{
-                      item.timeRange = ''
+                      item.timeRange = null
                       handleRuleContent(item.ruleId,'dateType',value)
                     }">
                       <el-option :value="3" label="当天之前"></el-option>

@@ -163,7 +163,7 @@ export default {
         try {
           let children = newVal?.children || []
           let ruleContent = newVal.conditionRuleContent || '[]'
-          ruleContent = JSON.parse(ruleContent)
+          ruleContent = JSON?.parse(ruleContent)
           ruleContent = (ruleContent && !ruleContent?.length) ? this.generateRuleContentDefault() : this.generateRuleContentSetRuleId(ruleContent)
           children = !children.length ? this.generateChildListDefault() : this.generateChildListSetRuleId(children)
           let visibilityScope = newVal.visibilityScope || null
@@ -283,6 +283,7 @@ export default {
         visibilityScope,
         usageScope,
         conditionRuleType,
+        subGroupColumn,
         subgroupFlag,
         conditionRuleContent,
         additionRule,
@@ -312,6 +313,7 @@ export default {
         config = {
           ...config,
           additionRule,// 1自动添加,2手动添加
+          subGroupColumn:additionRule===1 ? subGroupColumn : null,
           children: additionRule===2 ? newChildren : [],
         }
       }
@@ -376,7 +378,7 @@ export default {
       return arr.map((val, index) => {
         val.ruleId = index
         let ruleContentChild = val.conditionRuleContent || '[]'
-        ruleContentChild = JSON.parse(ruleContentChild)
+        ruleContentChild = JSON?.parse(ruleContentChild)
         val.conditionRuleContent = (ruleContentChild && !ruleContentChild?.length) ? this.generateRuleContentDefault(ruleContentChild) : this.generateRuleContentSetRuleId(ruleContentChild)
         return val
       })
@@ -456,7 +458,7 @@ export default {
       }]
     },
     generateVisibilityScopeValue(scopeData) {
-      let scope = JSON.parse(scopeData)
+      let scope = JSON?.parse(scopeData)
       if (!scope) {
         return []
       }

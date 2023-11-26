@@ -314,10 +314,11 @@ export default {
         const res = await getSegmentDetail({id:row.id})
         if(res.code === 200){
           let data = res.data
+          data.subgroupFlag = Boolean(data.subgroupFlag)
           if (type === 'copy') {
             delete data.id
           }
-          this.createCustomerRow = deepClone(row)
+          this.createCustomerRow = deepClone(data)
           this.drawerVisible = true
         }
         
