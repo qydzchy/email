@@ -14,6 +14,7 @@
       <div class="container">
         <ListCreateCustomerForm
             key="single"
+            ref="single"
             :showRange="true"
             :customer-form="formData"
             :rule-option="customerRuleOption"
@@ -24,7 +25,7 @@
         <div>
           <el-checkbox v-model="formData.subgroupFlag">添加二级客群</el-checkbox>
           <div class="fs-14 mt-6 gray-text">二级客群是在以上条件规则上，附加更多条件组生成的客群</div>
-          <el-form v-if="formData.subgroupFlag">
+          <el-form v-if="formData.subgroupFlag" :model="formData" ref="segmentFormRef" :rules="segmentFormRules">
             <el-form-item label="添加规则">
               <el-radio-group style="width: 100%" v-model="formData.additionRule" @change="handleAddRule">
                 <el-radio :label="1">自动生成</el-radio>
@@ -35,7 +36,7 @@
               </div>
             </el-form-item>
             <div v-show="formData.additionRule===1">
-              <el-form-item label="二级分群字段">
+              <el-form-item label="二级分群字段" prop="subGroupColumn">
                 <el-select v-model="formData.subGroupColumn">
                   <el-option v-for="(sub,index) in secondChildFieldOption" :key="index" :value="sub.columnName" :label="sub.nickName"></el-option>
                 </el-select>
@@ -55,6 +56,7 @@
                 <div class="fs-15 mb-10">二级客群{{ index + 1 }}</div>
                 <ListCreateCustomerForm
                     :key="'multiple'+index"
+                    :ref="'multiple'+index"
                     :customer-form="item"
                     :rule-option="customerRuleOption"
                     :visibility-option="visibilityScopeOption"
@@ -75,7 +77,7 @@
         <div class="wrap flex-middle space-between">
           <div>
             <el-button type="text" round plain>计算客群数</el-button>
-            <el-button :disabled="true" type="text" round>{{ formData.customerCount }}个</el-button>
+            <el-button v-if="formData.customerCount" :disabled="true" type="text" round>{{ formData.customerCount }}个</el-button>
           </div>
           <div>
             <el-button round :loading="btnLoading" @click="onHideDrawer">取消</el-button>
@@ -149,6 +151,11 @@ export default {
       defaultChooseIds: [],
       secondChildFieldOption: [],
       secondChildFieldList: [],//生成客群列表
+      segmentFormRules:{
+        subGroupColumn:[
+          {required:true,message:'请选择二级分群字段',trigger:'change'}
+        ]
+      },
     }
   },
   watch: {
@@ -276,7 +283,35 @@ export default {
       } catch {
       }
     },
+    // 校验表单
+    async validForm(){
+      let validList = []
+      const {subgroupFlag, additionRule, children} = this.formData
+      const resolve = await this.$refs.single.handleValidForm()
+      validList.push(resolve)
+
+      if(subgroupFlag){
+        if(additionRule===1){
+          this.$refs.segmentFormRef.validate(valid=>{
+            validList.push(valid)
+          })
+        }else if(additionRule===2){
+          if(Array.isArray(children) && children.length){
+            for(let i = 0;i < children.length;i++){
+              const subResolve = await this.$refs['multiple' + i]?.[0].handleValidForm()
+              validList.push(subResolve)
+            }
+          }
+        }
+      }
+      
+      return validList.every(val=>val)
+    },
     onConfirm() {
+      const validResult = this.validForm()
+      if(!validResult){
+        return
+      }
       const {
         id,
         name,

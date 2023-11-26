@@ -1,13 +1,13 @@
 <template>
-  <el-form class="create-customer-form" :model.sync="customerForm">
-    <el-form-item label="客群名称" required>
+  <el-form class="create-customer-form" :model.sync="customerForm" ref="listCustomerFormRef" :rules="listCustomerFormRules">
+    <el-form-item label="客群名称" prop="name">
       <el-input placeholder="请输入" size="small" :value.sync="customerForm.name"
                 @input="(value)=>onInput('name',value)" type="text" maxlength="32"
                 show-word-limit></el-input>
     </el-form-item>
     <template v-if="showRange">
       <el-row class="fs-14 flex-column">
-        <el-col>
+        <el-col class="mt-10">
           <span>使用范围</span>
           <el-tooltip>
             <template #content>
@@ -327,6 +327,11 @@ export default {
         {ruleId: 1},
         {ruleId: 2}
       ],
+      listCustomerFormRules:{
+        name:[
+          {required:true,message:'请填写名称',trigger:'blur'}
+        ]
+      }
     }
   },
   computed: {
@@ -495,6 +500,13 @@ export default {
         return []
       }
       return targetValue
+    },
+    handleValidForm(){
+      return new Promise(resolve=>{
+        this.$refs.listCustomerFormRef.validate(valid=>{
+          resolve(valid)
+        })
+      })
     }
   }
 }
