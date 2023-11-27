@@ -191,7 +191,7 @@ export default {
                     id={rowId} 
                     visible={isShowForm} 
                     tagList={field} 
-                    tagOption={this. indexOpt.tagOption} 
+                    tagOption={this.indexOpt.tagOption} 
                     showBtn={true}
                     on={{
                       hide:()=> this.confirmInput(),

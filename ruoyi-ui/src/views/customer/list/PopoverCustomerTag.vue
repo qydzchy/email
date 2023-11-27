@@ -75,7 +75,7 @@
 						</div>
 					</template>
 					<template v-else>
-						<div class="tag-li my-5 flex-middle space-between">
+						<div v-show="searchTag" class="tag-li my-5 flex-middle space-between">
 							<div
 								class="px-6 py-6 radius-4"
 								style="
@@ -169,6 +169,7 @@
 			},
 			tagOption: {
 				handler(newVal) {
+					console.log(newVal);
 					this.innerTagOption = deepClone(newVal);
 					this.tempOption = this.innerTagOption;
 					this.innerTagOption.forEach((val) => {
@@ -198,6 +199,10 @@
 		},
 		methods: {
 			async addPersonalTagReq() {
+				if(!this.searchTag){
+					this.$message.warning('标签内容不能为空')
+					return
+				}
 				try {
 					this.btnLoading = true;
 					const res = await addPersonalTag({

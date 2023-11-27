@@ -13,7 +13,7 @@
                                 :show-edit-icon="false"></CellOperate></span>
           </div>
           <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" @onClose="getDetailData"/>
+          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData"/>
         </el-row>
       </div>
       <div class="info-wrap flex-middle">
@@ -159,7 +159,7 @@ import CustomerContactDrawer from "../CustomerContactDrawer.vue";
 import CellOperate from "../CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
-import TableRowTags from "@/views/customer/list/TableRowTags.vue";
+import TableRowTags from "../TableRowTags.vue";
 import {getScheduleList} from "@/api/customer/schedule";
 import {deepClone, formatMonthAndDay} from "@/utils";
 import {getCustomerDetail, searchGroupsCustomer} from "@/api/customer/publicleads";
@@ -410,7 +410,7 @@ export default {
       try {
         const res = await getCustomerTagList()
         if (res.code === 200) {
-          this.options.indexOpt.tagOption = res.data
+          this.options.indexOpt.tagOption =  res.data
         }
       } catch {
       }
