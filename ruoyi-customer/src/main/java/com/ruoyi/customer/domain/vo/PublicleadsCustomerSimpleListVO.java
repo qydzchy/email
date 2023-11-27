@@ -1,11 +1,15 @@
 package com.ruoyi.customer.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.bo.CustomerContactBO;
 import com.ruoyi.customer.domain.bo.CustomerRecentActivityBO;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PublicleadsCustomerSimpleListVO {
@@ -19,6 +23,32 @@ public class PublicleadsCustomerSimpleListVO {
      * 公司名称
      */
     private String companyName;
+
+    /**
+     * 标签
+     */
+    @JsonIgnore
+    private String tagStr;
+
+    /**
+     * 客户分组ID
+     */
+    private Long packetId;
+
+    /**
+     * 客户分组名称
+     */
+    private String packetName;
+
+    /**
+     * 客户阶段ID
+     */
+    private Long stageId;
+
+    /**
+     * 客户阶段名称
+     */
+    private String stageName;
 
     /**
      * 最近跟进
@@ -73,6 +103,25 @@ public class PublicleadsCustomerSimpleListVO {
     private Integer focusFlag;
 
     public String getCustomerTypeName() {
+        return null;
+    }
+
+    public List<TagListVO> getTagList() {
+        if (StringUtils.isNotBlank(tagStr)) {
+            String[] tagArr = tagStr.split(",");
+            List<TagListVO> tagVOList = new ArrayList<>();
+            for (String tag : tagArr) {
+                String[] tagObj = tag.split("_");
+                if (tagObj.length > 1) {
+                    TagListVO tagVO = new TagListVO();
+                    tagVO.setId(Long.parseLong(tagObj[0]));
+                    tagVO.setName(tagObj[1]);
+                    tagVOList.add(tagVO);
+                }
+            }
+            return tagVOList;
+        }
+
         return null;
     }
 }
