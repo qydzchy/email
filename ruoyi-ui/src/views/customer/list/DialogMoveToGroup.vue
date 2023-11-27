@@ -79,7 +79,7 @@ export default {
       try {
         this.btnLoading = true
         const res = await movePacketCustomer({
-          id: this.row?.id,
+          id: this.row?.customerId,
           packetId: this.moveValue
         }).finally(() => {
           this.btnLoading = false

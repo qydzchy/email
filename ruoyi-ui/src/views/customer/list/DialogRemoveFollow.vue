@@ -71,10 +71,10 @@ export default {
   },
   methods: {
     async getFollowPerson() {
-      if (!this.row.id) return
+      if (!this.row.customerId) return
       try {
         const res = await searchFollowerCustomer({
-          id: this.row.id
+          id: this.row.customerId
         })
         if (res.code === 200) {
           this.followPersonList = res.data

@@ -120,7 +120,7 @@ export default {
       try {
         this.btnLoading = true
         const res = await transferredToCustomer({
-          id: this.row.id,
+          id: this.row.customerId,
           userId: this.singleValue
         }).finally(() => {
           this.btnLoading = false
@@ -136,7 +136,7 @@ export default {
       try {
         this.btnLoading = true
         const res = await shareToCustomer({
-          id: this.row.id,
+          id: this.row.customerId,
           userIds: this.commonValue
         }).finally(() => {
           this.btnLoading = false
@@ -152,7 +152,7 @@ export default {
       try {
         this.btnLoading = true
         const res = await reassignToCustomer({
-          id: this.row.id,
+          id: this.row.customerId,
           userIds: this.commonValue
         }).finally(() => {
           this.btnLoading = false

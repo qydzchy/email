@@ -19,7 +19,7 @@
                 </el-tooltip>
               </el-row>
               <el-row class="ml-10">
-                <OperateMenu :row="row" :indexOpt="indexOpt" :commandList="commandList">
+                <OperateMenu :row="rowData" :indexOpt="indexOpt" :commandList="commandList">
                   <el-tooltip placement="left" content="更多操作">
                     <i class="operate-more pointer el-icon-more-outline" style="transform: rotate(90deg)"></i>
                   </el-tooltip>

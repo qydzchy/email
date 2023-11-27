@@ -95,7 +95,7 @@ export default {
       try {
         this.btnLoading = true
         const res = await moveToPublicLeads({
-          id: this.row?.id,
+          id: this.row?.customerId,
           publicleadsGroupsId: this.movePoolGroup,
           publicleadsReasonId: this.movePoolReason,
         }).finally(() => {
