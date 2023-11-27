@@ -10,7 +10,7 @@
         </template>
       </div>
       <div>
-        <el-select placeholder="全部公海分组" v-model="searchQuery.pool">
+        <el-select placeholder="全部公海分组" v-model="searchQuery.pool" clearable @change="handleSearch" @clear="handleSearch">
           <el-option
               v-for="(item,index) in indexOpt.poolGroupOption"
               :key="index"
@@ -21,13 +21,16 @@
         <el-select-tree
             class="ml-10"
             v-model="searchQuery.group"
+            placeholder="全部分组"
             :data="indexOpt.groupOption"
             :props="{value:'id',label:'name'}"
             :default-expand-all="true"
             multiple
             collapse-tags
             clearable
-            :check-strictly="true">
+            :check-strictly="true"
+            @change="handleSearch"
+            @clear="handleSearch">
         </el-select-tree>
         <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
         <el-button round @click="moveToPrivateLeadsVisible=true">移入私海</el-button>
@@ -287,6 +290,8 @@ export default {
       try {
         const {currentPage, pageSize} = this.paginateOption
         const res = await getPublicLeadsList({
+          publicleadsGroupsId:this.searchQuery.pool,
+          packetId:this.searchQuery.group,
           pageNum: currentPage,
           pageSize: pageSize
         }).finally(() => {
@@ -311,6 +316,9 @@ export default {
       } else if (type === 'current') {
         this.paginateOption = {...this.paginateOption, currentPage: value}
       }
+      this.getList()
+    },
+    handleSearch(){
       this.getList()
     },
     onShowTableRowDrawer(row) {
@@ -340,7 +348,9 @@ export default {
       return stageRow
     },
     reloadList() {
-      this.getList()
+      setTimeout(()=>{
+        this.getList()
+      },400)
     }
   }
 }
