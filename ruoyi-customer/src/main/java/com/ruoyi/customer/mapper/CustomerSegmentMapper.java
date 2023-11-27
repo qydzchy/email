@@ -67,8 +67,9 @@ public interface CustomerSegmentMapper
     void batchInsertCustomerSegment(@Param("customerSegmentList") List<CustomerSegment> customerSegmentList);
 
     /**
-     * 根据客户ID删除
+     * 根据客户ID和指定客群ID删除
      * @param customerId
+     * @param segmentIdList
      */
-    void deleteCustomerSegmentByCustomerId(@Param("customerId") Long customerId);
+    void deleteCustomerSegmentByCustomerIdAndSegmentIds(@Param("customerId") Long customerId, @Param("segmentIdList") List<Long> segmentIdList);
 }
