@@ -45,13 +45,13 @@ const UsuallyInfoRule = [
         type: 'select-country',
         field: 'countryRegion',
         emit: ['on-change', 'blur'],
-        emitPrefix: 'country'
+        emitPrefix: 'country',
     },
     {
         title: '客户来源',
         type: 'el-select-tree',
-        field: 'origin',
-        value: '',
+        field: 'sourceIds',
+        value: [],
         props: {
             data: [],
             props: {
@@ -68,6 +68,11 @@ const UsuallyInfoRule = [
         title: '客户标签',
         type: 'select',
         field: 'tagIds',
+        props: {
+            multiple: true,
+            collapseTags:true,
+        },
+        options: [],
     },
     {
         title: '分组',
@@ -257,11 +262,11 @@ const OtherInfoRule = [
             {value: 6, label: '5000人以上'},
         ]
     },
-    {
-        title: '产品分组',
-        type: 'select',
-        field: 'productGroup'
-    },
+    // {
+    //     title: '产品分组',
+    //     type: 'select',
+    //     field: 'productGroup'
+    // },
     {
         title: '传真',
         type: 'input',
@@ -293,15 +298,22 @@ const OtherInfoRule = [
         title: '公司logo',
         type: 'upload',
         field: 'companyLogo',
+        value: '',
         props: {
             action: process.env.VUE_APP_BASE_API + "/common/upload",
+            fileList: [],
             multiple: false,
             limit: 1,
-            uploadType: 'image*/',
+            uploadType: "image",
+            accept: "image/*",
             name: 'file',
             withCredentials: true,
+            modalTitle:'公司logo',
             headers: {
                 Authorization: 'Bearer ' + getToken()
+            },
+            onSuccess: (res, file) => {
+                file.url = process.env.VUE_APP_BASE_API + res.fileName
             }
         },
     }

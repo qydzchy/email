@@ -719,7 +719,7 @@ export default {
               if (field === 'countryRegion') {
                 newValue = value.split('/')
               }
-              this.$set(this[listType], index, {...val, show: false, value: newValue})
+              this.$set(this[listType], index, {...val, show: field==='rating' ? true : false, value: newValue})
               this.$emit('reload')
             }
           })

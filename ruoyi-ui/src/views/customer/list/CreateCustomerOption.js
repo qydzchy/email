@@ -69,8 +69,10 @@ const UsuallyInfoRule = [
         type: 'select',
         field: 'tagIds',
         props: {
-            multiple: true
+            multiple: true,
+            collapseTags:true
         },
+        options: [],
     },
     {
         title: '分组',

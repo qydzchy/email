@@ -66,7 +66,7 @@
     </template>
     <!--   展示字段数据   -->
     <div class="wrap flex-middle space-between" v-else @click="onClick">
-      <span class="span-style" :title="generateTitle">
+      <span class="span-style fs-14" :title="generateTitle">
           <slot name="content">
             <span v-if="type==='select'">
               {{ generateSelectValue }}
