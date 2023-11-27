@@ -41,8 +41,9 @@ import CellOperate from './CellOperate.vue'
 import HeaderOperate from "./HeaderOperate.vue";
 import HeaderFilter from "./HeaderFilter.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
+import PopoverCustomerTag from "./PopoverCustomerTag.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
-import {editFocusFlagCustomer, getPrivateLeadsList} from "@/api/customer/publicleads";
+import {editFocusFlagCustomer, getPrivateLeadsList,editCustomer} from "@/api/customer/publicleads";
 
 const initCommandList =  ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'transfer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
 const groupCommandList = ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
@@ -156,23 +157,64 @@ export default {
           field: 'tagList',
           align: 'left',
           width: '200',
-          render: (_row, field) => {
+          render: (row, field, scope) => {
+            const {rowId, fieldName, showEditIcon} = this.tableCell
+            const propName = scope.column.property
+            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
             const wrap = () => {
               return field && field.length ? field?.map((val, idx) => {
                 const colorOpacity = val.color ? val.color + '4d' : ''
                 return val.name ?
-                    <span key={idx} class="px-6 py-6 mx-2"
+                    <span title={val.name} key={idx} class="px-6 py-6 mx-2"
                           style={{color: val.color, backgroundColor: colorOpacity}}>
                     {val.name}
                   </span> : '---'
               }) : '---'
             }
-            return <el-popover trigger="hover">
-              <template slot="default">
-                {wrap()}
-              </template>
-              <div slot="reference" class="line-clamp1">{wrap()}</div>
-            </el-popover>
+            return <CellOperate
+                type="customer-tag"
+                text={field}
+                visible={isShow}
+                showCopyIcon={false}
+                showEditIcon={!isShowForm}
+                on={{
+                  onEdit: () => this.onCellEdit(row?.id, propName),
+                  click: () => this.onCellClick(row),
+                  onBlur: () => this.onBlur(),
+                  onInput: (value) => this.onInput(value, scope, propName),
+                  onEnter: () => this.inputEnter(row)
+                }}
+            >
+            <template  slot="content">
+                <PopoverCustomerTag 
+                    id={rowId} 
+                    visible={isShowForm} 
+                    tagList={field} 
+                    tagOption={this. indexOpt.tagOption} 
+                    showBtn={true}
+                    on={{
+                      hide:()=> this.confirmInput(),
+                      confirm:(value)=>this.tagPopoverConfirm(row,value),
+                      reloadTag:()=>this.reloadTag()
+                    }}>
+                    <template slot="contentTag">
+                      <el-popover trigger="hover">
+                        <div slot="default">
+                          {wrap()}
+                        </div>
+                        <div 
+                          slot="reference" 
+                          class="line-clamp1" 
+                          style="width:144px;height:20px;" 
+                          onClick={(e) => e.stopPropagation()}>
+                          {wrap()}
+                        </div>
+                    </el-popover>
+                    </template>
+                </PopoverCustomerTag>
+            </template>
+            </CellOperate>
           },
         },
         {
@@ -391,7 +433,18 @@ export default {
       } catch {
 
       }
-
+    },
+    editCustomer(data) {
+      return new Promise(async resolve => {
+        try {
+          const res = await editCustomer({...data})
+          if (res.code === 200) {
+            this.$message.success('修改成功')
+            resolve(true)
+          }
+        } catch {
+        }
+      })
     },
     onCellClick(row) {
       this.rowDrawerData = row
@@ -409,6 +462,11 @@ export default {
       this.$set(this.list, scope.$index, {...scope.row, [field]: value})
     },
     inputEnter(scope) {
+      // this.editCustomer(data).then(res => {
+      //       if (res) {
+      //         this.$emit('reload')
+      //       }
+      // })
       this.confirmInput()
     },
     confirmInput() {
@@ -460,9 +518,26 @@ export default {
       })
       return stageRow
     },
+    tagPopoverConfirm(row,value){
+      let data = {
+        id:row.id,
+        tagIds:value.map(val=>val.id)
+      }
+      const res = this.editCustomer(data)
+      if(res){
+        this.confirmInput()
+        setTimeout(()=>{
+          this.getList()
+        },400)
+      }
+    
+    },
     reloadList() {
       this.getList()
-    }
+    },
+    reloadTag(){
+      this.$emit('reloadTag')
+    },
   }
 }
 </script>

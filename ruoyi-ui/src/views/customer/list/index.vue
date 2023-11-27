@@ -102,7 +102,8 @@
                 ref="tableListRef"
                 :params="tableListParams"
                 :index-opt="indexOpt"
-                :reloadMenu="getMenuList"/>
+                :reloadMenu="getMenuList"
+                @reloadTag="getTagList"/>
           </div>
 
         </template>

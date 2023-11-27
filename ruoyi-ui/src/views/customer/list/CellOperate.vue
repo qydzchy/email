@@ -4,6 +4,7 @@
       <!--   input   -->
       <template v-if="type==='input'">
         <el-input
+            ref="cellInputRef"
             size="small"
             :value.sync="curValue"
             v-bind="formOption"
@@ -176,6 +177,19 @@ export default {
       },
       immediate: true,
       deep: true,
+    },
+    showForm:{
+      handler(newVal){
+        if(!newVal){
+          return
+        }
+        if(this.type==='input'){
+          this.$nextTick(()=>{
+            this.$refs.cellInputRef.focus()
+          })
+        }
+      },
+      immediate: true,
     },
   },
   computed: {
