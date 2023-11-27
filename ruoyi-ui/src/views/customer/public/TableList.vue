@@ -285,16 +285,21 @@ export default {
     }
   },
   watch:{
-    indexOpt:{
+    'indexOpt.poolGroupOption':{
       handler(newVal){
-        this.noReq = !newVal.poolGroupOption.length
+        if(!newVal.length){
+          this.noReq = true
+        }else{
+          this.noReq = false
+          this.getList()
+        }
       },
       deep:true,
       immediate: true,
     }
   },
   mounted() {
-    this.getList()
+   
   },
   methods: {
     async getList() {
