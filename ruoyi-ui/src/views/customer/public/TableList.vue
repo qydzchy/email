@@ -287,11 +287,7 @@ export default {
   watch:{
     indexOpt:{
       handler(newVal){
-        if(!newVal.poolGroupOption.length){
-          this.noReq = true
-        }else{
-          this.noReq = false
-        }
+        this.noReq = !newVal.poolGroupOption.length
       },
       deep:true,
       immediate: true,
