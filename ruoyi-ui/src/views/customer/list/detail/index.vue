@@ -32,7 +32,7 @@
       </div>
     </div>
     <el-row type="flex">
-      <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
+      <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8" style="height: max-content;">
         <TableRowTabs :options="options" :row="rowData" @reload="getDetailData"/>
       </el-col>
       <el-col :span="7" class="ml-16">
