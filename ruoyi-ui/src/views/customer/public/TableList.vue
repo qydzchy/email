@@ -72,7 +72,9 @@ export default {
     indexOpt: {
       type: Object,
       default: () => {
-        return {}
+        return {
+          poolGroupOption:[]
+        }
       },
       required: false
     }
@@ -279,6 +281,18 @@ export default {
       },
       moveToGroupVisible: false,
       moveToPrivateLeadsVisible: false,
+      noReq:false,
+    }
+  },
+  watch:{
+    indexOpt:{
+      handler(newVal){
+        if(!newVal.poolGroupOption.length){
+          this.noReq = true
+        }
+      },
+      deep:true,
+      immediate: true,
     }
   },
   mounted() {
@@ -286,6 +300,9 @@ export default {
   },
   methods: {
     async getList() {
+      if(this.noReq){
+        return
+      }
       this.tableLoading = true
       try {
         const {currentPage, pageSize} = this.paginateOption
