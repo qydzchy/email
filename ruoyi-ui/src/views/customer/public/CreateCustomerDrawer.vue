@@ -90,6 +90,7 @@ export default {
           stageOption: [],
           originOption: [],
           poolGroupOption: [],
+          tagOption:[],
         }
       },
       required: false
@@ -144,6 +145,7 @@ export default {
     },
     indexOpt: {
       handler(newVal) {
+        console.log(newVal);
         this.rule.map(val => {
           if (val.field === 'packetId') {
             val.props.data = newVal.groupOption || []
@@ -168,7 +170,7 @@ export default {
           } else if (val.field === 'origin') {
             val.props.data = newVal.originOption || []
           } else if (val.field === 'poolGroup') {
-            const valid = !newVal.poolGroupOption && !newVal.poolGroupOption.length
+            const valid = !newVal.poolGroupOption && !newVal.poolGroupOption?.length
             if (valid) {
               return
             }
@@ -177,6 +179,27 @@ export default {
               return {
                 value: val.id,
                 label: val.name
+              }
+            })
+          }else if (val.field === 'tagIds') {
+            const valid = !newVal.tagOption && !newVal.tagOption?.length
+            if (valid) {
+              return
+            }
+            val.options = newVal.tagOption.map(val => {
+              return {
+                value: val.id,
+                label: val.name,
+                'slot': function ($h) {
+                  return $h('span', {
+                    style: {
+                      backgroundColor: val.color ? val.color + '4d' : '',
+                      color: val.color,
+                      borderRadius: '4px',
+                      padding: '2px 6px'
+                    }
+                  }, [val.name])
+                }
               }
             })
           }

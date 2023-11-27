@@ -13,7 +13,7 @@
                                 :show-edit-icon="false"></CellOperate></span>
           </div>
           <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" @onClose="getDetailData"/>
+          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData"/>
         </el-row>
       </div>
       <div class="info-wrap flex-middle">
@@ -24,6 +24,7 @@
               :curValue.sync="item.value"
               :type="item.type"
               :show-form="item.show"
+              :form-option="item.formOption"
               :show-copy-icon="false"
               :show-edit-icon="false"
               @onEdit="onEdit(item.id)"/>
@@ -32,7 +33,7 @@
     </div>
     <el-row type="flex">
       <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8">
-        <TableRowTabs :options="options" :row="{customerId:customerId}"/>
+        <TableRowTabs :options="options" :row="rowData" @reload="getDetailData"/>
       </el-col>
       <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
@@ -136,8 +137,7 @@ import CustomerContactDrawer from "../CustomerContactDrawer.vue";
 import CellOperate from "../CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
-import {getScheduleList} from "@/api/customer/schedule";
-import {formatMonthAndDay} from "@/utils";
+import {formatMonthAndDay,deepClone} from "@/utils";
 import {getCustomerDetail, searchGroupsCustomer} from "@/api/customer/publicleads";
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
@@ -295,10 +295,26 @@ export default {
         })
         if (res.code === 200) {
           this.rowData = res.data
+          this.rowData.countryRegion = this.rowData.countryRegion?.split('/') || []
+          this.rowData.customerId = this.rowData.id
+          let sourceList = deepClone(this.rowData.sourceList)
+          this.rowData.sourceIds = sourceList?.map(val => val.id)
+          let tagList = deepClone(this.rowData.tagList)
+          this.rowData.tagIds = tagList?.map(val => val.id)
+          this.rowData.stageId = this.rowData.stage?.id
+          this.rowData.packetId = this.rowData.packet?.id
+          this.rowData.timezone = +this.rowData.timezone
+          this.rowData.followPerson = this.rowData.followUpPersonnelList?.[0]?.nickName
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
           this.contactList = this.rowData.contactList
+          this.infoRowList.map(val => {
+            val.value = res.data[val.field]
+            return val
+          })
+          console.log(this.infoRowList);
         }
-      } catch {
+      } catch(e) {
+        console.error(e);
       }
     },
     onEdit(id) {

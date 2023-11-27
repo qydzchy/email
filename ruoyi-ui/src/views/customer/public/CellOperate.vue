@@ -4,6 +4,7 @@
       <!--   input   -->
       <template v-if="type==='input'">
         <el-input
+            ref="cellInputRef"
             size="small"
             :value.sync="curValue"
             v-bind="formOption"
@@ -19,7 +20,7 @@
         <SelectNext
             :value.sync="curValue"
             :selectOptions="formOption"
-            @change="handleChange"
+            @update:value="handleChange"
             @visibleChange="visibleChange"/>
       </template>
       <!--   tree   -->
@@ -36,7 +37,7 @@
       </template>
       <!--   rate   -->
       <template v-else-if="type==='rate'">
-        <el-rate :value.sync="curValue" v-bind="formOption" :disabled="!showEditIcon" @change="handleChange"></el-rate>
+        <el-rate :value.sync="curValue" v-bind="formOption" @change="handleChange" :disabled="!showEditIcon"></el-rate>
       </template>
       <!--   tel   -->
       <template v-else-if="type==='tel'">
@@ -62,14 +63,10 @@
       <template v-else-if="type==='country'">
         <select-country :value.sync="curValue" @input="handleInputCountry"></select-country>
       </template>
-      <!--   picture   -->
-      <template v-if="type==='picture'">
-        <el-image v-bind="formOption"/>
-      </template>
     </template>
     <!--   展示字段数据   -->
     <div class="wrap flex-middle space-between" v-else @click="onClick">
-      <span class="span-style" :title="generateTitle">
+      <span class="span-style fs-14" :title="generateTitle">
           <slot name="content">
             <span v-if="type==='select'">
               {{ generateSelectValue }}
@@ -81,8 +78,12 @@
               {{ generateTelValue }}
             </span>
             <span v-else-if="type==='country'" class="flex-middle">
-              <svg-icon v-if="generateCountryValue.svg" class="pr-4" :icon-class="generateCountryValue.svg"/>
+              <svg-icon v-if="generateCountryValue.svg" class="pr-4 fs-20" :icon-class="generateCountryValue.svg"/>
               {{ generateCountryValue.value }}
+            </span>
+            <span v-else-if="type==='picture'">
+                <el-avatar v-if="content" shape="square" :src="content"></el-avatar>
+                <span v-else>---</span>
             </span>
             <span v-else>
                {{ content || '---' }}
@@ -176,6 +177,19 @@ export default {
       },
       immediate: true,
       deep: true,
+    },
+    showForm:{
+      handler(newVal){
+        if(!newVal){
+          return
+        }
+        if(this.type==='input'){
+          this.$nextTick(()=>{
+            this.$refs.cellInputRef.focus()
+          })
+        }
+      },
+      immediate: true,
     },
   },
   computed: {
@@ -290,7 +304,7 @@ export default {
 <style lang="scss" scoped>
 .cell {
   .wrap {
-    height: 32px;
+    min-height: 32px;
   }
 
   &:hover .right-icon > i {

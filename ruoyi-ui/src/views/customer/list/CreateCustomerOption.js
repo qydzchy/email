@@ -71,6 +71,7 @@ const UsuallyInfoRule = [
         props: {
             multiple: true
         },
+        options: [],
     },
     {
         title: '分组',

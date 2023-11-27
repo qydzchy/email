@@ -161,12 +161,14 @@
               <div>
                 {{ follow.label }}
                 <el-tooltip v-if="follow.showTooltip" placement="top">
-                  <div slot="content" v-html="follow.tooltipText"></div>
+                  <template slot="content">
+                    <div v-html="follow.showTooltip"></div>
+                  </template>
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </div>
               <div class="flex-middle space-between py-5">
-                <span>{{ row[follow.field] || '---'}}</span>
+                <span>{{ row[follow.field] || '---' }}</span>
               </div>
             </el-col>
           </el-row>
@@ -186,7 +188,9 @@
               <div>
                 {{ sys.label }}
                 <el-tooltip v-if="sys.showTooltip" placement="top">
-                  <div slot="content" v-html="sys.tooltipText"></div>
+                  <template #content>
+                    <div v-html="sys.tooltipText"></div>
+                  </template>
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </div>
@@ -212,8 +216,8 @@ import CellOperate from "./CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap";
 import {generateMapKey} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
-import {timeZoneList} from "@/assets/data/countryData";
 import {editCustomer} from "@/api/customer/publicleads";
+import {timeZoneList} from "@/assets/data/countryData";
 
 export default {
   props: {
@@ -235,7 +239,7 @@ export default {
         }
       },
       required: false
-    },
+    }
   },
   components: {TableNext, CustomerContactDrawer, CollapseWrap, CellOperate},
   data() {
@@ -470,14 +474,17 @@ export default {
         {
           field: 'lastContactedAt',
           label: '最近联系时间',
+          showTooltip: '',
         },
         {
           field: 'lastFollowupAt',
           label: '最近跟进时间',
+          showTooltip: '',
         },
         {
           field: '',
           label: '下次移入公海日期',
+          showTooltip: '<span>根据移入公海规则计算得出，移入操作在凌晨进行</span>'
         },
         {
           field: '',
@@ -707,12 +714,14 @@ export default {
       this.editCustomer(data).then(res => {
         if (res) {
           this[listType].forEach((val, index) => {
-            let newValue = value
-            if (field === 'countryRegion') {
-              newValue = value.split('/')
+            if (val.field === field) {
+              let newValue = value
+              if (field === 'countryRegion') {
+                newValue = value.split('/')
+              }
+              this.$set(this[listType], index, {...val, show: field==='rating' ? true : false, value: newValue})
+              this.$emit('reload')
             }
-            this.$set(this[listType], index, {...val, show: false, value: newValue})
-            this.$emit('reload')
           })
         }
       })
