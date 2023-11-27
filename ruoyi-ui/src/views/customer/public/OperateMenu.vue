@@ -57,7 +57,7 @@
         v-if="moveToPrivateLeadsVisible"
         :row="row"
         :visible.sync="moveToPrivateLeadsVisible"
-        :privateOption="indexOpt.poolGroupOption"
+        :privateOption="indexOpt.groupOption"
         :reasonOption="indexOpt.poolReasonOption"
         @onConfirm="onMoveToPollConfirm"
     />

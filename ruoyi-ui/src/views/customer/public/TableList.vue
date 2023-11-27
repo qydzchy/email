@@ -52,7 +52,7 @@
     <DialogMoveToGroup :visible.sync="moveToGroupVisible" :row="{id:ids}" :groupOption="indexOpt.groupOption"/>
     <DialogMoveToPrivateLeads
         :visible.sync="moveToPrivateLeadsVisible"
-        :privateOption="indexOpt.poolGroupOption"
+        :privateOption="indexOpt.groupOption"
         :row="{id:ids}" @onConfirm="reloadList"/>
   </div>
 </template>
