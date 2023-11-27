@@ -108,7 +108,6 @@ export default {
   },
   methods: {
     async getAllUserList() {
-      if (!this.row.id) return
       try {
         const res = await getAllUser()
         if (res.code === 200) {
