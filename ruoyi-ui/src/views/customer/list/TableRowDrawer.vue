@@ -31,8 +31,9 @@
         </template>
         <div class="container">
           <div class="base-info flex-start px-30">
-            <el-avatar shape="square" :src="rowData.companyLogo"></el-avatar>
-
+            <div class="icon-w-50">
+              <el-avatar :size="50" shape="square" :src="rowData.companyLogo"></el-avatar>
+            </div>
             <div class="pl-10 fs-14">
               <label>{{ rowData.companyName || '---' }}</label>
               <div class="my-10 flex-middle">

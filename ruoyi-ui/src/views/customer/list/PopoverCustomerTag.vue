@@ -229,7 +229,7 @@
 				this.$emit('hide');
 			},
 			onHidePopover() {
-				console.log(this.innerTagList);
+				// console.log(this.innerTagList);
 				// this.$emit('onHide', this.innerTagList);
 			},
 			validTagIncludes(id) {
