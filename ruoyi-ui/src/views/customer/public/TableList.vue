@@ -289,6 +289,8 @@ export default {
       handler(newVal){
         if(!newVal.poolGroupOption.length){
           this.noReq = true
+        }else{
+          this.noReq = false
         }
       },
       deep:true,
