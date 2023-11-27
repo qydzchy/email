@@ -15,10 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ColumnAbstract {
@@ -59,14 +56,24 @@ public class ColumnAbstract {
             case NOT_NULL:
                 return relationId != null;
 
+            case EQUALS:
+                if (value == null) return false;
+                Long id = Long.parseLong(String.valueOf(value));
+                return relationId.longValue() == id.longValue();
+
+            case NOT_EQUALS:
+                if (value == null) return false;
+                Long id2 = Long.parseLong(String.valueOf(value));
+                return relationId.longValue() != id2.longValue();
+
             case IN:
                 if (relationId == null) return false;
-                List<Long> selectIds = ColumnUtils.objectToList(value, Long.class);
+                List<Long> selectIds = convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
                 return selectIds.contains(relationId);
 
             case NOT_IN:
                 if (relationId == null) return false;
-                List<Long> selectIds2 = ColumnUtils.objectToList(value, Long.class);
+                List<Long> selectIds2 = convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
                 return !selectIds2.contains(relationId);
 
             default:
@@ -90,11 +97,11 @@ public class ColumnAbstract {
 
             case EQUALS:
                 if (StringUtils.isBlank(name)) return false;
-                return name.startsWith(String.valueOf(value));
+                return name.equals(String.valueOf(value));
 
             case NOT_EQUALS:
                 if (StringUtils.isBlank(name)) return false;
-                return !name.startsWith(String.valueOf(value));
+                return !name.equals(String.valueOf(value));
 
             case IN:
                 if (StringUtils.isBlank(name)) return false;
@@ -125,15 +132,25 @@ public class ColumnAbstract {
             case NOT_NULL:
                 return type != null;
 
+            case EQUALS:
+                if (value == null) return false;
+                Long id = Long.parseLong(String.valueOf(value));
+                return type.longValue() == id.longValue();
+
+            case NOT_EQUALS:
+                if (value == null) return false;
+                Long id2 = Long.parseLong(String.valueOf(value));
+                return type.longValue() != id2.longValue();
+
             case IN:
                 if (type == null) return false;
-                List<Integer> selectTypes = ColumnUtils.objectToList(value, Integer.class);
-                return selectTypes.contains(type);
+                List<Long> selectIds = convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
+                return selectIds.contains(type.longValue());
 
             case NOT_IN:
                 if (type == null) return false;
-                List<Integer> selectTypes2 = ColumnUtils.objectToList(value, Integer.class);
-                return !selectTypes2.contains(type);
+                List<Long> selectIds2 = convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
+                return !selectIds2.contains(type.longValue());
 
             default:
                 return false;
@@ -186,18 +203,32 @@ public class ColumnAbstract {
             case NOT_NULL:
                 return userDeptInfoBO != null;
 
-            case IN:
+            case EQUALS:
                 Object value1 = segmentConditionRule.getValue();
                 if (value1 == null) return false;
 
-                // 跟进创建人查询部门
-                return userDeptService.userDeptVerify(Arrays.asList(userDeptInfoBO), value1.toString());
+                if (userDeptInfoBO.getUserId() == null) return false;
+                return String.valueOf(userDeptInfoBO.getUserId()).equals(value1.toString());
 
-            case NOT_IN:
+            case NOT_EQUALS:
                 Object value2 = segmentConditionRule.getValue();
                 if (value2 == null) return false;
 
-                return !userDeptService.userDeptVerify(Arrays.asList(userDeptInfoBO), value2.toString());
+                if (userDeptInfoBO.getUserId() == null) return false;
+                return !String.valueOf(userDeptInfoBO.getUserId()).equals(value2.toString());
+
+            case IN:
+                Object value3 = segmentConditionRule.getValue();
+                if (value3 == null) return false;
+
+                // 跟进创建人查询部门
+                return userDeptService.userDeptVerify(Arrays.asList(userDeptInfoBO), value3.toString());
+
+            case NOT_IN:
+                Object value4 = segmentConditionRule.getValue();
+                if (value4 == null) return false;
+
+                return !userDeptService.userDeptVerify(Arrays.asList(userDeptInfoBO), value4.toString());
 
             default:
                 return false;
@@ -359,5 +390,22 @@ public class ColumnAbstract {
         return Pair.of(startTime, endTime);
     }
 
+
+    /**
+     * double转long
+     * @param doubleList
+     * @return
+     */
+    protected List<Long> convertDoubleListToLongList(List<Double> doubleList) {
+        List<Long> longList = new ArrayList<>();
+
+        for (Double value : doubleList) {
+            // 将 Double 转换为 Long
+            long convertedValue = value.longValue();
+            longList.add(convertedValue);
+        }
+
+        return longList;
+    }
 
 }

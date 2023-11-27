@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class CustomerSourceColumn implements IColumnService {
+public class CustomerSourceColumn extends ColumnAbstract implements IColumnService {
 
     @Override
     public CustomerColumnEnum getCustomerColumnEnum() {
@@ -54,7 +54,7 @@ public class CustomerSourceColumn implements IColumnService {
 
                 case IN:
                     if (value == null) return false;
-                    List<Long> tagIds = ColumnUtils.objectToList(value, Long.class);
+                    List<Long> tagIds = super.convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
                     for (Long customerId : customerSourceIds) {
                         if (tagIds.contains(customerId)) {
                             return true;
@@ -63,7 +63,7 @@ public class CustomerSourceColumn implements IColumnService {
 
                 case NOT_IN:
                     if (value == null) return false;
-                    List<Long> sourceIds2 = ColumnUtils.objectToList(value, Long.class);
+                    List<Long> sourceIds2 = super.convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
                     boolean flag = false;
                     for (Long customerId : customerSourceIds) {
                         if (sourceIds2.contains(customerId)) {

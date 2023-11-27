@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 24/11/2023 17:43:01
+ Date: 27/11/2023 13:36:40
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2181 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2182 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -308,5 +308,6 @@ INSERT INTO `sys_menu` VALUES (2177, '客户文档列表', 2176, 1, '', NULL, NU
 INSERT INTO `sys_menu` VALUES (2178, '上传文档', 2176, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:upload:multiple', '#', 'admin', '2023-11-24 17:42:07', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2179, '下载文档', 2176, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:download', '#', 'admin', '2023-11-24 17:42:24', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2180, '删除文档', 2176, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:delete', '#', 'admin', '2023-11-24 17:42:41', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2181, '客群详情', 2119, 10, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:segment:detail', '#', 'admin', '2023-11-27 13:35:30', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;
