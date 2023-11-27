@@ -67,7 +67,11 @@
         </foreach>
     </delete>
 
-    <delete id="deleteCustomerSegmentByCustomerId">
+    <delete id="deleteCustomerSegmentByCustomerIdAndSegmentIds">
         delete from customer_customer_segment where customer_id = #{customerId}
+        and segment_id in
+        <foreach item="segmentId" collection="segmentIdList" open="(" separator="," close=")">
+            #{segmentId}
+        </foreach>
     </delete>
 </mapper>

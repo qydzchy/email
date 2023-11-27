@@ -106,47 +106,7 @@ public class SegmentServiceImpl implements ISegmentService
         segmentMapper.insertSegment(segment);
         Long id = segment.getId();
 
-        List<Segment> subSegmentList = new ArrayList<>();
-
-        if (segmentAddOrUpdateDTO.getAdditionRule().intValue() == 1) {
-            if (StringUtils.isBlank(segmentAddOrUpdateDTO.getSubGroupColumn())) {
-                throw new ServiceException("二级分群字段不能为空");
-            }
-
-            // 判断二级分群字段列表是否有数据
-            List<SubgroupColumnListVO> subgroupColumnVOList = subgroupColumnList(segmentAddOrUpdateDTO.getSubGroupColumn());
-            if (subgroupColumnVOList == null || subgroupColumnVOList.isEmpty()) {
-                return true;
-            }
-
-            subgroupColumnVOList.stream().forEach(subgroupColumnVO -> {
-                String name = subgroupColumnVO.getName();
-                Integer conditionRuleType = 1;
-                String conditionRuleContent = generateConditionRuleContent(segmentAddOrUpdateDTO.getSubGroupColumn(), subgroupColumnVO.getId());
-                subSegmentList.add(generateSubSegment(id, name, conditionRuleType, conditionRuleContent, userId, username));
-            });
-
-        } else if (segmentAddOrUpdateDTO.getAdditionRule().intValue() == 2) {
-            List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
-            if (subGroupList == null || subGroupList.isEmpty()) {
-                return true;
-            }
-
-            subGroupList.stream().forEach(subGroup -> {
-                String name = subGroup.getName();
-                Integer conditionRuleType = subGroup.getConditionRuleType();
-                String conditionRuleContent = subGroup.getConditionRuleContent();
-                subSegmentList.add(generateSubSegment(id, name, conditionRuleType, conditionRuleContent, userId, username));
-            });
-        }
-
-        // 批量新增子客群
-        if (!subSegmentList.isEmpty()) {
-            segmentMapper.batchInsertSegment(subSegmentList);
-        }
-
-        // 洗牌
-        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
+        subSegmentHandler(id, segmentAddOrUpdateDTO, userId, username);
         return true;
     }
 
@@ -217,30 +177,63 @@ public class SegmentServiceImpl implements ISegmentService
         Long id = segment.getId();
         segmentMapper.deleteSegmentByParentId(id);
 
-        List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
-        if (subGroupList != null && !subGroupList.isEmpty()) {
-            List<Segment> segmentList = new ArrayList<>();
-            subGroupList.stream().forEach(subGroup -> {
-                Segment subSegment = new Segment();
-                BeanUtils.copyProperties(subGroup, subSegment);
-                subSegment.setParentId(segmentAddOrUpdateDTO.getId());
-                subSegment.setDelFlag("0");
-                subSegment.setCreateId(userId);
-                subSegment.setCreateBy(username);
-                subSegment.setCreateTime(DateUtils.getNowDate());
-                subSegment.setUpdateId(userId);
-                subSegment.setUpdateBy(username);
-                subSegment.setUpdateTime(DateUtils.getNowDate());
-                segmentList.add(subSegment);
+        subSegmentHandler(id, segmentAddOrUpdateDTO, userId, username);
+        return true;
+    }
+
+    /**
+     * 二级客群处理
+     * @param id
+     * @param segmentAddOrUpdateDTO
+     * @param userId
+     * @param username
+     */
+    private void subSegmentHandler(Long id, SegmentAddOrUpdateDTO segmentAddOrUpdateDTO, Long userId, String username) {
+        List<Segment> subSegmentList = new ArrayList<>();
+
+        if (segmentAddOrUpdateDTO.getSubgroupFlag() == null || segmentAddOrUpdateDTO.getSubgroupFlag().intValue() == 0) {
+            return;
+        }
+
+        if (segmentAddOrUpdateDTO.getAdditionRule().intValue() == 1) {
+            if (StringUtils.isBlank(segmentAddOrUpdateDTO.getSubGroupColumn())) {
+                throw new ServiceException("二级分群字段不能为空");
+            }
+
+            // 判断二级分群字段列表是否有数据
+            List<SubgroupColumnListVO> subgroupColumnVOList = subgroupColumnList(segmentAddOrUpdateDTO.getSubGroupColumn());
+            if (subgroupColumnVOList == null || subgroupColumnVOList.isEmpty()) {
+                return;
+            }
+
+            subgroupColumnVOList.stream().forEach(subgroupColumnVO -> {
+                String name = subgroupColumnVO.getName();
+                Integer conditionRuleType = 1;
+                String conditionRuleContent = generateConditionRuleContent(segmentAddOrUpdateDTO.getSubGroupColumn(), subgroupColumnVO.getId());
+                subSegmentList.add(generateSubSegment(id, name, conditionRuleType, conditionRuleContent, userId, username));
             });
 
-            // 批量新增子客群
-            segmentMapper.batchInsertSegment(segmentList);
+        } else if (segmentAddOrUpdateDTO.getAdditionRule().intValue() == 2) {
+            List<SegmentAddOrUpdateDTO> subGroupList = segmentAddOrUpdateDTO.getChildren();
+            if (subGroupList == null || subGroupList.isEmpty()) {
+                return;
+            }
+
+            subGroupList.stream().forEach(subGroup -> {
+                String name = subGroup.getName();
+                Integer conditionRuleType = subGroup.getConditionRuleType();
+                String conditionRuleContent = subGroup.getConditionRuleContent();
+                subSegmentList.add(generateSubSegment(id, name, conditionRuleType, conditionRuleContent, userId, username));
+            });
+        }
+
+        // 批量新增子客群
+        if (!subSegmentList.isEmpty()) {
+            segmentMapper.batchInsertSegment(subSegmentList);
         }
 
         // 洗牌
         CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
-        return true;
     }
 
     /**

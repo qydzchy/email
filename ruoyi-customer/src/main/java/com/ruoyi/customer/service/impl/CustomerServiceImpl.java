@@ -733,7 +733,6 @@ public class CustomerServiceImpl implements ICustomerService {
         if (!dbUserIds.contains(userId)) {
             throw new ServiceException("您不是该客户的跟进人，无法修改重点客户");
         }
-
         customerMapper.updateFocusFlag(id, userId, username);
         return true;
     }
@@ -939,6 +938,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean shuffle(Long customerIdParam, Long segmentIdParam) {
         // 获取客户列表
         List<Long> customerIdList = getCustomerIdList(customerIdParam);
@@ -986,12 +986,14 @@ public class CustomerServiceImpl implements ICustomerService {
                 }
             }
 
-            // 删除客户和客群的关系
-            customerSegmentMapper.deleteCustomerSegmentByCustomerId(customerId);
-            // 批量保存客户和客群的关系
-            batchSaveCustomerSegment(customerId, segmentIdList);
-            // 批量保存客户和客群的关系日志
-            batchSaveCustomerSegmentLog(customerId, segmentIdList);
+            if (!segmentIdList.isEmpty()) {
+                // 删除客户和客群的关系
+                customerSegmentMapper.deleteCustomerSegmentByCustomerIdAndSegmentIds(customerId, segmentIdList);
+                // 批量保存客户和客群的关系
+                batchSaveCustomerSegment(customerId, segmentIdList);
+                // 批量保存客户和客群的关系日志
+                batchSaveCustomerSegmentLog(customerId, segmentIdList);
+            }
         });
 
         return true;
@@ -1370,26 +1372,24 @@ public class CustomerServiceImpl implements ICustomerService {
                 // 如果该客户在私海里面没有跟进记录，则移入公海
                 if (userIdSet == null || userIdSet.isEmpty()) {
                     isMovePublicleads = true;
-                // 如果存在的跟进人存在不在白名单里面的，则移入公海
+                // 如果存在的跟进人存在不在白名单里面的，则进行移入公海规则判断
                 } else if (!whiteListUserIdSet.containsAll(userIdSet)) {
-                    isMovePublicleads = true;
-                }
+                    // 计算两个日期之间的天数差距
+                    long diffInMillies = Math.abs(lastContactedAt.getTime() - currentDate.getTime());
+                    long daysDifference = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    if (daysDifference >= days.longValue()) {
+                        isMovePublicleads = true;
+                    }
 
-                // 计算两个日期之间的天数差距
-                long diffInMillies = Math.abs(lastContactedAt.getTime() - currentDate.getTime());
-                long daysDifference = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                if (daysDifference >= days.longValue()) {
-                    isMovePublicleads = true;
-                }
-
-                if (isMovePublicleads) {
-                    movePublicleadsCustomerIdSet.add(customerId);
+                    if (isMovePublicleads) {
+                        movePublicleadsCustomerIdSet.add(customerId);
+                    }
                 }
             });
         });
 
         // 移入公海
-        if (movePublicleadsCustomerIdSet.isEmpty()) {
+        if (!movePublicleadsCustomerIdSet.isEmpty()) {
             //
             List<Long> movePublicleadsCustomerIdList = new ArrayList<>(movePublicleadsCustomerIdSet);
             List<List<Long>> customerIdListPartition = Lists.partition(movePublicleadsCustomerIdList, 200);

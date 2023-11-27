@@ -74,7 +74,7 @@
     <insert id="batchInsertCustomerSeaLog">
         insert into customer_customer_sea_log(customer_id, sea_type, create_time, type)
         values
-        <foreach collection="list" item="item" index="index" separator=",">
+        <foreach collection="customerSeaLogList" item="item" index="index" separator=",">
             (#{item.customerId}, #{item.seaType}, #{item.createTime}, #{item.type})
         </foreach>
     </insert>

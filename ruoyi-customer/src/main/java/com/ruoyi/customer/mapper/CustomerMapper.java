@@ -189,7 +189,7 @@ public interface CustomerMapper
      * @param customerIdList
      * @param type
      */
-    void batchUpdateCustomerSeaType(@Param("customerIdList") List<Long> customerIdList, @Param("type") Integer type);
+    void batchUpdateCustomerSeaType(@Param("customerIdList") List<Long> customerIdList, @Param("seaType") Integer seaType);
 
     /**
      * 查询角色部门简单信息

@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from customer_publicleads_rules cpr
         left join customer_publicleads_rules_segment cprs on cpr.id = cprs.publicleads_rules_id
         where cpr.del_flag = '0' and cpr.status = 1
-        and cpr.start_time &gt;= now()
+        and cpr.start_time &lt;= now()
     </select>
 
     <insert id="insertPublicleadsRules" parameterType="PublicleadsRules" useGeneratedKeys="true" keyProperty="id">
