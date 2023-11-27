@@ -176,10 +176,10 @@
 						label: '社交平台',
 						field: 'socialPlatform',
 						render: (_row, field) => {
-							const contactList = JSON?.parse(field);
-							return contactList.length ? (
+							const socialList = JSON?.parse(field);
+							return socialList.length ? (
 								<div>
-									{contactList.map((val, index) => {
+									{socialList.map((val, index) => {
 										return (
 											<div key={index}>
 												{val.type}-{val.account}
