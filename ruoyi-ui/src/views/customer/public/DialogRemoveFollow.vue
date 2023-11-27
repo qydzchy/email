@@ -19,8 +19,8 @@
         </el-select>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary" :disabled="!removeFollowPerson" @click="removeFollow">确 定</el-button>
+        <el-button round @click="onCancel">取 消</el-button>
+        <el-button round type="primary" :disabled="!removeFollowPerson" @click="removeFollow">确 定</el-button>
       </div>
     </el-dialog>
   </div>
