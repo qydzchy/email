@@ -9,7 +9,6 @@ import com.ruoyi.customer.service.handler.customer.column.utils.ColumnUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,25 +53,28 @@ public class CustomerTagColumn extends ColumnAbstract implements IColumnService 
                     return !customerTagIds.contains(tagId2);
 
                 case IN:
-                    if (customerTagIds == null) return false;
-                    List<Long> tagIds = ColumnUtils.objectToList(value, Long.class);
-                    for (Long customerId : customerTagIds) {
-                        if (tagIds.contains(customerId)) {
-                            return true;
-                        }
-                    }
-
-                case NOT_IN:
-                    if (customerTagIds == null) return false;
-                    List<Long> tagIds2 = ColumnUtils.objectToList(value, Long.class);
+                    if (customerTagIds == null || value == null) return false;
+                    List<Long> tagIds = super.convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
                     boolean flag = false;
-                    for (Long customerId : customerTagIds) {
-                        if (tagIds2.contains(customerId)) {
+                    for (Long customerTagId : customerTagIds) {
+                        if (tagIds.contains(customerTagId)) {
                             flag = true;
                             break;
                         }
                     }
-                    return !flag;
+                    return flag;
+
+                case NOT_IN:
+                    if (customerTagIds == null || value == null) return false;
+                    List<Long> tagIds2 = super.convertDoubleListToLongList(ColumnUtils.objectToList(value, Double.class));
+                    boolean flag2 = false;
+                    for (Long customerTagId : customerTagIds) {
+                        if (tagIds2.contains(customerTagId)) {
+                            flag2 = true;
+                            break;
+                        }
+                    }
+                    return !flag2;
 
                 default:
                     return false;

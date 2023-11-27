@@ -49,6 +49,7 @@
             resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
         select su.user_id as id, su.nick_name as name from customer_customer_follow_up_personnel cfup
         left join sys_user su on cfup.user_id = su.user_id and su.del_flag = '0'
+        group by su.user_id, su.nick_name
     </select>
 
     <insert id="insertCustomerFollowUpPersonnel" parameterType="CustomerFollowUpPersonnel" useGeneratedKeys="true" keyProperty="id">
