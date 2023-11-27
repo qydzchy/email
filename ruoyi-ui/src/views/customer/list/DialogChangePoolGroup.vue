@@ -79,7 +79,7 @@ export default {
       try {
         this.btnLoading = true
         const res = await changeGroupsCustomer({
-          id: this.row?.id,
+          id: this.row?.customerId,
           publicleadsGroupsId: this.changePoolValue
         }).finally(() => {
           this.btnLoading = false

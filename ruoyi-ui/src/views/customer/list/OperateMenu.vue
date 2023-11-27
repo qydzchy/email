@@ -57,7 +57,7 @@
         v-if="moveToPoolVisible"
         :row="row"
         :visible.sync="moveToPoolVisible"
-        :privateOption="indexOpt.privateOption"
+        :poolOption="indexOpt.poolGroupOption"
         :reasonOption="indexOpt.poolReasonOption"
         @onConfirm="onMoveToPollConfirm"
     />
@@ -205,7 +205,7 @@ export default {
                 instance.confirmButtonLoading = true;
                 instance.confirmButtonText = '执行中...';
                 try {
-                  const res = await followCancelCustomer({id: this.row?.id}).finally(() => {
+                  const res = await followCancelCustomer({id: this.row?.customerId}).finally(() => {
                     instance.confirmButtonLoading = false
                     done()
                   })
