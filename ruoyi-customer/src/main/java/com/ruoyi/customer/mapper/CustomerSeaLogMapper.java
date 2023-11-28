@@ -2,6 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerSeaLog;
+import com.ruoyi.customer.domain.bo.CustomerSeaLogCountBO;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -62,12 +63,12 @@ public interface CustomerSeaLogMapper
 
     /**
      * 查询在该时间之后是否存在该跟进人的领取该客户的记录
-     * @param customerId
+     * @param customerIds
      * @param createId
      * @param createTime
      * @return
      */
-    int countCustomerSeaByCustomerIdAndUserIdAndCreateTime(@Param("customerId") Long customerId, @Param("createId") Long createId, @Param("createTime") String createTime);
+    List<CustomerSeaLogCountBO> getCustomerSeaCountByCustomerIdAndUserIdAndCreateTime(@Param("customerIds") List<Long> customerIds, @Param("createId") Long createId, @Param("createTime") String createTime);
 
     /**
      * 统计在指定时间领取的客户数量

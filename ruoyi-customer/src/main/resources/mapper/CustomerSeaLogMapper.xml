@@ -30,12 +30,17 @@
         where id = #{id}
     </select>
 
-    <select id="countCustomerSeaByCustomerIdAndUserIdAndCreateTime" resultType="java.lang.Integer">
-        select count(*) from customer_customer_sea_log
-        where customer_id = #{customerId}
-        and create_id = #{createId}
-        and create_time &gt;= #{createTime}
-        and sea_type = 1
+    <select id="getCustomerSeaCountByCustomerIdAndUserIdAndCreateTime" resultType="com.ruoyi.customer.domain.bo.CustomerSeaLogCountBO">
+        select customer.id as customerId, customer.company_name as companyName, count(log.id) as moveCount from customer_customer_sea_log log
+        left join customer_customer customer on log.customer_id = customer.id
+        where log.customer_id in
+        <foreach item="customerId" collection="customerIds" open="(" separator="," close=")">
+            #{customerId}
+        </foreach>
+        and log.create_id = #{createId}
+        and log.create_time &gt;= #{createTime}
+        and log.sea_type = 1
+        group by customer.id
     </select>
 
     <select id="countCustomerSeaByUserIdAndCreateTime" resultType="java.lang.Integer">
@@ -72,10 +77,10 @@
     </insert>
 
     <insert id="batchInsertCustomerSeaLog">
-        insert into customer_customer_sea_log(customer_id, sea_type, create_time, type)
+        insert into customer_customer_sea_log(customer_id, sea_type, create_id, create_time, type)
         values
         <foreach collection="customerSeaLogList" item="item" index="index" separator=",">
-            (#{item.customerId}, #{item.seaType}, #{item.createTime}, #{item.type})
+            (#{item.customerId}, #{item.seaType}, #{item.createId}, #{item.createTime}, #{item.type})
         </foreach>
     </insert>
 

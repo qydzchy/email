@@ -769,51 +769,58 @@ public class CustomerServiceImpl implements ICustomerService {
     /**
      * 移入私海
      *
-     * @param id
+     * @param ids
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean moveToPrivateleads(Long id, Long packetId) {
+    public boolean moveToPrivateleads(List<Long> ids, Long packetId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        List<CustomerFollowUpPersonnel> customerFollowUpPersonnelList = new ArrayList<>();
+
         // 校验公海领取规则
-        /*isClaimCountValid(id, userId);
+        isClaimCountValid(ids, userId);
         // 校验领取上限
-        isPublicleadsClaimLimitValid(userId);
+        isPublicleadsClaimLimitValid(userId, ids.size());
         // 校验客户上限
-        isCustomerLimitsValid(userId);*/
+        isCustomerLimitsValid(userId, ids.size());
 
-        Integer type = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
-        Customer customer = customerMapper.selectCustomerById(id);
-        customer.setSeaType(type);
-        if (packetId != null) {
-            customer.setPacketId(packetId);
-        }
-        customer.setUpdateId(userId);
-        customer.setUpdateBy(username);
-        customer.setUpdateTime(DateUtils.getNowDate());
-        customerMapper.updateCustomer(customer);
+        ids.stream().forEach(id -> {
+            Integer type = CustomerSeaTypeEnum.PRIVATE_LEADS.getType();
+            Customer customer = customerMapper.selectCustomerById(id);
+            customer.setSeaType(type);
+            if (packetId != null) {
+                customer.setPacketId(packetId);
+            }
+            customer.setUpdateId(userId);
+            customer.setUpdateBy(username);
+            customer.setUpdateTime(DateUtils.getNowDate());
+            customerMapper.updateCustomer(customer);
 
-        // 客户移入私海处理
-        customerMoveToSeaHandler(Arrays.asList(id), type, userId, CustomerSeaLogTypeEnum.MANUAL);
+            // 客户移入私海处理
+            customerMoveToSeaHandler(Arrays.asList(id), type, userId, CustomerSeaLogTypeEnum.MANUAL);
 
-        // 删除跟进人
-        customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(id, userId, username);
+            // 删除跟进人
+            customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerId(id, userId, username);
 
-        // 新增跟进人
-        CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
-        customerFollowUpPersonnel.setCustomerId(id);
-        customerFollowUpPersonnel.setUserId(userId);
-        customerFollowUpPersonnel.setCreateId(userId);
-        customerFollowUpPersonnel.setCreateBy(username);
-        customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
-        customerFollowUpPersonnel.setUpdateId(userId);
-        customerFollowUpPersonnel.setUpdateBy(username);
-        customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
-        customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
+            // 新增跟进人
+            CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+            customerFollowUpPersonnel.setCustomerId(id);
+            customerFollowUpPersonnel.setDelFlag("0");
+            customerFollowUpPersonnel.setUserId(userId);
+            customerFollowUpPersonnel.setCreateId(userId);
+            customerFollowUpPersonnel.setCreateBy(username);
+            customerFollowUpPersonnel.setCreateTime(DateUtils.getNowDate());
+            customerFollowUpPersonnel.setUpdateId(userId);
+            customerFollowUpPersonnel.setUpdateBy(username);
+            customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
+            customerFollowUpPersonnelList.add(customerFollowUpPersonnel);
+        });
+
+        customerFollowUpPersonnelMapper.batchInsertCustomerFollowUpPersonnel(customerFollowUpPersonnelList);
 
         return true;
     }
@@ -823,7 +830,7 @@ public class CustomerServiceImpl implements ICustomerService {
      *
      * @param userId
      */
-    private void isCustomerLimitsValid(Long userId) {
+    private void isCustomerLimitsValid(Long userId, int customerNum) {
         Limits limitsParam = new Limits();
         limitsParam.setUserId(userId);
         // 客户上限
@@ -837,7 +844,7 @@ public class CustomerServiceImpl implements ICustomerService {
         if (limitsNum != null) {
             // 查询私海客户数量
             Integer privateleadsCustomerNum = customerMapper.selectPrivateleadsNumByUserId(userId);
-            if (privateleadsCustomerNum >= limitsNum) {
+            if (privateleadsCustomerNum + customerNum > limitsNum) {
                 throw new ServiceException("您的客户数量已达上限");
             }
         }
@@ -848,7 +855,7 @@ public class CustomerServiceImpl implements ICustomerService {
      *
      * @param userId
      */
-    private void isPublicleadsClaimLimitValid(Long userId) {
+    private void isPublicleadsClaimLimitValid(Long userId, int customerNum) {
         PublicleadsClaimLimit publicleadsClaimLimitParam = new PublicleadsClaimLimit();
         publicleadsClaimLimitParam.setUserId(userId);
         publicleadsClaimLimitParam.setDelFlag("0");
@@ -864,7 +871,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
         // 统计在指定时间领取的客户数量
         int count = customerSeaLogMapper.countCustomerSeaByUserIdAndCreateTime(userId, startTime, endTime);
-        if (count >= claimLimit) {
+        if (count + customerNum > claimLimit) {
             throw new ServiceException("领取失败，您在" + startTime + "至" + endTime + "时间内领取的客户数量已达到上限");
         }
     }
@@ -908,16 +915,16 @@ public class CustomerServiceImpl implements ICustomerService {
     /**
      * 领取数量限制是否成立
      *
-     * @param customerId
+     * @param customerIds
      * @param userId
      * @return
      */
-    private void isClaimCountValid(Long customerId, Long userId) {
+    private void isClaimCountValid(List<Long> customerIds, Long userId) {
         List<Settings> settingsList = settingsMapper.selectSettingsList(new Settings());
         if (settingsList == null || settingsList.isEmpty()) return;
 
         Settings settings = settingsList.get(0);
-        if (settings.getClaimLimitFlag() != null && settings.getClaimLimitFlag().intValue() == 1
+        if (settings.getClaimLimitFlag() != null && settings.getClaimLimitFlag().intValue() == 0
                 && settings.getClaimLimitDays() != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
@@ -927,13 +934,14 @@ public class CustomerServiceImpl implements ICustomerService {
             String resultDate = DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", calendar.getTime());
 
             // 查询在该时间之后是否存在该跟进人的领取该客户的记录
-            int count = customerSeaLogMapper.countCustomerSeaByCustomerIdAndUserIdAndCreateTime(customerId, userId, resultDate);
-            if (count > 0) {
-                throw new ServiceException("领取失败，该客户在" + settings.getClaimLimitDays() + "天内已被领取过");
+            List<CustomerSeaLogCountBO> customerSeaLogCountBOList = customerSeaLogMapper.getCustomerSeaCountByCustomerIdAndUserIdAndCreateTime(customerIds, userId, resultDate);
+
+            for (CustomerSeaLogCountBO customerSeaLogCountBO : customerSeaLogCountBOList) {
+                if (customerSeaLogCountBO.getMoveCount() > 0) {
+                    throw new ServiceException("领取失败，客户"+customerSeaLogCountBO.getCompanyName()+"在" + settings.getClaimLimitDays() + "天内已被领取过");
+                }
             }
         }
-
-        return;
     }
 
 

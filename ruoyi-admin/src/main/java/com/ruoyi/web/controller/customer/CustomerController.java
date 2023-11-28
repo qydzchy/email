@@ -345,12 +345,12 @@ public class CustomerController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:customer:move:to:privateleads')")
     @Log(title = "移入私海", businessType = BusinessType.UPDATE)
     @PostMapping("/move/to/privateleads")
-    public AjaxResult moveToPrivateleads(@RequestBody Customer customer)
+    public AjaxResult moveToPrivateleads(@RequestBody MoveToPrivateleadsDTO moveToPrivateleadsDTO)
     {
-        if (customer.getId() == null) {
-            throw new ServiceException("ID不能为空");
+        if (moveToPrivateleadsDTO.getId() == null || moveToPrivateleadsDTO.getId().isEmpty()) {
+            throw new ServiceException("请选择客户");
         }
 
-        return toAjax(customerService.moveToPrivateleads(customer.getId(), customer.getPacketId()));
+        return toAjax(customerService.moveToPrivateleads(moveToPrivateleadsDTO.getId(), moveToPrivateleadsDTO.getPacketId()));
     }
 }

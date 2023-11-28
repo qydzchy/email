@@ -154,10 +154,10 @@ public interface ICustomerService
 
     /**
      * 移入私海
-     * @param id
+     * @param ids
      * @return
      */
-    boolean moveToPrivateleads(Long id, Long packetId);
+    boolean moveToPrivateleads(List<Long> ids, Long packetId);
 
     /**
      * 洗牌
