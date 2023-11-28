@@ -293,6 +293,7 @@ export default {
                 text={field}
                 visible={isShow}
                 showCopyIcon={false}
+                showEditIcon={false}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
                   click: () => this.onCellClick(row),
