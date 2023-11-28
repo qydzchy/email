@@ -69,8 +69,8 @@ public interface BlackListRecordsMapper
 
     /**
      * 查询邮箱是否存在建档黑名单中
-     * @param email
+     * @param domain
      * @return
      */
-    Integer countByName(@Param("email") String email);
+    Integer countByName(@Param("domain") String domain);
 }
