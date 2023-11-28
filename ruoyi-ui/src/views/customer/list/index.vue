@@ -38,7 +38,7 @@
         <template #paneL>
           <div class="left-wrap">
             <div class="flex-column" :class="{'is-collapsed':collapsed}" style="height: inherit;">
-              <div class="menu">
+              <div class="menu" v-loading="menuLoading">
                 <el-collapse v-model="activeNames" @change="handleChange">
                   <template v-for="item in menuList">
                     <div
@@ -158,7 +158,8 @@ export default {
         poolReasonOption: [],
         tagOption: [],
         teamMemberOption: [],
-      }
+      },
+      menuLoading:false
 
     }
   },
@@ -189,8 +190,11 @@ export default {
     // 菜单列表
     async getMenuList() {
       try {
+        this.menuLoading = true
         const res = await getPrivateSegmentMenu({
           type: this.listType
+        }).finally(()=>{
+          this.menuLoading = false
         })
         if (res.code === 200) {
           this.menuList = res.data?.map(val=>{
