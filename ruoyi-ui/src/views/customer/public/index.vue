@@ -1,7 +1,7 @@
 <template>
   <div class="page-customer-public pt-16">
-    <div class="line flex-middle space-between py-10 px-20">
-      <div class="bold fs-24 pb-4">
+    <div class="line flex-middle space-between">
+      <div class="bold fs-24 flex-middle">
         公海客户
       </div>
       <el-dropdown trigger="click" split-button type="primary" round @click="onShowDrawer" @command="handleCommand">
@@ -190,6 +190,7 @@ export default {
 <style lang="scss" scoped>
 .page-customer-public {
   .line {
+    padding: 10px 20px 14px 20px;
     border-bottom: 1px solid #e6e6e6;
   }
 
