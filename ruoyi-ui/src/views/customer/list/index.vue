@@ -4,7 +4,7 @@
       <div class="flex-middle">
         <span>客户列表</span>
         <div class="line mx-10"></div>
-        <el-radio-group v-model="listType">
+        <el-radio-group v-model="listType" @change="handleCustomerGroup">
           <el-radio-button :label="1">我的客户</el-radio-button>
           <el-radio-button :label="2">团队客户</el-radio-button>
         </el-radio-group>
@@ -189,7 +189,9 @@ export default {
     // 菜单列表
     async getMenuList() {
       try {
-        const res = await getPrivateSegmentMenu()
+        const res = await getPrivateSegmentMenu({
+          type: this.listType
+        })
         if (res.code === 200) {
           this.menuList = res.data?.map(val=>{
             if(val.children && val.children.length){
@@ -317,6 +319,9 @@ export default {
       if (command === 'import') {
         targetBlank('/customer/config/import-operate')
       }
+    },
+    handleCustomerGroup(){
+      this.getMenuList()
     },
     handleChange(e) {
 

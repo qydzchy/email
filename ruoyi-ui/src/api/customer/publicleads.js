@@ -19,10 +19,11 @@ export function getPublicLeadsList(params) {
 }
 
 // 私海列表菜单选项
-export function getPrivateSegmentMenu() {
+export function getPrivateSegmentMenu(params) {
     return request({
         url: '/customer/customer/segment/list',
         method: 'get',
+        params
     })
 }
 
