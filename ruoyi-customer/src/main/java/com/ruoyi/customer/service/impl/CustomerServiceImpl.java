@@ -7,6 +7,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
@@ -217,15 +219,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
         // 判断联系人邮箱是否存在建档黑名单中
         List<CustomerContactAddOrUpdateDTO> contactList = customerAddOrUpdateDTO.getContactList();
-        if (CollectionUtils.isNotEmpty(contactList)) {
-            List<String> emailList = contactList.stream().map(CustomerContactAddOrUpdateDTO::getEmail).filter(email -> StringUtils.isNotBlank(email)).collect(Collectors.toList());
-            for (String email : emailList) {
-                Integer contactEmailNum = blackListRecordsMapper.countByName(email);
-                if (contactEmailNum > 0) {
-                    throw new ServiceException(String.format("联系人邮箱%s已存在建档黑名单中", email));
-                }
-            }
-        }
+        checkBlackListRecords(contactList);
 
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
@@ -275,6 +269,59 @@ public class CustomerServiceImpl implements ICustomerService {
         // 洗牌
         CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> shuffle(id, null));
         return true;
+    }
+
+    /**
+     * 校验建档黑名单
+     * @param contactList
+     */
+    private void checkBlackListRecords(List<CustomerContactAddOrUpdateDTO> contactList) {
+        if (CollectionUtils.isNotEmpty(contactList)) {
+            List<String> emailList = contactList.stream().map(CustomerContactAddOrUpdateDTO::getEmail).filter(email -> StringUtils.isNotBlank(email)).collect(Collectors.toList());
+            List<BlackListRecords> blackListRecordsList = blackListRecordsMapper.selectBlackListRecordsList(new BlackListRecords());
+            if (blackListRecordsList != null && !blackListRecordsList.isEmpty()) {
+                List<String> blacklist = blackListRecordsList.stream().map(BlackListRecords::getDomain).collect(Collectors.toList());
+                for (String email : emailList) {
+                    if (isBlacklisted(email, blacklist)) {
+                        throw new ServiceException(email + "在建档黑名单中");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查邮箱是否在黑名单中
+     * @param email
+     * @param blacklist
+     * @return
+     */
+    private boolean isBlacklisted(String email, List<String> blacklist) {
+        for (String pattern : blacklist) {
+            // 使用正则表达式匹配
+            if (matchesPattern(email, pattern)) {
+                return true; // 匹配到黑名单规则，返回true
+            }
+        }
+        return false; // 未匹配到黑名单规则，返回false
+    }
+
+    /**
+     * 使用正则表达式匹配邮箱
+     * @param email
+     * @param pattern
+     * @return
+     */
+    private boolean matchesPattern(String email, String pattern) {
+        // 将通配符转换为正则表达式
+        pattern = pattern.replace(".", "\\.");
+        pattern = pattern.replace("*", ".*");
+
+        // 使用Pattern和Matcher进行匹配
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(email);
+
+        return matcher.find(); // 使用find()来检查字符串中是否包含模式
     }
 
     /**
@@ -411,6 +458,10 @@ public class CustomerServiceImpl implements ICustomerService {
             }
         }
 
+        // 判断联系人邮箱是否存在建档黑名单中
+        List<CustomerContactAddOrUpdateDTO> contactList = customerAddOrUpdateDTO.getContactList();
+        checkBlackListRecords(contactList);
+
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
 
@@ -436,7 +487,6 @@ public class CustomerServiceImpl implements ICustomerService {
             batchInsertCustomerTag(id, customerAddOrUpdateDTO.getTagIds());
         }
 
-        List<CustomerContactAddOrUpdateDTO> contactList = customerAddOrUpdateDTO.getContactList();
         if (contactList != null && !contactList.isEmpty()) {
             List<CustomerContactAddOrUpdateDTO> saveContactList = new ArrayList<>();
             for (CustomerContactAddOrUpdateDTO contact : contactList) {
