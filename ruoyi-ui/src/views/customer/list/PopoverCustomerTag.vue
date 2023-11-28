@@ -223,6 +223,8 @@
 				innerTagList = innerTagList.map((val) => val.id);
 				if (!innerTagList.includes(item.id)) {
 					this.innerTagList.push(item);
+				}else{
+					this.innerTagList = this.innerTagList.filter(val=>val.id!==item.id)
 				}
 			},
 			onConfirmPopover() {

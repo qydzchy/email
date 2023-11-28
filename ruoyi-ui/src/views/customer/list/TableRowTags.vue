@@ -79,9 +79,9 @@
 				try {
 					const res = await editCustomer({ ...data });
 					if (res.code === 200) {
-						this.$emit('onClose');
+						this.reloadTag()
 						this.$message.success('标签更新成功');
-            this.tagVisible = false
+						this.tagVisible = false;
 					}
 				} catch {}
 			},

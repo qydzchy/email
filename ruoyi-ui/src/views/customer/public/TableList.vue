@@ -135,7 +135,30 @@ export default {
           field: 'tagList',
           align: 'left',
           width: '200',
-          render: (_row, field) => EmptyStr(field),
+          render: (_row, field, _scope) => {
+            const wrap = () => {
+              return field && field.length ? field?.map((val, idx) => {
+                const colorOpacity = val.color ? val.color + '4d' : ''
+                return val.name ?
+                    <span title={val.name} key={idx} class="px-6 py-6 mx-2"
+                          style={{color: val.color, backgroundColor: colorOpacity}}>
+                    {val.name}
+                  </span> : '---'
+              }) : '---'
+            }
+            return <el-popover trigger="hover">
+                        <div slot="default">
+                          {wrap()}
+                        </div>
+                        <div 
+                          slot="reference" 
+                          class="line-clamp1" 
+                          style="width:144px;height:20px;" 
+                          onClick={(e) => e.stopPropagation()}>
+                          {wrap()}
+                        </div>
+                  </el-popover>
+          }
         },
         {
           label: '客户分组',

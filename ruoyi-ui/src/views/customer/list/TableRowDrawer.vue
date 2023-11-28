@@ -44,7 +44,7 @@
                 </span>
               </div>
               <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-              <TableRowTags :detail-id="row.id" :tag-list="rowData.tagList" :index-opt="indexOpt" @onClose="reload"/>
+              <TableRowTags :detail-id="row.id" :tag-list="rowData.tagList" :index-opt="indexOpt" @reloadTag="reload"/>
             </div>
           </div>
           <div class="tabs mt-10">
