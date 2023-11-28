@@ -4,12 +4,12 @@
       <div class="flex-middle">
         <span>客户列表</span>
         <div class="line mx-10"></div>
-        <el-radio-group v-model="listType" @change="handleCustomerGroup">
+        <el-radio-group v-model="listType" @change="handleGetMenuList">
           <el-radio-button :label="1">我的客户</el-radio-button>
           <el-radio-button :label="2">团队客户</el-radio-button>
         </el-radio-group>
         <template v-if="listType===2">
-          <el-select class="ml-10" v-model="userId" placeholder="选择部门或业务员" clearable>
+          <el-select class="ml-10" v-model="userId" placeholder="选择部门或业务员" clearable @change="handleGetMenuList">
             <el-option
                 v-for="item in indexOpt.teamMemberOption"
                 :key="item.userId"
@@ -192,7 +192,8 @@ export default {
       try {
         this.menuLoading = true
         const res = await getPrivateSegmentMenu({
-          type: this.listType
+          type: this.listType,
+          memberId: this.userId
         }).finally(()=>{
           this.menuLoading = false
         })
@@ -324,7 +325,7 @@ export default {
         targetBlank('/customer/config/import-operate')
       }
     },
-    handleCustomerGroup(){
+    handleGetMenuList(){
       this.getMenuList()
     },
     handleChange(e) {
