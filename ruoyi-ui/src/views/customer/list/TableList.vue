@@ -292,12 +292,10 @@ export default {
                 curValue={field}
                 text={field}
                 visible={isShow}
-                showEditIcon={false}
                 showCopyIcon={false}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
                   click: () => this.onCellClick(row),
-                  onBlur: () => this.onBlur(),
                 }}
             >
             </CellOperate>
@@ -442,7 +440,9 @@ export default {
             this.$message.success('修改成功')
             resolve(true)
           }
+          resolve(false)
         } catch {
+          resolve(false)
         }
       })
     },
@@ -462,15 +462,21 @@ export default {
       this.$set(this.list, scope.$index, {...scope.row, [field]: value})
     },
     inputEnter(scope) {
-      // this.editCustomer(data).then(res => {
-      //       if (res) {
-      //         this.$emit('reload')
-      //       }
-      // })
       this.confirmInput()
     },
-    confirmInput() {
-      // const newVal = this.list.find(val => val.id === this.curEditId)[this.tableCell.fieldName]
+    async confirmInput() {
+      const newVal = this.list.find(val => val.id === this.curEditId)
+      if(newVal[this.tableCell.fieldName] !== this.tableCell.tempValue){
+        const data = {
+          id:this.curEditId,
+          [this.tableCell.fieldName]:newVal[this.tableCell.fieldName]
+        }
+        const res = await this.editCustomer(data)
+        if(!res) {
+          let itemIdx = this.list.findIndex(val=>val.id===this.curEditId)
+          this.$set(this.list, itemIdx, {...newVal, [this.tableCell.fieldName]: this.tableCell.tempValue})
+        }
+      }
       this.curEditId = ''
       this.tableCell = {
         rowId: '',
@@ -523,14 +529,14 @@ export default {
         id:row.id,
         tagIds:value.map(val=>val.id)
       }
-      const res = this.editCustomer(data)
-      if(res){
-        this.confirmInput()
-        setTimeout(()=>{
-          this.getList()
-        },400)
-      }
-    
+      this.editCustomer(data).then(res=>{
+        if(res){
+          this.confirmInput()
+          setTimeout(()=>{
+            this.getList()
+          },400)
+        }
+      })
     },
     reloadList() {
       this.getList()

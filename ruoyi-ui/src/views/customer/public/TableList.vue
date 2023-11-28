@@ -10,7 +10,7 @@
         </template>
       </div>
       <div>
-        <el-select placeholder="全部公海分组" v-model="searchQuery.pool" clearable @change="handleSearch" @clear="handleSearch">
+        <el-select placeholder="全部公海分组" v-model="searchQuery.pool" clearable @change="handleSearch">
           <el-option
               v-for="(item,index) in indexOpt.poolGroupOption"
               :key="index"
@@ -30,10 +30,10 @@
             clearable
             :check-strictly="true"
             @change="handleSearch"
-            @clear="handleSearch">
+           >
         </el-select-tree>
-        <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
-        <el-button round @click="moveToPrivateLeadsVisible=true">移入私海</el-button>
+        <!-- <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
+        <el-button round @click="moveToPrivateLeadsVisible=true">移入私海</el-button> -->
       </div>
     </div>
     <div class="table-list mt-20">
@@ -64,7 +64,7 @@ import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import CellOperate from './CellOperate.vue'
 import DialogMoveToGroup from "./DialogMoveToGroup.vue";
 import DialogMoveToPrivateLeads from "./DialogMoveToPrivateLeads.vue";
-import {EmptyStr} from "@/utils/tools";
+import {EmptyStr,targetBlank} from "@/utils/tools";
 import {getPublicLeadsList} from "@/api/customer/publicleads";
 
 export default {
@@ -346,8 +346,7 @@ export default {
       this.rowDrawerVisible = true
     },
     jumpDetail(id) {
-      console.log(id)
-      this.$router.push('/customer/public/personal/' + id)
+      targetBlank('/customer/public/personal/' + id)
     },
     formatGroup(id) {
       let groupName = ''
