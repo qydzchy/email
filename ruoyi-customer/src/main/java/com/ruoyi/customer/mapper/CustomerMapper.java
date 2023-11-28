@@ -72,10 +72,10 @@ public interface CustomerMapper
 
     /**
      * 移动客户到分组
-     * @param id
+     * @param ids
      * @param packetId
      */
-    void moveCustomerToPacket(@Param("id") Long id, @Param("packetId") Long packetId);
+    void moveCustomerToPacket(@Param("ids") List<Long> ids, @Param("packetId") Long packetId);
 
     /**
      * 修改重点关注

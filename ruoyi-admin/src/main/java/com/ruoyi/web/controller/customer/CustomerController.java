@@ -155,8 +155,8 @@ public class CustomerController extends BaseController
     @PostMapping("/move/customer/to/packet")
     public AjaxResult moveCustomerToPacket(@RequestBody CustomerPacketMoveDTO customerPacketMoveDTO)
     {
-        if (customerPacketMoveDTO.getId() == null) {
-            throw new ServiceException("ID不能为空");
+        if (customerPacketMoveDTO.getIds() == null || customerPacketMoveDTO.getIds().isEmpty()) {
+            throw new ServiceException("请选择客户");
         }
         if (customerPacketMoveDTO.getPacketId() == null) {
             throw new ServiceException("分组ID不能为空");

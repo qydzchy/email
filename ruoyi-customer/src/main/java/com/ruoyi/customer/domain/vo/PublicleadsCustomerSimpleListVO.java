@@ -25,32 +25,6 @@ public class PublicleadsCustomerSimpleListVO {
     private String companyName;
 
     /**
-     * 标签
-     */
-    @JsonIgnore
-    private String tagStr;
-
-    /**
-     * 客户分组ID
-     */
-    private Long packetId;
-
-    /**
-     * 客户分组名称
-     */
-    private String packetName;
-
-    /**
-     * 客户阶段ID
-     */
-    private Long stageId;
-
-    /**
-     * 客户阶段名称
-     */
-    private String stageName;
-
-    /**
      * 最近跟进
      */
     private CustomerRecentActivityBO recentFollowUp;
@@ -101,27 +75,4 @@ public class PublicleadsCustomerSimpleListVO {
      * @return
      */
     private Integer focusFlag;
-
-    public String getCustomerTypeName() {
-        return null;
-    }
-
-    public List<TagListVO> getTagList() {
-        if (StringUtils.isNotBlank(tagStr)) {
-            String[] tagArr = tagStr.split(",");
-            List<TagListVO> tagVOList = new ArrayList<>();
-            for (String tag : tagArr) {
-                String[] tagObj = tag.split("_");
-                if (tagObj.length > 1) {
-                    TagListVO tagVO = new TagListVO();
-                    tagVO.setId(Long.parseLong(tagObj[0]));
-                    tagVO.setName(tagObj[1]);
-                    tagVOList.add(tagVO);
-                }
-            }
-            return tagVOList;
-        }
-
-        return null;
-    }
 }

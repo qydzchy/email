@@ -511,7 +511,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
     @Override
     public boolean moveCustomerToPacket(CustomerPacketMoveDTO customerPacketMoveDTO) {
-        customerMapper.moveCustomerToPacket(customerPacketMoveDTO.getId(), customerPacketMoveDTO.getPacketId());
+        customerMapper.moveCustomerToPacket(customerPacketMoveDTO.getIds(), customerPacketMoveDTO.getPacketId());
         return true;
     }
 
