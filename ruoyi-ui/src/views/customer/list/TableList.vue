@@ -151,16 +151,14 @@ export default {
           align: 'left',
           width: '120',
           render: (row, field, scope) => {
-            const {rowId, fieldName, showEditIcon} = this.tableCell
+            const {fieldName} = this.tableCell
             const propName = scope.column.property
-            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
             const isShowForm = this.curEditId === row?.id && fieldName === propName
             return <CellOperate
                     showForm={isShowForm}
                     type="input"
                     curValue={field}
                     text={field}
-                    visible={isShow}
                     on={{
                       onEdit: () => this.onCellEdit(row?.id, propName),
                       click: () => this.onCellClick(row),
@@ -181,9 +179,8 @@ export default {
           align: 'left',
           width: '200',
           render: (row, field, scope) => {
-            const {rowId, fieldName, showEditIcon} = this.tableCell
+            const {rowId, fieldName} = this.tableCell
             const propName = scope.column.property
-            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
             const isShowForm = this.curEditId === row?.id && fieldName === propName
             const wrap = () => {
               return field && field.length ? field?.map((val, idx) => {
@@ -198,7 +195,6 @@ export default {
             return <CellOperate
                 type="customer-tag"
                 text={field}
-                visible={isShow}
                 showCopyIcon={false}
                 showEditIcon={!isShowForm}
                 on={{
@@ -245,8 +241,29 @@ export default {
           field: 'packetId',
           align: 'left',
           width: '200',
-          render: (_row, field) => {
-            return this.formatGroup(field) || '---'
+          render: (row, field, scope) => {
+            const {fieldName} = this.tableCell
+            const propName = scope.column.property
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+                    showForm={isShowForm}
+                    type="select"
+                    curValue={field}
+                    text={field}
+                    formOption={{
+                      options: this.indexOpt.groupOption,
+                      props:{
+                        value:'id',
+                        label:'name'
+                      }
+                    }}
+                    on={{
+                      onEdit: () => this.onCellEdit(row?.id, propName),
+                      onChange: (value) => this.onInput(value, scope, propName),
+                      onBlur: () => this.onBlur(),
+                    }}
+                >
+                </CellOperate>
           }
         },
         {
@@ -254,11 +271,43 @@ export default {
           field: 'stageId',
           align: 'left',
           width: '200',
-          render: (_row, field) => {
+          render: (row, field, scope) => {
             const {name, color} = this.formatStage(field)
-            return <span class="px-6 py-6 radius-8"
-                         style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}>{name || '无'}</span>
+            const {fieldName} = this.tableCell
+            const propName = scope.column.property
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+                    showForm={isShowForm}
+                    type="select"
+                    curValue={field}
+                    text={field}
+                    formOption={{
+                      options: this.indexOpt.stageOption,
+                      props:{
+                        value:'id',
+                        label:'name'
+                      }
+                    }}
+                    on={{
+                      onEdit: () => this.onCellEdit(row?.id, propName),
+                      onChange: (value) => this.onInput(value, scope, propName),
+                      onBlur: () => this.onBlur(),
+                    }}
+                >
+                <span 
+                  slot="content" 
+                  class="px-6 py-6 radius-8" 
+                  style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}
+                >
+                  {name || '无'}
+                </span>
+                </CellOperate>
           }
+          // render: (_row, field) => {
+          //   const {name, color} = this.formatStage(field)
+          //   return <span class="px-6 py-6 radius-8"
+          //                style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}>{name || '无'}</span>
+          // }
         },
         {
           label: '主要联系人',
@@ -316,10 +365,11 @@ export default {
                 text={field}
                 visible={isShow}
                 showCopyIcon={false}
-                showEditIcon={false}
                 on={{
                   onEdit: () => this.onCellEdit(row?.id, propName),
                   click: () => this.onCellClick(row),
+                  onChange: (value) => this.onInput(value, scope, propName),
+                  onBlur: () => this.onCountryBlur(),
                 }}
             >
             </CellOperate>
@@ -482,6 +532,22 @@ export default {
     onBlur() {
       this.confirmInput()
     },
+    // 国家特殊处理
+    onCountryBlur(){
+      this.$nextTick(async()=>{
+        const newVal = this.list.find(val => val.id === this.curEditId)
+        let data = {
+          id:this.curEditId,
+          countryRegion: newVal[this.tableCell.fieldName].join('/')
+        }
+        const res = await this.editCustomer(data)
+        if(!res) {
+          let itemIdx = this.list.findIndex(val=>val.id===this.curEditId)
+          this.$set(this.list, itemIdx, {...newVal, [this.tableCell.fieldName]: this.tableCell.tempValue})
+        }
+        this.clearTableCellData()
+      })
+    },
     onInput(value, scope, field) {
       this.$set(this.list, scope.$index, {...scope.row, [field]: value})
     },
@@ -491,16 +557,20 @@ export default {
     async confirmInput() {
       const newVal = this.list.find(val => val.id === this.curEditId)
       if(newVal[this.tableCell.fieldName] !== this.tableCell.tempValue){
-        const data = {
+        let data = {
           id:this.curEditId,
-          [this.tableCell.fieldName]:newVal[this.tableCell.fieldName]
+          [this.tableCell.fieldName]: newVal[this.tableCell.fieldName]
         }
+        
         const res = await this.editCustomer(data)
         if(!res) {
           let itemIdx = this.list.findIndex(val=>val.id===this.curEditId)
           this.$set(this.list, itemIdx, {...newVal, [this.tableCell.fieldName]: this.tableCell.tempValue})
         }
       }
+      this.clearTableCellData()
+    },
+    clearTableCellData(){
       this.curEditId = ''
       this.tableCell = {
         rowId: '',

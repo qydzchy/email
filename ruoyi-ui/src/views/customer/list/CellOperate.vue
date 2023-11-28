@@ -61,7 +61,7 @@
       </template>
       <!--   country   -->
       <template v-else-if="type==='country'">
-        <select-country :value.sync="curValue" @input="handleInputCountry"></select-country>
+        <select-country :value.sync="curValue" @input="handleInputCountry" @onBlur="onBlur"></select-country>
       </template>
     </template>
     <!--   展示字段数据   -->
@@ -119,7 +119,11 @@ export default {
           data: [],
           isStrictly: true,
           propsSelect: {},
-          propsTree: {}
+          propsTree: {},
+          props:{
+            label:'label',
+            value:'value'
+          }
         }
       },
       required: false
@@ -167,7 +171,6 @@ export default {
     return {
       content: '',
       options: generatePhone()
-
     }
   },
   watch: {
@@ -203,7 +206,7 @@ export default {
       return echoTitle
     },
     generateSelectValue() {
-      return this.formOption.options?.find(val => val.value === this.content)?.label || '---'
+      return this.formOption.options?.find(val => val[this.formOption.props.value] === this.content)?.[this.formOption.props.label] || '---'
     },
     generateTreeValue() {
       let res = ''
@@ -280,7 +283,7 @@ export default {
       this.$emit('onChange', {...this.curValue, phone_prefix: value})
     },
     handleInputCountry(value) {
-      this.$emit('onChange', value.join('/'))
+      this.$emit('onChange', value)
     },
     handleInputTel(value) {
       this.$emit('onInput', {...this.curValue, phone: value})

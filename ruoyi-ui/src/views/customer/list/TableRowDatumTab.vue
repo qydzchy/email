@@ -709,16 +709,13 @@ export default {
     confirmSetValue(listType, field, value) {
       const data = {
         id: this.row.customerId,
-        [field]: value
+        [field]: field === 'countryRegion' ? value.join('/') : value
       }
       this.editCustomer(data).then(res => {
         if (res) {
           this[listType].forEach((val, index) => {
             if (val.field === field) {
               let newValue = value
-              if (field === 'countryRegion') {
-                newValue = value.split('/')
-              }
               this.$set(this[listType], index, {...val, show: field==='rating' ? true : false, value: newValue})
               this.$emit('reload')
             }
