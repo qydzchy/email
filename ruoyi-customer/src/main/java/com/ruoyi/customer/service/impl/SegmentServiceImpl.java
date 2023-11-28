@@ -378,7 +378,7 @@ public class SegmentServiceImpl implements ISegmentService
      * @return
      */
     @Override
-    public List<CustomerSegmentListVO> segmentList(Integer type) {
+    public List<CustomerSegmentListVO> segmentList(Integer type, Long memberId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         Long deptId = loginUser.getDeptId();
@@ -391,7 +391,11 @@ public class SegmentServiceImpl implements ISegmentService
             userDeptInfoBOList = Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build());
         } else if (type.intValue() == 2) {
             List<TeamMembersListVO> teamMemberList = customerService.getTeamMembers();
-            userDeptInfoBOList = teamMemberList.stream().map(teamMember -> UserDeptInfoBO.builder().userId(teamMember.getUserId()).deptId(teamMember.getDeptId()).build()).collect(Collectors.toList());
+            if (memberId != null) {
+                userDeptInfoBOList = teamMemberList.stream().filter(teamMember -> teamMember.getUserId().longValue() == memberId.longValue()).map(teamMember -> UserDeptInfoBO.builder().userId(teamMember.getUserId()).deptId(teamMember.getDeptId()).build()).collect(Collectors.toList());
+            } else {
+                userDeptInfoBOList = teamMemberList.stream().map(teamMember -> UserDeptInfoBO.builder().userId(teamMember.getUserId()).deptId(teamMember.getDeptId()).build()).collect(Collectors.toList());
+            }
         }
 
         // 不成立的客群ID

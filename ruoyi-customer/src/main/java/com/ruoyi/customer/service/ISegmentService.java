@@ -86,7 +86,7 @@ public interface ISegmentService
      * 客户列表-客群列表
      * @return
      */
-    List<CustomerSegmentListVO> segmentList(Integer type);
+    List<CustomerSegmentListVO> segmentList(Integer type, Long memberId);
 
     /**
      * 可见范围是否成立
