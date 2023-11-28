@@ -341,7 +341,11 @@ export default {
           show: false,
           value: '',
           options: {
-            options: []
+            options: [],
+            props:{
+              value:'id',
+              label:'name'
+            }
           },
         },
         {
@@ -369,7 +373,11 @@ export default {
           value: '',
           options: {
             clearable: true,
-            options: []
+            options: [],
+            props:{
+              value:'id',
+              label:'name'
+            }
           },
         },
         {
@@ -427,7 +435,11 @@ export default {
               {value: 4, label: '500-999人'},
               {value: 5, label: '1000-4999人'},
               {value: 6, label: '5000人以上'},
-            ]
+            ],
+            props:{
+              value:'value',
+              label:'label'
+            }
           }
         },
         // {

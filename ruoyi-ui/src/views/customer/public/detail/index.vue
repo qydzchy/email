@@ -181,7 +181,11 @@ export default {
           show: false,
           formOption: {
             clearable: true,
-            options: []
+            options: [],
+            props: {
+              value: 'id',
+              label: 'name',
+            },
           },
         },
         {
@@ -211,7 +215,11 @@ export default {
           show: false,
           formOption: {
             clearable: true,
-            options: []
+            options: [],
+            props:{
+              value: 'id',
+              label: 'name',
+            } 
           },
         },
         {
