@@ -145,7 +145,6 @@ export default {
     },
     indexOpt: {
       handler(newVal) {
-        console.log(newVal);
         this.rule.map(val => {
           if (val.field === 'packetId') {
             val.props.data = newVal.groupOption || []

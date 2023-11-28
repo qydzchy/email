@@ -9,14 +9,16 @@
 		<el-option
 			v-for="(opt, index) in selectOptions.options"
 			:key="index"
-			:label="opt[selectOptions.props.label]"
-			:value="opt[selectOptions.props.value]">
-			<span v-if="!opt.bgColor">{{ opt[selectOptions.props.label] }}</span>
+			:label="opt[generateProps.label]"
+			:value="opt[generateProps.value]">
+			<span v-if="!opt.bgColor">{{
+				opt[generateProps.label]
+			}}</span>
 			<span
 				v-else
 				class="white-text px-4 py-4 radius-4"
 				:style="`background-color:${opt.bgColor}`">
-				{{ opt.label }}
+				{{ opt[generateProps.label] }}
 			</span>
 		</el-option>
 	</el-select>
@@ -55,6 +57,14 @@
 					this.selectValue = newVal;
 				},
 				immediate: true,
+			},
+		},
+		computed: {
+			generateProps() {
+				return {
+					label: this.selectOptions?.props?.label || 'label',
+					value: this.selectOptions?.props?.value || 'value',
+				};
 			},
 		},
 		methods: {
