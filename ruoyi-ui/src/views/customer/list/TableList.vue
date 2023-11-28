@@ -140,7 +140,7 @@ export default {
                 }}
             >
               <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e, row?.id)}>
-                {field}
+                {field || '---'}
               </div>
             </CellOperate>
           }
@@ -150,7 +150,30 @@ export default {
           field: 'shortName',
           align: 'left',
           width: '120',
-          render: (_row, field) => EmptyStr(field),
+          render: (row, field, scope) => {
+            const {rowId, fieldName, showEditIcon} = this.tableCell
+            const propName = scope.column.property
+            const isShow = showEditIcon && rowId === row?.id && fieldName === propName
+            const isShowForm = this.curEditId === row?.id && fieldName === propName
+            return <CellOperate
+                    showForm={isShowForm}
+                    type="input"
+                    curValue={field}
+                    text={field}
+                    visible={isShow}
+                    on={{
+                      onEdit: () => this.onCellEdit(row?.id, propName),
+                      click: () => this.onCellClick(row),
+                      onBlur: () => this.onBlur(),
+                      onInput: (value) => this.onInput(value, scope, propName),
+                      onEnter: () => this.inputEnter(row)
+                    }}
+                >
+                  <div slot="content" class="pointer" onClick={(e) => this.jumpPersonalDetail(e, row?.id)}>
+                    {field || '---'}
+                  </div>
+                </CellOperate>
+          }
         },
         {
           label: '客户标签',
