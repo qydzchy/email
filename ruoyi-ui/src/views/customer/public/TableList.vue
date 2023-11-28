@@ -123,13 +123,13 @@ export default {
             </div>
           }
         },
-        {
-          label: '简称',
-          field: 'shortName',
-          align: 'left',
-          width: '200',
-          render: (_row, field) => EmptyStr(field),
-        },
+        // {
+        //   label: '简称',
+        //   field: 'shortName',
+        //   align: 'left',
+        //   width: '200',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
         // {
         //   label: '客户标签',
         //   field: 'tagList',
@@ -161,31 +161,21 @@ export default {
         //   }
         // },
         {
-          label: '客户分组',
-          field: 'packetId',
+          label: '最近跟进',
+          field: 'recentFollowUp',
           align: 'left',
           width: '200',
-          render: (_row, field) => {
-            return this.formatGroup(field) || '---'
+          render: (row, field, _scope) => {
+            return <CellOperate
+                text={field?.followUpContent}
+                showEditIcon={false}
+                showCopyIcon={false}
+            >
+              <div slot="content" class="pointer">
+                {field?.followUpContent || '---'}
+              </div>
+            </CellOperate>
           }
-        },
-        {
-          label: '客户阶段',
-          field: 'stageId',
-          align: 'left',
-          width: '200',
-          render: (_row, field) => {
-            const {name, color} = this.formatStage(field)
-            return <span class="px-6 py-6 radius-8"
-                         style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}>{name || '无'}</span>
-          }
-        },
-        {
-          label: '主要联系人',
-          field: 'primaryContact',
-          align: 'left',
-          width: '200',
-          render: (_row, field) => EmptyStr(field),
         },
         {
           label: '最近动态',
@@ -206,7 +196,7 @@ export default {
         },
         {
           label: '原跟进人',
-          field: 'contactName',
+          field: 'originalFollowUp',
           align: 'left',
           width: '200',
           render: (row, _field) => {
@@ -233,10 +223,15 @@ export default {
           }
         },
         {
-          label: '客户编号',
-          field: 'customerNo',
-          align: 'left',
-          width: '160',
+          label: '客户类型',
+          field: 'customerType',
+          width: '120',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '客户评分',
+          field: 'customerScore',
+          width: '120',
           render: (_row, field) => EmptyStr(field),
         },
         {
@@ -247,6 +242,62 @@ export default {
           render: (_row, field) => EmptyStr(field),
         },
         {
+          label: '时区',
+          field: 'timezone',
+          render: (_row, field) => EmptyStr(field),
+        },
+        {
+          label: '社交平台',
+          field: 'contact',
+          render: (_row, field) => {
+            let content = field?.socialPlatform || '[]'
+            let socialPlatformList = JSON.parse(content)
+            return Array.isArray(socialPlatformList) ? socialPlatformList.map((val,index)=>{
+              return <div key={index}>{`${val.type||'---'} ${val.account||'---'}`}</div>
+            }) : '---'
+          },
+        },
+        {
+          label: '生日',
+          field: 'birthday',
+          render: (row, _field) => <div>{row.contact?.birthday || '---'}</div>,
+        },
+        // {
+        //   label: '客户分组',
+        //   field: 'packetId',
+        //   align: 'left',
+        //   width: '200',
+        //   render: (_row, field) => {
+        //     return this.formatGroup(field) || '---'
+        //   }
+        // },
+        // {
+        //   label: '客户阶段',
+        //   field: 'stageId',
+        //   align: 'left',
+        //   width: '200',
+        //   render: (_row, field) => {
+        //     const {name, color} = this.formatStage(field)
+        //     return <span class="px-6 py-6 radius-8"
+        //                  style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}>{name || '无'}</span>
+        //   }
+        // },
+        // {
+        //   label: '主要联系人',
+        //   field: 'primaryContact',
+        //   align: 'left',
+        //   width: '200',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
+        // {
+        //   label: '客户编号',
+        //   field: 'customerNo',
+        //   align: 'left',
+        //   width: '160',
+        //   render: (_row, field) => EmptyStr(field),
+        // },
+        
+        {
           label: '创建时间',
           field: 'createTime',
           align: 'left',
@@ -254,25 +305,22 @@ export default {
           render: (_row, field) => EmptyStr(field),
         },
         // {
-        //   label: '客户类型',
-        //   field: 'phone',
-        //   render: (_row, field) => EmptyStr(field),
-        // },
-        // {
-        //   label: '客户评分',
+        //   label: '星级',
         //   field: 'rating',
-        //   render: (_row, field) => EmptyStr(field),
-        // },
-        // {
-        //    label: '时区',
-        //    field: 'timezone',
-        //    render: (_row, field) => EmptyStr(field),
-        //  },
-        //  {
-        //    label: '社交平台',
-        //    field: 'contact',
-        //    render: (_row, field) => EmptyStr(field),
-        //  }
+        //   width: '200',
+        //   render:(_row,field)=>{
+        //     return <CellOperate
+        //               curValue={field}
+        //               showForm={true}
+        //               text={field}
+        //               type="rate"
+        //               showCopyIcon={false}
+        //               on={{
+        //                 onChange:(value)=>{}
+        //               }}>
+        //             </CellOperate>
+        //   }
+        // }
       ],
       extraEvent: {
         'selection-change': (value) => this.handleSelectionChange(value)
