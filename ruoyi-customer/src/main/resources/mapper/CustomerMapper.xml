@@ -330,11 +330,11 @@
     </select>
 
     <select id="getAllUser" resultType="com.ruoyi.customer.domain.vo.TeamMembersListVO">
-        select user_id as userId, nick_name as nickName from sys_user where status = 0 and del_flag = '0'
+        select user_id as userId, nick_name as nickName, dept_id as deptId from sys_user where status = 0 and del_flag = '0'
     </select>
 
     <select id="getUserByDeptIds" resultType="com.ruoyi.customer.domain.vo.TeamMembersListVO">
-        select user_id as userId, nick_name as nickName from sys_user where dept_id in
+        select user_id as userId, nick_name as nickName, dept_id as deptId from sys_user where dept_id in
         <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
             #{deptId}
         </foreach>
@@ -361,6 +361,14 @@
 
     <select id="selectTimeZone" resultType="com.ruoyi.customer.domain.vo.SubgroupColumnListVO">
         select value as id, label as name from base_timezone
+    </select>
+
+    <select id="countByCompanyName" resultType="java.lang.Integer">
+        select count(*) from customer_customer where company_name = #{companyName} and del_flag = '0'
+    </select>
+
+    <select id="countByIdAndCompanyName" resultType="java.lang.Integer">
+        select count(*) from customer_customer where id != #{id} and company_name = #{companyName} and del_flag = '0'
     </select>
 
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">

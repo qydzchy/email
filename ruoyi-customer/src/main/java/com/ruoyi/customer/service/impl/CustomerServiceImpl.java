@@ -206,6 +206,12 @@ public class CustomerServiceImpl implements ICustomerService {
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
+        // 判断客户公司名称是否已存在
+        Integer companyNameCount = customerMapper.countByCompanyName(customerAddOrUpdateDTO.getCompanyName());
+        if (companyNameCount > 0) {
+            throw new ServiceException("客户公司名称已存在");
+        }
+
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
 
@@ -220,8 +226,8 @@ public class CustomerServiceImpl implements ICustomerService {
             }
             customerNo = customerAddOrUpdateDTO.getCustomerNo();
             // 判断客户编号是否已存在
-            Integer count = customerMapper.countByCustomerNo(customerNo);
-            if (count > 0) {
+            Integer customerNoCount = customerMapper.countByCustomerNo(customerNo);
+            if (customerNoCount > 0) {
                 throw new ServiceException("客户编号已存在");
             }
         }
@@ -381,6 +387,14 @@ public class CustomerServiceImpl implements ICustomerService {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
+
+        // 判断客户公司名称是否已存在
+        if (StringUtils.isNotBlank(customerAddOrUpdateDTO.getCompanyName())) {
+            Integer count = customerMapper.countByIdAndCompanyName(customerAddOrUpdateDTO.getId(), customerAddOrUpdateDTO.getCompanyName());
+            if (count > 0) {
+                throw new ServiceException("客户公司名称已存在");
+            }
+        }
 
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerAddOrUpdateDTO, customer);
@@ -1467,7 +1481,7 @@ public class CustomerServiceImpl implements ICustomerService {
         }
 
         // 把自己加入到团队成员中
-        teamMembersListVOList.add(TeamMembersListVO.builder().userId(userId).nickName(nickName).build());
+        teamMembersListVOList.add(TeamMembersListVO.builder().userId(userId).nickName(nickName).deptId(deptId).build());
         return deduplicateById(teamMembersListVOList);
     }
 

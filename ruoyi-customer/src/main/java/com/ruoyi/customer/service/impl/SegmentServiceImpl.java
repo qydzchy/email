@@ -378,7 +378,7 @@ public class SegmentServiceImpl implements ISegmentService
      * @return
      */
     @Override
-    public List<CustomerSegmentListVO> segmentList() {
+    public List<CustomerSegmentListVO> segmentList(Integer type) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         Long deptId = loginUser.getDeptId();
@@ -386,16 +386,24 @@ public class SegmentServiceImpl implements ISegmentService
         // 查询所有客群
         List<Segment> segmentList = segmentMapper.selectSegmentList(new Segment());
 
+        List<UserDeptInfoBO> userDeptInfoBOList = new ArrayList<>();
+        if (type.intValue() == 1) {
+            userDeptInfoBOList = Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build());
+        } else if (type.intValue() == 2) {
+            List<TeamMembersListVO> teamMemberList = customerService.getTeamMembers();
+            userDeptInfoBOList = teamMemberList.stream().map(teamMember -> UserDeptInfoBO.builder().userId(teamMember.getUserId()).deptId(teamMember.getDeptId()).build()).collect(Collectors.toList());
+        }
+
         // 不成立的客群ID
         Set<Long> notMetSegmentIdSet = new HashSet<>();
-        segmentList.stream().forEach(segment -> {
+        for (Segment segment : segmentList) {
             if (segment.getParentId().longValue() == -1L) {
-                boolean visibleConditionMet = isVisibleConditionMet(Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build()), segment);
+                boolean visibleConditionMet = isVisibleConditionMet(userDeptInfoBOList, segment);
                 if (!visibleConditionMet) {
                     notMetSegmentIdSet.add(segment.getId());
                 }
             }
-        });
+        }
 
         // 移除掉不成立的客群包括子客群
         Iterator<Segment> iterator = segmentList.iterator();
@@ -406,8 +414,9 @@ public class SegmentServiceImpl implements ISegmentService
             }
         }
 
+        List<Long> userIds = userDeptInfoBOList.stream().map(UserDeptInfoBO::getUserId).collect(Collectors.toList());
         // 查询当前用户的客群客户数
-        List<Map<String, Object>> segmentCustomerCountMapList = segmentMapper.selectSegmentCustomerCountByUserId(userId);
+        List<Map<String, Object>> segmentCustomerCountMapList = segmentMapper.selectSegmentCustomerCountByUserId(userIds);
         Map<Long, Integer> segmentCustomerCountMap = segmentCustomerCountMapList.stream().collect(Collectors.toMap(
                 map -> Long.parseLong(String.valueOf(map.get("segmentId"))),
                 map -> Integer.parseInt(String.valueOf(map.get("customerCount")))));
@@ -430,7 +439,7 @@ public class SegmentServiceImpl implements ISegmentService
         }
 
         // 初始化客群
-        List<CustomerSegmentListVO> allCustomerSegmentVOList = initBasicSegment(userId);
+        List<CustomerSegmentListVO> allCustomerSegmentVOList = initBasicSegment(userIds);
         allCustomerSegmentVOList.addAll(buildTree2(customerSegmentVOList, -1L));
         return allCustomerSegmentVOList;
     }
@@ -454,7 +463,7 @@ public class SegmentServiceImpl implements ISegmentService
      * 生成基础客群
      * @return
      */
-    private List<CustomerSegmentListVO> initBasicSegment(Long userId) {
+    private List<CustomerSegmentListVO> initBasicSegment(List<Long> userIds) {
         List<CustomerSegmentListVO> basicSegment = new ArrayList<>();
 
         CustomerSegmentListVO allSegment = new CustomerSegmentListVO();
@@ -462,7 +471,7 @@ public class SegmentServiceImpl implements ISegmentService
         allSegment.setParentId(-1L);
         allSegment.setName("全部客户");
         // 查询客户数量
-        Integer allCustomerCount = segmentMapper.countCustomerCountByUserId(userId, null);
+        Integer allCustomerCount = segmentMapper.countCustomerCountByUserId(userIds, null);
         allSegment.setCustomerCount(allCustomerCount);
         basicSegment.add(allSegment);
 
@@ -471,7 +480,7 @@ public class SegmentServiceImpl implements ISegmentService
         followSegment.setParentId(-1L);
         followSegment.setName("我的关注");
         // 查询客户数量
-        Integer focusCustomerCount = segmentMapper.countCustomerCountByUserId(userId, true);
+        Integer focusCustomerCount = segmentMapper.countCustomerCountByUserId(userIds, true);
         followSegment.setCustomerCount(focusCustomerCount);
         basicSegment.add(followSegment);
 

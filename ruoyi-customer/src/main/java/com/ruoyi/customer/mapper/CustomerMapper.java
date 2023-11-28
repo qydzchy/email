@@ -244,4 +244,19 @@ public interface CustomerMapper
      * @return
      */
     List<SubgroupColumnListVO> selectTimeZone();
+
+    /**
+     * 查询客户公司名称是否已存在
+     * @param companyName
+     * @return
+     */
+    Integer countByCompanyName(@Param("companyName") String companyName);
+
+    /**
+     * 查询客户公司名称是否已存在
+     * @param id
+     * @param companyName
+     * @return
+     */
+    Integer countByIdAndCompanyName(@Param("id") Long id, @Param("companyName") String companyName);
 }

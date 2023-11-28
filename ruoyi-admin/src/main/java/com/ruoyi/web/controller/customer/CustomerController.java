@@ -48,9 +48,9 @@ public class CustomerController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:segment:list')")
     @GetMapping("/segment/list")
-    public AjaxResult segmentList()
+    public AjaxResult segmentList(@NotNull(message = "类型不能为空") Integer type)
     {
-        return success(segmentService.segmentList());
+        return success(segmentService.segmentList(type));
     }
 
 

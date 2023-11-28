@@ -97,16 +97,16 @@ public interface SegmentMapper
 
     /**
      * 用户的客群客户数
-     * @param userId
+     * @param userIds
      * @return
      */
-    List<Map<String, Object>> selectSegmentCustomerCountByUserId(@Param("userId") Long userId);
+    List<Map<String, Object>> selectSegmentCustomerCountByUserId(@Param("userIds") List<Long> userIds);
 
     /**
      * 根据跟进人统计客户数
-     * @param userId
+     * @param userIds
      * @param focusFlag
      * @return
      */
-    Integer countCustomerCountByUserId(@Param("userId") Long userId, @Param("focusFlag") Boolean focusFlag);
+    Integer countCustomerCountByUserId(@Param("userIds") List<Long> userIds, @Param("focusFlag") Boolean focusFlag);
 }

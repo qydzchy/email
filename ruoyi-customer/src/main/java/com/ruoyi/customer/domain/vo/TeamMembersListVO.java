@@ -17,6 +17,11 @@ public class TeamMembersListVO {
      */
     private String nickName;
 
+    /**
+     * 部门ID
+     */
+    private Long deptId;
+
 
     @Override
     public boolean equals(Object o) {
