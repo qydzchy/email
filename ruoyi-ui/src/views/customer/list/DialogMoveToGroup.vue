@@ -77,9 +77,10 @@ export default {
   methods: {
     async onConfirm() {
       try {
+        const ids =  Array.isArray(this.row?.id) ? this.row?.id : [this.row?.id]
         this.btnLoading = true
         const res = await movePacketCustomer({
-          id: this.row?.customerId,
+          ids: ids,
           packetId: this.moveValue
         }).finally(() => {
           this.btnLoading = false

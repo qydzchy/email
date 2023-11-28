@@ -13,7 +13,7 @@
                                 :show-edit-icon="false"></CellOperate></span>
           </div>
           <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData"/>
+          <!-- <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData"/> -->
         </el-row>
       </div>
       <div class="info-wrap flex-middle">
@@ -174,7 +174,19 @@ export default {
       infoRowList: [
         {
           id: 1,
-          label: '分组',
+          label: '客户分组',
+          field: 'packetId',
+          value: '',
+          type: 'tree',
+          show: false,
+          formOption: {
+            clearable: true,
+            options: []
+          },
+        },
+        {
+          id: 2,
+          label: '客户分组',
           field: 'packetId',
           value: '',
           type: 'tree',
@@ -191,7 +203,7 @@ export default {
           },
         },
         {
-          id: 2,
+          id: 3,
           label: '公海分组',
           field: 'poolGroup',
           value: '',
@@ -203,7 +215,7 @@ export default {
           },
         },
         {
-          id: 3,
+          id: 4,
           label: '客户星级',
           field: 'rating',
           value: null,
@@ -212,9 +224,9 @@ export default {
           formOption: {},
         },
         {
-          id: 4,
-          label: '公司网址',
-          field: 'companyWebsite',
+          id: 5,
+          label: '评分',
+          field: 'customerScore',
           value: '',
           type: 'input',
           show: false,

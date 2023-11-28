@@ -135,10 +135,10 @@ export default {
           command: 'moveGroup',
           label: '移动至分组'
         },
-        {
-          command: 'mergeCustomer',
-          label: '合并客户'
-        },
+        // {
+        //   command: 'mergeCustomer',
+        //   label: '合并客户'
+        // },
         {
           command: 'transfer',
           label: '转移给'
