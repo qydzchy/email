@@ -34,7 +34,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectBlackListRecordsVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="countByName" resultType="java.lang.Integer">
+        select count(1) from customer_black_list_records where domain like concat('%', #{domain}) and del_flag = '0'
+    </select>
+
     <insert id="insertBlackListRecords" parameterType="BlackListRecords">
         insert into customer_black_list_records
         <trim prefix="(" suffix=")" suffixOverrides=",">

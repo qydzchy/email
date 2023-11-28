@@ -66,4 +66,11 @@ public interface BlackListRecordsMapper
      * @return
      */
     int batchDeleteByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 查询邮箱是否存在建档黑名单中
+     * @param email
+     * @return
+     */
+    Integer countByName(@Param("email") String email);
 }

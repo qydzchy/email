@@ -32,6 +32,7 @@ import com.ruoyi.customer.service.ISegmentService;
 import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
 import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
@@ -95,6 +96,8 @@ public class CustomerServiceImpl implements ICustomerService {
     private PublicleadsRulesMapper publicleadsRulesMapper;
     @Resource
     private PublicleadsWhiteListMapper publicleadsWhiteListMapper;
+    @Resource
+    private BlackListRecordsMapper blackListRecordsMapper;
     @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
@@ -210,6 +213,18 @@ public class CustomerServiceImpl implements ICustomerService {
         Integer companyNameCount = customerMapper.countByCompanyName(customerAddOrUpdateDTO.getCompanyName());
         if (companyNameCount > 0) {
             throw new ServiceException("客户公司名称已存在");
+        }
+
+        // 判断联系人邮箱是否存在建档黑名单中
+        List<CustomerContactAddOrUpdateDTO> contactList = customerAddOrUpdateDTO.getContactList();
+        if (CollectionUtils.isNotEmpty(contactList)) {
+            List<String> emailList = contactList.stream().map(CustomerContactAddOrUpdateDTO::getEmail).filter(email -> StringUtils.isNotBlank(email)).collect(Collectors.toList());
+            for (String email : emailList) {
+                Integer contactEmailNum = blackListRecordsMapper.countByName(email);
+                if (contactEmailNum > 0) {
+                    throw new ServiceException(String.format("联系人邮箱%s已存在建档黑名单中", email));
+                }
+            }
         }
 
         Customer customer = new Customer();
