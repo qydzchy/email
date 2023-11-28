@@ -32,8 +32,8 @@
             @change="handleSearch"
            >
         </el-select-tree>
-        <!-- <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
-        <el-button round @click="moveToPrivateLeadsVisible=true">移入私海</el-button> -->
+        <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
+        <el-button round @click="moveToPrivateLeadsVisible=true">移入私海</el-button>
       </div>
     </div>
     <div class="table-list mt-20">
