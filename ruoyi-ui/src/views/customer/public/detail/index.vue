@@ -324,7 +324,7 @@ export default {
           this.rowData.stageId = this.rowData.stage?.id
           this.rowData.packetId = this.rowData.packet?.id
           this.rowData.timezone = +this.rowData.timezone
-          this.rowData.followPerson = this.rowData.followUpPersonnelList?.[0]?.nickName
+          this.rowData.followPerson = this.rowData.followUpPersonnelList.map(val=>val.nickName)?.join('、')
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
           this.contactList = this.rowData.contactList
           this.infoRowList.map(val => {
