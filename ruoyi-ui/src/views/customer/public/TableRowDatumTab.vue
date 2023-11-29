@@ -341,7 +341,11 @@ export default {
           show: false,
           value: '',
           options: {
-            options: []
+            options: [],
+            props:{
+              value:'id',
+              label:'name'
+            }
           },
         },
         {
@@ -369,7 +373,11 @@ export default {
           value: '',
           options: {
             clearable: true,
-            options: []
+            options: [],
+            props:{
+              value:'id',
+              label:'name'
+            }
           },
         },
         {
@@ -427,7 +435,11 @@ export default {
               {value: 4, label: '500-999人'},
               {value: 5, label: '1000-4999人'},
               {value: 6, label: '5000人以上'},
-            ]
+            ],
+            props:{
+              value:'value',
+              label:'label'
+            }
           }
         },
         // {
@@ -709,16 +721,13 @@ export default {
     confirmSetValue(listType, field, value) {
       const data = {
         id: this.row.customerId,
-        [field]: value
+        [field]:field === 'countryRegion' ? value.join('/') : value
       }
       this.editCustomer(data).then(res => {
         if (res) {
           this[listType].forEach((val, index) => {
             if (val.field === field) {
               let newValue = value
-              if (field === 'countryRegion') {
-                newValue = value.split('/')
-              }
               this.$set(this[listType], index, {...val, show: field==='rating' ? true : false, value: newValue})
               this.$emit('reload')
             }
