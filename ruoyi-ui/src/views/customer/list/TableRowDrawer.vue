@@ -212,12 +212,14 @@ export default {
 <style lang="scss" scoped>
 
 .table-row-drawer {
-  ::v-deep .el-drawer__wrapper {
-    z-index: 2 !important;
+  ::v-deep .el-drawer__wrapper,
+  ::v-deep .el-drawer__container {
+    pointer-events: none;
   }
 
   ::v-deep .el-drawer.rtl {
     width: 600px !important;
+    pointer-events: all;
   }
 
 
