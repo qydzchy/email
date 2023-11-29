@@ -674,6 +674,10 @@ export default {
       })
     },
     handleEnter(listType, field, bool) {
+      const validList = ['countryRegion']
+      if(validList.includes(field)){
+        return
+      }
       this[listType].forEach((val, index) => {
         if (val.field === field) {
           let data = {
