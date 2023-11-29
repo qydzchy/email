@@ -359,7 +359,6 @@ public class ColumnAbstract {
     private Pair<Date, Date> getTimeRange(TimeRangeEnum timeRangeEnum) {
         Date startTime = null;
         Date endTime = null;
-        // todo 待补齐
         switch (timeRangeEnum) {
             case TODAY:
                 startTime = TimeRangeUtils.getStartOfDay(new Date());
@@ -384,6 +383,70 @@ public class ColumnAbstract {
             case NEXT_WEEK:
                 startTime = TimeRangeUtils.getStartOfNextWeek();
                 endTime  = TimeRangeUtils.getEndOfNextWeek();
+                break;
+            case THIS_MONTH:
+                startTime = TimeRangeUtils.getStartOfThisMonth();
+                endTime = TimeRangeUtils.getEndOfThisMonth();
+                break;
+            case LAST_MONTH:
+                startTime = TimeRangeUtils.getStartOfLastMonth();
+                endTime = TimeRangeUtils.getEndOfLastMonth();
+                break;
+            case THIS_QUARTER:
+                startTime = TimeRangeUtils.getStartOfThisQuarter();
+                endTime = TimeRangeUtils.getEndOfThisQuarter();
+                break;
+            case LAST_QUARTER:
+                startTime = TimeRangeUtils.getStartOfLastQuarter();
+                endTime = TimeRangeUtils.getEndOfLastQuarter();
+                break;
+            case THIS_YEAR:
+                startTime = TimeRangeUtils.getStartOfThisYear();
+                endTime = TimeRangeUtils.getEndOfThisYear();
+                break;
+            case PAST_7_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast7Days();
+                endTime = TimeRangeUtils.getEndOfPast7Days();
+                break;
+            case PAST_14_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast14Days();
+                endTime = TimeRangeUtils.getEndOfPast14Days();
+                break;
+            case PAST_30_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast30Days();
+                endTime = TimeRangeUtils.getEndOfPast30Days();
+                break;
+            case PAST_60_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast60Days();
+                endTime = TimeRangeUtils.getEndOfPast60Days();
+                break;
+            case PAST_90_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast90Days();
+                endTime = TimeRangeUtils.getEndOfPast90Days();
+                break;
+            case PAST_180_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast180Days();
+                endTime = TimeRangeUtils.getEndOfPast180Days();
+                break;
+            case PAST_365_DAYS:
+                startTime = TimeRangeUtils.getStartOfPast365Days();
+                endTime = TimeRangeUtils.getEndOfPast365Days();
+                break;
+            case NEXT_3_DAYS:
+                startTime = TimeRangeUtils.getStartOfNext3Days();
+                endTime = TimeRangeUtils.getEndOfNext3Days();
+                break;
+            case NEXT_7_DAYS:
+                startTime = TimeRangeUtils.getStartOfNext7Days();
+                endTime = TimeRangeUtils.getEndOfNext7Days();
+                break;
+            case NEXT_14_DAYS:
+                startTime = TimeRangeUtils.getStartOfNext14Days();
+                endTime = TimeRangeUtils.getEndOfNext14Days();
+                break;
+            case NEXT_30_DAYS:
+                startTime = TimeRangeUtils.getStartOfNext30Days();
+                endTime = TimeRangeUtils.getEndOfNext30Days();
                 break;
         }
 
