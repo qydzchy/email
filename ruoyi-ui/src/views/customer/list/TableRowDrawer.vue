@@ -232,7 +232,11 @@ export default {
     border-bottom: 1px solid #f0f0f0;
   }
 
-  .container {
+  ::v-deep .el-drawer__body{
+    .base-info{
+      max-height: 130px;
+      overflow-y: auto;
+    }
   }
 }
 </style>
