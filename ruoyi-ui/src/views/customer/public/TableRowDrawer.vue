@@ -62,8 +62,9 @@ import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import TableRowTags from "./TableRowTags.vue";
 import CellOperate from "./CellOperate.vue";
-import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
 import OperateMenu from "./OperateMenu.vue";
+import {editFocusFlagCustomer, getCustomerDetail} from "@/api/customer/publicleads";
+import {deepClone} from "@/utils";
 
 export default {
   props: {
@@ -141,6 +142,15 @@ export default {
           this.rowData = res.data
           this.rowData.countryRegion = this.rowData.countryRegion?.split('/') || []
           this.rowData.customerId = this.rowData.id
+          let sourceList = deepClone(this.rowData.sourceList)
+          this.rowData.sourceIds = sourceList?.map(val => val.id)
+          let tagList = deepClone(this.rowData.tagList)
+          this.rowData.tagIds = tagList?.map(val => val.id)
+          this.rowData.stageId = this.rowData.stage?.id
+          this.rowData.packetId = this.rowData.packet?.id
+          this.rowData.sourceIds = this.rowData.sourceList.map(val=>val.id)
+          this.rowData.timezone = +this.rowData.timezone
+          this.rowData.followPerson = this.rowData.followUpPersonnelList?.[0]?.nickName
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
         }
       } catch (e) {

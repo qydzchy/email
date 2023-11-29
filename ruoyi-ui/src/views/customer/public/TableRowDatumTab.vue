@@ -110,7 +110,7 @@
                   @onInput="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
                   @onChange="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
                   @onEnter="handleEnter('usuallyInfo',usually.field,false)"
-                  @onBlur="onShowForm('usuallyInfo',usually.field,false)"
+                  @onBlur="handleEnter('usuallyInfo',usually.field,false)"
                   @onEdit="onShowForm('usuallyInfo',usually.field,true)">
               </CellOperate>
             </el-col>
@@ -140,7 +140,7 @@
                   @onInput="(val)=>handleSetValue('otherInfo',other.field,val)"
                   @onChange="(val)=>handleSetValue('otherInfo',other.field,val)"
                   @onEnter="handleEnter('otherInfo',other.field,false)"
-                  @onBlur="onShowForm('otherInfo',other.field,false)"
+                  @onBlur="handleEnter('otherInfo',other.field,false)"
                   @onEdit="onShowForm('otherInfo',other.field,true)">
               </CellOperate>
             </el-col>
@@ -300,9 +300,9 @@ export default {
           options: {},
         },
         {
-          field: 'origin',
+          field: 'sourceIds',
           label: '客户来源',
-          type: 'select',
+          type: 'tree',
           show: false,
           value: '',
           options: {
@@ -322,7 +322,7 @@ export default {
           label: '分组',
           type: 'tree',
           show: false,
-          value: '7',
+          value: '',
           options: {
             size: 'small',
             filterable: true,
@@ -479,7 +479,7 @@ export default {
           label: '公司logo',
           type: 'picture',
           otherEcho: true,
-          slot: '111'
+          slot: ''
         },
       ],
       followInfo: [
@@ -637,21 +637,13 @@ export default {
           if (val.field === 'packetId') {
             val.options.data = indexOpt.groupOption || []
           } else if (val.field === 'stageId') {
-            val.options.options = indexOpt.stageOption.map(val => {
-              return {
-                value: val.id,
-                label: val.name,
-              }
-            })
+            val.options.options = indexOpt.stageOption
           } else if (val.field === 'origin') {
             val.options.data = indexOpt.originOption || []
           } else if (val.field === 'poolGroup') {
-            val.options.options = indexOpt.poolGroupOption.map(val => {
-              return {
-                value: val.id,
-                label: val.name
-              }
-            })
+            val.options.options = indexOpt.poolGroupOption || []
+          } else if(val.field === 'sourceIds'){
+            val.options.data = indexOpt.originOption || []
           }
           return val
         })
