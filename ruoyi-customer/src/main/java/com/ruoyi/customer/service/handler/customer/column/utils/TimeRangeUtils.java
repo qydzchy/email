@@ -120,6 +120,62 @@ public class TimeRangeUtils {
         return getEndOfDay(calendar.getTime());
     }
 
+    // 获取上月的开始时间
+    public static Date getStartOfLastMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取上月的结束时间
+    public static Date getEndOfLastMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取本季度的开始时间
+    public static Date getStartOfThisQuarter() {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int startMonth = (currentMonth / 3) * 3; // Calculate the start month of the quarter
+        calendar.set(Calendar.MONTH, startMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取本季度的结束时间
+    public static Date getEndOfThisQuarter() {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int endMonth = ((currentMonth / 3) + 1) * 3 - 1; // Calculate the end month of the quarter
+        calendar.set(Calendar.MONTH, endMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取上季度的开始时间
+    public static Date getStartOfLastQuarter() {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int startMonth = ((currentMonth / 3) - 1) * 3; // Calculate the start month of the last quarter
+        calendar.set(Calendar.MONTH, startMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取上季度的结束时间
+    public static Date getEndOfLastQuarter() {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int endMonth = (currentMonth / 3) * 3 - 1; // Calculate the end month of the last quarter
+        calendar.set(Calendar.MONTH, endMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return getEndOfDay(calendar.getTime());
+    }
+
     // 获取本年的开始时间
     public static Date getStartOfThisYear() {
         Calendar calendar = Calendar.getInstance();
@@ -133,6 +189,146 @@ public class TimeRangeUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MONTH, Calendar.DECEMBER);
         calendar.set(Calendar.DAY_OF_MONTH, 31);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取过去7天的开始时间
+    public static Date getStartOfPast7Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -6);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去7天的结束时间
+    public static Date getEndOfPast7Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取过去14天的开始时间
+    public static Date getStartOfPast14Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -13);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去14天的结束时间
+    public static Date getEndOfPast14Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取过去30天的开始时间
+    public static Date getStartOfPast30Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -29);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去30天的结束时间
+    public static Date getEndOfPast30Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取过去60天的开始时间
+    public static Date getStartOfPast60Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -59);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去60天的结束时间
+    public static Date getEndOfPast60Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取过去90天的开始时间
+    public static Date getStartOfPast90Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -89);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去90天的结束时间
+    public static Date getEndOfPast90Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取过去180天的开始时间
+    public static Date getStartOfPast180Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -179);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去180天的结束时间
+    public static Date getEndOfPast180Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取过去365天的开始时间
+    public static Date getStartOfPast365Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -364);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取过去365天的结束时间
+    public static Date getEndOfPast365Days() {
+        return getEndOfDay(new Date()); // End time is the current time
+    }
+
+    // 获取未来3天的开始时间
+    public static Date getStartOfNext3Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取未来3天的结束时间
+    public static Date getEndOfNext3Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 3);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取未来7天的开始时间
+    public static Date getStartOfNext7Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取未来7天的结束时间
+    public static Date getEndOfNext7Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取未来14天的开始时间
+    public static Date getStartOfNext14Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取未来14天的结束时间
+    public static Date getEndOfNext14Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 14);
+        return getEndOfDay(calendar.getTime());
+    }
+
+    // 获取未来30天的开始时间
+    public static Date getStartOfNext30Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(calendar.getTime());
+    }
+
+    // 获取未来30天的结束时间
+    public static Date getEndOfNext30Days() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 30);
         return getEndOfDay(calendar.getTime());
     }
 }
