@@ -494,20 +494,20 @@ export default {
           showTooltip: '',
         },
         {
-          field: '',
+          field: 'latestMoveToPublicSeaTime',
           label: '下次移入公海日期',
           showTooltip: '<span>根据移入公海规则计算得出，移入操作在凌晨进行</span>'
         },
         {
-          field: '',
+          field: 'latestEnterPrivateSeaTime',
           label: '最近进入私海时间',
         },
         {
-          field: '',
+          field: 'latestEnterPublicSeaTime',
           label: '最近进入公海时间',
         },
         {
-          field: '',
+          field: 'enterPublicSeaCount',
           label: '进入公海次数',
         },
         {
