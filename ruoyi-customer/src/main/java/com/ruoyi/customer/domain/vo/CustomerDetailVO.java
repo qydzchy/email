@@ -90,6 +90,29 @@ public class CustomerDetailVO {
     private Date updateTime;
 
     /**
+     * 获取最近进入公海的时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date latestEnterPublicSeaTime;
+
+    /**
+     * 获取最近进入私海的时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date latestEnterPrivateSeaTime;
+
+    /**
+     * 获取最近移入公海的时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date latestMoveToPublicSeaTime;
+
+    /**
+     * 进入公海次数
+     */
+    private Integer enterPublicSeaCount;
+
+    /**
      * 联系人
      */
     private List<CustomerContactBO> contactList;

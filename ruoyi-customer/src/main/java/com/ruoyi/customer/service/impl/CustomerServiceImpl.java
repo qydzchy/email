@@ -156,14 +156,61 @@ public class CustomerServiceImpl implements ICustomerService {
                 publicleadsGroupsService.selectPublicleadsGroupsByCustomerId(id), executor
         );
 
+        CustomerSeaLog customerSeaLog = new CustomerSeaLog();
+        customerSeaLog.setCustomerId(id);
+        CompletableFuture<List<CustomerSeaLog>> customerSeaLogListFuture = CompletableFuture.supplyAsync(() ->
+                customerSeaLogMapper.selectCustomerSeaLogList(customerSeaLog), executor
+        );
+
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(customerFuture, contactListFuture, followUpPersonnelListFuture,
                 followUpRecordsListFuture, tagListFuture, sourceListFuture, stageFuture, packetFuture, publicleadsGroupsFuture);
 
-        return allFutures.thenApplyAsync(ignored ->
-                        buildCustomerDetailVO(customerFuture.join(), contactListFuture.join(), followUpPersonnelListFuture.join(),
-                                followUpRecordsListFuture.join(), tagListFuture.join(), sourceListFuture.join(),
-                                stageFuture.join(), packetFuture.join(), publicleadsGroupsFuture.join()), executor)
-                .join();
+        return allFutures.thenApplyAsync(ignored -> {
+            CustomerDetailVO customerDetailVO = buildCustomerDetailVO(customerFuture.join(), contactListFuture.join(),
+                    followUpPersonnelListFuture.join(), followUpRecordsListFuture.join(), tagListFuture.join(),
+                    sourceListFuture.join(), stageFuture.join(), packetFuture.join(), publicleadsGroupsFuture.join());
+
+            setSeaLogInfo(customerDetailVO, customerSeaLogListFuture.join());
+
+            return customerDetailVO;
+        }, executor).join();
+    }
+
+
+    private void setSeaLogInfo(CustomerDetailVO customerDetailVO, List<CustomerSeaLog> customerSeaLogList) {
+        Map<Integer, List<CustomerSeaLog>> latestEntriesMap = customerSeaLogList.stream()
+                .filter(entry -> entry.getCustomerId() != null)
+                .collect(Collectors.groupingBy(
+                        CustomerSeaLog::getSeaType,
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(Comparator.comparing(CustomerSeaLog::getCreateTime)),
+                                optional -> optional.map(Collections::singletonList).orElseGet(Collections::emptyList)
+                        )
+                ));
+
+        // 设置最近进入公海的时间
+        if (latestEntriesMap.containsKey(CustomerSeaTypeEnum.PUBLIC_LEADS.getType())) {
+            List<CustomerSeaLog> customerPublicleadsSeaLogList = latestEntriesMap.get(CustomerSeaTypeEnum.PUBLIC_LEADS.getType());
+            customerDetailVO.setLatestEnterPublicSeaTime(customerPublicleadsSeaLogList != null && !customerPublicleadsSeaLogList.isEmpty() ? customerPublicleadsSeaLogList.get(0).getCreateTime() : null);
+        }
+
+        // 设置最近进入私海的时间
+        if (latestEntriesMap.containsKey(CustomerSeaTypeEnum.PRIVATE_LEADS.getType())) {
+            List<CustomerSeaLog> customerPrivateleadsSeaLogList = latestEntriesMap.get(CustomerSeaTypeEnum.PRIVATE_LEADS.getType());
+            customerDetailVO.setLatestEnterPrivateSeaTime(customerPrivateleadsSeaLogList != null && !customerPrivateleadsSeaLogList.isEmpty() ? customerPrivateleadsSeaLogList.get(0).getCreateTime() : null);
+        }
+
+        // 设置最近移入公海的时间
+        CustomerSeaLog latestEntry = customerSeaLogList.stream()
+                .filter(entry -> entry.getCreateId() == null && entry.getSeaType() == CustomerSeaTypeEnum.PUBLIC_LEADS.getType() && entry.getCreateTime() != null)
+                .max(Comparator.comparing(CustomerSeaLog::getCreateTime))
+                .orElse(null);
+
+        customerDetailVO.setLatestMoveToPublicSeaTime(latestEntry != null ? latestEntry.getCreateTime() : null);
+
+        // 设置进入公海次数
+        long enterPublicSeaCount = customerSeaLogList.stream().filter(csl -> csl.getSeaType().intValue() == CustomerSeaTypeEnum.PUBLIC_LEADS.getType()).count();
+        customerDetailVO.setEnterPublicSeaCount((int) enterPublicSeaCount);
     }
 
     private CustomerDetailVO buildCustomerDetailVO(Customer customer, List<CustomerContactBO> contactList,
