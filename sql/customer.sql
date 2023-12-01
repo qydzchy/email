@@ -495,7 +495,7 @@ CREATE TABLE `customer_segment`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `parent_id` bigint(20) NOT NULL COMMENT '父ID 第一级为-1',
 `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客群名称',
-`usage_scope` tinyint(1) NOT NULL COMMENT '使用范围 1.公司共享 2.个人使用',
+`usage_scope` tinyint(1) COMMENT '使用范围 1.公司共享 2.个人使用',
 `visibility_scope` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '可见范围',
 `condition_rule_type` tinyint(1) NOT NULL COMMENT '条件规则 1.满足全部条件 2.满足任一条件 3.自定义条件',
 `condition_rule_content` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '条件规则内容',
