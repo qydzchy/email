@@ -48,9 +48,9 @@ public enum CustomerColumnEnum {
     LAST_CONTACTED_AT("last_contacted_at", "最近联系时间", CustomerColumnCategoryEnum.DATE_TIME),
     LAST_FOLLOWUP_AT("last_followup_at", "最近跟进时间", CustomerColumnCategoryEnum.DATE_TIME),
     //NEXT_SCHEDULE_TIME("next_schedule_time", "下次日程时间", CustomerColumnCategoryEnum.DATE_TIME),
-    //LAST_PRIVATELEADS_ENTRY("last_privateleads_entry", "最近进入私海时间", CustomerColumnCategoryEnum.DATE_TIME),
-    //LAST_PUBLICLEADS_ENTRY("last_publicleads_entry", "最近进入公海时间", CustomerColumnCategoryEnum.DATE_TIME),
-    //NEXT_PUBLICLEADS_DATE("next_publicleads_date", "下次移入公海日期", CustomerColumnCategoryEnum.DATE_TIME),
+    LAST_PRIVATELEADS_ENTRY("last_privateleads_entry", "最近进入私海时间", CustomerColumnCategoryEnum.DATE_TIME),
+    LAST_PUBLICLEADS_ENTRY("last_publicleads_entry", "最近进入公海时间", CustomerColumnCategoryEnum.DATE_TIME),
+    NEXT_PUBLICLEADS_DATE("next_publicleads_date", "下次移入公海日期", CustomerColumnCategoryEnum.DATE_TIME),
     LAST_FOLLOW_UP_DATE("last_follow_up_date", "最近[写跟进]时间", CustomerColumnCategoryEnum.DATE_TIME),
     //LAST_SENT_EMAIL_TIME("last_sent_email_time", "最近发件时间", CustomerColumnCategoryEnum.DATE_TIME),
     //LAST_RECEIVED_EMAIL_TIME("last_received_email_time", "最近收件时间", CustomerColumnCategoryEnum.DATE_TIME)
