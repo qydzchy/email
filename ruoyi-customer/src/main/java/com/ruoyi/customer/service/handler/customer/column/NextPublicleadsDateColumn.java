@@ -9,26 +9,26 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * 最近进入私海时间
+ * 下次移入公海日期
  */
 @Slf4j
 @Component
-public class LastPrivateleadsEntryColumn extends ColumnAbstract implements IColumnService {
+public class NextPublicleadsDateColumn extends ColumnAbstract implements IColumnService {
 
     @Override
     public CustomerColumnEnum getCustomerColumnEnum() {
-        return CustomerColumnEnum.LAST_PRIVATELEADS_ENTRY;
+        return CustomerColumnEnum.NEXT_PUBLICLEADS_DATE;
     }
 
     @Override
     public boolean handler(CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) {
         try {
-            Date latestEnterPrivateSeaTime = customerDetail.getLatestEnterPrivateSeaTime();
-            if (latestEnterPrivateSeaTime == null) return false;
+            Date latestMoveToPublicSeaTime = customerDetail.getLatestMoveToPublicSeaTime();
+            if (latestMoveToPublicSeaTime == null) return false;
 
-            return super.dateHandler(latestEnterPrivateSeaTime, segmentConditionRule);
+            return super.dateHandler(latestMoveToPublicSeaTime, segmentConditionRule);
         } catch (Exception e) {
-            log.error("最近进入私海时间处理异常", e);
+            log.error("下次移入公海日期处理异常", e);
             return false;
         }
     }
