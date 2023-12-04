@@ -1,0 +1,1199 @@
+.new-tms-function-exp-tips {
+  background: #017aff;
+  z-index: 200;
+  max-width: unset
+}
+
+.new-tms-function-exp-tips .tip-content {
+  width: 288px
+}
+
+.new-tms-function-exp-tips .title {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px
+}
+
+.new-tms-function-exp-tips .tms-function-title {
+  color: #fff
+}
+
+.new-tms-function-exp-tips .descript {
+  font-size: 14px;
+  line-height: 20px;
+  padding-top: 4px
+}
+
+.new-tms-function-exp-tips .mm-button {
+  min-width: 0;
+  padding: 2px 12px;
+  height: 24px;
+  font-size: 14px;
+  border: none;
+  line-height: 20px;
+  border-radius: 4px;
+  color: #017aff;
+  margin-top: 20px;
+  margin-left: 20px;
+  float: right
+}
+
+.new-tms-function-exp-tips[x-has-arrow][x-placement^=bottom] .popper-arrow {
+  border-bottom-color: #017aff !important
+}
+
+.new-tms-function-exp-tips[x-has-arrow][x-placement^=top] .popper-arrow {
+  border-top-color: #017aff !important
+}
+
+.new-tms-function-exp-tips[x-has-arrow][x-placement^=left] .popper-arrow {
+  border-left-color: #017aff !important
+}
+
+.new-tms-function-exp-tips[x-has-arrow][x-placement^=right] .popper-arrow {
+  border-right-color: #017aff !important
+}
+
+.new-function-guide .mask {
+  background: rgba(30, 33, 38, .2)
+}
+
+.new-function-guide .beacon-step-mode {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px
+}
+
+.new-function-guide .beacon-step-mode .guidance-content .step-img {
+  padding-bottom: 12px
+}
+
+.new-function-guide .beacon-step-mode .guidance-content .title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #000;
+  padding-bottom: 8px
+}
+
+.new-function-guide .beacon-step-mode .guidance-content .content {
+  font-size: 14px;
+  line-height: 20px;
+  color: #686c73;
+  width: 288px;
+  padding-bottom: 12px
+}
+
+.new-function-guide .beacon-step-mode .actions {
+  top: 0;
+  align-items: center
+}
+
+.new-function-guide .beacon-step-mode .actions .beacon-event-back,
+.new-function-guide .beacon-step-mode .actions .beacon-event-done,
+.new-function-guide .beacon-step-mode .actions .beacon-event-next {
+  background: #017aff;
+  border-radius: 2px;
+  padding: 5px 16px;
+  font-size: 14px;
+  line-height: 22px
+}
+
+.new-function-guide .beacon-step-mode .total {
+  color: #9ea1a8;
+  font-size: 14px;
+  line-height: 20px
+}
+
+.expose-guide-finished-tips .mm-modal-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+  top: 50%;
+  transform: translateY(-50%)
+}
+
+.expose-guide-finished-tips .mm-modal-content {
+  width: 320px
+}
+
+.expose-guide-finished-tips .mm-modal-body {
+  padding: 0;
+  border-radius: 8px
+}
+
+.meeting-mail-container {
+  border: 1px solid #e1e1e1;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  min-width: 640px;
+  box-sizing: border-box
+}
+
+.meeting-mail-container .left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+
+.meeting-mail-container .left>img {
+  margin-right: 20px
+}
+
+.meeting-mail-container .left .info {
+  line-height: 22px;
+  height: 22px;
+  white-space: nowrap
+}
+
+.meeting-mail-container .left .info .label {
+  color: #8c8c8c;
+  margin-right: 8px
+}
+
+.meeting-mail-container .right {
+  display: flex;
+  align-items: center
+}
+
+.meeting-mail-container .right .btn-item {
+  margin-left: 16px;
+  height: 44px;
+  min-width: 50px;
+  line-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer
+}
+
+.meeting-mail-container .right .btn-item .btn-text {
+  margin-left: 4px
+}
+
+.meeting-mail-container .right .btn-item.view {
+  cursor: default
+}
+
+.meeting-mail-container .right .btn-item.view .btn-text {
+  color: #8c8c8c
+}
+
+.mail-content-body>iframe {
+  border: 0;
+  margin: 0;
+  height: 200px;
+  width: 100%;
+  min-width: 100%
+}
+
+.mail-content-slice-tip {
+  font-size: 14px;
+  padding: 10px 0;
+  color: #263551
+}
+
+.mail-content-slice-tip a {
+  color: #0884f3;
+  margin-left: 5px
+}
+
+.previewer-eml-wrapper {
+  position: relative;
+  box-sizing: border-box;
+  width: 800px;
+  height: 100%;
+  margin: 20px auto 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch
+}
+
+.previewer-eml-wrapper .mailDetail {
+  display: flex;
+  flex-direction: column;
+  height: 100%
+}
+
+.previewer-eml-wrapper .mailDetail .mailDetail-body {
+  margin: 25px 0;
+  padding: 0;
+  flex: 1
+}
+
+.iframe-view {
+  left: 0
+}
+
+.iframe-view,
+.iframe-view iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff
+}
+
+.iframe-view iframe {
+  position: relative
+}
+
+.image-view-container {
+  padding: 56px 16px
+}
+
+.image-view-container,
+.image-view-container .image-view {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box
+}
+
+.image-view-container .image-view {
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.image-view-container .image-view .bg-block {
+  height: 56px;
+  width: 100%
+}
+
+.image-view-container .image-view img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  max-width: none;
+  transition: width .3s, height .3s;
+  cursor: grab;
+  background: #fff
+}
+
+.image-view-container .toolbar {
+  height: 44px;
+  width: 128px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 12px;
+  border-radius: 4px;
+  background: rgba(30, 33, 38, .8);
+  padding: 2px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between
+}
+
+.image-view-container .toolbar .okki-icon-wrap {
+  height: 40px;
+  width: 40px;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff
+}
+
+.image-view-container .toolbar .okki-icon-wrap:hover {
+  background: #686c73;
+  border-radius: 4px;
+  color: #fff
+}
+
+.image-view-container .toolbar .okki-icon-wrap.disabled {
+  color: #9ea1a8;
+  cursor: not-allowed
+}
+
+.image-view-container .toolbar .okki-icon-wrap.disabled:hover {
+  background: initial
+}
+
+.image-view-container .toolbar .toolbar-rotate .okki-svg-icon {
+  transform: translateY(-1px)
+}
+
+.toolbar-tooltip-popper {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 24px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background: rgba(70, 70, 70, .9);
+  border-radius: 4px;
+  z-index: 9999999
+}
+
+.toolbar-tooltip-popper.mm-tooltip-popper[x-has-arrow][x-placement^=top] .popper-arrow {
+  border-top-color: rgba(70, 70, 70, .9)
+}
+
+.fold-transition {
+  transition: all .5s ease
+}
+
+.fold-enter,
+.fold-leave {
+  opacity: 0
+}
+
+.previewer-wrap {
+  position: fixed;
+  z-index: 1000000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%
+}
+
+.previewer-wrap .header {
+  z-index: 2;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  color: #fff;
+  background: #1e2126;
+  line-height: 56px;
+  text-align: center
+}
+
+.previewer-wrap .header .file-name {
+  display: inline-block;
+  float: left;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  max-width: 20em;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 32px;
+  color: #fff
+}
+
+.previewer-wrap .header .m-iconBtn {
+  color: #fff;
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  border-radius: 4px
+}
+
+.previewer-wrap .header .m-iconBtn:hover {
+  color: #fff;
+  background: #686c73
+}
+
+.previewer-wrap .header .m-iconBtn.disabled {
+  cursor: not-allowed
+}
+
+.previewer-wrap .header .right-actions {
+  margin-left: auto;
+  line-height: 32px
+}
+
+.previewer-wrap .header .right-actions .open {
+  margin-right: 10px;
+  margin-left: 10px
+}
+
+.previewer-wrap .header .right-actions .close {
+  cursor: pointer
+}
+
+.previewer-wrap .main {
+  display: flex;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: #fff
+}
+
+.previewer-wrap .main.image-view-type {
+  background: rgba(0, 0, 0, .8)
+}
+
+.previewer-wrap .main.image-view-type .m_preview_unView h2 {
+  color: #fff
+}
+
+.previewer-wrap .main .paging-control {
+  position: absolute;
+  width: 40px;
+  color: #fff;
+  border-radius: 50%;
+  background: #1e2126;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer
+}
+
+.previewer-wrap .main .paging-control:hover {
+  background: #017aff
+}
+
+.previewer-wrap .main .previous {
+  left: 20px
+}
+
+.previewer-wrap .main .next {
+  right: 20px
+}
+
+.previewer-wrap .main .m_preview_unView {
+  position: relative;
+  min-height: 150px;
+  text-align: center
+}
+
+.previewer-wrap .main .m_preview_unView h2 {
+  margin-bottom: 20px
+}
+
+.previewer-wrap .paging-tips {
+  position: absolute;
+  top: 90%;
+  left: 20px;
+  padding: 8px;
+  border-radius: 4px;
+  color: #fff;
+  background: #000;
+  font-size: 12px;
+  line-height: 12px
+}
+
+.component-add-toolbar-attach {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+  flex-flow: wrap
+}
+
+.component-add-toolbar-attach li {
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+  width: 33%;
+  overflow: hidden;
+  height: 30px;
+  margin-bottom: 4px;
+  border-right: 4px solid #fafafa;
+  border-radius: 2px;
+  color: #263551;
+  background-color: #edf3f9;
+  font-size: 12px;
+  line-height: 30px
+}
+
+.component-add-toolbar-attach li.fail {
+  background: #ffe1e1
+}
+
+.component-add-toolbar-attach li.fail .btns span {
+  color: #e95b5b
+}
+
+.component-add-toolbar-attach li.tradeDocument {
+  background: #ebedf0
+}
+
+.component-add-toolbar-attach li.expire {
+  background: #fff1da
+}
+
+.component-add-toolbar-attach li:hover {
+  color: #3a4550
+}
+
+.component-add-toolbar-attach li .size {
+  color: #89909e
+}
+
+.component-add-toolbar-attach li .expire-time {
+  min-width: 120px;
+  color: #89909e;
+  text-align: center
+}
+
+.component-add-toolbar-attach li .file-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  line-height: 30px
+}
+
+.component-add-toolbar-attach li .file-name .name {
+  margin-right: 5px;
+  min-width: 0;
+  height: 30px
+}
+
+.component-add-toolbar-attach li .file-name .name .mm-tooltip-trigger {
+  min-width: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.component-add-toolbar-attach li .file-name .size {
+  flex-shrink: 0
+}
+
+.component-add-toolbar-attach li .file-name .file-name-input {
+  width: 144px
+}
+
+.component-add-toolbar-attach li .c-attach-progress {
+  display: inline-block;
+  margin-top: 10px
+}
+
+.component-add-toolbar-attach li .c-attach-progress .c-progress-span {
+  background: linear-gradient(90deg, #13bafa, #0884f3);
+  transition: all .2s ease-in
+}
+
+.component-add-toolbar-attach li .btns {
+  padding-right: 10px
+}
+
+.component-add-toolbar-attach li .btns a {
+  margin-left: 4px
+}
+
+.component-add-toolbar-attach li .btns a:hover {
+  text-decoration: underline
+}
+
+.component-add-toolbar-attach li .attachment-icon {
+  margin: 0 6px
+}
+
+.component-add-toolbar-attach li .description-icon {
+  margin: auto 6px
+}
+
+@media screen and (max-width:1460px) {
+  .component-add-toolbar-attach li {
+    width: 50%
+  }
+}
+
+@media screen and (max-width:1080px) {
+  .component-add-toolbar-attach li {
+    width: 100%
+  }
+}
+
+.mail-plus-drag-upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  max-width: 100%;
+  height: 100%;
+  background: #fafafa;
+  border: 1px solid #ced5e0;
+  display: flex;
+  flex-direction: column
+}
+
+.mail-plus-drag-upload .bottom-area,
+.mail-plus-drag-upload .top-area {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  color: #666;
+  text-align: center;
+  justify-content: center;
+  align-items: center
+}
+
+.mail-plus-drag-upload .top-area {
+  border-bottom: 1px solid #ced5e0
+}
+
+.cross-supply-access-modal .mm-modal-body {
+  padding: 24px
+}
+
+.cross-supply-access-modal .close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  cursor: pointer
+}
+
+.cross-supply-access-modal .title {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
+  color: #000;
+  padding-bottom: 24px
+}
+
+.cross-supply-access-modal .content {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  font-weight: 400;
+  color: #000;
+  font-size: 14px;
+  line-height: 24px;
+  min-height: 200px
+}
+
+.cross-supply-access-modal .content .main {
+  flex: 1
+}
+
+.cross-supply-access-modal .content .example {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  border-radius: 8px;
+  margin-left: 40px;
+  border: 1px solid #e1e1e1;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 14px 20px
+}
+
+.cross-supply-access-modal .content .example .icon {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 40px;
+  height: 40px
+}
+
+.cross-supply-access-modal .content .example img {
+  width: 160px
+}
+
+.cross-supply-access-modal .content .jump-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0
+}
+
+@media screen and (max-width:1000px) {
+  .component-add-toolbar .mail-attach-list li {
+    width: 50%
+  }
+}
+
+.component-add-toolbar {
+  position: relative;
+  height: 36px;
+  flex-shrink: 0
+}
+
+.component-add-toolbar .mail-tool {
+  display: flex;
+  bottom: 0;
+  width: 100%;
+  min-width: 580px;
+  height: 36px;
+  background: #f0f2f5;
+  line-height: 36px;
+  align-items: center;
+  padding: 0 8px;
+  box-sizing: border-box
+}
+
+.component-add-toolbar .mail-tool .mail-size {
+  line-height: 36px
+}
+
+.component-add-toolbar .mail-tool .name {
+  padding-right: 10px;
+  border-right: 1px solid #cecece;
+  color: #9d9d9d;
+  font-size: 12px
+}
+
+.component-add-toolbar .mail-tool .m-icon {
+  font-size: 12px
+}
+
+.component-add-toolbar .mail-tool .tool-item {
+  vertical-align: bottom;
+  position: relative;
+  color: #2a2a2a;
+  font-size: 12px;
+  height: 28px;
+  line-height: 28px;
+  cursor: pointer;
+  padding: 0 8px
+}
+
+[lang=en] .component-add-toolbar .mail-tool .tool-item {
+  padding: 0 6px;
+  text-align: center
+}
+
+.component-add-toolbar .mail-tool .tool-item:hover {
+  background: #dcdee0;
+  border-radius: 4px
+}
+
+.component-add-toolbar .mail-tool .tool-item input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  font-size: 0;
+  cursor: pointer
+}
+
+.component-add-toolbar .mail-tool .tool-item.general-info {
+  height: 20px;
+  line-height: 18px
+}
+
+.component-add-toolbar .mail-tool .tool-item.general-info .mm-select {
+  min-width: 70px
+}
+
+.component-add-toolbar .mail-tool .tool-item.general-info .mm-selector {
+  padding: 0;
+  height: 20px;
+  min-height: 0;
+  line-height: 20px
+}
+
+.component-add-toolbar .mail-tool .tool-item.general-info .mm-selector-rendered {
+  line-height: normal
+}
+
+.component-add-toolbar .mail-tool .mail-toolbar-dropdown .mm-dropdown-trigger {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 8px
+}
+
+.component-add-toolbar .mail-tool .mail-toolbar-dropdown:hover {
+  border-radius: .25rem
+}
+
+.component-add-toolbar .mail-tool .red-dot-tip {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: #e70707;
+  margin-bottom: 20px
+}
+
+.component-add-toolbar .mail-tool .mm-divider-vertical {
+  height: 16px;
+  top: 0;
+  margin: 0 8px
+}
+
+.component-add-toolbar .mail-tool .ai-disabled {
+  color: #333;
+  cursor: not-allowed;
+  opacity: .6
+}
+
+.component-add-toolbar .mail-attach-list {
+  display: flex;
+  flex-flow: wrap
+}
+
+.component-add-toolbar .mail-attach-list li {
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+  width: 33.33%;
+  min-width: 300px;
+  height: 26px;
+  margin: 8px 0;
+  border-right: 5px solid #fff;
+  border-radius: 2px;
+  color: #7f878f;
+  background-color: #efefef;
+  line-height: 26px
+}
+
+.component-add-toolbar .mail-attach-list li:hover {
+  color: #3a4550
+}
+
+.component-add-toolbar .mail-attach-list li .name {
+  display: inline-block;
+  max-width: 120px;
+  margin-right: 5px
+}
+
+.component-add-toolbar .mail-attach-list li .c-attach-progress {
+  display: inline-block;
+  margin-top: 10px
+}
+
+.component-add-toolbar .mail-attach-list li .btns {
+  position: absolute;
+  top: 0;
+  right: 10px
+}
+
+.component-add-toolbar .mail-attach-list li .btns a {
+  margin-left: 4px
+}
+
+.component-add-toolbar .mail-attach-list li .btns a:hover {
+  text-decoration: underline
+}
+
+.component-add-toolbar .mail-attach-list li .m-icon {
+  margin: 0 6px;
+  font-size: 12px
+}
+
+.more-tool-popper .mm-dropdown-item-content {
+  color: #3d3d3d
+}
+
+.more-tool-popper .mm-dropdown-item-content:hover {
+  background-color: #eef5ff
+}
+
+.expands-dialog .big-file-remark {
+  margin-top: 8px;
+  color: #888;
+  font-size: 12px
+}
+
+[lang=en] .component-add-toolbar .mail-tool {
+  display: flex;
+  overflow: hidden;
+  flex-wrap: nowrap
+}
+
+[lang=en] .component-add-toolbar .mail-tool a {
+  height: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 12px;
+  white-space: nowrap
+}
+
+.mce-container .okki-mce-icon {
+  height: 1em;
+  width: 1em;
+  vertical-align: middle;
+  color: currentColor
+}
+
+.mce-container .okki-mce-icon * {
+  color: currentColor
+}
+
+.mce-container.mce-panel.mce-floatpanel {
+  max-height: 250px
+}
+
+.mce-container .mce-flow-layout {
+  padding-right: 60px
+}
+
+.mce-container .mce-flow-layout .mce-flow-layout-item.mce-btn-group.mce-last {
+  float: none;
+  position: absolute;
+  top: 0;
+  right: 0
+}
+
+.tox-editor-container .tox-toolbar:last-child {
+  display: none
+}
+
+.tox-editor-container .tox-toolbar:last-child.expand {
+  display: flex
+}
+
+.template-group-dialog .template-group-content {
+  margin: -15px
+}
+
+.template-group-dialog .template-group-list {
+  min-height: 200px;
+  max-height: 450px;
+  overflow-y: auto
+}
+
+.template-group-dialog .drag-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 56px
+}
+
+.template-group-dialog .drag-item:hover .move-btn {
+  visibility: visible
+}
+
+.template-group-dialog .drag-item .item-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+  margin-right: 25px;
+  border-bottom: 1px solid #e6e8ea;
+  box-sizing: border-box
+}
+
+.template-group-dialog .drag-item .move-btn {
+  width: 25px;
+  visibility: hidden;
+  text-align: center
+}
+
+.template-group-dialog .drag-item .num {
+  margin-right: 5px;
+  display: inline-block;
+  flex-shrink: 0
+}
+
+.template-group-dialog .drag-item .btn-list {
+  width: 40px;
+  display: flex;
+  justify-content: flex-end
+}
+
+.template-group-dialog .drag-item .btn-list .okki-icon-wrap:last-child {
+  margin-left: 18px
+}
+
+.template-group-dialog .drag-item .name {
+  width: 300px;
+  display: inline-block
+}
+
+.template-group-dialog .drag-item .left-content {
+  display: flex;
+  align-items: center
+}
+
+.template-group-dialog .drag-item .m-icon {
+  cursor: pointer
+}
+
+.template-group-dialog .drag-item .name-input {
+  width: 200px
+}
+
+.template-group-dialog .drag-item .name-input.error input {
+  border-color: #e95b5b
+}
+
+.template-group-dialog .drag-item .error-text {
+  color: #ff5050;
+  flex-shrink: 0;
+  margin-left: 10px
+}
+
+.template-group-dialog .add-btn {
+  cursor: pointer;
+  position: absolute;
+  color: #0064ff;
+  left: 25px;
+  bottom: 20px
+}
+
+.mail-plus-tpl {
+  background: #fff
+}
+
+.mail-plus-tpl .mail-config-header {
+  padding-bottom: 14px
+}
+
+.mail-plus-tpl .mail-config-header h3 {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 32px
+}
+
+.mail-plus-tpl .mail-config-select {
+  width: 220px
+}
+
+.mail-plus-tpl .tpl-content {
+  position: relative
+}
+
+.mail-plus-tpl .tpl-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 17px
+}
+
+.mail-plus-tpl .tpl-list .icon-cross-p,
+.mail-plus-tpl .tpl-list .icon-edit-p {
+  display: none;
+  position: absolute;
+  font-size: 14px;
+  cursor: pointer
+}
+
+.mail-plus-tpl .tpl-list .icon-edit-p {
+  top: 0;
+  right: 0
+}
+
+.mail-plus-tpl .tpl-list .icon-cross-p {
+  right: 0;
+  bottom: 0
+}
+
+.mail-plus-tpl .tpl-list .ellipsis {
+  display: inline-block;
+  width: 120px
+}
+
+.mail-plus-tpl .tpl-list .tpl-list-item {
+  position: relative;
+  width: 200px;
+  height: 210px;
+  margin: 0 20px 82px 0;
+  padding: 15px;
+  background-color: #ececec;
+  text-align: center
+}
+
+.mail-plus-tpl .tpl-list .tpl-list-item:hover .icon-cross-p,
+.mail-plus-tpl .tpl-list .tpl-list-item:hover .icon-edit-p {
+  display: block
+}
+
+.mail-plus-tpl .tpl-list .tpl-list-item img {
+  width: 170px;
+  height: 200px
+}
+
+.mail-plus-tpl .tpl-list .tpl-list-item p {
+  padding-left: 0 !important
+}
+
+.mail-plus-tpl .tpl-list .tpl-list-item .tpl-name {
+  position: absolute;
+  bottom: -31px;
+  left: 0;
+  width: 100%
+}
+
+.mail-plus-tpl .tpl-edit {
+  width: auto;
+  padding: 5px;
+  box-shadow: none
+}
+
+.mail-plus-tpl .tpl-edit .edit-field {
+  display: flex;
+  margin-bottom: 10px
+}
+
+.mail-plus-tpl .tpl-edit .edit-field .component-add-toolbar-attach li {
+  border-right: 4px solid #fff
+}
+
+.mail-plus-tpl .tpl-edit .edit-field .add-toolbar {
+  flex: 1;
+  position: relative;
+  top: -11px;
+  border: 1px solid #ccc;
+  border-top: none
+}
+
+.mail-plus-tpl .tpl-edit .edit-field .add-toolbar .mail-size {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  margin-right: 17px;
+  color: #535d71;
+  font-size: 12px
+}
+
+.mail-plus-tpl .tpl-edit .edit-field .mail-editor {
+  flex: 1
+}
+
+.mail-plus-tpl .tpl-edit .edit-field.edit-tool {
+  padding-left: 80px
+}
+
+.mail-plus-tpl .tpl-edit .edit-field.edit-tool>a {
+  position: relative;
+  margin-right: 12px
+}
+
+.mail-plus-tpl .tpl-edit .edit-field.edit-tool>a .m-icon {
+  margin-right: 5px
+}
+
+.mail-plus-tpl .tpl-edit .edit-field.edit-tool>a>input {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0
+}
+
+.mail-plus-tpl .tpl-edit .edit-field.edit-btns {
+  margin: 20px auto 20px auto;
+  justify-content: center
+}
+
+.mail-plus-tpl .tpl-edit .edit-field.edit-btns .mm-button:first-child {
+  margin-right: 20px
+}
+
+.mail-plus-tpl .tpl-edit .edit-field .m-label {
+  width: 80px;
+  height: 32px;
+  padding: 0 10px 0 0;
+  text-align: right;
+  line-height: 32px;
+  flex-shrink: 0
+}
+
+.mail-plus-tpl .tpl-edit .edit-field .component-input {
+  flex: 1
+}
+
+.mail-plus-tpl .tpl-edit .mail-config-select {
+  width: 300px;
+  margin-right: 10px
+}
+
+.mail-plus-tpl .tpl-edit .edit-btn {
+  align-self: center;
+  cursor: pointer
+}

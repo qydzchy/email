@@ -1,7 +1,10 @@
 package com.ruoyi.email.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.Template;
+import com.ruoyi.email.domain.vo.template.TemplateListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 模板Mapper接口
@@ -58,4 +61,19 @@ public interface TemplateMapper
      * @return 结果
      */
     public int deleteTemplateByIds(Long[] ids);
+
+    /**
+     * 模板列表
+     * @param userId
+     * @return
+     */
+    List<TemplateListVO> getByCreateId(@Param("createId") Long userId);
+
+    /**
+     * 根据id删除模板
+     * @param id
+     * @param userId
+     * @param nowDate
+     */
+    void deleteById(@Param("id") Long id, @Param("createId") Long userId, @Param("updateTime") Date nowDate);
 }

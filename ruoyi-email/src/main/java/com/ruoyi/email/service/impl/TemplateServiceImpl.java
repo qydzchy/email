@@ -1,12 +1,17 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.template.TemplateListVO;
 import com.ruoyi.email.service.ITemplateService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TemplateMapper;
 import com.ruoyi.email.domain.Template;
+
+import javax.annotation.Resource;
 
 /**
  * 模板Service业务层处理
@@ -17,7 +22,7 @@ import com.ruoyi.email.domain.Template;
 @Service
 public class TemplateServiceImpl implements ITemplateService
 {
-    @Autowired
+    @Resource
     private TemplateMapper templateMapper;
 
     /**
@@ -53,7 +58,15 @@ public class TemplateServiceImpl implements ITemplateService
     @Override
     public int insertTemplate(Template template)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        template.setCreateId(userId);
+        template.setCreateBy(username);
         template.setCreateTime(DateUtils.getNowDate());
+        template.setUpdateId(userId);
+        template.setUpdateBy(username);
+        template.setUpdateTime(DateUtils.getNowDate());
         return templateMapper.insertTemplate(template);
     }
 
@@ -66,6 +79,11 @@ public class TemplateServiceImpl implements ITemplateService
     @Override
     public int updateTemplate(Template template)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        template.setUpdateId(userId);
+        template.setUpdateBy(username);
         template.setUpdateTime(DateUtils.getNowDate());
         return templateMapper.updateTemplate(template);
     }
@@ -92,5 +110,24 @@ public class TemplateServiceImpl implements ITemplateService
     public int deleteTemplateById(Long id)
     {
         return templateMapper.deleteTemplateById(id);
+    }
+
+    /**
+     * 模板列表
+     * @return
+     */
+    @Override
+    public List<TemplateListVO> list() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        return templateMapper.getByCreateId(userId);
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        templateMapper.deleteById(id, userId, DateUtils.getNowDate());
+        return true;
     }
 }
