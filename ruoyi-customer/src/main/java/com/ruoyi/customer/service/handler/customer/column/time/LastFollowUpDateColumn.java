@@ -5,7 +5,6 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.vo.CustomerDetailVO;
 import com.ruoyi.customer.domain.vo.CustomerFollowUpRecordsListVO;
-import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -14,7 +13,6 @@ import java.util.List;
 /**
  * 最近[写跟进]时间
  */
-@Component
 public class LastFollowUpDateColumn implements ITimeColumnService {
 
     @Override

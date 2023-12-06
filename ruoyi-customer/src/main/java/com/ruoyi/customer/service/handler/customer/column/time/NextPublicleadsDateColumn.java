@@ -2,14 +2,12 @@ package com.ruoyi.customer.service.handler.customer.column.time;
 
 import com.ruoyi.common.enums.customer.CustomerColumnEnum;
 import com.ruoyi.customer.domain.vo.CustomerDetailVO;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 /**
  * 下次移入公海日期
  */
-@Component
 public class NextPublicleadsDateColumn implements ITimeColumnService {
 
     @Override
