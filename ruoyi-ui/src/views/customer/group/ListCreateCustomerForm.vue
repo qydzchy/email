@@ -173,7 +173,6 @@
                       <el-option :value="6" label="日期字段"></el-option>
                     </el-select>
                   </template>
-
                 </el-col>
               </template>
               <template>
@@ -203,6 +202,31 @@
                         :label="opt.name">
                     </el-option>
                   </el-select>
+                  <!-- 选择当天之后、之前，具体日期、字段 -->
+                  <template  v-if="[3,4].includes(item.dateType)">
+                    <el-input-number  
+                      :value.sync="item.timeRange" 
+                      controls-position="right"
+                      @input="(value)=>handleRuleContent(item.ruleId,'timeRange',value)"/>
+                      <span class="ml-10">天</span>
+                  </template>
+                  <el-date-picker
+                    v-if="[5,6].includes(item.dateType)"
+                    :value.sync="item.timeRange" 
+                    align="right"
+                    type="date"
+                    placeholder="请选择日期"
+                    clearable
+                    :picker-options="{
+                      shortcuts:[{
+                        text: '今天',
+                        onClick(picker) {
+                          picker.$emit('pick', new Date());
+                        }
+                      }]
+                    }"
+                    @input="(value)=>handleRuleContent(item.ruleId,'timeRange',value)">
+                  </el-date-picker>
                 </el-col>
 
               </template>
