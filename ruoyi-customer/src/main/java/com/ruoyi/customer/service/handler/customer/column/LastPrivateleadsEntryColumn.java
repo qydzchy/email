@@ -22,11 +22,11 @@ public class LastPrivateleadsEntryColumn extends ColumnAbstract implements IColu
 
     @Override
     public boolean handler(CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) {
-        try {
-            Date latestEnterPrivateSeaTime = customerDetail.getLatestEnterPrivateSeaTime();
-            if (latestEnterPrivateSeaTime == null) return false;
+        Date latestEnterPrivateSeaTime = customerDetail.getLatestEnterPrivateSeaTime();
+        if (latestEnterPrivateSeaTime == null) return false;
 
-            return super.dateHandler(latestEnterPrivateSeaTime, segmentConditionRule);
+        try {
+            return super.dateHandler(latestEnterPrivateSeaTime, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("最近进入私海时间处理异常", e);
             return false;

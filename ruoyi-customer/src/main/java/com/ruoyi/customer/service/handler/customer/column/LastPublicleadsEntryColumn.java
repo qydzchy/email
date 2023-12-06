@@ -22,11 +22,11 @@ public class LastPublicleadsEntryColumn extends ColumnAbstract implements IColum
 
     @Override
     public boolean handler(CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) {
-        try {
-            Date latestEnterPublicSeaTime = customerDetail.getLatestEnterPublicSeaTime();
-            if (latestEnterPublicSeaTime == null) return false;
+        Date latestEnterPublicSeaTime = customerDetail.getLatestEnterPublicSeaTime();
+        if (latestEnterPublicSeaTime == null) return false;
 
-            return super.dateHandler(latestEnterPublicSeaTime, segmentConditionRule);
+        try {
+            return super.dateHandler(latestEnterPublicSeaTime, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("最近进入公海时间处理异常", e);
             return false;

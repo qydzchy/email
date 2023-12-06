@@ -25,7 +25,7 @@ public class DataUpdateTimeColumn extends ColumnAbstract implements IColumnServi
         Date updateTime = customerDetail.getUpdateTime();
         if (updateTime == null) return false;
         try {
-            return super.dateHandler(updateTime, segmentConditionRule);
+            return super.dateHandler(updateTime, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("资料更新时间处理异常", e);
             return false;

@@ -7,7 +7,9 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.bo.SegmentConditionRuleBO;
 import com.ruoyi.customer.domain.bo.UserDeptInfoBO;
+import com.ruoyi.customer.domain.vo.CustomerDetailVO;
 import com.ruoyi.customer.service.IUserDeptService;
+import com.ruoyi.customer.service.handler.customer.column.time.TimeColumnContext;
 import com.ruoyi.customer.service.handler.customer.column.utils.ColumnUtils;
 import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
 import org.springframework.data.util.Pair;
@@ -22,6 +24,8 @@ public class ColumnAbstract {
 
     @Resource
     private IUserDeptService userDeptService;
+    @Resource
+    private TimeColumnContext timeColumnContext;
 
     /**
      * 空值处理
@@ -161,7 +165,7 @@ public class ColumnAbstract {
      * 日期时间处理
      * @return
      */
-    protected boolean dateHandler(Date time, SegmentConditionRuleBO segmentConditionRule) throws Exception {
+    protected boolean dateHandler(Date time, CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) throws Exception {
         Integer conditionType = segmentConditionRule.getConditionType();
         ConditionTypeEnum conditionTypeEnum = ConditionTypeEnum.getByType(conditionType);
         switch (conditionTypeEnum) {
@@ -178,10 +182,10 @@ public class ColumnAbstract {
                 return time != null;
 
             case BEFORE:
-                return beforeTime(time, segmentConditionRule);
+                return beforeTime(time, customerDetail, segmentConditionRule);
 
             case AFTER:
-                return afterTime(time, segmentConditionRule);
+                return afterTime(time, customerDetail, segmentConditionRule);
         }
 
         return false;
@@ -237,12 +241,12 @@ public class ColumnAbstract {
 
 
     /**
-     * 晚于多少钱
+     * 晚于多少天
      * @param time
      * @param segmentConditionRule
      * @return
      */
-    private boolean afterTime(Date time, SegmentConditionRuleBO segmentConditionRule) throws ParseException {
+    private boolean afterTime(Date time, CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) throws ParseException {
         Integer timeRange = segmentConditionRule.getTimeRange();
         TimeRangeEnum timeRangeEnum = TimeRangeEnum.getByCode(timeRange);
         switch (timeRangeEnum) {
@@ -263,9 +267,9 @@ public class ColumnAbstract {
                 Date specifiedDateTime = DateUtils.parseDate(value + " 00:00:00", DateUtils.YYYY_MM_DD_HH_MM_SS);
                 return time.after(specifiedDateTime);
 
-            // todo 未完成
             case DATE_FIELD:
-                break;
+                String columnName = String.valueOf(segmentConditionRule.getValue());
+                return timeColumnContext.before(columnName, time, customerDetail);
         }
 
         return false;
@@ -277,7 +281,7 @@ public class ColumnAbstract {
      * @param segmentConditionRule
      * @return
      */
-    private boolean beforeTime(Date time, SegmentConditionRuleBO segmentConditionRule) throws Exception {
+    private boolean beforeTime(Date time, CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) throws Exception {
         Integer timeRange = segmentConditionRule.getTimeRange();
         TimeRangeEnum timeRangeEnum = TimeRangeEnum.getByCode(timeRange);
         switch (timeRangeEnum) {
@@ -298,9 +302,9 @@ public class ColumnAbstract {
                 Date specifiedDateTime = DateUtils.parseDate(value + " 00:00:00", DateUtils.YYYY_MM_DD_HH_MM_SS);
                 return time.before(specifiedDateTime);
 
-                // todo 未完成
             case DATE_FIELD:
-                break;
+                String columnName = String.valueOf(segmentConditionRule.getValue());
+                return timeColumnContext.before(columnName, time, customerDetail);
         }
 
         return false;

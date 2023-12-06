@@ -25,7 +25,7 @@ public class LastFollowupAtColumn extends ColumnAbstract implements IColumnServi
         Date lastFollowupAt = customerDetail.getLastFollowupAt();
         if (lastFollowupAt == null) return false;
         try {
-            return super.dateHandler(lastFollowupAt, segmentConditionRule);
+            return super.dateHandler(lastFollowupAt, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("最近跟进时间处理异常", e);
             return false;

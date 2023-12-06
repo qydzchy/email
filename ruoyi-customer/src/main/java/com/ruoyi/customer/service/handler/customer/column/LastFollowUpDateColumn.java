@@ -38,7 +38,7 @@ public class LastFollowUpDateColumn extends ColumnAbstract implements IColumnSer
 
             if (createTime == null) return false;
 
-            return super.dateHandler(createTime, segmentConditionRule);
+            return super.dateHandler(createTime, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("最近[写跟进]时间处理异常", e);
             return false;

@@ -22,11 +22,11 @@ public class NextPublicleadsDateColumn extends ColumnAbstract implements IColumn
 
     @Override
     public boolean handler(CustomerDetailVO customerDetail, SegmentConditionRuleBO segmentConditionRule) {
-        try {
-            Date latestMoveToPublicSeaTime = customerDetail.getLatestMoveToPublicSeaTime();
-            if (latestMoveToPublicSeaTime == null) return false;
+        Date latestMoveToPublicSeaTime = customerDetail.getLatestMoveToPublicSeaTime();
+        if (latestMoveToPublicSeaTime == null) return false;
 
-            return super.dateHandler(latestMoveToPublicSeaTime, segmentConditionRule);
+        try {
+            return super.dateHandler(latestMoveToPublicSeaTime, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("下次移入公海日期处理异常", e);
             return false;

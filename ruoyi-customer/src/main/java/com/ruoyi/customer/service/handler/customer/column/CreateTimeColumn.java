@@ -24,7 +24,7 @@ public class CreateTimeColumn extends ColumnAbstract implements IColumnService {
         Date createTime = customerDetail.getCreateTime();
         if (createTime == null) return false;
         try {
-            return super.dateHandler(createTime, segmentConditionRule);
+            return super.dateHandler(createTime, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("创建时间处理异常", e);
             return false;

@@ -15,7 +15,7 @@ public class CustomerTask {
     private ICustomerService customerService;
 
     /**
-     * 客户客群洗牌
+     * 客户客群清洗
      * 一天执行一次
      */
     public void shuffle() {

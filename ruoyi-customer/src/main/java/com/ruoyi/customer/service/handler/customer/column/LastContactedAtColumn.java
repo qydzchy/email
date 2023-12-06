@@ -25,7 +25,7 @@ public class LastContactedAtColumn extends ColumnAbstract implements IColumnServ
         Date lastContactedAt = customerDetail.getLastContactedAt();
         if (lastContactedAt == null) return false;
         try {
-            return super.dateHandler(lastContactedAt, segmentConditionRule);
+            return super.dateHandler(lastContactedAt, customerDetail, segmentConditionRule);
         } catch (Exception e) {
             log.error("最近联系时间处理异常", e);
             return false;
