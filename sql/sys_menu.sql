@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 29/11/2023 14:56:38
+ Date: 07/12/2023 14:55:38
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2183 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2235 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -133,38 +133,10 @@ INSERT INTO `sys_menu` VALUES (1058, '导入代码', 116, 4, '#', '', '', 1, 0, 
 INSERT INTO `sys_menu` VALUES (1059, '预览代码', 116, 5, '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview', '#', 'admin', '2023-07-31 13:30:09', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (1060, '生成代码', 116, 6, '#', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code', '#', 'admin', '2023-07-31 13:30:09', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2002, '邮件', 0, 4, 'email/index', 'email/index', NULL, 1, 0, 'C', '0', '0', 'email:index', 'email', 'admin', '2023-08-03 14:10:27', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2003, '邮件列表-（首页）', 2002, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:list', '#', 'admin', '2023-10-11 16:26:53', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2004, '邮件保存-（写信）', 2002, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:save', '#', 'admin', '2023-10-11 16:27:15', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2005, '邮件发送-（写信）', 2002, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:send', '#', 'admin', '2023-10-11 16:27:33', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2006, '邮件固定', 2002, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:fixed', '#', 'admin', '2023-10-11 16:28:12', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2007, '邮件删除', 2002, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:delete', '#', 'admin', '2023-10-11 16:28:38', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2008, '快速回复', 2002, 6, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:send:quick:reply', '#', 'admin', '2023-10-11 16:33:08', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2009, '标记为已读邮件', 2002, 7, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:read', '#', 'admin', '2023-10-11 16:33:53', 'admin', '2023-10-11 16:34:40', '');
-INSERT INTO `sys_menu` VALUES (2010, '标记为垃圾邮件', 2002, 8, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:spam', '#', 'admin', '2023-10-11 16:34:28', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2011, '移动邮件到文件夹', 2002, 9, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:move:folder', '#', 'admin', '2023-10-11 16:36:38', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2012, '移动邮件到标签', 2002, 10, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:move:label', '#', 'admin', '2023-10-11 16:37:12', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2013, '标记待处理', 2002, 11, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:pending', '#', 'admin', '2023-10-11 16:37:32', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2014, '邮件导出', 2002, 12, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:export', '#', 'admin', '2023-10-11 16:38:12', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2015, '附件上传', 2002, 13, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:upload', '#', 'admin', '2023-10-11 16:40:19', 'admin', '2023-10-11 16:45:30', '');
-INSERT INTO `sys_menu` VALUES (2016, '附件下载', 2002, 14, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:download', '#', 'admin', '2023-10-11 16:40:41', 'admin', '2023-10-11 16:45:36', '');
-INSERT INTO `sys_menu` VALUES (2017, '附件重命名', 2002, 15, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:rename', '#', 'admin', '2023-10-11 16:44:23', 'admin', '2023-10-11 16:45:44', '');
-INSERT INTO `sys_menu` VALUES (2018, '附件删除', 2002, 16, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:delete', '#', 'admin', '2023-10-11 16:45:03', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2019, '文件夹列表', 2002, 17, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:list', '#', 'admin', '2023-10-11 16:46:24', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2020, '文件夹新增', 2002, 18, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:add', '#', 'admin', '2023-10-11 16:46:47', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2021, '文件夹修改', 2002, 19, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:edit', '#', 'admin', '2023-10-11 16:47:17', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2022, '文件夹删除', 2002, 20, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:delete', '#', 'admin', '2023-10-11 16:47:36', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2023, '标签列表', 2002, 21, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:list', '#', 'admin', '2023-10-11 16:48:09', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2024, '标签新增', 2002, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:add', '#', 'admin', '2023-10-11 16:48:27', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2025, '标签颜色修改', 2002, 23, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:edit:color', '#', 'admin', '2023-10-11 16:48:51', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2026, '标签名称修改', 2002, 24, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:edit:name', '#', 'admin', '2023-10-11 16:49:18', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2027, '标签删除', 2002, 25, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:delete', '#', 'admin', '2023-10-11 16:49:39', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2028, '邮箱列表', 2002, 26, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:list', '#', 'admin', '2023-10-11 16:50:10', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2029, '收件箱列表', 2002, 27, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:pull:list', '#', 'admin', '2023-10-11 16:54:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2030, '发件箱列表', 2002, 28, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:send:list', '#', 'admin', '2023-10-11 16:55:05', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2031, '邮箱新增', 2002, 29, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:add', '#', 'admin', '2023-10-11 16:55:29', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2032, '邮箱检测', 2002, 30, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:test', '#', 'admin', '2023-10-11 16:56:59', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2033, '邮箱修改', 2002, 31, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:edit', '#', 'admin', '2023-10-11 16:57:25', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2034, '邮箱解绑', 2002, 32, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:unbind', '#', 'admin', '2023-10-11 16:57:46', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2019, '文件夹列表', 2183, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:list', '#', 'admin', '2023-10-11 16:46:24', 'admin', '2023-12-07 11:46:01', '');
+INSERT INTO `sys_menu` VALUES (2020, '文件夹新增', 2183, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:add', '#', 'admin', '2023-10-11 16:46:47', 'admin', '2023-12-07 11:46:10', '');
+INSERT INTO `sys_menu` VALUES (2021, '文件夹修改', 2183, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:edit', '#', 'admin', '2023-10-11 16:47:17', 'admin', '2023-12-07 11:46:18', '');
+INSERT INTO `sys_menu` VALUES (2022, '文件夹删除', 2183, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:folder:delete', '#', 'admin', '2023-10-11 16:47:36', 'admin', '2023-12-07 11:46:24', '');
 INSERT INTO `sys_menu` VALUES (2035, '企业管理', 0, 5, 'company', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'compnay', 'admin', '2023-11-01 17:48:04', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2036, '客户', 0, 6, '/customer', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'peoples', 'admin', '2023-11-01 17:48:49', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2039, '建档黑名单列表', 2062, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:black:list:records:list', '#', 'admin', '2023-11-24 14:55:02', 'admin', '2023-11-24 15:10:49', '');
@@ -310,5 +282,57 @@ INSERT INTO `sys_menu` VALUES (2179, '下载文档', 2176, 3, '', NULL, NULL, 1,
 INSERT INTO `sys_menu` VALUES (2180, '删除文档', 2176, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:document:delete', '#', 'admin', '2023-11-24 17:42:41', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2181, '客群详情', 2119, 10, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:segment:detail', '#', 'admin', '2023-11-27 13:35:30', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2182, '查询所有用户', 2129, 24, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:get:all:users', '#', 'admin', '2023-11-29 14:55:33', 'admin', '2023-11-29 14:55:50', '');
+INSERT INTO `sys_menu` VALUES (2183, '文件夹', 2002, 16, '', NULL, NULL, 1, 0, 'F', '0', '0', '', '#', 'admin', '2023-12-07 11:45:01', 'admin', '2023-12-07 11:47:36', '');
+INSERT INTO `sys_menu` VALUES (2184, '模板', 2002, 12, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 11:50:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2185, '模板列表', 2184, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:list', '#', 'admin', '2023-12-07 11:51:24', 'admin', '2023-12-07 11:53:07', '');
+INSERT INTO `sys_menu` VALUES (2186, '新增模板', 2184, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:add', '#', 'admin', '2023-12-07 11:51:44', 'admin', '2023-12-07 11:53:14', '');
+INSERT INTO `sys_menu` VALUES (2187, '编辑模板', 2184, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:edit', '#', 'admin', '2023-12-07 11:51:59', 'admin', '2023-12-07 11:53:22', '');
+INSERT INTO `sys_menu` VALUES (2188, '删除模板', 2184, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:delete', '#', 'admin', '2023-12-07 11:52:14', 'admin', '2023-12-07 11:53:28', '');
+INSERT INTO `sys_menu` VALUES (2189, '模板类型', 2184, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 11:52:59', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2190, '模板类型列表', 2189, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:type:list', '#', 'admin', '2023-12-07 11:53:42', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2191, '新增模板类型', 2189, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:type:add', '#', 'admin', '2023-12-07 11:53:55', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2192, '编辑模板类型', 2189, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:type:edit', '#', 'admin', '2023-12-07 11:55:23', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2193, '删除模板类型', 2189, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:template:type:delete', '#', 'admin', '2023-12-07 11:55:41', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2194, '邮箱管理', 2002, 13, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 11:56:08', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2195, '邮箱任务列表', 2194, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:list', '#', 'admin', '2023-12-07 11:56:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2196, '新增邮箱任务', 2194, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:add', '#', 'admin', '2023-12-07 11:57:26', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2197, '邮箱任务检测', 2194, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:test', '#', 'admin', '2023-12-07 11:57:41', 'admin', '2023-12-07 11:58:11', '');
+INSERT INTO `sys_menu` VALUES (2198, '修改邮箱任务', 2194, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:edit', '#', 'admin', '2023-12-07 11:57:57', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2199, '邮箱任务解绑', 2194, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:unbind', '#', 'admin', '2023-12-07 11:58:32', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2200, '快速文本', 2002, 15, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 13:39:19', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2201, '快速文本列表', 2200, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:quick:text:list', '#', 'admin', '2023-12-07 13:40:20', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2202, '新增快速文本', 2200, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:quick:text:add', '#', 'admin', '2023-12-07 13:40:33', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2203, '编辑快速文本', 2200, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:quick:text:edit', '#', 'admin', '2023-12-07 13:40:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2204, '删除快速文本', 2200, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:quick:text:delete', '#', 'admin', '2023-12-07 13:41:02', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2205, '标签', 2002, 17, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 13:41:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2206, '标签列表', 2205, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:list', '#', 'admin', '2023-12-07 13:42:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2207, '新增标签', 2205, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:add', '#', 'admin', '2023-12-07 13:42:36', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2208, '修改标签颜色', 2205, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:edit:color', '#', 'admin', '2023-12-07 13:42:52', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2209, '修改标签名称', 2205, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:edit:name', '#', 'admin', '2023-12-07 13:43:09', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2210, '删除标签', 2205, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:label:delete', '#', 'admin', '2023-12-07 13:43:58', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2211, '邮件', 2002, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 13:44:20', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2212, '获取邮件列表-（首页）', 2211, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:list', '#', 'admin', '2023-12-07 13:45:03', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2213, '收件箱列表', 2211, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:pull:list', '#', 'admin', '2023-12-07 13:45:36', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2214, '发件箱列表', 2211, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:task:send:list', '#', 'admin', '2023-12-07 13:45:50', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2215, '邮件保存-（写信）', 2211, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:save', '#', 'admin', '2023-12-07 13:46:17', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2216, '邮件发送-（写信）', 2211, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:send', '#', 'admin', '2023-12-07 13:46:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2217, '附件', 2211, 6, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2023-12-07 13:48:51', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2218, '上传附件', 2217, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:upload', '#', 'admin', '2023-12-07 13:49:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2219, '重命名', 2217, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:rename', '#', 'admin', '2023-12-07 13:49:19', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2220, '删除附件', 2217, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:delete', '#', 'admin', '2023-12-07 13:49:53', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2221, '附件下载', 2217, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:download', '#', 'admin', '2023-12-07 13:50:08', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2222, '邮件固定', 2211, 7, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:fixed', '#', 'admin', '2023-12-07 13:50:32', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2223, '邮件删除', 2211, 8, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:delete', '#', 'admin', '2023-12-07 13:50:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2224, '快速回复', 2211, 9, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:send:quick:reply', '#', 'admin', '2023-12-07 13:51:05', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2225, '已读邮件', 2211, 10, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:read', '#', 'admin', '2023-12-07 13:51:39', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2226, '垃圾邮件', 2211, 11, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:spam', '#', 'admin', '2023-12-07 13:52:01', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2227, '移动邮件到文件夹', 2211, 12, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:move:folder', '#', 'admin', '2023-12-07 13:52:19', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2228, '移动邮件到标签', 2211, 13, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:move:label', '#', 'admin', '2023-12-07 13:52:36', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2229, '标记待处理', 2211, 14, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:pending', '#', 'admin', '2023-12-07 13:52:50', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2230, '邮件导出', 2211, 15, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:export', '#', 'admin', '2023-12-07 13:53:05', 'admin', '2023-12-07 13:53:14', '');
+INSERT INTO `sys_menu` VALUES (2231, '上传邮件附件', 2211, 16, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:upload', '#', 'admin', '2023-12-07 13:53:42', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2232, '下载邮件附件', 2211, 17, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:download', '#', 'admin', '2023-12-07 13:54:00', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2233, '删除邮件标签', 2211, 18, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:delete:label', '#', 'admin', '2023-12-07 13:54:15', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2234, '统计菜单邮件数量', 2211, 19, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:count:menu', '#', 'admin', '2023-12-07 13:54:34', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;
