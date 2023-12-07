@@ -162,7 +162,7 @@
 		watch: {
 			tagList: {
 				handler(newVal) {
-					this.innerTagList = JSON.parse(JSON.stringify(newVal));
+					this.innerTagList = JSON.parse(JSON.stringify(newVal)) || [];
 				},
 				deep: true,
 				immediate: true,
