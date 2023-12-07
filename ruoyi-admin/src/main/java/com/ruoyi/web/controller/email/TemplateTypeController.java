@@ -50,12 +50,12 @@ public class TemplateTypeController extends BaseController {
     }
 
     /**
-     * 编辑快速文本
+     * 编辑模板类型
      * @param templateType
      * @return
      */
     @PreAuthorize("@ss.hasPermi('email:template:type:edit')")
-    @Log(title = "编辑模板名称", businessType = BusinessType.INSERT)
+    @Log(title = "编辑模板类型", businessType = BusinessType.INSERT)
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody TemplateType templateType)
     {
@@ -71,7 +71,7 @@ public class TemplateTypeController extends BaseController {
     }
 
     /**
-     * 删除快速文本
+     * 删除模板类型
      */
     @PreAuthorize("@ss.hasPermi('email:template:type:delete')")
     @Log(title = "删除模板类型", businessType = BusinessType.UPDATE)
