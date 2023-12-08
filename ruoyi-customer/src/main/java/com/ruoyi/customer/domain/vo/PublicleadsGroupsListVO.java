@@ -4,6 +4,7 @@ import com.ruoyi.system.domain.vo.UserInfoVO;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class PublicleadsGroupsListVO {
@@ -18,7 +19,7 @@ public class PublicleadsGroupsListVO {
     /**
      * 分组成员信息
      */
-    private List<UserInfoVO> userInfoList;
+    private List<Map<String, Object>> groupUserList;
 
     /**
      * 是否为默认分组

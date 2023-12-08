@@ -22,14 +22,15 @@ public class PublicleadsGroups extends BaseEntity
     @Excel(name = "分组名称")
     private String name;
 
-    /** 分组成员ID（逗号拼接） */
-    @Excel(name = "分组成员ID", readConverterExp = "逗号拼接")
-    private String userIds;
-
     /**
      * 默认分组 0.否 1.是
      */
     private Boolean defaultGroupFlag;
+
+    /**
+     * 分组成员
+     */
+    private String groupMember;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -60,15 +61,6 @@ public class PublicleadsGroups extends BaseEntity
     {
         return name;
     }
-    public void setUserIds(String userIds) 
-    {
-        this.userIds = userIds;
-    }
-
-    public String getUserIds() 
-    {
-        return userIds;
-    }
 
     public Boolean getDefaultGroupFlag() {
         return defaultGroupFlag;
@@ -76,6 +68,14 @@ public class PublicleadsGroups extends BaseEntity
 
     public void setDefaultGroupFlag(Boolean defaultGroupFlag) {
         this.defaultGroupFlag = defaultGroupFlag;
+    }
+
+    public String getGroupMember() {
+        return groupMember;
+    }
+
+    public void setGroupMember(String groupMember) {
+        this.groupMember = groupMember;
     }
 
     public void setDelFlag(String delFlag)
@@ -112,7 +112,6 @@ public class PublicleadsGroups extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("name", getName())
-            .append("userIds", getUserIds())
             .append("delFlag", getDelFlag())
             .append("createId", getCreateId())
             .append("createBy", getCreateBy())
