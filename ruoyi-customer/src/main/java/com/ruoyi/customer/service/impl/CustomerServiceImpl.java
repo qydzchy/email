@@ -28,9 +28,7 @@ import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.*;
 import com.ruoyi.customer.mapper.*;
-import com.ruoyi.customer.service.ICustomerFollowUpRecordsService;
-import com.ruoyi.customer.service.IPublicleadsGroupsService;
-import com.ruoyi.customer.service.ISegmentService;
+import com.ruoyi.customer.service.*;
 import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
 import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +37,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import com.ruoyi.customer.service.ICustomerService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -101,11 +98,15 @@ public class CustomerServiceImpl implements ICustomerService {
     @Resource
     private BlackListRecordsMapper blackListRecordsMapper;
     @Resource
+    private PublicleadsGroupsMapper publicleadsGroupsMapper;
+    @Resource
     private ICustomerFollowUpRecordsService customerFollowUpRecordsService;
     @Resource
     private IPublicleadsGroupsService publicleadsGroupsService;
     @Resource
     private ISegmentService segmentService;
+    @Resource
+    private IUserDeptService userDeptService;
     @Resource
     private ColumnContext columnContext;
 
@@ -889,7 +890,23 @@ public class CustomerServiceImpl implements ICustomerService {
     public List<CustomerPublicleadsGroupListVO> publicleadsGroupsList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        return customerMapper.publicleadsGroupsList(userId);
+        Long deptId = loginUser.getDeptId();
+
+        List<UserDeptInfoBO> userDeptInfoBOList = Arrays.asList(UserDeptInfoBO.builder().userId(userId).deptId(deptId).build());
+        List<PublicleadsGroups> publicleadsGroupsList = publicleadsGroupsMapper.selectPublicleadsGroupsList(new PublicleadsGroups());
+
+        List<CustomerPublicleadsGroupListVO> customerPublicleadsGroupVOList = new ArrayList<>();
+        for (PublicleadsGroups publicleadsGroups : publicleadsGroupsList) {
+            String groupMember = publicleadsGroups.getGroupMember();
+            if (userDeptService.userDeptVerify(userDeptInfoBOList, groupMember)) {
+                CustomerPublicleadsGroupListVO customerPublicleadsGroupVO = new CustomerPublicleadsGroupListVO();
+                customerPublicleadsGroupVO.setId(publicleadsGroups.getId());
+                customerPublicleadsGroupVO.setName(publicleadsGroups.getName());
+                customerPublicleadsGroupVOList.add(customerPublicleadsGroupVO);
+            }
+        }
+
+        return customerPublicleadsGroupVOList;
     }
 
     /**
@@ -1604,27 +1621,6 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public List<TeamMembersListVO> getAllUsers() {
         return customerMapper.getAllUser();
-    }
-
-    /**
-     * 客户分组列表
-     * @return
-     */
-    @Override
-    public List<PacketListVO> packetList() {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        Long deptId = loginUser.getDeptId();
-
-        // 查询所有的分组
-        List<Packet> packetList = packetMapper.selectPacketList(new Packet());
-        Iterator<Packet> iterator = packetList.iterator();
-        while (iterator.hasNext()) {
-            Packet packet = iterator.next();
-
-        }
-
-        return null;
     }
 
     /**

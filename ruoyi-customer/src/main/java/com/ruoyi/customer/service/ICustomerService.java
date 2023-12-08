@@ -223,10 +223,4 @@ public interface ICustomerService
      * @return
      */
     List<TeamMembersListVO> getAllUsers();
-
-    /**
-     * 客户分组列表
-     * @return
-     */
-    List<PacketListVO> packetList();
 }

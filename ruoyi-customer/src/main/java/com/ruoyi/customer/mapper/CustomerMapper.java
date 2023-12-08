@@ -95,13 +95,6 @@ public interface CustomerMapper
     void changePublicleadsGroups(@Param("id") Long id, @Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
-     * 查询公海分组列表
-     * @param userId
-     * @return
-     */
-    List<CustomerPublicleadsGroupListVO> publicleadsGroupsList(@Param("userId") Long userId);
-
-    /**
      * 将客户移入私海
      * @param id
      */

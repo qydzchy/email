@@ -95,18 +95,6 @@
           )
     </select>
 
-    <select id="publicleadsGroupsList" resultType="com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO">
-        SELECT
-            pg.id,
-            pg.NAME
-        FROM
-            customer_publicleads_groups pg
-            LEFT JOIN customer_publicleads_groups_user pgu ON pg.id = pgu.publicleads_groups_id
-        WHERE
-            pgu.user_id = #{userId} and pg.del_flag = '0'
-        GROUP BY pg.id
-    </select>
-
     <select id="selectPrivateleadsCustomerPage"
             resultType="com.ruoyi.customer.domain.vo.PrivateleadsCustomerSimpleListVO">
         SELECT
