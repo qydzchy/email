@@ -399,6 +399,7 @@ CREATE TABLE `customer_publicleads_groups`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分组名称',
 `default_group_flag` tinyint(1) NOT NULL COMMENT '默认分组 0.否 1.是 ',
+`group_member` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT NULL COMMENT '分组成员{"user":[1,2,3],"dept":[1,2,3]}',
 `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
 `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
 `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
@@ -407,22 +408,7 @@ CREATE TABLE `customer_publicleads_groups`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
-
-
--- ----------------------------
--- Table structure for customer_publicleads_groups_user
--- ----------------------------
-DROP TABLE IF EXISTS `customer_publicleads_groups_user`;
-CREATE TABLE `customer_publicleads_groups_user`  (
-`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-`publicleads_groups_id` bigint(20) NULL DEFAULT NULL COMMENT '公海分组',
-`user_id` bigint(20) NULL DEFAULT NULL COMMENT '分组成员',
-PRIMARY KEY (`id`) USING BTREE,
-INDEX `idx_publicleads_groups_id`(`publicleads_groups_id`) USING BTREE COMMENT '公海分组索引',
-INDEX `idx_user_id`(`user_id`) USING BTREE COMMENT '分组成员索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组成员' ROW_FORMAT = Dynamic;
-
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for customer_publicleads_reason

@@ -1900,63 +1900,19 @@ INSERT INTO `customer_publicleads_claim_limit` VALUES (2, 1, 10, 1, '0', 1, 'adm
 -- ----------------------------
 DROP TABLE IF EXISTS `customer_publicleads_groups`;
 CREATE TABLE `customer_publicleads_groups`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分组名称',
-  `default_group_flag` tinyint(1) NOT NULL COMMENT '默认分组 0.否 1.是 ',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
-  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分组名称',
+`default_group_flag` tinyint(1) NOT NULL COMMENT '默认分组 0.否 1.是 ',
+`group_member` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT NULL COMMENT '分组成员{"user":[1,2,3],"dept":[1,2,3]}',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of customer_publicleads_groups
--- ----------------------------
-INSERT INTO `customer_publicleads_groups` VALUES (7, '分组名称01', 0, '0', 1, 'admin', '2023-11-06 16:52:23', 1, 'admin', '2023-11-06 16:52:38');
-INSERT INTO `customer_publicleads_groups` VALUES (8, '测试01', 0, '2', 1, 'admin', '2023-11-14 08:53:27', 1, 'admin', '2023-11-14 09:01:43');
-INSERT INTO `customer_publicleads_groups` VALUES (9, 'aaa', 0, '2', 1, 'admin', '2023-11-14 08:55:16', 1, 'admin', '2023-11-14 09:01:42');
-INSERT INTO `customer_publicleads_groups` VALUES (10, '分组名称02', 0, '2', 1, 'admin', '2023-11-14 09:01:50', 5, 'wangwu', '2023-11-24 16:28:17');
-INSERT INTO `customer_publicleads_groups` VALUES (11, '分组名称02', 0, '0', 1, 'admin', '2023-11-27 17:09:52', 1, 'admin', '2023-11-27 17:09:52');
-INSERT INTO `customer_publicleads_groups` VALUES (12, '分组名称03', 0, '0', 1, 'admin', '2023-11-27 17:16:58', 1, 'admin', '2023-11-27 17:16:58');
-
--- ----------------------------
--- Table structure for customer_publicleads_groups_user
--- ----------------------------
-DROP TABLE IF EXISTS `customer_publicleads_groups_user`;
-CREATE TABLE `customer_publicleads_groups_user`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `publicleads_groups_id` bigint(20) NULL DEFAULT NULL COMMENT '公海分组',
-  `user_id` bigint(20) NULL DEFAULT NULL COMMENT '分组成员',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_publicleads_groups_id`(`publicleads_groups_id`) USING BTREE COMMENT '公海分组索引',
-  INDEX `idx_user_id`(`user_id`) USING BTREE COMMENT '分组成员索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组成员' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of customer_publicleads_groups_user
--- ----------------------------
-INSERT INTO `customer_publicleads_groups_user` VALUES (9, 7, 1);
-INSERT INTO `customer_publicleads_groups_user` VALUES (10, 8, 1);
-INSERT INTO `customer_publicleads_groups_user` VALUES (11, 8, 104);
-INSERT INTO `customer_publicleads_groups_user` VALUES (12, 8, 2);
-INSERT INTO `customer_publicleads_groups_user` VALUES (13, 8, 106);
-INSERT INTO `customer_publicleads_groups_user` VALUES (14, 8, 107);
-INSERT INTO `customer_publicleads_groups_user` VALUES (15, 8, 108);
-INSERT INTO `customer_publicleads_groups_user` VALUES (16, 8, 109);
-INSERT INTO `customer_publicleads_groups_user` VALUES (17, 9, 1);
-INSERT INTO `customer_publicleads_groups_user` VALUES (18, 9, 104);
-INSERT INTO `customer_publicleads_groups_user` VALUES (19, 9, 2);
-INSERT INTO `customer_publicleads_groups_user` VALUES (20, 9, 106);
-INSERT INTO `customer_publicleads_groups_user` VALUES (21, 9, 107);
-INSERT INTO `customer_publicleads_groups_user` VALUES (22, 9, 108);
-INSERT INTO `customer_publicleads_groups_user` VALUES (23, 9, 109);
-INSERT INTO `customer_publicleads_groups_user` VALUES (31, 10, 2);
-INSERT INTO `customer_publicleads_groups_user` VALUES (32, 11, 1);
-INSERT INTO `customer_publicleads_groups_user` VALUES (33, 12, 6);
 
 -- ----------------------------
 -- Table structure for customer_publicleads_reason
