@@ -82,18 +82,22 @@
                 <i class="el-icon-warning-outline ml-6"></i>
               </el-tooltip>
             </div>
-            <el-radio-group class="flex-column gap-10 mb-10" v-model="groupDialogForm.availableMember">
+            <el-radio-group class="flex-column gap-10 mb-10" v-model="groupDialogForm.availableMember" @change="handleMemberType">
               <el-radio :label="1">全部成员</el-radio>
               <el-radio :label="2">指定成员</el-radio>
             </el-radio-group>
-            <TreeSelectNext
-              :default-props="defaultProps"
-              :tree-data="memberOption"
-              :echo-data.sync="groupDialogForm.designatedMember"
+            <el-select-tree
+              style="width: 100%"
+              v-model="groupDialogForm.designatedMember"
+              multiple
+              clearable
+              filterable
+              show-checkbox
+              collapse-tags
+              :data="memberOption"
+              :props="defaultProps"
               :disabled="groupDialogForm.availableMember === 1"
-              echo-name="nickName"
-            />
-
+              :default-expand-all="true"/>
           </div>
 
         </el-form-item>
@@ -107,9 +111,7 @@
 </template>
 
 <script>
-import {delMenu, getMenu, listMenu} from "@/api/system/menu";
 import DelPopover from "./DelPopover.vue";
-import TreeSelectNext from '@/components/TreeSelectNext'
 import {mapState} from "vuex";
 import {packetAdd, packetDelete, packetEdit, packetList} from "@/api/company/group";
 import {listDeptUsersTree} from "@/api/system/dept";
@@ -126,8 +128,7 @@ const initGroupForm = {
 export default {
   dicts: ['sys_show_hide', 'sys_normal_disable'],
   components: {
-    DelPopover,
-    TreeSelectNext
+    DelPopover
   },
   data() {
     return {
@@ -141,13 +142,14 @@ export default {
       groupDialog: false, //
       groupDialogTitle: '新建客户分组',
       groupDialogForm: {...initGroupForm},
-      data: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        value: 'id'
       },
       memberOption: [],
-
+      tempAllDept: [],
+      tempAllUser: [],
     }
   },
   mounted() {
@@ -181,7 +183,7 @@ export default {
       try {
         const res = await listDeptUsersTree()
         if (res.code === 200) {
-          this.memberOption = res.data
+          this.memberOption = this.generateMemberOption(res.data)
         }
       } catch {
       }
@@ -201,12 +203,12 @@ export default {
       this.groupDialogTitle = '编辑客户分组'
       const searchName = this.generateSearchParent(this.menuList, row?.parentId)
       const parentName = row?.parentId !== -1 ? searchName : '客户分组'
-      const designatedMember = row?.designatedMember?.length ? row.designatedMember.split(',').map(val => +val) : []
+      const designatedMember = row?.designatedMember || null
       this.groupDialogForm = {
         ...this.groupDialogForm,
         ...row,
         parentName: parentName,
-        designatedMember: designatedMember
+        designatedMember: this.generateMemberChoose(designatedMember)
       }
       this.groupDialog = true
     },
@@ -231,7 +233,7 @@ export default {
           parentId,
           parentName,
           availableMember,
-          designatedMember: availableMember === 2 ? designatedMember.join(',') : "",
+          designatedMember: availableMember === 2 ? designatedMember : "",
         })
         if (res.code === 200) {
           this.$message({
@@ -253,7 +255,7 @@ export default {
           parentId,
           parentName,
           availableMember,
-          designatedMember: availableMember === 2 ? designatedMember.join(',') : "",
+          designatedMember: availableMember === 2 ? designatedMember : "",
         })
         if (res.code === 200) {
           this.$message({
@@ -268,13 +270,16 @@ export default {
     },
     // 确认
     onConfirm() {
-      const formData = this.groupDialogForm
-      if (!formData.name) {
+      if (!this.groupDialogForm.name) {
         this.$message({
           type: 'error',
           message: '请填写分组名'
         })
         return
+      }
+      const formData = {
+        ...this.groupDialogForm,
+
       }
       if (!formData.id) {
         this.packetAddReq(formData)
@@ -302,6 +307,11 @@ export default {
           })
         }
       })
+    },
+    handleMemberType(value){
+      if(value===1){
+        this.groupDialogForm.designatedMember = []
+      }
     },
     generateLevelList(list) {
 
@@ -331,7 +341,104 @@ export default {
       }
       searchParent(list, parentId)
       return parentName
-    }
+    },
+    generateMemberChoose(scopeData) {
+      let scope = JSON?.parse(scopeData)
+      if (!scope) {
+        return []
+      }
+      // 部门
+      let dept = []
+      if (scope?.dept?.allFlag) {
+        this.tempAllDept.forEach(val => {
+          dept.push(val.id)
+        })
+      } else {
+        dept = scope?.dept?.deptIds || []
+      }
+      // 用户
+      let user = []
+      if (scope?.user?.allFlag) {
+        this.tempAllUser.forEach(val => {
+          user.push(val.id)
+        })
+      } else {
+        user = scope?.user?.userIds || []
+      }
+      
+      return [...dept, ...user]
+
+    },
+    // 格式化成员结构
+    generateMemberOption(list) {
+      let ids = []
+      let allDept = {
+        id: 'allDept',
+        name: '全部部门',
+        children: []
+      }
+      let allUser = {
+        id: 'allUser',
+        name: '全部人员',
+        children: []
+      }
+      const deepSearch = arr => arr.forEach(val => {
+        ids.push(val.id)
+        if (val.type === 1) {
+          allDept.children.push({
+            id: val.id,
+            name: val.name
+          })
+        } else if (val.type === 2) {
+          allUser.children.push({
+            id: val.id,
+            name: val.name
+          })
+        }
+        if (val.children && val.children.length) {
+          deepSearch(val.children)
+        }
+      })
+      deepSearch(list)
+      this.tempAllDept = allDept.children
+      this.tempAllUser = allUser.children
+      return [{
+        id: 'all',
+        name: '全公司可见',
+        children: [allDept, allUser]
+      }]
+    },
+    generateMemberFormat(ids) {
+      let templateScope = {
+        "dept": { //部门
+          "allFlag": true, // true所有部门 false指定部门
+          "deptIds": [] //指定部门ID
+        },
+        "user": { //用户
+          "allFlag": true, //true所有用户 false指定用户
+          "userIds": [] //指定用户ID
+        }
+      }
+      // 校验勾选部门
+      const validDept = this.tempAllDept.every(val => ids.includes(val.id))
+      if (validDept) {
+        templateScope.dept.allFlag = true
+      } else {
+        templateScope.dept.allFlag = false
+        let deptIds = this.tempAllDept.filter(val => ids.includes(val.id))
+        templateScope.dept.deptIds = deptIds.map(val => val.id)
+      }
+      // 校验勾选用户
+      const validUser = this.tempAllUser.every(val => ids.includes(val.id))
+      if (validUser) {
+        templateScope.user.allFlag = true
+      } else {
+        templateScope.user.allFlag = false
+        let userIds = this.tempAllUser.filter(val => ids.includes(val.id))
+        templateScope.user.userIds = userIds.map(val => val.id)
+      }
+      return JSON.stringify(templateScope)
+    },
   }
 }
 </script>
