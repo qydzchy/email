@@ -16,4 +16,5 @@ public class UserDeptInfoBO {
      * 部门ID
      */
     private Long deptId;
+
 }

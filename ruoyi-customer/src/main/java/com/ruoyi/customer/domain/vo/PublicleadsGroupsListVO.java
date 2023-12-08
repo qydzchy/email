@@ -1,10 +1,6 @@
 package com.ruoyi.customer.domain.vo;
 
-import com.ruoyi.system.domain.vo.UserInfoVO;
 import lombok.Data;
-
-import java.util.List;
-import java.util.Map;
 
 @Data
 public class PublicleadsGroupsListVO {
@@ -17,9 +13,9 @@ public class PublicleadsGroupsListVO {
     private String name;
 
     /**
-     * 分组成员信息
+     * 分组成员
      */
-    private List<Map<String, Object>> groupUserList;
+    private String groupMember;
 
     /**
      * 是否为默认分组

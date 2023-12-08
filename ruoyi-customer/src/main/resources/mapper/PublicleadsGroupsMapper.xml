@@ -37,29 +37,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="list" resultType="com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO">
-        select pg.id, pg.name, pg.default_group_flag as defaultGroupFlag, u.user_id as userId, u.user_name as userName, u.nick_name as nickName
-        from customer_publicleads_groups pg
-        left join customer_publicleads_groups_user pgu on pg.id = pgu.publicleads_groups_id
-        left join sys_user u on pgu.user_id = u.user_id
-        where pg.del_flag = '0'
-    </select>
-
     <select id="selectPublicleadsGroupsByCustomerId"
-            resultType="com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO">
+            resultType="com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO">
         SELECT
             pg.id,
             pg.NAME,
             pg.default_group_flag AS defaultGroupFlag,
-            u.user_id AS userId,
-            u.user_name AS userName,
-            u.nick_name AS nickName
+            pg.group_member AS groupMember
         FROM
             customer_publicleads_groups pg
-            LEFT JOIN customer_customer cc ON cc.publicleads_groups_id = pg.id
-            AND cc.del_flag = '0'
-            LEFT JOIN customer_publicleads_groups_user pgu ON pg.id = pgu.publicleads_groups_id
-            LEFT JOIN sys_user u ON pgu.user_id = u.user_id
+            LEFT JOIN customer_customer cc ON cc.publicleads_groups_id = pg.id AND cc.del_flag = '0'
         WHERE
             pg.del_flag = '0'
             AND cc.id = #{customerId}

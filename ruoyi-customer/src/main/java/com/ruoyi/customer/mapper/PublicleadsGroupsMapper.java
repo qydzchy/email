@@ -2,7 +2,7 @@ package com.ruoyi.customer.mapper;
 
 import java.util.List;
 import com.ruoyi.customer.domain.PublicleadsGroups;
-import com.ruoyi.customer.domain.bo.PublicleadsGroupsListBO;
+import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import com.ruoyi.customer.domain.vo.SubgroupColumnListVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -63,17 +63,11 @@ public interface PublicleadsGroupsMapper
     public int deletePublicleadsGroupsByIds(Long[] ids);
 
     /**
-     * 公海分组列表
-     * @return
-     */
-    List<PublicleadsGroupsListBO> list();
-
-    /**
      * 根据客户id查询客户所在的公海分组
      * @param customerId
      * @return
      */
-    List<PublicleadsGroupsListBO> selectPublicleadsGroupsByCustomerId(@Param("customerId") Long customerId);
+    List<PublicleadsGroupsListVO> selectPublicleadsGroupsByCustomerId(@Param("customerId") Long customerId);
 
     /**
      * 查询客户公海分组简单信息

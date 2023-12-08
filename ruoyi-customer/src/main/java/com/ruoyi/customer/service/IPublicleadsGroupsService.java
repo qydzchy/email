@@ -1,8 +1,8 @@
 package com.ruoyi.customer.service;
 
 import java.util.List;
+
 import com.ruoyi.customer.domain.PublicleadsGroups;
-import com.ruoyi.customer.domain.dto.PublicleadsGroupAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 
 /**
@@ -16,18 +16,18 @@ public interface IPublicleadsGroupsService
     /**
      * 新增公海分组
      * 
-     * @param publicleadsGroupAddOrUpdateDTO 公海分组
+     * @param publicleadsGroups
      * @return 结果
      */
-    public boolean insertPublicleadsGroups(PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO);
+    public boolean insertPublicleadsGroups(PublicleadsGroups publicleadsGroups);
 
     /**
      * 修改公海分组
      * 
-     * @param publicleadsGroupAddOrUpdateDTO 公海分组
+     * @param publicleadsGroups
      * @return 结果
      */
-    public boolean updatePublicleadsGroups(PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO);
+    public boolean updatePublicleadsGroups(PublicleadsGroups publicleadsGroups);
 
     /**
      * 删除公海分组信息

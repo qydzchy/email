@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.customer.domain.dto.PublicleadsGroupAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.PublicleadsGroupsListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,15 +49,15 @@ public class PublicleadsGroupsController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:groups:add')")
     @Log(title = "新增公海分组", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
+    public AjaxResult add(@RequestBody PublicleadsGroups publicleadsGroups)
     {
-        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getName())) {
+        if (StringUtils.isBlank(publicleadsGroups.getName())) {
             throw new ServiceException("分组名称不能为空");
         }
-        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getUserIds())) {
+        if (StringUtils.isBlank(publicleadsGroups.getGroupMember())) {
             throw new ServiceException("分组成员不能为空");
         }
-        return toAjax(publicleadsGroupsService.insertPublicleadsGroups(publicleadsGroupAddOrUpdateDTO));
+        return toAjax(publicleadsGroupsService.insertPublicleadsGroups(publicleadsGroups));
     }
 
     /**
@@ -67,18 +66,18 @@ public class PublicleadsGroupsController extends BaseController
     @PreAuthorize("@ss.hasPermi('customer:public:leads:groups:edit')")
     @Log(title = "修改公海分组", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody PublicleadsGroupAddOrUpdateDTO publicleadsGroupAddOrUpdateDTO)
+    public AjaxResult edit(@RequestBody PublicleadsGroups publicleadsGroups)
     {
-        if (publicleadsGroupAddOrUpdateDTO.getId() == null) {
+        if (publicleadsGroups.getId() == null) {
             throw new ServiceException("ID不能为空");
         }
-        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getName())) {
+        if (StringUtils.isBlank(publicleadsGroups.getName())) {
             throw new ServiceException("分组名称不能为空");
         }
-        if (StringUtils.isBlank(publicleadsGroupAddOrUpdateDTO.getUserIds())) {
+        if (StringUtils.isBlank(publicleadsGroups.getGroupMember())) {
             throw new ServiceException("分组成员不能为空");
         }
-        return toAjax(publicleadsGroupsService.updatePublicleadsGroups(publicleadsGroupAddOrUpdateDTO));
+        return toAjax(publicleadsGroupsService.updatePublicleadsGroups(publicleadsGroups));
     }
 
     /**

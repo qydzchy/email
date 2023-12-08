@@ -353,4 +353,14 @@ public class CustomerController extends BaseController
 
         return toAjax(customerService.moveToPrivateleads(moveToPrivateleadsDTO.getId(), moveToPrivateleadsDTO.getPacketId()));
     }
+
+    /**
+     * 查询客户分组列表
+     */
+  /*  @PreAuthorize("@ss.hasPermi('customer:customer:packet:list')")
+    @GetMapping(value = "/packet/list")
+    public AjaxResult packetList()
+    {
+        return success(customerService.packetList());
+    }*/
 }
