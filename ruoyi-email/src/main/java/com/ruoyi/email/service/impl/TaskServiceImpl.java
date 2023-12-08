@@ -317,7 +317,9 @@ public class TaskServiceImpl implements ITaskService
 
             for (MailItem mailItem : mailItems) {
                 try {
-                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailPath, attachmentPath);
+                    String newEmailPath = emailPath.concat("/").concat(task.getAccount());
+                    String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());
+                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
                         saveEmailData(task.getId(), universalMail);
