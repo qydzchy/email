@@ -1903,7 +1903,7 @@ CREATE TABLE `customer_publicleads_groups`  (
 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
 `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分组名称',
 `default_group_flag` tinyint(1) NOT NULL COMMENT '默认分组 0.否 1.是 ',
-`group_member` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT NULL COMMENT '分组成员{"user":[1,2,3],"dept":[1,2,3]}',
+`group_member` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分组成员{"user":[1,2,3],"dept":[1,2,3]}',
 `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
 `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
 `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
