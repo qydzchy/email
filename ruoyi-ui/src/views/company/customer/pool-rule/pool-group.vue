@@ -19,6 +19,8 @@
         width="400px"
         style="margin-top: 25vh"
         :title="poolGroupDialogTitle"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
         destroy-on-close
     >
       <el-form ref="poolGroupRef" :model="poolGroupFrom" :rules="poolGroupFromRule">
@@ -28,13 +30,18 @@
         </el-form-item>
         <el-form-item label="分组成员" prop="userIds">
           <div class="form-item">
-            <TreeSelectNext
-                v-if="!poolGroupFrom.isView"
-                :default-props="defaultProps"
-                :tree-data="memberOption"
-                :echo-data.sync="poolGroupFrom.userIds"
-            />
-
+            <el-select-tree
+              v-if="!poolGroupFrom.isView"
+              style="width: 100%"
+              v-model="poolGroupFrom.userIds"
+              multiple
+              clearable
+              filterable
+              show-checkbox
+              collapse-tags
+              :data="memberOption"
+              :props="defaultProps"
+              :default-expand-all="true"/>
             <div class="flex-middle" v-else>
               <el-tooltip :content="formatMemberList">
                 <div style="width: auto">
@@ -151,14 +158,16 @@ export default {
       data: treeList,
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        value: 'id'
       },
       memberOption: [],
       tableLoading: false,
       btnLoading: false,
+      tempAllDept: [],
+      tempAllUser: [],
     }
-  }
-  ,
+  },
   computed: {
     formatMemberList() {
       if (!this.poolGroupFrom.memberList.length) {
@@ -170,11 +179,16 @@ export default {
       })
       return arr.join(',')
     }
-  }
-  ,
+  },
+  watch:{
+    poolGroupDialog(newVal){
+      if(newVal){
+        this.getCommonTree()
+      }
+    }
+  },
   mounted() {
     this.getList()
-    this.getCommonTree()
   },
   methods: {
     async getList() {
@@ -199,7 +213,7 @@ export default {
       try {
         const res = await listDeptUsersTree()
         if (res.code === 200) {
-          this.memberOption = res.data
+          this.memberOption = this.generateMemberOption(res.data)
         }
       } catch {
       }
@@ -282,7 +296,10 @@ export default {
       this.$refs.poolGroupRef.validate(valid => {
         if (valid) {
           this.btnLoading = true
-          const formData = this.poolGroupFrom
+          const formData = {
+            ...this.poolGroupFrom,
+            userIds:this.generateMemberFormat(this.poolGroupFrom.userIds)
+          }
           if (!formData.id) {
             this.groupsAddReq(formData)
           } else {
@@ -296,6 +313,76 @@ export default {
       this.poolGroupDialogTitle = '添加公海分组'
       this.poolGroupFrom = initPoolGroupFrom
       this.poolGroupDialog = false
+    },
+    // 格式化成员结构
+    generateMemberOption(list) {
+      let ids = []
+      let allDept = {
+        id: 'allDept',
+        name: '全部部门',
+        children: []
+      }
+      let allUser = {
+        id: 'allUser',
+        name: '全部人员',
+        children: []
+      }
+      const deepSearch = arr => arr.forEach(val => {
+        ids.push(val.id)
+        if (val.type === 1) {
+          allDept.children.push({
+            id: val.id,
+            name: val.name
+          })
+        } else if (val.type === 2) {
+          allUser.children.push({
+            id: val.id,
+            name: val.name
+          })
+        }
+        if (val.children && val.children.length) {
+          deepSearch(val.children)
+        }
+      })
+      deepSearch(list)
+      this.tempAllDept = allDept.children
+      this.tempAllUser = allUser.children
+      return [{
+        id: 'all',
+        name: '全公司可见',
+        children: [allDept, allUser]
+      }]
+    },
+    generateMemberFormat(ids) {
+      let templateScope = {
+        "dept": { //部门
+          "allFlag": true, // true所有部门 false指定部门
+          "deptIds": [] //指定部门ID
+        },
+        "user": { //用户
+          "allFlag": true, //true所有用户 false指定用户
+          "userIds": [] //指定用户ID
+        }
+      }
+      // 校验勾选部门
+      const validDept = this.tempAllDept.every(val => ids.includes(val.id))
+      if (validDept) {
+        templateScope.dept.allFlag = true
+      } else {
+        templateScope.dept.allFlag = false
+        let deptIds = this.tempAllDept.filter(val => ids.includes(val.id))
+        templateScope.dept.deptIds = deptIds.map(val => val.id)
+      }
+      // 校验勾选用户
+      const validUser = this.tempAllUser.every(val => ids.includes(val.id))
+      if (validUser) {
+        templateScope.user.allFlag = true
+      } else {
+        templateScope.user.allFlag = false
+        let userIds = this.tempAllUser.filter(val => ids.includes(val.id))
+        templateScope.user.userIds = userIds.map(val => val.id)
+      }
+      return JSON.stringify(templateScope)
     },
   }
 }
