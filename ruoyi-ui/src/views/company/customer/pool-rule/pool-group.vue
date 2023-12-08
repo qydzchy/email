@@ -179,7 +179,6 @@ export default {
   },
   mounted() {
     this.getCommonTree()
-    this.getList()
   },
   methods: {
     async getList() {
@@ -206,10 +205,14 @@ export default {
     },
     async getCommonTree() {
       try {
-        const res = await listDeptUsersTree()
+        const res = await listDeptUsersTree().finally(()=>{
+          // 请求完成后再请求列表
+          this.getList()
+        })
         if (res.code === 200) {
           this.memberOption = this.generateMemberOption(res.data)
         }
+        
       } catch {
       }
     },
@@ -296,7 +299,6 @@ export default {
             ...this.poolGroupFrom,
             groupMember:this.generateMemberFormat(this.poolGroupFrom.groupMember)
           }
-          console.log(formData);
           if (!formData.id) {
             this.groupsAddReq(formData)
           } else {

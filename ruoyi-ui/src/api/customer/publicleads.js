@@ -174,3 +174,11 @@ export function getAllUser() {
         method: 'get'
     })
 }
+
+// 分组测试接口
+export function getSetPacketList() {
+    return request({
+        url: '/customer/customer/settings/packet/list',
+        method: 'get'
+    })
+}

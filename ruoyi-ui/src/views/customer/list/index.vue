@@ -121,11 +121,10 @@ import HeaderFilter from './HeaderFilter.vue'
 import TableList from './TableList.vue'
 import CreateCustomerDrawer from "./CreateCustomerDrawer.vue";
 import {targetBlank} from "@/utils/tools";
-import {packetList} from "@/api/company/group";
 import {stageList} from "@/api/company/status";
 import {getOriginList} from "@/api/company/origin";
 import {reasonList} from "@/api/company/poolRule";
-import {getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer} from "@/api/customer/publicleads";
+import {getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer, getSetPacketList} from "@/api/customer/publicleads";
 import TableRowDrawer from "@/views/customer/list/TableRowDrawer.vue";
 import {getCustomerTagList} from "@/api/customer/config";
 import {listDeptUsersTree} from "@/api/system/dept";
@@ -223,7 +222,7 @@ export default {
     // 分组选项
     async getGroupList() {
       try {
-        const res = await packetList()
+        const res = await getSetPacketList()
         if (res.code === 200) {
           this.indexOpt.groupOption = res.data
         }
