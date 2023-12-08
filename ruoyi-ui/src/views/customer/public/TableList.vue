@@ -333,8 +333,8 @@ export default {
         pageSizes: [10, 20, 50, 100]
       },
       paginateEvent: {
-        'size-change': (value) => this.handlePagination('size', value),
-        'current-change': (value) => this.handlePagination('current', value)
+        'size-change': (value) => this.handlePagination('pageSize', value),
+        'current-change': (value) => this.handlePagination('currentPage', value)
       },
       // 行内容编辑
       tableCell: {
@@ -402,11 +402,7 @@ export default {
       this.ids = selection.map(item => item.id)
     },
     handlePagination(type, value) {
-      if (type === 'size') {
-        this.paginateOption = {...this.paginateOption, pageSize: value}
-      } else if (type === 'current') {
-        this.paginateOption = {...this.paginateOption, currentPage: value}
-      }
+      this.paginateOption = {...this.paginateOption, [type]: value}
       this.getList()
     },
     handleSearch(){

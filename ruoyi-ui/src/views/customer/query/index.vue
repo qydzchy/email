@@ -203,9 +203,9 @@
 				},
 				paginateEvent: {
 					'size-change': (value) =>
-						this.handlePagination('size', value),
+						this.handlePagination('pageSize', value),
 					'current-change': (value) =>
-						this.handlePagination('current', value),
+						this.handlePagination('currentPage', value),
 				},
 			};
 		},
@@ -247,17 +247,7 @@
 				} catch {}
 			},
 			handlePagination(type, value) {
-				if (type === 'size') {
-					this.paginateOption = {
-						...this.paginateOption,
-						pageSize: value,
-					};
-				} else if (type === 'current') {
-					this.paginateOption = {
-						...this.paginateOption,
-						currentPage: value,
-					};
-				}
+				this.paginateOption = {...this.paginateOption, [type]: value}
 				this.searchList();
 			},
 			generateCountryValue(value) {
