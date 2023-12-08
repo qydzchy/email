@@ -28,12 +28,12 @@
           <el-input :disabled="poolGroupFrom.isView" v-model="poolGroupFrom.name"
                     placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item label="分组成员" prop="userIds">
+        <el-form-item label="分组成员" prop="groupMember">
           <div class="form-item">
             <el-select-tree
               v-if="!poolGroupFrom.isView"
               style="width: 100%"
-              v-model="poolGroupFrom.userIds"
+              v-model="poolGroupFrom.groupMember"
               multiple
               clearable
               filterable
@@ -69,7 +69,7 @@ import {listDeptUsersTree} from "@/api/system/dept";
 
 const initPoolGroupFrom = {
   name: '',
-  userIds: [],
+  groupMember: [],
   isView: false
 }
 export default {
@@ -86,7 +86,7 @@ export default {
         },
         {
           label: '成员',
-          field: 'userInfoList',
+          field: 'groupMember',
           align: 'left',
           render: (_row, field) => {
             if (!field?.length) {
@@ -96,8 +96,8 @@ export default {
               if (index > 3) {
                 return null
               }
-              const name = val?.nickName || ''
-
+              
+              const name = this.memberNameSearch(val)
               return <el-tooltip disabled={!name} content={name}>
                 <el-avatar class="el-icon-user-solid icon-40 radius-20 mx-4"></el-avatar>
               </el-tooltip>
@@ -116,7 +116,7 @@ export default {
             return (
                 <div>
                   {
-                    row?.default ?
+                    row?.defaultGroupFlag === 1 ?
                         <div class="flex-middle flex-center">
                           <el-button type="text" onClick={() => this.onView(row)}>查看</el-button>
                           <el-tooltip placement="top">
@@ -146,7 +146,7 @@ export default {
         name: [
           {required: true, message: '请输入分组名称', trigger: 'blur'}
         ],
-        userIds: [
+        groupMember: [
           {required: true, message: '请选择分组成员', trigger: 'change'}
         ],
       },
@@ -167,24 +167,18 @@ export default {
   },
   computed: {
     formatMemberList() {
-      if (!this.poolGroupFrom.memberList.length) {
+      if (!this.poolGroupFrom.groupMember.length) {
         return ''
       }
       let arr = []
-      this.poolGroupFrom.memberList.map(val => {
-        arr.push(val.name)
+      this.poolGroupFrom.groupMember.map(val => {
+        arr.push(this.memberNameSearch(val.id))
       })
       return arr.join(',')
     }
   },
-  watch:{
-    poolGroupDialog(newVal){
-      if(newVal){
-        this.getCommonTree()
-      }
-    }
-  },
   mounted() {
+    this.getCommonTree()
     this.getList()
   },
   methods: {
@@ -195,12 +189,16 @@ export default {
           this.tableLoading = false
         })
         if (res.code === 200) {
-          let disabledList = []
-          this.poolGroupByList = res.data
-          this.poolGroupByList.forEach(val => {
-            disabledList.push(val.userId)
-          })
-          this.disabledList = disabledList
+          // let disabledList = []
+          const data = res.data?.map(val=>{
+            val.groupMember =  this.generateMemberChoose(val.groupMember)
+            return val
+          }) || []
+          this.poolGroupByList = data
+          // this.poolGroupByList.forEach(val => {
+          //   disabledList.push(val.userId)
+          // })
+          // this.disabledList = disabledList
         }
       } catch {
         this.tableLoading = false
@@ -218,18 +216,17 @@ export default {
     onView(row) {
       this.poolGroupFrom = {
         name: row.name,
-        memberList: row.member,
+        groupMember: row.groupMember,
         isView: true
       }
       this.poolGroupDialogTitle = '查看公海分组'
       this.poolGroupDialog = true
     },
     onEdit(row) {
-      const userIds = row?.userInfoList || null 
       this.poolGroupFrom = {
         id: row?.id,
         name: row?.name,
-        userIds: this.generateMemberChoose(userIds),
+        groupMember: row?.groupMember,
         isView: false
       }
       this.poolGroupDialogTitle = '编辑公海分组'
@@ -253,7 +250,7 @@ export default {
       try {
         const res = await groupsAdd({
           name: row?.name,
-          userIds: row?.userIds || ''
+          groupMember: row?.groupMember || ''
         }).finally(() => {
           this.btnLoading = false
         })
@@ -275,7 +272,7 @@ export default {
         const res = await groupsEdit({
           id: row?.id,
           name: row?.name,
-          userIds: row?.userIds || ''
+          groupMember: row?.groupMember || ''
         }).finally(() => {
           this.btnLoading = false
         })
@@ -297,7 +294,7 @@ export default {
           this.btnLoading = true
           const formData = {
             ...this.poolGroupFrom,
-            userIds:this.generateMemberFormat(this.poolGroupFrom.userIds)
+            groupMember:this.generateMemberFormat(this.poolGroupFrom.groupMember)
           }
           console.log(formData);
           if (!formData.id) {
@@ -313,6 +310,16 @@ export default {
       this.poolGroupDialogTitle = '添加公海分组'
       this.poolGroupFrom = initPoolGroupFrom
       this.poolGroupDialog = false
+    },
+    memberNameSearch(id){
+      let name = ''
+      const memberListUnion = [...this.tempAllDept,...this.tempAllUser]
+      memberListUnion.forEach(val=>{
+        if(val.id===id){
+          name = val.name
+        }
+      })
+      return name
     },
     generateMemberChoose(scopeData) {
       let scope = JSON?.parse(scopeData)

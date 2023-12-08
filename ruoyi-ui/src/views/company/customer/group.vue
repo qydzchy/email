@@ -279,7 +279,7 @@ export default {
       }
       const formData = {
         ...this.groupDialogForm,
-
+        designatedMember: this.generateMemberFormat(this.groupDialogForm.designatedMember)
       }
       if (!formData.id) {
         this.packetAddReq(formData)
