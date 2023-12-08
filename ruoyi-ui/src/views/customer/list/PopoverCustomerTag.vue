@@ -6,7 +6,8 @@
 		<template slot="default">
 			<div
 				class="tag-popover"
-				v-clickOutside="onHidePopover">
+				v-clickOutside="onHidePopover"
+				@click.stop>
 				<div>
 					<div class="echo-tag-list mb-4">
 						<el-tag
@@ -75,7 +76,9 @@
 						</div>
 					</template>
 					<template v-else>
-						<div v-show="searchTag" class="tag-li my-5 flex-middle space-between">
+						<div
+							v-show="searchTag"
+							class="tag-li my-5 flex-middle space-between">
 							<div
 								class="px-6 py-6 radius-4"
 								style="
@@ -108,6 +111,7 @@
 						size="small"
 						round
 						type="primary"
+						:disabled="innerTagList && !innerTagList.length"
 						@click="onConfirmPopover">
 						确认
 					</el-button>
@@ -162,7 +166,8 @@
 		watch: {
 			tagList: {
 				handler(newVal) {
-					this.innerTagList = JSON.parse(JSON.stringify(newVal));
+					this.innerTagList =
+						JSON.parse(JSON.stringify(newVal)) || [];
 				},
 				deep: true,
 				immediate: true,
@@ -198,9 +203,9 @@
 		},
 		methods: {
 			async addPersonalTagReq() {
-				if(!this.searchTag){
-					this.$message.warning('标签内容不能为空')
-					return
+				if (!this.searchTag) {
+					this.$message.warning('标签内容不能为空');
+					return;
 				}
 				try {
 					this.btnLoading = true;
@@ -223,8 +228,10 @@
 				innerTagList = innerTagList.map((val) => val.id);
 				if (!innerTagList.includes(item.id)) {
 					this.innerTagList.push(item);
-				}else{
-					this.innerTagList = this.innerTagList.filter(val=>val.id!==item.id)
+				} else {
+					this.innerTagList = this.innerTagList.filter(
+						(val) => val.id !== item.id,
+					);
 				}
 			},
 			onConfirmPopover() {
