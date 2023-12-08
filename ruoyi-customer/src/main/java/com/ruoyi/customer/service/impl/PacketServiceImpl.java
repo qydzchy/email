@@ -129,7 +129,14 @@ public class PacketServiceImpl implements IPacketService
         return buildTree(packetVOList, -1L);
     }
 
-    private List<PacketListVO> buildTree(List<PacketListVO> packetListVOList, Long parentId) {
+    /**
+     * 构建树型结构
+     * @param packetListVOList
+     * @param parentId
+     * @return
+     */
+    @Override
+    public List<PacketListVO> buildTree(List<PacketListVO> packetListVOList, Long parentId) {
         List<PacketListVO> children = new ArrayList<>();
 
         for (PacketListVO packetListVO : packetListVOList) {

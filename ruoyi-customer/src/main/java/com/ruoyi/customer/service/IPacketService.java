@@ -48,4 +48,12 @@ public interface IPacketService
      * @return
      */
     List<PacketListVO> packetList();
+
+    /**
+     * 构建树型结构
+     * @param packetListVOList
+     * @param parentId
+     * @return
+     */
+    List<PacketListVO> buildTree(List<PacketListVO> packetListVOList, Long parentId);
 }

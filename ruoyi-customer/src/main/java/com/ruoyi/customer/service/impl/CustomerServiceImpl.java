@@ -1607,6 +1607,27 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 客户分组列表
+     * @return
+     */
+    @Override
+    public List<PacketListVO> packetList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Long deptId = loginUser.getDeptId();
+
+        // 查询所有的分组
+        List<Packet> packetList = packetMapper.selectPacketList(new Packet());
+        Iterator<Packet> iterator = packetList.iterator();
+        while (iterator.hasNext()) {
+            Packet packet = iterator.next();
+
+        }
+
+        return null;
+    }
+
+    /**
      * 去重
      * @param list
      * @return

@@ -357,10 +357,11 @@ public class CustomerController extends BaseController
     /**
      * 查询客户分组列表
      */
-  /*  @PreAuthorize("@ss.hasPermi('customer:customer:packet:list')")
+     // todo 未开发完
+    @PreAuthorize("@ss.hasPermi('customer:customer:packet:list')")
     @GetMapping(value = "/packet/list")
     public AjaxResult packetList()
     {
         return success(customerService.packetList());
-    }*/
+    }
 }
