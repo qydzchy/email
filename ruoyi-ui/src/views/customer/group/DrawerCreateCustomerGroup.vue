@@ -173,7 +173,7 @@ export default {
           ruleContent = JSON?.parse(ruleContent)
           ruleContent = (ruleContent && !ruleContent?.length) ? this.generateRuleContentDefault() : this.generateRuleContentSetRuleId(ruleContent)
           children = !children.length ? this.generateChildListDefault() : this.generateChildListSetRuleId(children)
-          let visibilityScope = newVal.visibilityScope || null
+          let visibilityScope = newVal?.visibilityScope || null
           visibilityScope = this.generateVisibilityScopeValue(visibilityScope)
           let curRowData = {
             ...newVal,
@@ -513,8 +513,9 @@ export default {
           user.push(val.id)
         })
       } else {
-        dept = scope?.user?.userIds || []
+        user = scope?.user?.userIds || []
       }
+      
       return [...dept, ...user]
 
     },

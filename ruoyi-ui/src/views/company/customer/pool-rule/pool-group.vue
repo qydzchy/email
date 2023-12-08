@@ -64,9 +64,7 @@
 import TableNext from "@/components/TableNext/index.vue";
 import DelPopover from "@/views/company/customer/DelPopover.vue";
 import {EmptyStr} from "@/utils/tools";
-import {treeList} from "@/mock";
 import {groupsAdd, groupsDelete, groupsEdit, groupsList} from "@/api/company/poolRule";
-import TreeSelectNext from "@/components/TreeSelectNext/index.vue";
 import {listDeptUsersTree} from "@/api/system/dept";
 
 const initPoolGroupFrom = {
@@ -75,7 +73,7 @@ const initPoolGroupFrom = {
   isView: false
 }
 export default {
-  components: {TreeSelectNext, TableNext, DelPopover},
+  components: {TableNext, DelPopover},
   data() {
     return {
       poolGroupByList: [],
@@ -155,7 +153,6 @@ export default {
       poolGroupDialog: false,
       poolGroupDialogTitle: '新建公海分组',
       emptyOption: [],
-      data: treeList,
       defaultProps: {
         children: 'children',
         label: 'name',
@@ -228,11 +225,11 @@ export default {
       this.poolGroupDialog = true
     },
     onEdit(row) {
-      console.log(row)
+      const userIds = row?.userInfoList || null 
       this.poolGroupFrom = {
         id: row?.id,
         name: row?.name,
-        userIds: row?.userInfoList?.map(val => val?.name) || [],
+        userIds: this.generateMemberChoose(userIds),
         isView: false
       }
       this.poolGroupDialogTitle = '编辑公海分组'
@@ -256,7 +253,7 @@ export default {
       try {
         const res = await groupsAdd({
           name: row?.name,
-          userIds: row?.userIds.join(',')
+          userIds: row?.userIds || ''
         }).finally(() => {
           this.btnLoading = false
         })
@@ -268,7 +265,8 @@ export default {
           await this.getList()
           this.onCancel()
         }
-      } catch {
+      } catch(e) {
+        console.error(e);
       }
     },
     // 编辑分组
@@ -277,7 +275,7 @@ export default {
         const res = await groupsEdit({
           id: row?.id,
           name: row?.name,
-          userIds: row?.userIds.join(',')
+          userIds: row?.userIds || ''
         }).finally(() => {
           this.btnLoading = false
         })
@@ -289,7 +287,8 @@ export default {
           await this.getList()
           this.onCancel()
         }
-      } catch {
+      } catch(e) {
+        console.error(e);
       }
     },
     onConfirm() {
@@ -300,6 +299,7 @@ export default {
             ...this.poolGroupFrom,
             userIds:this.generateMemberFormat(this.poolGroupFrom.userIds)
           }
+          console.log(formData);
           if (!formData.id) {
             this.groupsAddReq(formData)
           } else {
@@ -313,6 +313,33 @@ export default {
       this.poolGroupDialogTitle = '添加公海分组'
       this.poolGroupFrom = initPoolGroupFrom
       this.poolGroupDialog = false
+    },
+    generateMemberChoose(scopeData) {
+      let scope = JSON?.parse(scopeData)
+      if (!scope) {
+        return []
+      }
+      // 部门
+      let dept = []
+      if (scope?.dept?.allFlag) {
+        this.tempAllDept.forEach(val => {
+          dept.push(val.id)
+        })
+      } else {
+        dept = scope?.dept?.deptIds || []
+      }
+      // 用户
+      let user = []
+      if (scope?.user?.allFlag) {
+        this.tempAllUser.forEach(val => {
+          user.push(val.id)
+        })
+      } else {
+        user = scope?.user?.userIds || []
+      }
+      
+      return [...dept, ...user]
+
     },
     // 格式化成员结构
     generateMemberOption(list) {
