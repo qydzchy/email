@@ -82,7 +82,7 @@
                 <i class="el-icon-warning-outline ml-6"></i>
               </el-tooltip>
             </div>
-            <el-radio-group class="flex-column gap-10 mb-10" v-model="groupDialogForm.availableMember">
+            <el-radio-group class="flex-column gap-10 mb-10" v-model="groupDialogForm.availableMember" @change="handleMemberType">
               <el-radio :label="1">全部成员</el-radio>
               <el-radio :label="2">指定成员</el-radio>
             </el-radio-group>
@@ -307,6 +307,11 @@ export default {
           })
         }
       })
+    },
+    handleMemberType(value){
+      if(value===1){
+        this.groupDialogForm.designatedMember = []
+      }
     },
     generateLevelList(list) {
 
