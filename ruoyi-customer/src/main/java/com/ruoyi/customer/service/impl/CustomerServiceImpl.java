@@ -537,20 +537,41 @@ public class CustomerServiceImpl implements ICustomerService {
 
         if (contactList != null && !contactList.isEmpty()) {
             List<CustomerContactAddOrUpdateDTO> saveContactList = new ArrayList<>();
+            List<CustomerContactAddOrUpdateDTO> updateContactList = new ArrayList<>();
             for (CustomerContactAddOrUpdateDTO contact : contactList) {
                 if (contact.getId() == null) {
                     saveContactList.add(contact);
                 } else {
-                    CustomerContact customerContact = new CustomerContact();
-                    BeanUtils.copyProperties(contact, customerContact);
-                    customerContact.setUpdateId(userId);
-                    customerContact.setUpdateBy(username);
-                    customerContact.setUpdateTime(DateUtils.getNowDate());
-                    customerContactMapper.updateCustomerContact(customerContact);
+                    updateContactList.add(contact);
                 }
             }
-            // 批量新增客户跟进人
-            batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
+
+            List<Long> contactIds = contactList.stream().filter(contact -> contact.getId() != null).map(contact -> contact.getId()).collect(Collectors.toList());
+
+            List<CustomerContactBO> existCustomerContactBOList = customerContactMapper.selectCustomerContactByCustomerId(id);
+            List<Long> deleteContactIds = existCustomerContactBOList.stream().map(CustomerContactBO::getId).collect(Collectors.toList());
+            deleteContactIds.removeAll(contactIds);
+
+            // 删除客户联系人
+            if (!deleteContactIds.isEmpty()) {
+                Long[] idsToDelete = deleteContactIds.toArray(new Long[0]);
+                customerContactMapper.deleteCustomerContactByIds(idsToDelete);
+            }
+
+            // 批量新增客户联系人
+            if (!saveContactList.isEmpty()) {
+                batchInsertCustomerContact(saveContactList, userId, username, id);
+            }
+
+            // 更新客户联系人
+            for (CustomerContactAddOrUpdateDTO contact : updateContactList) {
+                CustomerContact customerContact = new CustomerContact();
+                BeanUtils.copyProperties(contact, customerContact);
+                customerContact.setUpdateId(userId);
+                customerContact.setUpdateBy(username);
+                customerContact.setUpdateTime(DateUtils.getNowDate());
+                customerContactMapper.updateCustomerContact(customerContact);
+            }
         }
 
         // 编辑客户事件
