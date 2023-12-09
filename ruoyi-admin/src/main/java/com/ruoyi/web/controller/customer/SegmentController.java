@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.dto.SegmentAddOrUpdateDTO;
 import com.ruoyi.customer.domain.vo.SegmentListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,6 +69,10 @@ public class SegmentController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody SegmentAddOrUpdateDTO segmentAddOrUpdateDTO)
     {
+        if (StringUtils.isBlank(segmentAddOrUpdateDTO.getName())) {
+            throw new ServiceException("客群名称不能为空");
+        }
+
         if (segmentAddOrUpdateDTO.getUsageScope() == null) {
             throw new ServiceException("使用范围不能为空");
         }
@@ -100,6 +105,9 @@ public class SegmentController extends BaseController
     {
         if (segmentAddOrUpdateDTO.getId() == null) {
             throw new ServiceException("客群ID不能为空");
+        }
+        if (StringUtils.isBlank(segmentAddOrUpdateDTO.getName())) {
+            throw new ServiceException("客群名称不能为空");
         }
         if (segmentAddOrUpdateDTO.getUsageScope() == null) {
             throw new ServiceException("使用范围不能为空");
