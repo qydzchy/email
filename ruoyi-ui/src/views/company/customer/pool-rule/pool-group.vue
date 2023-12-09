@@ -116,7 +116,7 @@ export default {
             return (
                 <div>
                   {
-                    row?.defaultGroupFlag === 1 ?
+                    row?.defaultGroupFlag ?
                         <div class="flex-middle flex-center">
                           <el-button type="text" onClick={() => this.onView(row)}>查看</el-button>
                           <el-tooltip placement="top">
