@@ -158,7 +158,6 @@
 							collapse-tags
 							:options="memberOption"
 							:props="defaultProps"
-							:show-all-levels="false"
 							:disabled="
 								groupDialogForm.availableMember === 1
 							"></el-cascader>
