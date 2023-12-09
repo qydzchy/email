@@ -156,12 +156,11 @@ export default {
                 value: val.id,
                 label: val.name,
                 'slot': function ($h) {
-                  return $h('div', {
+                  return $h('span', {
                     style: {
-                      width: 'max-content',
                       backgroundColor: val.color,
                       color: 'white',
-                      padding: '0 10px',
+                      padding: '2px 6px',
                       borderRadius: '4px',
                     }
                   }, [val.name])
