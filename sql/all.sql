@@ -1914,6 +1914,9 @@ CREATE TABLE `customer_publicleads_groups`  (
 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '公海分组表' ROW_FORMAT = Dynamic;
 
+INSERT INTO `customer_publicleads_groups`(`name`, `default_group_flag`, `group_member`, `del_flag`, `create_id`, `create_by`, `create_time`, `update_id`, `update_by`, `update_time`) VALUES ('公共公海分组', 1, '{\"dept\":{\"allFlag\":true,\"deptIds\":[]},\"user\":{\"allFlag\":true,\"userIds\":[]}}', '0', 1, 'admin', '2023-12-08 21:18:54', 1, 'admin', '2023-12-08 21:57:28');
+
+
 -- ----------------------------
 -- Table structure for customer_publicleads_reason
 -- ----------------------------
