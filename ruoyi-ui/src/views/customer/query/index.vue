@@ -176,7 +176,7 @@
 						label: '社交平台',
 						field: 'socialPlatform',
 						render: (_row, field) => {
-							const socialList = JSON?.parse(field);
+							const socialList = JSON?.parse(field || '[]');
 							return socialList.length ? (
 								<div>
 									{socialList.map((val, index) => {
