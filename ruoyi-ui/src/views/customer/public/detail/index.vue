@@ -209,7 +209,7 @@ export default {
         {
           id: 3,
           label: '公海分组',
-          field: 'poolGroup',
+          field: 'publicleadsGroupsId',
           value: '',
           type: 'select',
           show: false,
@@ -265,24 +265,29 @@ export default {
       handler(newVal) {
         const {indexOpt} = newVal
         this.infoRowList.map(val => {
-          if (val.field === 'packetId') {
-            val.formOption.data = indexOpt.groupOption || []
-          } else if (val.field === 'stageId') {
-            val.formOption.options = indexOpt.stageOption.map(val => {
-              return {
-                value: val.id,
-                label: val.name,
-              }
-            })
-          } else if (val.field === 'origin') {
-            val.formOption.data = indexOpt.originOption || []
-          } else if (val.field === 'poolGroup') {
-            val.formOption.options = indexOpt.poolGroupOption.map(val => {
-              return {
-                value: val.id,
-                label: val.name
-              }
-            })
+          switch(val.field){
+            case "packetId":
+              val.formOption.data = indexOpt.groupOption || []
+              break;
+            case "stageId":
+              val.formOption.options = indexOpt.stageOption.map(val => {
+                return {
+                  id: val.id,
+                  name: val.name,
+                }
+              })
+              break;
+            case "origin":
+              val.formOption.data = indexOpt.originOption || []
+              break;
+            case "publicleadsGroupsId":
+              val.formOption.options = indexOpt.poolGroupOption.map(val => {
+                return {
+                  id: val.id,
+                  name: val.name
+                }
+              })
+              break;
           }
           return val
         })
@@ -326,6 +331,8 @@ export default {
           this.rowData.timezone = +this.rowData.timezone
           this.rowData.followPerson = this.rowData.followUpPersonnelList.map(val=>val.nickName)?.join('、')
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
+          this.rowData.publicleadsGroupsId = this.rowData.publicleadsGroups?.id
+
           this.contactList = this.rowData.contactList
           this.infoRowList.map(val => {
             val.value = res.data[val.field]

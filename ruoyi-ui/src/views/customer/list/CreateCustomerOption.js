@@ -133,7 +133,7 @@ const UsuallyInfoRule = [
     {
         title: '公海分组',
         type: 'select',
-        field: 'poolGroup',
+        field: 'publicleadsGroupsId',
         value: 1,
         options: [],
         validate: [

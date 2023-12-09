@@ -364,7 +364,7 @@ export default {
           value: '',
         },
         {
-          field: 'poolGroup',
+          field: 'publicleadsGroupsId',
           label: '公海分组',
           type: 'select',
           show: false,
@@ -634,16 +634,22 @@ export default {
       handler(newVal) {
         const {indexOpt} = newVal
         this.usuallyInfo.map(val => {
-          if (val.field === 'packetId') {
+          switch(val.field){
+            case "packetId":
             val.options.data = indexOpt.groupOption || []
-          } else if (val.field === 'stageId') {
-            val.options.options = indexOpt.stageOption
-          } else if (val.field === 'origin') {
+              break;
+            case "stageId":
+            val.options.options = indexOpt.stageOption || []
+              break;
+            case "origin":
             val.options.data = indexOpt.originOption || []
-          } else if (val.field === 'poolGroup') {
+              break;
+            case "publicleadsGroupsId":
             val.options.options = indexOpt.poolGroupOption || []
-          } else if(val.field === 'sourceIds'){
+              break;
+            case "sourceIds":
             val.options.data = indexOpt.originOption || []
+              break;
           }
           return val
         })
@@ -703,7 +709,7 @@ export default {
 
     },
     handleSetValue(listType, field, value) {
-      const validList = ['companyWebsite', 'shortName', 'companyName', 'tel', 'address', 'fax', 'companyRemarks']
+      const validList = ['companyWebsite', 'shortName', 'companyName', 'tel', 'address', 'fax', 'companyRemarks','sourceIds', 'publicleadsGroupsId']
       if (validList.includes(field)) {
         this[listType].forEach((val, index) => {
           if (val.field === field) {

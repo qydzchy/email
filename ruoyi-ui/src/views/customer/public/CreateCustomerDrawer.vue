@@ -169,7 +169,7 @@ export default {
             })
           } else if (val.field === 'origin') {
             val.props.data = newVal.originOption || []
-          } else if (val.field === 'poolGroup') {
+          } else if (val.field === 'publicleadsGroupsId') {
             const valid = !newVal.poolGroupOption && !newVal.poolGroupOption?.length
             if (valid) {
               return
@@ -279,6 +279,8 @@ export default {
     onHideDrawer() {
       this.customerFormValue = {}
       this.customerOtherFormValue = {}
+      this.customerForm.resetFields()
+      this.customerOtherForm.resetFields()
       this.$emit('update:visible', false)
     },
     handleCountry(field, value) {

@@ -162,6 +162,7 @@ export default {
           this.rowData.timezone = +this.rowData.timezone
           this.rowData.followPerson = this.rowData.followUpPersonnelList.map(val=>val.nickName)?.join('、')
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
+          this.rowData.publicleadsGroupsId = this.rowData.publicleadsGroups?.id
         }
       } catch (e) {
         console.error(e)

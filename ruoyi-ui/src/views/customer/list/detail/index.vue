@@ -9,11 +9,17 @@
           <div class="fs-20 bold">{{ rowData.companyName || '---' }}</div>
           <div class="my-10 flex-middle gap-10">
             <span>{{ rowData.customerNo || '---' }}</span>
-            <span> <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false"
-                                :show-edit-icon="false"></CellOperate></span>
+            <span>
+              <CellOperate 
+                type="country" 
+                :text="rowData.countryRegion" 
+                :show-copy-icon="false"                    
+                :show-edit-icon="false">
+              </CellOperate>
+            </span>
           </div>
           <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData"/>
+          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData" @reloadTag="getDetailData"/>
         </el-row>
       </div>
       <div class="info-wrap flex-middle">
@@ -217,7 +223,7 @@ export default {
         {
           id: 2,
           label: '公海分组',
-          field: 'poolGroup',
+          field: 'publicleadsGroupsId',
           value: '',
           type: 'select',
           show: false,
@@ -274,24 +280,30 @@ export default {
       handler(newVal) {
         const {indexOpt} = newVal
         this.infoRowList.map(val => {
-          if (val.field === 'packetId') {
-            val.formOption.data = indexOpt.groupOption || []
-          } else if (val.field === 'stageId') {
-            val.formOption.options = indexOpt.stageOption.map(val => {
-              return {
-                value: val.id,
-                label: val.name,
-              }
-            })
-          } else if (val.field === 'origin') {
-            val.formOption.data = indexOpt.originOption || []
-          } else if (val.field === 'poolGroup') {
-            val.formOption.options = indexOpt.poolGroupOption.map(val => {
-              return {
-                value: val.id,
-                label: val.name
-              }
-            })
+          switch(val.field){
+            case "packetId":
+              val.formOption.data = indexOpt.groupOption || []
+              break;
+            case "stageId":
+              val.formOption.options = indexOpt.stageOption.map(val => {
+                return {
+                  value: val.id,
+                  label: val.name,
+                }
+              })
+              break;
+            case "origin":
+              val.formOption.data = indexOpt.originOption || []
+              break;
+            case "publicleadsGroupsId":
+              val.formOption.options = indexOpt.poolGroupOption.map(val => {
+                return {
+                  id: val.id,
+                  name: val.name
+                }
+              })
+              console.log(val.formOption.options);
+              break;
           }
           return val
         })
@@ -336,9 +348,18 @@ export default {
           this.rowData.timezone = +this.rowData.timezone
           this.rowData.followPerson = this.rowData.followUpPersonnelList.map(val=>val.nickName)?.join('、')
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
+          this.rowData.publicleadsGroupsId = this.rowData.publicleadsGroups?.id
+
           this.contactList = this.rowData.contactList
           this.infoRowList.map(val => {
-            val.value = res.data[val.field]
+            switch(val.field){
+              case "publicleadsGroupsId":
+                val.value = this.rowData.publicleadsGroups.id
+                break;
+              default:
+                val.value = res.data[val.field]
+                break;
+            }
             return val
           })
         }
