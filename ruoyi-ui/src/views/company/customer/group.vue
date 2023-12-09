@@ -145,8 +145,7 @@
 						</div>
 						<el-radio-group
 							class="flex-column gap-10 mb-10"
-							v-model="groupDialogForm.availableMember"
-							@change="handleMemberType">
+							v-model="groupDialogForm.availableMember">
 							<el-radio :label="1">全部成员</el-radio>
 							<el-radio :label="2">指定成员</el-radio>
 						</el-radio-group>
@@ -229,6 +228,7 @@
 					expandTrigger: 'hover',
 					multiple: true,
 					leaf: false,
+					disabled: 'disabled',
 				},
 				memberOption: [],
 				tempAllDept: [],
@@ -439,11 +439,6 @@
 						}
 					});
 			},
-			handleMemberType(value) {
-				if (value === 1) {
-					this.$refs.designatedMemberRef.handleClear();
-				}
-			},
 			generateLevelList(list) {
 				const deepLevel = (arr, count = 0) => {
 					count++;
@@ -509,20 +504,27 @@
 						user.push(searchResult);
 					});
 				}
-				console.log(user);
-
 				return user;
 			},
 			// 处理人员数据
 			generateMemberOption(list) {
 				const deepSearch = (arr) =>
 					arr.map((val) => {
-						if (val.type === 2) {
-							delete val.children;
-							this.tempAllUserIds.push(val.id);
-						}
 						if (val.children && val.children.length) {
-							deepSearch(val.children);
+							const deepResult = deepSearch(val.children);
+							const bool = deepResult.some(
+								(val) => !val.disabled,
+							);
+							console.log('bool', bool);
+							val.disabled = !bool;
+						} else {
+							delete val.children;
+							val.disabled = !(val.type === 2);
+						}
+						if (val.type === 2) {
+							// 人员默认不禁用
+							val.disabled = false;
+							this.tempAllUserIds.push(val.id);
 						}
 						return val;
 					});
