@@ -155,7 +155,7 @@ export default {
     // 上传成功回调
     handleUploadSuccess(res, file) {
       if (res.code === 200) {
-        this.uploadList.push({ name: res.fileName, url: res.fileName });
+        this.uploadList.push({ name: res.newFileName, url: res.fileName });
         this.uploadedSuccessfully();
       } else {
         this.number--;
@@ -171,6 +171,7 @@ export default {
       if(findex > -1) {
         this.fileList.splice(findex, 1);
         this.$emit("input", this.listToString(this.fileList));
+        this.$emit('update:value', this.listToString(this.fileList))
       }
     },
     // 上传失败
@@ -184,13 +185,19 @@ export default {
         this.fileList = this.fileList.concat(this.uploadList);
         this.uploadList = [];
         this.number = 0;
+        this.fileList.map(val=>{
+          val.url = process.env.VUE_APP_BASE_API + val.url
+          return val
+        })
+        // 兼容form-create
         this.$emit("input", this.listToString(this.fileList));
+        this.$emit('update:value', this.listToString(this.fileList))
         this.$modal.closeLoading();
       }
     },
     // 预览
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
+      this.dialogImageUrl =  file.fileName ? (process.env.VUE_APP_BASE_API + file.fileName) : file.url;
       this.dialogVisible = true;
     },
     // 对象转成指定字符串分隔
