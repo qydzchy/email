@@ -111,7 +111,7 @@
 						field: 'customerPhone',
 						width: '160',
 						render: (_row, field) => {
-							const contactList = JSON?.parse(field);
+							const contactList = JSON?.parse(field || '[]');
 							return contactList.length ? (
 								<div>
 									{contactList.map((val, index) => {
