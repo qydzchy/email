@@ -12,10 +12,10 @@
           </div>
           <div v-if="index!==0">
             <el-tooltip placement="top" content="设置为主联系人">
-              <svg-icon class="pointer" icon-class="important-gray" @click="onSortContactForm(item.id)"/>
+              <svg-icon class="pointer" icon-class="important-gray" @click="onSortContactForm(item.contactId)"/>
             </el-tooltip>
             <el-tooltip placement="top" content="删除">
-              <i class="el-icon-delete pl-10 pointer" @click="onDelContactForm(item.id)"></i>
+              <i class="el-icon-delete pl-10 pointer" @click="onDelContactForm(item.contactId)"></i>
             </el-tooltip>
           </div>
         </div>
@@ -117,7 +117,7 @@
           </el-row>
         </el-form>
         <div>
-          <div class="collapse flex-middle flex-center fs-12 mt-10 pointer" @click="onCollapsed(item.id)">
+          <div class="collapse flex-middle flex-center fs-12 mt-10 pointer" @click="onCollapsed(item.contactId)">
             {{ item.show ? '收起' : '展开全部(选填)' }}
             <i class="ml-6" :class="item.show ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i>
           </div>
@@ -138,7 +138,7 @@ import {deepClone} from "@/utils";
 import {platformOption, rankOption, sexRadio} from "@/constant/customer/ContactCard";
 
 const addConstruct = {
-  id: +new Date(),
+  contactId: +new Date(),
   show: false,
   nickName: '',
   email: '',
@@ -196,6 +196,7 @@ export default {
           let list = deepClone(newVal)
           this.formList = list.map(val => {
             val.show = false
+            val.contactId = val.id
             return val
           })
         }
@@ -205,24 +206,24 @@ export default {
     },
   },
   methods: {
-    onCollapsed(id) {
+    onCollapsed(contactId) {
       this.formList.map((val) => {
-        if (val.id === id) {
+        if (val.contactId === contactId) {
           val.show = !val.show
         }
         return val
       })
     },
     onAddContactForm() {
-      this.formList.push({...deepClone(addConstruct), id: +new Date()})
+      this.formList.push({...deepClone(addConstruct), contactId: +new Date()})
     },
-    onDelContactForm(id) {
-      this.formList = this.formList.filter(val => val.id !== id)
+    onDelContactForm(contactId) {
+      this.formList = this.formList.filter(val => val.contactId !== contactId)
     },
-    onSortContactForm(id) {
+    onSortContactForm(contactId) {
       let tempValue = {}
       let filterResList = this.formList.filter(val => {
-        if (val.id !== id) {
+        if (val.contactId !== contactId) {
           val.primaryContactFlag = false
           return val
         } else {
@@ -233,6 +234,7 @@ export default {
       filterResList.unshift(tempValue)
       this.formList = filterResList
     },
+    // 添加平台或联系人    
     onAdd(type) {
       this.formList.map(val => {
         val[type].unshift({
@@ -241,6 +243,7 @@ export default {
         return val
       })
     },
+    // 删除平台或联系人
     onReduce(id, type) {
       this.formList.map(val => {
         val[type] = val[type].filter(val => val.id !== id)
@@ -249,7 +252,7 @@ export default {
     },
     getInnerData() {
       let valid = []
-      this.formList.forEach((val, index) => {
+      this.formList.forEach((_val, index) => {
         this.$refs[`contactRef-${index}`][0].validate(res => {
           valid.push(res)
         })
@@ -259,7 +262,7 @@ export default {
       }
       let innerData = JSON.parse(JSON.stringify(this.formList))
       innerData.map(val => {
-        delete val.id
+        delete val.contactId
         val.socialPlatform = val.socialPlatform.map(platform => {
           delete platform.id
           return platform
