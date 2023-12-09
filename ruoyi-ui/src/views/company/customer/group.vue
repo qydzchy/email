@@ -514,7 +514,6 @@
 							const bool = deepResult.some(
 								(val) => !val.disabled,
 							);
-							console.log('bool', bool);
 							val.disabled = !bool;
 						} else {
 							delete val.children;
