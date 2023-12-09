@@ -38,7 +38,9 @@
     </div>
     <div class="table-list mt-20">
       <TableNext
-          :list="list" :columns="columns"
+          :loading="tableLoading"
+          :list="list" 
+          :columns="columns"
           :extra-option="{height:'68vh'}"
           :extra-event="extraEvent"
           :paginate-option="paginateOption"/>
@@ -336,6 +338,7 @@ export default {
         'size-change': (value) => this.handlePagination('pageSize', value),
         'current-change': (value) => this.handlePagination('currentPage', value)
       },
+      tableLoading:false,
       // 行内容编辑
       tableCell: {
         rowId: '',
