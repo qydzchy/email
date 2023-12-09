@@ -2,7 +2,7 @@
   <div class="contact-card">
     <div class="fs-16 my-10">联系人{{ formList.length }}</div>
     <div>
-      <div class="card" v-for="(item,index) in formList" :key="index">
+      <div class="contact-card-ul" v-for="(item,index) in formList" :key="index">
         <div class="flex-middle space-between">
           <div class="card-title">
             <span>{{ item.nickName || `联系人${index + 1}` }}</span>
@@ -280,7 +280,7 @@ export default {
 
 <style lang="scss" scoped>
 .contact-card {
-  .card {
+  .contact-card-ul {
     display: block;
     box-sizing: border-box;
     padding: 16px;

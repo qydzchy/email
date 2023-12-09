@@ -1,38 +1,3 @@
-/*!
-			 *
-			 * @okki-design/ui v0.15.0-master.6
-			 *
-			 * Copyright 2022-present,OKKI Design.
-			 * All rights reserved.
-			 *
-			 */[class*=okki-] input::-ms-clear,[class*=okki-] input::-ms-reveal,[class*=okki-]::-ms-clear,[class^=okki-] input::-ms-clear,[class^=okki-] input::-ms-reveal,[class^=okki-]::-ms-clear {
-  display:none
-}
-body {
-  color:var(--okki-medium-9)
-}
-a {
-  color:var(--okki-primary-color)
-}
-a:hover {
-  color:var(--okki-primary-color-hover)
-}
-a:active {
-  color:var(--okki-primary-color-active)
-}
-a:active,a:focus,a:hover {
-  outline:0;
-  text-decoration:none
-}
-mark {
-  background-color:#fefff0
-}
-::-moz-selection {
-  background:var(--okki-primary-color)
-}
-::selection {
-  background:var(--okki-primary-color)
-}
 .clearfix:after,.clearfix:before {
   content:"";
   display:table
