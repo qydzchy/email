@@ -81,11 +81,13 @@
 					{
 						label: '客户编号',
 						field: 'customerNo',
+						width: '200',
 						render: (_row, field) => EmptyStr(field),
 					},
 					{
 						label: '客户阶段',
 						field: 'customerStageName',
+						width: '200',
 						render: (_row, field) => EmptyStr(field),
 					},
 					{
