@@ -45,8 +45,8 @@
                 <el-row v-if="secondChildFieldList.length">
                   <el-col>根据「关注人」的选项，共生成 {{ secondChildFieldList.length }} 个二级客群，客户数为 0 时不显示
                   </el-col>
-                  <el-col v-for="group in secondChildFieldList" :key="group.id">
-                    {{ group.name }}
+                  <el-col v-for="(group,index) in secondChildFieldList" :key="index">
+                    {{ group | emptyStr }}
                   </el-col>
                 </el-row>
               </el-form-item>
@@ -199,6 +199,11 @@ export default {
           this.getSubGroupList()
         }
       },
+    }
+  },
+  filters:{
+    emptyStr(value){
+      return value?.name || '---'
     }
   },
   mounted() {
