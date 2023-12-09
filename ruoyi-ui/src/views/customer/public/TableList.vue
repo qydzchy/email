@@ -251,6 +251,7 @@ export default {
         {
           label: '社交平台',
           field: 'contact',
+          width: '200',
           render: (_row, field) => {
             let content = field?.socialPlatform || '[]'
             let socialPlatformList = JSON.parse(content)
@@ -262,6 +263,7 @@ export default {
         {
           label: '生日',
           field: 'birthday',
+          width: '200',
           render: (row, _field) => <div>{row.contact?.birthday || '---'}</div>,
         },
         // {
