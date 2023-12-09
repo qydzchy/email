@@ -171,8 +171,8 @@ export default {
         return ''
       }
       let arr = []
-      this.poolGroupFrom.groupMember.map(val => {
-        arr.push(this.memberNameSearch(val.id))
+      this.poolGroupFrom.groupMember.forEach(val => {
+        arr.push(this.memberNameSearch(val))
       })
       return arr.join(',')
     }
