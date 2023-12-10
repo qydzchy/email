@@ -198,8 +198,6 @@ html {
 }
 html>body {
   color:var(--xs-black);
-  font-size:.875rem;
-  line-height:1.25rem;
   -webkit-overflow-scrolling:touch;
   font-family:"Monospaced Number",Chinese Quote,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif
 }

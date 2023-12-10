@@ -282,7 +282,10 @@ export default {
                     curValue={field}
                     text={field}
                     formOption={{
-                      options: this.indexOpt.stageOption,
+                      options: this.indexOpt.stageOption.map(val=>{
+                        val.bgColor = val.color
+                        return val
+                      }),
                       props:{
                         value:'id',
                         label:'name'
