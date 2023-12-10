@@ -110,10 +110,6 @@ public class PacketServiceImpl implements IPacketService
         Iterator<PacketListVO> iterator = packetVOList.iterator();
         while (iterator.hasNext()) {
             PacketListVO packetVO = iterator.next();
-            if (packetVO.getParentId().longValue() != -1L) {
-                continue;
-            }
-
             Integer availableMember = packetVO.getAvailableMember();
             boolean isMet = true;
             if (availableMember.intValue() == 2) {

@@ -559,10 +559,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             isSuccess = true;
         } catch (MessagingException e) {
             log.error("messagingException e:{}", e);
-            throw new ServiceException("发送失败");
         } catch (Exception e) {
             log.error("发送失败，e:{}", e);
-            throw new ServiceException();
         }
 
         // 更新数据
@@ -824,7 +822,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     public String sendEmail(String host, Integer port, boolean useSSL, String mailFrom, String password,
                           String[] mailTos, String[] mailCcs, String[] mailBccs,
                           String title, String content, String inReplyTo, String references, Long traceEmailId, String proxyHost, Integer proxyPort,
-                          String proxyUser, String proxyPassword, String[] attachmentPaths) throws MessagingException {
+                          String proxyUser, String proxyPassword, String[] attachmentPaths) throws Exception {
         Properties properties = new Properties();
 
         if (useSSL) {
