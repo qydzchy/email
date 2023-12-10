@@ -247,14 +247,14 @@ export default {
             const isShowForm = this.curEditId === row?.id && fieldName === propName
             return <CellOperate
                     showForm={isShowForm}
-                    type="select"
+                    type="tree"
                     curValue={field}
                     text={field}
                     formOption={{
-                      options: this.indexOpt.groupOption,
+                      data: this.indexOpt.groupOption,
                       props:{
-                        value:'id',
-                        label:'name'
+                        value: 'id',
+                        label: 'name',
                       }
                     }}
                     on={{

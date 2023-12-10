@@ -10,7 +10,7 @@
           :columns="originColumns"
           :extra-option="{
           height:'80vh',
-          rowKey:'menuId',
+          rowKey:'id',
           defaultExpandAll:isExpandAll,
           treeProps:{
             children: 'children',
@@ -66,19 +66,7 @@ export default {
   },
   computed: {
     totalGroup() {
-      let count = 0
-      const deepSearch = () => {
-        this.originList.forEach(val => {
-          if (val.id) {
-            count = count + 1
-          }
-          if (val.children && val.children.length) {
-            deepSearch(val.children)
-          }
-        })
-      }
-      deepSearch()
-      return count
+      return this.generateCount(this.originList)
     },
   },
   mounted() {
@@ -98,6 +86,21 @@ export default {
       } catch {
       }
 
+    },
+    generateCount(arr){
+      let count = 0
+      const deepSearch = (arr) => {
+        arr?.forEach(val => {
+          if (val.id) {
+            count = count + 1
+          }
+          if (val.children && val.children.length) {
+            deepSearch(val.children)
+          }
+        })
+      }
+      deepSearch(arr)
+      return count
     },
   }
 }
