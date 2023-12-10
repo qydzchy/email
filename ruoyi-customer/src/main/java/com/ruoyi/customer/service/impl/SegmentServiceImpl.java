@@ -107,6 +107,8 @@ public class SegmentServiceImpl implements ISegmentService
         Long id = segment.getId();
 
         subSegmentHandler(id, segmentAddOrUpdateDTO, userId, username);
+        // 洗牌
+        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
         return true;
     }
 
@@ -178,6 +180,8 @@ public class SegmentServiceImpl implements ISegmentService
         segmentMapper.deleteSegmentByParentId(id);
 
         subSegmentHandler(id, segmentAddOrUpdateDTO, userId, username);
+        // 洗牌
+        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
         return true;
     }
 
@@ -231,9 +235,6 @@ public class SegmentServiceImpl implements ISegmentService
         if (!subSegmentList.isEmpty()) {
             segmentMapper.batchInsertSegment(subSegmentList);
         }
-
-        // 洗牌
-        CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> customerService.shuffle(null, id));
     }
 
     /**

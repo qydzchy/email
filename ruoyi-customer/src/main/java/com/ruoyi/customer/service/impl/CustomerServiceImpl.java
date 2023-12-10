@@ -1121,12 +1121,15 @@ public class CustomerServiceImpl implements ICustomerService {
         if (segmentList == null || segmentList.isEmpty()) return false;
 
         customerIdList.stream().forEach(customerId -> {
-            List<Long> segmentIdList = new ArrayList<>();
             // 获取客户详情
             CustomerDetailVO customerDetail = getCustomerDetail(customerId);
             // 获取客户跟进人
             List<CustomerFollowUpPersonnelListVO> customerFollowUpPersonnelVOList = customerFollowUpPersonnelMapper.selectCustomerFollowUpPersonnelByCustomerId(customerId);
             for (Segment segment : segmentList) {
+                if (segment.getParentId().longValue() != -1L) continue;
+
+                List<Long> deleteSegmentIdList = new ArrayList<>();
+                List<Long> segmentIdList = new ArrayList<>();
                 // 可见范围是否成立，不成立跳过客群
                 List<UserDeptInfoBO> userDeptInfoBOList = new ArrayList<>();
                 for (CustomerFollowUpPersonnelListVO customerFollowUpPersonnelVO : customerFollowUpPersonnelVOList) {
@@ -1139,12 +1142,14 @@ public class CustomerServiceImpl implements ICustomerService {
                 // 先判断父客群是否成立
                 boolean parentSegmentConditionMet = isSegmentConditionMet(customerDetail, segment);
 
+                // 查询二级客群列表
+                List<Segment> secondSegmentList = getSencondSegmentList(segment.getId());
+
+                // 满足条件的客群id
                 if (parentSegmentConditionMet) {
                     // 添加一级客群id
                     segmentIdList.add(segment.getId());
 
-                    // 查询二级客群列表
-                    List<Segment> secondSegmentList = getSencondSegmentList(segment.getId());
                     if (secondSegmentList != null && !secondSegmentList.isEmpty()) {
                         // 有二级客群，判断二级客群是否成立
                         for (Segment secondSegment : secondSegmentList) {
@@ -1156,15 +1161,25 @@ public class CustomerServiceImpl implements ICustomerService {
                         }
                     }
                 }
-            }
 
-            if (!segmentIdList.isEmpty()) {
+                // 需要删除的客群id
+                deleteSegmentIdList.add(segment.getId());
+                if (secondSegmentList != null && !secondSegmentList.isEmpty()) {
+                    // 有二级客群，判断二级客群是否成立
+                    for (Segment secondSegment : secondSegmentList) {
+                        deleteSegmentIdList.add(secondSegment.getId());
+                    }
+                }
+
                 // 删除客户和客群的关系
-                customerSegmentMapper.deleteCustomerSegmentByCustomerIdAndSegmentIds(customerId, segmentIdList);
-                // 批量保存客户和客群的关系
-                batchSaveCustomerSegment(customerId, segmentIdList);
-                // 批量保存客户和客群的关系日志
-                batchSaveCustomerSegmentLog(customerId, segmentIdList);
+                customerSegmentMapper.deleteCustomerSegmentByCustomerIdAndSegmentIds(customerId, deleteSegmentIdList);
+
+                if (!segmentIdList.isEmpty()) {
+                    // 批量保存客户和客群的关系
+                    batchSaveCustomerSegment(customerId, segmentIdList);
+                    // 批量保存客户和客群的关系日志
+                    batchSaveCustomerSegmentLog(customerId, segmentIdList);
+                }
             }
         });
 

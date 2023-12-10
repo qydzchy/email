@@ -1,5 +1,7 @@
 package com.ruoyi.customer.service.handler.customer.column;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.enums.customer.CustomerColumnEnum;
 import com.ruoyi.customer.domain.bo.CustomerContactBO;
 import com.ruoyi.customer.domain.bo.SegmentConditionRuleBO;
@@ -26,8 +28,12 @@ public class SocialPlatformColumn extends ColumnAbstract implements IColumnServi
         List<CustomerContactBO> contactList = customerDetail.getContactList();
         if (contactList != null && !contactList.isEmpty()) {
             for (CustomerContactBO customerContactBO : contactList) {
-                if (super.nullHandler(customerContactBO.getSocialPlatform(), segmentConditionRule)) {
-                    return true;
+                String socialPlatform = customerContactBO.getSocialPlatform();
+                JSONArray socialPlatformJsonA = JSONArray.parseArray(socialPlatform);
+                for (JSONObject socialPlatformJson : socialPlatformJsonA.toJavaList(JSONObject.class)) {
+                    if (super.nullHandler(socialPlatformJson.getString("account"), segmentConditionRule)) {
+                        return true;
+                    }
                 }
             }
         }

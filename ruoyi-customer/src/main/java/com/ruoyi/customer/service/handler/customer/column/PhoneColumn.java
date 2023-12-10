@@ -1,6 +1,9 @@
 package com.ruoyi.customer.service.handler.customer.column;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.enums.customer.CustomerColumnEnum;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.domain.bo.CustomerContactBO;
 import com.ruoyi.customer.domain.bo.SegmentConditionRuleBO;
 import com.ruoyi.customer.domain.vo.CustomerDetailVO;
@@ -26,8 +29,15 @@ public class PhoneColumn extends ColumnAbstract implements IColumnService {
         List<CustomerContactBO> contactList = customerDetail.getContactList();
         if (contactList != null && !contactList.isEmpty()) {
             for (CustomerContactBO customerContactBO : contactList) {
-                if (super.nullHandler(customerContactBO.getPhone(), segmentConditionRule)) {
-                    return true;
+                String phone = null;
+                if (StringUtils.isNotBlank(customerContactBO.getPhone())) {
+                    phone = customerContactBO.getPhone();
+                    JSONArray phoneJsonA = JSONArray.parseArray(phone);
+                    for (JSONObject phoneJson : phoneJsonA.toJavaList(JSONObject.class)) {
+                        if (super.nullHandler(phoneJson.getString("phone"), segmentConditionRule)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
