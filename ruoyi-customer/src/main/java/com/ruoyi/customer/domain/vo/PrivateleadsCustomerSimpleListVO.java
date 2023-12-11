@@ -103,6 +103,7 @@ public class PrivateleadsCustomerSimpleListVO {
                     TagListVO tagVO = new TagListVO();
                     tagVO.setId(Long.parseLong(tagObj[0]));
                     tagVO.setName(tagObj[1]);
+                    tagVO.setColor(tagObj[2]);
                     tagVOList.add(tagVO);
                 }
             }

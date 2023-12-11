@@ -106,7 +106,7 @@
         SELECT
             customer.id,
             customer.company_name as companyName,
-            (SELECT GROUP_CONCAT( CONCAT(t.id, '_', t.name) ) FROM customer_customer_tag ct LEFT JOIN customer_tag t ON ct.tag_id = t.id WHERE ct.customer_id = customer.id AND t.del_flag = '0') AS tagStr,
+            (SELECT GROUP_CONCAT( CONCAT(t.id, '_', t.name, '_', t.color) ) FROM customer_customer_tag ct LEFT JOIN customer_tag t ON ct.tag_id = t.id WHERE ct.customer_id = customer.id AND t.del_flag = '0') AS tagStr,
             customer.packet_id as packetId,
             packet.name as packetName,
             stage.id as stageId,
