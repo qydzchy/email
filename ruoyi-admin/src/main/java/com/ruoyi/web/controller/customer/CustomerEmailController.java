@@ -47,7 +47,7 @@ public class CustomerEmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('customer:email:packet:list')")
     @GetMapping("/packet/list")
     public AjaxResult packetList() {
-        return success(packetService.packetList());
+        return success(customerEmailService.packetList());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.ruoyi.customer.service;
 
+import com.ruoyi.customer.domain.vo.EmailPacketVOList;
 import com.ruoyi.customer.domain.vo.EmailPublicleadsGroupsVOList;
 import com.ruoyi.customer.domain.vo.EmailRatingListVO;
 
@@ -12,6 +13,12 @@ public interface ICustomerEmailService {
      * @return
      */
     List<EmailPublicleadsGroupsVOList> publicleadsGroupsList();
+
+    /**
+     * 客户分组列表
+     * @return
+     */
+    List<EmailPacketVOList> packetList();
 
     /**
      * 客户星级列表

@@ -278,4 +278,11 @@ public interface CustomerMapper
      * @return
      */
     List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(@Param("userId") Long userId);
+
+    /**
+     * 查询分组客户数
+     * @param userId
+     * @return
+     */
+    List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(@Param("userId") Long userId);
 }

@@ -2,15 +2,11 @@ package com.ruoyi.customer.service.impl;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.customer.domain.bo.CustomerCountGroupByPublicleadsGroupsBO;
-import com.ruoyi.customer.domain.bo.CustomerCountGroupByRatingBO;
-import com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupBO;
-import com.ruoyi.customer.domain.bo.EmailCountGroupByRatingBO;
-import com.ruoyi.customer.domain.vo.CustomerPublicleadsGroupListVO;
-import com.ruoyi.customer.domain.vo.EmailPublicleadsGroupsVOList;
-import com.ruoyi.customer.domain.vo.EmailRatingListVO;
+import com.ruoyi.customer.domain.bo.*;
+import com.ruoyi.customer.domain.vo.*;
 import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.customer.service.ICustomerEmailService;
+import com.ruoyi.customer.service.IPacketService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,6 +20,8 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
 
     @Resource
     private ICustomerService customerService;
+    @Resource
+    private IPacketService packetService;
 
     /**
      * 公海分组列表
@@ -53,6 +51,33 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             emailPublicleadsGroupsVOList.add(emailPublicleadsGroupsVO);
         }
 
+        return emailPublicleadsGroupsVOList;
+    }
+
+    /**
+     * 客户分组列表
+     * @return
+     */
+    @Override
+    public List<EmailPacketVOList> packetList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        // 查询客户星级客户数量
+        List<CustomerCountGroupByPacketBO> customerCountGroupByPacketList = customerService.selectCustomerCountGroupByPacket(userId);
+
+
+
+        List<PacketListVO> packetVOList = packetService.packetList();
+        if (packetVOList != null && packetVOList.size() > 0) {
+            List<EmailPacketVOList> emailPacketVOList = new ArrayList<>();
+            for (PacketListVO packetVO : packetVOList) {
+                EmailPacketVOList emailPacketVO = new EmailPacketVOList();
+                emailPacketVO.setId(packetVO.getId());
+                emailPacketVO.setName(packetVO.getName());
+                emailPacketVOList.add(emailPacketVO);
+            }
+            return emailPacketVOList;
+        }
 
         return null;
     }

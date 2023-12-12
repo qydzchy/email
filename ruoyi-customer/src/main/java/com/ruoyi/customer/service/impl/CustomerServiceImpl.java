@@ -1688,9 +1688,24 @@ public class CustomerServiceImpl implements ICustomerService {
         return customerMapper.selectCustomerCountGroupByPublicleadsGroups(userId);
     }
 
+    /**
+     * 查询公海分组邮件数
+     * @param userId
+     * @return
+     */
     @Override
     public List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(Long userId) {
         return customerMapper.selectEmailCountGroupByPublicleadsGroups(userId);
+    }
+
+    /**
+     * 查询客户分组客户数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(Long userId) {
+        return customerMapper.selectCustomerCountGroupByPacket(userId);
     }
 
     /**
