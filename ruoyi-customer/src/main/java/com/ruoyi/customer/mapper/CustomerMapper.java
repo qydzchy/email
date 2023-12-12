@@ -1,9 +1,9 @@
 package com.ruoyi.customer.mapper;
 
 import java.util.List;
+
 import com.ruoyi.customer.domain.Customer;
-import com.ruoyi.customer.domain.bo.CustomerMovePublicleadsRulesInfoBO;
-import com.ruoyi.customer.domain.bo.RoleDeptSimpleInfoVO;
+import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.vo.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -180,7 +180,6 @@ public interface CustomerMapper
     /**
      * 批量更新客户的公海/私海类型
      * @param customerIdList
-     * @param type
      */
     void batchUpdateCustomerSeaType(@Param("customerIdList") List<Long> customerIdList, @Param("seaType") Integer seaType);
 
@@ -252,4 +251,31 @@ public interface CustomerMapper
      * @return
      */
     Integer countByIdAndCompanyName(@Param("id") Long id, @Param("companyName") String companyName);
+
+    /**
+     * 查询星级客户数
+     * @return
+     */
+    List<CustomerCountGroupByRatingBO> selectCustomerCountGroupByRating(@Param("userId") Long userId);
+
+    /**
+     * 查询星级邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByRatingBO> selectEmailCountGroupByRating(@Param("userId") Long userId);
+
+    /**
+     * 查询公海分组客户数
+     * @param userId
+     * @return
+     */
+    List<CustomerCountGroupByPublicleadsGroupsBO> selectCustomerCountGroupByPublicleadsGroups(@Param("userId") Long userId);
+
+    /**
+     * 查询公海分组邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(@Param("userId") Long userId);
 }

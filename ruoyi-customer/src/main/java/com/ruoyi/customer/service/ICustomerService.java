@@ -5,6 +5,10 @@ import java.util.List;
 import com.ruoyi.common.enums.customer.CustomerSeaLogTypeEnum;
 import com.ruoyi.common.enums.customer.FollowUpRulesTypeEnum;
 import com.ruoyi.customer.domain.Customer;
+import com.ruoyi.customer.domain.bo.CustomerCountGroupByPublicleadsGroupsBO;
+import com.ruoyi.customer.domain.bo.CustomerCountGroupByRatingBO;
+import com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupBO;
+import com.ruoyi.customer.domain.bo.EmailCountGroupByRatingBO;
 import com.ruoyi.customer.domain.dto.*;
 import com.ruoyi.customer.domain.vo.*;
 import org.springframework.data.util.Pair;
@@ -223,4 +227,31 @@ public interface ICustomerService
      * @return
      */
     List<TeamMembersListVO> getAllUsers();
+
+    /**
+     * 查询星级客户数
+     * @return
+     */
+    List<CustomerCountGroupByRatingBO> selectCustomerCountGroupByRating(Long userId);
+
+    /**
+     * 查询星级邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByRatingBO> selectEmailCountGroupByRating(Long userId);
+
+    /**
+     * 查询公海分组客户数
+     * @param userId
+     * @return
+     */
+    List<CustomerCountGroupByPublicleadsGroupsBO> selectCustomerCountGroupByPublicleadsGroups(Long userId);
+
+    /**
+     * 查询公海分组邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(Long userId);
 }

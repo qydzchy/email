@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.customer.mapper.CustomerMapper;
+import com.ruoyi.customer.service.ICustomerService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -17,6 +19,8 @@ public class CustomerTest {
 
     @Resource
     private CustomerMapper customerMapper;
+    @Resource
+    private ICustomerService customerService;
 
     @Test
     public void test01() {
@@ -36,5 +40,12 @@ public class CustomerTest {
                 customerMapper.insertBaseCountry(type, value, label);
             }
         }
+    }
+
+    @Test
+    public void test02() {
+        Map<Integer, Integer> ratingMapList = customerService.selectCustomerCountGroupByRating(1L);
+
+        System.out.println(ratingMapList);
     }
 }

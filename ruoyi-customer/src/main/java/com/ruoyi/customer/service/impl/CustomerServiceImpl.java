@@ -1660,6 +1660,40 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 查询星级客户数
+     * @return
+     */
+    @Override
+    public List<CustomerCountGroupByRatingBO> selectCustomerCountGroupByRating(Long userId) {
+        return customerMapper.selectCustomerCountGroupByRating(userId);
+    }
+
+    /**
+     * 查询星级邮件数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountGroupByRatingBO> selectEmailCountGroupByRating(Long userId) {
+        return customerMapper.selectEmailCountGroupByRating(userId);
+    }
+
+    /**
+     * 查询公海分组客户数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<CustomerCountGroupByPublicleadsGroupsBO> selectCustomerCountGroupByPublicleadsGroups(Long userId) {
+        return customerMapper.selectCustomerCountGroupByPublicleadsGroups(userId);
+    }
+
+    @Override
+    public List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(Long userId) {
+        return customerMapper.selectEmailCountGroupByPublicleadsGroups(userId);
+    }
+
+    /**
      * 去重
      * @param list
      * @return
