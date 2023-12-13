@@ -1709,6 +1709,36 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 查询客户分组邮件数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPacket(Long userId) {
+        return customerMapper.selectEmailCountGroupByPacket(userId);
+    }
+
+    /**
+     * 查询来源客户数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<CustomerCountGroupBySourceBO> selectCustomerCountGroupBySource(Long userId) {
+        return customerMapper.selectCustomerCountGroupBySource(userId);
+    }
+
+    /**
+     * 查询来源邮件数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountGroupBySourceBO> selectEmailCountGroupBySource(Long userId) {
+        return customerMapper.selectEmailCountGroupBySource(userId);
+    }
+
+    /**
      * 去重
      * @param list
      * @return

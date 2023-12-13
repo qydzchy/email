@@ -3,6 +3,7 @@ package com.ruoyi.customer.service;
 import com.ruoyi.customer.domain.vo.EmailPacketVOList;
 import com.ruoyi.customer.domain.vo.EmailPublicleadsGroupsVOList;
 import com.ruoyi.customer.domain.vo.EmailRatingListVO;
+import com.ruoyi.customer.domain.vo.EmailSourceVOList;
 
 import java.util.List;
 
@@ -25,4 +26,10 @@ public interface ICustomerEmailService {
      * @return
      */
     List<EmailRatingListVO> ratingList();
+
+    /**
+     * 客户来源列表
+     * @return
+     */
+    List<EmailSourceVOList> sourceList();
 }

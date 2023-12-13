@@ -2,8 +2,10 @@ package com.ruoyi.customer.service.impl;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.customer.domain.Source;
 import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.vo.*;
+import com.ruoyi.customer.mapper.SourceMapper;
 import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.customer.service.ICustomerEmailService;
 import com.ruoyi.customer.service.IPacketService;
@@ -22,6 +24,8 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     private ICustomerService customerService;
     @Resource
     private IPacketService packetService;
+    @Resource
+    private SourceMapper sourceMapper;
 
     /**
      * 公海分组列表
@@ -32,11 +36,11 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         // 查询客户星级客户数量
-        List<CustomerCountGroupByPublicleadsGroupsBO> customerCountGroupByPublicleadsGroupsList = customerService.selectCustomerCountGroupByPublicleadsGroups(userId);
-        Map<Long, Integer> customerMap = customerCountGroupByPublicleadsGroupsList.stream().collect(Collectors.toMap(customerCountGroupByPublicleadsGroups -> customerCountGroupByPublicleadsGroups.getPublicleadsGroupsId(), customerCountGroupByPublicleadsGroups -> customerCountGroupByPublicleadsGroups.getCount()));
+        List<CustomerCountGroupByPublicleadsGroupsBO> customerCountGroupByList = customerService.selectCustomerCountGroupByPublicleadsGroups(userId);
+        Map<Long, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getPublicleadsGroupsId(), customerCountGroupBy -> customerCountGroupBy.getCount()));
         // 客户邮件数量
-        List<EmailCountGroupByPublicleadsGroupBO> emailCountGroupByPublicleadsGroupList = customerService.selectEmailCountGroupByPublicleadsGroups(userId);
-        Map<Long, Integer> emailMap = emailCountGroupByPublicleadsGroupList.stream().collect(Collectors.toMap(emailCountGroupByPublicleadsGroup -> emailCountGroupByPublicleadsGroup.getPublicleadsGroupsId(), emailCountGroupByPublicleadsGroup -> emailCountGroupByPublicleadsGroup.getCount()));
+        List<EmailCountGroupByPublicleadsGroupBO> emailCountGroupByList = customerService.selectEmailCountGroupByPublicleadsGroups(userId);
+        Map<Long, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getPublicleadsGroupsId(), emailCountGroupBy -> emailCountGroupBy.getCount()));
 
         // 查询公海分组列表
         List<CustomerPublicleadsGroupListVO> customerPublicleadsGroupVOList = customerService.publicleadsGroupsList();
@@ -62,10 +66,12 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     public List<EmailPacketVOList> packetList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        // 查询客户星级客户数量
-        List<CustomerCountGroupByPacketBO> customerCountGroupByPacketList = customerService.selectCustomerCountGroupByPacket(userId);
-
-
+        // 客户数量
+        List<CustomerCountGroupByPacketBO> customerCountGroupByList = customerService.selectCustomerCountGroupByPacket(userId);
+        Map<Long, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getPacketId(), customerCountGroupBy -> customerCountGroupBy.getCount()));
+        // 客户邮件数量
+        List<EmailCountGroupByPublicleadsGroupBO> emailCountGroupByList = customerService.selectEmailCountGroupByPacket(userId);
+        Map<Long, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getPublicleadsGroupsId(), emailCountGroupBy -> emailCountGroupBy.getCount()));
 
         List<PacketListVO> packetVOList = packetService.packetList();
         if (packetVOList != null && packetVOList.size() > 0) {
@@ -74,6 +80,8 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
                 EmailPacketVOList emailPacketVO = new EmailPacketVOList();
                 emailPacketVO.setId(packetVO.getId());
                 emailPacketVO.setName(packetVO.getName());
+                emailPacketVO.setCustomerCount(customerMap.get(packetVO.getId()));
+                emailPacketVO.setEmailCount(emailMap.get(packetVO.getId()));
                 emailPacketVOList.add(emailPacketVO);
             }
             return emailPacketVOList;
@@ -90,12 +98,12 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     public List<EmailRatingListVO> ratingList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        // 查询客户星级客户数量
-        List<CustomerCountGroupByRatingBO> customerCountGroupByRatingList = customerService.selectCustomerCountGroupByRating(userId);
-        Map<Integer, Integer> customerMap = customerCountGroupByRatingList.stream().collect(Collectors.toMap(customerCountGroupByRating -> customerCountGroupByRating.getRating(), customerCountGroupByRating -> customerCountGroupByRating.getCount()));
+        // 客户数量
+        List<CustomerCountGroupByRatingBO> customerCountGroupByList = customerService.selectCustomerCountGroupByRating(userId);
+        Map<Integer, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getRating(), customerCountGroupBy -> customerCountGroupBy.getCount()));
         // 客户邮件数量
-        List<EmailCountGroupByRatingBO> emailCountGroupByRatingList = customerService.selectEmailCountGroupByRating(userId);
-        Map<String, Integer> emailMap = emailCountGroupByRatingList.stream().collect(Collectors.toMap(emailCountGroupByRating -> emailCountGroupByRating.getRating(), emailCountGroupByRating -> emailCountGroupByRating.getCount()));
+        List<EmailCountGroupByRatingBO> emailCountGroupByList = customerService.selectEmailCountGroupByRating(userId);
+        Map<String, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getRating(), emailCountGroupBy -> emailCountGroupBy.getCount()));
 
         List<EmailRatingListVO> emailRatingVOList = new ArrayList<>();
         for (int i = 5; i > 0; i--) {
@@ -107,5 +115,35 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         }
 
         return emailRatingVOList;
+    }
+
+    /**
+     * 客户来源列表
+     * @return
+     */
+    @Override
+    public List<EmailSourceVOList> sourceList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        // 客户数量
+        List<CustomerCountGroupBySourceBO> customerCountGroupByList = customerService.selectCustomerCountGroupBySource(userId);
+        Map<Long, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getSourceId(), customerCountGroupBy -> customerCountGroupBy.getCount()));
+        // 客户邮件数量
+        List<EmailCountGroupBySourceBO> emailCountGroupByList = customerService.selectEmailCountGroupBySource(userId);
+        Map<Long, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getSourceId(), emailCountGroupBy -> emailCountGroupBy.getCount()));
+
+        List<EmailSourceVOList> emailSourceVOList = new ArrayList<>();
+        // 客户来源列表
+        List<Source> sourceList = sourceMapper.selectSourceList(new Source());
+        for (Source source : sourceList) {
+            EmailSourceVOList emailSourceVO = new EmailSourceVOList();
+            emailSourceVO.setId(source.getId());
+            emailSourceVO.setName(source.getName());
+            emailSourceVO.setCustomerCount(customerMap.get(source.getId()));
+            emailSourceVO.setEmailCount(emailMap.get(source.getId()));
+            emailSourceVOList.add(emailSourceVO);
+        }
+
+        return emailSourceVOList;
     }
 }

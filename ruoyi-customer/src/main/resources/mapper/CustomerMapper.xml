@@ -384,7 +384,7 @@
             resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupByPublicleadsGroupsBO">
         select cc.publicleads_groups_id as publicleadsGroupsId, count(1) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  cfup on cc.id = cfup.customer_id
-        where cc.del_flag = '0' and cfup.del_flag = '0' and cfup.user_id = #{userId} group by publicleads_groups_id
+        where cc.del_flag = '0' and cfup.del_flag = '0' and cfup.user_id = #{userId} group by cc.publicleads_groups_id
     </select>
 
     <select id="selectEmailCountGroupByPublicleadsGroups"
@@ -393,10 +393,44 @@
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by publicleads_groups_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.publicleads_groups_id
     </select>
+
     <select id="selectCustomerCountGroupByPacket"
-            resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupByPacketBO"></select>
+            resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupByPacketBO">
+        select cc.packet_id as packetId, count(1) as count from customer_customer cc
+            left join customer_customer_follow_up_personnel  cfup on cc.id = cfup.customer_id
+        where cc.del_flag = '0' and cfup.del_flag = '0' and cfup.user_id = #{userId} group by cc.packet_id
+    </select>
+
+    <select id="selectEmailCountGroupByPacket"
+            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupBO">
+        select cc.packet_id as packetId, count(1) as count from customer_customer cc
+            left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
+            left join customer_customer_contact ccc on cc.id = ccc.customer_id
+            left join mailbox_task_email mte on ccc.email = mte.fromer
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.packet_id
+    </select>
+
+    <select id="selectCustomerCountGroupBySource"
+            resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupBySourceBO">
+        SELECT ccs.source_id AS sourceId, COUNT(DISTINCT cc.id) AS count
+        FROM customer_customer cc
+        LEFT JOIN customer_customer_follow_up_personnel cfup ON cc.id = cfup.customer_id
+        LEFT JOIN customer_customer_source ccs ON cc.id = ccs.customer_id
+        WHERE cc.del_flag = '0' AND cfup.del_flag = '0' AND cfup.user_id = #{userId}
+        GROUP BY ccs.source_id
+    </select>
+
+    <select id="selectEmailCountGroupBySource"
+            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupBySourceBO">
+        select ccs.source_id as sourceId, count(DISTINCT cc.id) as count from customer_customer cc
+        left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
+        left join customer_customer_contact ccc on cc.id = ccc.customer_id
+        left join mailbox_task_email mte on ccc.email = mte.fromer
+        left join customer_customer_source ccs ON cc.id = ccs.customer_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by ccs.source_id
+    </select>
 
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer

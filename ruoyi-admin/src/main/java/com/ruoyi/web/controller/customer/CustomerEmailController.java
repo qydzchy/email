@@ -56,7 +56,7 @@ public class CustomerEmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('customer:email:source:list')")
     @GetMapping("/source/list")
     public AjaxResult sourceList() {
-        return success(sourceService.list());
+        return success(customerEmailService.sourceList());
     }
 
 

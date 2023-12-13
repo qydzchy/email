@@ -258,4 +258,25 @@ public interface ICustomerService
      * @return
      */
     List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(Long userId);
+
+    /**
+     * 查询分组邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPacket(Long userId);
+
+    /**
+     * 查询来源客户数
+     * @param userId
+     * @return
+     */
+    List<CustomerCountGroupBySourceBO> selectCustomerCountGroupBySource(Long userId);
+
+    /**
+     * 查询来源邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupBySourceBO> selectEmailCountGroupBySource(Long userId);
 }

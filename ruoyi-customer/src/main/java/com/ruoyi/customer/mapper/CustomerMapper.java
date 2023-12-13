@@ -285,4 +285,25 @@ public interface CustomerMapper
      * @return
      */
     List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(@Param("userId") Long userId);
+
+    /**
+     * 查询分组邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPacket(@Param("userId") Long userId);
+
+    /**
+     * 查询来源客户数
+     * @param userId
+     * @return
+     */
+    List<CustomerCountGroupBySourceBO> selectCustomerCountGroupBySource(@Param("userId") Long userId);
+
+    /**
+     * 查询来源邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupBySourceBO> selectEmailCountGroupBySource(@Param("userId") Long userId);
 }
