@@ -69,5 +69,12 @@ public class CustomerEmailController extends BaseController {
         return success(customerEmailService.ratingList());
     }
 
-
+    /**
+     * 客户活跃度
+     */
+    @PreAuthorize("@ss.hasPermi('customer:email:activity:list')")
+    @GetMapping("/activity/list")
+    public AjaxResult activityList() {
+        return success(customerEmailService.activityList());
+    }
 }

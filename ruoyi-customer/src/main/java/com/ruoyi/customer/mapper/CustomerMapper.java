@@ -306,4 +306,11 @@ public interface CustomerMapper
      * @return
      */
     List<EmailCountGroupBySourceBO> selectEmailCountGroupBySource(@Param("userId") Long userId);
+
+    /**
+     * 查询客户邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByCustomerBO> selectEmailCountGroupByCustomer(@Param("userId") Long userId);
 }

@@ -279,4 +279,11 @@ public interface ICustomerService
      * @return
      */
     List<EmailCountGroupBySourceBO> selectEmailCountGroupBySource(Long userId);
+
+    /**
+     * 查询客户邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByCustomerBO> selectEmailCountGroupByCustomer(Long userId);
 }

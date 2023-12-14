@@ -2,8 +2,10 @@ package com.ruoyi.customer.domain.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class EmailSourceVOList {
+public class EmailActivityListVO {
 
     private Long id;
 
@@ -12,4 +14,6 @@ public class EmailSourceVOList {
     private Integer customerCount;
 
     private Integer emailCount;
+
+    private List<EmailActivityListVO> customerList;
 }

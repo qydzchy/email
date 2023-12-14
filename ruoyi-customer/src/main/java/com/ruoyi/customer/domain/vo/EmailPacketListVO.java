@@ -3,7 +3,7 @@ package com.ruoyi.customer.domain.vo;
 import lombok.Data;
 
 @Data
-public class EmailPacketVOList {
+public class EmailPacketListVO {
 
     private Long id;
 

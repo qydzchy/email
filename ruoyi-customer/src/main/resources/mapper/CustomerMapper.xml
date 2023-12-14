@@ -432,6 +432,16 @@
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by ccs.source_id
     </select>
 
+    <select id="selectEmailCountGroupByCustomer"
+            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByCustomerBO">
+        select cc.id as customerId, cc.company_name as companyName, cc.last_contacted_at as lastContactedAt, count(DISTINCT cc.id) as count from customer_customer cc
+            left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
+            left join customer_customer_contact ccc on cc.id = ccc.customer_id
+            left join mailbox_task_email mte on ccc.email = mte.fromer
+            left join customer_customer_source ccs ON cc.id = ccs.customer_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.last_contacted_at order by cc.last_contacted_at desc
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">

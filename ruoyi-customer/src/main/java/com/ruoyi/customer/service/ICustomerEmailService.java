@@ -1,9 +1,6 @@
 package com.ruoyi.customer.service;
 
-import com.ruoyi.customer.domain.vo.EmailPacketVOList;
-import com.ruoyi.customer.domain.vo.EmailPublicleadsGroupsVOList;
-import com.ruoyi.customer.domain.vo.EmailRatingListVO;
-import com.ruoyi.customer.domain.vo.EmailSourceVOList;
+import com.ruoyi.customer.domain.vo.*;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ public interface ICustomerEmailService {
      * 客户分组列表
      * @return
      */
-    List<EmailPacketVOList> packetList();
+    List<EmailPacketListVO> packetList();
 
     /**
      * 客户星级列表
@@ -31,5 +28,11 @@ public interface ICustomerEmailService {
      * 客户来源列表
      * @return
      */
-    List<EmailSourceVOList> sourceList();
+    List<EmailSourceListVO> sourceList();
+
+    /**
+     * 客户活跃度列表
+     * @return
+     */
+    List<EmailActivityListVO> activityList();
 }

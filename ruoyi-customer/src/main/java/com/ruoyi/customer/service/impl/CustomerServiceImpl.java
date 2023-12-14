@@ -1739,6 +1739,16 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 查询客户邮件数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountGroupByCustomerBO> selectEmailCountGroupByCustomer(Long userId) {
+        return customerMapper.selectEmailCountGroupByCustomer(userId);
+    }
+
+    /**
      * 去重
      * @param list
      * @return
