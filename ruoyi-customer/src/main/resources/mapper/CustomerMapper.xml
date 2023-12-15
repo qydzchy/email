@@ -365,71 +365,41 @@
         select count(*) from customer_customer where id != #{id} and company_name = #{companyName} and del_flag = '0'
     </select>
 
-    <select id="selectCustomerCountGroupByRating" resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupByRatingBO">
-        select cc.rating, count(1) as count from customer_customer cc
-        left join customer_customer_follow_up_personnel  cfup on cc.id = cfup.customer_id
-        where cc.del_flag = '0' and cfup.del_flag = '0' and cfup.user_id = #{userId} group by rating
-    </select>
-
     <select id="selectEmailCountGroupByRating"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByRatingBO">
-        select cc.rating, count(1) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, cc.rating, count(1) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by rating
-    </select>
-
-    <select id="selectCustomerCountGroupByPublicleadsGroups"
-            resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupByPublicleadsGroupsBO">
-        select cc.publicleads_groups_id as publicleadsGroupsId, count(1) as count from customer_customer cc
-            left join customer_customer_follow_up_personnel  cfup on cc.id = cfup.customer_id
-        where cc.del_flag = '0' and cfup.del_flag = '0' and cfup.user_id = #{userId} group by cc.publicleads_groups_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, rating
     </select>
 
     <select id="selectEmailCountGroupByPublicleadsGroups"
-            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupBO">
-        select cc.publicleads_groups_id as publicleadsGroupsId, count(1) as count from customer_customer cc
+            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupsBO">
+        select cc.id as customerId, cc.company_name as companyName, cc.publicleads_groups_id as publicleadsGroupsId, count(1) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.publicleads_groups_id
-    </select>
-
-    <select id="selectCustomerCountGroupByPacket"
-            resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupByPacketBO">
-        select cc.packet_id as packetId, count(1) as count from customer_customer cc
-            left join customer_customer_follow_up_personnel  cfup on cc.id = cfup.customer_id
-        where cc.del_flag = '0' and cfup.del_flag = '0' and cfup.user_id = #{userId} group by cc.packet_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.publicleads_groups_id order by cc.create_time desc
     </select>
 
     <select id="selectEmailCountGroupByPacket"
-            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupBO">
-        select cc.packet_id as packetId, count(1) as count from customer_customer cc
+            resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPacketBO">
+        select cc.id as customerId, cc.company_name as companyName, cc.packet_id as packetId, count(1) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.packet_id
-    </select>
-
-    <select id="selectCustomerCountGroupBySource"
-            resultType="com.ruoyi.customer.domain.bo.CustomerCountGroupBySourceBO">
-        SELECT ccs.source_id AS sourceId, COUNT(DISTINCT cc.id) AS count
-        FROM customer_customer cc
-        LEFT JOIN customer_customer_follow_up_personnel cfup ON cc.id = cfup.customer_id
-        LEFT JOIN customer_customer_source ccs ON cc.id = ccs.customer_id
-        WHERE cc.del_flag = '0' AND cfup.del_flag = '0' AND cfup.user_id = #{userId}
-        GROUP BY ccs.source_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.packet_id order by cc.create_time desc
     </select>
 
     <select id="selectEmailCountGroupBySource"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupBySourceBO">
-        select ccs.source_id as sourceId, count(DISTINCT cc.id) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, ccs.source_id as sourceId, count(DISTINCT cc.id) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
         left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by ccs.source_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, ccs.source_id
     </select>
 
     <select id="selectEmailCountGroupByCustomer"

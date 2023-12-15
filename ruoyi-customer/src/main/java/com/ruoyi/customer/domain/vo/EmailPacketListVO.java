@@ -2,6 +2,8 @@ package com.ruoyi.customer.domain.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class EmailPacketListVO {
 
@@ -12,4 +14,6 @@ public class EmailPacketListVO {
     private Integer customerCount;
 
     private Integer emailCount;
+
+    private List<EmailCustomerVO> customerList;
 }

@@ -3,7 +3,7 @@ package com.ruoyi.customer.domain.bo;
 import lombok.Data;
 
 @Data
-public class EmailCountGroupByRatingBO {
+public class EmailCountGroupByPublicleadsGroupsBO {
 
     /**
      * 客户ID
@@ -21,7 +21,7 @@ public class EmailCountGroupByRatingBO {
     private Integer count;
 
     /**
-     * 客户星级
+     * 公海分组ID
      */
-    private Integer rating;
+    private Long publicleadsGroupsId;
 }

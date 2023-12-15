@@ -10,7 +10,7 @@ public interface ICustomerEmailService {
      * 公海分组列表
      * @return
      */
-    List<EmailPublicleadsGroupsVOList> publicleadsGroupsList();
+    List<EmailPublicleadsGroupsListVO> publicleadsGroupsList();
 
     /**
      * 客户分组列表

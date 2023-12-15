@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,26 +32,47 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
      * @return
      */
     @Override
-    public List<EmailPublicleadsGroupsVOList> publicleadsGroupsList() {
+    public List<EmailPublicleadsGroupsListVO> publicleadsGroupsList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        // 查询客户星级客户数量
-        List<CustomerCountGroupByPublicleadsGroupsBO> customerCountGroupByList = customerService.selectCustomerCountGroupByPublicleadsGroups(userId);
-        Map<Long, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getPublicleadsGroupsId(), customerCountGroupBy -> customerCountGroupBy.getCount()));
         // 客户邮件数量
-        List<EmailCountGroupByPublicleadsGroupBO> emailCountGroupByList = customerService.selectEmailCountGroupByPublicleadsGroups(userId);
-        Map<Long, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getPublicleadsGroupsId(), emailCountGroupBy -> emailCountGroupBy.getCount()));
+        List<EmailCountGroupByPublicleadsGroupsBO> emailCountGroupByList = customerService.selectEmailCountGroupByPublicleadsGroups(userId);
 
         // 查询公海分组列表
         List<CustomerPublicleadsGroupListVO> customerPublicleadsGroupVOList = customerService.publicleadsGroupsList();
 
-        List<EmailPublicleadsGroupsVOList> emailPublicleadsGroupsVOList = new ArrayList<>();
+        List<EmailPublicleadsGroupsListVO> emailPublicleadsGroupsVOList = new ArrayList<>();
         for (CustomerPublicleadsGroupListVO customerPublicleadsGroupVO : customerPublicleadsGroupVOList) {
-            EmailPublicleadsGroupsVOList emailPublicleadsGroupsVO = new EmailPublicleadsGroupsVOList();
-            emailPublicleadsGroupsVO.setId(customerPublicleadsGroupVO.getId());
-            emailPublicleadsGroupsVO.setName(customerPublicleadsGroupVO.getName());
-            emailPublicleadsGroupsVO.setCustomerCount(customerMap.get(customerPublicleadsGroupVO.getId()));
-            emailPublicleadsGroupsVO.setEmailCount(emailMap.get(customerPublicleadsGroupVO.getId()));
+            Long id = customerPublicleadsGroupVO.getId();
+            String name = customerPublicleadsGroupVO.getName();
+            int customerCount = 0;
+            int emailCount = 0;
+
+            List<EmailCustomerVO> customerList = new ArrayList<>();
+            Iterator<EmailCountGroupByPublicleadsGroupsBO> iterator = emailCountGroupByList.iterator();
+            while (iterator.hasNext()) {
+                EmailCountGroupByPublicleadsGroupsBO emailCountGroupBy = iterator.next();
+                Long publicleadsGroupsId = emailCountGroupBy.getPublicleadsGroupsId();
+                if (id.longValue() == publicleadsGroupsId.longValue()) {
+                    customerCount ++;
+                    emailCount += emailCountGroupBy.getCount();
+
+                    EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+                    emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
+                    emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
+                    emailCustomerVO.setCustomerCount(1);
+                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    customerList.add(emailCustomerVO);
+                    iterator.remove();
+                }
+            }
+
+            EmailPublicleadsGroupsListVO emailPublicleadsGroupsVO = new EmailPublicleadsGroupsListVO();
+            emailPublicleadsGroupsVO.setId(id);
+            emailPublicleadsGroupsVO.setName(name);
+            emailPublicleadsGroupsVO.setEmailCount(emailCount);
+            emailPublicleadsGroupsVO.setCustomerCount(customerCount);
+            emailPublicleadsGroupsVO.setCustomerList(customerList);
             emailPublicleadsGroupsVOList.add(emailPublicleadsGroupsVO);
         }
 
@@ -69,28 +87,46 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     public List<EmailPacketListVO> packetList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        // 客户数量
-        List<CustomerCountGroupByPacketBO> customerCountGroupByList = customerService.selectCustomerCountGroupByPacket(userId);
-        Map<Long, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getPacketId(), customerCountGroupBy -> customerCountGroupBy.getCount()));
         // 客户邮件数量
-        List<EmailCountGroupByPublicleadsGroupBO> emailCountGroupByList = customerService.selectEmailCountGroupByPacket(userId);
-        Map<Long, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getPublicleadsGroupsId(), emailCountGroupBy -> emailCountGroupBy.getCount()));
+        List<EmailCountGroupByPacketBO> emailCountGroupByList = customerService.selectEmailCountGroupByPacket(userId);
 
+        List<EmailPacketListVO> emailPacketVOList = new ArrayList<>();
         List<PacketListVO> packetVOList = packetService.packetList();
-        if (packetVOList != null && packetVOList.size() > 0) {
-            List<EmailPacketListVO> emailPacketListVO = new ArrayList<>();
-            for (PacketListVO packetVO : packetVOList) {
-                EmailPacketListVO emailPacketVO = new EmailPacketListVO();
-                emailPacketVO.setId(packetVO.getId());
-                emailPacketVO.setName(packetVO.getName());
-                emailPacketVO.setCustomerCount(customerMap.get(packetVO.getId()));
-                emailPacketVO.setEmailCount(emailMap.get(packetVO.getId()));
-                emailPacketListVO.add(emailPacketVO);
+        for (PacketListVO packetVO : packetVOList) {
+            Long id = packetVO.getId();
+            String name = packetVO.getName();
+            int customerCount = 0;
+            int emailCount = 0;
+
+            List<EmailCustomerVO> customerList = new ArrayList<>();
+            Iterator<EmailCountGroupByPacketBO> iterator = emailCountGroupByList.iterator();
+            while (iterator.hasNext()) {
+                EmailCountGroupByPacketBO emailCountGroupBy = iterator.next();
+                Long packetId = emailCountGroupBy.getPacketId();
+                if (id.longValue() == packetId.longValue()) {
+                    customerCount ++;
+                    emailCount += emailCountGroupBy.getCount();
+
+                    EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+                    emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
+                    emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
+                    emailCustomerVO.setCustomerCount(1);
+                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    customerList.add(emailCustomerVO);
+                    iterator.remove();
+                }
             }
-            return emailPacketListVO;
+
+            EmailPacketListVO emailPacketListVO = new EmailPacketListVO();
+            emailPacketListVO.setId(id);
+            emailPacketListVO.setName(name);
+            emailPacketListVO.setEmailCount(emailCount);
+            emailPacketListVO.setCustomerCount(customerCount);
+            emailPacketListVO.setCustomerList(customerList);
+            emailPacketVOList.add(emailPacketListVO);
         }
 
-        return null;
+        return emailPacketVOList;
     }
 
     /**
@@ -101,20 +137,41 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     public List<EmailRatingListVO> ratingList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        // 客户数量
-        List<CustomerCountGroupByRatingBO> customerCountGroupByList = customerService.selectCustomerCountGroupByRating(userId);
-        Map<Integer, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getRating(), customerCountGroupBy -> customerCountGroupBy.getCount()));
         // 客户邮件数量
         List<EmailCountGroupByRatingBO> emailCountGroupByList = customerService.selectEmailCountGroupByRating(userId);
-        Map<String, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getRating(), emailCountGroupBy -> emailCountGroupBy.getCount()));
 
         List<EmailRatingListVO> emailRatingVOList = new ArrayList<>();
         for (int i = 5; i > 0; i--) {
-            EmailRatingListVO ratingListVO = new EmailRatingListVO();
-            ratingListVO.setRating(i);
-            ratingListVO.setCustomerCount(customerMap.containsKey(i) ? customerMap.get(i) : 0);
-            ratingListVO.setEmailCount(emailMap.containsKey(i) ? emailMap.get(i) : 0);
-            emailRatingVOList.add(ratingListVO);
+            Long id = Long.valueOf(i);
+            String name = String.valueOf(i);
+            int customerCount = 0;
+            int emailCount = 0;
+
+            List<EmailCustomerVO> customerList = new ArrayList<>();
+            Iterator<EmailCountGroupByRatingBO> iterator = emailCountGroupByList.iterator();
+            while (iterator.hasNext()) {
+                EmailCountGroupByRatingBO emailCountGroupBy = iterator.next();
+                Long rating = emailCountGroupBy.getRating() != null ? Long.valueOf(emailCountGroupBy.getRating()) : 0L;
+                if (id.longValue() == rating.longValue()) {
+                    customerCount ++;
+                    emailCount += emailCountGroupBy.getCount();
+
+                    EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+                    emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
+                    emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
+                    emailCustomerVO.setCustomerCount(1);
+                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    customerList.add(emailCustomerVO);
+                }
+            }
+
+            EmailRatingListVO emailRatingListVO = new EmailRatingListVO();
+            emailRatingListVO.setId(id);
+            emailRatingListVO.setName(name);
+            emailRatingListVO.setEmailCount(emailCount);
+            emailRatingListVO.setCustomerCount(customerCount);
+            emailRatingListVO.setCustomerList(customerList);
+            emailRatingVOList.add(emailRatingListVO);
         }
 
         return emailRatingVOList;
@@ -128,22 +185,43 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     public List<EmailSourceListVO> sourceList() {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        // 客户数量
-        List<CustomerCountGroupBySourceBO> customerCountGroupByList = customerService.selectCustomerCountGroupBySource(userId);
-        Map<Long, Integer> customerMap = customerCountGroupByList.stream().collect(Collectors.toMap(customerCountGroupBy -> customerCountGroupBy.getSourceId(), customerCountGroupBy -> customerCountGroupBy.getCount()));
+
         // 客户邮件数量
         List<EmailCountGroupBySourceBO> emailCountGroupByList = customerService.selectEmailCountGroupBySource(userId);
-        Map<Long, Integer> emailMap = emailCountGroupByList.stream().collect(Collectors.toMap(emailCountGroupBy -> emailCountGroupBy.getSourceId(), emailCountGroupBy -> emailCountGroupBy.getCount()));
 
-        List<EmailSourceListVO> emailSourceListVO = new ArrayList<>();
         // 客户来源列表
         List<Source> sourceList = sourceMapper.selectSourceList(new Source());
+        List<EmailSourceListVO> emailSourceListVO = new ArrayList<>();
         for (Source source : sourceList) {
+            Long id = source.getId();
+            String name = source.getName();
+            int customerCount = 0;
+            int emailCount = 0;
+
+            List<EmailCustomerVO> customerList = new ArrayList<>();
+            Iterator<EmailCountGroupBySourceBO> iterator = emailCountGroupByList.iterator();
+            while (iterator.hasNext()) {
+                EmailCountGroupBySourceBO emailCountGroupBy = iterator.next();
+                Long sourceId = emailCountGroupBy.getSourceId();
+                if (id.longValue() == sourceId.longValue()) {
+                    customerCount ++;
+                    emailCount += emailCountGroupBy.getCount();
+
+                    EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+                    emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
+                    emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
+                    emailCustomerVO.setCustomerCount(1);
+                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    customerList.add(emailCustomerVO);
+                }
+            }
+
             EmailSourceListVO emailSourceVO = new EmailSourceListVO();
-            emailSourceVO.setId(source.getId());
-            emailSourceVO.setName(source.getName());
-            emailSourceVO.setCustomerCount(customerMap.get(source.getId()));
-            emailSourceVO.setEmailCount(emailMap.get(source.getId()));
+            emailSourceVO.setId(id);
+            emailSourceVO.setName(name);
+            emailSourceVO.setEmailCount(emailCount);
+            emailSourceVO.setCustomerCount(customerCount);
+            emailSourceVO.setCustomerList(customerList);
             emailSourceListVO.add(emailSourceVO);
         }
 

@@ -253,12 +253,6 @@ public interface CustomerMapper
     Integer countByIdAndCompanyName(@Param("id") Long id, @Param("companyName") String companyName);
 
     /**
-     * 查询星级客户数
-     * @return
-     */
-    List<CustomerCountGroupByRatingBO> selectCustomerCountGroupByRating(@Param("userId") Long userId);
-
-    /**
      * 查询星级邮件数
      * @param userId
      * @return
@@ -266,39 +260,18 @@ public interface CustomerMapper
     List<EmailCountGroupByRatingBO> selectEmailCountGroupByRating(@Param("userId") Long userId);
 
     /**
-     * 查询公海分组客户数
-     * @param userId
-     * @return
-     */
-    List<CustomerCountGroupByPublicleadsGroupsBO> selectCustomerCountGroupByPublicleadsGroups(@Param("userId") Long userId);
-
-    /**
      * 查询公海分组邮件数
      * @param userId
      * @return
      */
-    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(@Param("userId") Long userId);
-
-    /**
-     * 查询分组客户数
-     * @param userId
-     * @return
-     */
-    List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(@Param("userId") Long userId);
+    List<EmailCountGroupByPublicleadsGroupsBO> selectEmailCountGroupByPublicleadsGroups(@Param("userId") Long userId);
 
     /**
      * 查询分组邮件数
      * @param userId
      * @return
      */
-    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPacket(@Param("userId") Long userId);
-
-    /**
-     * 查询来源客户数
-     * @param userId
-     * @return
-     */
-    List<CustomerCountGroupBySourceBO> selectCustomerCountGroupBySource(@Param("userId") Long userId);
+    List<EmailCountGroupByPacketBO> selectEmailCountGroupByPacket(@Param("userId") Long userId);
 
     /**
      * 查询来源邮件数

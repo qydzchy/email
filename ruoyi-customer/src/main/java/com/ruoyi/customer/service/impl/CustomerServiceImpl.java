@@ -1660,15 +1660,6 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
-     * 查询星级客户数
-     * @return
-     */
-    @Override
-    public List<CustomerCountGroupByRatingBO> selectCustomerCountGroupByRating(Long userId) {
-        return customerMapper.selectCustomerCountGroupByRating(userId);
-    }
-
-    /**
      * 查询星级邮件数
      * @param userId
      * @return
@@ -1679,33 +1670,13 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
-     * 查询公海分组客户数
-     * @param userId
-     * @return
-     */
-    @Override
-    public List<CustomerCountGroupByPublicleadsGroupsBO> selectCustomerCountGroupByPublicleadsGroups(Long userId) {
-        return customerMapper.selectCustomerCountGroupByPublicleadsGroups(userId);
-    }
-
-    /**
      * 查询公海分组邮件数
      * @param userId
      * @return
      */
     @Override
-    public List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(Long userId) {
+    public List<EmailCountGroupByPublicleadsGroupsBO> selectEmailCountGroupByPublicleadsGroups(Long userId) {
         return customerMapper.selectEmailCountGroupByPublicleadsGroups(userId);
-    }
-
-    /**
-     * 查询客户分组客户数
-     * @param userId
-     * @return
-     */
-    @Override
-    public List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(Long userId) {
-        return customerMapper.selectCustomerCountGroupByPacket(userId);
     }
 
     /**
@@ -1714,18 +1685,8 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return
      */
     @Override
-    public List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPacket(Long userId) {
+    public List<EmailCountGroupByPacketBO> selectEmailCountGroupByPacket(Long userId) {
         return customerMapper.selectEmailCountGroupByPacket(userId);
-    }
-
-    /**
-     * 查询来源客户数
-     * @param userId
-     * @return
-     */
-    @Override
-    public List<CustomerCountGroupBySourceBO> selectCustomerCountGroupBySource(Long userId) {
-        return customerMapper.selectCustomerCountGroupBySource(userId);
     }
 
     /**

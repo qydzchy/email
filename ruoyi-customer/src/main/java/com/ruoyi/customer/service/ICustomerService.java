@@ -226,12 +226,6 @@ public interface ICustomerService
     List<TeamMembersListVO> getAllUsers();
 
     /**
-     * 查询星级客户数
-     * @return
-     */
-    List<CustomerCountGroupByRatingBO> selectCustomerCountGroupByRating(Long userId);
-
-    /**
      * 查询星级邮件数
      * @param userId
      * @return
@@ -239,39 +233,18 @@ public interface ICustomerService
     List<EmailCountGroupByRatingBO> selectEmailCountGroupByRating(Long userId);
 
     /**
-     * 查询公海分组客户数
-     * @param userId
-     * @return
-     */
-    List<CustomerCountGroupByPublicleadsGroupsBO> selectCustomerCountGroupByPublicleadsGroups(Long userId);
-
-    /**
      * 查询公海分组邮件数
      * @param userId
      * @return
      */
-    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPublicleadsGroups(Long userId);
-
-    /**
-     * 查询分组客户数
-     * @param userId
-     * @return
-     */
-    List<CustomerCountGroupByPacketBO> selectCustomerCountGroupByPacket(Long userId);
+    List<EmailCountGroupByPublicleadsGroupsBO> selectEmailCountGroupByPublicleadsGroups(Long userId);
 
     /**
      * 查询分组邮件数
      * @param userId
      * @return
      */
-    List<EmailCountGroupByPublicleadsGroupBO> selectEmailCountGroupByPacket(Long userId);
-
-    /**
-     * 查询来源客户数
-     * @param userId
-     * @return
-     */
-    List<CustomerCountGroupBySourceBO> selectCustomerCountGroupBySource(Long userId);
+    List<EmailCountGroupByPacketBO> selectEmailCountGroupByPacket(Long userId);
 
     /**
      * 查询来源邮件数
