@@ -21,6 +21,16 @@ public class CustomerEmailController extends BaseController {
     private ICustomerEmailService customerEmailService;
 
     /**
+     * 邮件系统-通用列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:email:general:list')")
+    @GetMapping("/general/list")
+    public AjaxResult generalList()
+    {
+        return success(customerEmailService.generalList());
+    }
+
+    /**
      * 邮件系统-公海分组列表
      * @return
      */

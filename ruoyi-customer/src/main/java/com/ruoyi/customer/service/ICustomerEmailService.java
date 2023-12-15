@@ -35,4 +35,10 @@ public interface ICustomerEmailService {
      * @return
      */
     List<EmailActivityListVO> activityList();
+
+    /**
+     * 通用列表
+     * @return
+     */
+    List<EmailGeneralListVO> generalList();
 }

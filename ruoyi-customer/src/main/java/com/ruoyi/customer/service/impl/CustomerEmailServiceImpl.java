@@ -299,4 +299,17 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
 
         return emailActivityVOList;
     }
+
+    /**
+     * 通用列表 todo 未完成
+     * @return
+     */
+    @Override
+    public List<EmailGeneralListVO> generalList() {
+        // 最近7天有往来
+
+
+        // 关注客户
+        return null;
+    }
 }
