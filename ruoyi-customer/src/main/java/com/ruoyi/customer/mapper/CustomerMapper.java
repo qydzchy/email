@@ -286,4 +286,18 @@ public interface CustomerMapper
      * @return
      */
     List<EmailCountGroupByCustomerBO> selectEmailCountGroupByCustomer(@Param("userId") Long userId);
+
+    /**
+     * 查询“最近7天有往来”客户的邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountByRecentInteractions7DaysBO> selectRecentInteractions7Days(Long userId);
+
+    /**
+     * 查询关注客户的邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByFocusFlagBO> selectEmailCountGroupByFocusFlag(Long userId);
 }

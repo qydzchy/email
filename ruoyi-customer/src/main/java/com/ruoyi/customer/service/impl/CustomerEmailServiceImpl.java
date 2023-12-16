@@ -306,10 +306,60 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
      */
     @Override
     public List<EmailGeneralListVO> generalList() {
-        // 最近7天有往来
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
 
+        // 最近7天有往来
+        List<EmailCountByRecentInteractions7DaysBO> emailCountByRecentInteractions7DaysBOList = customerService.selectRecentInteractions7Days(userId);
+        int recentInteractions7DaysEmailCount = 0;
+        int recentInteractions7DaysCustomerCount = 0;
+        List<EmailCustomerVO> recentInteractions7DaysCustomerList = new ArrayList<>();
+        for (EmailCountByRecentInteractions7DaysBO emailCountByRecentInteractions7DaysBO : emailCountByRecentInteractions7DaysBOList) {
+            recentInteractions7DaysCustomerCount ++;
+            recentInteractions7DaysEmailCount += emailCountByRecentInteractions7DaysBO.getCount();
+
+            EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+            emailCustomerVO.setId(emailCountByRecentInteractions7DaysBO.getCustomerId());
+            emailCustomerVO.setName(emailCountByRecentInteractions7DaysBO.getCompanyName());
+            emailCustomerVO.setCustomerCount(1);
+            emailCustomerVO.setEmailCount(emailCountByRecentInteractions7DaysBO.getCount());
+            recentInteractions7DaysCustomerList.add(emailCustomerVO);
+        }
+
+        EmailGeneralListVO recentInteractions7DaysEmailGeneralVO = new EmailGeneralListVO();
+        recentInteractions7DaysEmailGeneralVO.setId(0L);
+        recentInteractions7DaysEmailGeneralVO.setName("最近7天有往来");
+        recentInteractions7DaysEmailGeneralVO.setCustomerCount(recentInteractions7DaysCustomerCount);
+        recentInteractions7DaysEmailGeneralVO.setEmailCount(recentInteractions7DaysEmailCount);
+        recentInteractions7DaysEmailGeneralVO.setCustomerList(recentInteractions7DaysCustomerList);
 
         // 关注客户
-        return null;
+        List<EmailCountGroupByFocusFlagBO> emailCountGroupByFocusFlagBOList = customerService.selectEmailCountGroupByFocusFlag(userId);
+        int focusFlagEmailCount = 0;
+        int focusFlagCustomerCount = 0;
+        List<EmailCustomerVO> focusFlagCustomerList = new ArrayList<>();
+        for (EmailCountGroupByFocusFlagBO emailCountGroupByFocusFlagBO : emailCountGroupByFocusFlagBOList) {
+            focusFlagCustomerCount ++;
+            focusFlagEmailCount += emailCountGroupByFocusFlagBO.getCount();
+
+            EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+            emailCustomerVO.setId(emailCountGroupByFocusFlagBO.getCustomerId());
+            emailCustomerVO.setName(emailCountGroupByFocusFlagBO.getCompanyName());
+            emailCustomerVO.setCustomerCount(1);
+            emailCustomerVO.setEmailCount(emailCountGroupByFocusFlagBO.getCount());
+            focusFlagCustomerList.add(emailCustomerVO);
+        }
+
+        EmailGeneralListVO focusFlagEmailGeneralVO = new EmailGeneralListVO();
+        focusFlagEmailGeneralVO.setId(0L);
+        focusFlagEmailGeneralVO.setName("关注客户");
+        focusFlagEmailGeneralVO.setCustomerCount(focusFlagCustomerCount);
+        focusFlagEmailGeneralVO.setEmailCount(focusFlagEmailCount);
+        focusFlagEmailGeneralVO.setCustomerList(focusFlagCustomerList);
+
+        List<EmailGeneralListVO> emailGeneralVOList = new ArrayList<>();
+        emailGeneralVOList.add(recentInteractions7DaysEmailGeneralVO);
+        emailGeneralVOList.add(focusFlagEmailGeneralVO);
+        return emailGeneralVOList;
     }
 }

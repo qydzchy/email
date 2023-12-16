@@ -1710,6 +1710,26 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 查询“最近7天有往来”客户的邮件数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountByRecentInteractions7DaysBO> selectRecentInteractions7Days(Long userId) {
+        return customerMapper.selectRecentInteractions7Days(userId);
+    }
+
+    /**
+     * 查询关注客户的邮件数
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountGroupByFocusFlagBO> selectEmailCountGroupByFocusFlag(Long userId) {
+        return customerMapper.selectEmailCountGroupByFocusFlag(userId);
+    }
+
+    /**
      * 去重
      * @param list
      * @return
