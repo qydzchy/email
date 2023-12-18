@@ -13,7 +13,10 @@ public class EmailGeneralListVO {
 
     private Integer customerCount;
 
-    private Integer emailCount;
+    /**
+     * 未读邮件数量
+     */
+    private Integer unReadEmailCount;
 
     private List<EmailCustomerVO> customerList;
 }

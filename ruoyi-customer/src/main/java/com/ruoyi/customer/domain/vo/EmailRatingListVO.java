@@ -13,7 +13,7 @@ public class EmailRatingListVO {
 
     private Integer customerCount;
 
-    private Integer emailCount;
+    private Integer unReadEmailCount;
 
     private List<EmailCustomerVO> customerList;
 }

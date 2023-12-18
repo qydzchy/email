@@ -61,7 +61,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
                     emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
                     emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
                     emailCustomerVO.setCustomerCount(1);
-                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    emailCustomerVO.setUnReadEmailCount(emailCountGroupBy.getCount());
                     customerList.add(emailCustomerVO);
                     iterator.remove();
                 }
@@ -70,7 +70,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             EmailPublicleadsGroupsListVO emailPublicleadsGroupsVO = new EmailPublicleadsGroupsListVO();
             emailPublicleadsGroupsVO.setId(id);
             emailPublicleadsGroupsVO.setName(name);
-            emailPublicleadsGroupsVO.setEmailCount(emailCount);
+            emailPublicleadsGroupsVO.setUnReadEmailCount(emailCount);
             emailPublicleadsGroupsVO.setCustomerCount(customerCount);
             emailPublicleadsGroupsVO.setCustomerList(customerList);
             emailPublicleadsGroupsVOList.add(emailPublicleadsGroupsVO);
@@ -111,7 +111,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
                     emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
                     emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
                     emailCustomerVO.setCustomerCount(1);
-                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    emailCustomerVO.setUnReadEmailCount(emailCountGroupBy.getCount());
                     customerList.add(emailCustomerVO);
                     iterator.remove();
                 }
@@ -120,7 +120,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             EmailPacketListVO emailPacketListVO = new EmailPacketListVO();
             emailPacketListVO.setId(id);
             emailPacketListVO.setName(name);
-            emailPacketListVO.setEmailCount(emailCount);
+            emailPacketListVO.setUnReadEmailCount(emailCount);
             emailPacketListVO.setCustomerCount(customerCount);
             emailPacketListVO.setCustomerList(customerList);
             emailPacketVOList.add(emailPacketListVO);
@@ -160,7 +160,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
                     emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
                     emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
                     emailCustomerVO.setCustomerCount(1);
-                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    emailCustomerVO.setUnReadEmailCount(emailCountGroupBy.getCount());
                     customerList.add(emailCustomerVO);
                 }
             }
@@ -168,7 +168,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             EmailRatingListVO emailRatingListVO = new EmailRatingListVO();
             emailRatingListVO.setId(id);
             emailRatingListVO.setName(name);
-            emailRatingListVO.setEmailCount(emailCount);
+            emailRatingListVO.setUnReadEmailCount(emailCount);
             emailRatingListVO.setCustomerCount(customerCount);
             emailRatingListVO.setCustomerList(customerList);
             emailRatingVOList.add(emailRatingListVO);
@@ -211,7 +211,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
                     emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
                     emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
                     emailCustomerVO.setCustomerCount(1);
-                    emailCustomerVO.setEmailCount(emailCountGroupBy.getCount());
+                    emailCustomerVO.setUnReadEmailCount(emailCountGroupBy.getCount());
                     customerList.add(emailCustomerVO);
                 }
             }
@@ -219,7 +219,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             EmailSourceListVO emailSourceVO = new EmailSourceListVO();
             emailSourceVO.setId(id);
             emailSourceVO.setName(name);
-            emailSourceVO.setEmailCount(emailCount);
+            emailSourceVO.setUnReadEmailCount(emailCount);
             emailSourceVO.setCustomerCount(customerCount);
             emailSourceVO.setCustomerList(customerList);
             emailSourceListVO.add(emailSourceVO);
@@ -286,13 +286,13 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
                 customerVO.setId(emailCountGroupByCustomerBO.getCustomerId());
                 customerVO.setName(emailCountGroupByCustomerBO.getCompanyName());
                 customerVO.setCustomerCount(1);
-                customerVO.setEmailCount(emailCountGroupByCustomerBO.getCount());
+                customerVO.setUnReadEmailCount(emailCountGroupByCustomerBO.getCount());
                 customerCount++;
                 emailCount += emailCountGroupByCustomerBO.getCount();
             }
 
             emailActivityVO.setCustomerCount(customerCount);
-            emailActivityVO.setEmailCount(emailCount);
+            emailActivityVO.setUnReadEmailCount(emailCount);
             emailActivityVO.setCustomerList(customerList);
             emailActivityVOList.add(emailActivityVO);
         });
@@ -301,7 +301,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     }
 
     /**
-     * 通用列表 todo 未完成
+     * 通用列表
      * @return
      */
     @Override
@@ -322,7 +322,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             emailCustomerVO.setId(emailCountByRecentInteractions7DaysBO.getCustomerId());
             emailCustomerVO.setName(emailCountByRecentInteractions7DaysBO.getCompanyName());
             emailCustomerVO.setCustomerCount(1);
-            emailCustomerVO.setEmailCount(emailCountByRecentInteractions7DaysBO.getCount());
+            emailCustomerVO.setUnReadEmailCount(emailCountByRecentInteractions7DaysBO.getCount());
             recentInteractions7DaysCustomerList.add(emailCustomerVO);
         }
 
@@ -330,7 +330,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         recentInteractions7DaysEmailGeneralVO.setId(0L);
         recentInteractions7DaysEmailGeneralVO.setName("最近7天有往来");
         recentInteractions7DaysEmailGeneralVO.setCustomerCount(recentInteractions7DaysCustomerCount);
-        recentInteractions7DaysEmailGeneralVO.setEmailCount(recentInteractions7DaysEmailCount);
+        recentInteractions7DaysEmailGeneralVO.setUnReadEmailCount(recentInteractions7DaysEmailCount);
         recentInteractions7DaysEmailGeneralVO.setCustomerList(recentInteractions7DaysCustomerList);
 
         // 关注客户
@@ -346,7 +346,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             emailCustomerVO.setId(emailCountGroupByFocusFlagBO.getCustomerId());
             emailCustomerVO.setName(emailCountGroupByFocusFlagBO.getCompanyName());
             emailCustomerVO.setCustomerCount(1);
-            emailCustomerVO.setEmailCount(emailCountGroupByFocusFlagBO.getCount());
+            emailCustomerVO.setUnReadEmailCount(emailCountGroupByFocusFlagBO.getCount());
             focusFlagCustomerList.add(emailCustomerVO);
         }
 
@@ -354,7 +354,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         focusFlagEmailGeneralVO.setId(0L);
         focusFlagEmailGeneralVO.setName("关注客户");
         focusFlagEmailGeneralVO.setCustomerCount(focusFlagCustomerCount);
-        focusFlagEmailGeneralVO.setEmailCount(focusFlagEmailCount);
+        focusFlagEmailGeneralVO.setUnReadEmailCount(focusFlagEmailCount);
         focusFlagEmailGeneralVO.setCustomerList(focusFlagCustomerList);
 
         List<EmailGeneralListVO> emailGeneralVOList = new ArrayList<>();

@@ -11,5 +11,8 @@ public class EmailCustomerVO {
 
     private Integer customerCount;
 
-    private Integer emailCount;
+    /**
+     * 未读邮件数量
+     */
+    private Integer unReadEmailCount;
 }

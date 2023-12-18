@@ -371,7 +371,7 @@
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, rating
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, rating
     </select>
 
     <select id="selectEmailCountGroupByPublicleadsGroups"
@@ -380,7 +380,7 @@
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.publicleads_groups_id order by cc.create_time desc
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.publicleads_groups_id order by cc.create_time desc
     </select>
 
     <select id="selectEmailCountGroupByPacket"
@@ -389,7 +389,7 @@
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             left join mailbox_task_email mte on ccc.email = mte.fromer
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.packet_id order by cc.create_time desc
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.packet_id order by cc.create_time desc
     </select>
 
     <select id="selectEmailCountGroupBySource"
@@ -399,7 +399,7 @@
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         left join mailbox_task_email mte on ccc.email = mte.fromer
         left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, ccs.source_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, ccs.source_id
     </select>
 
     <select id="selectEmailCountGroupByCustomer"
@@ -409,7 +409,7 @@
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             left join mailbox_task_email mte on ccc.email = mte.fromer
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.last_contacted_at order by cc.last_contacted_at desc
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.last_contacted_at order by cc.last_contacted_at desc
     </select>
 
     <select id="selectRecentInteractions7Days"
@@ -419,7 +419,7 @@
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             left join mailbox_task_email mte on ccc.email = mte.fromer
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} AND cc.last_contacted_at >= CURDATE() - INTERVAL 7 DAY group by cc.id, cc.company_name order by cc.last_contacted_at desc
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} AND cc.last_contacted_at >= CURDATE() - INTERVAL 7 DAY group by cc.id, cc.company_name order by cc.last_contacted_at desc
     </select>
 
     <select id="selectEmailCountGroupByFocusFlag"
@@ -429,7 +429,7 @@
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             left join mailbox_task_email mte on ccc.email = mte.fromer
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and cc.focus_flag = 1 and ccfup.user_id = #{userId} group by cc.id, cc.company_name
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and cc.focus_flag = 1 and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name
     </select>
 
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
