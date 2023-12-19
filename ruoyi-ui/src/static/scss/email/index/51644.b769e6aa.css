@@ -1,0 +1,19 @@
+.contact-filter-multiple-select {
+  min-height: 34px
+}
+
+.contact-filter-multiple-select .mm-selector-rendered>ul {
+  display: flex
+}
+
+.contact-filter-multiple-select .mm-selector-rendered>ul li:nth-child(2) {
+  flex-shrink: 0
+}
+
+.contact-filter-multiple-select .mm-selector-rendered>ul .mm-selector-search {
+  margin-right: 0
+}
+
+.contact-filter-multiple-select .mm-selector-rendered:after {
+  display: none
+}

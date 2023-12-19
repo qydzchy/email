@@ -45,7 +45,7 @@
                         <!---->
                       </div>
                     </div>
-                    <div class="mail-nav-normal-container">
+                    <div class="mail-nav-normal-container" v-if="isMailNavNormalContainerOpen">
                       <ul role="menubar" class="mm-menu mail-sidebar-menu">
                         <li :class="['mm-submenu', isInboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleInbox">
@@ -536,7 +536,8 @@ export default {
       isLabelSystemOpen: true,
       isLabelCustomOpen: true,
       isDropdownShown: false,
-      menuCount: {}
+      menuCount: {},
+      isMailNavNormalContainerOpen : true
     };
   },
   components: {

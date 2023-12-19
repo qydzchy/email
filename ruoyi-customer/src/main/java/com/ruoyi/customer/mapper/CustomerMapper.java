@@ -292,12 +292,19 @@ public interface CustomerMapper
      * @param userId
      * @return
      */
-    List<EmailCountByRecentInteractions7DaysBO> selectRecentInteractions7Days(Long userId);
+    List<EmailCountByRecentInteractions7DaysBO> selectRecentInteractions7Days(@Param("userId") Long userId);
 
     /**
      * 查询关注客户的邮件数
      * @param userId
      * @return
      */
-    List<EmailCountGroupByFocusFlagBO> selectEmailCountGroupByFocusFlag(Long userId);
+    List<EmailCountGroupByFocusFlagBO> selectEmailCountGroupByFocusFlag(@Param("userId") Long userId);
+
+    /**
+     * 查询阶段邮件数
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByStageBO> selectEmailCountGroupByStage(@Param("userId") Long userId);
 }

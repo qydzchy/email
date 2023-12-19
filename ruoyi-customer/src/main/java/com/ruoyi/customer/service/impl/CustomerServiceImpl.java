@@ -1730,6 +1730,16 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 阶段列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCountGroupByStageBO> selectEmailCountGroupByStage(Long userId) {
+        return customerMapper.selectEmailCountGroupByStage(userId);
+    }
+
+    /**
      * 去重
      * @param list
      * @return

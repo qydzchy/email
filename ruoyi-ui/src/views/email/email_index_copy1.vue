@@ -516,10 +516,6 @@ export default {
       this.triggerEmailHeaderEvent('TRACK_INFORMATION');
     },
 
-    switchWriteEmailPage() {
-      this.currentLayout = 'write_email';
-    },
-
     triggerEmailHeaderEvent(emailType, currentPage) {
       this.setActive(emailType);
       this.switchLayout('email_header');

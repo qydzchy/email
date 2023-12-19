@@ -42,7 +42,7 @@ public class CustomerEmailController extends BaseController {
     }
 
     /**
-     * 邮件系统-公海分组列表
+     * 邮件系统-客户分组列表
      * @return
      */
     @PreAuthorize("@ss.hasPermi('customer:email:packet:list')")
@@ -60,6 +60,14 @@ public class CustomerEmailController extends BaseController {
         return success(customerEmailService.sourceList());
     }
 
+    /**
+     * 邮件系统-客户状态列表
+     */
+    @PreAuthorize("@ss.hasPermi('customer:email:stage:list')")
+    @GetMapping("/stage/list")
+    public AjaxResult stageList() {
+        return success(customerEmailService.stageList());
+    }
 
     /**
      * 邮件系统-客户星级列表
@@ -71,7 +79,7 @@ public class CustomerEmailController extends BaseController {
     }
 
     /**
-     * 客户活跃度
+     * 邮件系统-客户活跃度列表
      */
     @PreAuthorize("@ss.hasPermi('customer:email:activity:list')")
     @GetMapping("/activity/list")

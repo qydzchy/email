@@ -362,4 +362,54 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         emailGeneralVOList.add(focusFlagEmailGeneralVO);
         return emailGeneralVOList;
     }
+
+    /**
+     * 阶段列表
+     * @return
+     */
+    @Override
+    public List<EmailStageListVO> stageList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        // 客户邮件数量
+        List<EmailCountGroupByStageBO> emailCountGroupByList = customerService.selectEmailCountGroupByStage(userId);
+
+        List<EmailStageListVO> emailStageVOList = new ArrayList<>();
+        List<PacketListVO> packetVOList = packetService.packetList();
+        for (PacketListVO packetVO : packetVOList) {
+            Long id = packetVO.getId();
+            String name = packetVO.getName();
+            int customerCount = 0;
+            int emailCount = 0;
+
+            List<EmailCustomerVO> customerList = new ArrayList<>();
+            Iterator<EmailCountGroupByStageBO> iterator = emailCountGroupByList.iterator();
+            while (iterator.hasNext()) {
+                EmailCountGroupByStageBO emailCountGroupBy = iterator.next();
+                Long stageId = emailCountGroupBy.getStageId();
+                if (id.longValue() == stageId.longValue()) {
+                    customerCount ++;
+                    emailCount += emailCountGroupBy.getCount();
+
+                    EmailCustomerVO emailCustomerVO = new EmailCustomerVO();
+                    emailCustomerVO.setId(emailCountGroupBy.getCustomerId());
+                    emailCustomerVO.setName(emailCountGroupBy.getCompanyName());
+                    emailCustomerVO.setCustomerCount(1);
+                    emailCustomerVO.setUnReadEmailCount(emailCountGroupBy.getCount());
+                    customerList.add(emailCustomerVO);
+                    iterator.remove();
+                }
+            }
+
+            EmailStageListVO emailStageListVO = new EmailStageListVO();
+            emailStageListVO.setId(id);
+            emailStageListVO.setName(name);
+            emailStageListVO.setUnReadEmailCount(emailCount);
+            emailStageListVO.setCustomerCount(customerCount);
+            emailStageListVO.setCustomerList(customerList);
+            emailStageVOList.add(emailStageListVO);
+        }
+
+        return emailStageVOList;
+    }
 }

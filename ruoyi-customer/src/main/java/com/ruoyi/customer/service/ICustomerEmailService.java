@@ -41,4 +41,10 @@ public interface ICustomerEmailService {
      * @return
      */
     List<EmailGeneralListVO> generalList();
+
+    /**
+     * 阶段列表
+     * @return
+     */
+    List<EmailStageListVO> stageList();
 }

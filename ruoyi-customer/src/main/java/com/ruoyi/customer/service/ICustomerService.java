@@ -273,4 +273,11 @@ public interface ICustomerService
      * @return
      */
     List<EmailCountGroupByFocusFlagBO> selectEmailCountGroupByFocusFlag(Long userId);
+
+    /**
+     * 阶段列表
+     * @param userId
+     * @return
+     */
+    List<EmailCountGroupByStageBO> selectEmailCountGroupByStage(Long userId);
 }
