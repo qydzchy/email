@@ -493,7 +493,7 @@
                           </div>
 
 
-                          <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                          <div v-for="labelTypeData in labelTypeDatas" :key="labelTypeData.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
                             <div class="mm-tree-node-content" style="padding-left: 14px;">
 																			<span class="mm-tree-node-expand-icon-wrapper">
 																				<svg class="mm-icon mm-icon-chevrondown tree-expand-icon" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
@@ -504,7 +504,7 @@
                               <!---->
                               <span class="mm-tree-node-label-wrap">
 																				<span class="tree-node-text">
-																					<span title="公共公海分组" class="ellipsis name">公共公海分组</span>
+																					<span title="公共公海分组" class="ellipsis name">{{labelTypeData.name}}</span>
 																					<span class="mm-tooltip count">
 																						<span class="mm-tooltip-trigger">
 																							<span>35,0</span>
