@@ -370,7 +370,7 @@
         select cc.id as customerId, cc.company_name as companyName, cc.rating, count(1) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
-        left join mailbox_task_email mte on ccc.email = mte.fromer
+        join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, rating
     </select>
 
@@ -379,7 +379,7 @@
         select cc.id as customerId, cc.company_name as companyName, cc.publicleads_groups_id as publicleadsGroupsId, count(1) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
-        left join mailbox_task_email mte on ccc.email = mte.fromer
+        join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and cc.publicleads_groups_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.publicleads_groups_id order by cc.create_time desc
     </select>
 
@@ -388,7 +388,7 @@
         select cc.id as customerId, cc.company_name as companyName, cc.packet_id as packetId, count(1) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
-            left join mailbox_task_email mte on ccc.email = mte.fromer
+            join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and cc.packet_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.packet_id order by cc.create_time desc
     </select>
 
@@ -397,7 +397,7 @@
         select cc.id as customerId, cc.company_name as companyName, ccs.source_id as sourceId, count(DISTINCT mte.id) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
-        left join mailbox_task_email mte on ccc.email = mte.fromer
+        join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
         left join customer_customer_source ccs ON cc.id = ccs.customer_id
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccs.source_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, ccs.source_id
     </select>
@@ -407,7 +407,7 @@
         select cc.id as customerId, cc.company_name as companyName, cc.last_contacted_at as lastContactedAt, count(DISTINCT mte.id) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
-            left join mailbox_task_email mte on ccc.email = mte.fromer
+            join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.last_contacted_at order by cc.last_contacted_at desc
     </select>
@@ -417,7 +417,7 @@
         select cc.id as customerId, cc.company_name as companyName, count(DISTINCT mte.id) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
-            left join mailbox_task_email mte on ccc.email = mte.fromer
+            join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} AND cc.last_contacted_at >= CURDATE() - INTERVAL 7 DAY group by cc.id, cc.company_name order by cc.last_contacted_at desc
     </select>
@@ -427,8 +427,8 @@
         select cc.id as customerId, cc.company_name as companyName, count(DISTINCT mte.id) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
-            left join mailbox_task_email mte on ccc.email = mte.fromer
-            left join customer_customer_source ccs ON cc.id = ccs.customer_id
+            left join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
+            join customer_customer_source ccs ON cc.id = ccs.customer_id
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and cc.focus_flag = 1 and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name
     </select>
 
@@ -437,7 +437,7 @@
         select cc.id as customerId, cc.company_name as companyName, cc.stage_id as stageId, count(1) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
-            left join mailbox_task_email mte on ccc.email = mte.fromer
+            join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
         where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and cc.stage_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.stage_id order by cc.create_time desc
     </select>
 

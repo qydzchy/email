@@ -743,6 +743,81 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         }
     }
 
+    /**
+     * 客户列表
+     * @param customerId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerList(Long customerId, Integer pageNum, Integer pageSize) {
+        int count = taskEmailMapper.customerCount(customerId);
+        if (count <= 0) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerList(customerId, offset, limit);
+        if (emailListVOList == null || emailListVOList.isEmpty()) {
+            return Pair.of(count, new ArrayList<>());
+        }
+
+        List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
+        // 查询邮件附件信息
+        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+        if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+
+        // 查询邮件标签信息
+        List<EmailLabelBO> emailLabelBOList = labelService.listByEmailIds(ids);
+        if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
+        Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
+
+
+        emailListVOList.stream().forEach(emailListVO -> {
+            Long id = emailListVO.getId();
+            if (attachmentGroupMap.containsKey(id)) {
+                List<EmailAttachmentBO> emailAttachmentGroupList = attachmentGroupMap.get(id);
+                emailListVO.setEmailAttachmentList(emailAttachmentGroupList);
+            } else {
+                emailListVO.setEmailAttachmentList(Collections.emptyList());
+            }
+
+            if (labelGroupMap.containsKey(id)) {
+                List<EmailLabelBO> emailLabelGroupList = labelGroupMap.get(id);
+                emailListVO.setEmailLabelList(emailLabelGroupList);
+            } else {
+                emailListVO.setEmailLabelList(Collections.emptyList());
+            }
+        });
+
+        Map<String, List<EmailListVO>> data = new LinkedHashMap<>();
+        emailListVOList.stream().forEach(emailListVO -> {
+            Date sendDate = emailListVO.getSendDate();
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(sendDate.toInstant(), ZoneId.systemDefault());
+            String dynamicLabel = getDynamicLabel(localDateTime);
+
+            if (data.containsKey(dynamicLabel)) {
+                data.get(dynamicLabel).add(emailListVO);
+            } else {
+                data.put(dynamicLabel, new ArrayList<EmailListVO>() {{
+                    add(emailListVO);
+                }});
+            }
+        });
+
+        List<Map<String, List<EmailListVO>>> dataList = new ArrayList<>();
+        data.forEach((key, value) -> {
+            dataList.add(new HashMap<String, List<EmailListVO>>() {{
+                put(key, value);
+            }});
+        });
+
+        return Pair.of(count, dataList);
+    }
+
     private Integer draftsCount(Long userId) {
         return taskEmailMapper.countDraftsNum(userId);
     }

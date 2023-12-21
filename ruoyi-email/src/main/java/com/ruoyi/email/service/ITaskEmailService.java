@@ -220,4 +220,13 @@ public interface ITaskEmailService
      * @return
      */
     MenuCountVO countMenu();
+
+    /**
+     * 客户列表
+     * @param customerId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerList(Long customerId, Integer pageNum, Integer pageSize);
 }

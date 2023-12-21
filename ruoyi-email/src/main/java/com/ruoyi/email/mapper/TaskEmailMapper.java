@@ -198,4 +198,20 @@ public interface TaskEmailMapper
      * @return
      */
     Integer countDraftsNum(@Param("createId") Long userId);
+
+    /**
+     * 统计客户邮件数
+     * @param customerId
+     * @return
+     */
+    int customerCount(@Param("customerId") Long customerId);
+
+    /**
+     * 客户邮件列表
+     * @param customerId
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<EmailListVO> customerList(@Param("customerId") Long customerId, @Param("offset") int offset, @Param("limit") int limit);
 }

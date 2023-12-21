@@ -33,6 +33,7 @@ import com.ruoyi.customer.service.handler.customer.column.ColumnContext;
 import com.ruoyi.customer.service.handler.customer.column.utils.TimeRangeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
@@ -1737,6 +1738,28 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public List<EmailCountGroupByStageBO> selectEmailCountGroupByStage(Long userId) {
         return customerMapper.selectEmailCountGroupByStage(userId);
+    }
+
+    /**
+     * 统计客户邮件数
+     * @param customerId
+     * @return
+     */
+    @Override
+    public int emailCount(Long customerId) {
+        return customerMapper.emailCount(customerId);
+    }
+
+    /**
+     * 客户邮件列表
+     * @param customerId
+     * @param offset
+     * @param limit
+     * @return
+     */
+    @Override
+    public List<EmailListVO> emailList(Long customerId, int offset, int limit) {
+        return customerMapper.emailList(customerId, offset, limit);
     }
 
     /**

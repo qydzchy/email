@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 通用列表
 export function generalList(query) {
   return request({
-    url: '/customer/email/general/list',
+    url: '/email/customer/general/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function generalList(query) {
 // 公海分组列表
 export function publicleadsGroupsList(query) {
   return request({
-    url: '/customer/email/publicleads/groups/list',
+    url: '/email/customer/publicleads/groups/list',
     method: 'get',
     params: query
   })
@@ -21,7 +21,7 @@ export function publicleadsGroupsList(query) {
 // 客户分组列表
 export function packetList(query) {
   return request({
-    url: '/customer/email/packet/list',
+    url: '/email/customer/packet/list',
     method: 'get',
     params: query
   })
@@ -30,7 +30,7 @@ export function packetList(query) {
 // 客户来源列表
 export function sourceList(query) {
   return request({
-    url: '/customer/email/source/list',
+    url: '/email/customer/source/list',
     method: 'get',
     params: query
   })
@@ -39,7 +39,7 @@ export function sourceList(query) {
 // 客户状态列表
 export function stageList(query) {
   return request({
-    url: '/customer/email/stage/list',
+    url: '/email/customer/stage/list',
     method: 'get',
     params: query
   })
@@ -48,7 +48,7 @@ export function stageList(query) {
 // 客户星级列表
 export function ratingList(query) {
   return request({
-    url: '/customer/email/rating/list',
+    url: '/email/customer/rating/list',
     method: 'get',
     params: query
   })
@@ -57,7 +57,7 @@ export function ratingList(query) {
 // 客户活跃度列表
 export function activityList(query) {
   return request({
-    url: '/customer/email/activity/list',
+    url: '/email/customer/activity/list',
     method: 'get',
     params: query
   })

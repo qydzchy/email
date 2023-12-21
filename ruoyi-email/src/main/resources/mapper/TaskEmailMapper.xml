@@ -244,6 +244,18 @@
           AND t.del_flag = '0'
     </select>
 
+    <select id="customerCount" resultType="java.lang.Integer">
+        select count(DISTINCT(mte.id)) from customer_customer cc
+        left join customer_customer_contact ccc on cc.id = ccc.customer_id
+        left join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
+        where cc.id = ${customerId}
+
+    </select>
+
+    <select id="customerList" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
+
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">
