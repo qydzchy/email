@@ -141,7 +141,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         List<EmailCountGroupByRatingBO> emailCountGroupByList = customerService.selectEmailCountGroupByRating(userId);
 
         List<EmailRatingListVO> emailRatingVOList = new ArrayList<>();
-        for (int i = 5; i > 0; i--) {
+        for (int i = 5; i >= 0; i--) {
             Long id = Long.valueOf(i);
             String name = String.valueOf(i);
             int customerCount = 0;
@@ -267,32 +267,31 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
             emailCountGroupBy.setActivityName(customerActivityEnum.getName());
         }
 
-        Map<Long, List<EmailCountGroupByCustomerBO>> customerIdMap = emailCountGroupByList.stream().collect(Collectors.groupingBy(emailCountGroupBy -> emailCountGroupBy.getCustomerId()));
-
         List<EmailActivityListVO> emailActivityVOList = new ArrayList<>();
-        customerIdMap.forEach((customerId, list) -> {
-            EmailCountGroupByCustomerBO firstEmailCountGroupByCustomerBO = list.get(0);
-            Integer activityType = firstEmailCountGroupByCustomerBO.getActivityType();
+        Map<Integer, List<EmailCountGroupByCustomerBO>> activityTypeMap = emailCountGroupByList.stream().collect(Collectors.groupingBy(emailCountGroupBy -> emailCountGroupBy.getActivityType()));
+        activityTypeMap.forEach((activityType, emailCountGroupByCustomerList) -> {
+            EmailCountGroupByCustomerBO firstEmailCountGroupByCustomerBO = emailCountGroupByCustomerList.get(0);
             String activityName = firstEmailCountGroupByCustomerBO.getActivityName();
+
+            int totalUnReadEmailCount = 0;
+            int totalCustomerCount = 0;
+            List<EmailCustomerVO> customerList = new ArrayList<>();
+            for (EmailCountGroupByCustomerBO emailCountGroupByCustomer : emailCountGroupByCustomerList) {
+                EmailCustomerVO customer = new EmailCustomerVO();
+                customer.setId(emailCountGroupByCustomer.getCustomerId());
+                customer.setName(emailCountGroupByCustomer.getCompanyName());
+                customer.setUnReadEmailCount(emailCountGroupByCustomer.getCount());
+                customer.setCustomerCount(1);
+                customerList.add(customer);
+                totalUnReadEmailCount += emailCountGroupByCustomer.getCount();
+                totalCustomerCount ++;
+            }
 
             EmailActivityListVO emailActivityVO = new EmailActivityListVO();
             emailActivityVO.setId(activityType.longValue());
             emailActivityVO.setName(activityName);
-            int customerCount = 0;
-            int emailCount = 0;
-            List<EmailActivityListVO> customerList = new ArrayList<>();
-            for (EmailCountGroupByCustomerBO emailCountGroupByCustomerBO : list) {
-                EmailActivityListVO customerVO = new EmailActivityListVO();
-                customerVO.setId(emailCountGroupByCustomerBO.getCustomerId());
-                customerVO.setName(emailCountGroupByCustomerBO.getCompanyName());
-                customerVO.setCustomerCount(1);
-                customerVO.setUnReadEmailCount(emailCountGroupByCustomerBO.getCount());
-                customerCount++;
-                emailCount += emailCountGroupByCustomerBO.getCount();
-            }
-
-            emailActivityVO.setCustomerCount(customerCount);
-            emailActivityVO.setUnReadEmailCount(emailCount);
+            emailActivityVO.setUnReadEmailCount(totalUnReadEmailCount);
+            emailActivityVO.setCustomerCount(totalCustomerCount);
             emailActivityVO.setCustomerList(customerList);
             emailActivityVOList.add(emailActivityVO);
         });
@@ -327,7 +326,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         }
 
         EmailGeneralListVO recentInteractions7DaysEmailGeneralVO = new EmailGeneralListVO();
-        recentInteractions7DaysEmailGeneralVO.setId(0L);
+        recentInteractions7DaysEmailGeneralVO.setId(-1L);
         recentInteractions7DaysEmailGeneralVO.setName("最近7天有往来");
         recentInteractions7DaysEmailGeneralVO.setCustomerCount(recentInteractions7DaysCustomerCount);
         recentInteractions7DaysEmailGeneralVO.setUnReadEmailCount(recentInteractions7DaysEmailCount);
@@ -351,7 +350,7 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         }
 
         EmailGeneralListVO focusFlagEmailGeneralVO = new EmailGeneralListVO();
-        focusFlagEmailGeneralVO.setId(0L);
+        focusFlagEmailGeneralVO.setId(-2L);
         focusFlagEmailGeneralVO.setName("关注客户");
         focusFlagEmailGeneralVO.setCustomerCount(focusFlagCustomerCount);
         focusFlagEmailGeneralVO.setUnReadEmailCount(focusFlagEmailCount);

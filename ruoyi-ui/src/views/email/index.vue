@@ -441,22 +441,6 @@
 																</span>
                       </div>
                       <div class="select-wrapper">
-<!--																<span class="mm-select">
-																	<div class="mm-selector&#45;&#45;single mm-selector" tabindex="0">
-																		&lt;!&ndash;&ndash;&gt;
-																		<div class="mm-selector-rendered">
-																			<span title="公海分组" class="mm-selector-selected-value" style="opacity: 1;">公海分组</span>
-                                      &lt;!&ndash;&ndash;&gt;
-																		</div>
-                                    &lt;!&ndash;&ndash;&gt;
-																		<span class="mm-selector-suffix-icon">
-																			<svg class="mm-icon mm-icon-chevrondown mm-selector-arrow" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px; outline: none;">
-																				<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																			</svg>
-																		</span>
-																	</div>
-																</span>-->
-
                         <el-select v-model="selectedLabelTypeValue" placeholder="请选择" @change="handleLabelTypeSelectChange">
                           <el-option
                             v-for="item in labelTypeOptions"
@@ -468,10 +452,14 @@
                       </div>
                       <div class="nav-wrap">
                         <div class="mm-tree--highlight-current mm-tree customer-mail-nav-tree" role="tree">
-                          <div v-for="labelTypeData in labelTypeDatas" :key="labelTypeData.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="0">
+                          <div v-for="generalLabelTypeData in generalLabelTypeDatas" :key="generalLabelTypeData.id"
+                               :class="['is-focusable mm-tree-node', generalLabelTypeData.showGeneralChildren ? 'is-expanded' : '']"
+                               @click="toggleGeneralChildren(generalLabelTypeData)"
+                               aria-disabled="" draggable="false" role="treeitem" tabindex="0"
+                          >
                             <div class="mm-tree-node-content" style="padding-left: 14px;">
 																			<span class="mm-tree-node-expand-icon-wrapper">
-																				<svg class="mm-icon mm-icon-chevrondown tree-expand-icon" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
+																				<svg :class="['mm-icon mm-icon-chevrondown tree-expand-icon', generalLabelTypeData.showGeneralChildren ? 'expanded' : '']" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
 																					<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
 																				</svg>
 																			</span>
@@ -479,43 +467,78 @@
                               <!---->
                               <span class="mm-tree-node-label-wrap">
 																				<span class="tree-node-text">
-																					<span class="ellipsis name">{{labelTypeData.name}}</span>
+																					<span class="ellipsis name">{{generalLabelTypeData.name}}</span>
 																					<span class="mm-tooltip count">
 																						<span class="mm-tooltip-trigger">
-																							<span>{{ labelTypeData.customerCount }},{{ labelTypeData.emailCount }}</span>
+																							<span>{{ generalLabelTypeData.customerCount }},{{ generalLabelTypeData.unReadEmailCount }}</span>
 																						</span>
                                             <!---->
 																					</span>
 																				</span>
 																			</span>
                             </div>
-                            <div class="mm-tree-node-children" role="group" style="display: none;"></div>
+                              <div v-if="generalLabelTypeData.showGeneralChildren" class="mm-tree-node-children" role="group">
+                                <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                                  <div class="mm-tree-node-content" style="padding-left: 34px;">
+                                    <span class="mm-tree-node-expand-icon-wrapper">
+                                      <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                                        <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                                      </svg>
+                                    </span>
+                                                                <!---->
+                                                                <!---->
+                                    <span class="mm-tree-node-label-wrap">
+                                      <a href="/pro/mail/customer?company_id=13952243948271" title="precisionelectronics.net" class="link ellipsis tree-node-text">
+                                        <div class="mm-popover empty-item-tooltip" props="[object Object]">
+                                          <div>
+                                            <span class="ellipsis name">{{customer.name}}</span>
+                                          </div>
+                                          <!---->
+                                        </div>
+                                        <!---->
+                                      </a>
+                                    </span>
+                                   </div>
+                                  </div>
+                              </div>
                           </div>
 
-
-                          <div v-for="labelTypeData in labelTypeDatas" :key="labelTypeData.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                          <div v-for="labelTypeData in labelTypeDatas" :key="labelTypeData.id"
+                               :class="['is-focusable mm-tree-node', labelTypeData.showChildren ? 'is-expanded' : '']"
+                               @click="toggleLabelTypeChildren(labelTypeData)"
+                               aria-disabled="" draggable="false" role="treeitem" tabindex="-1"
+                          >
                             <div class="mm-tree-node-content" style="padding-left: 14px;">
 																			<span class="mm-tree-node-expand-icon-wrapper">
-																				<svg class="mm-icon mm-icon-chevrondown tree-expand-icon" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
+																				<svg :class="['mm-icon mm-icon-chevrondown tree-expand-icon', labelTypeData.showChildren ? 'expanded' : '']" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
 																					<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
 																				</svg>
 																			</span>
                               <!---->
                               <!---->
                               <span class="mm-tree-node-label-wrap">
-																				<span class="tree-node-text">
-																					<span title="公共公海分组" class="ellipsis name">{{labelTypeData.name}}</span>
-																					<span class="mm-tooltip count">
-																						<span class="mm-tooltip-trigger">
-																							<span>35,0</span>
-																						</span>
-                                            <!---->
-																					</span>
-																				</span>
-																			</span>
+                                <div class="tree-node-text" v-if="selectedLabelTypeValue == 5">
+                                  <span v-for="number in Array.from({ length: labelTypeData.name }).fill()" :key="number" class="okki-icon-wrap" color="#F7BA2A">​<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#F7BA2A">
+                                      <path d="M22 9.67a1 1 0 00-.86-.67l-5.69-.83L12.9 3a1 1 0 00-1.8 0L8.55 8.16 2.86 9a1 1 0 00-.81.68 1 1 0 00.25 1l4.13 4-1 5.68a1 1 0 001.45 1.07L12 18.76l5.1 2.68c.14.08.299.12.46.12a1 1 0 00.59-.19 1 1 0 00.4-1l-1-5.68 4.13-4A1 1 0 0022 9.67z"></path>
+                                    </svg>
+                                  </span>
+                                  <span v-for="number in Array.from({ length: Math.max(0, 5 - labelTypeData.name) }).fill()" :key="number" class="okki-icon-wrap" color="#e8e8e8">​<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#e8e8e8">
+                                    <path d="M22 9.67a1 1 0 00-.86-.67l-5.69-.83L12.9 3a1 1 0 00-1.8 0L8.55 8.16 2.86 9a1 1 0 00-.81.68 1 1 0 00.25 1l4.13 4-1 5.68a1 1 0 001.45 1.07L12 18.76l5.1 2.68c.14.08.299.12.46.12a1 1 0 00.59-.19 1 1 0 00.4-1l-1-5.68 4.13-4A1 1 0 0022 9.67z"></path>
+                                  </svg>
+                                </span>
+                                </div>
+                                <div class="tree-node-text" v-else>
+                                  <span class="ellipsis name">{{ labelTypeData.name }}</span>
+                                  <span class="mm-tooltip count">
+                                    <span class="mm-tooltip-trigger">
+                                      <span>{{ labelTypeData.customerCount }},{{ labelTypeData.unReadEmailCount }}</span>
+                                    </span>
+                                  </span>
+                                </div>
+                              </span>
                             </div>
-                            <div class="mm-tree-node-children" role="group" style="display: none;">
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                            <div v-if="labelTypeData.showChildren" class="mm-tree-node-children" role="group">
+                              <div v-for="customer in labelTypeData.customerList" :key="customer.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
                                 <div class="mm-tree-node-content" style="padding-left: 34px;">
 																					<span class="mm-tree-node-expand-icon-wrapper">
 																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
@@ -528,789 +551,7 @@
 																						<a data-savepage-href="/pro/mail/customer?company_id=13952243948271" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13952243948271" title="precisionelectronics.net" class="link ellipsis tree-node-text">
 																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
 																								<div>
-																									<span class="ellipsis name">precisionelectronics.net</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=1697266388112" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=1697266388112" title="UIG DEDEKTOR SAN.VE TIC.LTD.STI" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">UIG DEDEKTOR SAN.VE TIC.LTD.STI</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=5873436570347" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=5873436570347" title="Alexey Bushuev" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Alexey Bushuev</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=1579135505006" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=1579135505006" title="Tech Quality co.,Ltd" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Tech Quality co.,Ltd</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335605332722" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335605332722" title="Apadturk TM" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Apadturk TM</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3695495346974" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3695495346974" title="Solution Tech" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Solution Tech</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=2955669374763" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=2955669374763" title="aoonamm@gmail.com（6）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">aoonamm@gmail.com（6）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=2282478918397" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=2282478918397" title="Tentech Corporation（8）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Tentech Corporation（8）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335763802154" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335763802154" title="No Company Name_975483422" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">No Company Name_975483422</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335766740449" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335766740449" title="No Company Name_978178257(14)" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">No Company Name_978178257(14)</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3930463165021" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3930463165021" title="ilumac.com.br（4）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">ilumac.com.br（4）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13206552247283" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13206552247283" title="all（7）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">all（7）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335579673099" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335579673099" title="NoCompanyName_1161033168" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">NoCompanyName_1161033168</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=2448975263357" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=2448975263357" title="NoCompanyName_1466249189（12）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">NoCompanyName_1466249189（12）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=5304350758965" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=5304350758965" title="Tony Buldakov（11）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Tony Buldakov（11）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=5640213394356" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=5640213394356" title="Nick TV（9）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Nick TV（9）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=4573290488897" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=4573290488897" title="Larbsopha" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Larbsopha</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335744905294" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335744905294" title="Tiago Cavadas（10）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Tiago Cavadas（10）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13203994129551" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13203994129551" title="viktor.olvir@yandex.ru(3)" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">viktor.olvir@yandex.ru(3)</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=2282477394623" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=2282477394623" title="NA" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">NA</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335734036360" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335734036360" title="Christian Villamil(5)" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Christian Villamil(5)</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=2654162512886" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=2654162512886" title="cedrixsongore@hotmail.com" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">cedrixsongore@hotmail.com</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335614317514" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335614317514" title="Total imex corporation Co.,Ltd." class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Total imex corporation Co.,Ltd.</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335753350229" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335753350229" title="Speedlight Electronics Importing LLC" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Speedlight Electronics Importing LLC</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=2976241297142" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=2976241297142" title="COMEL SRL" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">COMEL SRL</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13285671447452" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13285671447452" title="DRUID LLC" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">DRUID LLC</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=1232118145087" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=1232118145087" title="MPI-NEO CO.,LTD." class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">MPI-NEO CO.,LTD.</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13206569561783" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13206569561783" title="Trainser（2）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Trainser（2）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3344182248718" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3344182248718" title="Complex Invest LLC（1）" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Complex Invest LLC（1）</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335760303955" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335760303955" title="Walnut Hills Product Innovations, LLC" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Walnut Hills Product Innovations, LLC</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=4650380424233" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=4650380424233" title="Ubicom Technology Co.,Ltd." class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Ubicom Technology Co.,Ltd.</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=3335749873203" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=3335749873203" title="kazem taghdareh" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">kazem taghdareh</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13285552533675" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13285552533675" title="Aliyainnovation.co" class="link ellipsis tree-node-text">
-																							<div class="mm-popover is-empty empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">Aliyainnovation.co</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13744321738559" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13744321738559" title="NoCompanyName_1758690318" class="link ellipsis tree-node-text">
-																							<div class="mm-popover is-empty empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">NoCompanyName_1758690318</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
-                                </div>
-                                <!---->
-                              </div>
-                              <div class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
-                                <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
-                                  <!---->
-                                  <!---->
-                                  <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13955826089170" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13955826089170" title="ceshi001" class="link ellipsis tree-node-text">
-																							<div class="mm-popover is-empty empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">ceshi001</span>
+																									<span class="ellipsis name">{{customer.name}}</span>
 																								</div>
                                                 <!---->
 																							</div>
@@ -1453,6 +694,7 @@ export default {
       menuCount: {},
       isMailNavNormalContainerOpen : true,
       selectedLabelTypeValue: null,
+      generalLabelTypeDatas: null,
       labelTypeDatas: null,
       labelTypeOptions: [{
         value: 1,
@@ -1636,42 +878,77 @@ export default {
       this.isFolderOpen = !this.isFolderOpen;
     },
 
+    toggleGeneralChildren(generalLabelTypeData) {
+      if (!generalLabelTypeData.hasOwnProperty('showGeneralChildren')) {
+        this.$set(generalLabelTypeData, 'showGeneralChildren', false);
+      }
+
+      generalLabelTypeData.showGeneralChildren = !generalLabelTypeData.showGeneralChildren;
+    },
+
+    toggleLabelTypeChildren(labelTypeData) {
+      if (!labelTypeData.hasOwnProperty('showChildren')) {
+        this.$set(labelTypeData, 'showChildren', false);
+      }
+
+      labelTypeData.showChildren = !labelTypeData.showChildren;
+    },
+
     toggleType(isMailNavNormalContainerOpen) {
       this.isMailNavNormalContainerOpen = isMailNavNormalContainerOpen;
 
       if (!this.isMailNavNormalContainerOpen) {
         if (this.labelTypeOptions.length > 0) {
           this.selectedLabelTypeValue = this.labelTypeOptions[0].value;
+          this.labelTypeDataList(this.selectedLabelTypeValue);
         }
       }
     },
 
     getTaskCount(taskId) {
+      if (taskId === undefined || taskId === null) {
+        return '';
+      }
+
       const task = this.menuCount.menuInboxTaskCountList.find(t => t.taskId === taskId);
       return task ? task.count : '';
     },
 
     handleLabelTypeSelectChange(selectedValue) {
       this.selectedLabelTypeValue = selectedValue;
-
+      this.labelTypeDataList(selectedValue);
     },
 
     labelTypeDataList(selectedValue) {
       if (selectedValue == 1) {
         publicleadsGroupsList().then((response) => {
-          this.labelTypeData = response.data;
+          this.labelTypeDatas = response.data;
         });
       } else if (selectedValue == 2) {
-
+        packetList().then((response) => {
+          this.labelTypeDatas = response.data;
+        });
       } else if (selectedValue == 3) {
-
+        sourceList().then((response) => {
+          this.labelTypeDatas = response.data;
+        });
       } else if (selectedValue == 4) {
-
+        stageList().then((response) => {
+          this.labelTypeDatas = response.data;
+        });
       } else if (selectedValue == 5) {
-
+        ratingList().then((response) => {
+          this.labelTypeDatas = response.data;
+        });
       } else if (selectedValue == 6) {
-
+        activityList().then((response) => {
+          this.labelTypeDatas = response.data;
+        });
       }
+
+      generalList().then((response) => {
+        this.generalLabelTypeDatas = response.data;
+      });
     }
   },
 
