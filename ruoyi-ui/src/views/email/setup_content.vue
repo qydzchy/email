@@ -14,6 +14,7 @@ import EmailManagementComponent from './email_management/list.vue';
 import FolderComponent from './folder/list.vue';
 import LabelComponent from './label/list.vue';
 import QuickTextComponent from './quick_text/list.vue';
+import BlacklistComponent from './blacklist/list.vue';
 
 export default {
   data() {
@@ -34,6 +35,8 @@ export default {
         return LabelComponent;
       } else if (this.selectedTab === '快速文本') {
         return QuickTextComponent;
+      } else if (this.selectedTab === '黑名单') {
+        return BlacklistComponent;
       }
       // ... 可以为其他选项项返回其他组件
       return null;

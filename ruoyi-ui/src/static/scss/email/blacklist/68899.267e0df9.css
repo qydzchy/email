@@ -1,0 +1,100 @@
+.mail-black-dialog .mm-modal-body {
+  padding: 70px 30px
+}
+
+.mail-black-dialog .mm-modal-content {
+  width: 600px
+}
+
+.mail-black-dialog .mm-modal-body {
+  padding: 70px 60px 70px 45px
+}
+
+.mail-plus-black {
+  height: 100%;
+  overflow-y: auto
+}
+
+.mail-plus-black .mail-config-header {
+  padding-bottom: 14px
+}
+
+.mail-plus-black .mail-black-add {
+  margin-top: 16px
+}
+
+.mail-plus-black .mail-black-add .mm-input {
+  width: 600px;
+  margin-right: 5px
+}
+
+.mail-plus-black .mail-black-search .mm-input {
+  width: 256px
+}
+
+.mail-plus-black .mail-black-search .mm-input-inner {
+  border-radius: 4px 0 0 4px
+}
+
+.mail-plus-black .mail-black-search .mail-black-search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  border: 1px solid #e0e0e0;
+  border-left: none;
+  border-radius: 0 4px 4px 0
+}
+
+.mail-plus-black .mail-black-domain,
+.mail-plus-black .mail-black-email {
+  position: relative;
+  margin-bottom: 50px
+}
+
+.mail-plus-black .mm-pagination {
+  padding-top: 10px !important
+}
+
+.mail-plus-black .mail-black-list {
+  margin-top: 14px;
+  line-height: 38px
+}
+
+.mail-plus-black .mail-black-list .mail-black-header {
+  background-color: #f1f1f1
+}
+
+.mail-plus-black .mail-black-list .mail-black-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 10px;
+  border-bottom: 1px solid #d9d9d9
+}
+
+.mail-plus-black .mail-black-list .mail-black-list-item p {
+  text-indent: 7px
+}
+
+.mail-plus-black .mail-black-list .mail-black-list-item .action-box {
+  width: 70px;
+  text-align: center
+}
+
+.mail-plus-black .mail-black-list .no-block {
+  min-height: 200px
+}
+
+.mail-plus-black .mail-black-list .btn-list {
+  width: 70px
+}
+
+.mail-black-dialog-field {
+  display: flex;
+  align-items: center
+}
+
+.mail-black-dialog-field .mm-input {
+  width: 256px
+}
