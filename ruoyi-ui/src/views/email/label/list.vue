@@ -218,7 +218,7 @@ export default {
       try {
         const response = await editLabelColor(data);
         if (response.code === 200) {
-          this.$message.success("编辑成功");cd
+          this.$message.success("编辑成功");
           this.refreshLabelList();
           EventBus.$emit('refresh-index-label-list');
         } else {

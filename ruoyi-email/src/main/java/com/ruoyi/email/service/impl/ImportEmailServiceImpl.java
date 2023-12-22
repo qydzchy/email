@@ -1,12 +1,22 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.Task;
+import com.ruoyi.email.domain.vo.email.ImportListVO;
+import com.ruoyi.email.domain.vo.task.TaskListVO;
+import com.ruoyi.email.mapper.TaskMapper;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.ImportEmailMapper;
 import com.ruoyi.email.domain.ImportEmail;
 import com.ruoyi.email.service.IImportEmailService;
+
+import javax.annotation.Resource;
 
 /**
  * 导入邮件Service业务层处理
@@ -17,8 +27,10 @@ import com.ruoyi.email.service.IImportEmailService;
 @Service
 public class ImportEmailServiceImpl implements IImportEmailService 
 {
-    @Autowired
+    @Resource
     private ImportEmailMapper importEmailMapper;
+    @Resource
+    private TaskMapper taskMapper;
 
     /**
      * 查询导入邮件
@@ -92,5 +104,41 @@ public class ImportEmailServiceImpl implements IImportEmailService
     public int deleteImportEmailById(Long id)
     {
         return importEmailMapper.deleteImportEmailById(id);
+    }
+
+    /**
+     * 邮箱任务列表
+     * @return
+     */
+    @Override
+    public List<TaskListVO> getTaskList() {
+        List<Task> taskList = taskMapper.selectTaskList(new Task());
+        List<TaskListVO> taskVOList = new ArrayList<>();
+        for (Task task : taskList) {
+            TaskListVO taskListVO = new TaskListVO();
+            taskListVO.setId(task.getId());
+            taskListVO.setAccount(task.getAccount());
+            taskVOList.add(taskListVO);
+        }
+
+        return taskVOList;
+    }
+
+    /**
+     * 导入邮件列表（分页）
+     * @return
+     */
+    @Override
+    public Pair<Integer, List<ImportListVO>> page() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        long count = importEmailMapper.count(userId);
+        if (count == 0L) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        List<ImportListVO> importListVOList = importEmailMapper.list(userId);
+        return null;
     }
 }

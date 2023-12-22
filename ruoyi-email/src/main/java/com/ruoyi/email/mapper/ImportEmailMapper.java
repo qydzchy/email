@@ -2,6 +2,8 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.ImportEmail;
+import com.ruoyi.email.domain.vo.email.ImportListVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 导入邮件Mapper接口
@@ -58,4 +60,18 @@ public interface ImportEmailMapper
      * @return 结果
      */
     public int deleteImportEmailByIds(Long[] ids);
+
+    /**
+     * 统计导入邮件列表数量
+     * @param createId
+     * @return
+     */
+    long count(@Param("createId") Long createId);
+
+    /**
+     * 导入邮件列表
+     * @param createId
+     * @return
+     */
+    List<ImportListVO> list(@Param("createId") Long createId);
 }

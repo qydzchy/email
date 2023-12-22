@@ -7,9 +7,9 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 导入邮件对象 mailbox_import_email
- * 
+ *
  * @author tangJM
- * @date 2023-07-31
+ * @date 2023-12-22
  */
 public class ImportEmail extends BaseEntity
 {
@@ -46,94 +46,136 @@ public class ImportEmail extends BaseEntity
     @Excel(name = "失败原因")
     private String failureReasons;
 
-    public void setId(Long id) 
+    /** 邮件总数 */
+    @Excel(name = "邮件总数")
+    private Long mailTotal;
+
+    /** 创建者ID */
+    @Excel(name = "创建者ID")
+    private Long createId;
+
+    /** 更新者ID */
+    @Excel(name = "更新者ID")
+    private Long updateId;
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setFileName(String fileName) 
+    public void setFileName(String fileName)
     {
         this.fileName = fileName;
     }
 
-    public String getFileName() 
+    public String getFileName()
     {
         return fileName;
     }
-    public void setTaskId(Long taskId) 
+    public void setTaskId(Long taskId)
     {
         this.taskId = taskId;
     }
 
-    public Long getTaskId() 
+    public Long getTaskId()
     {
         return taskId;
     }
-    public void setTaskName(String taskName) 
+    public void setTaskName(String taskName)
     {
         this.taskName = taskName;
     }
 
-    public String getTaskName() 
+    public String getTaskName()
     {
         return taskName;
     }
-    public void setFolderId(Long folderId) 
+    public void setFolderId(Long folderId)
     {
         this.folderId = folderId;
     }
 
-    public Long getFolderId() 
+    public Long getFolderId()
     {
         return folderId;
     }
-    public void setFolderName(String folderName) 
+    public void setFolderName(String folderName)
     {
         this.folderName = folderName;
     }
 
-    public String getFolderName() 
+    public String getFolderName()
     {
         return folderName;
     }
-    public void setImportStatus(Integer importStatus) 
+    public void setImportStatus(Integer importStatus)
     {
         this.importStatus = importStatus;
     }
 
-    public Integer getImportStatus() 
+    public Integer getImportStatus()
     {
         return importStatus;
     }
-    public void setFailureReasons(String failureReasons) 
+    public void setFailureReasons(String failureReasons)
     {
         this.failureReasons = failureReasons;
     }
 
-    public String getFailureReasons() 
+    public String getFailureReasons()
     {
         return failureReasons;
+    }
+    public void setMailTotal(Long mailTotal)
+    {
+        this.mailTotal = mailTotal;
+    }
+
+    public Long getMailTotal()
+    {
+        return mailTotal;
+    }
+    public void setCreateId(Long createId)
+    {
+        this.createId = createId;
+    }
+
+    public Long getCreateId()
+    {
+        return createId;
+    }
+    public void setUpdateId(Long updateId)
+    {
+        this.updateId = updateId;
+    }
+
+    public Long getUpdateId()
+    {
+        return updateId;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("fileName", getFileName())
-            .append("taskId", getTaskId())
-            .append("taskName", getTaskName())
-            .append("folderId", getFolderId())
-            .append("folderName", getFolderName())
-            .append("importStatus", getImportStatus())
-            .append("failureReasons", getFailureReasons())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+                .append("id", getId())
+                .append("fileName", getFileName())
+                .append("taskId", getTaskId())
+                .append("taskName", getTaskName())
+                .append("folderId", getFolderId())
+                .append("folderName", getFolderName())
+                .append("importStatus", getImportStatus())
+                .append("failureReasons", getFailureReasons())
+                .append("mailTotal", getMailTotal())
+                .append("createId", getCreateId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateId", getUpdateId())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .toString();
     }
 }

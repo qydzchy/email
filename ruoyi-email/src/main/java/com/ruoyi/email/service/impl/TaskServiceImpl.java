@@ -20,7 +20,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
-import com.ruoyi.email.domain.vo.task.ListTaskVO;
+import com.ruoyi.email.domain.vo.task.TaskListVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
@@ -86,7 +86,7 @@ public class TaskServiceImpl implements ITaskService
      * @return 邮箱任务
      */
     @Override
-    public List<ListTaskVO> listTask()
+    public List<TaskListVO> listTask()
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();

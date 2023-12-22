@@ -4,7 +4,7 @@ import java.util.List;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
-import com.ruoyi.email.domain.vo.task.ListTaskVO;
+import com.ruoyi.email.domain.vo.task.TaskListVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
 import org.springframework.data.util.Pair;
 
@@ -67,7 +67,7 @@ public interface ITaskService
      * 列表
      * @return
      */
-    List<ListTaskVO> listTask();
+    List<TaskListVO> listTask();
 
     /**
      * 解绑

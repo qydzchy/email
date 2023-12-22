@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.email.mapper.ImportEmailMapper">
-    
+
     <resultMap type="ImportEmail" id="ImportEmailResult">
         <result property="id"    column="id"    />
         <result property="fileName"    column="file_name"    />
@@ -13,19 +13,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="folderName"    column="folder_name"    />
         <result property="importStatus"    column="import_status"    />
         <result property="failureReasons"    column="failure_reasons"    />
+        <result property="mailTotal"    column="mail_total"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectImportEmailVo">
-        select id, file_name, task_id, task_name, folder_id, folder_name, import_status, failure_reasons, create_by, create_time, update_by, update_time from mailbox_import_email
+        select id, file_name, task_id, task_name, folder_id, folder_name, import_status, failure_reasons, mail_total, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_import_email
     </sql>
 
     <select id="selectImportEmailList" parameterType="ImportEmail" resultMap="ImportEmailResult">
         <include refid="selectImportEmailVo"/>
-        <where>  
+        <where>
             <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
             <if test="taskId != null "> and task_id = #{taskId}</if>
             <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
@@ -33,14 +36,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="folderName != null  and folderName != ''"> and folder_name like concat('%', #{folderName}, '%')</if>
             <if test="importStatus != null "> and import_status = #{importStatus}</if>
             <if test="failureReasons != null  and failureReasons != ''"> and failure_reasons = #{failureReasons}</if>
+            <if test="mailTotal != null "> and mail_total = #{mailTotal}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
     </select>
-    
+
     <select id="selectImportEmailById" parameterType="Long" resultMap="ImportEmailResult">
         <include refid="selectImportEmailVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="count" resultType="java.lang.Long">
+        select count(*) from mailbox_import_email where del_flag = '0' and create_id = #{createId}
+    </select>
+
+    <select id="list" resultType="com.ruoyi.email.domain.vo.email.ImportListVO">
+        <include refid="selectImportEmailVo"/>
+        where del_flag = '0' and create_id = #{createId} order by create_time desc
+    </select>
+
     <insert id="insertImportEmail" parameterType="ImportEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_import_email
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -51,11 +66,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="folderName != null and folderName != ''">folder_name,</if>
             <if test="importStatus != null">import_status,</if>
             <if test="failureReasons != null">failure_reasons,</if>
+            <if test="mailTotal != null">mail_total,</if>
+            <if test="createId != null">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fileName != null and fileName != ''">#{fileName},</if>
             <if test="taskId != null">#{taskId},</if>
@@ -64,11 +82,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="folderName != null and folderName != ''">#{folderName},</if>
             <if test="importStatus != null">#{importStatus},</if>
             <if test="failureReasons != null">#{failureReasons},</if>
+            <if test="mailTotal != null">#{mailTotal},</if>
+            <if test="createId != null">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateImportEmail" parameterType="ImportEmail">
@@ -81,8 +102,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="folderName != null and folderName != ''">folder_name = #{folderName},</if>
             <if test="importStatus != null">import_status = #{importStatus},</if>
             <if test="failureReasons != null">failure_reasons = #{failureReasons},</if>
+            <if test="mailTotal != null">mail_total = #{mailTotal},</if>
+            <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -94,7 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteImportEmailByIds" parameterType="String">
-        delete from mailbox_import_email where id in 
+        delete from mailbox_import_email where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

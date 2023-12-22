@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
-import com.ruoyi.email.domain.vo.task.ListTaskVO;
+import com.ruoyi.email.domain.vo.task.TaskListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -38,7 +38,7 @@ public class TaskController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list()
     {
-        List<ListTaskVO> list = taskService.listTask();
+        List<TaskListVO> list = taskService.listTask();
         return getDataTable(list);
     }
 

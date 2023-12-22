@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ListTaskVO {
+public class TaskListVO {
 
     /** 主键 */
     private Long id;
