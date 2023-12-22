@@ -32,7 +32,7 @@ public class EmailCustomerController extends BaseController {
     /**
      * 客户模块-通用列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:general:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:general:list')")
     @GetMapping("/general/list")
     public AjaxResult generalList()
     {
@@ -43,7 +43,7 @@ public class EmailCustomerController extends BaseController {
      * 客户模块-公海分组列表
      * @return
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:publicleads:groups:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:publicleads:groups:list')")
     @GetMapping("/publicleads/groups/list")
     public AjaxResult publicleadsGroupsList()
     {
@@ -54,7 +54,7 @@ public class EmailCustomerController extends BaseController {
      * 客户模块-客户分组列表
      * @return
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:packet:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:packet:list')")
     @GetMapping("/packet/list")
     public AjaxResult packetList() {
         return success(customerEmailService.packetList());
@@ -63,7 +63,7 @@ public class EmailCustomerController extends BaseController {
     /**
      * 客户模块-客户来源列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:source:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:source:list')")
     @GetMapping("/source/list")
     public AjaxResult sourceList() {
         return success(customerEmailService.sourceList());
@@ -72,7 +72,7 @@ public class EmailCustomerController extends BaseController {
     /**
      * 客户模块-客户状态列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:stage:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:stage:list')")
     @GetMapping("/stage/list")
     public AjaxResult stageList() {
         return success(customerEmailService.stageList());
@@ -81,7 +81,7 @@ public class EmailCustomerController extends BaseController {
     /**
      * 客户模块-客户星级列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:rating:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:rating:list')")
     @GetMapping("/rating/list")
     public AjaxResult ratingList() {
         return success(customerEmailService.ratingList());
@@ -90,7 +90,7 @@ public class EmailCustomerController extends BaseController {
     /**
      * 客户模块-客户活跃度列表
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:activity:list')")
+    @PreAuthorize("@ss.hasPermi('email:customer:activity:list')")
     @GetMapping("/activity/list")
     public AjaxResult activityList() {
         return success(customerEmailService.activityList());
@@ -99,13 +99,13 @@ public class EmailCustomerController extends BaseController {
     /**
      * 客户模块-客户邮件列表（分页）
      */
-    @PreAuthorize("@ss.hasPermi('customer:email:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(@NotNull(message = "客户ID不能为空") Long customerId,
+    @PreAuthorize("@ss.hasPermi('email:customer:email:list')")
+    @GetMapping("/email/list")
+    public TableDataInfo emailList(@NotNull(message = "客户ID不能为空") Long customerId,
                               @NotNull(message = "页数不能为空") Integer pageNum,
                               @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerList(customerId, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 

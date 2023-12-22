@@ -559,6 +559,9 @@ import {
   spamEmail,
   deleteEmail,
 } from "@/api/email/email";
+import {
+  customerEmailList
+} from "@/api/customer/email";
 
 export default {
   data() {
@@ -673,6 +676,25 @@ export default {
       });
     },
 
+    /**
+     * 获取客户邮件列表
+     * @param customerId
+     */
+    fetchCustomerEmailList(customerId) {
+      const query = {
+        customerId: customerId,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+
+      customerEmailList(query).then(response => {
+        this.localEmailList = response.rows;
+        this.total = response.total;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
+    },
+
     toggleActive(email) {
       // 将状态改成已读
       this.readEmail(email);
@@ -744,6 +766,9 @@ export default {
       } else if (/^LABEL_(.+)$/.test(selectedEmailType)) {
         const labelId = RegExp.$1;
         this.fetchEmailList(null, null, null, null, null, null, null, null, null, labelId);
+      } else if (/^CUSTOMER_(.+)$/.test(selectedEmailType)) {
+        const customerId = RegExp.$1;
+        this.fetchCustomerEmailList(customerId);
       }
     },
 

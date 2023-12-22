@@ -222,11 +222,11 @@ public interface ITaskEmailService
     MenuCountVO countMenu();
 
     /**
-     * 客户列表
+     * 客户邮件列表
      * @param customerId
      * @param pageNum
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerList(Long customerId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Integer pageNum, Integer pageSize);
 }

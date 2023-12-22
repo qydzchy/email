@@ -751,15 +751,15 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerList(Long customerId, Integer pageNum, Integer pageSize) {
-        int count = taskEmailMapper.customerCount(customerId);
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Integer pageNum, Integer pageSize) {
+        int count = taskEmailMapper.customerEmailCount(customerId);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.customerList(customerId, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(customerId, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }
@@ -774,7 +774,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         List<EmailLabelBO> emailLabelBOList = labelService.listByEmailIds(ids);
         if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
         Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
-
 
         emailListVOList.stream().forEach(emailListVO -> {
             Long id = emailListVO.getId();

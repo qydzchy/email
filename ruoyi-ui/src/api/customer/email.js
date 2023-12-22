@@ -62,3 +62,12 @@ export function activityList(query) {
     params: query
   })
 }
+
+// 客户邮件列表
+export function customerEmailList(query) {
+  return request({
+    url: '/email/customer/email/list',
+    method: 'get',
+    params: query
+  })
+}

@@ -478,7 +478,12 @@
 																			</span>
                             </div>
                               <div v-if="generalLabelTypeData.showGeneralChildren" class="mm-tree-node-children" role="group">
-                                <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                                <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id"
+                                     class="is-focusable mm-tree-node"
+                                     :class="{ 'is-focusable mm-tree-node': activeMenuItem === 'CUSTOMER_'+customer.id }"
+                                     @click="customerClick(customer.id)"
+                                     aria-disabled="" draggable="false" role="treeitem" tabindex="-1"
+                                >
                                   <div class="mm-tree-node-content" style="padding-left: 34px;">
                                     <span class="mm-tree-node-expand-icon-wrapper">
                                       <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
@@ -601,6 +606,7 @@
               :selectedTaskId="selectedTaskId"
               :emailType="currentEmailType"
               :writeEmailType="writeEmailType"
+              :type="isMailNavNormalContainerOpen"
               @switch="switchLayout"
             ></component>
 

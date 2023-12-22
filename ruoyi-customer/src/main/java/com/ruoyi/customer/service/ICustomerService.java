@@ -280,20 +280,4 @@ public interface ICustomerService
      * @return
      */
     List<EmailCountGroupByStageBO> selectEmailCountGroupByStage(Long userId);
-
-    /**
-     * 统计客户邮件数
-     * @param customerId
-     * @return
-     */
-    int emailCount(Long customerId);
-
-    /**
-     * 客户邮件列表
-     * @param customerId
-     * @param offset
-     * @param limit
-     * @return
-     */
-    List<EmailListVO> emailList(Long customerId, int offset, int limit);
 }

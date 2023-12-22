@@ -204,7 +204,7 @@ public interface TaskEmailMapper
      * @param customerId
      * @return
      */
-    int customerCount(@Param("customerId") Long customerId);
+    int customerEmailCount(@Param("customerId") Long customerId);
 
     /**
      * 客户邮件列表
@@ -213,5 +213,5 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> customerList(@Param("customerId") Long customerId, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("offset") int offset, @Param("limit") int limit);
 }
