@@ -19,7 +19,7 @@
               <h3 class="config-page-title">邮箱地址黑名单</h3>
               <span class="tips">黑名单中邮箱对应的邮件将自动收取到垃圾邮件（不会收到新邮件提醒）</span>
             </div>
-            <button type="button" class="mm-button mm-button__text flex items-center text-blue-300">
+            <button type="button" class="mm-button mm-button__text flex items-center text-blue-300" @click="addEmailBtn()">
               <!---->
               <!---->
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -81,6 +81,52 @@
               </li>
             </ul>
           </div>
+
+          <div class="mail-black-list">
+            <ul>
+              <li class="mail-black-list-item mail-black-header">
+                <p>邮箱地址</p>
+                <div class="btn-list">
+                  <span class="mr-2">操作</span>
+                </div>
+              </li>
+              <li v-for="emailData in emailDatas" :key="emailData.id" class="mail-black-list-item">
+                <p>aaa@qq.com</p>
+                <div class="btn-list">
+                  <div class="btn-list-item text-blue-300">删除</div>
+                </div>
+              </li>
+            </ul>
+            <ul class="mm-pagination mm-pagination__right">
+              <li class="disabled mm-pagination-prev">
+                <svg class="mm-icon mm-icon-chevronleft" viewBox="0 0 24 24" name="chevronleft" fill="currentColor" style="height: 0.875rem; width: 0.875rem;">
+                  <path d="M15.8 22l-9.6-9.4c-.3-.3-.3-.8 0-1.1l9.6-9.4c.3-.3.7-.3 1 0l1 1c.3.3.3.7 0 1l-7.6 7.4c-.3.3-.3.8 0 1.1l7.5 7.4c.3.3.3.7 0 1l-1 1c-.2.2-.6.2-.9 0z"></path>
+                </svg>
+              </li>
+              <li>
+                <ul class="mm-pagination-pager">
+                  <li class="active mm-pagination-number">
+                    <span>1</span>
+                  </li>
+                  <li class="active mm-pagination-number">
+                    <span>2</span>
+                  </li>
+                  <li class="active mm-pagination-number">
+                    <span>3</span>
+                  </li>
+                  <!---->
+                  <!---->
+                  <!---->
+                </ul>
+              </li>
+              <li class="disabled mm-pagination-next">
+                <svg class="mm-icon mm-icon-chevronright" viewBox="0 0 24 24" name="chevronright" fill="currentColor" style="height: 0.875rem; width: 0.875rem;">
+                  <path d="M8.3 2l9.5 9.5c.3.3.3.7 0 1L8.3 22c-.3.2-.8.2-1.1 0l-1-1c-.2-.3-.2-.8 0-1.1l7.6-7.4c.2-.3.2-.7 0-1L6.3 4.1C6 3.8 6 3.3 6.3 3l1-1c.3-.2.7-.2 1 0z"></path>
+                </svg>
+              </li>
+            </ul>
+          </div>
+
         </div>
         <div class="mail-black-domain">
           <div class="mail-config-header">
@@ -163,15 +209,49 @@
 </style>
 <script>
 import addEmailTemplate from './addEmail.vue';
+import {listBlacklist, addBlacklist, editBlacklist, deleteBlacklist} from "@/api/email/blacklist";
 
 export default {
-  components: {addEmailTemplate}
+  components: {addEmailTemplate},
+
+  data() {
+    return {
+      emailContent: '',
+      domainContent: '',
+      emailPageNum: 1,
+      domainPageNum: 1,
+      pageSize: 5,
+      emailTotol: 0,
+      emailDatas: null,
+      domainTotal: 0,
+      domainDatas: null
+    }
+  },
 
   methods: {
     addEmailBtn() {
       this.$refs.addEmail.open();
     },
-  }
+
+    blacklistEmailList() {
+      const query = {
+        content: this.emailContent,
+        pageNum: this.emailPageNum,
+        pageSize: this.pageSize
+      }
+
+      listBlacklist(query).then(response => {
+        this.emailDatas = response.rows;
+        this.emailTotol = response.total;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
+    }
+  },
+
+  created() {
+    this.blacklistEmailList();
+  },
 };
 
 </script>

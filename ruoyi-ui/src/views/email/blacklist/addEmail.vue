@@ -24,7 +24,7 @@
                     <!---->
                     <span class="mm-input-affix-wrapper">
                       <!---->
-                      <input type="text" class="mm-input-inner">
+                      <input v-model="content" type="text" class="mm-input-inner">
                       <!---->
                     </span>
                     <!---->
@@ -44,7 +44,7 @@
                 <span>取消</span>
                 <!---->
               </button>
-              <button type="button" class="mm-button mm-button__primary">
+              <button @click="confirm" type="button" class="mm-button mm-button__primary">
                 <!---->
                 <!---->
                 <span>确定</span>
@@ -59,12 +59,13 @@
 </template>
 <script>
 import {EventBus} from "@/api/email/event-bus";
+import {addBlacklist} from "@/api/email/blacklist";
 
 export default {
   data() {
     return {
       addEmailPage: false,
-      name: ''
+      content: ''
     }
   },
 
@@ -75,39 +76,34 @@ export default {
 
     close() {
       this.addEmailPage = false;
-      this.name = '';
+      this.content = '';
     },
 
     // 保存标签
     async confirm() {
-      if (!this.selectedColor) {
-        this.$message.error("标签颜色不能为空");
-        return;
-      }
-
-      if (!this.name) {
-        this.$message.error("标签名称不能为空");
+      if (!this.content) {
+        this.$message.error("邮箱地址不能为空");
         return;
       }
 
       const data = {
         "color": this.selectedColor,
-        "name": this.name
+        "content": this.content
       };
 
       try {
-        const response = await addLabel(data);
+        data.type = 1;
+        const response = await addBlacklist(data);
         if (response.code === 200) {
           this.$message.success("新增成功");
           this.close();
           // 刷新列表
-          EventBus.$emit('refresh-label-list');
-          EventBus.$emit('refresh-index-label-list');
+          EventBus.$emit('refresh-blacklist-list');
         } else {
           this.$message.error("新增失败");
         }
       } catch (error) {
-        console.error('Error saving the label:', error);
+        console.error('Error saving the blacklist:', error);
       }
     }
   }
