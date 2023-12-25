@@ -663,10 +663,10 @@
             <div class="btn-bottom">
                 <div class="mm-space mm-space__horizontal">
                     <div class="mm-space-item" style="margin-right: 16px;">
-                        <button type="button" class="mm-button"><!----><!---->取消<!----></button>
+                        <button type="button" class="mm-button" @click="onCancel"><!----><!---->取消<!----></button>
                     </div>
                     <div class="mm-space-item">
-                        <button type="button" class="mm-button mm-button__primary"><!----><!---->保存<!----></button>
+                        <button type="button" class="mm-button mm-button__primary" @click="onSave"><!----><!---->保存<!----></button>
                     </div>
                 </div>
             </div>
@@ -676,7 +676,14 @@
 </template>
 
 <script>
-	export default {};
+	export default {
+        methods:{
+            onSave(){},
+            onCancel(){
+                this.$emit('backToHeader')
+            },
+        }
+    };
 </script>
 
 <style lang="scss" scoped>

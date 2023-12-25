@@ -9,57 +9,13 @@
 				<span class="label">邮件延迟发送:</span>
 				<div class="section-inner">
 					<div class="mm-radio-group radio-list">
-						<label class="mm-radio"
-							><input
-								name="mm-radio-group-39"
-								type="radio"
-								value="0" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label"
-									>即时发送</span
-								></span
-							></label
-						><label class="mm-radio"
-							><input
-								name="mm-radio-group-39"
-								type="radio"
-								value="0.5" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label"
-									>延迟 30 秒发送</span
-								></span
-							></label
-						><label class="mm-radio"
-							><input
-								name="mm-radio-group-39"
-								type="radio"
-								value="1" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label"
-									>延迟 1 分钟发送</span
-								></span
-							></label
-						><label class="mm-radio"
-							><input
-								name="mm-radio-group-39"
-								type="radio"
-								value="2" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label"
-									>延迟 2 分钟发送</span
-								></span
-							></label
-						><label class="mm-radio"
-							><input
-								name="mm-radio-group-39"
-								type="radio"
-								value="5" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label"
-									>延迟 5 分钟发送</span
-								></span
-							></label
-						>
+						<el-radio-group v-model="optionForm.delay">
+							<el-radio :label="0">即时发送</el-radio>
+							<el-radio :label="0.5">延迟 30 秒发送</el-radio>
+							<el-radio :label="1">延迟 1 分钟发送</el-radio>
+							<el-radio :label="2">延迟 2 分钟发送</el-radio>
+							<el-radio :label="5">延迟 5 分钟发送</el-radio>
+						</el-radio-group>
 					</div>
 					<div
 						class="tips"
@@ -85,15 +41,33 @@
 										><!----><span
 											class="mm-input-affix-wrapper"
 											><!----><input
-												type="text"
-												class="mm-input-inner" /><span
+												type="number"
+												class="mm-input-inner"
+												v-model="optionForm.min"
+												@blur="
+													optionForm.min < 30
+														? (optionForm.min = 30)
+														: optionForm.min >
+																1800 &&
+														  (optionForm.min = 1800)
+												" /><span
 												class="mm-input-suffix"
 												><!---->
 												<div
 													class="mm-input-number-control-wrapper">
 													<span
-														class="mm-input-number-control mm-input-number-control--disabled"
-														><svg
+														class="mm-input-number-control"
+														:class="{
+															'mm-input-number-control--disabled':
+																optionForm.min <=
+																30,
+														}"
+														@click="
+															optionForm.min >
+																30 &&
+																optionForm.min--
+														">
+														<svg
 															class="mm-icon mm-icon-down"
 															viewBox="0 0 24 24"
 															name="down"
@@ -107,6 +81,16 @@
 																d="M3.8 6.5h16.4c.4 0 .8.6.4 1l-8 9.8c-.3.3-.9.3-1.2 0l-8-9.8c-.4-.4-.1-1 .4-1z"></path></svg></span
 													><span
 														class="mm-input-number-control"
+														:class="{
+															'mm-input-number-control--disabled':
+																optionForm.min >=
+																1800,
+														}"
+														@click="
+															optionForm.min <
+																1800 &&
+																optionForm.min++
+														"
 														><svg
 															class="mm-icon mm-icon-up"
 															viewBox="0 0 24 24"
@@ -137,14 +121,32 @@
 										><!----><span
 											class="mm-input-affix-wrapper"
 											><!----><input
-												type="text"
-												class="mm-input-inner" /><span
+												type="number"
+												class="mm-input-inner"
+												v-model="optionForm.max"
+												@blur="
+													optionForm.max < 30
+														? (optionForm.max = 30)
+														: optionForm.max >
+																1800 &&
+														  (optionForm.max = 1800)
+												" /><span
 												class="mm-input-suffix"
 												><!---->
 												<div
 													class="mm-input-number-control-wrapper">
 													<span
 														class="mm-input-number-control"
+														:class="{
+															'mm-input-number-control--disabled':
+																optionForm.max <=
+																30,
+														}"
+														@click="
+															optionForm.max >
+																30 &&
+																optionForm.max--
+														"
 														><svg
 															class="mm-icon mm-icon-down"
 															viewBox="0 0 24 24"
@@ -158,7 +160,17 @@
 															<path
 																d="M3.8 6.5h16.4c.4 0 .8.6.4 1l-8 9.8c-.3.3-.9.3-1.2 0l-8-9.8c-.4-.4-.1-1 .4-1z"></path></svg></span
 													><span
-														class="mm-input-number-control mm-input-number-control--disabled"
+														class="mm-input-number-control"
+														:class="{
+															'mm-input-number-control--disabled':
+																optionForm.max >=
+																1800,
+														}"
+														@click="
+															optionForm.max <
+																1800 &&
+																optionForm.max++
+														"
 														><svg
 															class="mm-icon mm-icon-up"
 															viewBox="0 0 24 24"
@@ -188,118 +200,51 @@
 			<div class="section-wrapper">
 				<span class="label">当地实时时间:</span>
 				<div class="mm-radio-group radio-list">
-					<label class="mm-radio"
-						><input
-							name="mm-radio-group-40"
-							type="radio"
-							value="1" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">启用</span></span
-						></label
-					><label class="mm-radio"
-						><input
-							name="mm-radio-group-40"
-							type="radio"
-							value="0" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">停用</span></span
-						></label
-					>
+					<el-radio-group v-model="optionForm.location">
+						<el-radio :label="1">启用</el-radio>
+						<el-radio :label="0">停用</el-radio>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="section-wrapper">
 				<span class="label">邮件发送提醒:</span>
 				<div class="mm-radio-group section-list">
-					<label class="mm-radio"
-						><input
-							name="mm-radio-group-41"
-							type="radio"
-							value="1" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">弹窗提醒</span></span
-						></label
-					><label class="mm-radio"
-						><input
-							name="mm-radio-group-41"
-							type="radio"
-							value="0" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">不提醒</span></span
-						></label
-					>
+					<el-radio-group v-model="optionForm.emailTip">
+						<el-radio :label="1">弹窗提醒</el-radio>
+						<el-radio :label="0">不提醒</el-radio>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="section-title">邮件翻译</div>
 			<div class="section-wrapper">
 				<span class="label">邮件翻译功能:</span>
 				<div class="mm-radio-group radio-list">
-					<label class="mm-radio"
-						><input
-							name="mm-radio-group-42"
-							type="radio"
-							value="1" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">启用</span></span
-						></label
-					><label class="mm-radio"
-						><input
-							name="mm-radio-group-42"
-							type="radio"
-							value="0" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">停用</span></span
-						></label
-					>
+					<el-radio-group v-model="optionForm.translate">
+						<el-radio :label="1">启用</el-radio>
+						<el-radio :label="0">停用</el-radio>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="section-title">待处理邮件</div>
 			<div class="section-wrapper">
 				<span class="label">待处理关闭:</span>
 				<div class="mm-radio-group radio-list">
-					<label class="mm-radio"
-						><input
-							name="mm-radio-group-43"
-							type="radio"
-							value="1" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label"
-								>回复邮件后自动关闭待处理状态</span
-							></span
-						></label
-					><label class="mm-radio"
-						><input
-							name="mm-radio-group-43"
-							type="radio"
-							value="0" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label"
-								>手动关闭待处理状态</span
-							></span
-						></label
-					>
+					<el-radio-group v-model="optionForm.handle">
+						<el-radio :label="1"
+							>回复邮件后自动关闭待处理状态</el-radio
+						>
+						<el-radio :label="0">手动关闭待处理状态</el-radio>
+					</el-radio-group>
 				</div>
 			</div>
 			<div class="section-wrapper">
 				<span class="label">自动化待处理:</span>
 				<div class="section-innner">
 					<div class="mm-radio-group radio-list">
-						<label class="mm-radio"
-							><input
-								name="mm-radio-group-44"
-								type="radio"
-								value="1" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label">启用</span></span
-							></label
-						><label class="mm-radio"
-							><input
-								name="mm-radio-group-44"
-								type="radio"
-								value="0" /><span class="mm-radio-faux"
-								><span class="mm-radio-input"></span
-								><span class="mm-radio-label">停用</span></span
-							></label
-						>
+						<el-radio-group v-model="optionForm.auto">
+							<el-radio :label="1">启用</el-radio>
+							<el-radio :label="0">停用</el-radio>
+						</el-radio-group>
 					</div>
 					<!----><!---->
 				</div>
@@ -308,23 +253,10 @@
 			<div class="section-wrapper">
 				<span class="label">异常邮箱检测:</span>
 				<div class="mm-radio-group radio-list">
-					<label class="mm-radio"
-						><input
-							name="mm-radio-group-45"
-							type="radio"
-							value="1" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">启用</span></span
-						></label
-					><label class="mm-radio"
-						><input
-							name="mm-radio-group-45"
-							type="radio"
-							value="0" /><span class="mm-radio-faux"
-							><span class="mm-radio-input"></span
-							><span class="mm-radio-label">停用</span></span
-						></label
-					>
+					<el-radio-group v-model="optionForm.fail">
+						<el-radio :label="1">启用</el-radio>
+						<el-radio :label="0">停用</el-radio>
+					</el-radio-group>
 				</div>
 			</div>
 		</div>
@@ -335,7 +267,8 @@
 					style="margin-right: 16px">
 					<button
 						type="button"
-						class="mm-button">
+						class="mm-button"
+						@click="onCancel">
 						<!----><!----><span>取消</span
 						><!---->
 					</button>
@@ -343,7 +276,8 @@
 				<div class="mm-space-item">
 					<button
 						type="button"
-						class="mm-button mm-button__primary">
+						class="mm-button mm-button__primary"
+						@click="onSave">
 						<!----><!----><span>保存</span
 						><!---->
 					</button>
@@ -354,9 +288,33 @@
 </template>
 
 <script>
-	export default {};
+	export default {
+		data() {
+			return {
+				optionForm: {
+					min: 30,
+					max: 1800,
+					delay: 0,
+					location: 0,
+					emailTip: 0,
+					translate: 0,
+					handle: 0,
+					auto: 0,
+					fail: 0,
+				},
+			};
+		},
+		methods: {
+			onSave() {
+				console.log(this.optionForm);
+			},
+			onCancel() {
+				this.$emit('changeTab', '常规');
+			},
+		},
+	};
 </script>
 
 <style lang="scss" scoped>
-@import url('./css/index.css');
+	@import url('./css/index.css');
 </style>

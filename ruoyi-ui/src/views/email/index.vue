@@ -795,6 +795,7 @@ export default {
     // 文件夹
     folderClick(folderId) {
       const active = 'FOLDER_' + folderId;
+      this.selectedTaskId = active
       this.triggerEmailHeaderEvent(active);
     },
 
@@ -849,6 +850,7 @@ export default {
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
+      this.currentEmailType = emailType
       this.setActive(emailType);
       this.switchLayout('email_header');
       this.$nextTick(()=>{
