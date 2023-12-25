@@ -19,6 +19,8 @@ import com.ruoyi.email.domain.Blacklist;
 import com.ruoyi.email.service.IBlacklistService;
 import com.ruoyi.common.core.page.TableDataInfo;
 
+import javax.annotation.Resource;
+
 /**
  * 黑名单Controller
  * 
@@ -29,7 +31,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RequestMapping("/email/blacklist")
 public class BlacklistController extends BaseController
 {
-    @Autowired
+    @Resource
     private IBlacklistService blacklistService;
 
     /**
@@ -49,7 +51,7 @@ public class BlacklistController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:blacklist:add')")
     @Log(title = "新增黑名单", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody Blacklist blacklist)
     {
         return toAjax(blacklistService.insertBlacklist(blacklist));
@@ -60,7 +62,7 @@ public class BlacklistController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:blacklist:edit')")
     @Log(title = "修改黑名单", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody Blacklist blacklist)
     {
         return toAjax(blacklistService.updateBlacklist(blacklist));
@@ -69,10 +71,10 @@ public class BlacklistController extends BaseController
     /**
      * 删除黑名单
      */
-    @PreAuthorize("@ss.hasPermi('email:blacklist:remove')")
+    @PreAuthorize("@ss.hasPermi('email:blacklist:delete')")
     @Log(title = "删除黑名单", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
+	@PostMapping("/delete")
+    public AjaxResult delete(@PathVariable Long[] ids)
     {
         return toAjax(blacklistService.deleteBlacklistByIds(ids));
     }
