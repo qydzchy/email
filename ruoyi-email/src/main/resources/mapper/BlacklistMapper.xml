@@ -28,12 +28,18 @@
             <if test="content != null  and content != ''"> and content like concat('%', #{content}, '%')</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
+            and del_flag = '0'
         </where>
+        order by create_time desc
     </select>
 
     <select id="selectBlacklistById" parameterType="Long" resultMap="BlacklistResult">
         <include refid="selectBlacklistVo"/>
         where id = #{id}
+    </select>
+
+    <select id="countByTypeAndContent" resultType="java.lang.Integer">
+        select count(1) from mailbox_blacklist where type = #{type} and content = #{content} and del_flag = '0'
     </select>
 
     <insert id="insertBlacklist" parameterType="Blacklist" useGeneratedKeys="true" keyProperty="id">
@@ -78,9 +84,9 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteBlacklistById" parameterType="Long">
-        delete from mailbox_blacklist where id = #{id}
-    </delete>
+    <update id="deleteBlacklistById">
+        update mailbox_blacklist set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW()  where id = #{id}
+    </update>
 
     <delete id="deleteBlacklistByIds" parameterType="String">
         delete from mailbox_blacklist where id in
