@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<component :is="dynamicComponent"></component>
+		<component
+			:is="dynamicComponent"
+			@backToHeader="backToHeader"
+			@onChangeTab="onChangeTab"></component>
 	</div>
 </template>
 
@@ -47,6 +50,14 @@
 					default:
 						return null;
 				}
+			},
+		},
+		methods: {
+			backToHeader(){
+				this.$emit('backToHeader')
+			},
+			onChangeTab(value) {
+				this.$emit('changeTab', value);
 			},
 		},
 	};

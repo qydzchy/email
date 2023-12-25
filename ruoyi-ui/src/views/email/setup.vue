@@ -2,14 +2,15 @@
   <div class="mm-split-pane mm-split-pane__right" style="left: 12.2835%;">
     <div class="mail-plus-config layout-extraSidebar-content" mail-type="" folder-id="">
       <div class="mm-tabs mm-tabs__top mm-tabs__align-left m-tab">
-        <SetUpHeader @change-tab="updateTab"></SetUpHeader>
-        <SetUpContent :selectedTab="currentTab"></SetUpContent>
+        <SetUpHeader ref="headerTabRef" @change-tab="updateTab"></SetUpHeader>
+        <SetUpContent :selectedTab="currentTab" @backToHeader="backToHeader" @changeTab="changeTab"></SetUpContent>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { EventBus } from "@/api/email/event-bus";
 import SetUpHeader from './setup_header.vue';
 import SetUpContent from './setup_content.vue';
 
@@ -26,7 +27,14 @@ export default {
   methods: {
     updateTab(tabName) {
       this.currentTab = tabName;
+    },
+    backToHeader(){
+      EventBus.$emit('switch-email-header','ALL_RECEIVED');
+
+    },
+    changeTab(value){
+      this.$refs.headerTabRef.emitChange(value)
     }
-  }
+  },
 };
 </script>
