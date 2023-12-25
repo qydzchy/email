@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.Blacklist;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 黑名单Mapper接口
@@ -49,7 +50,7 @@ public interface BlacklistMapper
      * @param id 黑名单主键
      * @return 结果
      */
-    public int deleteBlacklistById(Long id);
+    public int deleteBlacklistById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除黑名单
@@ -58,4 +59,12 @@ public interface BlacklistMapper
      * @return 结果
      */
     public int deleteBlacklistByIds(Long[] ids);
+
+    /**
+     * 根据类型和内容查询黑名单数量
+     * @param type
+     * @param content
+     * @return
+     */
+    int countByTypeAndContent(@Param("type") Integer type, @Param("content") String content);
 }

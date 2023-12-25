@@ -3702,7 +3702,7 @@ CREATE TABLE `mailbox_blacklist`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `type` tinyint(1) NOT NULL COMMENT '类型: 1.邮箱地址黑名单 2.域名黑名单',
   `content` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '邮箱地址或域名',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '删除标志(0代表存在2代表删除)',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -3712,9 +3712,6 @@ CREATE TABLE `mailbox_blacklist`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '黑名单表' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Records of mailbox_blacklist
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for mailbox_folder
@@ -3877,6 +3874,7 @@ CREATE TABLE `mailbox_import_email`  (
   `import_status` tinyint(1) NOT NULL COMMENT '导入状态: 1.正在处理 2.导入成功 3.导入失败',
   `failure_reasons` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '失败原因',
   `mail_total` int(11) NOT NULL COMMENT '邮件总数',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
@@ -3885,10 +3883,6 @@ CREATE TABLE `mailbox_import_email`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '导入邮件表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of mailbox_import_email
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for mailbox_label

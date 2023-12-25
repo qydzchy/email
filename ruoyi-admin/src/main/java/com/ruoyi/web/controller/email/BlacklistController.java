@@ -1,6 +1,9 @@
 package com.ruoyi.web.controller.email;
 
 import java.util.List;
+
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,18 +57,14 @@ public class BlacklistController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody Blacklist blacklist)
     {
-        return toAjax(blacklistService.insertBlacklist(blacklist));
-    }
+        if (blacklist.getType() == null) {
+            throw new ServiceException("类型不能为空");
+        }
+        if (StringUtils.isBlank(blacklist.getContent())) {
+            throw new ServiceException("内容不能为空");
+        }
 
-    /**
-     * 修改黑名单
-     */
-    @PreAuthorize("@ss.hasPermi('email:blacklist:edit')")
-    @Log(title = "修改黑名单", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody Blacklist blacklist)
-    {
-        return toAjax(blacklistService.updateBlacklist(blacklist));
+        return toAjax(blacklistService.insertBlacklist(blacklist));
     }
 
     /**
@@ -74,8 +73,8 @@ public class BlacklistController extends BaseController
     @PreAuthorize("@ss.hasPermi('email:blacklist:delete')")
     @Log(title = "删除黑名单", businessType = BusinessType.DELETE)
 	@PostMapping("/delete")
-    public AjaxResult delete(@PathVariable Long[] ids)
+    public AjaxResult delete(@RequestBody Blacklist blacklist)
     {
-        return toAjax(blacklistService.deleteBlacklistByIds(ids));
+        return toAjax(blacklistService.deleteBlacklistById(blacklist.getId()));
     }
 }

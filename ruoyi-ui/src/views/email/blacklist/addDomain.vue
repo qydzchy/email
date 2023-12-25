@@ -1,6 +1,6 @@
 <template>
-  <div v-if="addEmailPage">
-    <div class="mm-modal__overflow-auto mm-modal--mask mm-modal mm-dialog mail-black-dialog" style="z-index: 1003;">
+  <div v-if="addDomainPage">
+    <div class="mm-modal__overflow-auto mm-modal--mask mm-modal mm-dialog mail-black-dialog" style="z-index: 1000;">
       <div class="mm-modal-mask"></div>
       <div class="mm-modal-wrapper" style="padding-top: 15vh;">
         <div class="mm-modal-content" style="border-color: transparent;">
@@ -9,27 +9,27 @@
           </svg>
           <div class="mm-modal-header">
             <div class="mm-modal-title">
-              <span>添加邮箱地址黑名单</span>
+              <span>添加域名黑名单</span>
             </div>
           </div>
           <div class="mm-modal-body">
             <form class="mm-form-horizontal mm-form">
               <div class="mm-form-field--required mm-form-field">
                 <div class="mm-form-field-label" style="width: 80px;">
-                  <span>邮箱地址:</span>
+                  <span>邮箱域名:</span>
                 </div>
                 <div class="mm-form-field-control" style="margin-left: 80px;">
-                <span class="mm-form-field-children">
-                  <span class="mm-input" style="width: 400px;">
+							<span class="mm-form-field-children">
+								<span class="mm-input" style="width: 400px;">
+									<!---->
+									<span class="mm-input-affix-wrapper">
+										<!---->
+										<input v-model="content" type="text" class="mm-input-inner">
                     <!---->
-                    <span class="mm-input-affix-wrapper">
-                      <!---->
-                      <input v-model="content" type="text" class="mm-input-inner">
-                      <!---->
-                    </span>
-                    <!---->
-                  </span>
-                </span>
+									</span>
+                  <!---->
+								</span>
+							</span>
                   <!---->
                   <!---->
                 </div>
@@ -64,25 +64,25 @@ import {addBlacklist} from "@/api/email/blacklist";
 export default {
   data() {
     return {
-      addEmailPage: false,
+      addDomainPage: false,
       content: ''
     }
   },
 
   methods: {
     open() {
-      this.addEmailPage = true;
+      this.addDomainPage = true;
     },
 
     close() {
-      this.addEmailPage = false;
+      this.addDomainPage = false;
       this.content = '';
     },
 
     // 保存标签
     async confirm() {
       if (!this.content) {
-        this.$message.error("邮箱地址不能为空");
+        this.$message.error("邮箱域名不能为空");
         return;
       }
 
@@ -91,13 +91,13 @@ export default {
       };
 
       try {
-        data.type = 1;
+        data.type = 2;
         const response = await addBlacklist(data);
         if (response.code === 200) {
           this.$message.success("新增成功");
           this.close();
           // 刷新列表
-          EventBus.$emit('refresh-blacklist-email-list');
+          EventBus.$emit('refresh-blacklist-domain-list');
         } else {
           this.$message.error("新增失败");
         }
