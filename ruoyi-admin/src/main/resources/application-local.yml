@@ -9,7 +9,7 @@ ruoyi:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: /home/ruoyi/uploadPath
+  profile: D:/ruoyi/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
@@ -132,10 +132,10 @@ xss:
 
 email:
   attachment:
-    path: /home/ruoyi/email/attachment
+    path: D:\back\Desktop\attachment
   # 拉取邮件.eml
   pull:
-    path: /home/ruoyi/email/mailbox
+    path: D:\back\Desktop\mailbox\
 
   trace:
     # 邮件回调服务地址
@@ -146,4 +146,4 @@ email:
 
 customer:
     document:
-      upload-dir: /home/ruoyi/customer/file
+      upload-dir: D:\back\Desktop\file\

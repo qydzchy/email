@@ -44,8 +44,5 @@ public class CustomerTest {
 
     @Test
     public void test02() {
-        Map<Integer, Integer> ratingMapList = customerService.selectCustomerCountGroupByRating(1L);
-
-        System.out.println(ratingMapList);
     }
 }
