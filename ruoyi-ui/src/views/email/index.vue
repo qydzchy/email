@@ -916,7 +916,7 @@ export default {
         return '';
       }
 
-      const task = this.menuCount.menuInboxTaskCountList.find(t => t.taskId === taskId);
+      const task = this.menuCount.menuInboxTaskCountList?.find(t => t.taskId === taskId) || [];
       return task ? task.count : '';
     },
 

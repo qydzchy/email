@@ -1,0 +1,426 @@
+.public-mail-tag-wrapper {
+    display: inline-block
+}
+
+.public-mail-tag-wrapper .public-mail-tag-content {
+    display: flex;
+    position: relative;
+    align-items: center;
+    width: 100%
+}
+
+.public-mail-tag-wrapper .public-mail-tag-content .public-icon {
+    margin-right: 3px
+}
+
+.mce-container .okki-mce-icon {
+    height: 1em;
+    width: 1em;
+    vertical-align: middle;
+    color: currentColor
+}
+
+.mce-container .okki-mce-icon * {
+    color: currentColor
+}
+
+.mce-container.mce-panel.mce-floatpanel {
+    max-height: 250px
+}
+
+.mce-container .mce-flow-layout {
+    padding-right: 60px
+}
+
+.mce-container .mce-flow-layout .mce-flow-layout-item.mce-btn-group.mce-last {
+    float: none;
+    position: absolute;
+    top: 0;
+    right: 0
+}
+
+.tox-editor-container .tox-toolbar:last-child {
+    display: none
+}
+
+.tox-editor-container .tox-toolbar:last-child.expand {
+    display: flex
+}
+
+.holiday-wrapper .date-selector-item {
+    margin-top: 15px;
+    flex: 1;
+    align-items: center;
+    display: flex;
+    width: 280px
+}
+
+.holiday-wrapper .date-selector-item .date-label {
+    width: 120px
+}
+
+.holiday-wrapper .date-selector-item:first-child {
+    margin-right: 20px
+}
+
+.holiday-wrapper .editor-box {
+    width: 585px
+}
+
+.holiday-wrapper .editor-box .upload-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px
+}
+
+.holiday-wrapper #mail-out-image-upload {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0
+}
+
+.conventional-look .section-wrapper {
+    margin: 16px 0
+}
+
+.conventional-look .section-wrapper:first-of-type {
+    margin-top: 24px
+}
+
+.conventional-look .section-wrapper:last-of-type {
+    margin-bottom: 32px
+}
+
+.conventional-look .mm-color-picker-toggle-value {
+    width: 100%;
+    padding-right: 8px;
+    justify-content: flex-end
+}
+
+.inline-item {
+    display: flex;
+    padding-left: 196px
+}
+
+.inline-item .item-value {
+    padding: 0!important
+}
+
+.inline-item .item-value:first-child {
+    position: relative;
+    padding-right: 24px!important
+}
+
+.inline-item .item-value:first-child .tips {
+    position: absolute;
+    top: 100%
+}
+
+.mm-color-picker-popper .mm-color-picker-device {
+    width: 362px
+}
+
+.mm-color-picker-popper .mm-color-picker-device .mm-color-picker-alpha,.mm-color-picker-popper .mm-color-picker-device .mm-color-picker-panel {
+    width: 342px
+}
+
+.mm-color-picker-popper .mm-color-picker-tools-value {
+    width: 242px
+}
+
+.create-sign .mce-btn[aria-label=Fullscreen] {
+    display: none
+}
+
+.create-sign .component-input .input {
+    width: 460px
+}
+
+.create-sign .mm-select {
+    max-width: 300px
+}
+
+.create-sign .text-field .item-value {
+    width: 484px
+}
+
+.create-sign .upload-container {
+    padding: 10px 0
+}
+
+.create-sign .upload-container label {
+    cursor: pointer
+}
+
+.create-sign .upload-container input {
+    overflow: hidden;
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0
+}
+
+.create-sign .upload-container .upload-tip {
+    float: right;
+    color: red;
+    font-size: 12px
+}
+
+.mce-menu,.mce-popover,.mce-window {
+    z-index: 10000!important
+}
+
+.sign-box {
+    position: relative;
+    width: 400px;
+    height: 176px;
+    padding-bottom: 42px;
+    border-radius: 4px;
+    margin-top: 12px;
+    border: 1px solid #b6b6b6
+}
+
+.sign-box .sign-content {
+    height: 100%;
+}
+
+.sign-box .buttonset {
+    position: absolute;
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    line-height: 42px;
+    text-align: right;
+    background-color: #f5f5f5
+}
+
+.sign-box .buttonset .m-btn {
+    width: 48px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 0
+}
+
+.sign-box .buttonset .m-btn:before {
+    border-radius: 0
+}
+
+.sign-box .buttonset .m-btn.gray {
+    background-color: #d9d9d9
+}
+
+.sign-box .buttonset .m-btn.gray span {
+    color: #77777b
+}
+
+.mail-box {
+    width: 576px;
+    height: 330px;
+    border-radius: 1px
+}
+
+.mail-box .m-input {
+    width: 202px
+}
+
+.mail-box .long-input {
+    width: 400px
+}
+
+.mail-box .mail-list-header {
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden
+}
+
+.mail-box .mail-list-header .change-btn {
+    flex: 1;
+    line-height: 34px;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #b6b6b6;
+    border-right: 1px solid #d9d9d9
+}
+
+.mail-box .mail-list-header .change-btn.no-border {
+    border-top: none;
+    border-right: none
+}
+
+.mail-box .mail-list-header .change-btn.no-border .change-btn-list {
+    display: none
+}
+
+.mail-box .mail-list-header .change-btn .change-btn-list {
+    display: flex;
+    justify-content: flex-end;
+    text-align: right
+}
+
+.mail-box .mail-list-header .change-btn .change-btn-list .m-icon {
+    display: inline-block;
+    border-left: 1px solid #d9d9d9;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none
+}
+
+.mail-box .mail-list-header .change-btn .change-btn-list .m-icon:hover {
+    color: #0884f3
+}
+
+.mail-box .mail-list-header .change-btn .change-btn-list .m-icon.disable {
+    color: #b6b6b6
+}
+
+.mail-box .mail-list-header .change-btn .change-btn-list .icon-left-thin {
+    border-right: none
+}
+
+.mail-box .mail-list {
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    line-height: 34px;
+    transition: all .2s ease-in-out
+}
+
+.mail-box .mail-list .mail-item {
+    line-height: 34px;
+    border-bottom: 1px solid #b6b6b6;
+    border-left: 1px solid #d9d9d9;
+    border-top: 1px solid #d9d9d9;
+    background-color: #f5f5f5
+}
+
+.mail-box .mail-list .mail-item p {
+    width: 165px;
+    padding: 0 7px;
+    opacity: .5;
+    text-align: center;
+    cursor: pointer
+}
+
+.mail-box .mail-list .mail-item.active {
+    border-bottom: none;
+    border-right: 1px solid;
+    border-color: #b6b6b6;
+    background-color: #fff
+}
+
+.mail-box .mail-list .mail-item.active p {
+    opacity: 1
+}
+
+.mail-box .mail-content,.mail-box .mail-list .mail-item:last-child {
+    border-right: 1px solid #b6b6b6
+}
+
+.mail-box .mail-content {
+    border-bottom: 1px solid #b6b6b6;
+    border-left: 1px solid #b6b6b6
+}
+
+.mail-box .config-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 10px
+}
+
+.mail-box .config-item .left {
+    width: 113px;
+    text-align: right
+}
+
+.mail-box .config-item .right {
+    padding-left: 20px
+}
+
+.mail-box .config-item .sign-select {
+    min-width: 200px
+}
+
+.mail-plus-conventional {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    padding-right: 0!important;
+    box-sizing: border-box
+}
+
+.mail-plus-conventional .mm-select {
+    width: auto
+}
+
+.mail-plus-conventional .field-select-value {
+    min-width: 6em
+}
+
+.mail-plus-conventional .field-selection {
+    padding-right: 20px
+}
+
+.mail-plus-conventional .mail-plus-conventional-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    overflow: hidden
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .section-wrapper .label {
+    width: 134px;
+    text-align: right
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .section-wrapper .mm-select {
+    width: 378px
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .conventional-content {
+    flex: 1;
+
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .btn-bottom {
+    flex-shrink: 0;
+    text-align: center;
+    line-height: 48px
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .num-radio-group {
+    display: flex;
+    width: -moz-fit-content;
+    width: fit-content;
+    line-height: 28px;
+    border: 1px solid #e0e0e0
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .num-radio-group .num-item {
+    width: 50px;
+    text-align: center;
+    cursor: pointer
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .num-radio-group .num-item:not(:first-child) {
+    border-left: 1px solid #efefef
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .num-radio-group .num-item.active {
+    background: #0083ec;
+    color: #fff
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .mail-remind .mm-checkbox {
+    margin-right: 20px
+}
+
+.mail-plus-conventional .mail-plus-conventional-content .mail-remind .mm-checkbox:last-child {
+    margin-right: 0
+}

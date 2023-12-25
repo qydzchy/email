@@ -1,46 +1,53 @@
 <template>
-  <div>
-    <div v-if="selectedTab === '常规'"></div>
-    <div v-else-if="selectedTab === '模板'"></div>
-    <div v-else-if="selectedTab === '标签'"></div>
-    <component :is="dynamicComponent"></component>
-    <!-- 其他条件... -->
-  </div>
+	<div>
+		<component :is="dynamicComponent"></component>
+	</div>
 </template>
 
 <script>
-import TemplateComponent from './template/list.vue';
-import EmailManagementComponent from './email_management/list.vue';
-import FolderComponent from './folder/list.vue';
-import LabelComponent from './label/list.vue';
-import QuickTextComponent from './quick_text/list.vue';
-import BlacklistComponent from './blacklist/list.vue';
+	import UsuallyComponent from './usually/index.vue';
+	import TemplateComponent from './template/list.vue';
+	import EmailManagementComponent from './email_management/list.vue';
+	import FolderComponent from './folder/list.vue';
+	import LabelComponent from './label/list.vue';
+	import QuickTextComponent from './quick_text/list.vue';
+	import BlacklistComponent from './blacklist/list.vue';
+	import ImportEmailComponent from './import_email/index.vue';
+	import OtherOptionComponent from './other_option/index.vue';
 
-export default {
-  data() {
-    return {
-      currentTab: '常规'
-    };
-  },
-  props: ['selectedTab'],
-  computed: {
-    dynamicComponent() {
-      if (this.selectedTab === '模板') {
-        return TemplateComponent;
-      } else if (this.selectedTab === '邮箱管理') {
-        return EmailManagementComponent;
-      } else if (this.selectedTab === '文件夹') {
-        return FolderComponent;
-      } else if (this.selectedTab === '标签') {
-        return LabelComponent;
-      } else if (this.selectedTab === '快速文本') {
-        return QuickTextComponent;
-      } else if (this.selectedTab === '黑名单') {
-        return BlacklistComponent;
-      }
-      // ... 可以为其他选项项返回其他组件
-      return null;
-    }
-  }
-};
+	export default {
+		data() {
+			return {
+				currentTab: '常规',
+			};
+		},
+		props: ['selectedTab'],
+		computed: {
+			dynamicComponent() {
+				switch (this.selectedTab) {
+					case '常规':
+						return UsuallyComponent;
+					case '模板':
+						return TemplateComponent;
+					case '邮箱管理':
+						return EmailManagementComponent;
+					case '文件夹':
+						return FolderComponent;
+						break;
+					case '标签':
+						return LabelComponent;
+					case '快速文本':
+						return QuickTextComponent;
+					case '黑名单':
+						return BlacklistComponent;
+					case '导入邮件':
+						return ImportEmailComponent;
+					case '其他配置':
+						return OtherOptionComponent;
+					default:
+						return null;
+				}
+			},
+		},
+	};
 </script>

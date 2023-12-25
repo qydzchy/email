@@ -7,7 +7,7 @@
 
 @each $var in $fontSize {
     .fs-#{$var} {
-        font-size: #{$var}px;
+        font-size: #{$var}px !important;
     }
 
     .icon-#{$var} {
@@ -41,23 +41,23 @@
     }
 
     .mx-#{$size} {
-        margin-left: #{$size}px;
-        margin-right: #{$size}px;
+        margin-left: #{$size}px !important;
+        margin-right: #{$size}px !important;
     }
 
     .my-#{$size} {
-        margin-top: #{$size}px;
-        margin-bottom: #{$size}px;
+        margin-top: #{$size}px !important;
+        margin-bottom: #{$size}px !important;
     }
 
     .px-#{$size} {
-        padding-left: #{$size}px;
-        padding-right: #{$size}px;
+        padding-left: #{$size}px !important;
+        padding-right: #{$size}px !important;
     }
 
     .py-#{$size} {
-        padding-top: #{$size}px;
-        padding-bottom: #{$size}px;
+        padding-top: #{$size}px !important;
+        padding-bottom: #{$size}px !important;
     }
 
     .radius-#{$size}{

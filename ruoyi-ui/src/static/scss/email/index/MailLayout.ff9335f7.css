@@ -160,7 +160,7 @@
 }
 .layout-extraSidebar {
   display:flex;
-  height:calc(100vh - 60px)
+  height: calc(100vh - 84px);
 }
 .layout-extraSidebar .layout-extraSidebar-sidebar {
   height:100%;

@@ -165,7 +165,7 @@
 import addEmailTemplate from './addEmail.vue';
 
 export default {
-  components: {addEmailTemplate}
+  components: {addEmailTemplate},
 
   methods: {
     addEmailBtn() {
