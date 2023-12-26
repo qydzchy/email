@@ -1,6 +1,7 @@
 package com.ruoyi.email.domain.vo.email;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.enums.email.ImportStatusEnum;
 import lombok.Data;
 
@@ -38,6 +39,18 @@ public class ImportListVO {
 
     /** 邮件总数 */
     private Long mailTotal;
+
+    /** 新增数 */
+    private Integer addedCount;
+
+    /** 重复数 */
+    private Integer duplicateCount;
+
+    /** 过滤数 */
+    private Integer filteredCount;
+
+    /** 失败数 */
+    private Integer failureCount;
 
     /**
      * 创建时间

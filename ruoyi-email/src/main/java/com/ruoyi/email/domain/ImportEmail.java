@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 导入邮件对象 mailbox_import_email
  *
  * @author tangJM
- * @date 2023-12-22
+ * @date 2023-12-26
  */
 public class ImportEmail extends BaseEntity
 {
@@ -48,7 +48,26 @@ public class ImportEmail extends BaseEntity
 
     /** 邮件总数 */
     @Excel(name = "邮件总数")
-    private Long mailTotal;
+    private Integer mailTotal;
+
+    /** 新增数 */
+    @Excel(name = "新增数")
+    private Integer addedCount;
+
+    /** 重复数 */
+    @Excel(name = "重复数")
+    private Integer duplicateCount;
+
+    /** 过滤数 */
+    @Excel(name = "过滤数")
+    private Integer filteredCount;
+
+    /** 失败数 */
+    @Excel(name = "失败数")
+    private Integer failureCount;
+
+    /** 删除标志(0代表存在2代表删除) */
+    private String delFlag;
 
     /** 创建者ID */
     @Excel(name = "创建者ID")
@@ -130,14 +149,55 @@ public class ImportEmail extends BaseEntity
     {
         return failureReasons;
     }
-    public void setMailTotal(Long mailTotal)
-    {
+
+    public Integer getMailTotal() {
+        return mailTotal;
+    }
+
+    public void setMailTotal(Integer mailTotal) {
         this.mailTotal = mailTotal;
     }
 
-    public Long getMailTotal()
+    public Integer getAddedCount() {
+        return addedCount;
+    }
+
+    public void setAddedCount(Integer addedCount) {
+        this.addedCount = addedCount;
+    }
+
+    public Integer getDuplicateCount() {
+        return duplicateCount;
+    }
+
+    public void setDuplicateCount(Integer duplicateCount) {
+        this.duplicateCount = duplicateCount;
+    }
+
+    public Integer getFilteredCount() {
+        return filteredCount;
+    }
+
+    public void setFilteredCount(Integer filteredCount) {
+        this.filteredCount = filteredCount;
+    }
+
+    public Integer getFailureCount() {
+        return failureCount;
+    }
+
+    public void setFailureCount(Integer failureCount) {
+        this.failureCount = failureCount;
+    }
+
+    public void setDelFlag(String delFlag)
     {
-        return mailTotal;
+        this.delFlag = delFlag;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
     }
     public void setCreateId(Long createId)
     {
@@ -170,6 +230,11 @@ public class ImportEmail extends BaseEntity
                 .append("importStatus", getImportStatus())
                 .append("failureReasons", getFailureReasons())
                 .append("mailTotal", getMailTotal())
+                .append("addedCount", getAddedCount())
+                .append("duplicateCount", getDuplicateCount())
+                .append("filteredCount", getFilteredCount())
+                .append("failureCount", getFailureCount())
+                .append("delFlag", getDelFlag())
                 .append("createId", getCreateId())
                 .append("createBy", getCreateBy())
                 .append("createTime", getCreateTime())

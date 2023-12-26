@@ -6,6 +6,7 @@ import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
 import com.ruoyi.email.domain.vo.task.TaskListVO;
 import com.ruoyi.email.domain.vo.task.TestTaskVO;
+import com.ruoyi.email.service.handler.email.UniversalMail;
 import org.springframework.data.util.Pair;
 
 /**
@@ -121,4 +122,9 @@ public interface ITaskService
      * @return
      */
     List<HomeListTaskVO> sendList();
+
+    /**
+     * 保存邮件内容
+     */
+    void saveEmailData(Long taskId, Long folderId, Integer type, UniversalMail universalMail);
 }

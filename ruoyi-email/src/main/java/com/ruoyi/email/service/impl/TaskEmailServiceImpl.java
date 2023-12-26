@@ -178,6 +178,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             statusList = Arrays.asList(TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
         }
 
+        folderId = folderId != null ? folderId : -1L;
+
         int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, folderId, labelId, statusList);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());

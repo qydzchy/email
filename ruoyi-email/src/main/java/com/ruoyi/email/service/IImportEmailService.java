@@ -5,6 +5,7 @@ import com.ruoyi.email.domain.ImportEmail;
 import com.ruoyi.email.domain.vo.email.ImportListVO;
 import com.ruoyi.email.domain.vo.task.TaskListVO;
 import org.springframework.data.util.Pair;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 导入邮件Service接口
@@ -33,10 +34,10 @@ public interface IImportEmailService
     /**
      * 新增导入邮件
      * 
-     * @param importEmail 导入邮件
+     * @param file
      * @return 结果
      */
-    public int insertImportEmail(ImportEmail importEmail);
+    public boolean insertImportEmail(MultipartFile file, Long taskId, String taskName, Long folderId, String folderName, Boolean filterEmailFlag);
 
     /**
      * 修改导入邮件
@@ -70,7 +71,6 @@ public interface IImportEmailService
 
     /**
      * 导入邮件列表（分页）
-     * @param importEmail
      * @return
      */
     Pair<Integer, List<ImportListVO>> page();

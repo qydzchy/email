@@ -135,7 +135,10 @@ email:
     path: D:\back\Desktop\attachment
   # 拉取邮件.eml
   pull:
-    path: D:\back\Desktop\mailbox\
+    path: D:\back\Desktop\mailbox
+  # 导入邮件的临时目录
+  import:
+    temp-path: D:\back\Desktop\import\tempDir
 
   trace:
     # 邮件回调服务地址
