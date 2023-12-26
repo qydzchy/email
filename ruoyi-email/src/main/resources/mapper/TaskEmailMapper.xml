@@ -288,6 +288,10 @@
             LIMIT #{offset}, #{limit}
     </select>
 
+    <select id="countByEmlFileParam" resultType="java.lang.Integer">
+        select count(*) from mailbox_task_email where task_id = #{taskId} and folder_id = #{folderId} and name = #{name} and send_date = #{sendDate} and del_flag = '0'
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">

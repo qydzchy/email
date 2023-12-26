@@ -75,7 +75,7 @@ public class MailItemParser {
      * @param message
      * @param universalMail
      */
-    private static void setMessageHeaderParam(MimeMessage message, UniversalMail universalMail) {
+    public static void setMessageHeaderParam(MimeMessage message, UniversalMail universalMail) {
         String[] messageIdArray = new String[0];
         String[] inReplyToArray = new String[0];
         String[] referencesArray = new String[0];
@@ -192,7 +192,7 @@ public class MailItemParser {
     public static UniversalMail parseMimeMessage(MimeMessage mimeMessage) throws MailPlusException {
         try {
             Folder folder = mimeMessage.getFolder();
-            if(!folder.isOpen()) {
+            if(folder != null && !folder.isOpen()) {
                 folder.open(Folder.READ_WRITE);
             }
             MimeMessageParser parser = (new MimeMessageParser(mimeMessage)).parse();

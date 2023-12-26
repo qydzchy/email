@@ -66,7 +66,7 @@ public interface ImportEmailMapper
      * @param createId
      * @return
      */
-    long count(@Param("createId") Long createId);
+    int count(@Param("createId") Long createId);
 
     /**
      * 导入邮件列表

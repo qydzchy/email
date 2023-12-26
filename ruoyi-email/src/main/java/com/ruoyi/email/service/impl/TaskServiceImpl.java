@@ -327,7 +327,6 @@ public class TaskServiceImpl implements ITaskService
                 } catch (MailPlusException e) {
                     log.error("{}", e);
                 }
-
             }
 
         } catch (Exception e) {
@@ -417,6 +416,51 @@ public class TaskServiceImpl implements ITaskService
         } else {
             taskEmail.setType(EmailTypeEnum.PULL.getType());
         }
+        taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
+        taskEmail.setCreateTime(DateUtils.getNowDate());
+        taskEmailService.insertTaskEmail(taskEmail);
+        Long emailId = taskEmail.getId();
+
+        // 邮件内容
+        TaskEmailContent emailContent = new TaskEmailContent();
+        emailContent.setEmailId(emailId);
+        emailContent.setContent(universalMail.getContent());
+        emailContent.setCreateTime(DateUtils.getNowDate());
+        taskEmailContentService.insertTaskEmailContent(emailContent);
+
+        //附件
+        List<TaskAttachment> taskAttachmentList = new ArrayList<>();
+        List<UniversalAttachment> attachments = universalMail.getAttachments();
+        if (attachments != null) {
+            for (UniversalAttachment attachment : attachments) {
+                TaskAttachment taskAttachment = new TaskAttachment();
+                BeanUtils.copyProperties(attachment, taskAttachment);
+                taskAttachment.setCreateTime(DateUtils.getNowDate());
+                taskAttachmentList.add(taskAttachment);
+            }
+
+            if (!taskAttachmentList.isEmpty()) {
+                taskAttachmentService.batchInsertTaskAttachment(taskAttachmentList);
+
+                // 批量保存邮件附件关联数据
+                List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
+                taskAttachmentList.stream().forEach(taskAttachment -> {
+                    taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(taskAttachment.getId()).build());
+                });
+
+                taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
+            }
+        }
+    }
+
+    @Override
+    public void saveEmailData(Long taskId, Long folderId, Integer type, UniversalMail universalMail) {
+        TaskEmail taskEmail = new TaskEmail();
+        // 邮件
+        BeanUtils.copyProperties(universalMail, taskEmail);
+        taskEmail.setTaskId(taskId);
+        taskEmail.setFolderId(folderId);
+        taskEmail.setType(type);
         taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
         taskEmail.setCreateTime(DateUtils.getNowDate());
         taskEmailService.insertTaskEmail(taskEmail);

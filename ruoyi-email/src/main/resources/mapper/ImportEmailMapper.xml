@@ -14,6 +14,11 @@
         <result property="importStatus"    column="import_status"    />
         <result property="failureReasons"    column="failure_reasons"    />
         <result property="mailTotal"    column="mail_total"    />
+        <result property="addedCount"    column="added_count"    />
+        <result property="duplicateCount"    column="duplicate_count"    />
+        <result property="filteredCount"    column="filtered_count"    />
+        <result property="failureCount"    column="failure_count"    />
+        <result property="delFlag"    column="del_flag"    />
         <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -23,7 +28,7 @@
     </resultMap>
 
     <sql id="selectImportEmailVo">
-        select id, file_name, task_id, task_name, folder_id, folder_name, import_status, failure_reasons, mail_total, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_import_email
+        select id, file_name, task_id, task_name, folder_id, folder_name, import_status, failure_reasons, mail_total, added_count, duplicate_count, filtered_count, failure_count, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_import_email
     </sql>
 
     <select id="selectImportEmailList" parameterType="ImportEmail" resultMap="ImportEmailResult">
@@ -37,6 +42,10 @@
             <if test="importStatus != null "> and import_status = #{importStatus}</if>
             <if test="failureReasons != null  and failureReasons != ''"> and failure_reasons = #{failureReasons}</if>
             <if test="mailTotal != null "> and mail_total = #{mailTotal}</if>
+            <if test="addedCount != null "> and added_count = #{addedCount}</if>
+            <if test="duplicateCount != null "> and duplicate_count = #{duplicateCount}</if>
+            <if test="filteredCount != null "> and filtered_count = #{filteredCount}</if>
+            <if test="failureCount != null "> and failure_count = #{failureCount}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
@@ -47,7 +56,7 @@
         where id = #{id}
     </select>
 
-    <select id="count" resultType="java.lang.Long">
+    <select id="count" resultType="java.lang.Integer">
         select count(*) from mailbox_import_email where del_flag = '0' and create_id = #{createId}
     </select>
 
@@ -67,6 +76,11 @@
             <if test="importStatus != null">import_status,</if>
             <if test="failureReasons != null">failure_reasons,</if>
             <if test="mailTotal != null">mail_total,</if>
+            <if test="addedCount != null">added_count,</if>
+            <if test="duplicateCount != null">duplicate_count,</if>
+            <if test="filteredCount != null">filtered_count,</if>
+            <if test="failureCount != null">failure_count,</if>
+            <if test="delFlag != null">del_flag,</if>
             <if test="createId != null">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -83,6 +97,11 @@
             <if test="importStatus != null">#{importStatus},</if>
             <if test="failureReasons != null">#{failureReasons},</if>
             <if test="mailTotal != null">#{mailTotal},</if>
+            <if test="addedCount != null">#{addedCount},</if>
+            <if test="duplicateCount != null">#{duplicateCount},</if>
+            <if test="filteredCount != null">#{filteredCount},</if>
+            <if test="failureCount != null">#{failureCount},</if>
+            <if test="delFlag != null">#{delFlag},</if>
             <if test="createId != null">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -103,6 +122,11 @@
             <if test="importStatus != null">import_status = #{importStatus},</if>
             <if test="failureReasons != null">failure_reasons = #{failureReasons},</if>
             <if test="mailTotal != null">mail_total = #{mailTotal},</if>
+            <if test="addedCount != null">added_count = #{addedCount},</if>
+            <if test="duplicateCount != null">duplicate_count = #{duplicateCount},</if>
+            <if test="filteredCount != null">filtered_count = #{filteredCount},</if>
+            <if test="failureCount != null">failure_count = #{failureCount},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

@@ -136,6 +136,9 @@ email:
   # 拉取邮件.eml
   pull:
     path: /home/ruoyi/email/mailbox
+  # 导入邮件的临时目录
+  import:
+    temp-path: /home/ruoyi/email/import/tempDir
 
   trace:
     # 邮件回调服务地址

@@ -163,7 +163,18 @@ public class FolderServiceImpl implements IFolderService
             folderListVOList.add(folderListVO);
         }
 
-        return buildTree(folderListVOList, -1L);
+        List<FolderListVO> folderVOList = buildTree(folderListVOList, -1L);
+        FolderListVO pullFolder = new FolderListVO();
+        pullFolder.setId(-2L);
+        pullFolder.setName("收件箱");
+
+        FolderListVO sendFolder = new FolderListVO();
+        pullFolder.setId(-1L);
+        pullFolder.setName("已发送");
+
+        folderVOList.set(1, pullFolder);
+        folderVOList.set(2, sendFolder);
+        return folderVOList;
     }
 
     @Override
