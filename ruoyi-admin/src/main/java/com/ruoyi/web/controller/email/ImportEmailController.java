@@ -54,6 +54,17 @@ public class ImportEmailController extends BaseController
     public AjaxResult folderList()
     {
         List<FolderListVO> list = folderService.getFolderTree();
+
+        FolderListVO pullFolder = new FolderListVO();
+        pullFolder.setId(-2L);
+        pullFolder.setName("收件箱");
+
+        FolderListVO sendFolder = new FolderListVO();
+        pullFolder.setId(-1L);
+        pullFolder.setName("已发送");
+
+        list.add(1, pullFolder);
+        list.add(2, sendFolder);
         return success(list);
     }
 
