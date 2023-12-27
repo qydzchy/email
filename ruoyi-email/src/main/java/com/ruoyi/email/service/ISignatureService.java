@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Signature;
+import com.ruoyi.email.domain.vo.signature.SignatureListVO;
 
 /**
  * 个性签名Service接口
@@ -58,4 +59,10 @@ public interface ISignatureService
      * @return 结果
      */
     public int deleteSignatureById(Long id);
+
+    /**
+     * 签名列表
+     * @return
+     */
+    List<SignatureListVO> list();
 }

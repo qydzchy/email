@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.Signature;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 个性签名Mapper接口
@@ -49,7 +50,7 @@ public interface SignatureMapper
      * @param id 个性签名主键
      * @return 结果
      */
-    public int deleteSignatureById(Long id);
+    public int deleteSignatureById(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 
     /**
      * 批量删除个性签名

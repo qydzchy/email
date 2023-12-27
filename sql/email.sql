@@ -86,27 +86,29 @@ CREATE TABLE `mailbox_general`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮箱常规表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for mailbox_general_single
+-- Table structure for mailbox_task_single_setting
 -- ----------------------------
-DROP TABLE IF EXISTS `mailbox_general_single`;
-CREATE TABLE `mailbox_general_single`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `general_id` bigint(20) NOT NULL COMMENT '配置常规ID',
-  `letter_nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '写信昵称',
-  `default_signature_id` bigint(20) NULL DEFAULT NULL COMMENT '默认签名',
-  `reply_signature_id` bigint(20) NULL DEFAULT NULL COMMENT '回复/转发签名',
-  `default_cc_flag` tinyint(1) NOT NULL COMMENT '默认抄送: 0.关闭 1.启用',
-  `default_cc` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '默认抄送,请使用\";\"分隔多个邮箱',
-  `default_bcc_flag` tinyint(1) NOT NULL COMMENT '默认密送: 0.关闭 1.启用',
-  `default_bcc` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '默认密送,请使用\";\"分隔多个邮箱',
-  `trace_flag` tinyint(1) NOT NULL COMMENT '是否追踪邮件: 0.否 1.是',
-  `return_receipt_flag` tinyint(1) NOT NULL COMMENT '是否回执: 0.否 1.是',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '删除标志(0代表存在2代表删除)',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '更新者',
-  `update_time` datetime(0) NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+DROP TABLE IF EXISTS `mailbox_task_single_setting`;
+CREATE TABLE `mailbox_task_single_setting`  (
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`task_id` bigint(20) NOT NULL COMMENT '任务ID',
+`letter_nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '写信昵称',
+`default_signature_id` bigint(20) NULL DEFAULT NULL COMMENT '默认签名',
+`reply_signature_id` bigint(20) NULL DEFAULT NULL COMMENT '回复/转发签名',
+`default_cc_flag` tinyint(1) NOT NULL COMMENT '默认抄送: 0.关闭 1.启用',
+`default_cc` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '默认抄送,请使用\";\"分隔多个邮箱',
+`default_bcc_flag` tinyint(1) NOT NULL COMMENT '默认密送: 0.关闭 1.启用',
+`default_bcc` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '默认密送,请使用\";\"分隔多个邮箱',
+`trace_flag` tinyint(1) NOT NULL COMMENT '是否追踪邮件: 0.否 1.是',
+`return_receipt_flag` tinyint(1) NOT NULL COMMENT '是否回执: 0.否 1.是',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '单个邮箱设置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -224,15 +226,17 @@ CREATE TABLE `mailbox_quick_text`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `mailbox_signature`;
 CREATE TABLE `mailbox_signature`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `title` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主题',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '内容',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '删除标志(0代表存在2代表删除)',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '更新者',
-  `update_time` datetime(0) NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+`title` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主题',
+`content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '内容',
+`del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+`create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+`create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+`update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+`update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '个性签名表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------

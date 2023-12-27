@@ -1,12 +1,19 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.signature.SignatureListVO;
 import com.ruoyi.email.service.ISignatureService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.SignatureMapper;
 import com.ruoyi.email.domain.Signature;
+
+import javax.annotation.Resource;
 
 /**
  * 个性签名Service业务层处理
@@ -17,7 +24,7 @@ import com.ruoyi.email.domain.Signature;
 @Service
 public class SignatureServiceImpl implements ISignatureService
 {
-    @Autowired
+    @Resource
     private SignatureMapper signatureMapper;
 
     /**
@@ -53,7 +60,18 @@ public class SignatureServiceImpl implements ISignatureService
     @Override
     public int insertSignature(Signature signature)
     {
-        signature.setCreateTime(DateUtils.getNowDate());
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        Date now = DateUtils.getNowDate();
+        signature.setCreateId(userId);
+        signature.setCreateBy(username);
+        signature.setCreateTime(now);
+        signature.setUpdateId(userId);
+        signature.setUpdateBy(username);
+        signature.setUpdateTime(now);
+
         return signatureMapper.insertSignature(signature);
     }
 
@@ -66,6 +84,12 @@ public class SignatureServiceImpl implements ISignatureService
     @Override
     public int updateSignature(Signature signature)
     {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        signature.setUpdateId(userId);
+        signature.setUpdateBy(username);
         signature.setUpdateTime(DateUtils.getNowDate());
         return signatureMapper.updateSignature(signature);
     }
@@ -91,6 +115,33 @@ public class SignatureServiceImpl implements ISignatureService
     @Override
     public int deleteSignatureById(Long id)
     {
-        return signatureMapper.deleteSignatureById(id);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+
+        return signatureMapper.deleteSignatureById(id, userId, username);
+    }
+
+    /**
+     * 签名列表
+     * @return
+     */
+    @Override
+    public List<SignatureListVO> list() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Signature signatureParam = new Signature();
+        signatureParam.setCreateId(userId);
+        List<Signature> signatureList = signatureMapper.selectSignatureList(signatureParam);
+        List<SignatureListVO> signatureVOList = new ArrayList<>();
+        for (Signature signature : signatureList) {
+            SignatureListVO signatureVO = new SignatureListVO();
+            signatureVO.setId(signature.getId());
+            signatureVO.setTitle(signature.getTitle());
+            signatureVO.setContent(signature.getContent());
+            signatureVOList.add(signatureVO);
+        }
+
+        return signatureVOList;
     }
 }

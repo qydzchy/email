@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.email.mapper.GeneralSingleMapper">
-    
-    <resultMap type="GeneralSingle" id="GeneralSingleResult">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.email.mapper.TaskSingleSettingMapper">
+
+    <resultMap type="TaskSingleSetting" id="TaskSingleSettingResult">
         <result property="id"    column="id"    />
-        <result property="generalId"    column="general_id"    />
+        <result property="taskId"    column="task_id"    />
         <result property="letterNickname"    column="letter_nickname"    />
         <result property="defaultSignatureId"    column="default_signature_id"    />
         <result property="replySignatureId"    column="reply_signature_id"    />
@@ -17,20 +17,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="traceFlag"    column="trace_flag"    />
         <result property="returnReceiptFlag"    column="return_receipt_flag"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectGeneralSingleVo">
-        select id, general_id, letter_nickname, default_signature_id, reply_signature_id, default_cc_flag, default_cc, default_bcc_flag, default_bcc, trace_flag, return_receipt_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_general_single
+    <sql id="selectTaskSingleSettingVo">
+        select id, task_id, letter_nickname, default_signature_id, reply_signature_id, default_cc_flag, default_cc, default_bcc_flag, default_bcc, trace_flag, return_receipt_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task_single_setting
     </sql>
 
-    <select id="selectGeneralSingleList" parameterType="GeneralSingle" resultMap="GeneralSingleResult">
-        <include refid="selectGeneralSingleVo"/>
-        <where>  
-            <if test="generalId != null "> and general_id = #{generalId}</if>
+    <select id="selectTaskSingleSettingList" parameterType="TaskSingleSetting" resultMap="TaskSingleSettingResult">
+        <include refid="selectTaskSingleSettingVo"/>
+        <where>
+            <if test="taskId != null "> and task_id = #{taskId}</if>
             <if test="letterNickname != null  and letterNickname != ''"> and letter_nickname like concat('%', #{letterNickname}, '%')</if>
             <if test="defaultSignatureId != null "> and default_signature_id = #{defaultSignatureId}</if>
             <if test="replySignatureId != null "> and reply_signature_id = #{replySignatureId}</if>
@@ -40,18 +42,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defaultBcc != null  and defaultBcc != ''"> and default_bcc = #{defaultBcc}</if>
             <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
             <if test="returnReceiptFlag != null "> and return_receipt_flag = #{returnReceiptFlag}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
     </select>
-    
-    <select id="selectGeneralSingleById" parameterType="Long" resultMap="GeneralSingleResult">
-        <include refid="selectGeneralSingleVo"/>
+
+    <select id="selectTaskSingleSettingById" parameterType="Long" resultMap="TaskSingleSettingResult">
+        <include refid="selectTaskSingleSettingVo"/>
         where id = #{id}
     </select>
-        
-    <insert id="insertGeneralSingle" parameterType="GeneralSingle" useGeneratedKeys="true" keyProperty="id">
-        insert into mailbox_general_single
+
+    <select id="list" resultType="com.ruoyi.email.domain.vo.task.TaskSingleSettingListVO">
+        select tss.id, t.id as taskId, t.account as taskName, tss.letter_nickname as letterNickname, tss.default_signature_id as defaultSignatureId, tss.reply_signature_id as replySignatureId, tss.default_cc_flag as defaultCcFlag, tss.default_cc as defaultCc, tss.default_bcc_flag as defaultBccFlag, tss.default_bcc as defaultBcc, tss.trace_flag as traceFlag, tss.return_receipt_flag as returnReceiptFlag from mailbox_task t
+        left join mailbox_task_single_setting tss on t.id = tss.task_id
+        where t.create_id = #{createId} and t.del_flag = '0'
+    </select>
+
+    <insert id="insertTaskSingleSetting" parameterType="TaskSingleSetting" useGeneratedKeys="true" keyProperty="id">
+        insert into mailbox_task_single_setting
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="generalId != null">general_id,</if>
+            <if test="taskId != null">task_id,</if>
             <if test="letterNickname != null and letterNickname != ''">letter_nickname,</if>
             <if test="defaultSignatureId != null">default_signature_id,</if>
             <if test="replySignatureId != null">reply_signature_id,</if>
@@ -61,14 +71,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defaultBcc != null">default_bcc,</if>
             <if test="traceFlag != null">trace_flag,</if>
             <if test="returnReceiptFlag != null">return_receipt_flag,</if>
-            <if test="delFlag != null and delFlag != ''">del_flag,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="generalId != null">#{generalId},</if>
+            <if test="taskId != null">#{taskId},</if>
             <if test="letterNickname != null and letterNickname != ''">#{letterNickname},</if>
             <if test="defaultSignatureId != null">#{defaultSignatureId},</if>
             <if test="replySignatureId != null">#{replySignatureId},</if>
@@ -78,18 +90,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defaultBcc != null">#{defaultBcc},</if>
             <if test="traceFlag != null">#{traceFlag},</if>
             <if test="returnReceiptFlag != null">#{returnReceiptFlag},</if>
-            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
-    <update id="updateGeneralSingle" parameterType="GeneralSingle">
-        update mailbox_general_single
+    <update id="updateTaskSingleSetting" parameterType="TaskSingleSetting">
+        update mailbox_task_single_setting
         <trim prefix="SET" suffixOverrides=",">
-            <if test="generalId != null">general_id = #{generalId},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
             <if test="letterNickname != null and letterNickname != ''">letter_nickname = #{letterNickname},</if>
             <if test="defaultSignatureId != null">default_signature_id = #{defaultSignatureId},</if>
             <if test="replySignatureId != null">reply_signature_id = #{replySignatureId},</if>
@@ -99,21 +113,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defaultBcc != null">default_bcc = #{defaultBcc},</if>
             <if test="traceFlag != null">trace_flag = #{traceFlag},</if>
             <if test="returnReceiptFlag != null">return_receipt_flag = #{returnReceiptFlag},</if>
-            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
-            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
     </update>
 
-    <delete id="deleteGeneralSingleById" parameterType="Long">
-        delete from mailbox_general_single where id = #{id}
+    <delete id="deleteTaskSingleSettingById" parameterType="Long">
+        delete from mailbox_task_single_setting where id = #{id}
     </delete>
 
-    <delete id="deleteGeneralSingleByIds" parameterType="String">
-        delete from mailbox_general_single where id in 
+    <delete id="deleteTaskSingleSettingByIds" parameterType="String">
+        delete from mailbox_task_single_setting where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
