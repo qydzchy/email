@@ -219,9 +219,8 @@ public interface TaskEmailMapper
      * 判断邮件是否存在
      * @param taskId
      * @param folderId
-     * @param name
      * @param sentDate
      * @return
      */
-    int countByEmlFileParam(@Param("taskId") Long taskId, @Param("folderId") Long folderId, @Param("name") String name, @Param("sendDate") Date sentDate);
+    int countByEmlFileParam(@Param("taskId") Long taskId, @Param("folderId") Long folderId, @Param("title") String title, @Param("sendDate") Date sentDate);
 }

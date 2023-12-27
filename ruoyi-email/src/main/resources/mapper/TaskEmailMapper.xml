@@ -92,7 +92,6 @@
         <foreach collection="statusList" item="status" open="(" separator="," close=")">
             #{status}
         </foreach>
-        and folder = 'INBOX'
         <if test="attachmentFlag != null and attachmentFlag == true">
             AND EXISTS (
             SELECT 1
@@ -133,7 +132,6 @@
         <foreach collection="statusList" item="status" open="(" separator="," close=")">
             #{status}
         </foreach>
-        AND mte.folder = 'INBOX'
         <if test="attachmentFlag != null and attachmentFlag == true">
             AND EXISTS (
             SELECT 1
@@ -289,7 +287,7 @@
     </select>
 
     <select id="countByEmlFileParam" resultType="java.lang.Integer">
-        select count(*) from mailbox_task_email where task_id = #{taskId} and folder_id = #{folderId} and name = #{name} and send_date = #{sendDate} and del_flag = '0'
+        select count(*) from mailbox_task_email where task_id = #{taskId} and folder_id = #{folderId} and title = #{title} and send_date = #{sendDate} and del_flag = '0'
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">

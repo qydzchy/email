@@ -61,8 +61,9 @@
     </select>
 
     <select id="list" resultType="com.ruoyi.email.domain.vo.email.ImportListVO">
-        <include refid="selectImportEmailVo"/>
+        select id, file_name as fileName, task_id as taskId, task_name as taskName, folder_id as folderId, folder_name as folderName, import_status as importStatus, failure_reasons as failureReasons, mail_total as mailTotal, added_count as addedCount, duplicate_count as duplicateCount, filtered_count as filteredCount, failure_count as failureCount, create_time as createTime from mailbox_import_email
         where del_flag = '0' and create_id = #{createId} order by create_time desc
+        LIMIT #{offset}, #{limit}
     </select>
 
     <insert id="insertImportEmail" parameterType="ImportEmail" useGeneratedKeys="true" keyProperty="id">
