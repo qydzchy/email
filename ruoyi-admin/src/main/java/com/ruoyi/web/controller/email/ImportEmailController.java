@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.email;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.exception.ServiceException;
@@ -60,11 +62,10 @@ public class ImportEmailController extends BaseController
         pullFolder.setName("收件箱");
 
         FolderListVO sendFolder = new FolderListVO();
-        pullFolder.setId(-1L);
-        pullFolder.setName("已发送");
+        sendFolder.setId(-1L);
+        sendFolder.setName("已发送");
 
-        list.add(1, pullFolder);
-        list.add(2, sendFolder);
+        list.addAll(0, Arrays.asList(pullFolder, sendFolder));
         return success(list);
     }
 
@@ -76,9 +77,7 @@ public class ImportEmailController extends BaseController
     @PostMapping("/upload")
     public AjaxResult upload(@RequestParam("file") MultipartFile file,
                              @RequestParam Long taskId,
-                             @RequestParam String taskName,
                              @RequestParam Long folderId,
-                             @RequestParam String folderName,
                              @RequestParam Boolean filterEmailFlag)
     {
         if (taskId == null) {
@@ -88,7 +87,7 @@ public class ImportEmailController extends BaseController
             throw new ServiceException("目标文件夹不能为空");
         }
 
-        return toAjax(importEmailService.insertImportEmail(file, taskId, taskName, folderId, folderName, filterEmailFlag));
+        return toAjax(importEmailService.insertImportEmail(file, taskId, folderId, filterEmailFlag));
     }
 
     /**
@@ -96,9 +95,10 @@ public class ImportEmailController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('email:import:page')")
     @GetMapping("/page")
-    public TableDataInfo page()
+    public TableDataInfo page(@NotNull(message = "页数不能为空") Integer pageNum,
+                              @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<ImportListVO>> pair = importEmailService.page();
+        Pair<Integer, List<ImportListVO>> pair = importEmailService.page(pageNum, pageSize);
         Integer total = pair.getFirst();
         List<ImportListVO> rows = pair.getSecond();
 

@@ -1,7 +1,6 @@
 package com.ruoyi.email.domain.vo.email;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.enums.email.ImportStatusEnum;
 import lombok.Data;
 

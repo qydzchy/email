@@ -1,10 +1,9 @@
 package com.ruoyi.email.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -14,9 +13,12 @@ import com.ruoyi.common.enums.email.ImportStatusEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.vo.email.ImportListVO;
 import com.ruoyi.email.domain.vo.task.TaskListVO;
+import com.ruoyi.email.mapper.FolderMapper;
 import com.ruoyi.email.mapper.TaskEmailMapper;
 import com.ruoyi.email.mapper.TaskMapper;
 import com.ruoyi.email.service.ITaskService;
@@ -25,12 +27,15 @@ import com.ruoyi.email.service.handler.email.UniversalAttachment;
 import com.ruoyi.email.service.handler.email.UniversalMail;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.ImportEmailMapper;
 import com.ruoyi.email.domain.ImportEmail;
 import com.ruoyi.email.service.IImportEmailService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -53,6 +58,8 @@ public class ImportEmailServiceImpl implements IImportEmailService
     private TaskMapper taskMapper;
     @Resource
     private TaskEmailMapper taskEmailMapper;
+    @Resource
+    private FolderMapper folderMapper;
     @Resource
     private ITaskService taskService;
 
@@ -87,6 +94,11 @@ public class ImportEmailServiceImpl implements IImportEmailService
         return importEmailMapper.selectImportEmailList(importEmail);
     }
 
+    public static void main(String[] args) {
+        System.out.println(UUID.fastUUID());
+        System.out.println(UUID.randomUUID());
+    }
+
     /**
      * 新增导入邮件
      * 
@@ -94,13 +106,15 @@ public class ImportEmailServiceImpl implements IImportEmailService
      * @return 结果
      */
     @Override
-    public boolean insertImportEmail(MultipartFile file, Long taskId, String taskName, Long folderId, String folderName, Boolean filterEmailFlag)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertImportEmail(MultipartFile file, Long taskId, Long folderId, Boolean filterEmailFlag)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
 
+        String tempDir = tempPath + "/" + UUID.fastUUID();
         Long id = -1L;
         int mailTotal = 0;
         int addedCount = 0;
@@ -108,40 +122,42 @@ public class ImportEmailServiceImpl implements IImportEmailService
         int filteredCount = 0;
         int failureCount = 0;
         int status = ImportStatusEnum.SUCCESS.getStatus();
+        String failureReasons = null;
         try {
             Task task = taskMapper.selectTaskById(taskId);
             if (task == null) {
                 throw new ServiceException("没有该目标邮箱");
             }
 
+            String folderName = "";
+            if (folderId.longValue() == -2L) {
+                folderName = "收件箱";
+            } else if (folderId.longValue() == -1L) {
+                folderName = "发件箱";
+            } else {
+                Folder folder = folderMapper.selectFolderById(folderId);
+                if (folder == null) {
+                    throw new ServiceException("没有该文件夹");
+                }
+                folderName = folder.getName();
+            }
+
             String fileName = file.getOriginalFilename();
             String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-            ImportEmail importEmail = generateImportEmail(fileName, taskId, taskName, folderId, folderName, userId, username);
+            ImportEmail importEmail = generateImportEmail(fileName, taskId, task.getAccount(), folderId, folderName, userId, username);
             // 保存导入邮件记录
             importEmailMapper.insertImportEmail(importEmail);
+            id = importEmail.getId();
 
-            List<Pair<String, String>> emlFileInfoList = new ArrayList<>();
+            List<String> emlFilePathList = new ArrayList<>();
             if ("eml".equals(fileExtension)) {
                 InputStream emlStream = file.getInputStream();
-                String tempFilePath = saveEmlToTempDirectory(emlStream, fileName);
-                emlFileInfoList.add(Pair.of(fileName, tempFilePath));
+                String tempFilePath = saveEmlToTempDirectory(emlStream, tempDir, fileName);
+                emlFilePathList.add(tempFilePath);
 
             } else if ("zip".equals(fileExtension)) {
-                File zipFile = convertMultiPartToFile(file);
-
-                try (ZipInputStream zipInputStream = new ZipInputStream(FileUtils.openInputStream(zipFile))) {
-                    ZipEntry entry;
-                    while ((entry = zipInputStream.getNextEntry()) != null) {
-                        if (!entry.isDirectory() && entry.getName().endsWith(".eml")) {
-                            InputStream emlStream = zipInputStream;
-                            // 使用上传的文件名作为临时文件名
-                            String tempFileName = file.getOriginalFilename();
-                            String tempFilePath = saveEmlToTempDirectory(emlStream, tempFileName);
-                            emlFileInfoList.add(Pair.of(tempFileName, tempFilePath));
-                        }
-                    }
-                }
+                emlFilePathList.addAll(extractEmlFilesFromZip(file, tempDir));
             }
 
             folderId = folderId.intValue() > 0 ? folderId : -1L;
@@ -150,18 +166,17 @@ public class ImportEmailServiceImpl implements IImportEmailService
             String newEmailPath = emailPath.concat("/").concat(task.getAccount());
             String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());
 
-
-            mailTotal = emlFileInfoList.size();
+            mailTotal = emlFilePathList.size();
             // 判断文件是否存在该数据库中
-            for (Pair<String, String> emlFileInfo : emlFileInfoList) {
+            for (String emlFilePath : emlFilePathList) {
+                FileInputStream fileInputStream = null;
                 try {
-                    String emlFileName = emlFileInfo.getFirst();
-                    String emlFilePath = emlFileInfo.getSecond();
                     Session session = Session.getDefaultInstance(new Properties());
-                    MimeMessage mimeMessage = new MimeMessage(session, new FileInputStream(new File(emlFilePath)));
+                    fileInputStream = new FileInputStream(new File(emlFilePath));
+                    MimeMessage mimeMessage = new MimeMessage(session, fileInputStream);
+                    String title = mimeMessage.getSubject();
                     Date sentDate = mimeMessage.getSentDate();
-
-                    int count = taskEmailMapper.countByEmlFileParam(taskId, folderId, emlFileName, sentDate);
+                    int count = taskEmailMapper.countByEmlFileParam(taskId, folderId, title, sentDate);
                     if (count > 0) {
                         duplicateCount++;
                         if (Optional.ofNullable(filterEmailFlag).orElse(false)) {
@@ -183,22 +198,60 @@ public class ImportEmailServiceImpl implements IImportEmailService
                 } catch(Exception e) {
                     log.error("导入邮件操作异常：{}", e);
                     failureCount++;
+                } finally {
+                    fileInputStream.close();
                 }
             }
-
 
         } catch (Exception e) {
             log.error("处理文件失败：{}", e);
             status = ImportStatusEnum.FAILURE.getStatus();
+            failureReasons = e.getMessage();
         } finally {
-            // 在处理完成后删除临时目录及其内容
-            deleteTempDirectory();
-
             // 更新导入邮件记录
-            updateStatus(id, status, mailTotal, addedCount, duplicateCount, filteredCount, failureCount);
+            updateStatus(id, status, failureReasons, mailTotal, addedCount, duplicateCount, filteredCount, failureCount);
+
+            // 在处理完成后删除临时目录及其内容
+            deleteTempDirectory(tempDir);
         }
 
         return true;
+    }
+
+    /**
+     * 解压zip压缩包到指定目录
+     * @param file
+     * @param outputDirectory
+     * @return
+     * @throws IOException
+     */
+    private List<String> extractEmlFilesFromZip(MultipartFile file, String outputDirectory) {
+        File tempDir = new File(outputDirectory);
+        if (!tempDir.exists()) {
+            tempDir.mkdirs();
+        }
+
+        List<String> emlFilePathList = new ArrayList<>();
+
+        try (ZipInputStream zipInputStream = new ZipInputStream(file.getInputStream(), Charset.forName("GBK"))) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (!entry.isDirectory() && entry.getName().endsWith(".eml")) {
+                    String tempFileName = FilenameUtils.getName(entry.getName());
+                    String tempFilePath = outputDirectory + File.separator + tempFileName;
+
+                    try (FileOutputStream fos = new FileOutputStream(tempFilePath)) {
+                        IOUtils.copy(zipInputStream, fos);
+                    }
+
+                    emlFilePathList.add(tempFilePath);
+                }
+            }
+        } catch (IOException e) {
+            log.error("解压zip压缩包到指定目录异常：{}", e);
+        }
+
+        return emlFilePathList;
     }
 
     /**
@@ -211,10 +264,11 @@ public class ImportEmailServiceImpl implements IImportEmailService
      * @param filteredCount
      * @param failureCount
      */
-    private void updateStatus(Long id, int status, int mailTotal, int addedCount, int duplicateCount, int filteredCount, int failureCount) {
+    private void updateStatus(Long id, int status, String failureReasons, int mailTotal, int addedCount, int duplicateCount, int filteredCount, int failureCount) {
         ImportEmail importEmail = new ImportEmail();
         importEmail.setId(id);
         importEmail.setImportStatus(status);
+        importEmail.setFailureReasons(failureReasons);
         importEmail.setMailTotal(mailTotal);
         importEmail.setAddedCount(addedCount);
         importEmail.setDuplicateCount(duplicateCount);
@@ -260,11 +314,16 @@ public class ImportEmailServiceImpl implements IImportEmailService
     /**
      * 保存eml文件到临时目录
      * @param emlStream
-     * @param tempFileName
+     * @param path
      * @throws IOException
      */
-    private String saveEmlToTempDirectory(InputStream emlStream, String tempFileName) throws IOException {
-        File tempFile = new File(tempPath, tempFileName);
+    private String saveEmlToTempDirectory(InputStream emlStream, String path, String tempFileName) throws IOException {
+        File tempDir = new File(path);
+        if (!tempDir.exists()) {
+            tempDir.mkdirs();
+        }
+
+        File tempFile = new File(tempDir, tempFileName);
 
         // 将 EML 内容保存到临时文件
         FileUtils.copyInputStreamToFile(emlStream, tempFile);
@@ -280,11 +339,22 @@ public class ImportEmailServiceImpl implements IImportEmailService
     /**
      * 删除临时目录
      */
-    private void deleteTempDirectory() {
+    private void deleteTempDirectory(String path) {
         try {
-            FileUtils.deleteDirectory(new File(tempPath));
+            FileUtils.deleteDirectory(new File(path));
+            log.info("临时目录删除成功");
         } catch (IOException e) {
-            log.error("删除临时目录失败：{}", e);
+            log.error("删除临时目录失败：{}", e.getMessage(), e);
+
+            // 如果文件被占用等原因导致删除失败，您可以尝试延迟一段时间后再次尝试删除
+            // 例如，等待1秒后再次尝试删除
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                FileUtils.deleteDirectory(new File(path));
+                log.info("临时目录第二次删除成功");
+            } catch (IOException | InterruptedException ex) {
+                log.error("再次尝试删除临时目录失败：{}", ex.getMessage(), ex);
+            }
         }
     }
 
@@ -348,7 +418,7 @@ public class ImportEmailServiceImpl implements IImportEmailService
      * @return
      */
     @Override
-    public Pair<Integer, List<ImportListVO>> page() {
+    public Pair<Integer, List<ImportListVO>> page(Integer pageNum, Integer pageSize) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
@@ -357,7 +427,9 @@ public class ImportEmailServiceImpl implements IImportEmailService
             return Pair.of(0, new ArrayList<>());
         }
 
-        List<ImportListVO> importVOList = importEmailMapper.list(userId);
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<ImportListVO> importVOList = importEmailMapper.list(userId, offset, limit);
         return Pair.of(count, importVOList);
     }
 }

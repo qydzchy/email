@@ -37,7 +37,7 @@ public interface IImportEmailService
      * @param file
      * @return 结果
      */
-    public boolean insertImportEmail(MultipartFile file, Long taskId, String taskName, Long folderId, String folderName, Boolean filterEmailFlag);
+    public boolean insertImportEmail(MultipartFile file, Long taskId, Long folderId, Boolean filterEmailFlag);
 
     /**
      * 修改导入邮件
@@ -73,5 +73,5 @@ public interface IImportEmailService
      * 导入邮件列表（分页）
      * @return
      */
-    Pair<Integer, List<ImportListVO>> page();
+    Pair<Integer, List<ImportListVO>> page(Integer pageNum, Integer pageSize);
 }

@@ -73,5 +73,5 @@ public interface ImportEmailMapper
      * @param createId
      * @return
      */
-    List<ImportListVO> list(@Param("createId") Long createId);
+    List<ImportListVO> list(@Param("createId") Long createId, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }
