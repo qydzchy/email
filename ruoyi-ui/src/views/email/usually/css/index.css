@@ -64,7 +64,8 @@
 }
 
 .holiday-wrapper .editor-box {
-    width: 585px
+    width: 590px;
+    border:1px solid #ccc;
 }
 
 .holiday-wrapper .editor-box .upload-container {
