@@ -9,9 +9,9 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 邮箱常规对象 mailbox_general
- * 
+ *
  * @author tangJM
- * @date 2023-07-31
+ * @date 2023-12-27
  */
 public class General extends BaseEntity
 {
@@ -50,11 +50,15 @@ public class General extends BaseEntity
 
     /** 文字颜色 */
     @Excel(name = "文字颜色")
-    private String wordColor;
+    private String fontColor;
 
     /** 群发箱视图​: 1.任务视图 2.邮件视图 */
     @Excel(name = "群发箱视图​: 1.任务视图 2.邮件视图")
     private Integer groupBoxView;
+
+    /** 群发邮件展示 1.仅在群发箱 2.发件箱与群发箱 */
+    @Excel(name = "群发邮件展示 1.仅在群发箱 2.发件箱与群发箱")
+    private Integer massEmailDisplay;
 
     /** 提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒 */
     @Excel(name = "提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒")
@@ -64,9 +68,13 @@ public class General extends BaseEntity
     @Excel(name = "签名ID")
     private Long signatureId;
 
-    /** 写信,逗号分隔: 1.正文拼写检查(编辑器会以红色波浪线提示正文中的拼写错误) 2.新窗口写信 (将在下次打开邮件时生效) */
-    @Excel(name = "写信,逗号分隔: 1.正文拼写检查(编辑器会以红色波浪线提示正文中的拼写错误) 2.新窗口写信 (将在下次打开邮件时生效)")
+    /** 写信,逗号分隔: 1.正文拼写检查(编辑器会以红色波浪线提示正文中的拼写错误) 2.新窗口写信 (将在下次打开邮件时生效) 3.发送后返回上一页 */
+    @Excel(name = "写信,逗号分隔: 1.正文拼写检查(编辑器会以红色波浪线提示正文中的拼写错误) 2.新窗口写信 (将在下次打开邮件时生效) 3.发送后返回上一页")
     private String writeLetter;
+
+    /** 粘贴格式 1,始终移除格式 2.始终保持格式 3.每次粘贴提醒 */
+    @Excel(name = "粘贴格式 1,始终移除格式 2.始终保持格式 3.每次粘贴提醒")
+    private Integer pasteFormat;
 
     /** 自动回复: 0.停用 1.启用(同一邮箱给你发送多封邮件时,4天内最多对该邮箱自动回复一次) */
     @Excel(name = "自动回复: 0.停用 1.启用(同一邮箱给你发送多封邮件时,4天内最多对该邮箱自动回复一次)")
@@ -76,6 +84,10 @@ public class General extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date startTime;
+
+    /** 最后一天标识 1.勾选 0未选 */
+    @Excel(name = "最后一天标识 1.勾选 0未选")
+    private Integer lastDayFlag;
 
     /** 最后一天 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -89,194 +101,252 @@ public class General extends BaseEntity
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
-    public void setId(Long id) 
+    /** 创建者ID */
+    @Excel(name = "创建者ID")
+    private Long createId;
+
+    /** 更新者ID */
+    @Excel(name = "更新者ID")
+    private Long updateId;
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setDefaultTaskId(Long defaultTaskId) 
+    public void setDefaultTaskId(Long defaultTaskId)
     {
         this.defaultTaskId = defaultTaskId;
     }
 
-    public Long getDefaultTaskId() 
+    public Long getDefaultTaskId()
     {
         return defaultTaskId;
     }
-    public void setMaxPerPage(Integer maxPerPage) 
+    public void setMaxPerPage(Integer maxPerPage)
     {
         this.maxPerPage = maxPerPage;
     }
 
-    public Integer getMaxPerPage() 
+    public Integer getMaxPerPage()
     {
         return maxPerPage;
     }
-    public void setEmailReadingModeFlag(Integer emailReadingModeFlag) 
+    public void setEmailReadingModeFlag(Integer emailReadingModeFlag)
     {
         this.emailReadingModeFlag = emailReadingModeFlag;
     }
 
-    public Integer getEmailReadingModeFlag() 
+    public Integer getEmailReadingModeFlag()
     {
         return emailReadingModeFlag;
     }
-    public void setMoveDeleteReport(Integer moveDeleteReport) 
+    public void setMoveDeleteReport(Integer moveDeleteReport)
     {
         this.moveDeleteReport = moveDeleteReport;
     }
 
-    public Integer getMoveDeleteReport() 
+    public Integer getMoveDeleteReport()
     {
         return moveDeleteReport;
     }
-    public void setLanguage(Integer language) 
+    public void setLanguage(Integer language)
     {
         this.language = language;
     }
 
-    public Integer getLanguage() 
+    public Integer getLanguage()
     {
         return language;
     }
-    public void setDefaultFont(String defaultFont) 
+    public void setDefaultFont(String defaultFont)
     {
         this.defaultFont = defaultFont;
     }
 
-    public String getDefaultFont() 
+    public String getDefaultFont()
     {
         return defaultFont;
     }
-    public void setFontSize(String fontSize) 
+    public void setFontSize(String fontSize)
     {
         this.fontSize = fontSize;
     }
 
-    public String getFontSize() 
+    public String getFontSize()
     {
         return fontSize;
     }
-    public void setWordColor(String wordColor) 
+    public void setFontColor(String fontColor)
     {
-        this.wordColor = wordColor;
+        this.fontColor = fontColor;
     }
 
-    public String getWordColor() 
+    public String getFontColor()
     {
-        return wordColor;
+        return fontColor;
     }
-    public void setGroupBoxView(Integer groupBoxView) 
+    public void setGroupBoxView(Integer groupBoxView)
     {
         this.groupBoxView = groupBoxView;
     }
 
-    public Integer getGroupBoxView() 
+    public Integer getGroupBoxView()
     {
         return groupBoxView;
     }
-    public void setRemind(Integer remind) 
+    public void setMassEmailDisplay(Integer massEmailDisplay)
+    {
+        this.massEmailDisplay = massEmailDisplay;
+    }
+
+    public Integer getMassEmailDisplay()
+    {
+        return massEmailDisplay;
+    }
+    public void setRemind(Integer remind)
     {
         this.remind = remind;
     }
 
-    public Integer getRemind() 
+    public Integer getRemind()
     {
         return remind;
     }
-    public void setSignatureId(Long signatureId) 
+    public void setSignatureId(Long signatureId)
     {
         this.signatureId = signatureId;
     }
 
-    public Long getSignatureId() 
+    public Long getSignatureId()
     {
         return signatureId;
     }
-    public void setWriteLetter(String writeLetter) 
+    public void setWriteLetter(String writeLetter)
     {
         this.writeLetter = writeLetter;
     }
 
-    public String getWriteLetter() 
+    public String getWriteLetter()
     {
         return writeLetter;
     }
-    public void setAutoResponseFlag(Integer autoResponseFlag) 
+    public void setPasteFormat(Integer pasteFormat)
+    {
+        this.pasteFormat = pasteFormat;
+    }
+
+    public Integer getPasteFormat()
+    {
+        return pasteFormat;
+    }
+    public void setAutoResponseFlag(Integer autoResponseFlag)
     {
         this.autoResponseFlag = autoResponseFlag;
     }
 
-    public Integer getAutoResponseFlag() 
+    public Integer getAutoResponseFlag()
     {
         return autoResponseFlag;
     }
-    public void setStartTime(Date startTime) 
+    public void setStartTime(Date startTime)
     {
         this.startTime = startTime;
     }
 
-    public Date getStartTime() 
+    public Date getStartTime()
     {
         return startTime;
     }
-    public void setLastDay(Date lastDay) 
+    public void setLastDayFlag(Integer lastDayFlag)
+    {
+        this.lastDayFlag = lastDayFlag;
+    }
+
+    public Integer getLastDayFlag()
+    {
+        return lastDayFlag;
+    }
+    public void setLastDay(Date lastDay)
     {
         this.lastDay = lastDay;
     }
 
-    public Date getLastDay() 
+    public Date getLastDay()
     {
         return lastDay;
     }
-    public void setReContent(String reContent) 
+    public void setReContent(String reContent)
     {
         this.reContent = reContent;
     }
 
-    public String getReContent() 
+    public String getReContent()
     {
         return reContent;
     }
-    public void setDelFlag(String delFlag) 
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
 
-    public String getDelFlag() 
+    public String getDelFlag()
     {
         return delFlag;
+    }
+    public void setCreateId(Long createId)
+    {
+        this.createId = createId;
+    }
+
+    public Long getCreateId()
+    {
+        return createId;
+    }
+    public void setUpdateId(Long updateId)
+    {
+        this.updateId = updateId;
+    }
+
+    public Long getUpdateId()
+    {
+        return updateId;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("defaultTaskId", getDefaultTaskId())
-            .append("maxPerPage", getMaxPerPage())
-            .append("emailReadingModeFlag", getEmailReadingModeFlag())
-            .append("moveDeleteReport", getMoveDeleteReport())
-            .append("language", getLanguage())
-            .append("defaultFont", getDefaultFont())
-            .append("fontSize", getFontSize())
-            .append("wordColor", getWordColor())
-            .append("groupBoxView", getGroupBoxView())
-            .append("remind", getRemind())
-            .append("signatureId", getSignatureId())
-            .append("writeLetter", getWriteLetter())
-            .append("autoResponseFlag", getAutoResponseFlag())
-            .append("startTime", getStartTime())
-            .append("lastDay", getLastDay())
-            .append("reContent", getReContent())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+                .append("id", getId())
+                .append("defaultTaskId", getDefaultTaskId())
+                .append("maxPerPage", getMaxPerPage())
+                .append("emailReadingModeFlag", getEmailReadingModeFlag())
+                .append("moveDeleteReport", getMoveDeleteReport())
+                .append("language", getLanguage())
+                .append("defaultFont", getDefaultFont())
+                .append("fontSize", getFontSize())
+                .append("fontColor", getFontColor())
+                .append("groupBoxView", getGroupBoxView())
+                .append("massEmailDisplay", getMassEmailDisplay())
+                .append("remind", getRemind())
+                .append("signatureId", getSignatureId())
+                .append("writeLetter", getWriteLetter())
+                .append("pasteFormat", getPasteFormat())
+                .append("autoResponseFlag", getAutoResponseFlag())
+                .append("startTime", getStartTime())
+                .append("lastDayFlag", getLastDayFlag())
+                .append("lastDay", getLastDay())
+                .append("reContent", getReContent())
+                .append("delFlag", getDelFlag())
+                .append("createId", getCreateId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateId", getUpdateId())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .toString();
     }
 }

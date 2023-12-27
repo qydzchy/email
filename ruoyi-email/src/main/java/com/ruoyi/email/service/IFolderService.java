@@ -3,7 +3,7 @@ package com.ruoyi.email.service;
 import java.util.List;
 import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
-import com.ruoyi.email.domain.vo.folder.FolderListVO;
+import com.ruoyi.email.domain.vo.FolderListVO;
 
 /**
  * 文件夹Service接口

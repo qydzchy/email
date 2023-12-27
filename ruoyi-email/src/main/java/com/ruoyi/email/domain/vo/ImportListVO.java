@@ -1,4 +1,4 @@
-package com.ruoyi.email.domain.vo.email;
+package com.ruoyi.email.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.enums.email.ImportStatusEnum;

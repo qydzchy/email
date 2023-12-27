@@ -2,7 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.QuickText;
-import com.ruoyi.email.domain.vo.quicktext.QuickTextListVO;
+import com.ruoyi.email.domain.vo.QuickTextListVO;
 
 /**
  * 快速文本Service接口

@@ -7,9 +7,9 @@ import javax.validation.constraints.NotNull;
 
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.email.domain.vo.email.ImportListVO;
-import com.ruoyi.email.domain.vo.folder.FolderListVO;
-import com.ruoyi.email.domain.vo.task.TaskListVO;
+import com.ruoyi.email.domain.vo.ImportListVO;
+import com.ruoyi.email.domain.vo.FolderListVO;
+import com.ruoyi.email.domain.vo.TaskListVO;
 import com.ruoyi.email.service.IFolderService;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;

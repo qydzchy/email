@@ -2,7 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Template;
-import com.ruoyi.email.domain.vo.template.TemplateListVO;
+import com.ruoyi.email.domain.vo.TemplateListVO;
 
 /**
  * 模板Service接口

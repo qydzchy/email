@@ -1,4 +1,4 @@
-package com.ruoyi.email.domain.vo.label;
+package com.ruoyi.email.domain.vo;
 
 import lombok.Builder;
 import lombok.Data;

@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.email.domain.vo.signature.SignatureListVO;
+import com.ruoyi.email.domain.vo.SignatureListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

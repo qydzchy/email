@@ -5,7 +5,7 @@ import java.util.List;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.email.domain.vo.template.TemplateTypeListVO;
+import com.ruoyi.email.domain.vo.TemplateTypeListVO;
 import com.ruoyi.email.service.ITemplateTypeService;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TemplateTypeMapper;

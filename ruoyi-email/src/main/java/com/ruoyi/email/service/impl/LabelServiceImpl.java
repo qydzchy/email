@@ -7,7 +7,7 @@ import com.ruoyi.common.enums.email.LabelTypeEnum;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.bo.EmailLabelBO;
-import com.ruoyi.email.domain.vo.label.LabelListVO;
+import com.ruoyi.email.domain.vo.LabelListVO;
 import com.ruoyi.email.service.ILabelService;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.LabelMapper;

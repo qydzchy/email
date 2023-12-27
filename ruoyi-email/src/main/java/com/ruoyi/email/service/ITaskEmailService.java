@@ -7,8 +7,8 @@ import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
-import com.ruoyi.email.domain.vo.email.EmailListVO;
-import com.ruoyi.email.domain.vo.email.MenuCountVO;
+import com.ruoyi.email.domain.vo.EmailListVO;
+import com.ruoyi.email.domain.vo.MenuCountVO;
 import org.springframework.data.util.Pair;
 
 

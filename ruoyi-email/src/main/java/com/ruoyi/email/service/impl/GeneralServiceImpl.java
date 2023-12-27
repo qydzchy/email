@@ -1,12 +1,18 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.GeneralVO;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.GeneralMapper;
 import com.ruoyi.email.domain.General;
 import com.ruoyi.email.service.IGeneralService;
+
+import javax.annotation.Resource;
 
 /**
  * 邮箱常规Service业务层处理
@@ -17,7 +23,7 @@ import com.ruoyi.email.service.IGeneralService;
 @Service
 public class GeneralServiceImpl implements IGeneralService 
 {
-    @Autowired
+    @Resource
     private GeneralMapper generalMapper;
 
     /**
@@ -66,7 +72,22 @@ public class GeneralServiceImpl implements IGeneralService
     @Override
     public int updateGeneral(General general)
     {
-        general.setUpdateTime(DateUtils.getNowDate());
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        Date now = DateUtils.getNowDate();
+
+        general.setUpdateId(userId);
+        general.setUpdateBy(username);
+        general.setUpdateTime(now);
+
+        if (general.getId() == null) {
+            general.setCreateId(userId);
+            general.setCreateBy(username);
+            general.setCreateTime(now);
+            return generalMapper.insertGeneral(general);
+        }
+
         return generalMapper.updateGeneral(general);
     }
 
@@ -92,5 +113,17 @@ public class GeneralServiceImpl implements IGeneralService
     public int deleteGeneralById(Long id)
     {
         return generalMapper.deleteGeneralById(id);
+    }
+
+    /**
+     * 获取邮箱常规详细信息
+     * @return
+     */
+    @Override
+    public GeneralVO getInfo() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        return generalMapper.getByCreateId(userId);
     }
 }

@@ -2,7 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.TaskSingleSetting;
-import com.ruoyi.email.domain.vo.task.TaskSingleSettingListVO;
+import com.ruoyi.email.domain.vo.TaskSingleSettingListVO;
 
 /**
  * 单个邮箱设置Service接口

@@ -2,7 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.Signature;
-import com.ruoyi.email.domain.vo.signature.SignatureListVO;
+import com.ruoyi.email.domain.vo.SignatureListVO;
 
 /**
  * 个性签名Service接口

@@ -3,7 +3,7 @@ package com.ruoyi.email.mapper;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.QuickText;
-import com.ruoyi.email.domain.vo.quicktext.QuickTextListVO;
+import com.ruoyi.email.domain.vo.QuickTextListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

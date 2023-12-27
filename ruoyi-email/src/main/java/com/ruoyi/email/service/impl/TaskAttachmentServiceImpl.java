@@ -15,7 +15,7 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
-import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
+import com.ruoyi.email.domain.vo.AttachmentListVO;
 import com.ruoyi.email.service.ITaskAttachmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

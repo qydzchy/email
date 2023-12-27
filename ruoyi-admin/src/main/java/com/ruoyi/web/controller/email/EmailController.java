@@ -9,7 +9,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.dto.email.*;
-import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
 import lombok.extern.slf4j.Slf4j;

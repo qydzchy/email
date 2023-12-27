@@ -5,7 +5,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.customer.service.ICustomerEmailService;
-import com.ruoyi.email.domain.vo.email.EmailListVO;
+import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailService;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;

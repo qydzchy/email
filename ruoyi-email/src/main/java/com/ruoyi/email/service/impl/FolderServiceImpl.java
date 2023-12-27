@@ -10,7 +10,7 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
-import com.ruoyi.email.domain.vo.folder.FolderListVO;
+import com.ruoyi.email.domain.vo.FolderListVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.FolderMapper;

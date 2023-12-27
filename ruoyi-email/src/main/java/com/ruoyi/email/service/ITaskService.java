@@ -3,9 +3,9 @@ package com.ruoyi.email.service;
 import java.util.List;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
-import com.ruoyi.email.domain.vo.task.HomeListTaskVO;
-import com.ruoyi.email.domain.vo.task.TaskListVO;
-import com.ruoyi.email.domain.vo.task.TestTaskVO;
+import com.ruoyi.email.domain.vo.HomeListTaskVO;
+import com.ruoyi.email.domain.vo.TaskListVO;
+import com.ruoyi.email.domain.vo.TestTaskVO;
 import com.ruoyi.email.service.handler.email.UniversalMail;
 import org.springframework.data.util.Pair;
 

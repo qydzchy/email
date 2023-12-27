@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmail;
-import com.ruoyi.email.domain.vo.email.EmailListVO;
-import com.ruoyi.email.domain.vo.email.MenuInboxTaskCountVO;
+import com.ruoyi.email.domain.vo.EmailListVO;
+import com.ruoyi.email.domain.vo.MenuInboxTaskCountVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

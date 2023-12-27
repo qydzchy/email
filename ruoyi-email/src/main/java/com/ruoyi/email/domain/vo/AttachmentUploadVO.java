@@ -1,16 +1,14 @@
-package com.ruoyi.email.domain.vo.attachment;
+package com.ruoyi.email.domain.vo;
 
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
 @Data
-public class AttachmentListVO {
-
-    private Long id;
+@Builder
+public class AttachmentUploadVO {
 
     /**
-     * 附件名称
+     * 文件名称
      */
     private String name;
 
@@ -18,5 +16,4 @@ public class AttachmentListVO {
      * 附件大小
      */
     private Long size;
-
 }

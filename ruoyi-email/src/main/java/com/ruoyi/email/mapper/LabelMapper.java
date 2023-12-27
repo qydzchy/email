@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.Label;
 import com.ruoyi.email.domain.bo.EmailLabelBO;
-import com.ruoyi.email.domain.vo.label.LabelListVO;
+import com.ruoyi.email.domain.vo.LabelListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

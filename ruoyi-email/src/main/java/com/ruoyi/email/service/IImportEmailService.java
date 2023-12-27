@@ -2,8 +2,8 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.ImportEmail;
-import com.ruoyi.email.domain.vo.email.ImportListVO;
-import com.ruoyi.email.domain.vo.task.TaskListVO;
+import com.ruoyi.email.domain.vo.ImportListVO;
+import com.ruoyi.email.domain.vo.TaskListVO;
 import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 

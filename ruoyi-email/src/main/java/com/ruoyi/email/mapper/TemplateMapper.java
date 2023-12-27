@@ -3,7 +3,7 @@ package com.ruoyi.email.mapper;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.email.domain.Template;
-import com.ruoyi.email.domain.vo.template.TemplateListVO;
+import com.ruoyi.email.domain.vo.TemplateListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

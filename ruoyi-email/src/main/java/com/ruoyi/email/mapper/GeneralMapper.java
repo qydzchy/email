@@ -2,6 +2,8 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.General;
+import com.ruoyi.email.domain.vo.GeneralVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 邮箱常规Mapper接口
@@ -58,4 +60,11 @@ public interface GeneralMapper
      * @return 结果
      */
     public int deleteGeneralByIds(Long[] ids);
+
+    /**
+     * 根据创建人id查询
+     * @param createId
+     * @return
+     */
+    GeneralVO getByCreateId(@Param("createId") Long createId);
 }

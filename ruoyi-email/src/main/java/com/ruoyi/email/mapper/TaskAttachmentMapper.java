@@ -3,7 +3,6 @@ package com.ruoyi.email.mapper;
 import java.util.List;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
-import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

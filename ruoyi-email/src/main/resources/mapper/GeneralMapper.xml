@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.email.mapper.GeneralMapper">
-    
+
     <resultMap type="General" id="GeneralResult">
         <result property="id"    column="id"    />
         <result property="defaultTaskId"    column="default_task_id"    />
@@ -13,29 +13,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="language"    column="language"    />
         <result property="defaultFont"    column="default_font"    />
         <result property="fontSize"    column="font_size"    />
-        <result property="wordColor"    column="word_color"    />
+        <result property="fontColor"    column="font_color"    />
         <result property="groupBoxView"    column="group_box_view"    />
+        <result property="massEmailDisplay"    column="mass_email_display"    />
         <result property="remind"    column="remind"    />
         <result property="signatureId"    column="signature_id"    />
         <result property="writeLetter"    column="write_letter"    />
+        <result property="pasteFormat"    column="paste_format"    />
         <result property="autoResponseFlag"    column="auto_response_flag"    />
         <result property="startTime"    column="start_time"    />
+        <result property="lastDayFlag"    column="last_day_flag"    />
         <result property="lastDay"    column="last_day"    />
         <result property="reContent"    column="re_content"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectGeneralVo">
-        select id, default_task_id, max_per_page, email_reading_mode_flag, move_delete_report, language, default_font, font_size, word_color, group_box_view, remind, signature_id, write_letter, auto_response_flag, start_time, last_day, re_content, del_flag, create_by, create_time, update_by, update_time from mailbox_general
+        select id, default_task_id, max_per_page, email_reading_mode_flag, move_delete_report, language, default_font, font_size, font_color, group_box_view, mass_email_display, remind, signature_id, write_letter, paste_format, auto_response_flag, start_time, last_day_flag, last_day, re_content, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_general
     </sql>
 
     <select id="selectGeneralList" parameterType="General" resultMap="GeneralResult">
         <include refid="selectGeneralVo"/>
-        <where>  
+        <where>
             <if test="defaultTaskId != null "> and default_task_id = #{defaultTaskId}</if>
             <if test="maxPerPage != null "> and max_per_page = #{maxPerPage}</if>
             <if test="emailReadingModeFlag != null "> and email_reading_mode_flag = #{emailReadingModeFlag}</if>
@@ -43,23 +48,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="language != null "> and language = #{language}</if>
             <if test="defaultFont != null  and defaultFont != ''"> and default_font = #{defaultFont}</if>
             <if test="fontSize != null  and fontSize != ''"> and font_size = #{fontSize}</if>
-            <if test="wordColor != null  and wordColor != ''"> and word_color = #{wordColor}</if>
+            <if test="fontColor != null  and fontColor != ''"> and font_color = #{fontColor}</if>
             <if test="groupBoxView != null "> and group_box_view = #{groupBoxView}</if>
+            <if test="massEmailDisplay != null "> and mass_email_display = #{massEmailDisplay}</if>
             <if test="remind != null "> and remind = #{remind}</if>
             <if test="signatureId != null "> and signature_id = #{signatureId}</if>
             <if test="writeLetter != null  and writeLetter != ''"> and write_letter = #{writeLetter}</if>
+            <if test="pasteFormat != null "> and paste_format = #{pasteFormat}</if>
             <if test="autoResponseFlag != null "> and auto_response_flag = #{autoResponseFlag}</if>
             <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="lastDayFlag != null "> and last_day_flag = #{lastDayFlag}</if>
             <if test="lastDay != null "> and last_day = #{lastDay}</if>
             <if test="reContent != null  and reContent != ''"> and re_content = #{reContent}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
     </select>
-    
+
     <select id="selectGeneralById" parameterType="Long" resultMap="GeneralResult">
         <include refid="selectGeneralVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertGeneral" parameterType="General" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_general
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -70,21 +80,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="language != null">language,</if>
             <if test="defaultFont != null and defaultFont != ''">default_font,</if>
             <if test="fontSize != null and fontSize != ''">font_size,</if>
-            <if test="wordColor != null and wordColor != ''">word_color,</if>
+            <if test="fontColor != null">font_color,</if>
             <if test="groupBoxView != null">group_box_view,</if>
+            <if test="massEmailDisplay != null">mass_email_display,</if>
             <if test="remind != null">remind,</if>
             <if test="signatureId != null">signature_id,</if>
             <if test="writeLetter != null">write_letter,</if>
+            <if test="pasteFormat != null">paste_format,</if>
             <if test="autoResponseFlag != null">auto_response_flag,</if>
             <if test="startTime != null">start_time,</if>
+            <if test="lastDayFlag != null">last_day_flag,</if>
             <if test="lastDay != null">last_day,</if>
             <if test="reContent != null">re_content,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createId != null">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="defaultTaskId != null">#{defaultTaskId},</if>
             <if test="maxPerPage != null">#{maxPerPage},</if>
@@ -93,21 +108,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="language != null">#{language},</if>
             <if test="defaultFont != null and defaultFont != ''">#{defaultFont},</if>
             <if test="fontSize != null and fontSize != ''">#{fontSize},</if>
-            <if test="wordColor != null and wordColor != ''">#{wordColor},</if>
+            <if test="fontColor != null">#{fontColor},</if>
             <if test="groupBoxView != null">#{groupBoxView},</if>
+            <if test="massEmailDisplay != null">#{massEmailDisplay},</if>
             <if test="remind != null">#{remind},</if>
             <if test="signatureId != null">#{signatureId},</if>
             <if test="writeLetter != null">#{writeLetter},</if>
+            <if test="pasteFormat != null">#{pasteFormat},</if>
             <if test="autoResponseFlag != null">#{autoResponseFlag},</if>
             <if test="startTime != null">#{startTime},</if>
+            <if test="lastDayFlag != null">#{lastDayFlag},</if>
             <if test="lastDay != null">#{lastDay},</if>
             <if test="reContent != null">#{reContent},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateGeneral" parameterType="General">
@@ -120,18 +140,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="language != null">language = #{language},</if>
             <if test="defaultFont != null and defaultFont != ''">default_font = #{defaultFont},</if>
             <if test="fontSize != null and fontSize != ''">font_size = #{fontSize},</if>
-            <if test="wordColor != null and wordColor != ''">word_color = #{wordColor},</if>
+            <if test="fontColor != null">font_color = #{fontColor},</if>
             <if test="groupBoxView != null">group_box_view = #{groupBoxView},</if>
+            <if test="massEmailDisplay != null">mass_email_display = #{massEmailDisplay},</if>
             <if test="remind != null">remind = #{remind},</if>
             <if test="signatureId != null">signature_id = #{signatureId},</if>
             <if test="writeLetter != null">write_letter = #{writeLetter},</if>
+            <if test="pasteFormat != null">paste_format = #{pasteFormat},</if>
             <if test="autoResponseFlag != null">auto_response_flag = #{autoResponseFlag},</if>
             <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="lastDayFlag != null">last_day_flag = #{lastDayFlag},</if>
             <if test="lastDay != null">last_day = #{lastDay},</if>
             <if test="reContent != null">re_content = #{reContent},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -143,9 +168,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteGeneralByIds" parameterType="String">
-        delete from mailbox_general where id in 
+        delete from mailbox_general where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
+    <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.GeneralVO">
+        select id, default_task_id as defaultTaskId, max_per_page as maxPerPage, email_reading_mode_flag as emailReadingModeFlag, move_delete_report as moveDeleteReport, language, default_font as defaultFont, font_size as fontSize, word_color as wordColor, group_box_view as groupBoxView, remind, signature_id as signatureId, write_letter as writeLetter, auto_response_flag as autoResponseFlag, start_time as startTime, last_day as lastDay, re_content as reContent from mailbox_general
+        where create_id = #{createId} and del_flag = '0' order by create_time desc limit 1
+    </select>
 </mapper>

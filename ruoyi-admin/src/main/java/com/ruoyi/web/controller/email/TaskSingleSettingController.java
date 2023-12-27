@@ -3,7 +3,7 @@ package com.ruoyi.web.controller.email;
 import java.util.List;
 import javax.annotation.Resource;
 
-import com.ruoyi.email.domain.vo.task.TaskSingleSettingListVO;
+import com.ruoyi.email.domain.vo.TaskSingleSettingListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;

@@ -2,7 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.ImportEmail;
-import com.ruoyi.email.domain.vo.email.ImportListVO;
+import com.ruoyi.email.domain.vo.ImportListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

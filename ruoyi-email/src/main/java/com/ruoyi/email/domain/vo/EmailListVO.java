@@ -1,4 +1,4 @@
-package com.ruoyi.email.domain.vo.email;
+package com.ruoyi.email.domain.vo;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

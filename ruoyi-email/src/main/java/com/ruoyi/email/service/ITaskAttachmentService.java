@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
-import com.ruoyi.email.domain.vo.attachment.AttachmentListVO;
+import com.ruoyi.email.domain.vo.AttachmentListVO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

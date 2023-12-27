@@ -2,7 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.TaskSingleSetting;
-import com.ruoyi.email.domain.vo.task.TaskSingleSettingListVO;
+import com.ruoyi.email.domain.vo.TaskSingleSettingListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

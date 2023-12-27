@@ -7,7 +7,7 @@ import java.util.List;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.email.domain.vo.signature.SignatureListVO;
+import com.ruoyi.email.domain.vo.SignatureListVO;
 import com.ruoyi.email.service.ISignatureService;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.SignatureMapper;

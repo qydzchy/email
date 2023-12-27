@@ -3,7 +3,7 @@ package com.ruoyi.email.service;
 import java.util.List;
 import com.ruoyi.email.domain.Label;
 import com.ruoyi.email.domain.bo.EmailLabelBO;
-import com.ruoyi.email.domain.vo.label.LabelListVO;
+import com.ruoyi.email.domain.vo.LabelListVO;
 
 /**
  * 标签Service接口

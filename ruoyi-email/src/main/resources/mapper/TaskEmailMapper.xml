@@ -116,7 +116,7 @@
         and del_flag = #{delFlag}
     </select>
 
-    <select id="selectTaskEmailPage" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
+    <select id="selectTaskEmailPage" resultType="com.ruoyi.email.domain.vo.EmailListVO">
         SELECT
         mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title,
         mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag, mte.pending_flag as pendingFlag, mte.pending_time as pendingTime,
@@ -180,7 +180,7 @@
         select reference from mailbox_task_email where reference like '${reference}%' order by send_date desc limit 1;
     </select>
     <select id="selectTaskEmailByMessageIdAndInReplyTo"
-            resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
+            resultType="com.ruoyi.email.domain.vo.EmailListVO">
         select mte.id, mte.task_id as taskId, mte.uid, mte.fromer, mte.receiver, mte.bcc, mte.cc, mte.folder, mte.folder_id as folderId, mte.title, mte.send_date as sendDate, mte.eml_path as emlPath, mte.read_flag as readFlag,
         mte.pending_flag as pendingFlag, mte.pending_time as pendingTime, mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mte.message_id as messageId, mte.in_reply_to as inReplyTo, mte.reference, mtec.content from mailbox_task_email mte
         left join mailbox_task_email_content mtec on mte.id = mtec.email_id
@@ -198,7 +198,7 @@
         order by mte.send_date desc
     </select>
 
-    <select id="countUnReadEmailNum" resultType="com.ruoyi.email.domain.vo.email.MenuInboxTaskCountVO">
+    <select id="countUnReadEmailNum" resultType="com.ruoyi.email.domain.vo.MenuInboxTaskCountVO">
         SELECT
             te.task_id AS taskId,
             COUNT( te.id ) AS count
@@ -248,7 +248,7 @@
         where ccc.customer_id = ${customerId}
     </select>
 
-    <select id="customerEmailList" resultType="com.ruoyi.email.domain.vo.email.EmailListVO">
+    <select id="customerEmailList" resultType="com.ruoyi.email.domain.vo.EmailListVO">
         SELECT
             mte.id,
             mte.task_id AS taskId,

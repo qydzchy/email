@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.General;
+import com.ruoyi.email.domain.vo.GeneralVO;
 
 /**
  * 邮箱常规Service接口
@@ -58,4 +59,10 @@ public interface IGeneralService
      * @return 结果
      */
     public int deleteGeneralById(Long id);
+
+    /**
+     * 获取邮箱常规详细信息
+     * @return
+     */
+    GeneralVO getInfo();
 }

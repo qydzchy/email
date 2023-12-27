@@ -2,7 +2,6 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.Folder;
-import com.ruoyi.email.domain.vo.folder.FolderListVO;
 import org.apache.ibatis.annotations.Param;
 
 /**

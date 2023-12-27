@@ -52,7 +52,7 @@
         where id = #{id}
     </select>
 
-    <select id="list" resultType="com.ruoyi.email.domain.vo.task.TaskSingleSettingListVO">
+    <select id="list" resultType="com.ruoyi.email.domain.vo.TaskSingleSettingListVO">
         select tss.id, t.id as taskId, t.account as taskName, tss.letter_nickname as letterNickname, tss.default_signature_id as defaultSignatureId, tss.reply_signature_id as replySignatureId, tss.default_cc_flag as defaultCcFlag, tss.default_cc as defaultCc, tss.default_bcc_flag as defaultBccFlag, tss.default_bcc as defaultBcc, tss.trace_flag as traceFlag, tss.return_receipt_flag as returnReceiptFlag from mailbox_task t
         left join mailbox_task_single_setting tss on t.id = tss.task_id
         where t.create_id = #{createId} and t.del_flag = '0'
