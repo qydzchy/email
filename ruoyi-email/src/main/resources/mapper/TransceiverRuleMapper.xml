@@ -13,14 +13,18 @@
         <result property="executeOperation"    column="execute_operation"    />
         <result property="fixedFlag"    column="fixed_flag"    />
         <result property="readFlag"    column="read_flag"    />
+        <result property="folderFlag"    column="folder_flag"    />
         <result property="folderId"    column="folder_id"    />
+        <result property="forwardToFlag"    column="forward_to_flag"    />
         <result property="forwardTo"    column="forward_to"    />
         <result property="pendingFlag"    column="pending_flag"    />
         <result property="pendingType"    column="pending_type"    />
         <result property="pendingDay"    column="pending_day"    />
         <result property="pendingTime"    column="pending_time"    />
+        <result property="autoResponseFlag"    column="auto_response_flag"    />
         <result property="autoResponse"    column="auto_response"    />
         <result property="applyToHistoryMailFlag"    column="apply_to_history_mail_flag"    />
+        <result property="applyToHistoryMailTrueType"    column="apply_to_history_mail_true_type"    />
         <result property="executeTaskId"    column="execute_task_id"    />
         <result property="otherSendingRules"    column="other_sending_rules"    />
         <result property="status"    column="status"    />
@@ -35,7 +39,7 @@
     </resultMap>
 
     <sql id="selectTransceiverRuleVo">
-        select id, rule_type, rule_name, execute_condition, execute_condition_content, execute_operation, fixed_flag, read_flag, folder_id, forward_to, pending_flag, pending_type, pending_day, pending_time, auto_response, apply_to_history_mail_flag, execute_task_id, other_sending_rules, status, order, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_transceiver_rule
+        select id, rule_type, rule_name, execute_condition, execute_condition_content, execute_operation, fixed_flag, read_flag, folder_flag, folder_id, forward_to_flag, forward_to, pending_flag, pending_type, pending_day, pending_time, auto_response_flag, auto_response, apply_to_history_mail_flag, apply_to_history_mail_true_type, execute_task_id, other_sending_rules, status, order, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_transceiver_rule
     </sql>
 
     <select id="selectTransceiverRuleList" parameterType="TransceiverRule" resultMap="TransceiverRuleResult">
@@ -48,21 +52,24 @@
             <if test="executeOperation != null "> and execute_operation = #{executeOperation}</if>
             <if test="fixedFlag != null "> and fixed_flag = #{fixedFlag}</if>
             <if test="readFlag != null "> and read_flag = #{readFlag}</if>
+            <if test="folderFlag != null "> and folder_flag = #{folderFlag}</if>
             <if test="folderId != null "> and folder_id = #{folderId}</if>
+            <if test="forwardToFlag != null "> and forward_to_flag = #{forwardToFlag}</if>
             <if test="forwardTo != null  and forwardTo != ''"> and forward_to = #{forwardTo}</if>
             <if test="pendingFlag != null "> and pending_flag = #{pendingFlag}</if>
             <if test="pendingType != null "> and pending_type = #{pendingType}</if>
             <if test="pendingDay != null "> and pending_day = #{pendingDay}</if>
             <if test="pendingTime != null  and pendingTime != ''"> and pending_time = #{pendingTime}</if>
+            <if test="autoResponseFlag != null "> and auto_response_flag = #{autoResponseFlag}</if>
             <if test="autoResponse != null  and autoResponse != ''"> and auto_response = #{autoResponse}</if>
             <if test="applyToHistoryMailFlag != null "> and apply_to_history_mail_flag = #{applyToHistoryMailFlag}</if>
+            <if test="applyToHistoryMailTrueType != null "> and apply_to_history_mail_true_type = #{applyToHistoryMailTrueType}</if>
             <if test="executeTaskId != null "> and execute_task_id = #{executeTaskId}</if>
             <if test="otherSendingRules != null "> and other_sending_rules = #{otherSendingRules}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="order != null "> and order = #{order}</if>
             <if test="createId != null "> and create_id = #{createId}</if>
             <if test="updateId != null "> and update_id = #{updateId}</if>
-            and del_flag = '0'
         </where>
     </select>
 
@@ -96,14 +103,18 @@
             <if test="executeOperation != null">execute_operation,</if>
             <if test="fixedFlag != null">fixed_flag,</if>
             <if test="readFlag != null">read_flag,</if>
+            <if test="folderFlag != null">folder_flag,</if>
             <if test="folderId != null">folder_id,</if>
+            <if test="forwardToFlag != null">forward_to_flag,</if>
             <if test="forwardTo != null">forward_to,</if>
             <if test="pendingFlag != null">pending_flag,</if>
             <if test="pendingType != null">pending_type,</if>
             <if test="pendingDay != null">pending_day,</if>
             <if test="pendingTime != null">pending_time,</if>
+            <if test="autoResponseFlag != null">auto_response_flag,</if>
             <if test="autoResponse != null">auto_response,</if>
             <if test="applyToHistoryMailFlag != null">apply_to_history_mail_flag,</if>
+            <if test="applyToHistoryMailTrueType != null">apply_to_history_mail_true_type,</if>
             <if test="executeTaskId != null">execute_task_id,</if>
             <if test="otherSendingRules != null">other_sending_rules,</if>
             <if test="status != null">status,</if>
@@ -124,14 +135,18 @@
             <if test="executeOperation != null">#{executeOperation},</if>
             <if test="fixedFlag != null">#{fixedFlag},</if>
             <if test="readFlag != null">#{readFlag},</if>
+            <if test="folderFlag != null">#{folderFlag},</if>
             <if test="folderId != null">#{folderId},</if>
+            <if test="forwardToFlag != null">#{forwardToFlag},</if>
             <if test="forwardTo != null">#{forwardTo},</if>
             <if test="pendingFlag != null">#{pendingFlag},</if>
             <if test="pendingType != null">#{pendingType},</if>
             <if test="pendingDay != null">#{pendingDay},</if>
             <if test="pendingTime != null">#{pendingTime},</if>
+            <if test="autoResponseFlag != null">#{autoResponseFlag},</if>
             <if test="autoResponse != null">#{autoResponse},</if>
             <if test="applyToHistoryMailFlag != null">#{applyToHistoryMailFlag},</if>
+            <if test="applyToHistoryMailTrueType != null">#{applyToHistoryMailTrueType},</if>
             <if test="executeTaskId != null">#{executeTaskId},</if>
             <if test="otherSendingRules != null">#{otherSendingRules},</if>
             <if test="status != null">#{status},</if>
@@ -156,14 +171,18 @@
             <if test="executeOperation != null">execute_operation = #{executeOperation},</if>
             <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
             <if test="readFlag != null">read_flag = #{readFlag},</if>
+            <if test="folderFlag != null">folder_flag = #{folderFlag},</if>
             <if test="folderId != null">folder_id = #{folderId},</if>
+            <if test="forwardToFlag != null">forward_to_flag = #{forwardToFlag},</if>
             <if test="forwardTo != null">forward_to = #{forwardTo},</if>
             <if test="pendingFlag != null">pending_flag = #{pendingFlag},</if>
             <if test="pendingType != null">pending_type = #{pendingType},</if>
             <if test="pendingDay != null">pending_day = #{pendingDay},</if>
             <if test="pendingTime != null">pending_time = #{pendingTime},</if>
+            <if test="autoResponseFlag != null">auto_response_flag = #{autoResponseFlag},</if>
             <if test="autoResponse != null">auto_response = #{autoResponse},</if>
             <if test="applyToHistoryMailFlag != null">apply_to_history_mail_flag = #{applyToHistoryMailFlag},</if>
+            <if test="applyToHistoryMailTrueType != null">apply_to_history_mail_true_type = #{applyToHistoryMailTrueType},</if>
             <if test="executeTaskId != null">execute_task_id = #{executeTaskId},</if>
             <if test="otherSendingRules != null">other_sending_rules = #{otherSendingRules},</if>
             <if test="status != null">status = #{status},</if>

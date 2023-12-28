@@ -1,4 +1,5 @@
 package com.ruoyi.email.domain.vo;
+import com.ruoyi.common.annotation.Excel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +32,9 @@ public class TransceiverRuleListVO {
     /** 是否已读: 0.否 1.是 */
     private Boolean readFlag;
 
+    /** 是否移动至：0.否 1.是 */
+    private Boolean folderFlag;
+
     /** 文件夹ID */
     private Long folderId;
 
@@ -38,6 +42,9 @@ public class TransceiverRuleListVO {
      * 文件夹名称
      */
     private String folderName;
+
+    /** 是否转发至：0.否 1.是 */
+    private Boolean forwardToFlag;
 
     /** 转发至 */
     private String forwardTo;
@@ -57,11 +64,17 @@ public class TransceiverRuleListVO {
     /** 应用于历史邮件: 0.否 1.是 */
     private Integer applyToHistoryMailFlag;
 
+    /** 1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除） */
+    private Integer applyToHistoryMailTrueType;
+
     /** 执行邮箱ID: 0.表示全部邮箱 */
     private Long executeTaskId;
 
     /** 其他发件规则: 1.继续执行 2.不再执行 */
     private Integer otherSendingRules;
+
+    /** 是否自动回复：0.否 1.是 */
+    private Boolean autoResponseFlag;
 
     /** 状态 1.开启 0.关闭 */
     private Integer status;

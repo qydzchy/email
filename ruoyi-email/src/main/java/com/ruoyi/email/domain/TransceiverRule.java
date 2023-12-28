@@ -26,8 +26,8 @@ public class TransceiverRule extends BaseEntity
     @Excel(name = "规则名称")
     private String ruleName;
 
-    /** 执行条件: 1.执行以下操作 2.满足以下任一条件 */
-    @Excel(name = "执行条件: 1.执行以下操作 2.满足以下任一条件")
+    /** 执行条件: 1.满足以下所有条件 2.满足以下任一条件 */
+    @Excel(name = "执行条件: 1.满足以下所有条件 2.满足以下任一条件")
     private Integer executeCondition;
 
     /** 执行条件内容 */
@@ -46,9 +46,17 @@ public class TransceiverRule extends BaseEntity
     @Excel(name = "是否已读: 0.否 1.是")
     private Integer readFlag;
 
-    /** 文件夹ID,系统文件夹 */
-    @Excel(name = "文件夹ID,系统文件夹")
+    /** 是否移动至：0.否 1.是 */
+    @Excel(name = "是否移动至：0.否 1.是")
+    private Integer folderFlag;
+
+    /** 文件夹ID */
+    @Excel(name = "文件夹ID")
     private Long folderId;
+
+    /** 是否转发至：0.否 1.是 */
+    @Excel(name = "是否转发至：0.否 1.是")
+    private Boolean forwardToFlag;
 
     /** 转发至 */
     @Excel(name = "转发至")
@@ -70,6 +78,10 @@ public class TransceiverRule extends BaseEntity
     @Excel(name = "待处理-时间")
     private String pendingTime;
 
+    /** 是否自动回复：0.否 1.是 */
+    @Excel(name = "是否自动回复：0.否 1.是")
+    private Boolean autoResponseFlag;
+
     /** 自动回复 */
     @Excel(name = "自动回复")
     private String autoResponse;
@@ -77,6 +89,10 @@ public class TransceiverRule extends BaseEntity
     /** 应用于历史邮件: 0.否 1.是 */
     @Excel(name = "应用于历史邮件: 0.否 1.是")
     private Integer applyToHistoryMailFlag;
+
+    /** 1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除） */
+    @Excel(name = "1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件", readConverterExp = "不=包括已删除")
+    private Integer applyToHistoryMailTrueType;
 
     /** 执行邮箱ID: 0.表示全部邮箱 */
     @Excel(name = "执行邮箱ID: 0.表示全部邮箱")
@@ -177,6 +193,15 @@ public class TransceiverRule extends BaseEntity
     {
         return readFlag;
     }
+    public void setFolderFlag(Integer folderFlag)
+    {
+        this.folderFlag = folderFlag;
+    }
+
+    public Integer getFolderFlag()
+    {
+        return folderFlag;
+    }
     public void setFolderId(Long folderId)
     {
         this.folderId = folderId;
@@ -186,6 +211,7 @@ public class TransceiverRule extends BaseEntity
     {
         return folderId;
     }
+
     public void setForwardTo(String forwardTo)
     {
         this.forwardTo = forwardTo;
@@ -231,6 +257,23 @@ public class TransceiverRule extends BaseEntity
     {
         return pendingTime;
     }
+
+    public Boolean getForwardToFlag() {
+        return forwardToFlag;
+    }
+
+    public void setForwardToFlag(Boolean forwardToFlag) {
+        this.forwardToFlag = forwardToFlag;
+    }
+
+    public Boolean getAutoResponseFlag() {
+        return autoResponseFlag;
+    }
+
+    public void setAutoResponseFlag(Boolean autoResponseFlag) {
+        this.autoResponseFlag = autoResponseFlag;
+    }
+
     public void setAutoResponse(String autoResponse)
     {
         this.autoResponse = autoResponse;
@@ -248,6 +291,15 @@ public class TransceiverRule extends BaseEntity
     public Integer getApplyToHistoryMailFlag()
     {
         return applyToHistoryMailFlag;
+    }
+    public void setApplyToHistoryMailTrueType(Integer applyToHistoryMailTrueType)
+    {
+        this.applyToHistoryMailTrueType = applyToHistoryMailTrueType;
+    }
+
+    public Integer getApplyToHistoryMailTrueType()
+    {
+        return applyToHistoryMailTrueType;
     }
     public void setExecuteTaskId(Long executeTaskId)
     {
@@ -324,14 +376,18 @@ public class TransceiverRule extends BaseEntity
                 .append("executeOperation", getExecuteOperation())
                 .append("fixedFlag", getFixedFlag())
                 .append("readFlag", getReadFlag())
+                .append("folderFlag", getFolderFlag())
                 .append("folderId", getFolderId())
+                .append("forwardToFlag", getForwardToFlag())
                 .append("forwardTo", getForwardTo())
                 .append("pendingFlag", getPendingFlag())
                 .append("pendingType", getPendingType())
                 .append("pendingDay", getPendingDay())
                 .append("pendingTime", getPendingTime())
+                .append("autoResponseFlag", getAutoResponseFlag())
                 .append("autoResponse", getAutoResponse())
                 .append("applyToHistoryMailFlag", getApplyToHistoryMailFlag())
+                .append("applyToHistoryMailTrueType", getApplyToHistoryMailTrueType())
                 .append("executeTaskId", getExecuteTaskId())
                 .append("otherSendingRules", getOtherSendingRules())
                 .append("status", getStatus())

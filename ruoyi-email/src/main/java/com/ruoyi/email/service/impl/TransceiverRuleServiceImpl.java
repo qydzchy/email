@@ -11,9 +11,11 @@ import com.ruoyi.common.enums.email.TransceiverRuleColumnNameEnum;
 import com.ruoyi.common.enums.email.TransceiverRuleConditionTypeEnum;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.domain.bo.ExecuteConditionContentBO;
 import com.ruoyi.email.domain.vo.TransceiverRuleListVO;
 import com.ruoyi.email.domain.vo.TransceiverRuleVO;
+import com.ruoyi.email.mapper.FolderMapper;
 import com.ruoyi.email.service.ITransceiverRuleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
 {
     @Resource
     private TransceiverRuleMapper transceiverRuleMapper;
+    @Resource
+    private FolderMapper folderMapper;
 
     /**
      * 查询收发件规则
@@ -200,15 +204,35 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
 
         executeConditionName += "，则：";
 
-        if (Optional.ofNullable(transceiverRuleVO.getFixedFlag()).orElse(false)) {
-            executeConditionName += "打图钉";
+        if (Optional.ofNullable(transceiverRuleVO.getFolderFlag()).orElse(false) && transceiverRuleVO.getFolderId() != null) {
+            Long folderId = transceiverRuleVO.getFolderId();
+            Folder folder = folderMapper.getById(folderId, createId);
+            if (folder != null) {
+                executeConditionName += "移动到";
+                executeConditionName += folder.getName();
+                executeConditionName += "、";
+            }
         }
 
         if (Optional.ofNullable(transceiverRuleVO.getReadFlag()).orElse(false)) {
-            executeConditionName += "标记为已读";
+            executeConditionName += "标记为已读、";
         }
 
-        // todo 未完成
+        if (Optional.ofNullable(transceiverRuleVO.getFixedFlag()).orElse(false)) {
+            executeConditionName += "打图钉、";
+        }
+
+        if (Optional.ofNullable(transceiverRuleVO.getAutoResponseFlag()).orElse(false)) {
+            executeConditionName += "自动回复、";
+        }
+
+        if (Optional.ofNullable(transceiverRuleVO.getPendingFlag()).orElse(false)) {
+            executeConditionName += "标记为待处理";
+
+            if (transceiverRuleVO.getPendingType() != null) {
+                executeConditionName += "并设置稍后处理时间";
+            }
+        }
 
         return executeConditionName;
     }
