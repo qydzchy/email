@@ -6,24 +6,32 @@
         <div class="view-content-teleport-anchor"></div>
         <div :class="['mm-split', 'mail-layout-split', isLeftPaneVisible ? 'expanding' : 'collapsing']">
           <div class="mm-split-horizontal">
-            <div class="mm-split-pane mm-split-pane__left" :style="{right: isLeftPaneVisible ? '87.7165%' : '98.9177%'}">
+            <div class="mm-split-pane mm-split-pane__left"
+              :style="{ right: isLeftPaneVisible ? '87.7165%' : '98.9177%' }">
               <div class="layout-extraSidebar-sidebar">
                 <nav v-if="isLeftPaneVisible" class="main-plus-nav">
                   <div class="mail-nav" transition="menu">
                     <div class="mail-nav-switch">
                       <a :class="[isMailNavNormalContainerOpen ? 'active' : '']" @click="toggleType(true)">
-																	<span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																			<path fill-rule="evenodd" clip-rule="evenodd" d="M2.6 5.2A2.995 2.995 0 015 4h14c.981 0 1.852.47 2.4 1.199L12 11.591 2.6 5.199zM2 7.21V17a3 3 0 003 3h14a3 3 0 003-3V7.21l-9.438 6.417a1 1 0 01-1.124 0L2 7.209z"></path>
-																		</svg>
-																	</span>
+                        <span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M2.6 5.2A2.995 2.995 0 015 4h14c.981 0 1.852.47 2.4 1.199L12 11.591 2.6 5.199zM2 7.21V17a3 3 0 003 3h14a3 3 0 003-3V7.21l-9.438 6.417a1 1 0 01-1.124 0L2 7.209z">
+                            </path>
+                          </svg>
+                        </span>
                       </a>
                       <a :class="[!isMailNavNormalContainerOpen ? 'active' : '']" @click="toggleType(false)">
-                        <span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2a5 5 0 100 10 5 5 0 000-10zM8.296 13a6 6 0 00-6 6v2a1 1 0 001 1h17.408a1 1 0 001-1v-2a6 6 0 00-6-6H8.296z"></path>
+                        <span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M12 2a5 5 0 100 10 5 5 0 000-10zM8.296 13a6 6 0 00-6 6v2a1 1 0 001 1h17.408a1 1 0 001-1v-2a6 6 0 00-6-6H8.296z">
+                            </path>
                           </svg>
                         </span>
                       </a>
                     </div>
+                    <!-- 写信 -->
                     <div class="main-nav-head-pro">
                       <div class="mm-dropdown">
                         <div>
@@ -34,8 +42,11 @@
                               <!---->
                             </button>
                             <button type="button" class="mm-button mm-button__primary mm-button--icon">
-                              <svg class="mm-icon mm-icon-switch" viewBox="0 0 24 24" name="switch" fill="currentColor" style="height: 12px; width: 12px;">
-                                <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.3.8-.3 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                              <svg class="mm-icon mm-icon-switch" viewBox="0 0 24 24" name="switch" fill="currentColor"
+                                style="height: 12px; width: 12px;">
+                                <path
+                                  d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.3.8-.3 1.1 0l1 1c.2.3.2.7 0 1z">
+                                </path>
                               </svg>
                               <!---->
                               <!---->
@@ -45,27 +56,37 @@
                         <!---->
                       </div>
                     </div>
+                    <!-- 邮件 -->
                     <div class="mail-nav-normal-container" v-if="isMailNavNormalContainerOpen">
                       <ul role="menubar" class="mm-menu mail-sidebar-menu">
-                        <li :class="['mm-submenu', isInboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleInbox">
+                        <li :class="['mm-submenu', isInboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"
+                          role="menuitem" aria-haspopup="true" aria-expanded="true"
+                          nativeondragover="function(e){return(0,te.CV)(e,t)}"
+                          nativeondragleave="function(e){return(0,te.aB)(e,t)}"
+                          nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;"
+                            @click="toggleInbox">
                             <!---->
                             <span class="mm-menu-title">
-																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																					<span class="flex items-center" title="收件箱">收件箱</span>
-																				</div>
+                              <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <span class="flex items-center" title="收件箱">收件箱</span>
+                              </div>
                               <!---->
                               <!---->
-																			</span>
-                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                            </span>
+                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                              name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                              <path
+                                d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                              </path>
                             </svg>
                           </div>
                           <ul role="menu" class="mm-menu mm-menu--inline" v-show="isInboxOpen">
                             <li class="mm-menu-item mail-sidebar-menu-item"
-                                :class="{ 'mm-menu-item--active': activeMenuItem === 'ALL_RECEIVED' }"
-                                @click.prevent="allReceivedClick"
-                                role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'ALL_RECEIVED' }"
+                              @click.prevent="allReceivedClick" role="menuitem" tabindex="-1"
+                              nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                              style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
@@ -74,25 +95,26 @@
                                   <span class="flex items-center" title="全部收件">全部收件</span>
                                 </div>
                                 <span class="mm-tooltip mail-menu-item-count">
-																						<span class="mm-tooltip-trigger">{{menuCount.allReceivedCount}}</span>
+                                  <span class="mm-tooltip-trigger">{{ menuCount.allReceivedCount }}</span>
                                   <!---->
-																					</span>
+                                </span>
                                 <!---->
                               </div>
                             </li>
                             <li v-for="task in pullTaskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item"
-                                :class="{ 'mm-menu-item--active': activeMenuItem === 'PULL_'+task.id }"
-                                @click="taskPullClick(task.id)"
-                                role="menuitem" tabindex="-1" style="padding-left: 35px; padding-right: 14px;">
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'PULL_' + task.id }"
+                              @click="taskPullClick(task.id)" role="menuitem" tabindex="-1"
+                              style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
-                                <div v-if="task.connStatus === 1" class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <div v-if="task.connStatus === 1"
+                                  class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <!-- 正常状态的内容 -->
                                   <div class="mailbox-item ellipsis">
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
-                                        <span class="ellipsis">{{task.account}}</span>
+                                        <span class="ellipsis">{{ task.account }}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -100,34 +122,39 @@
                                 <div v-else class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <!-- 异常状态的内容 -->
                                   <div class="mailbox-item ellipsis">
-																							<span class="mm-tooltip mailbox-item-error-icon">
-																								<span class="mm-tooltip-trigger">
-																									<svg class="mm-icon mm-icon-info default-error-icon" viewBox="0 0 24 24" name="info" fill="#DD3C3C" style="height: 15px; width: 15px;">
-																										<path d="M12 .9C5.9.9.9 5.9.9 12s5 11.1 11.1 11.1 11.1-5 11.1-11.1S18.1.9 12 .9zm0 5.6c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4zm2.3 9.7c0 .2-.2.4-.5.4h-3.6c-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5.2 0 .4-.2.4-.4v-1.9c0-.2-.2-.5-.4-.5-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5h2.7c.3 0 .5.2.5.5v3.7c0 .2.2.4.4.4.3 0 .5.2.5.5v.9z"></path>
-																									</svg>
-																								</span>
-																							</span>
+                                    <span class="mm-tooltip mailbox-item-error-icon">
+                                      <span class="mm-tooltip-trigger">
+                                        <svg class="mm-icon mm-icon-info default-error-icon" viewBox="0 0 24 24"
+                                          name="info" fill="#DD3C3C" style="height: 15px; width: 15px;">
+                                          <path
+                                            d="M12 .9C5.9.9.9 5.9.9 12s5 11.1 11.1 11.1 11.1-5 11.1-11.1S18.1.9 12 .9zm0 5.6c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4zm2.3 9.7c0 .2-.2.4-.5.4h-3.6c-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5.2 0 .4-.2.4-.4v-1.9c0-.2-.2-.5-.4-.5-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5h2.7c.3 0 .5.2.5.5v3.7c0 .2.2.4.4.4.3 0 .5.2.5.5v.9z">
+                                          </path>
+                                        </svg>
+                                      </span>
+                                    </span>
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
                                         <span class="mm-tooltip mailbox-item-email-error-tip">
-																										<span class="mm-tooltip-trigger">
-																											<span class="ellipsis">{{task.account}}</span>
-																										</span>
-																									</span>
+                                          <span class="mm-tooltip-trigger">
+                                            <span class="ellipsis">{{ task.account }}</span>
+                                          </span>
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                                <span class="mm-tooltip mail-menu-item-count"><span class="mm-tooltip-trigger">{{ getTaskCount(task.id) }}</span></span>
+                                <span class="mm-tooltip mail-menu-item-count"><span class="mm-tooltip-trigger">{{
+                                  getTaskCount(task.id) }}</span></span>
                                 <!---->
                               </div>
                             </li>
                           </ul>
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item"
-                            :class="{ 'mm-menu-item--active': activeMenuItem === 'PENDING_MAIL' }"
-                            @click="pendingMailClick"
-                            role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+                          :class="{ 'mm-menu-item--active': activeMenuItem === 'PENDING_MAIL' }" @click="pendingMailClick"
+                          role="menuitem" tabindex="-1"
+                          nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                          style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
                           <div class="mail-sidebar-menu-item">
@@ -136,16 +163,17 @@
                               <span class="flex items-center">待处理邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger">{{menuCount.pendingMailCount}}</span>
+                              <span class="mm-tooltip-trigger">{{ menuCount.pendingMailCount }}</span>
                               <!---->
-																			</span>
+                            </span>
                             <!---->
                           </div>
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item"
-                            :class="{ 'mm-menu-item--active': activeMenuItem === 'AN_UNREAD_MAIL' }"
-                            @click="anUnreadMailClick"
-                            role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+                          :class="{ 'mm-menu-item--active': activeMenuItem === 'AN_UNREAD_MAIL' }"
+                          @click="anUnreadMailClick" role="menuitem" tabindex="-1"
+                          nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                          style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
                           <div class="mail-sidebar-menu-item">
@@ -154,16 +182,17 @@
                               <span class="flex items-center" title="未读邮件">未读邮件</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger">{{menuCount.anUnreadMailCount}}</span>
+                              <span class="mm-tooltip-trigger">{{ menuCount.anUnreadMailCount }}</span>
                               <!---->
-																			</span>
+                            </span>
                             <!---->
                           </div>
                         </li>
                         <li class="mm-menu-item mail-sidebar-menu-item"
-                            :class="{ 'mm-menu-item--active': activeMenuItem === 'DRAFTS' }"
-                            @click="draftsClick"
-                            role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 14px; padding-right: 14px;">
+                          :class="{ 'mm-menu-item--active': activeMenuItem === 'DRAFTS' }" @click="draftsClick"
+                          role="menuitem" tabindex="-1"
+                          nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                          style="padding-left: 14px; padding-right: 14px;">
                           <!---->
                           <!---->
                           <div class="mail-sidebar-menu-item">
@@ -172,31 +201,40 @@
                               <span class="flex items-center" title="草稿箱">草稿箱</span>
                             </div>
                             <span class="mm-tooltip mail-menu-item-count">
-																				<span class="mm-tooltip-trigger">{{menuCount.draftsCount}}</span>
+                              <span class="mm-tooltip-trigger">{{ menuCount.draftsCount }}</span>
                               <!---->
-																			</span>
+                            </span>
                             <!---->
                           </div>
                         </li>
-                        <li :class="['mm-submenu', isOutboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleOutbox">
+                        <li :class="['mm-submenu', isOutboxOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"
+                          role="menuitem" aria-haspopup="true" aria-expanded="true"
+                          nativeondragover="function(e){return(0,te.CV)(e,t)}"
+                          nativeondragleave="function(e){return(0,te.aB)(e,t)}"
+                          nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;"
+                            @click="toggleOutbox">
                             <!---->
                             <span class="mm-menu-title">
-																				<div class="right-click-menu-handler mail-menu-item-title ellipsis">
-																					<span class="flex items-center" title="发件箱">发件箱</span>
-																				</div>
+                              <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <span class="flex items-center" title="发件箱">发件箱</span>
+                              </div>
                               <!---->
                               <!---->
-																			</span>
-                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                            </span>
+                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                              name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                              <path
+                                d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                              </path>
                             </svg>
                           </div>
                           <ul role="menu" class="mm-menu mm-menu--inline" v-show="isOutboxOpen">
                             <li class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
-                                :class="{ 'mm-menu-item--active': activeMenuItem === 'COMPLETE_SHIPMENT' }"
-                                @click="completeShipmentClick"
-                                role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'COMPLETE_SHIPMENT' }"
+                              @click="completeShipmentClick" role="menuitem" tabindex="-1"
+                              nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                              style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
@@ -208,20 +246,23 @@
                                 <!---->
                               </div>
                             </li>
-                            <li v-for="task in sendTaskList" :key="task.id" class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
-                                :class="{ 'mm-menu-item--active': activeMenuItem === 'SEND_'+task.id }"
-                                @click="taskSendClick(task.id)"
-                                role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
+                            <li v-for="task in sendTaskList" :key="task.id"
+                              class="mm-menu-item mail-sidebar-menu-item novice-tour-enter-outbox-click"
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'SEND_' + task.id }"
+                              @click="taskSendClick(task.id)" role="menuitem" tabindex="-1"
+                              nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                              style="padding-left: 35px; padding-right: 14px;">
                               <!---->
                               <!---->
                               <div class="mail-sidebar-menu-item">
                                 <!---->
-                                <div v-if="task.connStatus === 1" class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <div v-if="task.connStatus === 1"
+                                  class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <!-- 正常状态的内容 -->
                                   <div class="mailbox-item ellipsis">
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
-                                        <span class="ellipsis">{{task.account}}</span>
+                                        <span class="ellipsis">{{ task.account }}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -229,20 +270,23 @@
                                 <div v-else class="right-click-menu-handler mail-menu-item-title ellipsis">
                                   <!-- 异常状态的内容 -->
                                   <div class="mailbox-item ellipsis">
-																							<span class="mm-tooltip mailbox-item-error-icon">
-																								<span class="mm-tooltip-trigger">
-																									<svg class="mm-icon mm-icon-info default-error-icon" viewBox="0 0 24 24" name="info" fill="#DD3C3C" style="height: 15px; width: 15px;">
-																										<path d="M12 .9C5.9.9.9 5.9.9 12s5 11.1 11.1 11.1 11.1-5 11.1-11.1S18.1.9 12 .9zm0 5.6c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4zm2.3 9.7c0 .2-.2.4-.5.4h-3.6c-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5.2 0 .4-.2.4-.4v-1.9c0-.2-.2-.5-.4-.5-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5h2.7c.3 0 .5.2.5.5v3.7c0 .2.2.4.4.4.3 0 .5.2.5.5v.9z"></path>
-																									</svg>
-																								</span>
-																							</span>
+                                    <span class="mm-tooltip mailbox-item-error-icon">
+                                      <span class="mm-tooltip-trigger">
+                                        <svg class="mm-icon mm-icon-info default-error-icon" viewBox="0 0 24 24"
+                                          name="info" fill="#DD3C3C" style="height: 15px; width: 15px;">
+                                          <path
+                                            d="M12 .9C5.9.9.9 5.9.9 12s5 11.1 11.1 11.1 11.1-5 11.1-11.1S18.1.9 12 .9zm0 5.6c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4zm2.3 9.7c0 .2-.2.4-.5.4h-3.6c-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5.2 0 .4-.2.4-.4v-1.9c0-.2-.2-.5-.4-.5-.3 0-.5-.1-.5-.4v-.9c0-.3.2-.5.5-.5h2.7c.3 0 .5.2.5.5v3.7c0 .2.2.4.4.4.3 0 .5.2.5.5v.9z">
+                                          </path>
+                                        </svg>
+                                      </span>
+                                    </span>
                                     <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
                                       <div class="public-mail-tag-content">
                                         <span class="mm-tooltip mailbox-item-email-error-tip">
-																										<span class="mm-tooltip-trigger">
-																											<span class="ellipsis">{{task.account}}</span>
-																										</span>
-																									</span>
+                                          <span class="mm-tooltip-trigger">
+                                            <span class="ellipsis">{{ task.account }}</span>
+                                          </span>
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
@@ -254,75 +298,103 @@
                           </ul>
                         </li>
 
-                        <li class="mm-submenu mm-submenu--opened top-divided for-folder-tour mail-sidebar-submenu" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                        <li class="mm-submenu mm-submenu--opened top-divided for-folder-tour mail-sidebar-submenu"
+                          role="menuitem" aria-haspopup="true" aria-expanded="true"
+                          nativeondragover="function(e){return(0,te.CV)(e,t)}"
+                          nativeondragleave="function(e){return(0,te.aB)(e,t)}"
+                          nativeondrop="function(e){return(0,te.LQ)(e,t)}">
                           <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;">
                             <!---->
                             <span class="mm-menu-title">
-																				<div class="right-click-menu-handler mail-menu-item-title ellipsis" @click="toggleFolder">
-																					<span class="flex items-center" title="文件夹">文件夹</span>
-																					<div>
-																						<div class="menu-item-operation-search">
-																							<div class="search-icon">
-																								<span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																										<path fill-rule="evenodd" clip-rule="evenodd" d="M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0zm-1.473 6.855a8.5 8.5 0 111.463-1.365l3.303 3.303a1 1 0 01-1.414 1.414l-3.352-3.352z"></path>
-																									</svg>
-																								</span>
-																							</div>
-																						</div>
-																					</div>
-																				</div>
+                              <div class="right-click-menu-handler mail-menu-item-title ellipsis" @click="toggleFolder">
+                                <span class="flex items-center" title="文件夹">文件夹</span>
+                                <div>
+                                  <div class="menu-item-operation-search">
+                                    <div class="search-icon">
+                                      <span class="okki-icon-wrap">​<svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                          height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                          fill="currentColor">
+                                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0zm-1.473 6.855a8.5 8.5 0 111.463-1.365l3.303 3.303a1 1 0 01-1.414 1.414l-3.352-3.352z">
+                                          </path>
+                                        </svg>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                               <!---->
-																				<span>
-																					<div class="mm-dropdown mail-nav-item-dropdown">
-																						<div class="mm-dropdown-trigger">
-																							<span class="okki-icon-wrap menu-item-operation-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																									<path d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z"></path>
-																								</svg>
-																							</span>
-																						</div>
-                                            <!---->
-																					</div>
-																				</span>
-																			</span>
-                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                              <span>
+                                <div class="mm-dropdown mail-nav-item-dropdown">
+                                  <div class="mm-dropdown-trigger">
+                                    <span class="okki-icon-wrap menu-item-operation-icon">​<svg
+                                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                        <path
+                                          d="M10 12a2 2 0 104 0 2 2 0 00-4 0zm0 7a2 2 0 104 0 2 2 0 00-4 0zm0-14a2 2 0 104 0 2 2 0 00-4 0z">
+                                        </path>
+                                      </svg>
+                                    </span>
+                                  </div>
+                                  <!---->
+                                </div>
+                              </span>
+                            </span>
+                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                              name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                              <path
+                                d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                              </path>
                             </svg>
                           </div>
-                          <FolderTree :folders="folders" v-show="isFolderOpen" @folder-selected="folderClick"></FolderTree>
+                          <FolderTree :folders="folders" v-show="isFolderOpen" @folder-selected="folderClick">
+                          </FolderTree>
                         </li>
 
 
-                        <li :class="['mm-submenu', isLabelOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"  role="menuitem" aria-haspopup="true" aria-expanded="true">
-                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleLabel">
+                        <li :class="['mm-submenu', isLabelOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"
+                          role="menuitem" aria-haspopup="true" aria-expanded="true">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;"
+                            @click="toggleLabel">
                             <span class="mm-menu-title">
                               <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                 <span class="flex items-center" title="标签邮件">标签邮件</span>
                               </div>
                             </span>
-                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" style="height: 12px; width: 12px;">
-                              <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                              name="chevrondown" style="height: 12px; width: 12px;">
+                              <path
+                                d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                              </path>
                             </svg>
                           </div>
                           <ul role="menu" class="mm-menu mm-menu--inline" v-show="isLabelOpen">
                             <!-- 系统标签 Section -->
-                            <li :class="['mm-submenu', isLabelSystemOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem">
-                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;" @click="toggleLabelSystem">
+                            <li
+                              :class="['mm-submenu', isLabelSystemOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"
+                              role="menuitem">
+                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;"
+                                @click="toggleLabelSystem">
                                 <span class="mm-menu-title">
                                   <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                     <span class="flex items-center" title="系统标签">系统标签</span>
                                   </div>
                                 </span>
-                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" style="height: 12px; width: 12px;">
-                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                                  name="chevrondown" style="height: 12px; width: 12px;">
+                                  <path
+                                    d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                                  </path>
                                 </svg>
                               </div>
                               <ul role="menu" class="mm-menu mm-menu--inline" v-show="isLabelSystemOpen">
-                                <li v-for="label in systemLabels" :key="label.id" class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_'+label.id }"
-                                    @click="labelClick(label.id)"
-                                >
+                                <li v-for="label in systemLabels" :key="label.id"
+                                  class="mm-menu-item mail-sidebar-menu-item"
+                                  :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_' + label.id }"
+                                  @click="labelClick(label.id)">
                                   <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': `rgb(${label.color})` }"></span>
+                                    <span class="mail-menu-item-tag-color"
+                                      :style="{ 'background-color': `rgb(${label.color})` }"></span>
                                     <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                       <span class="flex items-center" :title="label.name">{{ label.name }}</span>
                                     </div>
@@ -332,23 +404,31 @@
                             </li>
 
                             <!-- 自定义标签 Section -->
-                            <li :class="['mm-submenu', isLabelCustomOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem">
-                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;" @click="toggleLabelCustom">
+                            <li
+                              :class="['mm-submenu', isLabelCustomOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"
+                              role="menuitem">
+                              <div class="mm-submenu-title" style="padding-left: 35px; padding-right: 14px;"
+                                @click="toggleLabelCustom">
                                 <span class="mm-menu-title">
                                   <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                     <span class="flex items-center" title="自定义标签">自定义标签</span>
                                   </div>
                                 </span>
-                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" style="height: 12px; width: 12px;">
-                                  <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
+                                <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                                  name="chevrondown" style="height: 12px; width: 12px;">
+                                  <path
+                                    d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                                  </path>
                                 </svg>
                               </div>
                               <ul role="menu" class="mm-menu mm-menu--inline" v-show="isLabelCustomOpen">
-                                <li v-for="label in customLabels" :key="label.id" class="mm-menu-item mail-sidebar-menu-item"
-                                    :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_'+label.id }"
-                                    @click="labelClick(label.id)">
+                                <li v-for="label in customLabels" :key="label.id"
+                                  class="mm-menu-item mail-sidebar-menu-item"
+                                  :class="{ 'mm-menu-item--active': activeMenuItem === 'LABEL_' + label.id }"
+                                  @click="labelClick(label.id)">
                                   <div class="mail-sidebar-menu-item">
-                                    <span class="mail-menu-item-tag-color" :style="{ 'background-color': `rgb(${label.color})` }"></span>
+                                    <span class="mail-menu-item-tag-color"
+                                      :style="{ 'background-color': `rgb(${label.color})` }"></span>
                                     <div class="right-click-menu-handler mail-menu-item-title ellipsis">
                                       <span class="flex items-center" :title="label.name">{{ label.name }}</span>
                                     </div>
@@ -359,93 +439,104 @@
                           </ul>
                         </li>
 
-                    <li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']" role="menuitem" aria-haspopup="true" aria-expanded="true" nativeondragover="function(e){return(0,te.CV)(e,t)}" nativeondragleave="function(e){return(0,te.aB)(e,t)}" nativeondrop="function(e){return(0,te.LQ)(e,t)}">
-                    <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;" @click="toggleShowMore">
-                      <!---->
-                      <span class="mm-menu-title">
-                                                            <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                                                              <span class="flex items-center" title="显示更多">显示更多</span>
-                                                            </div>
-                        <!---->
-                        <!---->
-                                                          </span>
-                      <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                        <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                      </svg>
+                        <li :class="['mm-submenu', isShowMoreOpen ? 'mm-submenu--opened' : '', 'mail-sidebar-submenu']"
+                          role="menuitem" aria-haspopup="true" aria-expanded="true"
+                          nativeondragover="function(e){return(0,te.CV)(e,t)}"
+                          nativeondragleave="function(e){return(0,te.aB)(e,t)}"
+                          nativeondrop="function(e){return(0,te.LQ)(e,t)}">
+                          <div class="mm-submenu-title" style="padding-left: 14px; padding-right: 14px;"
+                            @click="toggleShowMore">
+                            <!---->
+                            <span class="mm-menu-title">
+                              <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                <span class="flex items-center" title="显示更多">显示更多</span>
+                              </div>
+                              <!---->
+                              <!---->
+                            </span>
+                            <svg class="mm-icon mm-icon-chevrondown mm-submenu-icon-arrow" viewBox="0 0 24 24"
+                              name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                              <path
+                                d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                              </path>
+                            </svg>
+                          </div>
+                          <ul role="menu" class="mm-menu mm-menu--inline" v-show="isShowMoreOpen">
+                            <li class="mm-menu-item mail-sidebar-menu-item"
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MAIL' }"
+                              @click="deletedMailClick" role="menuitem" tabindex="-1"
+                              nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                              style="padding-left: 35px; padding-right: 14px;">
+                              <!---->
+                              <!---->
+                              <div class="mail-sidebar-menu-item">
+                                <!---->
+                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                  <span class="flex items-center" title="已删除邮件">已删除邮件</span>
+                                </div>
+                                <!---->
+                                <!---->
+                              </div>
+                            </li>
+                            <li class="mm-menu-item mail-sidebar-menu-item"
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'SPAM' }" @click="spamMailClick"
+                              role="menuitem" tabindex="-1"
+                              nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                              style="padding-left: 35px; padding-right: 14px;">
+                              <!---->
+                              <!---->
+                              <div class="mail-sidebar-menu-item">
+                                <!---->
+                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                  <span class="flex items-center" title="垃圾邮件">垃圾邮件</span>
+                                </div>
+                                <!---->
+                                <!---->
+                              </div>
+                            </li>
+                            <li class="mm-menu-item mail-sidebar-menu-item"
+                              :class="{ 'mm-menu-item--active': activeMenuItem === 'TRACK_INFORMATION' }"
+                              @click="traceInformationClick" role="menuitem" tabindex="-1"
+                              nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}"
+                              style="padding-left: 35px; padding-right: 14px;">
+                              <!---->
+                              <!---->
+                              <div class="mail-sidebar-menu-item">
+                                <!---->
+                                <div class="right-click-menu-handler mail-menu-item-title ellipsis">
+                                  <span class="flex items-center" title="追踪信息">追踪信息</span>
+                                </div>
+                                <!---->
+                                <!---->
+                              </div>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
                     </div>
-                    <ul role="menu" class="mm-menu mm-menu--inline" v-show="isShowMoreOpen">
-                      <li class="mm-menu-item mail-sidebar-menu-item"
-                          :class="{ 'mm-menu-item--active': activeMenuItem === 'DELETED_MAIL' }"
-                          @click="deletedMailClick"
-                          role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                        <!---->
-                        <!---->
-                        <div class="mail-sidebar-menu-item">
-                          <!---->
-                          <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                            <span class="flex items-center" title="已删除邮件">已删除邮件</span>
-                          </div>
-                          <!---->
-                          <!---->
-                        </div>
-                      </li>
-                      <li class="mm-menu-item mail-sidebar-menu-item"
-                          :class="{ 'mm-menu-item--active': activeMenuItem === 'SPAM' }"
-                          @click="spamMailClick"
-                          role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                        <!---->
-                        <!---->
-                        <div class="mail-sidebar-menu-item">
-                          <!---->
-                          <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                            <span class="flex items-center" title="垃圾邮件">垃圾邮件</span>
-                          </div>
-                          <!---->
-                          <!---->
-                        </div>
-                      </li>
-                      <li class="mm-menu-item mail-sidebar-menu-item"
-                          :class="{ 'mm-menu-item--active': activeMenuItem === 'TRACK_INFORMATION' }"
-                          @click="traceInformationClick"
-                          role="menuitem" tabindex="-1" nativeonclick="function(e){e.stopPropagation(),n.gotoUpdate(M),M===w.e.MASS_BOX&&(0,h.M)(&quot;Email_catalogue_MassBox_view&quot;)}" style="padding-left: 35px; padding-right: 14px;">
-                        <!---->
-                        <!---->
-                        <div class="mail-sidebar-menu-item">
-                          <!---->
-                          <div class="right-click-menu-handler mail-menu-item-title ellipsis">
-                            <span class="flex items-center" title="追踪信息">追踪信息</span>
-                          </div>
-                          <!---->
-                          <!---->
-                        </div>
-                      </li>
-                    </ul>
-                    </li>
-                  </ul>
-            </div>
-
-                    <div class="customer-mail-nav" isbindemail="true" v-if="!isMailNavNormalContainerOpen">
+                    <!-- 客户 -->
+                    <div class="customer-mail-nav" isbindemail="true" v-else>
                       <div class="search-wrapper">
-																<span class="mm-input--prefix mm-input search-input">
-																	<!---->
-																	<span class="mm-input-affix-wrapper">
-																		<span class="mm-input-prefix--icon mm-input-prefix">
-																			<svg class="mm-icon mm-icon-search" viewBox="0 0 24 24" name="search"  fill="#b0adab">
-																				<path d="M22.9 20.9l-6.2-6.1c1.3-1.8 1.9-4 1.6-6.4-.6-3.9-3.8-7.1-7.8-7.4C5 .4.4 5 1 10.5c.3 4 3.5 7.3 7.4 7.8 2.4.3 4.6-.3 6.4-1.5l6.1 6.1c.3.3.7.3 1 0l.9-1c.3-.3.3-.7.1-1zM3.7 9.6c0-3.2 2.7-5.9 5.9-5.9 3.3 0 6 2.7 6 5.9 0 3.3-2.7 6-6 6-3.2 0-5.9-2.6-5.9-6z"></path>
-																			</svg>
-																		</span>
-																		<input placeholder="客户名称/编号/邮箱/联系人昵称" type="text" class="mm-input-inner" value="">
-                                    <!---->
-																	</span>
-                                  <!---->
-																</span>
+                        <span class="mm-input--prefix mm-input search-input">
+                          <!---->
+                          <span class="mm-input-affix-wrapper">
+                            <span class="mm-input-prefix--icon mm-input-prefix">
+                              <svg class="mm-icon mm-icon-search" viewBox="0 0 24 24" name="search" fill="#b0adab">
+                                <path
+                                  d="M22.9 20.9l-6.2-6.1c1.3-1.8 1.9-4 1.6-6.4-.6-3.9-3.8-7.1-7.8-7.4C5 .4.4 5 1 10.5c.3 4 3.5 7.3 7.4 7.8 2.4.3 4.6-.3 6.4-1.5l6.1 6.1c.3.3.7.3 1 0l.9-1c.3-.3.3-.7.1-1zM3.7 9.6c0-3.2 2.7-5.9 5.9-5.9 3.3 0 6 2.7 6 5.9 0 3.3-2.7 6-6 6-3.2 0-5.9-2.6-5.9-6z">
+                                </path>
+                              </svg>
+                            </span>
+                            <input placeholder="客户名称/编号/邮箱/联系人昵称" type="text" class="mm-input-inner" value="">
+                            <!---->
+                          </span>
+                          <!---->
+                        </span>
                       </div>
                       <div class="select-wrapper">
-                        <el-select v-model="selectedLabelTypeValue" placeholder="请选择" @change="handleLabelTypeSelectChange">
-                          <el-option
-                            v-for="item in labelTypeOptions"
-                            :key="item.value"
-                            :label="item.label"
+                        <el-select v-model="selectedLabelTypeValue" placeholder="请选择"
+                          @change="handleLabelTypeSelectChange">
+                          <el-option v-for="item in labelTypeOptions" :key="item.value" :label="item.label"
                             :value="item.value">
                           </el-option>
                         </el-select>
@@ -453,84 +544,108 @@
                       <div class="nav-wrap">
                         <div class="mm-tree--highlight-current mm-tree customer-mail-nav-tree" role="tree">
                           <div v-for="generalLabelTypeData in generalLabelTypeDatas" :key="generalLabelTypeData.id"
-                               :class="['is-focusable mm-tree-node', generalLabelTypeData.showGeneralChildren ? 'is-expanded' : '']"
-                               @click="toggleGeneralChildren(generalLabelTypeData)"
-                               aria-disabled="" draggable="false" role="treeitem" tabindex="0"
-                          >
+                            :class="['is-focusable mm-tree-node', generalLabelTypeData.showGeneralChildren ? 'is-expanded' : '']"
+                            @click="toggleGeneralChildren(generalLabelTypeData)" aria-disabled="" draggable="false"
+                            role="treeitem" tabindex="0">
                             <div class="mm-tree-node-content" style="padding-left: 14px;">
-																			<span class="mm-tree-node-expand-icon-wrapper">
-																				<svg :class="['mm-icon mm-icon-chevrondown tree-expand-icon', generalLabelTypeData.showGeneralChildren ? 'expanded' : '']" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																					<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																				</svg>
-																			</span>
+                              <span class="mm-tree-node-expand-icon-wrapper">
+                                <svg
+                                  :class="['mm-icon mm-icon-chevrondown tree-expand-icon', generalLabelTypeData.showGeneralChildren ? 'expanded' : '']"
+                                  viewBox="0 0 24 24" name="chevrondown" fill="currentColor"
+                                  style="height: 12px; width: 12px;">
+                                  <path
+                                    d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                                  </path>
+                                </svg>
+                              </span>
                               <!---->
                               <!---->
                               <span class="mm-tree-node-label-wrap">
-																				<span class="tree-node-text">
-																					<span class="ellipsis name">{{generalLabelTypeData.name}}</span>
-																					<span class="mm-tooltip count">
-																						<span class="mm-tooltip-trigger">
-																							<span>{{ generalLabelTypeData.customerCount }},{{ generalLabelTypeData.unReadEmailCount }}</span>
-																						</span>
-                                            <!---->
-																					</span>
-																				</span>
-																			</span>
-                            </div>
-                              <div v-if="generalLabelTypeData.showGeneralChildren" class="mm-tree-node-children" role="group">
-                                <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id"
-                                     class="is-focusable mm-tree-node"
-                                     :class="{ 'is-focusable mm-tree-node': activeMenuItem === 'CUSTOMER_'+customer.id }"
-                                     @click="customerClick(customer.id)"
-                                     aria-disabled="" draggable="false" role="treeitem" tabindex="-1"
-                                >
-                                  <div class="mm-tree-node-content" style="padding-left: 34px;">
-                                    <span class="mm-tree-node-expand-icon-wrapper">
-                                      <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
-                                        <path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-                                      </svg>
+                                <span class="tree-node-text">
+                                  <span class="ellipsis name">{{ generalLabelTypeData.name }}</span>
+                                  <span class="mm-tooltip count">
+                                    <span class="mm-tooltip-trigger">
+                                      <span>{{ generalLabelTypeData.customerCount }},{{
+                                        generalLabelTypeData.unReadEmailCount }}</span>
                                     </span>
-                                                                <!---->
-                                                                <!---->
-                                    <span class="mm-tree-node-label-wrap">
-                                      <a href="/pro/mail/customer?company_id=13952243948271" title="precisionelectronics.net" class="link ellipsis tree-node-text">
-                                        <div class="mm-popover empty-item-tooltip" props="[object Object]">
-                                          <div>
-                                            <span class="ellipsis name">{{customer.name}}</span>
-                                          </div>
-                                          <!---->
+                                    <!---->
+                                  </span>
+                                </span>
+                              </span>
+                            </div>
+                            <div v-if="generalLabelTypeData.showGeneralChildren" class="mm-tree-node-children"
+                              role="group">
+                              <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id"
+                                class="is-focusable mm-tree-node"
+                                :class="{ 'is-focusable mm-tree-node': activeMenuItem === 'CUSTOMER_' + customer.id }"
+                                @click="customerClick(customer.id)" aria-disabled="" draggable="false" role="treeitem"
+                                tabindex="-1">
+                                <div class="mm-tree-node-content" style="padding-left: 34px;">
+                                  <span class="mm-tree-node-expand-icon-wrapper">
+                                    <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24"
+                                      name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                                      <path
+                                        d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                                      </path>
+                                    </svg>
+                                  </span>
+                                  <!---->
+                                  <!---->
+                                  <span class="mm-tree-node-label-wrap">
+                                    <a href="/pro/mail/customer?company_id=13952243948271"
+                                      title="precisionelectronics.net" class="link ellipsis tree-node-text">
+                                      <div class="mm-popover empty-item-tooltip" props="[object Object]">
+                                        <div>
+                                          <span class="ellipsis name">{{ customer.name }}</span>
                                         </div>
                                         <!---->
-                                      </a>
-                                    </span>
-                                   </div>
-                                  </div>
+                                      </div>
+                                      <!---->
+                                    </a>
+                                  </span>
+                                </div>
                               </div>
+                            </div>
                           </div>
 
                           <div v-for="labelTypeData in labelTypeDatas" :key="labelTypeData.id"
-                               :class="['is-focusable mm-tree-node', labelTypeData.showChildren ? 'is-expanded' : '']"
-                               @click="toggleLabelTypeChildren(labelTypeData)"
-                               aria-disabled="" draggable="false" role="treeitem" tabindex="-1"
-                          >
+                            :class="['is-focusable mm-tree-node', labelTypeData.showChildren ? 'is-expanded' : '']"
+                            @click="toggleLabelTypeChildren(labelTypeData)" aria-disabled="" draggable="false"
+                            role="treeitem" tabindex="-1">
                             <div class="mm-tree-node-content" style="padding-left: 14px;">
-																			<span class="mm-tree-node-expand-icon-wrapper">
-																				<svg :class="['mm-icon mm-icon-chevrondown tree-expand-icon', labelTypeData.showChildren ? 'expanded' : '']" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																					<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																				</svg>
-																			</span>
+                              <span class="mm-tree-node-expand-icon-wrapper">
+                                <svg
+                                  :class="['mm-icon mm-icon-chevrondown tree-expand-icon', labelTypeData.showChildren ? 'expanded' : '']"
+                                  viewBox="0 0 24 24" name="chevrondown" fill="currentColor"
+                                  style="height: 12px; width: 12px;">
+                                  <path
+                                    d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                                  </path>
+                                </svg>
+                              </span>
                               <!---->
                               <!---->
                               <span class="mm-tree-node-label-wrap">
                                 <div class="tree-node-text" v-if="selectedLabelTypeValue == 5">
-                                  <span v-for="number in Array.from({ length: labelTypeData.name }).fill()" :key="number" class="okki-icon-wrap" color="#F7BA2A">​<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#F7BA2A">
-                                      <path d="M22 9.67a1 1 0 00-.86-.67l-5.69-.83L12.9 3a1 1 0 00-1.8 0L8.55 8.16 2.86 9a1 1 0 00-.81.68 1 1 0 00.25 1l4.13 4-1 5.68a1 1 0 001.45 1.07L12 18.76l5.1 2.68c.14.08.299.12.46.12a1 1 0 00.59-.19 1 1 0 00.4-1l-1-5.68 4.13-4A1 1 0 0022 9.67z"></path>
+                                  <span v-for="number in Array.from({ length: labelTypeData.name }).fill()" :key="number"
+                                    class="okki-icon-wrap" color="#F7BA2A">​<svg xmlns="http://www.w3.org/2000/svg"
+                                      width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                      fill="#F7BA2A">
+                                      <path
+                                        d="M22 9.67a1 1 0 00-.86-.67l-5.69-.83L12.9 3a1 1 0 00-1.8 0L8.55 8.16 2.86 9a1 1 0 00-.81.68 1 1 0 00.25 1l4.13 4-1 5.68a1 1 0 001.45 1.07L12 18.76l5.1 2.68c.14.08.299.12.46.12a1 1 0 00.59-.19 1 1 0 00.4-1l-1-5.68 4.13-4A1 1 0 0022 9.67z">
+                                      </path>
                                     </svg>
                                   </span>
-                                  <span v-for="number in Array.from({ length: Math.max(0, 5 - labelTypeData.name) }).fill()" :key="number" class="okki-icon-wrap" color="#e8e8e8">​<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#e8e8e8">
-                                    <path d="M22 9.67a1 1 0 00-.86-.67l-5.69-.83L12.9 3a1 1 0 00-1.8 0L8.55 8.16 2.86 9a1 1 0 00-.81.68 1 1 0 00.25 1l4.13 4-1 5.68a1 1 0 001.45 1.07L12 18.76l5.1 2.68c.14.08.299.12.46.12a1 1 0 00.59-.19 1 1 0 00.4-1l-1-5.68 4.13-4A1 1 0 0022 9.67z"></path>
-                                  </svg>
-                                </span>
+                                  <span
+                                    v-for="number in Array.from({ length: Math.max(0, 5 - labelTypeData.name) }).fill()"
+                                    :key="number" class="okki-icon-wrap" color="#e8e8e8">​<svg
+                                      xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                      aria-hidden="true" class="okki-svg-icon" fill="#e8e8e8">
+                                      <path
+                                        d="M22 9.67a1 1 0 00-.86-.67l-5.69-.83L12.9 3a1 1 0 00-1.8 0L8.55 8.16 2.86 9a1 1 0 00-.81.68 1 1 0 00.25 1l4.13 4-1 5.68a1 1 0 001.45 1.07L12 18.76l5.1 2.68c.14.08.299.12.46.12a1 1 0 00.59-.19 1 1 0 00.4-1l-1-5.68 4.13-4A1 1 0 0022 9.67z">
+                                      </path>
+                                    </svg>
+                                  </span>
                                 </div>
                                 <div class="tree-node-text" v-else>
                                   <span class="ellipsis name">{{ labelTypeData.name }}</span>
@@ -543,26 +658,33 @@
                               </span>
                             </div>
                             <div v-if="labelTypeData.showChildren" class="mm-tree-node-children" role="group">
-                              <div v-for="customer in labelTypeData.customerList" :key="customer.id" class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                              <div v-for="customer in labelTypeData.customerList" :key="customer.id"
+                                class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem"
+                                tabindex="-1">
                                 <div class="mm-tree-node-content" style="padding-left: 34px;">
-																					<span class="mm-tree-node-expand-icon-wrapper">
-																						<svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24" name="chevrondown"  fill="currentColor" style="height: 12px; width: 12px;">
-																							<path d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z"></path>
-																						</svg>
-																					</span>
+                                  <span class="mm-tree-node-expand-icon-wrapper">
+                                    <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24"
+                                      name="chevrondown" fill="currentColor" style="height: 12px; width: 12px;">
+                                      <path
+                                        d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
+                                      </path>
+                                    </svg>
+                                  </span>
                                   <!---->
                                   <!---->
                                   <span class="mm-tree-node-label-wrap">
-																						<a data-savepage-href="/pro/mail/customer?company_id=13952243948271" href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13952243948271" title="precisionelectronics.net" class="link ellipsis tree-node-text">
-																							<div class="mm-popover empty-item-tooltip" props="[object Object]">
-																								<div>
-																									<span class="ellipsis name">{{customer.name}}</span>
-																								</div>
-                                                <!---->
-																							</div>
-                                              <!---->
-																						</a>
-																					</span>
+                                    <a data-savepage-href="/pro/mail/customer?company_id=13952243948271"
+                                      href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13952243948271"
+                                      title="precisionelectronics.net" class="link ellipsis tree-node-text">
+                                      <div class="mm-popover empty-item-tooltip" props="[object Object]">
+                                        <div>
+                                          <span class="ellipsis name">{{ customer.name }}</span>
+                                        </div>
+                                        <!---->
+                                      </div>
+                                      <!---->
+                                    </a>
+                                  </span>
                                 </div>
                                 <!---->
                               </div>
@@ -572,67 +694,62 @@
                           <div class="mm-tree-drop-indicator" style="display: none;"></div>
                         </div>
                       </div>
-                      <div class="nav-max-customer-tip ellipsis" title="为了性能，每组最多展示200个客户，客户过多时建议直接搜索">为了性能，每组最多展示200个客户，客户过多时建议直接搜索</div>
+                      <div class="nav-max-customer-tip ellipsis" title="为了性能，每组最多展示200个客户，客户过多时建议直接搜索">
+                        为了性能，每组最多展示200个客户，客户过多时建议直接搜索</div>
                     </div>
-</div>
-</nav>
-<span :class="['position-toogle', isLeftPaneVisible ? 'expanding' : 'collapsing']" @click="toggleLeftPane">
-														<i class="m-icon icon-left-small"></i>
-													</span>
-</div>
-</div>
-<div class="mm-split-trigger-wrap" :style="{left: isLeftPaneVisible ? '12.2835%' : '1.08225%'}">
-<div class="mm-split-trigger mm-split-trigger-vertical">
-  <div class="mm-split-trigger-bar-wrap">
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
-    <i class="mm-split-trigger-bar"></i>
+                  </div>
+                </nav>
+                <span :class="['position-toogle', isLeftPaneVisible ? 'expanding' : 'collapsing']"
+                  @click="toggleLeftPane">
+                  <i class="m-icon icon-left-small"></i>
+                </span>
+              </div>
+            </div>
+            <div class="mm-split-trigger-wrap" :style="{ left: isLeftPaneVisible ? '12.2835%' : '1.08225%' }">
+              <div class="mm-split-trigger mm-split-trigger-vertical">
+                <div class="mm-split-trigger-bar-wrap">
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                  <i class="mm-split-trigger-bar"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- 使用动态组件切换BC布局 -->
+            <component v-if="currentLayout" :is="currentLayout" :key="currentLayout" :selectedEmail="selectedEmail"
+              :emailData="emailData" :emailTotal="emailTotal" :selectedTaskId="selectedTaskId"
+              :emailType="currentEmailType" :writeEmailType="writeEmailType" :type="isMailNavNormalContainerOpen"
+              @switch="switchLayout"></component>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <div class="side-chat-button-wrap" style="display: none;">
+      <div class="side-chat-button">
+        <span class="close-btn">
+          <svg class="svg-icon" aria-hidden="true" color="rgba(0,0,0,0.5)" style="width: 16px; height: 16px;">
+            <use xlink:href="#common-iconfont-close-btn"></use>
+          </svg>
+        </span>
+        <i class="common-iconfont common-iconfont-chat1" style="font-size: 18px; color: rgb(255, 255, 255);"></i>
+        <div class="chat-text">客服</div>
+      </div>
+    </div>
+    <!---->
+    <div class="novice-wrapper">
+      <!---->
+      <!--portal-->
+    </div>
+    <div style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 999999; pointer-events: none;">
+    </div>
   </div>
-</div>
-</div>
-
-<!-- 使用动态组件切换BC布局 -->
-            <component
-              :is="currentLayout"
-              :key="currentLayout"
-              :selectedEmail="selectedEmail"
-              :emailData="emailData"
-              :emailTotal="emailTotal"
-              :selectedTaskId="selectedTaskId"
-              :emailType="currentEmailType"
-              :writeEmailType="writeEmailType"
-              :type="isMailNavNormalContainerOpen"
-              @switch="switchLayout"
-            ></component>
-
-</div>
-</div>
-</div>
-</div>
-<!---->
-<div class="side-chat-button-wrap" style="display: none;">
-<div class="side-chat-button">
-									<span class="close-btn">
-										<svg class="svg-icon" aria-hidden="true" color="rgba(0,0,0,0.5)" style="width: 16px; height: 16px;">
-											<use xlink:href="#common-iconfont-close-btn"></use>
-										</svg>
-									</span>
-  <i class="common-iconfont common-iconfont-chat1" style="font-size: 18px; color: rgb(255, 255, 255);"></i>
-  <div class="chat-text">客服</div>
-</div>
-</div>
-<!---->
-<div class="novice-wrapper">
-<!---->
-<!--portal-->
-</div>
-<div style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 999999; pointer-events: none;"></div>
-</div>
 </template>
 
 <style lang="scss">
@@ -665,11 +782,12 @@ import writeEmailLayout from './write_email.vue';
 import sendSuccessLayout from './send_success.vue';
 import setup from './setup.vue';
 import FolderTree from './folder_list_item.vue'
-import {listTaskPull, listTaskSend} from "@/api/email/task";
+import CustomerEmailLayout from './customer_email/index.vue'
+import { listTaskPull, listTaskSend } from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
 import { listLabel } from "@/api/email/label";
 import { countMenu } from "@/api/email/email";
-import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, ratingList, activityList} from "@/api/customer/email";
+import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, ratingList, activityList } from "@/api/customer/email";
 import { EventBus } from "@/api/email/event-bus";
 
 export default {
@@ -698,7 +816,7 @@ export default {
       isLabelCustomOpen: true,
       isDropdownShown: false,
       menuCount: {},
-      isMailNavNormalContainerOpen : true,
+      isMailNavNormalContainerOpen: true,
       selectedLabelTypeValue: null,
       generalLabelTypeDatas: null,
       labelTypeDatas: null,
@@ -729,11 +847,13 @@ export default {
     'write_email': writeEmailLayout,
     'send_success': sendSuccessLayout,
     'setup': setup,
-    'FolderTree': FolderTree
+    'FolderTree': FolderTree,
+    'customer_email':CustomerEmailLayout
   },
 
   methods: {
     switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
+      console.log('layoutName',layoutName);
       this.currentLayout = layoutName;
       this.selectedEmail = email;
       this.emailData = emailData;
@@ -795,7 +915,6 @@ export default {
     // 文件夹
     folderClick(folderId) {
       const active = 'FOLDER_' + folderId;
-      this.selectedTaskId = active
       this.triggerEmailHeaderEvent(active);
     },
 
@@ -853,7 +972,7 @@ export default {
       this.currentEmailType = emailType
       this.setActive(emailType);
       this.switchLayout('email_header');
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         EventBus.$emit('email-header', emailType, currentPage, this.labels);
       })
     },
@@ -904,12 +1023,14 @@ export default {
 
     toggleType(isMailNavNormalContainerOpen) {
       this.isMailNavNormalContainerOpen = isMailNavNormalContainerOpen;
-
       if (!this.isMailNavNormalContainerOpen) {
+        this.currentLayout = 'customer_email'
         if (this.labelTypeOptions.length > 0) {
           this.selectedLabelTypeValue = this.labelTypeOptions[0].value;
           this.labelTypeDataList(this.selectedLabelTypeValue);
         }
+      } else {
+        this.allReceivedClick()
       }
     },
 
@@ -992,7 +1113,7 @@ export default {
     });
 
     EventBus.$on('switch-email-header', (emailType, currentPage) => {
-      this.triggerEmailHeaderEvent(emailType,currentPage)
+      this.triggerEmailHeaderEvent(emailType, currentPage)
     });
 
     EventBus.$on('refresh-index-task-list', () => {
