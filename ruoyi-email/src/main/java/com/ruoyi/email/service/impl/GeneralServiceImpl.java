@@ -1,12 +1,16 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.vo.GeneralVO;
+import com.ruoyi.email.domain.vo.TaskListVO;
+import com.ruoyi.email.mapper.TaskMapper;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.GeneralMapper;
 import com.ruoyi.email.domain.General;
@@ -25,6 +29,8 @@ public class GeneralServiceImpl implements IGeneralService
 {
     @Resource
     private GeneralMapper generalMapper;
+    @Resource
+    private TaskMapper taskMapper;
 
     /**
      * 查询邮箱常规
@@ -124,6 +130,35 @@ public class GeneralServiceImpl implements IGeneralService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        return generalMapper.getByCreateId(userId);
+        GeneralVO generalVO = generalMapper.getByCreateId(userId);
+        if (generalVO == null) {
+            generalVO = new GeneralVO();
+        }
+
+        return generalVO;
+    }
+
+    /**
+     * 获取默认任务列表
+     * @return
+     */
+    @Override
+    public List<TaskListVO> defaultTaskList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        Task taskParam = new Task();
+        taskParam.setCreateId(userId);
+        taskParam.setDelFlag("0");
+        List<Task> taskList = taskMapper.selectTaskList(taskParam);
+        List<TaskListVO> taskVOList = new ArrayList<>();
+        for (Task task : taskList) {
+            TaskListVO taskVO = new TaskListVO();
+            taskVO.setId(task.getId());
+            taskVO.setAccount(task.getAccount());
+            taskVOList.add(taskVO);
+        }
+
+        return taskVOList;
     }
 }

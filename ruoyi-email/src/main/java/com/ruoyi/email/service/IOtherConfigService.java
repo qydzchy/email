@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.OtherConfig;
+import com.ruoyi.email.domain.vo.OtherConfigVO;
 
 /**
  * 其他配置Service接口
@@ -58,4 +59,10 @@ public interface IOtherConfigService
      * @return 结果
      */
     public int deleteOtherConfigById(Long id);
+
+    /**
+     * 获取其他配置信息
+     * @return
+     */
+    OtherConfigVO getInfo();
 }

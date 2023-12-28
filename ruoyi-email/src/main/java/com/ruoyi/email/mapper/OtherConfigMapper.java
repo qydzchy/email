@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.OtherConfig;
+import com.ruoyi.email.domain.vo.OtherConfigVO;
 
 /**
  * 其他配置Mapper接口
@@ -58,4 +59,11 @@ public interface OtherConfigMapper
      * @return 结果
      */
     public int deleteOtherConfigByIds(Long[] ids);
+
+    /**
+     * 根据创建人id查询
+     * @param userId
+     * @return
+     */
+    OtherConfigVO getByCreateId(Long userId);
 }

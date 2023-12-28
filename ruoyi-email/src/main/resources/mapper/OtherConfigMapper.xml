@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.email.mapper.OtherConfigMapper">
-    
+
     <resultMap type="OtherConfig" id="OtherConfigResult">
         <result property="id"    column="id"    />
         <result property="delayedMailDelivery"    column="delayed_mail_delivery"    />
@@ -14,19 +14,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="pendingClose"    column="pending_close"    />
         <result property="automationPending"    column="automation_pending"    />
         <result property="abnormalMailboxDetection"    column="abnormal_mailbox_detection"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectOtherConfigVo">
-        select id, delayed_mail_delivery, sending_interval, local_real_time_time, email_reminders_flag, email_translation_function_flag, pending_close, automation_pending, abnormal_mailbox_detection, create_by, create_time, update_by, update_time from mailbox_other_config
+        select id, delayed_mail_delivery, sending_interval, local_real_time_time, email_reminders_flag, email_translation_function_flag, pending_close, automation_pending, abnormal_mailbox_detection, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_other_config
     </sql>
 
     <select id="selectOtherConfigList" parameterType="OtherConfig" resultMap="OtherConfigResult">
         <include refid="selectOtherConfigVo"/>
-        <where>  
+        <where>
             <if test="delayedMailDelivery != null "> and delayed_mail_delivery = #{delayedMailDelivery}</if>
             <if test="sendingInterval != null  and sendingInterval != ''"> and sending_interval = #{sendingInterval}</if>
             <if test="localRealTimeTime != null "> and local_real_time_time = #{localRealTimeTime}</if>
@@ -35,14 +38,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingClose != null "> and pending_close = #{pendingClose}</if>
             <if test="automationPending != null "> and automation_pending = #{automationPending}</if>
             <if test="abnormalMailboxDetection != null "> and abnormal_mailbox_detection = #{abnormalMailboxDetection}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
         </where>
     </select>
-    
+
     <select id="selectOtherConfigById" parameterType="Long" resultMap="OtherConfigResult">
         <include refid="selectOtherConfigVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.OtherConfigVO">
+        select id, delayed_mail_delivery as delayedMailDelivery, sending_interval as sendingInterval, local_real_time_time as localRealTimeTime, email_reminders_flag as emailRemindersFlag, email_translation_function_flag as emailTranslationFunctionFlag, pending_close as pendingClose, automation_pending as automationPending, abnormal_mailbox_detection as abnormalMailboxDetection from mailbox_other_config
+        where create_id = #{createId} and del_flag = '0'
+    </select>
+
     <insert id="insertOtherConfig" parameterType="OtherConfig" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_other_config
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -54,11 +64,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingClose != null">pending_close,</if>
             <if test="automationPending != null">automation_pending,</if>
             <if test="abnormalMailboxDetection != null">abnormal_mailbox_detection,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createId != null">create_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="delayedMailDelivery != null">#{delayedMailDelivery},</if>
             <if test="sendingInterval != null and sendingInterval != ''">#{sendingInterval},</if>
@@ -68,11 +81,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingClose != null">#{pendingClose},</if>
             <if test="automationPending != null">#{automationPending},</if>
             <if test="abnormalMailboxDetection != null">#{abnormalMailboxDetection},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateOtherConfig" parameterType="OtherConfig">
@@ -86,8 +102,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pendingClose != null">pending_close = #{pendingClose},</if>
             <if test="automationPending != null">automation_pending = #{automationPending},</if>
             <if test="abnormalMailboxDetection != null">abnormal_mailbox_detection = #{abnormalMailboxDetection},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -99,7 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteOtherConfigByIds" parameterType="String">
-        delete from mailbox_other_config where id in 
+        delete from mailbox_other_config where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

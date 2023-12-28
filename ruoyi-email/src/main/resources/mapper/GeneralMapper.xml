@@ -175,7 +175,7 @@
     </delete>
 
     <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.GeneralVO">
-        select id, default_task_id as defaultTaskId, max_per_page as maxPerPage, email_reading_mode_flag as emailReadingModeFlag, move_delete_report as moveDeleteReport, language, default_font as defaultFont, font_size as fontSize, word_color as wordColor, group_box_view as groupBoxView, remind, signature_id as signatureId, write_letter as writeLetter, auto_response_flag as autoResponseFlag, start_time as startTime, last_day as lastDay, re_content as reContent from mailbox_general
+        select id, default_task_id as defaultTaskId, max_per_page as maxPerPage, email_reading_mode_flag as emailReadingModeFlag, move_delete_report as moveDeleteReport, language, default_font as defaultFont, font_size as fontSize, font_color as fontColor, group_box_view as groupBoxView, mass_email_display as massEmailDisplay, remind, signature_id as signatureId, write_letter as writeLetter, paste_format as pasteFormat, auto_response_flag as autoResponseFlag, start_time as startTime, last_day_flag as lastDayFlag, last_day as lastDay, re_content as reContent from mailbox_general
         where create_id = #{createId} and del_flag = '0' order by create_time desc limit 1
     </select>
 </mapper>

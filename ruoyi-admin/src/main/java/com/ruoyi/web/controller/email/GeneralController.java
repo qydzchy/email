@@ -24,6 +24,17 @@ public class GeneralController extends BaseController
     private IGeneralService generalService;
 
     /**
+     * 默认邮箱列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:general:default:task:list')")
+    @GetMapping(value = "/default/task/list")
+    public AjaxResult defaultTaskList()
+    {
+        return success(generalService.defaultTaskList());
+    }
+
+
+    /**
      * 获取邮箱常规详细信息
      */
     @PreAuthorize("@ss.hasPermi('email:general:get:info')")

@@ -1,12 +1,18 @@
 package com.ruoyi.email.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.email.domain.vo.OtherConfigVO;
 import com.ruoyi.email.service.IOtherConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.OtherConfigMapper;
 import com.ruoyi.email.domain.OtherConfig;
+
+import javax.annotation.Resource;
 
 /**
  * 其他配置Service业务层处理
@@ -16,7 +22,8 @@ import com.ruoyi.email.domain.OtherConfig;
  */
 @Service
 public class OtherConfigServiceImpl implements IOtherConfigService {
-    @Autowired
+
+    @Resource
     private OtherConfigMapper otherConfigMapper;
 
     /**
@@ -65,7 +72,21 @@ public class OtherConfigServiceImpl implements IOtherConfigService {
     @Override
     public int updateOtherConfig(OtherConfig otherConfig)
     {
-        otherConfig.setUpdateTime(DateUtils.getNowDate());
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        String username = loginUser.getUsername();
+        Date now = DateUtils.getNowDate();
+
+        otherConfig.setUpdateId(userId);
+        otherConfig.setUpdateBy(username);
+        otherConfig.setUpdateTime(now);
+        if (otherConfig.getId() == null) {
+            otherConfig.setCreateId(userId);
+            otherConfig.setCreateBy(username);
+            otherConfig.setCreateTime(now);
+            return otherConfigMapper.insertOtherConfig(otherConfig);
+        }
+
         return otherConfigMapper.updateOtherConfig(otherConfig);
     }
 
@@ -91,5 +112,22 @@ public class OtherConfigServiceImpl implements IOtherConfigService {
     public int deleteOtherConfigById(Long id)
     {
         return otherConfigMapper.deleteOtherConfigById(id);
+    }
+
+    /**
+     * 获取其他配置信息
+     * @return
+     */
+    @Override
+    public OtherConfigVO getInfo() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(userId);
+        if (otherConfigVO == null) {
+            otherConfigVO = new OtherConfigVO();
+        }
+
+        return otherConfigVO;
     }
 }
