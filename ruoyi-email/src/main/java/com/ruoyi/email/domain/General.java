@@ -81,8 +81,8 @@ public class General extends BaseEntity
     private Integer autoResponseFlag;
 
     /** 开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     /** 最后一天标识 1.勾选 0未选 */
@@ -90,8 +90,8 @@ public class General extends BaseEntity
     private Integer lastDayFlag;
 
     /** 最后一天 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "最后一天", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "最后一天", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date lastDay;
 
     /** 回复内容 */

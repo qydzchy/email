@@ -57,14 +57,14 @@ public class GeneralVO {
     private Integer autoResponseFlag;
 
     /** 开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     /** 最后一天标识 1.勾选 0未选 */
     private Integer lastDayFlag;
 
     /** 最后一天 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastDay;
 
     /** 回复内容 */

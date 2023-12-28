@@ -7,9 +7,9 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 其他配置对象 mailbox_other_config
- * 
+ *
  * @author tangJM
- * @date 2023-07-31
+ * @date 2023-12-28
  */
 public class OtherConfig extends BaseEntity
 {
@@ -50,104 +50,145 @@ public class OtherConfig extends BaseEntity
     @Excel(name = "异常邮箱检测: 0.停用 1.启用")
     private Integer abnormalMailboxDetection;
 
-    public void setId(Long id) 
+    /** 删除标志(0代表存在2代表删除) */
+    private String delFlag;
+
+    /** 创建者ID */
+    @Excel(name = "创建者ID")
+    private Long createId;
+
+    /** 更新者ID */
+    @Excel(name = "更新者ID")
+    private Long updateId;
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setDelayedMailDelivery(Integer delayedMailDelivery) 
+    public void setDelayedMailDelivery(Integer delayedMailDelivery)
     {
         this.delayedMailDelivery = delayedMailDelivery;
     }
 
-    public Integer getDelayedMailDelivery() 
+    public Integer getDelayedMailDelivery()
     {
         return delayedMailDelivery;
     }
-    public void setSendingInterval(String sendingInterval) 
+    public void setSendingInterval(String sendingInterval)
     {
         this.sendingInterval = sendingInterval;
     }
 
-    public String getSendingInterval() 
+    public String getSendingInterval()
     {
         return sendingInterval;
     }
-    public void setLocalRealTimeTime(Integer localRealTimeTime) 
+    public void setLocalRealTimeTime(Integer localRealTimeTime)
     {
         this.localRealTimeTime = localRealTimeTime;
     }
 
-    public Integer getLocalRealTimeTime() 
+    public Integer getLocalRealTimeTime()
     {
         return localRealTimeTime;
     }
-    public void setEmailRemindersFlag(Integer emailRemindersFlag) 
+    public void setEmailRemindersFlag(Integer emailRemindersFlag)
     {
         this.emailRemindersFlag = emailRemindersFlag;
     }
 
-    public Integer getEmailRemindersFlag() 
+    public Integer getEmailRemindersFlag()
     {
         return emailRemindersFlag;
     }
-    public void setEmailTranslationFunctionFlag(Integer emailTranslationFunctionFlag) 
+    public void setEmailTranslationFunctionFlag(Integer emailTranslationFunctionFlag)
     {
         this.emailTranslationFunctionFlag = emailTranslationFunctionFlag;
     }
 
-    public Integer getEmailTranslationFunctionFlag() 
+    public Integer getEmailTranslationFunctionFlag()
     {
         return emailTranslationFunctionFlag;
     }
-    public void setPendingClose(Integer pendingClose) 
+    public void setPendingClose(Integer pendingClose)
     {
         this.pendingClose = pendingClose;
     }
 
-    public Integer getPendingClose() 
+    public Integer getPendingClose()
     {
         return pendingClose;
     }
-    public void setAutomationPending(Integer automationPending) 
+    public void setAutomationPending(Integer automationPending)
     {
         this.automationPending = automationPending;
     }
 
-    public Integer getAutomationPending() 
+    public Integer getAutomationPending()
     {
         return automationPending;
     }
-    public void setAbnormalMailboxDetection(Integer abnormalMailboxDetection) 
+    public void setAbnormalMailboxDetection(Integer abnormalMailboxDetection)
     {
         this.abnormalMailboxDetection = abnormalMailboxDetection;
     }
 
-    public Integer getAbnormalMailboxDetection() 
+    public Integer getAbnormalMailboxDetection()
     {
         return abnormalMailboxDetection;
+    }
+    public void setDelFlag(String delFlag)
+    {
+        this.delFlag = delFlag;
+    }
+
+    public String getDelFlag()
+    {
+        return delFlag;
+    }
+    public void setCreateId(Long createId)
+    {
+        this.createId = createId;
+    }
+
+    public Long getCreateId()
+    {
+        return createId;
+    }
+    public void setUpdateId(Long updateId)
+    {
+        this.updateId = updateId;
+    }
+
+    public Long getUpdateId()
+    {
+        return updateId;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("delayedMailDelivery", getDelayedMailDelivery())
-            .append("sendingInterval", getSendingInterval())
-            .append("localRealTimeTime", getLocalRealTimeTime())
-            .append("emailRemindersFlag", getEmailRemindersFlag())
-            .append("emailTranslationFunctionFlag", getEmailTranslationFunctionFlag())
-            .append("pendingClose", getPendingClose())
-            .append("automationPending", getAutomationPending())
-            .append("abnormalMailboxDetection", getAbnormalMailboxDetection())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+                .append("id", getId())
+                .append("delayedMailDelivery", getDelayedMailDelivery())
+                .append("sendingInterval", getSendingInterval())
+                .append("localRealTimeTime", getLocalRealTimeTime())
+                .append("emailRemindersFlag", getEmailRemindersFlag())
+                .append("emailTranslationFunctionFlag", getEmailTranslationFunctionFlag())
+                .append("pendingClose", getPendingClose())
+                .append("automationPending", getAutomationPending())
+                .append("abnormalMailboxDetection", getAbnormalMailboxDetection())
+                .append("delFlag", getDelFlag())
+                .append("createId", getCreateId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateId", getUpdateId())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .toString();
     }
 }

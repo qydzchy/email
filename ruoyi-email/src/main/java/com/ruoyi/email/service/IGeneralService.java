@@ -3,6 +3,7 @@ package com.ruoyi.email.service;
 import java.util.List;
 import com.ruoyi.email.domain.General;
 import com.ruoyi.email.domain.vo.GeneralVO;
+import com.ruoyi.email.domain.vo.TaskListVO;
 
 /**
  * 邮箱常规Service接口
@@ -65,4 +66,10 @@ public interface IGeneralService
      * @return
      */
     GeneralVO getInfo();
+
+    /**
+     * 默认邮箱任务列表
+     * @return
+     */
+    List<TaskListVO> defaultTaskList();
 }

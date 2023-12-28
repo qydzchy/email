@@ -3926,20 +3926,23 @@ INSERT INTO `mailbox_label` VALUES (10, '标签5', '172, 172, 172', 2, NULL, '0'
 DROP TABLE IF EXISTS `mailbox_other_config`;
 CREATE TABLE `mailbox_other_config`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `delayed_mail_delivery` tinyint(1) NOT NULL DEFAULT 1 COMMENT '邮件延迟发送: 1.即可发送 2.延迟30秒发送 3.延迟1分钟发送 4.延迟2分钟发送延迟 5.延迟5分钟发送',
-  `sending_interval` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '发送间隔',
-  `local_real_time_time` tinyint(1) NOT NULL COMMENT '当地实时时间: 0.停用 1.启用',
-  `email_reminders_flag` tinyint(1) NOT NULL COMMENT '邮件发送提醒: 1.弹窗提醒 2.不提醒',
-  `email_translation_function_flag` tinyint(1) NOT NULL COMMENT '邮件翻译功能: 0.停用 1.启用',
-  `pending_close` tinyint(1) NOT NULL COMMENT '待处理关闭: 1.回复邮件后自动关闭待处理状态 2.手动关闭待处理状态',
-  `automation_pending` tinyint(1) NOT NULL COMMENT '自动化待处理: 0.停用 1.启用',
-  `abnormal_mailbox_detection` tinyint(1) NOT NULL COMMENT '异常邮箱检测: 0.停用 1.启用',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '更新者',
-  `update_time` datetime(0) NOT NULL COMMENT '更新时间',
+  `delayed_mail_delivery` tinyint(1) NULL DEFAULT 1 COMMENT '邮件延迟发送: 1.即可发送 2.延迟30秒发送 3.延迟1分钟发送 4.延迟2分钟发送延迟 5.延迟5分钟发送',
+  `sending_interval` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发送间隔',
+  `local_real_time_time` tinyint(1) NULL DEFAULT NULL COMMENT '当地实时时间: 0.停用 1.启用',
+  `email_reminders_flag` tinyint(1) NULL DEFAULT NULL COMMENT '邮件发送提醒: 1.弹窗提醒 2.不提醒',
+  `email_translation_function_flag` tinyint(1) NULL DEFAULT NULL COMMENT '邮件翻译功能: 0.停用 1.启用',
+  `pending_close` tinyint(1) NULL DEFAULT NULL COMMENT '待处理关闭: 1.回复邮件后自动关闭待处理状态 2.手动关闭待处理状态',
+  `automation_pending` tinyint(1) NULL DEFAULT NULL COMMENT '自动化待处理: 0.停用 1.启用',
+  `abnormal_mailbox_detection` tinyint(1) NULL DEFAULT NULL COMMENT '异常邮箱检测: 0.停用 1.启用',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '其他配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '其他配置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mailbox_other_config
