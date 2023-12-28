@@ -7,9 +7,9 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 收发件规则对象 mailbox_transceiver_rule
- * 
+ *
  * @author tangJM
- * @date 2023-07-31
+ * @date 2023-12-28
  */
 public class TransceiverRule extends BaseEntity
 {
@@ -22,8 +22,8 @@ public class TransceiverRule extends BaseEntity
     @Excel(name = "规则类型: 1.收件规则 2.发件规则")
     private Integer ruleType;
 
-    /** 基本信息-规则名称 */
-    @Excel(name = "基本信息-规则名称")
+    /** 规则名称 */
+    @Excel(name = "规则名称")
     private String ruleName;
 
     /** 执行条件: 1.执行以下操作 2.满足以下任一条件 */
@@ -38,9 +38,41 @@ public class TransceiverRule extends BaseEntity
     @Excel(name = "执行操作: 1.执行以下操作 2.移动到【已删除邮件】")
     private Integer executeOperation;
 
-    /** 执行操作内容 */
-    @Excel(name = "执行操作内容")
-    private String executeOperationContent;
+    /** 是否固定: 0.否 1.是 */
+    @Excel(name = "是否固定: 0.否 1.是")
+    private Integer fixedFlag;
+
+    /** 是否已读: 0.否 1.是 */
+    @Excel(name = "是否已读: 0.否 1.是")
+    private Integer readFlag;
+
+    /** 文件夹ID,系统文件夹 */
+    @Excel(name = "文件夹ID,系统文件夹")
+    private Long folderId;
+
+    /** 转发至 */
+    @Excel(name = "转发至")
+    private String forwardTo;
+
+    /** 是否待处理: 0.否 1.是 */
+    @Excel(name = "是否待处理: 0.否 1.是")
+    private Integer pendingFlag;
+
+    /** 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第 */
+    @Excel(name = "待处理类型 1.邮件接收时间 2.邮件接收时间之后的第")
+    private Integer pendingType;
+
+    /** 待处理-天 */
+    @Excel(name = "待处理-天")
+    private Integer pendingDay;
+
+    /** 待处理-时间 */
+    @Excel(name = "待处理-时间")
+    private String pendingTime;
+
+    /** 自动回复 */
+    @Excel(name = "自动回复")
+    private String autoResponse;
 
     /** 应用于历史邮件: 0.否 1.是 */
     @Excel(name = "应用于历史邮件: 0.否 1.是")
@@ -54,127 +86,263 @@ public class TransceiverRule extends BaseEntity
     @Excel(name = "其他发件规则: 1.继续执行 2.不再执行")
     private Integer otherSendingRules;
 
+    /** 状态 1.开启 0.关闭 */
+    @Excel(name = "状态 1.开启 0.关闭")
+    private Integer status;
+
+    /** 顺序 */
+    @Excel(name = "顺序")
+    private Long order;
+
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
-    public void setId(Long id) 
+    /** 创建者ID */
+    @Excel(name = "创建者ID")
+    private Long createId;
+
+    /** 更新者ID */
+    @Excel(name = "更新者ID")
+    private Long updateId;
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setRuleType(Integer ruleType) 
+    public void setRuleType(Integer ruleType)
     {
         this.ruleType = ruleType;
     }
 
-    public Integer getRuleType() 
+    public Integer getRuleType()
     {
         return ruleType;
     }
-    public void setRuleName(String ruleName) 
+    public void setRuleName(String ruleName)
     {
         this.ruleName = ruleName;
     }
 
-    public String getRuleName() 
+    public String getRuleName()
     {
         return ruleName;
     }
-    public void setExecuteCondition(Integer executeCondition) 
+    public void setExecuteCondition(Integer executeCondition)
     {
         this.executeCondition = executeCondition;
     }
 
-    public Integer getExecuteCondition() 
+    public Integer getExecuteCondition()
     {
         return executeCondition;
     }
-    public void setExecuteConditionContent(String executeConditionContent) 
+    public void setExecuteConditionContent(String executeConditionContent)
     {
         this.executeConditionContent = executeConditionContent;
     }
 
-    public String getExecuteConditionContent() 
+    public String getExecuteConditionContent()
     {
         return executeConditionContent;
     }
-    public void setExecuteOperation(Integer executeOperation) 
+    public void setExecuteOperation(Integer executeOperation)
     {
         this.executeOperation = executeOperation;
     }
 
-    public Integer getExecuteOperation() 
+    public Integer getExecuteOperation()
     {
         return executeOperation;
     }
-    public void setExecuteOperationContent(String executeOperationContent) 
+    public void setFixedFlag(Integer fixedFlag)
     {
-        this.executeOperationContent = executeOperationContent;
+        this.fixedFlag = fixedFlag;
     }
 
-    public String getExecuteOperationContent() 
+    public Integer getFixedFlag()
     {
-        return executeOperationContent;
+        return fixedFlag;
     }
-    public void setApplyToHistoryMailFlag(Integer applyToHistoryMailFlag) 
+    public void setReadFlag(Integer readFlag)
+    {
+        this.readFlag = readFlag;
+    }
+
+    public Integer getReadFlag()
+    {
+        return readFlag;
+    }
+    public void setFolderId(Long folderId)
+    {
+        this.folderId = folderId;
+    }
+
+    public Long getFolderId()
+    {
+        return folderId;
+    }
+    public void setForwardTo(String forwardTo)
+    {
+        this.forwardTo = forwardTo;
+    }
+
+    public String getForwardTo()
+    {
+        return forwardTo;
+    }
+    public void setPendingFlag(Integer pendingFlag)
+    {
+        this.pendingFlag = pendingFlag;
+    }
+
+    public Integer getPendingFlag()
+    {
+        return pendingFlag;
+    }
+    public void setPendingType(Integer pendingType)
+    {
+        this.pendingType = pendingType;
+    }
+
+    public Integer getPendingType()
+    {
+        return pendingType;
+    }
+    public void setPendingDay(Integer pendingDay)
+    {
+        this.pendingDay = pendingDay;
+    }
+
+    public Integer getPendingDay()
+    {
+        return pendingDay;
+    }
+    public void setPendingTime(String pendingTime)
+    {
+        this.pendingTime = pendingTime;
+    }
+
+    public String getPendingTime()
+    {
+        return pendingTime;
+    }
+    public void setAutoResponse(String autoResponse)
+    {
+        this.autoResponse = autoResponse;
+    }
+
+    public String getAutoResponse()
+    {
+        return autoResponse;
+    }
+    public void setApplyToHistoryMailFlag(Integer applyToHistoryMailFlag)
     {
         this.applyToHistoryMailFlag = applyToHistoryMailFlag;
     }
 
-    public Integer getApplyToHistoryMailFlag() 
+    public Integer getApplyToHistoryMailFlag()
     {
         return applyToHistoryMailFlag;
     }
-    public void setExecuteTaskId(Long executeTaskId) 
+    public void setExecuteTaskId(Long executeTaskId)
     {
         this.executeTaskId = executeTaskId;
     }
 
-    public Long getExecuteTaskId() 
+    public Long getExecuteTaskId()
     {
         return executeTaskId;
     }
-    public void setOtherSendingRules(Integer otherSendingRules) 
+    public void setOtherSendingRules(Integer otherSendingRules)
     {
         this.otherSendingRules = otherSendingRules;
     }
 
-    public Integer getOtherSendingRules() 
+    public Integer getOtherSendingRules()
     {
         return otherSendingRules;
     }
-    public void setDelFlag(String delFlag) 
+    public void setStatus(Integer status)
+    {
+        this.status = status;
+    }
+
+    public Integer getStatus()
+    {
+        return status;
+    }
+    public void setOrder(Long order)
+    {
+        this.order = order;
+    }
+
+    public Long getOrder()
+    {
+        return order;
+    }
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
 
-    public String getDelFlag() 
+    public String getDelFlag()
     {
         return delFlag;
+    }
+    public void setCreateId(Long createId)
+    {
+        this.createId = createId;
+    }
+
+    public Long getCreateId()
+    {
+        return createId;
+    }
+    public void setUpdateId(Long updateId)
+    {
+        this.updateId = updateId;
+    }
+
+    public Long getUpdateId()
+    {
+        return updateId;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("ruleType", getRuleType())
-            .append("ruleName", getRuleName())
-            .append("executeCondition", getExecuteCondition())
-            .append("executeConditionContent", getExecuteConditionContent())
-            .append("executeOperation", getExecuteOperation())
-            .append("executeOperationContent", getExecuteOperationContent())
-            .append("applyToHistoryMailFlag", getApplyToHistoryMailFlag())
-            .append("executeTaskId", getExecuteTaskId())
-            .append("otherSendingRules", getOtherSendingRules())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+                .append("id", getId())
+                .append("ruleType", getRuleType())
+                .append("ruleName", getRuleName())
+                .append("executeCondition", getExecuteCondition())
+                .append("executeConditionContent", getExecuteConditionContent())
+                .append("executeOperation", getExecuteOperation())
+                .append("fixedFlag", getFixedFlag())
+                .append("readFlag", getReadFlag())
+                .append("folderId", getFolderId())
+                .append("forwardTo", getForwardTo())
+                .append("pendingFlag", getPendingFlag())
+                .append("pendingType", getPendingType())
+                .append("pendingDay", getPendingDay())
+                .append("pendingTime", getPendingTime())
+                .append("autoResponse", getAutoResponse())
+                .append("applyToHistoryMailFlag", getApplyToHistoryMailFlag())
+                .append("executeTaskId", getExecuteTaskId())
+                .append("otherSendingRules", getOtherSendingRules())
+                .append("status", getStatus())
+                .append("order", getOrder())
+                .append("delFlag", getDelFlag())
+                .append("createId", getCreateId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateId", getUpdateId())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .toString();
     }
 }

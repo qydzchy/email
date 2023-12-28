@@ -5041,25 +5041,33 @@ DROP TABLE IF EXISTS `mailbox_transceiver_rule`;
 CREATE TABLE `mailbox_transceiver_rule`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `rule_type` tinyint(1) NOT NULL COMMENT '规则类型: 1.收件规则 2.发件规则',
-  `rule_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '基本信息-规则名称',
+  `rule_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '规则名称',
   `execute_condition` tinyint(1) NOT NULL COMMENT '执行条件: 1.执行以下操作 2.满足以下任一条件',
   `execute_condition_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '执行条件内容',
   `execute_operation` tinyint(1) NOT NULL COMMENT '执行操作: 1.执行以下操作 2.移动到【已删除邮件】',
-  `execute_operation_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '执行操作内容',
+  `fixed_flag` tinyint(1) NULL DEFAULT 0 COMMENT '是否固定: 0.否 1.是',
+  `read_flag` tinyint(1) NULL DEFAULT 0 COMMENT '是否已读: 0.否 1.是',
+  `folder_id` bigint(20) NULL DEFAULT -1 COMMENT '文件夹ID,系统文件夹',
+  `forward_to` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '转发至',
+  `pending_flag` tinyint(1) NULL DEFAULT 0 COMMENT '是否待处理: 0.否 1.是',
+  `pending_type` tinyint(1) NULL DEFAULT NULL COMMENT '待处理类型 1.邮件接收时间 2.邮件接收时间之后的第',
+  `pending_day` int(5) NULL DEFAULT NULL COMMENT '待处理-天',
+  `pending_time` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '待处理-时间',
+  `auto_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '自动回复',
   `apply_to_history_mail_flag` tinyint(1) NOT NULL DEFAULT 1 COMMENT '应用于历史邮件: 0.否 1.是',
-  `execute_task_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '执行邮箱ID: 0.表示全部邮箱',
+  `execute_task_id` bigint(20) NULL DEFAULT 0 COMMENT '执行邮箱ID: 0.表示全部邮箱',
   `other_sending_rules` tinyint(1) NOT NULL COMMENT '其他发件规则: 1.继续执行 2.不再执行',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '删除标志(0代表存在2代表删除)',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建者',
-  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '更新者',
-  `update_time` datetime(0) NOT NULL COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL COMMENT '状态 1.开启 0.关闭',
+  `order` int(11) NULL DEFAULT NULL COMMENT '顺序',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
+  `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '收发件规则表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of mailbox_transceiver_rule
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for qrtz_blob_triggers
