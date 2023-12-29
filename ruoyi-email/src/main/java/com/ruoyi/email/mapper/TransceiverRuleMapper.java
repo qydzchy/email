@@ -84,7 +84,7 @@ public interface TransceiverRuleMapper
      * @param createId
      * @return
      */
-    List<TransceiverRuleListVO> list(@Param("createId") Long createId);
+    List<TransceiverRuleVO> list(@Param("createId") Long createId);
 
     /**
      * 根据客户分组ID查询客户分组名称

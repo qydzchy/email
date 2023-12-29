@@ -40,15 +40,15 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否固定: 0.否 1.是 */
     @Excel(name = "是否固定: 0.否 1.是")
-    private Integer fixedFlag;
+    private Boolean fixedFlag;
 
     /** 是否已读: 0.否 1.是 */
     @Excel(name = "是否已读: 0.否 1.是")
-    private Integer readFlag;
+    private Boolean readFlag;
 
     /** 是否移动至：0.否 1.是 */
     @Excel(name = "是否移动至：0.否 1.是")
-    private Integer folderFlag;
+    private Boolean folderFlag;
 
     /** 文件夹ID */
     @Excel(name = "文件夹ID")
@@ -64,7 +64,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否待处理: 0.否 1.是 */
     @Excel(name = "是否待处理: 0.否 1.是")
-    private Integer pendingFlag;
+    private Boolean pendingFlag;
 
     /** 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第 */
     @Excel(name = "待处理类型 1.邮件接收时间 2.邮件接收时间之后的第")
@@ -88,7 +88,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 应用于历史邮件: 0.否 1.是 */
     @Excel(name = "应用于历史邮件: 0.否 1.是")
-    private Integer applyToHistoryMailFlag;
+    private Boolean applyToHistoryMailFlag;
 
     /** 1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除） */
     @Excel(name = "1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件", readConverterExp = "不=包括已删除")
@@ -108,7 +108,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 顺序 */
     @Excel(name = "顺序")
-    private Long order;
+    private Long orderNum;
 
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
@@ -175,33 +175,6 @@ public class TransceiverRule extends BaseEntity
     {
         return executeOperation;
     }
-    public void setFixedFlag(Integer fixedFlag)
-    {
-        this.fixedFlag = fixedFlag;
-    }
-
-    public Integer getFixedFlag()
-    {
-        return fixedFlag;
-    }
-    public void setReadFlag(Integer readFlag)
-    {
-        this.readFlag = readFlag;
-    }
-
-    public Integer getReadFlag()
-    {
-        return readFlag;
-    }
-    public void setFolderFlag(Integer folderFlag)
-    {
-        this.folderFlag = folderFlag;
-    }
-
-    public Integer getFolderFlag()
-    {
-        return folderFlag;
-    }
     public void setFolderId(Long folderId)
     {
         this.folderId = folderId;
@@ -220,15 +193,6 @@ public class TransceiverRule extends BaseEntity
     public String getForwardTo()
     {
         return forwardTo;
-    }
-    public void setPendingFlag(Integer pendingFlag)
-    {
-        this.pendingFlag = pendingFlag;
-    }
-
-    public Integer getPendingFlag()
-    {
-        return pendingFlag;
     }
     public void setPendingType(Integer pendingType)
     {
@@ -283,15 +247,47 @@ public class TransceiverRule extends BaseEntity
     {
         return autoResponse;
     }
-    public void setApplyToHistoryMailFlag(Integer applyToHistoryMailFlag)
-    {
+
+    public Boolean getFixedFlag() {
+        return fixedFlag;
+    }
+
+    public void setFixedFlag(Boolean fixedFlag) {
+        this.fixedFlag = fixedFlag;
+    }
+
+    public Boolean getReadFlag() {
+        return readFlag;
+    }
+
+    public void setReadFlag(Boolean readFlag) {
+        this.readFlag = readFlag;
+    }
+
+    public Boolean getFolderFlag() {
+        return folderFlag;
+    }
+
+    public void setFolderFlag(Boolean folderFlag) {
+        this.folderFlag = folderFlag;
+    }
+
+    public Boolean getPendingFlag() {
+        return pendingFlag;
+    }
+
+    public void setPendingFlag(Boolean pendingFlag) {
+        this.pendingFlag = pendingFlag;
+    }
+
+    public Boolean getApplyToHistoryMailFlag() {
+        return applyToHistoryMailFlag;
+    }
+
+    public void setApplyToHistoryMailFlag(Boolean applyToHistoryMailFlag) {
         this.applyToHistoryMailFlag = applyToHistoryMailFlag;
     }
 
-    public Integer getApplyToHistoryMailFlag()
-    {
-        return applyToHistoryMailFlag;
-    }
     public void setApplyToHistoryMailTrueType(Integer applyToHistoryMailTrueType)
     {
         this.applyToHistoryMailTrueType = applyToHistoryMailTrueType;
@@ -328,15 +324,15 @@ public class TransceiverRule extends BaseEntity
     {
         return status;
     }
-    public void setOrder(Long order)
-    {
-        this.order = order;
+
+    public Long getOrderNum() {
+        return orderNum;
     }
 
-    public Long getOrder()
-    {
-        return order;
+    public void setOrderNum(Long orderNum) {
+        this.orderNum = orderNum;
     }
+
     public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
@@ -391,7 +387,7 @@ public class TransceiverRule extends BaseEntity
                 .append("executeTaskId", getExecuteTaskId())
                 .append("otherSendingRules", getOtherSendingRules())
                 .append("status", getStatus())
-                .append("order", getOrder())
+                .append("orderNum", getOrderNum())
                 .append("delFlag", getDelFlag())
                 .append("createId", getCreateId())
                 .append("createBy", getCreateBy())

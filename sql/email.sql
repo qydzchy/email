@@ -489,11 +489,11 @@ CREATE TABLE `mailbox_transceiver_rule`  (
 `auto_response_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否自动回复：0.否 1.是',
 `auto_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '自动回复',
 `apply_to_history_mail_flag` tinyint(1) NOT NULL DEFAULT 1 COMMENT '应用于历史邮件: 0.否 1.是',
-`apply_to_history_mail_true_type` tinyint(1) NULL DEFAULT NULL COMMENT '1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除）',
+`apply_to_history_mail_true_type` tinyint(1) NULL DEFAULT NULL COMMENT '应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除）',
 `execute_task_id` bigint(20) NULL DEFAULT 0 COMMENT '执行邮箱ID: 0.表示全部邮箱',
 `other_sending_rules` tinyint(1) NOT NULL COMMENT '其他发件规则: 1.继续执行 2.不再执行',
 `status` tinyint(1) NOT NULL COMMENT '状态 1.开启 0.关闭',
-`order` int(11) NULL DEFAULT NULL COMMENT '顺序',
+`order_num` int(11) NULL DEFAULT NULL COMMENT '顺序',
 `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
 `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
 `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
@@ -502,4 +502,4 @@ CREATE TABLE `mailbox_transceiver_rule`  (
 `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
 `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '收发件规则表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '收发件规则表' ROW_FORMAT = Dynamic;

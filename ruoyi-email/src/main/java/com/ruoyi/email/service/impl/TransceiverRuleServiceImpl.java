@@ -1,9 +1,6 @@
 package com.ruoyi.email.service.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -143,23 +140,32 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        List<TransceiverRuleListVO> transceiverRuleVOList = transceiverRuleMapper.list(userId);
-        for (TransceiverRuleListVO transceiverRuleVO : transceiverRuleVOList) {
+        List<TransceiverRuleVO> transceiverRuleVOList = transceiverRuleMapper.list(userId);
+        List<TransceiverRuleListVO> transceiverRuleListVOList = new ArrayList<>();
+        for (TransceiverRuleVO transceiverRuleVO : transceiverRuleVOList) {
+            TransceiverRuleListVO transceiverRuleListVO = new TransceiverRuleListVO();
+            transceiverRuleListVO.setId(transceiverRuleVO.getId());
+            transceiverRuleListVO.setRuleType(transceiverRuleVO.getRuleType());
+            transceiverRuleListVO.setRuleName(transceiverRuleVO.getRuleName());
+            transceiverRuleListVO.setStatus(transceiverRuleVO.getStatus());
             String executionRule = getExecutionRule(transceiverRuleVO, userId);
-            transceiverRuleVO.setExecutionRule(executionRule);
+            transceiverRuleListVO.setExecutionRule(executionRule);
+            transceiverRuleListVOList.add(transceiverRuleListVO);
         }
-        return transceiverRuleVOList;
+
+        return transceiverRuleListVOList;
     }
 
 
     /**
      * 获取执行规则
      */
-    public String getExecutionRule(TransceiverRuleListVO transceiverRuleVO, Long createId) {
+    public String getExecutionRule(TransceiverRuleVO transceiverRuleVO, Long createId) {
+        StringBuilder conditionContent = new StringBuilder();
         String executeConditionName = transceiverRuleVO.getExecuteCondition().intValue() == 1 ? "满足以下所有条件" : "满足以下任一条件";
 
-        executeConditionName += "：";
-        StringBuilder conditionContent = new StringBuilder();
+        conditionContent.append(executeConditionName).append("：");
+
         List<ExecuteConditionContentBO> executeConditionContentBOList = null;
         Gson gson = new Gson();
         try {
@@ -190,11 +196,11 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
                     } else if (value.equals("2")) {
                         value = "公海";
                     }
+                }
 
-                    conditionContent.append(columnAlias).append(" ").append(conditionAlias).append(value);
-                    if (index < executeConditionContentBOList.size() - 1) {
-                        conditionContent.append("、");
-                    }
+                conditionContent.append(columnAlias).append(" ").append(conditionAlias).append(value);
+                if (index < executeConditionContentBOList.size() - 1) {
+                    conditionContent.append("、");
                 }
             }
         } catch (Exception e) {
@@ -202,39 +208,37 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
                     "\n原因：{}", transceiverRuleVO.getId(), e);
         }
 
-        executeConditionName += "，则：";
+        conditionContent.append("，则：");
 
         if (Optional.ofNullable(transceiverRuleVO.getFolderFlag()).orElse(false) && transceiverRuleVO.getFolderId() != null) {
             Long folderId = transceiverRuleVO.getFolderId();
             Folder folder = folderMapper.getById(folderId, createId);
             if (folder != null) {
-                executeConditionName += "移动到";
-                executeConditionName += folder.getName();
-                executeConditionName += "、";
+                conditionContent.append("移动到").append(folder.getName()).append("、");
             }
         }
 
         if (Optional.ofNullable(transceiverRuleVO.getReadFlag()).orElse(false)) {
-            executeConditionName += "标记为已读、";
+            conditionContent.append("标记为已读、");
         }
 
         if (Optional.ofNullable(transceiverRuleVO.getFixedFlag()).orElse(false)) {
-            executeConditionName += "打图钉、";
+            conditionContent.append("打图钉、");
         }
 
         if (Optional.ofNullable(transceiverRuleVO.getAutoResponseFlag()).orElse(false)) {
-            executeConditionName += "自动回复、";
+            conditionContent.append("自动回复、");
         }
 
         if (Optional.ofNullable(transceiverRuleVO.getPendingFlag()).orElse(false)) {
-            executeConditionName += "标记为待处理";
+            conditionContent.append("标记为待处理");
 
             if (transceiverRuleVO.getPendingType() != null) {
-                executeConditionName += "并设置稍后处理时间";
+                conditionContent.append("并设置稍后处理时间");
             }
         }
 
-        return executeConditionName;
+        return conditionContent.toString();
     }
 
     /**
