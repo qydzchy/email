@@ -2,7 +2,9 @@
     <div class="mm-split-pane mm-split-pane__right" style="left: 12.2835%;">
         <div class="page-mail-list layout-extraSidebar-content" style="background-color: white;">
             <span>
-                <Header @switch="onSwitch" />
+                <Header :isHide="isHide" @switch="onSwitch">
+                    <Content @handlerHeader="bool => isHide = bool" />
+                </Header>
             </span>
         </div>
     </div>
@@ -15,6 +17,11 @@ export default {
     components: {
         Header,
         Content
+    },
+    data() {
+        return {
+            isHide: false
+        }
     },
     methods: {
         onSwitch(value) {
