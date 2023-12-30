@@ -1,6 +1,7 @@
 <template>
     <div class="dispatcher-page">
         <div class="mail-plus-rule config-page-item">
+            <!-- 列表 -->
             <div class="mail-rule-block" v-show="!showForm">
                 <div class="mail-rule-content">
                     <div class="mail-rule-content-list">
@@ -8,15 +9,14 @@
                             <div>
                                 <h3 class="config-page-title">收发件规则</h3><span class="tips">收件规则将按从上到下依次执行，可拖拽调整规则顺序</span>
                             </div><span class="mm-tooltip"><span class="mm-tooltip-trigger"><button type="button"
-                                        class="mm-button mm-button__primary"
-                                        @click="onShowForm"><!----><!---->新建规则<!----></button></span><!----></span>
+                                        class="mm-button mm-button__primary" @click="onShowForm">新建规则</button></span></span>
                         </div>
                         <ul class="mail-rule-list">
-                            <div class="mm-table-wrapper"><!---->
+                            <div class="mm-table-wrapper">
                                 <div class="mm-table mm-table__medium mm-table__horizontal-bordered">
                                     <div class="mm-thead" style="margin-right: -8px; margin-bottom: -8px;">
                                         <table cellpadding="0" cellspacing="0" border="0">
-                                            <colgroup><!---->
+                                            <colgroup>
                                                 <col width="20">
                                                 <col width="60">
                                                 <col width="60">
@@ -24,31 +24,31 @@
                                                 <col width="100">
                                             </colgroup>
                                             <thead>
-                                                <tr class=""><!---->
+                                                <tr class="">
                                                     <th class="">
                                                         <div class="mm-table-cell" title="" style="text-align: left;">
-                                                            <!----><!---->
+
                                                         </div>
                                                         <div class="mm-thead-dragbar__next mm-thead-dragbar"></div>
                                                     </th>
                                                     <th class="">
                                                         <div class="mm-table-cell" title="" style="text-align: left;">
-                                                            类型<!----><!----></div>
+                                                            类型</div>
                                                         <div class="mm-thead-dragbar__next mm-thead-dragbar"></div>
                                                     </th>
                                                     <th class="">
                                                         <div class="mm-table-cell" title="" style="text-align: left;">
-                                                            规则名称<!----><!----></div>
+                                                            规则名称</div>
                                                         <div class="mm-thead-dragbar__next mm-thead-dragbar"></div>
                                                     </th>
                                                     <th class="">
                                                         <div class="mm-table-cell" title="" style="text-align: left;">
-                                                            执行规则<!----><!----></div>
+                                                            执行规则</div>
                                                         <div class="mm-thead-dragbar__next mm-thead-dragbar"></div>
                                                     </th>
                                                     <th class="">
                                                         <div class="mm-table-cell" title="" style="text-align: right;">
-                                                            操作<!----><!----></div>
+                                                            操作</div>
                                                         <div class="mm-thead-dragbar__next mm-thead-dragbar"></div>
                                                     </th>
                                                 </tr>
@@ -58,15 +58,16 @@
                                     <div class="mm-tbody"
                                         style="margin-bottom: -8px; margin-right: -8px; max-height: 682px;">
                                         <table cellpadding="0" cellspacing="0" border="0">
-                                            <colgroup><!---->
+                                            <colgroup>
                                                 <col width="20">
                                                 <col width="60">
                                                 <col width="60">
                                                 <col width="200">
                                                 <col width="100">
-                                            </colgroup><!---->
+                                            </colgroup>
                                             <tbody>
-                                                <tr class="mm-tbody-tr" draggable="true"><!---->
+                                                <tr class="mm-tbody-tr" draggable="true" v-for="(item, idx) in list"
+                                                    :key="idx">
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: left;"><a
                                                                 class="e-move"><span
@@ -75,45 +76,40 @@
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: left;"><span
-                                                                class="mm-tag__success mm-tag__mini mm-tag">收件<!----></span>
+                                                                class="mm-tag__success mm-tag__mini mm-tag">{{ item.type
+                                                                }}</span>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div class="mm-table-cell" title="" style="text-align: left;">测试
+                                                        <div class="mm-table-cell" title="" style="text-align: left;">{{
+                                                            item.name }}
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: left;">
-                                                            <div title="若同时满足： 发件人 包含test@qq.com，  则：标记为待处理邮件并设置稍后处理时间"
-                                                                class="rule-desc ellipsis">若同时满足： 发件人 包含test@qq.com，
-                                                                则：标记为待处理邮件并设置稍后处理时间</div>
+                                                            <div :title="item.oddsName" class="rule-desc ellipsis">
+                                                                {{ item.oddsName }}</div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: right;">
-                                                            <div><label class="mm-switch__mini mm-switch"><input
-                                                                        type="checkbox">
-                                                                    <div class="mm-switch-faux">
-                                                                        <div class="mm-switch-input"><span
-                                                                                class="mm-switch-checked-box"></span><span
-                                                                                class="mm-switch-icon-wrap"><!----><!----></span><span
-                                                                                class="mm-switch-unchecked-box"></span>
-                                                                        </div>
-                                                                        <div class="mm-switch__pending-hint"></div>
-                                                                    </div>
-                                                                </label><!----><button type="button"
-                                                                    class="mm-button mm-button__text btn-list-item"><!----><!---->编辑<!----></button><button
-                                                                    type="button"
+                                                            <div>
+                                                                <el-switch v-model="item.status"></el-switch>
+                                                                <button type="button"
                                                                     class="mm-button mm-button__text btn-list-item"
-                                                                    style="padding-right: 0px;"><!----><!---->删除<!----></button>
+                                                                    @click="onEdit(item.id)">编辑</button>
+                                                                <button type="button"
+                                                                    class="mm-button mm-button__text btn-list-item"
+                                                                    style="padding-right: 0px;"
+                                                                    @click="onDelete(item.id)">删除</button>
                                                             </div>
                                                         </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
-                                        </table><!---->
-                                    </div><!----><!----><!---->
-                                </div><!----><!---->
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="mm-spinner" style="display: none;">
                                     <div class="mm-spinner-mask"></div>
                                     <div class="mm-spinner-wrapper">
@@ -123,15 +119,16 @@
                                                 <circle stroke-width="2" class="path" cx="50" cy="50" r="20" fill="none"
                                                     stroke-miterlimit="10"></circle>
                                             </svg>
-                                        </div><!---->
+                                        </div>
                                     </div>
                                 </div>
-                            </div><!---->
+                            </div>
                         </ul>
                     </div>
                 </div>
                 <div class="c-page-loading loading-more" style="display: none;"><span></span></div>
             </div>
+            <!-- 表单 -->
             <div class="mail-rule-edit" v-show="showForm">
                 <div class="filter-condition">
                     <div class="mail-config-header">
@@ -178,7 +175,7 @@
                                             <div class="v-form-item-label">
                                                 <p class="label">执行条件 <span class="tips">收到的邮件包含以下信息，则执行相应操作</span>
                                                 <div class="mm-popover">
-                                                    <div><i class="m-icon icon-nav-help"></i></div><!---->
+                                                    <div><i class="m-icon icon-nav-help"></i></div>
                                                 </div>
                                                 </p>
                                             </div>
@@ -189,52 +186,41 @@
 
                                         </div>
                                         <div class="mail-operation field-block">
-                                            <div class="item-value">
-                                                <div class="mail-rule-edit-filterSettings-item"><span
-                                                        class="num">1</span><span class="mm-select">
-                                                        <div class="mm-selector--single mm-selector" tabindex="0"><!---->
-                                                            <div class="mm-selector-rendered"><span title="如果发件人"
-                                                                    class="mm-selector-selected-value"
-                                                                    style="opacity: 1;">如果发件人</span><!----></div>
-                                                            <!----><span class="mm-selector-suffix-icon"><svg
-                                                                    class="mm-icon mm-icon-chevrondown mm-selector-arrow"
-                                                                    viewBox="0 0 24 24" name="chevrondown" xmlns="XMLNS"
-                                                                    fill="currentColor"
-                                                                    style="height: 12px; width: 12px; outline: none;">
-                                                                    <path
-                                                                        d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
-                                                                    </path>
-                                                                </svg></span>
-                                                        </div><!---->
-                                                    </span><span
-                                                        class="mm-select filter-setting-select filter-setting-field">
-                                                        <div class="mm-selector--single mm-selector" tabindex="0"><!---->
-                                                            <div class="mm-selector-rendered"><span title="包含"
-                                                                    class="mm-selector-selected-value"
-                                                                    style="opacity: 1;">包含</span><!----></div><!----><span
-                                                                class="mm-selector-suffix-icon"><svg
-                                                                    class="mm-icon mm-icon-chevrondown mm-selector-arrow"
-                                                                    viewBox="0 0 24 24" name="chevrondown" xmlns="XMLNS"
-                                                                    fill="currentColor"
-                                                                    style="height: 12px; width: 12px; outline: none;">
-                                                                    <path
-                                                                        d="M22 8.2l-9.5 9.6c-.3.2-.7.2-1 0L2 8.2c-.2-.3-.2-.7 0-1l1-1c.3-.3.8-.3 1.1 0l7.4 7.5c.3.3.7.3 1 0l7.4-7.5c.3-.2.8-.2 1.1 0l1 1c.2.3.2.7 0 1z">
-                                                                    </path>
-                                                                </svg></span>
-                                                        </div><!---->
-                                                    </span>
-                                                    <div class="v-form-item" is_public="" type="1" id="286"><!---->
-                                                        <div class="v-form-item-control"><span
-                                                                class="v-form-item-children"><span
-                                                                    class="mm-input filter-setting-field"><!----><span
-                                                                        class="mm-input-affix-wrapper"><!----><input
-                                                                            placeholder="例如：test、@xiaomcn.cn" type="text"
-                                                                            class="mm-input-inner"><!----></span><!----></span><!----></span><!---->
-                                                        </div>
-                                                    </div>
-                                                    <div class="mail-rule-edit-filterSettings-btn"><!----><span
-                                                            class="okki-icon-wrap" color="#7A8599">&ZeroWidthSpace;<svg
-                                                                xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            <div class="item-value" v-for="(item, index) in oddList" :key="index">
+                                                <div class="mail-rule-edit-filterSettings-item">
+                                                    <span class="num">{{ index + 1 }}</span>
+                                                    <el-select style="width:240px;margin-left:12px;"
+                                                        v-model="item.oddsFirst">
+                                                        <el-option label="如果发件人" :value="1"></el-option>
+                                                        <el-option label="如果收件人" :value="2"></el-option>
+                                                        <el-option label="如果抄送人" :value="3"></el-option>
+                                                        <el-option label="如果主题中" :value="4"></el-option>
+                                                        <el-option label="如果正文中（不包含引用文）" :value="5"></el-option>
+                                                    </el-select>
+                                                    <el-select style="width:240px;margin-left:12px;"
+                                                        v-model="item.oddsSecond">
+                                                        <el-option v-for="(opt, idx) in oddsOption(item.oddsFirst).option"
+                                                            :key="idx" :value="opt.value" :label="opt.label"></el-option>
+                                                    </el-select>
+                                                    <el-input style="width:240px;margin-left:12px;" v-model="item.oddsThird"
+                                                        :placeholder="oddsOption(item.oddsFirst).placeholder">
+                                                    </el-input>
+                                                    <div class="mail-rule-edit-filterSettings-btn pointer">
+                                                        <span class="okki-icon-wrap" color="#7A8599"
+                                                            v-if="oddList.length !== 1"
+                                                            @click="onOddsReduce(item.id)">&ZeroWidthSpace;
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                                viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                                                fill="#7A8599">
+                                                                <path d="M8 11a1 1 0 100 2h8a1 1 0 100-2H8z"></path>
+                                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                    d="M6.444 3.685a10 10 0 1111.112 16.63A10 10 0 016.444 3.685zm1.111 14.967a8 8 0 108.89-13.305 8 8 0 00-8.89 13.305z">
+                                                                </path>
+                                                            </svg>
+                                                        </span>
+                                                        <span v-if="oddList.length === index + 1" class="okki-icon-wrap"
+                                                            color="#7A8599" @click="onOddsAdd">&ZeroWidthSpace;
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                                 viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
                                                                 fill="#7A8599">
                                                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -243,7 +229,10 @@
                                                                 <path
                                                                     d="M13 8a1 1 0 10-2 0v3H8a1 1 0 100 2h3v3a1 1 0 102 0v-3h3a1 1 0 100-2h-3V8z">
                                                                 </path>
-                                                            </svg></span></div>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -355,11 +344,11 @@
                                                         value="1"><span class="mm-radio-faux"><span
                                                             class="mm-radio-input"></span><span
                                                             class="mm-radio-label">针对收件箱的历史邮件
-                                                            <!----></span></span></label><label class="mm-radio"><input
+                                                        </span></span></label><label class="mm-radio"><input
                                                         name="mm-radio-group-291" type="radio" value="-1"><span
                                                         class="mm-radio-faux"><span class="mm-radio-input"></span><span
                                                             class="mm-radio-label">针对收件箱及所有文件夹的历史邮件（不包括已删除）
-                                                            <!----></span></span></label>
+                                                        </span></span></label>
                                             </div>
                                         </div>
                                     </div>
@@ -396,10 +385,9 @@
                             <div class="btn-bottom">
                                 <div class="mm-space mm-space__horizontal">
                                     <div class="mm-space-item" style="margin-right: 16px;"><button type="button"
-                                            class="mm-button"
-                                            @click="onHideForm"><!----><!----><span>取消</span><!----></button></div>
+                                            class="mm-button" @click="onHideForm"><span>取消</span></button></div>
                                     <div class="mm-space-item"><button type="button"
-                                            class="mm-button mm-button__primary"><!----><!----><span>保存</span><!----></button>
+                                            class="mm-button mm-button__primary"><span>保存</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -422,7 +410,17 @@ export default {
     data() {
         return {
             showForm: false,
+            list: [
+                {
+                    id: 1,
+                    type: '收件',
+                    name: '测试',
+                    oddsName: '若同时满足： 发件人 包含test@qq.com， 则：标记为待处理邮件并设置稍后处理时间',
+                    status: false,
+                }
+            ],
             ruleData: {
+                id: '',
                 ruleType: 1,
                 ruleName: '',
                 executeOdds: 1,
@@ -437,14 +435,22 @@ export default {
                 inputTransfer: '',
                 marker: false,
                 emailReceipt: null,
-                receiptDay: '',
-                receiptTime: '',
+                receiptDay: 2,
+                receiptTime: new Date(0, 0, 0, 9, 0),
                 autoReply: false,
                 replyContent: '',
                 historyEmail: null,
                 executeEmail: '',
-                otherRule: null
+                otherRule: null,
             },
+            oddList: [
+                {
+                    id: 1,
+                    oddsFirst: 1,
+                    oddsSecond: 1,
+                    oddsThird: '',
+                }
+            ],
             editor: null,
             toolbarConfig: {
                 excludeKeys: [
@@ -455,6 +461,11 @@ export default {
         }
     },
     methods: {
+        onEdit(id) {
+            this.ruleData.id = id
+            this.showForm = true
+        },
+        onDelete(id) { },
         onCreated(editor) {
             let that = this
             this.editor = Object.seal(editor);
@@ -476,6 +487,71 @@ export default {
                     }
                 }
             }
+        },
+
+        oddsOption(oddsFirst) {
+            let result = {
+                option: [],
+                placeholder: ''
+            }
+            const optionData = [
+                {
+                    value: 1,
+                    label: '包含'
+                },
+                {
+                    value: 2,
+                    label: '不包含'
+                },
+                {
+                    value: 3,
+                    label: '隶属于'
+                },
+                {
+                    value: 4,
+                    label: '等于'
+                },
+                {
+                    value: 5,
+                    label: '不等于'
+                },
+            ]
+            switch (oddsFirst) {
+                case 1:
+                    result.option = optionData.filter(val => [1, 2, 3, 4, 5].includes(val.value))
+                    result.placeholder = '例如：test、@xiaomcn.cn'
+                    break;
+                case 2:
+                    result.option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
+                    result.placeholder = '例如：test、@xiaomcn.cn'
+                    break;
+                case 3:
+                    result.option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
+                    result.placeholder = '例如：test、@xiaomcn.cn'
+                    break;
+                case 4:
+                    result.option = optionData.filter(val => [1, 2].includes(val.value))
+                    result.placeholder = '例如：test、@xiaomcn.cn'
+                    break;
+                case 5:
+                    result.option = optionData.filter(val => [1, 2].includes(val.value))
+                    result.placeholder = '例如：price'
+                    break;
+                default:
+                    break;
+            }
+            return result
+        },
+        onOddsAdd() {
+            this.oddList.push({
+                id: +new Date(),
+                oddsFirst: 1,
+                oddsSecond: 1,
+                oddsThird: '',
+            })
+        },
+        onOddsReduce(id) {
+            this.oddList = this.oddList.filter(val => val.id !== id)
         },
         onShowForm(type, data) {
             this.showForm = true
