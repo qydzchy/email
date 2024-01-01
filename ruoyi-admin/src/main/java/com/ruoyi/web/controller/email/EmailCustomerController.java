@@ -4,7 +4,9 @@ import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.customer.service.ICustomerEmailService;
+import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailService;
 import org.springframework.data.util.Pair;
@@ -28,6 +30,8 @@ public class EmailCustomerController extends BaseController {
     private ITaskEmailService taskEmailService;
     @Resource
     private ICustomerEmailService customerEmailService;
+    @Resource
+    private ICustomerService customerService;
 
     /**
      * 客户模块-通用列表
@@ -115,5 +119,19 @@ public class EmailCustomerController extends BaseController {
         rspData.setRows(rows);
         rspData.setTotal(total);
         return rspData;
+    }
+
+    /**
+     * 获取客户详情详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('email:customer:detail')")
+    @GetMapping(value = "/detail")
+    public AjaxResult getCustomerDetail(Long id)
+    {
+        if (id == null) {
+            throw new ServiceException("ID不能为空");
+        }
+
+        return success(customerService.getCustomerDetail(id));
     }
 }
