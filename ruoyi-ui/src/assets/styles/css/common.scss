@@ -11,32 +11,31 @@
     }
 
     .icon-#{$var} {
+        width: #{$var}px !important;
+        height: #{$var}px !important;
+    }
+
+    .lineH-#{$var} {
+        line-height: #{$var}px !important;
+    }
+
+    .tooltip-W-#{$var} {
         width: #{$var}px;
-        height: #{$var}px;
     }
 
-    .lineH-#{$var}{
-        line-height: #{$var}px;
-    }
-
-    .tooltip-W-#{$var}{
-        width: #{$var}px;
-    }
-
-    .radius-#{$var}{
+    .radius-#{$var} {
         border-radius: #{$var}px;
     }
 
-    .zIndex-#{$var}{
-      z-index: $var;
+    .zIndex-#{$var} {
+        z-index: $var;
     }
 }
 
 @for $size from 1 through 50 {
-
     @each $t_d_key, $t_d_val in $spaceTypes_Dirs {
         .#{$t_d_key}-#{$size} {
-            #{$t_d_val}: #{$size}px;
+            #{$t_d_val}: #{$size}px !important;
         }
     }
 
@@ -60,20 +59,20 @@
         padding-bottom: #{$size}px !important;
     }
 
-    .radius-#{$size}{
-      border-radius:#{$size}px;
+    .radius-#{$size} {
+        border-radius: #{$size}px;
     }
 
-    .gap-#{$size}{
-      grid-gap: #{$size}px;
-      gap:#{$size}px;
+    .gap-#{$size} {
+        grid-gap: #{$size}px;
+        gap: #{$size}px;
     }
 }
 
 @each $pos in $positionList {
-  .#{$pos} {
-    position: #{$pos};
-  }
+    .#{$pos} {
+        position: #{$pos};
+    }
 }
 
 .flex1 {
@@ -100,10 +99,10 @@
     align-items: flex-end;
 }
 
-.flex-start{
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+.flex-start {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .flex-end {
@@ -128,21 +127,21 @@
     cursor: pointer;
 }
 
-.borderBox{
-  box-sizing: border-box;
+.borderBox {
+    box-sizing: border-box;
 }
 
-.white-text{
-	font-weight: 500;
-	color: #fff;
+.white-text {
+    font-weight: 500;
+    color: #fff;
 }
 
 .black-text {
-	font-weight: 500;
-	color: #333333;
+    font-weight: 500;
+    color: #333333;
 }
 
 .gray-text {
-	font-weight: 400;
-	color: #999999;
+    font-weight: 400;
+    color: #999999;
 }

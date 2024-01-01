@@ -848,12 +848,16 @@ export default {
     'send_success': sendSuccessLayout,
     'setup': setup,
     'FolderTree': FolderTree,
-    'customer_email':CustomerEmailLayout
+    'customer_email': CustomerEmailLayout
   },
-
+  mounted() {
+    const { type } = this.$route.query
+    if (type) {
+      this.currentLayout = type
+    }
+  },
   methods: {
     switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
-      console.log('layoutName',layoutName);
       this.currentLayout = layoutName;
       this.selectedEmail = email;
       this.emailData = emailData;
@@ -969,6 +973,7 @@ export default {
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
+      console.log('emailType', emailType);
       this.currentEmailType = emailType
       this.setActive(emailType);
       this.switchLayout('email_header');
