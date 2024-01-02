@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog :title="title" :visible.sync="dialogVisible" width="700px" :before-close="handleClose">
+		<el-dialog :title="title" :visible.sync="dialogVisible" width="700px" :before-close="handleClose" @close="onCancel">
 			<el-form class="mt-10" style="overflow:hidden;" :model="signatureForm" label-width="40px">
 				<el-form-item label="名称">
 					<el-input v-model="signatureForm.name" placeholder="请输入"></el-input>
@@ -10,13 +10,13 @@
 						<Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
 							:defaultConfig="toolbarConfig" />
 						<!-- 编辑器 -->
-						<Editor ref="editorInstance" style="height: 500px; overflow-y: hidden"
+						<Editor ref="editorInstance" style="height: 200px; overflow-y: hidden"
 							v-model="signatureForm.content" @onCreated="onCreated" mode="default" />
 					</div>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false">取 消</el-button>
+				<el-button @click="onCancel">取 消</el-button>
 				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
 			</span>
 		</el-dialog>
@@ -88,6 +88,9 @@ export default {
 		handleClose(done) {
 
 		},
+		onCancel() {
+			this.$emit('update:dialogVisible', false)
+		}
 	},
 };
 </script>

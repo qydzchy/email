@@ -850,12 +850,6 @@ export default {
     'FolderTree': FolderTree,
     'customer_email': CustomerEmailLayout
   },
-  mounted() {
-    const { type } = this.$route.query
-    if (type) {
-      this.currentLayout = type
-    }
-  },
   methods: {
     switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
       this.currentLayout = layoutName;
@@ -973,7 +967,6 @@ export default {
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
-      console.log('emailType', emailType);
       this.currentEmailType = emailType
       this.setActive(emailType);
       this.switchLayout('email_header');
@@ -1096,7 +1089,12 @@ export default {
   },
 
   mounted() {
-    this.allReceivedClick();  // 触发事件
+    const { type } = this.$route.query
+    if (type === 'write_email') {
+      this.currentLayout = type
+    } else {
+      this.allReceivedClick();  // 触发事件
+    }
     this.refreshPullEmailList();
     this.refreshSendEmailList();
     this.refreshFolderList();

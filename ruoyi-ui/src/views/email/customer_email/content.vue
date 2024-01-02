@@ -1,9 +1,10 @@
 <template>
-    <div class="only-mail-list mail-list-container">
+    <div class="mail-list-container" :class="{ 'only-mail-list': showHeader }">
         <div class="mm-split mail-three-mode-split">
             <div class="mm-split-horizontal">
-                <div class="mm-split-pane mm-split-pane__left" style="right: 42.3729%">
-                    <!-- 列表 -->
+                <!-- 列表 -->
+                <div class="mm-split-pane mm-split-pane__left" :style="`right: ${showHeader ? '29.1545%' : '64.7959%;'}`">
+
                     <div class="mail-list-scroll-container mail-list-wrap">
                         <div class="header-wrapper" style="">
                             <div class="mail-list-header-tool-wrapper">
@@ -873,9 +874,42 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mail-paging list-page-wrap" v-if="!showHeader && totalPages">
+                            <span class="total-count ellipsis">共 {{ total }} 封</span>
+                            <div class="quick-jumper">
+                                <input :max="totalPages" class="mail-paging-input" v-model="currentPage"
+                                    @blur="handlePageInputBlur" @input="handlePageInputChange">
+                                <span class="mail-paging-slash"> / </span>
+                                <span class="page-unit">{{ totalPages }}  页</span>
+                            </div>
+                            <div :class="['mail-paging-btn', 'left-btn', { 'disabled': currentPage === 1 }]"
+                                @click="prevPage">
+                                <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22"
+                                        height="22" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M15.707 5.293a1 1 0 010 1.414L10.414 12l5.293 5.293a1 1 0 01-1.414 1.414l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 0z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div :class="['mail-paging-btn', 'right-btn', { 'disabled': currentPage === totalPages }]"
+                                @click="nextPage">
+                                <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22"
+                                        height="22" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M8.293 5.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L13.586 12 8.293 6.707a1 1 0 010-1.414z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
-                <div class="mm-split-trigger-wrap" style="left: 57.6271%;">
+                <!-- 分割线 -->
+                <div class="mm-split-trigger-wrap" :style="`left: ${showHeader ? '70.8455%' : '35.2041%'}`">
                     <div class="mm-split-trigger mm-split-trigger-vertical">
                         <div class="mm-split-trigger-bar-wrap"><i class="mm-split-trigger-bar"></i><i
                                 class="mm-split-trigger-bar"></i><i class="mm-split-trigger-bar"></i><i
@@ -884,23 +918,84 @@
                                 class="mm-split-trigger-bar"></i></div>
                     </div>
                 </div>
-                <div class="mm-split-pane mm-split-pane__right" style="left: 57.6271%;"></div>
+                <!-- 侧边 -->
+                <div class="mm-split-pane mm-split-pane__right" :style="`left:${showHeader ? '70.8455%' : '35.2041%;'}`">
+                    <template v-if="!showHeader">
+                        <!-- 快捷邮件 -->
+                        <FastWrite />
+                        <!-- 抽屉 -->
+                        <div class="mail-side-card slide-fade" :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
+                            <span class="mail-position-toogle" @click="toggleRightPanel">
+                                <i class="m-icon icon-left-small"></i>
+                            </span>
+                            <!-- 内容 -->
+                            <PrviateListRow />
+                        </div>
+                    </template>
+
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import FastWrite from './FastWrite.vue'
+import PrviateListRow from '@/components/CustomerTableRow/PrviateListRow'
 export default {
+    components: {
+        FastWrite,
+        PrviateListRow
+    },
     data() {
         return {
-            
+            showHeader: true,
+            currentPage: 1,
+            pageSize: 30,
+            total: 100,
+            isRightPanelExpanded: true,
+
         }
+    },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.total / this.pageSize);
+        },
     },
     methods: {
         onShowLabel(id) {
+            this.showHeader = false
             this.$emit('handlerHeader', true)
-        }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage = Number(this.currentPage) + 1;
+            }
+        },
+
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage = Number(this.currentPage) - 1;
+            }
+        },
+        handlePageInputBlur() {
+            if (!this.currentPage) {
+                this.currentPage = 1;
+            }
+        },
+        handlePageInputChange(event) {
+            let inputValue = parseInt(event.target.value, 10);
+
+            // 检查输入值是否超出范围，并进行调整
+            if (inputValue > this.totalPages) {
+                this.currentPage = this.totalPages;
+            } else if (inputValue < 1) {
+                this.currentPage = 1;
+            }
+        },
+        toggleRightPanel() {
+            this.isRightPanelExpanded = !this.isRightPanelExpanded;
+        },
     }
 }
 </script>
