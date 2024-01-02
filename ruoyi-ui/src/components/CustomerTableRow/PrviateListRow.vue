@@ -44,7 +44,8 @@
                     </div>
                 </div>
                 <div class="tabs mt-10">
-                    <TableRowTabs :row="rowData" :options="options" @reload="reload" />
+                    <TableRowTabs :row="rowData" :options="options" :defaultCurTab="defaultCurTab"
+                        :defaultTabs="defaultTabs" @reload="reload" />
                 </div>
             </div>
             <el-backtop target=".el-tabs__content" :visibility-height="100" />
@@ -117,6 +118,8 @@ export default {
                 packetId: '',
                 packet: [],
             },
+            defaultCurTab: 'TableRowDealingsEmailTab',
+            defaultTabs: ['TableRowActivityTab', 'TableRowDatumTab', 'TableRowTradeTab', 'TableRowTipsTab', 'TableRowDocTab', 'TableRowDealingsEmailTab']
         }
     },
     watch: {
