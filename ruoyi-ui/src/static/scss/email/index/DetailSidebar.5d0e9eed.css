@@ -6,7 +6,7 @@
   flex-direction:column
 }
 .mail-side-card.collapsing {
-  width:20px
+  width:0px
 }
 .mail-side-card.collapsing.is-company {
   width:0
