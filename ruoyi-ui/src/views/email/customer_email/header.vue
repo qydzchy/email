@@ -1,5 +1,5 @@
 <template>
-    <div class="view-mode-three component-mail-list relative list-with-toolbar">
+    <div class="view-mode-three open component-mail-list relative list-with-toolbar">
         <div v-show="!isHide">
             <div class="promotion-wrapper"></div>
 
