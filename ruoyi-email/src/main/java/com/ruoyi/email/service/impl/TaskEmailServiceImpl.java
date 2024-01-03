@@ -753,15 +753,15 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Integer pageNum, Integer pageSize) {
-        int count = taskEmailMapper.customerEmailCount(customerId);
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean attachmentFlag, Integer pageNum, Integer pageSize) {
+        int count = taskEmailMapper.customerEmailCount(customerId, attachmentFlag);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(customerId, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(customerId, attachmentFlag, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }

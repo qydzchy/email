@@ -228,5 +228,5 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean attachmentFlag, Integer pageNum, Integer pageSize);
 }
