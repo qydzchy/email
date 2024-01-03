@@ -1,15 +1,15 @@
 <template>
   <div class="row-tabs">
-    <el-tabs v-model="curTab" v-loading="cardLoading" :class="options.isTabSetHeight ?'tabs-height':''">
-      <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name">
-        <component :row="row" :options="options" :is="tab.is" @reload="reload"/>
+    <el-tabs v-model="curTab" v-loading="cardLoading" :class="options.isTabSetHeight ? 'tabs-height' : ''">
+      <el-tab-pane v-for="tab in tabList" :key="tab.is" :label="tab.label" :name="tab.is">
+        <component :row="row" :options="options" :is="tab.is" @reload="reload" />
       </el-tab-pane>
     </el-tabs>
-<!--    <div class="operate-history flex-middle pointer" @click="operateHistoryVisible=true">-->
-<!--      <i class="el-icon-time fs-13"></i>-->
-<!--      <span class="fs-12 pl-6">操作历史</span>-->
-<!--    </div>-->
-<!--    <CustomerOperateHistoryDrawer :visible.sync="operateHistoryVisible"/>-->
+    <!--    <div class="operate-history flex-middle pointer" @click="operateHistoryVisible=true">-->
+    <!--      <i class="el-icon-time fs-13"></i>-->
+    <!--      <span class="fs-12 pl-6">操作历史</span>-->
+    <!--    </div>-->
+    <!--    <CustomerOperateHistoryDrawer :visible.sync="operateHistoryVisible"/>-->
   </div>
 </template>
 
@@ -19,6 +19,7 @@ import TableRowDatumTab from "./TableRowDatumTab.vue";
 import TableRowTradeTab from "./TableRowTradeTab.vue";
 import TableRowTipsTab from "./TableRowTipsTab.vue";
 import TableRowDocTab from "./TableRowDocTab.vue";
+import TableRowDealingsEmailTab from './TableRowDealingsEmailTab.vue'
 import CustomerOperateHistoryDrawer from "./CustomerOperateHistoryDrawer.vue";
 
 export default {
@@ -37,6 +38,18 @@ export default {
         }
       },
       required: false
+    },
+    defaultCurTab: {
+      type: String,
+      default: 'TableRowActivityTab',
+      required: false
+    },
+    defaultTabs: {
+      type: Array,
+      default: () => {
+        return ['TableRowActivityTab', 'TableRowDatumTab', 'TableRowTradeTab', 'TableRowTipsTab', 'TableRowDocTab']
+      },
+      required: false
     }
   },
   components: {
@@ -45,41 +58,43 @@ export default {
     TableRowTradeTab,
     TableRowTipsTab,
     TableRowDocTab,
+    TableRowDealingsEmailTab,
     CustomerOperateHistoryDrawer
   },
   data() {
     return {
-      curTab: "1",
-      tabList: [
-        {
-          label: '动态',
-          name: '1',
-          is: 'TableRowActivityTab',
-        },
-        {
-          label: '资料',
-          name: '2',
-          is: 'TableRowDatumTab',
-        },
-        {
-          label: '商机&交易',
-          name: '3',
-          is: 'TableRowTradeTab',
-        },
-        {
-          label: 'Tips',
-          name: '4',
-          is: 'TableRowTipsTab',
-        },
-        {
-          label: '文档',
-          name: '5',
-          is: 'TableRowDocTab',
-        },
-      ],
+      curTab: this.defaultCurTab,
+      tabList: [],
       cardLoading: false,
       operateHistoryVisible: false,
     }
+  },
+  created() {
+    const tabList = [{
+      label: '动态',
+      is: 'TableRowActivityTab',
+    },
+    {
+      label: '资料',
+      is: 'TableRowDatumTab',
+    },
+    {
+      label: '商机&交易',
+      is: 'TableRowTradeTab',
+    },
+    {
+      label: 'Tips',
+      is: 'TableRowTipsTab',
+    },
+    {
+      label: '文档',
+      is: 'TableRowDocTab',
+    },
+    {
+      label: '往来邮件',
+      is: 'TableRowDealingsEmailTab',
+    }]
+    this.tabList = tabList.filter(val => this.defaultTabs.includes(val.is))
   },
   methods: {
     reload() {
@@ -127,8 +142,6 @@ export default {
     }
   }
 
-  .tabs-main {
-
-  }
+  .tabs-main {}
 }
 </style>
