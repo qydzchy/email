@@ -18,10 +18,12 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
+import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
-import com.ruoyi.email.domain.vo.HomeListTaskVO;
-import com.ruoyi.email.domain.vo.TaskListVO;
-import com.ruoyi.email.domain.vo.TestTaskVO;
+import com.ruoyi.email.domain.vo.*;
+import com.ruoyi.email.mapper.GeneralMapper;
+import com.ruoyi.email.mapper.OtherConfigMapper;
+import com.ruoyi.email.mapper.TransceiverRuleMapper;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import com.ruoyi.email.util.ThreadPoolPullService;
@@ -60,6 +62,12 @@ public class TaskServiceImpl implements ITaskService
     private ITaskAttachmentService taskAttachmentService;
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
+    @Resource
+    private GeneralMapper generalMapper;
+    @Resource
+    private OtherConfigMapper otherConfigMapper;
+    @Resource
+    private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -306,11 +314,14 @@ public class TaskServiceImpl implements ITaskService
             return null;
         }
 
+        // 查询邮箱配置
+        EmailOperateParamBO emailOperateParamBO = getMailboxConfigByCreateId(task.getCreateId());
+
         try {
             // 查询存在的uid
             List<String> existUidList = taskEmailService.getUidsByTaskId(task.getId());
 
-            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, existUidList);
+            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, emailOperateParamBO, existUidList);
             if (mailItems == null || mailItems.size() == 0) {
                 return null;
             }
@@ -319,7 +330,7 @@ public class TaskServiceImpl implements ITaskService
                 try {
                     String newEmailPath = emailPath.concat("/").concat(task.getAccount());
                     String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());
-                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, newEmailPath, newAttachmentPath);
+                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailOperateParamBO, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
                         saveEmailData(task.getId(), universalMail);
@@ -336,6 +347,29 @@ public class TaskServiceImpl implements ITaskService
         }
 
         return null;
+    }
+
+    /**
+     * 根据创建者ID获取邮箱配置
+     * @param createId
+     */
+    private EmailOperateParamBO getMailboxConfigByCreateId(Long createId) {
+        EmailOperateParamBO emailOperateParamBO = new EmailOperateParamBO();
+        if (createId != null) {
+            // 查询常规配置
+            GeneralVO generalVO = generalMapper.getByCreateId(createId);
+            Integer maxPerPage = generalVO.getMaxPerPage();
+            // 查询其它配置
+            OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(createId);
+            // 查询收发件规则
+            List<TransceiverRuleVO> transceiverRuleList= transceiverRuleMapper.list(createId);
+
+            BeanUtils.copyProperties(emailOperateParamBO, otherConfigVO);
+            emailOperateParamBO.setMaxPerPage(maxPerPage);
+            emailOperateParamBO.setTransceiverRuleList(transceiverRuleList);
+        }
+
+        return emailOperateParamBO;
     }
 
     @Override

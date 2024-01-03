@@ -93,13 +93,21 @@
             tr.execute_operation AS executeOperation,
             tr.fixed_flag AS fixedFlag,
             tr.read_flag AS readFlag,
+            tr.folder_flag AS folderFlag,
             tr.folder_id AS folderId,
             f.NAME AS folderName,
+            tr.forward_to_flag as forwardToFlag,
             tr.forward_to AS forwardTo,
             tr.pending_flag AS pendingFlag,
             tr.pending_type AS pendingType,
             tr.pending_day AS pendingDay,
             tr.pending_time AS pendingTime,
+            tr.auto_response_flag AS autoResponseFlag,
+            tr.auto_response AS autoResponse,
+            tr.apply_to_history_mail_flag AS applyToHistoryMailFlag,
+            tr.apply_to_history_mail_true_type AS applyToHistoryMailTrueType,
+            tr.execute_task_id AS executeTaskId,
+            tr.other_sending_rules AS otherSendingRules,
             tr.status
         FROM
             mailbox_transceiver_rule tr

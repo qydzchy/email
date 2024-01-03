@@ -3,6 +3,7 @@ package com.ruoyi.email.service.handler.email;
 
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
+import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import lombok.extern.slf4j.Slf4j;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.WebProxy;
@@ -34,12 +35,12 @@ public class MyExchangeService implements IMailService {
     }
 
     @Override
-    public UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
+    public UniversalMail parseEmail(MailItem mailItem, EmailOperateParamBO emailOperateParamBO, String localSavePath, String attachmentPath) throws MailPlusException {
         return MailItemParser.parseMail(mailItem, localSavePath, attachmentPath);
     }
 
-    public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
-        int numEmailsToFetch = 100;
+    public List<MailItem> listAll(MailConn mailConn, EmailOperateParamBO emailOperateParamBO, List<String> existUidList) throws MailPlusException {
+        int numEmailsToFetch = emailOperateParamBO.getMaxPerPage();
         try {
             FindItemsResults items = getItems(mailConn, numEmailsToFetch);
             ArrayList<Item> itemList = items.getItems();
