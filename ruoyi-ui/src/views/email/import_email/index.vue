@@ -5,18 +5,27 @@
 			<ul class="c-form-inputItem">
 				<li class="flex items-center">
 					<label class="m-label">第一步：</label>
-					<el-select placeholder="选择目标邮箱" style="width:378px;"></el-select>
-					<el-select placeholder="选择目标文件夹" class="ml-6" style="width:378px;"></el-select>
+					<el-select v-model="importFormData.taskId" placeholder="选择目标邮箱" style="width:378px;">
+						<el-option v-for="(email, index) in emailOption" :key="index" :value="email.id"
+							:label="email.account"></el-option>
+					</el-select>
+					<el-select-tree placeholder="选择目标文件夹" class="ml-6" style="width:378px;"
+						v-model="importFormData.folderId" :data="folderOption" :props="{ value: 'id', label: 'name' }"
+						:check-strictly="true">
+					</el-select-tree>
 				</li>
 				<li class="pt-2">
 					<label class="m-label">第二步：</label>
 					<div class="mx-2 py-2 inline-block">
-						<a class="disabled m-btn m-uploadBtn">
+						<a class="m-btn m-uploadBtn"
+							:class="{ 'disabled': !(importFormData.taskId && importFormData.folderId) }">
 							<span>选择文件</span>
-							<input ref="selectFileRef"  type="file" name="file" />
+							<input :disabled="!(importFormData.taskId && importFormData.folderId)" type="file" name="file"
+								accept=".pst,.eml,.zip" @input="handleFile" />
 						</a>
 						<span class="e-file-value block">
-							<span style="color: red">暂时只支持pst、eml文件或者是eml文件组成的zip压缩包，不超过2G</span>
+							<span v-if="uploadFileName">{{ uploadFileName }}</span>
+							<span v-else style="color: red">暂时只支持pst、eml文件或者是eml文件组成的zip压缩包，不超过2G</span>
 						</span>
 					</div>
 				</li>
@@ -24,15 +33,15 @@
 					<label class="m-label">第三步：</label>
 					<div class="mx-2 py-2 inline-block">
 						<div>
-							<button class="disabled m-btn" type="button">
-								<span>确认上传</span></button><span class="e-upload-tips"></span><!---->
-						</div>
-						<label class="mm-checkbox">
-							<input true-value="true" type="checkbox" />
-							<span class="mm-checkbox-input"></span><span class="mm-checkbox-label">
-								过滤导入邮件
+							<button class="m-btn" :class="{ 'disabled': !uploadFileName }" type="button"
+								@click="uploadEmail">
+								<span>确认上传</span>
+							</button>
+							<span class="e-upload-tips">
+								{{ uploadStatus ? '上传成功，请稍后查看导入结果。' : '' }}
 							</span>
-						</label>
+						</div>
+						<el-checkbox v-model="importFormData.filterEmailFlag">过滤导入邮件</el-checkbox>
 					</div>
 				</li>
 			</ul>
@@ -62,14 +71,31 @@
 								<th class="list-status">导入状态</th>
 								<th class="list-count"><span>邮件总数</span></th>
 								<th class="list-deal">
-									<span>已处理数</span><span class="mm-tooltip inline-block h-4"><span
-											class="mm-tooltip-trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14"
-												height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
-												fill="currentColor" style="vertical-align: -0.1em">
-												<path fill-rule="evenodd" clip-rule="evenodd"
-													d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
-												</path>
-											</svg></span><!----></span>
+									<span>已处理数</span>
+									<el-tooltip content="" placement="top">
+										<template slot="content">
+											<div style="width:220px;line-height:28px" class="fs-14">
+												<p>已处理数=新增数+重复数+过滤数</p>
+												<div class="my-2 border-white border-b w-full border-solid border-t"
+													style="height: 0px;"></div>
+												<p>新增数：新增入库的邮件数</p>
+												<p>重复数：小满中已有的邮件数，会重新移动文件夹</p>
+												<p>过滤数：导入文件中，被过滤掉的邮件数</p>
+											</div>
+										</template>
+										<span class="mm-tooltip inline-block h-4">
+											<span class="mm-tooltip-trigger">
+												<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+													viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+													fill="currentColor" style="vertical-align: -0.1em">
+													<path fill-rule="evenodd" clip-rule="evenodd"
+														d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
+													</path>
+												</svg>
+											</span>
+										</span>
+									</el-tooltip>
+
 								</th>
 								<th class="list-fail">处理失败数</th>
 								<th class="list-desc">失败原因</th>
@@ -77,7 +103,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(item, index) in list" :key="index">
+							<tr v-for="(item, index) in  list " :key="index">
 								<td>
 									<p :title="item.fileName" class="ellipsis">
 										{{ item.fileName }}
@@ -85,41 +111,52 @@
 								</td>
 								<td>
 									<p :title="item.email" class="ellipsis">
-										{{ item.email }}
+										{{ item.taskName }}
 									</p>
 								</td>
 								<td>
-									<p>{{ item.folder }}</p>
+									<p>{{ item.folderName }}</p>
 								</td>
-								<td><span :class="statusMap[item.status].color">{{ statusMap[item.status].label }}</span>
+								<td><span :class="generateStatus(item.importStatus).color">{{
+									generateStatus(item.importStatus).label
+								}}</span>
 								</td>
 								<td>
-									<p>{{ item.emailCount }}</p>
+									<p>{{ item.mailTotal }}</p>
 								</td>
 								<td>
-									<span>{{ item.handleSuccess }}</span>
-									<span class="mm-tooltip inline-block h-4">
-										<span class="mm-tooltip-trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14"
-												height="14" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
-												fill="currentColor" style="
-													vertical-align: -0.1em;
-													margin-left: 4px;
-												">
-												<path fill-rule="evenodd" clip-rule="evenodd"
-													d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
-												</path>
-											</svg>
+									<span>{{ item.mailTotal }}</span>
+									<el-tooltip placement="right">
+										<template slot="content">
+											<div class="flex-column gap-4 fs-14">
+												<div>新增数：{{ item.addedCount }}</div>
+												<div>重复数：{{ item.duplicateCount }}</div>
+												<div>过滤数：{{ item.failureCount }}</div>
+											</div>
+										</template>
+										<span class="mm-tooltip inline-block h-4">
+											<span class="mm-tooltip-trigger"><svg xmlns="http://www.w3.org/2000/svg"
+													width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"
+													class="okki-svg-icon" fill="currentColor" style="
+														vertical-align: -0.1em;
+														margin-left: 4px;
+													">
+													<path fill-rule="evenodd" clip-rule="evenodd"
+														d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
+													</path>
+												</svg>
+											</span>
 										</span>
-									</span>
+									</el-tooltip>
 								</td>
 								<td>
-									<p>{{ item.handleFail }}</p>
+									<p>{{ item.failureCount }}</p>
 								</td>
 								<td>
-									<p>{{ item.failReason || '---' }}</p>
+									<p>{{ item.failureReasons || '---' }}</p>
 								</td>
 								<td>
-									<p>{{ item.importTime }}</p>
+									<p>{{ item.createTime }}</p>
 								</td>
 							</tr>
 
@@ -139,7 +176,7 @@
 						</li>
 						<li>
 							<ul class="mm-pagination-pager">
-								<li v-for="pageNumber in displayedPages" :key="pageNumber"
+								<li v-for=" pageNumber  in  displayedPages " :key="pageNumber"
 									:class="[pageNumber === pagination.current ? 'active' : '', 'mm-pagination-number']"
 									@click="onChangePage(pageNumber)">
 									<span>{{ pageNumber }}</span>
@@ -205,39 +242,31 @@
 </template>
 
 <script>
+import { getEmailTaskList, getImportFolderList, emailImport, getEmailImportList } from '@/api/email/emailImport'
 export default {
 	data() {
 		return {
-			list: [
-				{
-					id: 1,
-					fileName: 'A16Z合伙人：5G来了，我们能干啥？-2019-10-11.eml',
-					email: 'sales17@allxchips.com',
-					folder: '收件箱',
-					status: 1,
-					emailCount: 1,
-					handleSuccess: 1,
-					handleFail: 0,
-					failReason: '',
-					importTime: '2023-12-22 15:16:59'
-				},
-				{
-					id: 1,
-					fileName: '火箭蛋”又来袭蛋价后期仍有上涨可能-2019-07-17.eml',
-					email: 'w0r1d_space@sohu.com',
-					folder: 'tjm01',
-					status: 1,
-					emailCount: 1,
-					handleSuccess: 1,
-					handleFail: 0,
-					failReason: '',
-					importTime: '2023-12-22 15:16:59'
-				}
-			],
+			importFormData: {
+				file: '',
+				taskId: '',
+				folderId: '',
+				filterEmailFlag: true
+			},
+			list: [],
+			emailOption: [],
+			folderOption: [],
 			statusMap: {
 				1: {
+					label: '正在处理',
+					color: '',
+				},
+				2: {
 					label: '导入成功',
 					color: 'success'
+				},
+				3: {
+					label: '导入失败',
+					color: ''
 				},
 			},
 			pagination: {
@@ -245,7 +274,9 @@ export default {
 				total: 2,
 				pageSize: 10,
 				maxDisplayedPages: 10
-			}
+			},
+			uploadFileName: '',
+			uploadStatus: false,
 		}
 	},
 	computed: {
@@ -259,21 +290,99 @@ export default {
 			return Array.from({ length: end - start + 1 }, (_, index) => start + index);
 		},
 	},
+	mounted() {
+		this.init()
+	},
 	methods: {
-		refreshList() { },
+		init() {
+			this.getEmailOption()
+			this.getFolderOption()
+			this.getImportEmailList()
+		},
+		async getEmailOption() {
+			try {
+				const res = await getEmailTaskList()
+				if (res.code === 200) {
+					this.emailOption = res.data
+				}
+			} catch { }
+		},
+		async getFolderOption() {
+			try {
+				const res = await getImportFolderList()
+				if (res.code === 200) {
+					this.folderOption = res.data
+				}
+			} catch { }
+		},
+		async getImportEmailList() {
+			const { current, pageSize } = this.pagination
+			try {
+				const res = await getEmailImportList({
+					pageNum: current,
+					pageSize: pageSize
+				})
+				if (res.code === 200) {
+					this.list = res.rows
+				}
+			} catch (e) {
+				console.error(e.message);
+			}
+		},
+		handleFile(e) {
+			const file = e.target.files[0]
+			const isMaxFileData = (file.size / 1024 / 1024) > 2 * 2048
+			if (isMaxFileData) {
+				this.$message.warning('文件大小不能超过2G')
+				return
+			}
+			this.uploadFileName = file.name
+			this.importFormData.file = file
+		},
+		async uploadEmail() {
+			const { file, taskId, folderId, filterEmailFlag } = this.importFormData
+			let formData = new FormData()
+			formData.append('file', file)
+			formData.append('taskId', taskId)
+			formData.append('folderId', folderId)
+			formData.append('filterEmailFlag', filterEmailFlag)
+			try {
+				const res = await emailImport(formData)
+				if (res.code === 200) {
+					this.uploadFileName = ''
+					this.uploadStatus = true
+					this.getImportEmailList()
+				}
+			} catch (e) {
+				console.error(e.message);
+			}
+		},
+		refreshList() {
+			this.getImportEmailList()
+		},
 		onPagePrevious() {
 			if (this.pagination.current > 1) {
 				this.onChangePage(this.pagination.current - 1);
+				this.getImportEmailList()
 			}
 		},
 		onPageNext() {
 			if (this.pagination.current < this.totalPage) {
 				this.onChangePage(this.pagination.current + 1);
+				this.getImportEmailList()
 			}
 		},
 		onChangePage(pageNumber) {
 			if (pageNumber >= 1 && pageNumber <= this.totalPage) {
 				this.pagination.current = pageNumber;
+				this.getImportEmailList()
+			}
+		},
+		generateStatus(value) {
+			const { color = '', label = '' } = this.statusMap[value]
+			return {
+				color,
+				label
 			}
 		}
 	}
