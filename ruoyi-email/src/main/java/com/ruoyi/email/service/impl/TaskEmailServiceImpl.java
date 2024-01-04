@@ -34,6 +34,8 @@ import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.domain.vo.MenuCountVO;
 import com.ruoyi.email.domain.vo.MenuInboxTaskCountVO;
+import com.ruoyi.email.domain.vo.OtherConfigVO;
+import com.ruoyi.email.mapper.OtherConfigMapper;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +68,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
     @Resource
     private TaskEmailMapper taskEmailMapper;
+    @Resource
+    private OtherConfigMapper otherConfigMapper;
     @Resource
     private ITaskEmailContentService taskEmailContentService;
     @Resource
@@ -275,6 +279,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         TaskEmail taskEmail = new TaskEmail();
         BeanUtils.copyProperties(dto, taskEmail);
+        taskEmail.setPendingTime(getPendingTime(dto.getPendingTime(), userId));
         taskEmail.setUid(IdUtils.fastSimpleUUID());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
         taskEmail.setFolder("INBOX");
@@ -320,6 +325,40 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         }
 
         return emailId;
+    }
+
+    /**
+     * 获取定时发送时间
+     */
+    private Date getPendingTime(Date pendingTime, Long userId) {
+        Date sendTime = pendingTime != null ? pendingTime : new Date();
+        // 查询其它配置
+        OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(userId);
+        if (otherConfigVO == null || otherConfigVO.getDelayedMailDelivery() == null) return sendTime;
+
+        Integer delayedMailDelivery = otherConfigVO.getDelayedMailDelivery();
+        // 邮件延迟发送: 1.即可发送 2.延迟30秒发送 3.延迟1分钟发送 4.延迟2分钟发送延迟 5.延迟5分钟发送
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(sendTime);
+
+        switch (delayedMailDelivery) {
+            case 1:
+                break;
+            case 2:
+                calendar.add(Calendar.SECOND, 30);
+                break;
+            case 3:
+                calendar.add(Calendar.SECOND, 60);
+                break;
+            case 4:
+                calendar.add(Calendar.SECOND, 120);
+                break;
+            case 5:
+                calendar.add(Calendar.SECOND, 300);
+                break;
+        }
+
+        return sendTime;
     }
 
     /**
