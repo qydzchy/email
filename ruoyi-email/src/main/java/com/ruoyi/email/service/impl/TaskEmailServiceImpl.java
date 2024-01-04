@@ -37,6 +37,7 @@ import com.ruoyi.email.domain.vo.MenuInboxTaskCountVO;
 import com.ruoyi.email.domain.vo.OtherConfigVO;
 import com.ruoyi.email.mapper.OtherConfigMapper;
 import com.ruoyi.email.service.*;
+import com.ruoyi.email.service.handler.email.UniversalMail;
 import com.ruoyi.email.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -340,7 +341,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         // 邮件延迟发送: 1.即可发送 2.延迟30秒发送 3.延迟1分钟发送 4.延迟2分钟发送延迟 5.延迟5分钟发送
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(sendTime);
-
         switch (delayedMailDelivery) {
             case 1:
                 break;
@@ -360,6 +360,69 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         return sendTime;
     }
+
+    /**
+     * 自动回复
+     */
+    @Override
+    public void autoResponse(Task task, UniversalMail universalMail, String reContent) {
+        Date now = DateUtils.getNowDate();
+        String fromer = universalMail.getFromer();
+        String title = universalMail.getTitle();
+        Long userId = task.getCreateId();
+        String username = task.getCreateBy();
+
+        JSONArray jsonA = new JSONArray();
+        JSONObject jsonO = new JSONObject();
+        jsonO.put("name", fromer);
+        jsonO.put("email", fromer);
+        jsonA.add(jsonO);
+
+        String receiver = JSONObject.toJSONString(jsonA);
+        TaskEmail taskEmail = new TaskEmail();
+        taskEmail.setUid("autoResponse_" + IdUtils.fastSimpleUUID());
+        taskEmail.setTaskId(task.getId());
+        taskEmail.setFromer(task.getAccount());
+        taskEmail.setReceiver(receiver);
+        taskEmail.setTitle("Re: " + title);
+        taskEmail.setSendDate(new Date());
+        taskEmail.setType(EmailTypeEnum.SEND.getType());
+        taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmail.setCreateId(userId);
+        taskEmail.setCreateBy(username);
+        taskEmail.setCreateTime(now);
+        taskEmail.setUpdateId(userId);
+        taskEmail.setUpdateBy(username);
+        taskEmail.setUpdateTime(now);
+        taskEmail.setInReplyTo(universalMail.getMessageId());
+        taskEmail.setDelayedTxFlag(false);
+        taskEmail.setRecipientLocalTime(now);
+
+        String reference = "";
+        if (taskEmail.getReference() != null) {
+            reference = taskEmail.getReference() + " ";
+        }
+
+        reference += taskEmail.getMessageId();
+        taskEmail.setReference(reference);
+
+        taskEmailMapper.insertTaskEmail(taskEmail);
+
+        TaskEmailContent taskEmailContent = new TaskEmailContent();
+        taskEmailContent.setEmailId(taskEmail.getId());
+        taskEmailContent.setContent(reContent);
+        taskEmailContentService.insertTaskEmailContent(taskEmailContent);
+    }
+
+    /**
+     * 查询发送任务邮件列表
+     * @return
+     */
+    @Override
+    public List<TaskEmail> selectSendTaskEmailList(Long taskId) {
+        return taskEmailMapper.selectSendTaskEmailList(taskId);
+    }
+
 
     /**
      * 邮件发送-（写信）
