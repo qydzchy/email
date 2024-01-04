@@ -266,7 +266,7 @@ export default {
 				},
 				3: {
 					label: '导入失败',
-					color: ''
+					color: 'fail'
 				},
 			},
 			pagination: {
