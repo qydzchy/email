@@ -484,7 +484,7 @@ export default {
                     'group-image'
                 ]
             },
-            flagFields: ['fixedFlag', 'readFlag', 'folderFlag', 'forwardToFlag', 'pendingFlag', 'autoResponseFlag', 'autoToHistoryMailFlag']
+            flagFields: ['fixedFlag', 'readFlag', 'folderFlag', 'forwardToFlag', 'pendingFlag', 'autoResponseFlag', 'applyToHistoryMailFlag']
         }
     },
     mounted() {
@@ -551,7 +551,7 @@ export default {
                     this.ruleData = res.data
                     Object.keys(this.ruleData).forEach((value) => {
                         if (this.flagFields.includes(value)) {
-                            this.ruleData[value] = Boolean(this.ruleData[value])
+                            this.ruleData[value] = +(this.ruleData[value])
                         }
                     })
 
@@ -705,7 +705,7 @@ export default {
             }
             Object.keys(data).forEach((value) => {
                 if (this.flagFields.includes(value)) {
-                    data[value] = +data[value]
+                    data[value] = Boolean(data[value])
                 }
             })
             delete data.orderNum
