@@ -2,6 +2,7 @@ package com.ruoyi.email.service.handler.email;
 
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
+import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface IMailService {
      * @return 获取邮件内容
      * @throws MailPlusException
      */
-    UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException;
+    UniversalMail parseEmail(MailItem mailItem, EmailOperateParamBO emailOperateParamBO, String localSavePath, String attachmentPath) throws MailPlusException;
 
     /**
      * 获取邮件列表
@@ -39,7 +40,7 @@ public interface IMailService {
      * @return
      * @throws MailPlusException
      */
-    List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException;
+    List<MailItem> listAll(MailConn mailConn, EmailOperateParamBO emailOperateParamBO, List<String> existUidList) throws MailPlusException;
 
 
     ProtocolTypeEnum getProtocolTypeEnum();

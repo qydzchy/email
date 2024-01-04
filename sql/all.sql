@@ -5470,10 +5470,11 @@ CREATE TABLE `sys_job`  (
 INSERT INTO `sys_job` VALUES (1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams', '0/10 * * * * ?', '3', '1', '1', 'admin', '2023-07-31 13:30:09', '', NULL, '');
 INSERT INTO `sys_job` VALUES (2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')', '0/15 * * * * ?', '3', '1', '1', 'admin', '2023-07-31 13:30:09', '', NULL, '');
 INSERT INTO `sys_job` VALUES (3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)', '0/20 * * * * ?', '3', '1', '1', 'admin', '2023-07-31 13:30:09', '', NULL, '');
-INSERT INTO `sys_job` VALUES (4, '拉取邮件', 'SYSTEM', 'emailTask.syncEmail', '0 0/5 * * * ? ', '1', '1', '1', 'admin', '2023-09-13 08:27:30', 'admin', '2023-11-27 13:28:37', '');
-INSERT INTO `sys_job` VALUES (5, '发送邮件', 'SYSTEM', 'emailTask.sendEmail', '0 0/2 * * * ? ', '1', '0', '1', 'admin', '2023-09-13 13:28:35', 'admin', '2023-10-13 17:42:57', '');
+INSERT INTO `sys_job` VALUES (4, '拉取邮件', 'SYSTEM', 'emailTask.syncEmail', '0 0/5 * * * ? ', '1', '1', '0', 'admin', '2023-09-13 08:27:30', 'admin', '2024-01-04 14:54:09', '');
+INSERT INTO `sys_job` VALUES (5, '发送邮件', 'SYSTEM', 'emailTask.sendEmail', '0/10 * * * * ?', '1', '0', '0', 'admin', '2023-09-13 13:28:35', 'admin', '2024-01-04 14:54:05', '');
 INSERT INTO `sys_job` VALUES (6, '客户客群清洗', 'SYSTEM', 'customerTask.shuffle', '0 0 0/3 * * ? ', '1', '1', '0', 'admin', '2023-11-27 07:48:56', 'admin', '2023-12-04 14:47:32', '');
 INSERT INTO `sys_job` VALUES (7, '移动公海规则处理', 'SYSTEM', 'customerTask.movePublicleadsRulesHandler', '0 5 0 ? * * ', '1', '1', '0', 'admin', '2023-11-27 07:49:49', '', '2023-11-27 07:49:55', '');
+INSERT INTO `sys_job` VALUES (8, '异常邮箱检测', 'SYSTEM', 'emailTask.testEmail', '0 0 * * * ?', '1', '1', '0', 'admin', '2024-01-04 14:53:55', '', '2024-01-04 14:54:00', '');
 
 -- ----------------------------
 -- Table structure for sys_job_log

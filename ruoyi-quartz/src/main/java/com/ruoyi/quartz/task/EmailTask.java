@@ -33,4 +33,11 @@ public class EmailTask {
         // 发送草稿箱的任务
         taskService.sendEmail();
     }
+
+    /**
+     * 异常邮箱检测
+     */
+    public void testEmail() {
+        taskService.testEmail();
+    }
 }

@@ -2,6 +2,7 @@ package com.ruoyi.email.service.handler.email;
 
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
+import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,16 +33,16 @@ public class MailContext {
     /**
      * 解析文件
      */
-    public UniversalMail parseEmail(ProtocolTypeEnum protocolTypeEnum, MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
+    public UniversalMail parseEmail(ProtocolTypeEnum protocolTypeEnum, MailItem mailItem, EmailOperateParamBO emailOperateParamBO, String localSavePath, String attachmentPath) throws MailPlusException {
         IMailService mailService = protocolTypeMap.get(protocolTypeEnum);
-        return mailService.parseEmail(mailItem, localSavePath, attachmentPath);
+        return mailService.parseEmail(mailItem, emailOperateParamBO, localSavePath, attachmentPath);
     }
 
     /**
      * 获取邮件列表
      */
-    public List<MailItem> listAll(ProtocolTypeEnum protocolTypeEnum, MailConn mailConn, List<String> existUidList) throws MailPlusException {
+    public List<MailItem> listAll(ProtocolTypeEnum protocolTypeEnum, MailConn mailConn, EmailOperateParamBO emailOperateParamBO, List<String> existUidList) throws MailPlusException {
         IMailService mailService = protocolTypeMap.get(protocolTypeEnum);
-        return mailService.listAll(mailConn, existUidList);
+        return mailService.listAll(mailConn, emailOperateParamBO, existUidList);
     }
 }

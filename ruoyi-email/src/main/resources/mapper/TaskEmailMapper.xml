@@ -246,6 +246,15 @@
         select count(DISTINCT(mte.id)) from customer_customer_contact ccc
         left join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
         where ccc.customer_id = ${customerId}
+        AND ccc.del_flag = '0'
+        AND mte.del_flag = '0'
+        <if test="attachmentFlag != null and attachmentFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_attachment mtea
+            WHERE mte.id = mtea.email_id
+            )
+        </if>
     </select>
 
     <select id="customerEmailList" resultType="com.ruoyi.email.domain.vo.EmailListVO">
@@ -281,8 +290,16 @@
             OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
             LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
-            ccc.del_flag = '0'
+            ccc.customer_id = ${customerId}
+            AND ccc.del_flag = '0'
             AND mte.del_flag = '0'
+            <if test="attachmentFlag != null and attachmentFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM mailbox_task_email_attachment mtea
+                WHERE mte.id = mtea.email_id
+                )
+            </if>
         ORDER BY
             mte.send_date DESC
             LIMIT #{offset}, #{limit}
@@ -290,6 +307,52 @@
 
     <select id="countByEmlFileParam" resultType="java.lang.Integer">
         select count(*) from mailbox_task_email where task_id = #{taskId} and folder_id = #{folderId} and title = #{title} and send_date = #{sendDate} and del_flag = '0'
+    </select>
+
+    <select id="getContactEmailList" resultType="java.lang.String">
+        select ccc.email from customer_customer cc
+        left join customer_customer_contact ccc on cc.id = ccc.customer_id
+        where cc.customer_id = #{customerId} and cc.del_flag = '0' and ccc.del_flag = '0'
+    </select>
+
+    <select id="correspondenceEmailList" resultType="com.ruoyi.email.domain.vo.EmailListVO">
+        SELECT
+            mte.id,
+            mte.type,
+            mte.status,
+            mte.task_id AS taskId,
+            mte.uid,
+            mte.fromer,
+            mte.receiver,
+            mte.bcc,
+            mte.cc,
+            mte.folder,
+            mte.folder_id AS folderId,
+            mte.title,
+            mte.send_date AS sendDate,
+            mte.eml_path AS emlPath,
+            mte.read_flag AS readFlag,
+            mte.pending_flag AS pendingFlag,
+            mte.pending_time AS pendingTime,
+            mte.fixed_flag AS fixedFlag,
+            mte.spam_flag AS spamFlag,
+            mte.message_id AS messageId,
+            mte.in_reply_to AS inReplyTo,
+            mte.reference,
+            mtec.content
+        FROM
+            customer_customer_contact ccc
+                LEFT JOIN mailbox_task_email mte ON ccc.email = mte.fromer
+                OR mte.receiver LIKE concat( '%"email":"', ccc.email, '"%' )
+                OR mte.bcc LIKE concat( '%"email":"', ccc.email, '"%' )
+                OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
+                LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        WHERE
+            ccc.del_flag = '0'
+          AND mte.del_flag = '0'
+        ORDER BY
+            mte.send_date DESC
+            LIMIT #{offset}, #{limit}
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">

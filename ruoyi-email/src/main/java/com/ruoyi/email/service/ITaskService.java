@@ -127,4 +127,9 @@ public interface ITaskService
      * 保存邮件内容
      */
     void saveEmailData(Long taskId, Long folderId, Integer type, UniversalMail universalMail);
+
+    /**
+     * 邮箱测试
+     */
+    void testEmail();
 }

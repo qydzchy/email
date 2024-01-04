@@ -18,10 +18,12 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
+import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
-import com.ruoyi.email.domain.vo.HomeListTaskVO;
-import com.ruoyi.email.domain.vo.TaskListVO;
-import com.ruoyi.email.domain.vo.TestTaskVO;
+import com.ruoyi.email.domain.vo.*;
+import com.ruoyi.email.mapper.GeneralMapper;
+import com.ruoyi.email.mapper.OtherConfigMapper;
+import com.ruoyi.email.mapper.TransceiverRuleMapper;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import com.ruoyi.email.util.ThreadPoolPullService;
@@ -60,6 +62,12 @@ public class TaskServiceImpl implements ITaskService
     private ITaskAttachmentService taskAttachmentService;
     @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
+    @Resource
+    private GeneralMapper generalMapper;
+    @Resource
+    private OtherConfigMapper otherConfigMapper;
+    @Resource
+    private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -306,11 +314,14 @@ public class TaskServiceImpl implements ITaskService
             return null;
         }
 
+        // 查询邮箱配置
+        EmailOperateParamBO emailOperateParamBO = getMailboxConfigByCreateId(task.getCreateId());
+
         try {
             // 查询存在的uid
             List<String> existUidList = taskEmailService.getUidsByTaskId(task.getId());
 
-            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, existUidList);
+            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, emailOperateParamBO, existUidList);
             if (mailItems == null || mailItems.size() == 0) {
                 return null;
             }
@@ -319,7 +330,7 @@ public class TaskServiceImpl implements ITaskService
                 try {
                     String newEmailPath = emailPath.concat("/").concat(task.getAccount());
                     String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());
-                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, newEmailPath, newAttachmentPath);
+                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailOperateParamBO, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
                         saveEmailData(task.getId(), universalMail);
@@ -336,6 +347,29 @@ public class TaskServiceImpl implements ITaskService
         }
 
         return null;
+    }
+
+    /**
+     * 根据创建者ID获取邮箱配置
+     * @param createId
+     */
+    private EmailOperateParamBO getMailboxConfigByCreateId(Long createId) {
+        EmailOperateParamBO emailOperateParamBO = new EmailOperateParamBO();
+        if (createId != null) {
+            // 查询常规配置
+            GeneralVO generalVO = generalMapper.getByCreateId(createId);
+            Integer maxPerPage = generalVO.getMaxPerPage();
+            // 查询其它配置
+            OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(createId);
+            // 查询收发件规则
+            List<TransceiverRuleVO> transceiverRuleList= transceiverRuleMapper.list(createId);
+
+            BeanUtils.copyProperties(emailOperateParamBO, otherConfigVO);
+            emailOperateParamBO.setMaxPerPage(maxPerPage);
+            emailOperateParamBO.setTransceiverRuleList(transceiverRuleList);
+        }
+
+        return emailOperateParamBO;
     }
 
     @Override
@@ -362,11 +396,13 @@ public class TaskServiceImpl implements ITaskService
 
     @Override
     public void sendEmail() {
-        List<Task> taskList = taskMapper.selectTaskList(new Task());
+        Task taskParam = new Task();
+        taskParam.setDelFlag("0");
+        List<Task> taskList = taskMapper.selectTaskList(taskParam);
         ThreadPoolExecutor instance = ThreadPoolSendService.getInstance();
         taskList.stream().forEach(task -> {
             instance.execute(() -> {
-                sendEmail(task.getId());
+                sendEmail(task);
             });
         });
     }
@@ -385,20 +421,56 @@ public class TaskServiceImpl implements ITaskService
 
     /**
      * 发送邮件
-     * @param id
+     * @param task
      */
-    private void sendEmail(Long id) {
+    private void sendEmail(Task task) {
         TaskEmail taskEmailParam = new TaskEmail();
-        taskEmailParam.setTaskId(id);
+        taskEmailParam.setTaskId(task.getId());
         taskEmailParam.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
         taskEmailParam.setDelayedTxFlag(false);
         taskEmailParam.setDelFlag("0");
         List<TaskEmail> taskEmailList = taskEmailService.selectTaskEmailList(taskEmailParam);
+        // 获取随机休眠时间
+        int randomSleepTime = getRandomSleepTime(task.getCreateId());
 
+        int finalRandomSleepTime = randomSleepTime;
         taskEmailList.stream().forEach(taskEmail -> {
+            if (finalRandomSleepTime > 0) {
+                try {
+                    Thread.sleep(finalRandomSleepTime);
+                } catch (InterruptedException e) {
+                    log.error("休眠异常：{}", e);
+                }
+            }
+
             taskEmailService.sendEmail(taskEmail);
         });
-        
+    }
+
+    /**
+     * 获取随机休眠时间
+     * @param createId
+     * @return
+     */
+    private int getRandomSleepTime(Long createId) {
+        int randomSleepTime = 0;
+        if (createId == null) return randomSleepTime;
+
+        try {
+            OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(createId);
+            if (otherConfigVO == null || StringUtils.isBlank(otherConfigVO.getSendingInterval())) return randomSleepTime;
+
+            String sendingInterval = otherConfigVO.getSendingInterval();
+            String[] arr = sendingInterval.split("~");
+            int start = Integer.parseInt(arr[0]);
+            int end = Integer.parseInt(arr[1]);
+
+            Random random = new Random();
+            randomSleepTime = random.nextInt(end - start) + start;
+        } catch (Exception e) {
+            log.error("异常：{}", e);
+        }
+        return randomSleepTime;
     }
 
     /**
@@ -496,6 +568,25 @@ public class TaskServiceImpl implements ITaskService
                 taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
             }
         }
+    }
+
+    /**
+     * 邮箱测试
+     */
+    @Override
+    public void testEmail() {
+        // 查询所有的任务
+        Task taskParam = new Task();
+        taskParam.setDelFlag("0");
+        List<Task> taskList = taskMapper.selectTaskList(taskParam);
+        taskList.stream().forEach(task -> {
+            if (task.getCreateId() != null) {
+                OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(task.getCreateId());
+                if (otherConfigVO != null && otherConfigVO.getAbnormalMailboxDetection() != null && otherConfigVO.getAbnormalMailboxDetection().intValue() == 1) {
+                    testEmail(task);
+                }
+            }
+        });
     }
 
     /**
@@ -617,6 +708,15 @@ public class TaskServiceImpl implements ITaskService
             throw new ServiceException("任务为空");
         }
 
+        return testEmail(task);
+    }
+
+    /**
+     * 邮箱检测
+     * @param task
+     * @return
+     */
+    private TestTaskVO testEmail(Task task) {
         // 获取邮箱协议
         ProtocolTypeEnum protocolTypeEnum = ProtocolTypeEnum.getByType(task.getProtocolType());
         if (protocolTypeEnum == null) {

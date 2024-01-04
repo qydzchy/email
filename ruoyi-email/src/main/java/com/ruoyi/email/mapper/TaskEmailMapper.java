@@ -204,7 +204,7 @@ public interface TaskEmailMapper
      * @param customerId
      * @return
      */
-    int customerEmailCount(@Param("customerId") Long customerId);
+    int customerEmailCount(@Param("customerId") Long customerId, @Param("attachmentFlag") Boolean attachmentFlag);
 
     /**
      * 客户邮件列表
@@ -213,7 +213,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("attachmentFlag") Boolean attachmentFlag, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 判断邮件是否存在
@@ -223,4 +223,11 @@ public interface TaskEmailMapper
      * @return
      */
     int countByEmlFileParam(@Param("taskId") Long taskId, @Param("folderId") Long folderId, @Param("title") String title, @Param("sendDate") Date sentDate);
+
+    /**
+     * 获取客户联系人邮箱
+     * @param customerId
+     * @return
+     */
+    List<String> getContactEmailList(@Param("customerId") Long customerId);
 }

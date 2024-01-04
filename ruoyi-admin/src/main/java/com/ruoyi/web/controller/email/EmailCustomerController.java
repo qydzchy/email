@@ -117,10 +117,11 @@ public class EmailCustomerController extends BaseController {
     @PreAuthorize("@ss.hasPermi('email:customer:email:list')")
     @GetMapping("/email/list")
     public TableDataInfo emailList(@NotNull(message = "客户ID不能为空") Long customerId,
+                              Boolean attachmentFlag,
                               @NotNull(message = "页数不能为空") Integer pageNum,
                               @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, attachmentFlag, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 
@@ -137,13 +138,13 @@ public class EmailCustomerController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('email:customer:detail')")
     @GetMapping(value = "/detail")
-    public AjaxResult getCustomerDetail(Long id)
+    public AjaxResult getCustomerDetail(Long customerId)
     {
-        if (id == null) {
-            throw new ServiceException("ID不能为空");
+        if (customerId == null) {
+            throw new ServiceException("客户ID不能为空");
         }
 
-        return success(customerService.getCustomerDetail(id));
+        return success(customerService.getCustomerDetail(customerId));
     }
 
     /**
@@ -259,6 +260,7 @@ public class EmailCustomerController extends BaseController {
 
         return toAjax(customerFollowUpRecordsCommentService.deleteCustomerFollowUpRecordsCommentById(customerFollowUpRecordsComment.getId()));
     }
+
 
     /**
      * 参数校验
