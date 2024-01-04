@@ -69,32 +69,35 @@
                                                 <tr class="mm-tbody-tr" draggable="true" v-for="(item, idx) in list"
                                                     :key="idx">
                                                     <td>
-                                                        <div class="mm-table-cell" title="" style="text-align: left;"><a
-                                                                class="e-move"><span
-                                                                    class="m-icon icon-move-btn"></span></a>
+                                                        <div class="mm-table-cell" title="" style="text-align: left;">
+                                                            <a class="e-move">
+                                                                <span class="m-icon icon-move-btn"></span>
+                                                            </a>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: left;"><span
-                                                                class="mm-tag__success mm-tag__mini mm-tag">{{ item.type
+                                                                class="mm-tag__success mm-tag__mini mm-tag">{{
+                                                                    ruleMap[item.ruleType]
                                                                 }}</span>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: left;">{{
-                                                            item.name }}
+                                                            item.ruleName }}
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: left;">
-                                                            <div :title="item.oddsName" class="rule-desc ellipsis">
-                                                                {{ item.oddsName }}</div>
+                                                            <div :title="item.executionRule" class="rule-desc ellipsis">
+                                                                {{ item.executionRule }}</div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="mm-table-cell" title="" style="text-align: right;">
                                                             <div>
-                                                                <el-switch v-model="item.status"></el-switch>
+                                                                <el-switch v-model="item.status"
+                                                                    @change="handleStatus(item)"></el-switch>
                                                                 <button type="button"
                                                                     class="mm-button mm-button__text btn-list-item"
                                                                     @click="onEdit(item.id)">编辑</button>
@@ -179,7 +182,7 @@
                                                 </div>
                                                 </p>
                                             </div>
-                                            <el-radio-group v-model="ruleData.executeOdds">
+                                            <el-radio-group v-model="ruleData.executionCondition">
                                                 <el-radio :label="1">满足以下所有条件</el-radio>
                                                 <el-radio :label="2">满足以下任一条件</el-radio>
                                             </el-radio-group>
@@ -402,6 +405,7 @@
 
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import { getDispatcherRuleList, updateDispatcherRuleInfo, dispatcherRuleInfo, deleteDispatcherRuleInfo } from '@/api/email/dispatcherRules'
 export default {
     components: {
         Editor,
@@ -410,20 +414,16 @@ export default {
     data() {
         return {
             showForm: false,
-            list: [
-                {
-                    id: 1,
-                    type: '收件',
-                    name: '测试',
-                    oddsName: '若同时满足： 发件人 包含test@qq.com， 则：标记为待处理邮件并设置稍后处理时间',
-                    status: false,
-                }
-            ],
+            list: [],
+            ruleMap: {
+                1: '收件规则',
+                2: '发件规则'
+            },
             ruleData: {
                 id: '',
                 ruleType: 1,
                 ruleName: '',
-                executeOdds: 1,
+                executionCondition: 1,
                 operate: 0,
                 picker: false,
                 read: false,
@@ -460,12 +460,68 @@ export default {
             },
         }
     },
+    mounted() {
+        this.getList()
+    },
     methods: {
-        onEdit(id) {
-            this.ruleData.id = id
-            this.showForm = true
+        async getList() {
+            try {
+                const res = await getDispatcherRuleList()
+                if (res.code === 200) {
+                    this.list = res.data.map(val => {
+                        val.status = Boolean(val.status)
+                        return val
+                    })
+                }
+            } catch { }
         },
-        onDelete(id) { },
+        async handleStatus(item) {
+            try {
+                const res = await updateDispatcherRuleInfo({
+                    id: item.id,
+                })
+                if (res.code === 200) {
+                    this.getList()
+                }
+            } catch { }
+        },
+        async onEdit(id) {
+            try {
+                const res = await dispatcherRuleInfo(id)
+                if (res.code === 200) {
+                    this.ruleData = res.data
+                    this.showForm = true
+                }
+            } catch { }
+        },
+        onDelete(id) {
+            this.$confirm('是否删除?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+                roundButton: true,
+                beforeClose: async (action, instance, done) => {
+                    if (action === 'confirm') {
+                        instance.confirmButtonLoading = true;
+                        instance.confirmButtonText = '执行中...';
+                        try {
+                            const res = await deleteDispatcherRuleInfo({ id: id }).finally(() => {
+                                instance.confirmButtonLoading = false
+                                done()
+                            })
+                            if (res.code === 200) {
+                                this.$message.success('删除成功')
+                                this.getList()
+                            }
+                        } catch {
+                        }
+                    } else {
+                        done();
+                    }
+                }
+            }).then(_action => {
+            });
+        },
         onCreated(editor) {
             let that = this
             this.editor = Object.seal(editor);
