@@ -230,4 +230,18 @@ public interface TaskEmailMapper
      * @return
      */
     List<String> getContactEmailList(@Param("customerId") Long customerId);
+
+    /**
+     * 统计在4天内已经回复过邮件数量
+     * @param fromer
+     * @param receiver
+     * @return
+     */
+    int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver);
+
+    /**
+     * 查询发送任务邮件列表
+     * @return
+     */
+    List<TaskEmail> selectSendTaskEmailList(Long taskId);
 }

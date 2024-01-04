@@ -355,6 +355,26 @@
             LIMIT #{offset}, #{limit}
     </select>
 
+    <select id="countRepliedWithinFourDays" resultType="java.lang.Integer">
+        select count(te.id) from mailbox_task mt
+        left join mailbox_task_email mte on mt.id = mte.task_id
+        where mt.del_flag = '0' and mte.del_flag = '0'
+        and mt.account = #{fromer}
+        and mte.uid LIKE 'autoResponse_%'
+        and (mte.receiver LIKE concat( '%"email":"', #{receiver}, '"%' )
+            OR mte.bcc LIKE concat( '%"email":"', #{receiver}, '"%' )
+            OR mte.cc LIKE concat( '%"email":"', #{receiver}, '"%' ))
+          AND <![CDATA[ DATEDIFF(NOW(), mte.send_date) <= 4 ]]>;
+    </select>
+
+    <select id="selectSendTaskEmailList" resultMap="TaskEmailResult">
+        <include refid="selectTaskEmailVo"/>
+        WHERE task_id = #{taskId}
+        AND status = 2
+        AND del_flag = '0'
+        AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">

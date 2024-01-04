@@ -3,12 +3,14 @@ package com.ruoyi.email.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.domain.vo.MenuCountVO;
+import com.ruoyi.email.service.handler.email.UniversalMail;
 import org.springframework.data.util.Pair;
 
 
@@ -229,4 +231,18 @@ public interface ITaskEmailService
      * @return
      */
     Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean attachmentFlag, Integer pageNum, Integer pageSize);
+
+    /**
+     * 自动回复
+     * @param task
+     * @param universalMail
+     * @param reContent
+     */
+    void autoResponse(Task task, UniversalMail universalMail, String reContent);
+
+    /**
+     * 查询发送任务邮件列表
+     * @return
+     */
+    List<TaskEmail> selectSendTaskEmailList(Long taskId);
 }

@@ -21,9 +21,7 @@ import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.*;
-import com.ruoyi.email.mapper.GeneralMapper;
-import com.ruoyi.email.mapper.OtherConfigMapper;
-import com.ruoyi.email.mapper.TransceiverRuleMapper;
+import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
 import com.ruoyi.email.util.ThreadPoolPullService;
@@ -34,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import com.ruoyi.email.mapper.TaskMapper;
 
 import javax.annotation.Resource;
 
@@ -68,6 +65,8 @@ public class TaskServiceImpl implements ITaskService
     private OtherConfigMapper otherConfigMapper;
     @Resource
     private TransceiverRuleMapper transceiverRuleMapper;
+    @Resource
+    private TaskEmailMapper taskEmailMapper;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -335,6 +334,13 @@ public class TaskServiceImpl implements ITaskService
                     if (universalMail.getSendDate() != null) {
                         saveEmailData(task.getId(), universalMail);
                     }
+
+                    // 查询是否在4天内已经回复过邮件
+                    if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) {
+                        // 外出自动回复处理
+                        autoResponseHandler(task, universalMail, emailOperateParamBO);
+                    }
+
                 } catch (MailPlusException e) {
                     log.error("{}", e);
                 }
@@ -350,6 +356,44 @@ public class TaskServiceImpl implements ITaskService
     }
 
     /**
+     * 查询是否在4天内已经回复过邮件
+     * @param fromer
+     * @param receiver
+     */
+    private boolean checkRepliedWithinFourDays(String fromer, String receiver) {
+        int count = taskEmailMapper.countRepliedWithinFourDays(fromer, receiver);
+        return count > 0 ? true : false;
+    }
+
+    /**
+     * 外出自动回复处理
+     * @param task
+     * @param universalMail
+     * @param emailOperateParamBO
+     */
+    private void autoResponseHandler(Task task, UniversalMail universalMail, EmailOperateParamBO emailOperateParamBO) {
+        // 查询外出自动回复
+        Integer autoResponseFlag = emailOperateParamBO.getAutoResponseFlag();
+        if (autoResponseFlag.intValue() == 1) {
+            Date now = DateUtils.getNowDate();
+            Date startTime = emailOperateParamBO.getStartTime();
+            if (now.compareTo(startTime) < 0) return;
+
+            if (emailOperateParamBO.getLastDayFlag() != null && emailOperateParamBO.getLastDayFlag().intValue() == 1
+                    && emailOperateParamBO.getLastDay() != null) {
+                Date lastDay = emailOperateParamBO.getLastDay();
+                if (now.compareTo(lastDay) > 0) return;
+            }
+
+            if (StringUtils.isBlank(emailOperateParamBO.getReContent())) return;
+
+            // 查询在4天之内已经对该邮箱自动回复过了
+            taskEmailService.autoResponse(task, universalMail, emailOperateParamBO.getReContent());
+        }
+    }
+
+
+    /**
      * 根据创建者ID获取邮箱配置
      * @param createId
      */
@@ -358,15 +402,23 @@ public class TaskServiceImpl implements ITaskService
         if (createId != null) {
             // 查询常规配置
             GeneralVO generalVO = generalMapper.getByCreateId(createId);
-            Integer maxPerPage = generalVO.getMaxPerPage();
+
             // 查询其它配置
             OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(createId);
             // 查询收发件规则
             List<TransceiverRuleVO> transceiverRuleList= transceiverRuleMapper.list(createId);
 
-            BeanUtils.copyProperties(emailOperateParamBO, otherConfigVO);
-            emailOperateParamBO.setMaxPerPage(maxPerPage);
-            emailOperateParamBO.setTransceiverRuleList(transceiverRuleList);
+            if (generalVO != null) {
+                BeanUtils.copyProperties(emailOperateParamBO, generalVO);
+            }
+
+            if (otherConfigVO != null) {
+                BeanUtils.copyProperties(emailOperateParamBO, otherConfigVO);
+            }
+
+            if (transceiverRuleList != null && !transceiverRuleList.isEmpty()) {
+                emailOperateParamBO.setTransceiverRuleList(transceiverRuleList);
+            }
         }
 
         return emailOperateParamBO;
@@ -424,12 +476,7 @@ public class TaskServiceImpl implements ITaskService
      * @param task
      */
     private void sendEmail(Task task) {
-        TaskEmail taskEmailParam = new TaskEmail();
-        taskEmailParam.setTaskId(task.getId());
-        taskEmailParam.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
-        taskEmailParam.setDelayedTxFlag(false);
-        taskEmailParam.setDelFlag("0");
-        List<TaskEmail> taskEmailList = taskEmailService.selectTaskEmailList(taskEmailParam);
+        List<TaskEmail> taskEmailList = taskEmailService.selectSendTaskEmailList(task.getId());
         // 获取随机休眠时间
         int randomSleepTime = getRandomSleepTime(task.getCreateId());
 
