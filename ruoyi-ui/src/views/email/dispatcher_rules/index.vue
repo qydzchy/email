@@ -213,7 +213,7 @@
                                                     </el-select>
                                                     <el-input v-if="item.conditionType !== 3"
                                                         style="width:240px;margin-left:12px;" v-model="item.value"
-                                                        :placeholder="oddsPlaceholder(item.conditionType)">
+                                                        :placeholder="oddsPlaceholder(item.columnName, item.conditionType)">
                                                     </el-input>
                                                     <el-select v-else style="width:240px;margin-left:12px;"
                                                         v-model="item.value">
@@ -573,7 +573,7 @@ export default {
                         instance.confirmButtonLoading = true;
                         instance.confirmButtonText = '执行中...';
                         try {
-                            const res = await deleteDispatcherRuleInfo({ id: id }).finally(() => {
+                            const res = await deleteDispatcherRuleInfo({ id }).finally(() => {
                                 instance.confirmButtonLoading = false
                                 done()
                             })
@@ -658,8 +658,11 @@ export default {
             }
             return option
         },
-        oddsPlaceholder(conditionType) {
+        oddsPlaceholder(columnName, conditionType) {
             let placeholder = ''
+            if (columnName === 'body') {
+                return '例如：price'
+            }
             if ([1, 2].includes(conditionType)) {
                 placeholder = '例如：test、@xiaomcn.cn'
             } else if ([4, 5].includes(conditionType)) {
