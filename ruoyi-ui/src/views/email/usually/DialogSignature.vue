@@ -1,11 +1,12 @@
 <template>
 	<div>
-		<el-dialog :title="title" :visible.sync="dialogVisible" width="700px" :before-close="handleClose" @close="onCancel">
-			<el-form class="mt-10" style="overflow:hidden;" :model="signatureForm" label-width="40px">
-				<el-form-item label="名称">
-					<el-input v-model="signatureForm.name" placeholder="请输入"></el-input>
+		<el-dialog :title="title" :visible.sync="dialogVisible" width="700px" @close="onCancel">
+			<el-form class="mt-10" style="overflow:hidden;" :model="signatureForm" ref="signatureFormRef" label-width="50px"
+				:rules="rules">
+				<el-form-item label="名称" prop="title">
+					<el-input v-model="signatureForm.title" placeholder="请输入"></el-input>
 				</el-form-item>
-				<el-form-item label="内容">
+				<el-form-item label="内容" prop="content">
 					<div style="border:1px solid #ccc;">
 						<Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
 							:defaultConfig="toolbarConfig" />
@@ -17,7 +18,7 @@
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="onCancel">取 消</el-button>
-				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+				<el-button type="primary" @click="onConfirm">确 定</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -25,6 +26,7 @@
 
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import { addSignature, editSignature } from '@/api/email/usually'
 export default {
 	props: {
 		dialogVisible: {
@@ -52,10 +54,28 @@ export default {
 				]
 			},
 			signatureForm: {
-				name: '',
+				id: '',
+				title: '',
 				content: '',
 			},
+			rules: {
+				title: [
+					{ required: true, message: '请填写名称', trigger: 'blur' }
+				]
+			},
 		};
+	},
+	watch: {
+		signatureData: {
+			handler(newVal) {
+				this.signatureForm = {
+					...newVal
+				}
+				console.log(this.signatureForm);
+			}
+		},
+		deep: true,
+		immediate: true
 	},
 	computed: {
 		title() {
@@ -85,12 +105,38 @@ export default {
 				}
 			}
 		},
-		handleClose(done) {
-
+		async addReq(data) {
+			try {
+				const res = await addSignature(data)
+				if (res.code === 200) {
+					this.$message.success('新增成功')
+					this.$emit('onConfirm')
+				}
+			} catch { }
+		},
+		async editReq(data) {
+			try {
+				const res = await editSignature(data)
+				if (res.code === 200) {
+					this.$message.success('编辑成功')
+					this.$emit('onConfirm')
+				}
+			} catch { }
+		},
+		onConfirm() {
+			let data = {
+				...this.signatureForm
+			}
+			if (!data.id) {
+				delete data.id
+				this.addReq(data)
+			} else {
+				this.editReq(data)
+			}
 		},
 		onCancel() {
-			this.$emit('update:dialogVisible', false)
-		}
+			this.$emit('onCancel')
+		},
 	},
 };
 </script>

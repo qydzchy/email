@@ -135,7 +135,8 @@
             <div class="mail-rule-edit" v-show="showForm">
                 <div class="filter-condition">
                     <div class="mail-config-header">
-                        <h3 class="config-page-title">新建收发件规则</h3><span class="tips">设置过滤条件，方便对邮件进行快速的分类或处理</span>
+                        <h3 class="config-page-title">{{ ruleData.id ? '编辑' : '新建' }}收发件规则</h3><span
+                            class="tips">设置过滤条件，方便对邮件进行快速的分类或处理</span>
                     </div>
                     <form class="v-form v-form-vertical">
                         <div class="mail-rule-edit-content">
@@ -182,35 +183,51 @@
                                                 </div>
                                                 </p>
                                             </div>
-                                            <el-radio-group v-model="ruleData.executionCondition">
+                                            <el-radio-group v-model="ruleData.executeCondition">
                                                 <el-radio :label="1">满足以下所有条件</el-radio>
                                                 <el-radio :label="2">满足以下任一条件</el-radio>
                                             </el-radio-group>
 
                                         </div>
                                         <div class="mail-operation field-block">
-                                            <div class="item-value" v-for="(item, index) in oddList" :key="index">
+                                            <div class="item-value" v-for="(item, index) in executeConditionContent"
+                                                :key="index">
                                                 <div class="mail-rule-edit-filterSettings-item">
                                                     <span class="num">{{ index + 1 }}</span>
                                                     <el-select style="width:240px;margin-left:12px;"
-                                                        v-model="item.oddsFirst">
-                                                        <el-option label="如果发件人" :value="1"></el-option>
-                                                        <el-option label="如果收件人" :value="2"></el-option>
-                                                        <el-option label="如果抄送人" :value="3"></el-option>
-                                                        <el-option label="如果主题中" :value="4"></el-option>
-                                                        <el-option label="如果正文中（不包含引用文）" :value="5"></el-option>
+                                                        v-model="item.columnName" @change="() => item.conditionType = 1">
+                                                        <el-option label="如果发件人" value="fromer"></el-option>
+                                                        <el-option label="如果收件人" value="receiver"></el-option>
+                                                        <el-option label="如果抄送人" value="cc"></el-option>
+                                                        <el-option label="如果主题中" value="subject"></el-option>
+                                                        <el-option label="如果正文中（不包含引用文）" value="body"></el-option>
                                                     </el-select>
                                                     <el-select style="width:240px;margin-left:12px;"
-                                                        v-model="item.oddsSecond">
-                                                        <el-option v-for="(opt, idx) in oddsOption(item.oddsFirst).option"
+                                                        v-model="item.conditionType" @change="() => {
+                                                            item.value = '';
+                                                            item.packetId = '';
+                                                        }">
+                                                        <el-option
+                                                            v-for="(opt, idx) in conditionTypeOption(item.columnName)"
                                                             :key="idx" :value="opt.value" :label="opt.label"></el-option>
                                                     </el-select>
-                                                    <el-input style="width:240px;margin-left:12px;" v-model="item.oddsThird"
-                                                        :placeholder="oddsOption(item.oddsFirst).placeholder">
+                                                    <el-input v-if="item.conditionType !== 3"
+                                                        style="width:240px;margin-left:12px;" v-model="item.value"
+                                                        :placeholder="oddsPlaceholder(item.columnName, item.conditionType)">
                                                     </el-input>
+                                                    <el-select v-else style="width:240px;margin-left:12px;"
+                                                        v-model="item.value">
+                                                        <el-option label="私海" :value="1"></el-option>
+                                                        <el-option label="公海" :value="2"></el-option>
+                                                    </el-select>
+                                                    <el-select-tree v-if="item.conditionType === 3 && item.value === 1"
+                                                        placeholder="请选择" style="width:240px;margin-left:12px;"
+                                                        v-model="item.packetId" :data="packetOption"
+                                                        :props="{ value: 'id', label: 'name' }" :check-strictly="true">
+                                                    </el-select-tree>
                                                     <div class="mail-rule-edit-filterSettings-btn pointer">
                                                         <span class="okki-icon-wrap" color="#7A8599"
-                                                            v-if="oddList.length !== 1"
+                                                            v-if="executeConditionContent.length !== 1"
                                                             @click="onOddsReduce(item.id)">&ZeroWidthSpace;
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                                 viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
@@ -221,8 +238,9 @@
                                                                 </path>
                                                             </svg>
                                                         </span>
-                                                        <span v-if="oddList.length === index + 1" class="okki-icon-wrap"
-                                                            color="#7A8599" @click="onOddsAdd">&ZeroWidthSpace;
+                                                        <span v-if="executeConditionContent.length === index + 1"
+                                                            class="okki-icon-wrap" color="#7A8599"
+                                                            @click="onOddsAdd">&ZeroWidthSpace;
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                                 viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
                                                                 fill="#7A8599">
@@ -248,7 +266,7 @@
                                             <div class="v-form-item-label">
                                                 <p class="label">执行操作</p>
                                             </div>
-                                            <el-radio-group v-model="ruleData.operate">
+                                            <el-radio-group v-model="ruleData.executeOperation">
                                                 <el-radio :label="0">执行以下操作</el-radio>
                                                 <el-radio :label="1">移动到【已删除邮件】</el-radio>
                                             </el-radio-group>
@@ -256,44 +274,39 @@
                                         </div>
                                         <div class="operation-list block field-block">
                                             <div class="item-value">
-                                                <el-checkbox v-model="ruleData.picker">打钉</el-checkbox>
+                                                <el-checkbox v-model="ruleData.fixedFlag">打钉</el-checkbox>
                                             </div>
                                             <div class="item-value">
-                                                <el-checkbox v-model="ruleData.read">标记为【已读】</el-checkbox>
+                                                <el-checkbox v-model="ruleData.readFlag">标记为【已读】</el-checkbox>
                                             </div>
                                             <div class="item-value">
-                                                <el-checkbox v-model="ruleData.tag">标记为</el-checkbox>
-                                                <el-select style="width:240px;margin-left:6px;" v-model="ruleData.selectTag"
-                                                    placeholder="请选择分类">
-                                                </el-select>
-                                            </div>
-                                            <div class="item-value">
-                                                <el-checkbox v-model="ruleData.tag">移动到</el-checkbox>
-                                                <el-select style="width:240px;margin-left:6px;" v-model="ruleData.selectTag"
-                                                    placeholder="请选择文件夹">
-                                                </el-select>
+                                                <el-checkbox v-model="ruleData.folderFlag">移动到</el-checkbox>
+                                                <el-select-tree placeholder="选择目标文件夹" class="ml-6" style="width:240px;"
+                                                    v-model="ruleData.folderId" :data="folderOption"
+                                                    :props="{ value: 'id', label: 'name' }" :check-strictly="true">
+                                                </el-select-tree>
                                             </div>
                                             <div class="item-value review-role-wrap">
-                                                <el-checkbox v-model="ruleData.transfer">转发至</el-checkbox>
-                                                <el-input style="width:240px;margin-left:6px;"
-                                                    v-model="ruleData.inputTransfer" placeholder="请输入邮箱地址"></el-input>
+                                                <el-checkbox v-model="ruleData.forwardToFlag">转发至</el-checkbox>
+                                                <el-input style="width:240px;margin-left:6px;" v-model="ruleData.forwardTo"
+                                                    placeholder="请输入邮箱地址"></el-input>
                                             </div>
                                             <div class="item-value mark-pending review-role-wrap">
                                                 <div class="filter-name">
                                                     <el-checkbox
-                                                        v-model="ruleData.marker">标记为【待处理邮件】并设置稍后处理时间为：</el-checkbox>
+                                                        v-model="ruleData.pendingFlag">标记为【待处理邮件】并设置稍后处理时间为：</el-checkbox>
                                                     <div class="mark-pending-radio special-radio">
-                                                        <el-radio-group v-model="ruleData.emailReceipt">
+                                                        <el-radio-group v-model="ruleData.pendingType">
                                                             <el-radio :label="1">邮件接收时间</el-radio>
                                                             <el-radio :label="2">邮件接收时间之后的第</el-radio>
                                                         </el-radio-group>
                                                         <span style="padding-left: 30px;">
-                                                            <el-input-number v-model="ruleData.receiptDay"
+                                                            <el-input-number v-model="ruleData.pendingDay"
                                                                 controls-position="right"></el-input-number>
                                                         </span>
                                                         <span style="padding: 0px 8px;">天</span>
-                                                        <el-time-picker v-model="ruleData.receiptTime"
-                                                            placeholder="请选择"></el-time-picker>
+                                                        <el-time-picker v-model="ruleData.pendingTime"
+                                                            value-format="HH:mm:ss" placeholder="请选择"></el-time-picker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -301,7 +314,8 @@
                                                 <div class="filter-name auto-reply-box">
                                                     <div class="auto-reply-filter">
                                                         <span class="auto-reply-label">
-                                                            <el-checkbox v-model="ruleData.autoReply">自动回复</el-checkbox>
+                                                            <el-checkbox
+                                                                v-model="ruleData.autoResponseFlag">自动回复</el-checkbox>
                                                             <span class="tips">若 4 天内收到同一邮箱的多封邮件，系统只进行一次自动回复</span>
                                                         </span>
                                                         <div class="editor-box">
@@ -311,7 +325,7 @@
                                                             <!-- 编辑器 -->
                                                             <Editor ref="editorInstance"
                                                                 style="height:200px; overflow-y: hidden"
-                                                                v-model="ruleData.replyContent" @onCreated="onCreated"
+                                                                v-model="ruleData.autoResponse" @onCreated="onCreated"
                                                                 mode="default" />
                                                         </div>
 
@@ -326,33 +340,32 @@
                                     <div class="content">
                                         <div class="v-form-item v-form-item--required" components-props="[object Object]">
                                             <div class="v-form-item-label">
-                                                <p class="label">应用于历史邮件 <span class="okki-icon-wrap">&ZeroWidthSpace;<svg
-                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                            viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
-                                                            fill="currentColor">
-                                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
-                                                            </path>
-                                                        </svg></span></p>
+                                                <p class="label">应用于历史邮件
+                                                    <el-tooltip content="系统一律不会对历史邮件执行“转发至邮箱”和“自动回复”操作" placement="top">
+                                                        <span class="okki-icon-wrap">&ZeroWidthSpace;<svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                                                fill="currentColor">
+                                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                    d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
+                                                                </path>
+                                                            </svg>
+                                                        </span>
+                                                    </el-tooltip>
+                                                </p>
                                             </div>
-                                            <el-radio-group v-model="ruleData.historyEmail">
+                                            <el-radio-group v-model="ruleData.applyToHistoryMailFlag"
+                                                @change="value => ruleData.applyToHistoryMailTrueType = (!value ? '' : 1)">
                                                 <el-radio :label="1">是</el-radio>
                                                 <el-radio :label="0">否</el-radio>
                                             </el-radio-group>
                                         </div>
                                         <div class="item-value history-folder-id-selector field-block"
-                                            style="display: none;">
-                                            <div class="mm-radio-group">
-                                                <label class="mm-radio"><input name="mm-radio-group-291" type="radio"
-                                                        value="1"><span class="mm-radio-faux"><span
-                                                            class="mm-radio-input"></span><span
-                                                            class="mm-radio-label">针对收件箱的历史邮件
-                                                        </span></span></label><label class="mm-radio"><input
-                                                        name="mm-radio-group-291" type="radio" value="-1"><span
-                                                        class="mm-radio-faux"><span class="mm-radio-input"></span><span
-                                                            class="mm-radio-label">针对收件箱及所有文件夹的历史邮件（不包括已删除）
-                                                        </span></span></label>
-                                            </div>
+                                            v-if="ruleData.applyToHistoryMailFlag === 1">
+                                            <el-radio-group v-model="ruleData.applyToHistoryMailTrueType">
+                                                <el-radio :label="1">针对收件箱的历史邮件</el-radio>
+                                                <el-radio :label="2">针对收件箱及所有文件夹的历史邮件（不包括已删除）</el-radio>
+                                            </el-radio-group>
                                         </div>
                                     </div>
                                 </div>
@@ -365,7 +378,9 @@
                                                 </p>
                                             </div>
 
-                                            <el-select v-model="ruleData.executeEmail">
+                                            <el-select v-model="ruleData.executeTaskId">
+                                                <el-option v-for="(email, index) in emailOption" :key="index"
+                                                    :value="email.id" :label="email.account"></el-option>
                                             </el-select>
                                         </div>
                                     </div>
@@ -376,10 +391,11 @@
                                             <div class="v-form-item-label">
                                                 <p class="label">其他收件规则</p>
                                             </div>
-                                            <el-radio-group v-model="ruleData.otherRule">
+                                            <el-radio-group v-model="ruleData.otherSendingRules">
                                                 <el-radio :label="1">继续执行</el-radio>
-                                                <el-radio :label="0">不再执行<span
-                                                        class="tips">一旦邮件满足了本条规则，将不再执行后续收件规则。</span></el-radio>
+                                                <el-radio :label="0">不再执行
+                                                    <span class="tips">一旦邮件满足了本条规则，将不再执行后续收件规则。</span>
+                                                </el-radio>
                                             </el-radio-group>
                                         </div>
                                     </div>
@@ -389,8 +405,8 @@
                                 <div class="mm-space mm-space__horizontal">
                                     <div class="mm-space-item" style="margin-right: 16px;"><button type="button"
                                             class="mm-button" @click="onHideForm"><span>取消</span></button></div>
-                                    <div class="mm-space-item"><button type="button"
-                                            class="mm-button mm-button__primary"><span>保存</span></button>
+                                    <div class="mm-space-item"><button type="button" class="mm-button mm-button__primary"
+                                            @click="onSave"><span>保存</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -405,7 +421,35 @@
 
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import { getDispatcherRuleList, updateDispatcherRuleInfo, dispatcherRuleInfo, deleteDispatcherRuleInfo } from '@/api/email/dispatcherRules'
+import { getEmailTaskList, getImportFolderList } from '@/api/email/emailImport'
+import { getDispatcherRuleList, updateDispatcherRuleInfo, dispatcherRuleInfo, deleteDispatcherRuleInfo, getSetPacketList, addDispatcherRule, editDispatcherRule } from '@/api/email/dispatcherRules'
+import { deepClone } from '@/utils'
+const initData = {
+    id: '',
+    ruleType: 1,
+    ruleName: '',
+    executeCondition: 1,
+    executeOperation: 0,
+    executeConditionContent: [],
+    fixedFlag: false,
+    readFlag: false,
+    folderFlag: false,
+    folderId: '',
+    forwardToFlag: false,
+    forwardTo: '',
+    pendingFlag: false,
+    pendingType: null,
+    pendingDay: 2,
+    pendingTime: '09:00:00',
+    autoResponseFlag: false,
+    autoResponse: '',
+    applyToHistoryMailFlag: null,
+    applyToHistoryMailTrueType: null,
+    executeTaskId: '',
+    otherSendingRules: null,
+    status: 0,
+    orderNum: '',
+}
 export default {
     components: {
         Editor,
@@ -419,36 +463,18 @@ export default {
                 1: '收件规则',
                 2: '发件规则'
             },
-            ruleData: {
-                id: '',
-                ruleType: 1,
-                ruleName: '',
-                executionCondition: 1,
-                operate: 0,
-                picker: false,
-                read: false,
-                tag: false,
-                selectTag: '',
-                move: false,
-                selectMove: '',
-                transfer: false,
-                inputTransfer: '',
-                marker: false,
-                emailReceipt: null,
-                receiptDay: 2,
-                receiptTime: new Date(0, 0, 0, 9, 0),
-                autoReply: false,
-                replyContent: '',
-                historyEmail: null,
-                executeEmail: '',
-                otherRule: null,
-            },
-            oddList: [
+            ruleData: deepClone(initData),
+            emailOption: [],
+            folderOption: [],
+            packetOption: [],
+            executeConditionContent: [
                 {
-                    id: 1,
-                    oddsFirst: 1,
-                    oddsSecond: 1,
-                    oddsThird: '',
+                    oddId: +new Date(),
+                    andOr: 'and',
+                    columnName: 'fromer',
+                    conditionType: 1,
+                    value: '',
+                    packetId: ''
                 }
             ],
             editor: null,
@@ -458,12 +484,19 @@ export default {
                     'group-image'
                 ]
             },
+            flagFields: ['fixedFlag', 'readFlag', 'folderFlag', 'forwardToFlag', 'pendingFlag', 'autoResponseFlag', 'applyToHistoryMailFlag']
         }
     },
     mounted() {
-        this.getList()
+        this.init()
     },
     methods: {
+        init() {
+            this.getList()
+            this.getEmailOption()
+            this.getFolderOption()
+            this.getGroupList()
+        },
         async getList() {
             try {
                 const res = await getDispatcherRuleList()
@@ -474,6 +507,32 @@ export default {
                     })
                 }
             } catch { }
+        },
+        async getEmailOption() {
+            try {
+                const res = await getEmailTaskList()
+                if (res.code === 200) {
+                    this.emailOption = res.data
+                }
+            } catch { }
+        },
+        async getFolderOption() {
+            try {
+                const res = await getImportFolderList()
+                if (res.code === 200) {
+                    this.folderOption = res.data
+                }
+            } catch { }
+        },
+        // 分组选项
+        async getGroupList() {
+            try {
+                const res = await getSetPacketList()
+                if (res.code === 200) {
+                    this.packetOption = res.data
+                }
+            } catch {
+            }
         },
         async handleStatus(item) {
             try {
@@ -490,9 +549,18 @@ export default {
                 const res = await dispatcherRuleInfo(id)
                 if (res.code === 200) {
                     this.ruleData = res.data
+                    Object.keys(this.ruleData).forEach((value) => {
+                        if (this.flagFields.includes(value)) {
+                            this.ruleData[value] = +(this.ruleData[value])
+                        }
+                    })
+
+                    this.executeConditionContent = this.generateExecuteCondition(this.ruleData?.executeConditionContent)
                     this.showForm = true
                 }
-            } catch { }
+            } catch (e) {
+                console.error(e.message);
+            }
         },
         onDelete(id) {
             this.$confirm('是否删除?', {
@@ -505,7 +573,7 @@ export default {
                         instance.confirmButtonLoading = true;
                         instance.confirmButtonText = '执行中...';
                         try {
-                            const res = await deleteDispatcherRuleInfo({ id: id }).finally(() => {
+                            const res = await deleteDispatcherRuleInfo({ id }).finally(() => {
                                 instance.confirmButtonLoading = false
                                 done()
                             })
@@ -545,11 +613,8 @@ export default {
             }
         },
 
-        oddsOption(oddsFirst) {
-            let result = {
-                option: [],
-                placeholder: ''
-            }
+        conditionTypeOption(columnName) {
+            let option = []
             const optionData = [
                 {
                     value: 1,
@@ -572,49 +637,125 @@ export default {
                     label: '不等于'
                 },
             ]
-            switch (oddsFirst) {
-                case 1:
-                    result.option = optionData.filter(val => [1, 2, 3, 4, 5].includes(val.value))
-                    result.placeholder = '例如：test、@xiaomcn.cn'
+            switch (columnName) {
+                case 'fromer':
+                    option = optionData.filter(val => [1, 2, 3, 4, 5].includes(val.value))
                     break;
-                case 2:
-                    result.option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
-                    result.placeholder = '例如：test、@xiaomcn.cn'
+                case 'receiver':
+                    option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
                     break;
-                case 3:
-                    result.option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
-                    result.placeholder = '例如：test、@xiaomcn.cn'
+                case 'cc':
+                    option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
                     break;
-                case 4:
-                    result.option = optionData.filter(val => [1, 2].includes(val.value))
-                    result.placeholder = '例如：test、@xiaomcn.cn'
+                case 'subject':
+                    option = optionData.filter(val => [1, 2].includes(val.value))
                     break;
-                case 5:
-                    result.option = optionData.filter(val => [1, 2].includes(val.value))
-                    result.placeholder = '例如：price'
+                case 'body':
+                    option = optionData.filter(val => [1, 2].includes(val.value))
                     break;
                 default:
                     break;
             }
-            return result
+            return option
+        },
+        oddsPlaceholder(columnName, conditionType) {
+            let placeholder = ''
+            if (columnName === 'body') {
+                return '例如：price'
+            }
+            if ([1, 2].includes(conditionType)) {
+                placeholder = '例如：test、@xiaomcn.cn'
+            } else if ([4, 5].includes(conditionType)) {
+                placeholder = '例如：test@xiaomcn.cn'
+            }
+            return placeholder
         },
         onOddsAdd() {
-            this.oddList.push({
-                id: +new Date(),
-                oddsFirst: 1,
-                oddsSecond: 1,
-                oddsThird: '',
+            this.executeConditionContent.push({
+                oddId: +new Date(),
+                columnName: 'fromer',
+                conditionType: 1,
+                value: '',
+                packetId: ''
             })
         },
         onOddsReduce(id) {
-            this.oddList = this.oddList.filter(val => val.id !== id)
+            this.executeConditionContent = this.executeConditionContent.filter(val => val.oddId !== id)
+        },
+        async addReq(data) {
+            try {
+                const res = await addDispatcherRule(data)
+                if (res.code === 200) {
+                    this.$message.success('新增成功')
+                    this.getList()
+                    this.onHideForm()
+                }
+            } catch { }
+        },
+        async editReq(data) {
+            try {
+                const res = await editDispatcherRule(data)
+                if (res.code === 200) {
+                    this.$message.success('修改成功')
+                    this.getList()
+                    this.onHideForm()
+                }
+            } catch { }
+        },
+        onSave() {
+            let data = {
+                ...deepClone(this.ruleData)
+            }
+            Object.keys(data).forEach((value) => {
+                if (this.flagFields.includes(value)) {
+                    data[value] = Boolean(data[value])
+                }
+            })
+            delete data.orderNum
+            data.executeConditionContent = JSON.stringify(data.executeConditionContent)
+            // 执行条件
+            const { executeCondition } = data
+            if (executeCondition) {
+                let conditionMap = {
+                    1: 'and',
+                    2: 'or'
+                }
+                this.executeConditionContent.map(val => {
+                    delete val.oddId
+                    val.andOr = conditionMap[executeCondition]
+                    return val
+                })
+                data.executeConditionContent = JSON.stringify(this.executeConditionContent)
+            }
+
+            if (!data.id) {
+                delete data.id
+                this.addReq(data)
+            } else {
+                this.editReq(data)
+            }
         },
         onShowForm(type, data) {
             this.showForm = true
         },
         onHideForm() {
+            this.ruleData = deepClone(initData)
             this.showForm = false
-        }
+        },
+        generateExecuteCondition(strArr) {
+            const arr = JSON.parse(strArr)
+            if (Array.isArray(arr) && arr.length) {
+                return arr
+            } else {
+                return [{
+                    oddId: +new Date(),
+                    columnName: 'fromer',
+                    conditionType: 1,
+                    value: '',
+                    packetId: ''
+                }]
+            }
+        },
     }
 }
 </script>
