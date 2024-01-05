@@ -196,8 +196,8 @@
                                                     <span class="num">{{ index + 1 }}</span>
                                                     <el-select style="width:240px;margin-left:12px;"
                                                         v-model="item.columnName" @change="() => item.conditionType = 1">
-                                                        <el-option label="如果发件人" value="sender"></el-option>
-                                                        <el-option label="如果收件人" value="recipient"></el-option>
+                                                        <el-option label="如果发件人" value="fromer"></el-option>
+                                                        <el-option label="如果收件人" value="receiver"></el-option>
                                                         <el-option label="如果抄送人" value="cc"></el-option>
                                                         <el-option label="如果主题中" value="subject"></el-option>
                                                         <el-option label="如果正文中（不包含引用文）" value="body"></el-option>
@@ -471,7 +471,7 @@ export default {
                 {
                     oddId: +new Date(),
                     andOr: 'and',
-                    columnName: 'sender',
+                    columnName: 'fromer',
                     conditionType: 1,
                     value: '',
                     packetId: ''
@@ -638,10 +638,10 @@ export default {
                 },
             ]
             switch (columnName) {
-                case 'sender':
+                case 'fromer':
                     option = optionData.filter(val => [1, 2, 3, 4, 5].includes(val.value))
                     break;
-                case 'recipient':
+                case 'receiver':
                     option = optionData.filter(val => [1, 2, 4, 5].includes(val.value))
                     break;
                 case 'cc':
@@ -673,7 +673,7 @@ export default {
         onOddsAdd() {
             this.executeConditionContent.push({
                 oddId: +new Date(),
-                columnName: 'sender',
+                columnName: 'fromer',
                 conditionType: 1,
                 value: '',
                 packetId: ''
@@ -749,7 +749,7 @@ export default {
             } else {
                 return [{
                     oddId: +new Date(),
-                    columnName: 'sender',
+                    columnName: 'fromer',
                     conditionType: 1,
                     value: '',
                     packetId: ''

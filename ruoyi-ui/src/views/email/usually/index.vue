@@ -130,6 +130,40 @@
                         </div>
                     </div>
                 </div>
+                <section class="section-block">
+                    <h3>提醒</h3>
+                    <div class="section-wrapper mail-remind">
+                        <div class="label">提醒:</div>
+                        <el-checkbox-group v-model="formData.remind">
+                            <el-checkbox label="1">禁止新邮件到达时在页面弹出通知
+                                <el-tooltip content="勾选后不再弹窗进行新邮件提醒" placement="top">
+                                    <span class="okki-icon-wrap">
+                                        &ZeroWidthSpace;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                            fill="currentColor">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                </el-tooltip>
+                            </el-checkbox>
+                            <el-checkbox label="2">禁止发送邮件在页面弹出附件提醒
+                                <el-tooltip content="勾选后不再弹窗进行附件提醒" placement="top">
+                                    <span class="okki-icon-wrap">
+                                        &ZeroWidthSpace;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
+                                            fill="currentColor">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M4 12a8 8 0 1116 0 8 8 0 01-16 0zm8-10C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.2 4.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM11.2 9a1 1 0 100 2v5h-.9a1 1 0 100 2h3.5a1 1 0 100-2h-.6v-6a1 1 0 00-1-1h-1z">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                </el-tooltip>
+                            </el-checkbox>
+                        </el-checkbox-group>
+                    </div>
+                </section>
                 <section id="sign" class="section-block">
                     <h3>签名</h3>
                     <div class="section-wrapper">
@@ -177,10 +211,10 @@
                     <div class="section-wrapper">
                         <span class="label">写信：</span>
                         <div class="section-inner">
-                            <el-checkbox v-model="formData.writeLetter">正文拼写检查 ( 编辑器会以红色波浪线提示正文中的拼写错误) </el-checkbox>
-                            <el-checkbox v-model="formData.newWindow"
-                                @change="(value) => value && (formData.forward = false)">新窗口写信 ( 将在下次打开邮件时生效)</el-checkbox>
-                            <el-checkbox v-show="!formData.newWindow" v-model="formData.forward"> 发送后返回上一页 </el-checkbox>
+                            <el-checkbox v-model="writeLetterList[0]">正文拼写检查 ( 编辑器会以红色波浪线提示正文中的拼写错误) </el-checkbox>
+                            <el-checkbox v-model="writeLetterList[1]"
+                                @change="(value) => value && !writeLetterList[2]">新窗口写信 ( 将在下次打开邮件时生效)</el-checkbox>
+                            <el-checkbox v-show="!writeLetterList[1]" v-model="writeLetterList[2]"> 发送后返回上一页 </el-checkbox>
                         </div>
                     </div>
                     <div class="section-wrapper">
@@ -356,6 +390,7 @@
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import DialogSignature from "./DialogSignature.vue";
 import { getUsuallyInfo, getEmailTaskList, getSignatureList, deleteSignature, singleEmailSetting, editUsuallyInfo, editSingleEmailSetting } from '@/api/email/usually'
+import { deepClone } from '@/utils'
 export default {
     components: {
         Editor,
@@ -376,17 +411,17 @@ export default {
                 fontColor: '',
                 groupBoxView: 1,
                 massEmailDisplay: 1,
+                remind: [],
                 signatureId: '',
                 writeLetter: true,
                 pasteFormat: 1,
-                newWindow: false,
-                forward: false,
                 autoResponseFlag: 1,
                 startTime: '',
                 lastDay: '',
                 lastDayFlag: false,
                 reContent: '',
             },
+            writeLetterList: [false, false, false],
             signatureOption: [],
             emailOption: [],
             emailCountOption: [
@@ -473,7 +508,11 @@ export default {
             try {
                 const res = await getUsuallyInfo()
                 if (res.code === 200) {
-                    this.formData = { ...res.data }
+                    let data = res.data
+                    // data.remind = !data.remind ? [] : data.remind?.split(',')
+                    // this.writeLetter = !data.writeLetter ? [] : data.writeLetter?.split(',')
+                    this.formData = { ...data }
+
                 }
             } catch (e) {
                 console.error(e.message);
@@ -552,8 +591,9 @@ export default {
             const data = {
                 ...this.formData
             }
-            delete data.newWindow
-            delete data.forward
+            data.remind = data.remind.join(',')
+            // let writeLetter = deepClone(this.writeLetter)
+            // data.writeLetter = writeLetter.map(val => +val).join(',')
             let emailData = this.emailSetList[this.curSet]
             emailData.defaultBccFlag = +emailData.defaultBccFlag
             emailData.defaultCcFlag = +emailData.defaultCcFlag
