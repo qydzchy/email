@@ -42,7 +42,7 @@ public class GeneralVO {
     private Integer massEmailDisplay;
 
     /** 提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒 */
-    private Integer remind;
+    private String remind;
 
     /** 签名ID */
     private Long signatureId;

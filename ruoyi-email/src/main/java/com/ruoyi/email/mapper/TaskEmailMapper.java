@@ -244,4 +244,13 @@ public interface TaskEmailMapper
      * @return
      */
     List<TaskEmail> selectSendTaskEmailList(Long taskId);
+
+    /**
+     * 查询发件人邮箱是否存在客户联系人中
+     * @param seaType
+     * @param fromer
+     * @param packetId
+     * @return
+     */
+    int countCustomerContactByFromer(@Param("seaType") Integer seaType, @Param("fromer") String fromer, @Param("packetId") Long packetId);
 }

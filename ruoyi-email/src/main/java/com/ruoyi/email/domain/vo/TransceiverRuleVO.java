@@ -27,6 +27,12 @@ public class TransceiverRuleVO {
     /** 是否已读: 0.否 1.是 */
     private Boolean readFlag;
 
+    /** 是否分类: 0.否 1.是 */
+    private Boolean labelFlag;
+
+    /** 分类ID */
+    private Long labelId;
+
     /** 是否移动至：0.否 1.是 */
     private Boolean folderFlag;
 

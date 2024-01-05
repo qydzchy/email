@@ -218,6 +218,10 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
             }
         }
 
+        if (Optional.ofNullable(transceiverRuleVO.getLabelFlag()).orElse(false)) {
+            conditionContent.append("标记为、");
+        }
+
         if (Optional.ofNullable(transceiverRuleVO.getReadFlag()).orElse(false)) {
             conditionContent.append("标记为已读、");
         }

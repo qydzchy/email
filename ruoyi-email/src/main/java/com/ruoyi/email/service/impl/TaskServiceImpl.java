@@ -5,13 +5,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
-import com.ruoyi.common.enums.email.ConnStatusEnum;
-import com.ruoyi.common.enums.email.EmailTypeEnum;
-import com.ruoyi.common.enums.email.ProtocolTypeEnum;
-import com.ruoyi.common.enums.email.TaskExecutionStatusEnum;
+import com.ruoyi.common.enums.email.*;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.ruoyi.common.utils.DateUtils;
@@ -19,11 +17,14 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
+import com.ruoyi.email.domain.bo.EmailSimpleBO;
+import com.ruoyi.email.domain.bo.ExecuteConditionContentBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
+import com.ruoyi.email.service.handler.email.column.ColumnContext;
 import com.ruoyi.email.util.ThreadPoolPullService;
 import com.ruoyi.email.util.ThreadPoolSendService;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,8 @@ public class TaskServiceImpl implements ITaskService
     private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
     private TaskEmailMapper taskEmailMapper;
+    @Resource
+    private ColumnContext columnContext;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -332,7 +335,7 @@ public class TaskServiceImpl implements ITaskService
                     UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailOperateParamBO, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
-                        saveEmailData(task.getId(), universalMail);
+                        saveEmailData(task.getId(), universalMail, emailOperateParamBO);
                     }
 
                     // 查询是否在4天内已经回复过邮件
@@ -407,6 +410,7 @@ public class TaskServiceImpl implements ITaskService
             OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(createId);
             // 查询收发件规则
             List<TransceiverRuleVO> transceiverRuleList= transceiverRuleMapper.list(createId);
+            transceiverRuleList = transceiverRuleList.stream().filter(transceiverRule -> transceiverRule.getRuleType().intValue() == RuleTypeEnum.PULL.getType()).filter(transceiverRule -> transceiverRule.getStatus().intValue() == 1).collect(Collectors.toList());
 
             if (generalVO != null) {
                 BeanUtils.copyProperties(emailOperateParamBO, generalVO);
@@ -525,7 +529,7 @@ public class TaskServiceImpl implements ITaskService
      * @param taskId
      * @param universalMail
      */
-    private void saveEmailData(Long taskId, UniversalMail universalMail) {
+    private void saveEmailData(Long taskId, UniversalMail universalMail, EmailOperateParamBO emailOperateParamBO) {
         TaskEmail taskEmail = new TaskEmail();
         // 邮件
         BeanUtils.copyProperties(universalMail, taskEmail);
@@ -537,6 +541,48 @@ public class TaskServiceImpl implements ITaskService
         }
         taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
         taskEmail.setCreateTime(DateUtils.getNowDate());
+
+        // 收邮件规则 todo 待完成
+        /*List<TransceiverRuleVO> transceiverRuleList = emailOperateParamBO.getTransceiverRuleList();
+        List<ExecuteConditionContentBO> executeConditionContentBOList = null;
+        if (transceiverRuleList != null && !transceiverRuleList.isEmpty()) {
+            for (TransceiverRuleVO transceiverRuleVO : transceiverRuleList) {
+                Long executeTaskId = transceiverRuleVO.getExecuteTaskId();
+                // 如果执行任务id不为0，且不等于当前任务id，则跳过
+                if (executeTaskId.longValue() != 0L && executeTaskId.longValue() != taskId.longValue()) {
+                    continue;
+                }
+
+                String executeConditionContent = transceiverRuleVO.getExecuteConditionContent();
+                Gson gson = new Gson();
+                try {
+                    executeConditionContentBOList = Arrays.asList(gson.fromJson(transceiverRuleVO.getExecuteConditionContent(), ExecuteConditionContentBO[].class));
+                } catch (Exception e) {
+                    log.error("执行条件内容转换异常 ID：{}" +
+                            "\n原因：{}", transceiverRuleVO.getId(), e);
+                }
+
+                boolean isRuleMet = false;
+                for (ExecuteConditionContentBO executeConditionContentBO : executeConditionContentBOList) {
+                    EmailSimpleBO emailSimpleBO = getEmailSimpleBO(universalMail);
+                    // 判断条件是否成立
+                    boolean isConditionMet = columnContext.handler(executeConditionContentBO, emailSimpleBO);
+
+                    if (executeConditionContentBO.getAndOr().equals("and")) {
+                        if (!isConditionMet) {
+                            isRuleMet = false;
+                            break;
+                        }
+                    } else if (executeConditionContentBO.getAndOr().equals("or")) {
+                        if (isConditionMet) {
+                            isRuleMet = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }*/
+
         taskEmailService.insertTaskEmail(taskEmail);
         Long emailId = taskEmail.getId();
 
@@ -570,6 +616,21 @@ public class TaskServiceImpl implements ITaskService
                 taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
             }
         }
+    }
+
+    /**
+     * 获取邮件参数
+     * @param universalMail
+     * @return
+     */
+    private EmailSimpleBO getEmailSimpleBO(UniversalMail universalMail) {
+        EmailSimpleBO emailSimpleBO = new EmailSimpleBO();
+        emailSimpleBO.setFromer(universalMail.getFromer());
+        emailSimpleBO.setReceiver(universalMail.getReceiver());
+        emailSimpleBO.setCc(universalMail.getCc());
+        emailSimpleBO.setSubject(universalMail.getTitle());
+        emailSimpleBO.setBody(universalMail.getContent());
+        return emailSimpleBO;
     }
 
     @Override

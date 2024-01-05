@@ -1258,6 +1258,7 @@ public class CustomerServiceImpl implements ICustomerService {
             return false;
         }
 
+        // todo 有问题，需要修改
         for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
             boolean isConditionMet = columnContext.handler(customerDetail, segmentConditionRuleBO);
             if (!isConditionMet) return false;
