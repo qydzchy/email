@@ -1025,6 +1025,7 @@ export default {
         this.currentLayout = 'customer_email'
         if (this.labelTypeOptions.length > 0) {
           this.selectedLabelTypeValue = this.labelTypeOptions[0].value;
+          console.log(this.selectedLabelTypeValue);
           this.labelTypeDataList(this.selectedLabelTypeValue);
         }
       } else {
