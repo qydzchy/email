@@ -62,7 +62,7 @@ public class General extends BaseEntity
 
     /** 提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒 */
     @Excel(name = "提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒")
-    private Integer remind;
+    private String remind;
 
     /** 签名ID */
     @Excel(name = "签名ID")
@@ -208,15 +208,15 @@ public class General extends BaseEntity
     {
         return massEmailDisplay;
     }
-    public void setRemind(Integer remind)
-    {
+
+    public String getRemind() {
+        return remind;
+    }
+
+    public void setRemind(String remind) {
         this.remind = remind;
     }
 
-    public Integer getRemind()
-    {
-        return remind;
-    }
     public void setSignatureId(Long signatureId)
     {
         this.signatureId = signatureId;

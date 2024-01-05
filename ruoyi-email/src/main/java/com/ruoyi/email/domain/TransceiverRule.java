@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 收发件规则对象 mailbox_transceiver_rule
  *
  * @author tangJM
- * @date 2023-12-28
+ * @date 2024-01-05
  */
 public class TransceiverRule extends BaseEntity
 {
@@ -40,15 +40,23 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否固定: 0.否 1.是 */
     @Excel(name = "是否固定: 0.否 1.是")
-    private Boolean fixedFlag;
+    private Integer fixedFlag;
 
     /** 是否已读: 0.否 1.是 */
     @Excel(name = "是否已读: 0.否 1.是")
-    private Boolean readFlag;
+    private Integer readFlag;
+
+    /** 是否分类: 0.否 1.是 */
+    @Excel(name = "是否分类: 0.否 1.是")
+    private Integer labelFlag;
+
+    /** 分类ID */
+    @Excel(name = "分类ID")
+    private Long labelId;
 
     /** 是否移动至：0.否 1.是 */
     @Excel(name = "是否移动至：0.否 1.是")
-    private Boolean folderFlag;
+    private Integer folderFlag;
 
     /** 文件夹ID */
     @Excel(name = "文件夹ID")
@@ -56,7 +64,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否转发至：0.否 1.是 */
     @Excel(name = "是否转发至：0.否 1.是")
-    private Boolean forwardToFlag;
+    private Integer forwardToFlag;
 
     /** 转发至 */
     @Excel(name = "转发至")
@@ -64,7 +72,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否待处理: 0.否 1.是 */
     @Excel(name = "是否待处理: 0.否 1.是")
-    private Boolean pendingFlag;
+    private Integer pendingFlag;
 
     /** 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第 */
     @Excel(name = "待处理类型 1.邮件接收时间 2.邮件接收时间之后的第")
@@ -80,7 +88,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否自动回复：0.否 1.是 */
     @Excel(name = "是否自动回复：0.否 1.是")
-    private Boolean autoResponseFlag;
+    private Integer autoResponseFlag;
 
     /** 自动回复 */
     @Excel(name = "自动回复")
@@ -88,10 +96,10 @@ public class TransceiverRule extends BaseEntity
 
     /** 应用于历史邮件: 0.否 1.是 */
     @Excel(name = "应用于历史邮件: 0.否 1.是")
-    private Boolean applyToHistoryMailFlag;
+    private Integer applyToHistoryMailFlag;
 
-    /** 1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除） */
-    @Excel(name = "1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件", readConverterExp = "不=包括已删除")
+    /** 应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除） */
+    @Excel(name = "应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件", readConverterExp = "不=包括已删除")
     private Integer applyToHistoryMailTrueType;
 
     /** 执行邮箱ID: 0.表示全部邮箱 */
@@ -175,6 +183,51 @@ public class TransceiverRule extends BaseEntity
     {
         return executeOperation;
     }
+    public void setFixedFlag(Integer fixedFlag)
+    {
+        this.fixedFlag = fixedFlag;
+    }
+
+    public Integer getFixedFlag()
+    {
+        return fixedFlag;
+    }
+    public void setReadFlag(Integer readFlag)
+    {
+        this.readFlag = readFlag;
+    }
+
+    public Integer getReadFlag()
+    {
+        return readFlag;
+    }
+    public void setLabelFlag(Integer labelFlag)
+    {
+        this.labelFlag = labelFlag;
+    }
+
+    public Integer getLabelFlag()
+    {
+        return labelFlag;
+    }
+    public void setLabelId(Long labelId)
+    {
+        this.labelId = labelId;
+    }
+
+    public Long getLabelId()
+    {
+        return labelId;
+    }
+    public void setFolderFlag(Integer folderFlag)
+    {
+        this.folderFlag = folderFlag;
+    }
+
+    public Integer getFolderFlag()
+    {
+        return folderFlag;
+    }
     public void setFolderId(Long folderId)
     {
         this.folderId = folderId;
@@ -184,7 +237,15 @@ public class TransceiverRule extends BaseEntity
     {
         return folderId;
     }
+    public void setForwardToFlag(Integer forwardToFlag)
+    {
+        this.forwardToFlag = forwardToFlag;
+    }
 
+    public Integer getForwardToFlag()
+    {
+        return forwardToFlag;
+    }
     public void setForwardTo(String forwardTo)
     {
         this.forwardTo = forwardTo;
@@ -193,6 +254,15 @@ public class TransceiverRule extends BaseEntity
     public String getForwardTo()
     {
         return forwardTo;
+    }
+    public void setPendingFlag(Integer pendingFlag)
+    {
+        this.pendingFlag = pendingFlag;
+    }
+
+    public Integer getPendingFlag()
+    {
+        return pendingFlag;
     }
     public void setPendingType(Integer pendingType)
     {
@@ -221,23 +291,15 @@ public class TransceiverRule extends BaseEntity
     {
         return pendingTime;
     }
-
-    public Boolean getForwardToFlag() {
-        return forwardToFlag;
-    }
-
-    public void setForwardToFlag(Boolean forwardToFlag) {
-        this.forwardToFlag = forwardToFlag;
-    }
-
-    public Boolean getAutoResponseFlag() {
-        return autoResponseFlag;
-    }
-
-    public void setAutoResponseFlag(Boolean autoResponseFlag) {
+    public void setAutoResponseFlag(Integer autoResponseFlag)
+    {
         this.autoResponseFlag = autoResponseFlag;
     }
 
+    public Integer getAutoResponseFlag()
+    {
+        return autoResponseFlag;
+    }
     public void setAutoResponse(String autoResponse)
     {
         this.autoResponse = autoResponse;
@@ -247,47 +309,15 @@ public class TransceiverRule extends BaseEntity
     {
         return autoResponse;
     }
-
-    public Boolean getFixedFlag() {
-        return fixedFlag;
-    }
-
-    public void setFixedFlag(Boolean fixedFlag) {
-        this.fixedFlag = fixedFlag;
-    }
-
-    public Boolean getReadFlag() {
-        return readFlag;
-    }
-
-    public void setReadFlag(Boolean readFlag) {
-        this.readFlag = readFlag;
-    }
-
-    public Boolean getFolderFlag() {
-        return folderFlag;
-    }
-
-    public void setFolderFlag(Boolean folderFlag) {
-        this.folderFlag = folderFlag;
-    }
-
-    public Boolean getPendingFlag() {
-        return pendingFlag;
-    }
-
-    public void setPendingFlag(Boolean pendingFlag) {
-        this.pendingFlag = pendingFlag;
-    }
-
-    public Boolean getApplyToHistoryMailFlag() {
-        return applyToHistoryMailFlag;
-    }
-
-    public void setApplyToHistoryMailFlag(Boolean applyToHistoryMailFlag) {
+    public void setApplyToHistoryMailFlag(Integer applyToHistoryMailFlag)
+    {
         this.applyToHistoryMailFlag = applyToHistoryMailFlag;
     }
 
+    public Integer getApplyToHistoryMailFlag()
+    {
+        return applyToHistoryMailFlag;
+    }
     public void setApplyToHistoryMailTrueType(Integer applyToHistoryMailTrueType)
     {
         this.applyToHistoryMailTrueType = applyToHistoryMailTrueType;
@@ -324,15 +354,15 @@ public class TransceiverRule extends BaseEntity
     {
         return status;
     }
-
-    public Long getOrderNum() {
-        return orderNum;
-    }
-
-    public void setOrderNum(Long orderNum) {
+    public void setOrderNum(Long orderNum)
+    {
         this.orderNum = orderNum;
     }
 
+    public Long getOrderNum()
+    {
+        return orderNum;
+    }
     public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
@@ -372,6 +402,8 @@ public class TransceiverRule extends BaseEntity
                 .append("executeOperation", getExecuteOperation())
                 .append("fixedFlag", getFixedFlag())
                 .append("readFlag", getReadFlag())
+                .append("labelFlag", getLabelFlag())
+                .append("labelId", getLabelId())
                 .append("folderFlag", getFolderFlag())
                 .append("folderId", getFolderId())
                 .append("forwardToFlag", getForwardToFlag())

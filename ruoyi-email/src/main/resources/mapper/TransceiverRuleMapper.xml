@@ -13,6 +13,8 @@
         <result property="executeOperation"    column="execute_operation"    />
         <result property="fixedFlag"    column="fixed_flag"    />
         <result property="readFlag"    column="read_flag"    />
+        <result property="labelFlag"    column="label_flag"    />
+        <result property="labelId"    column="label_id"    />
         <result property="folderFlag"    column="folder_flag"    />
         <result property="folderId"    column="folder_id"    />
         <result property="forwardToFlag"    column="forward_to_flag"    />
@@ -39,7 +41,7 @@
     </resultMap>
 
     <sql id="selectTransceiverRuleVo">
-        select id, rule_type, rule_name, execute_condition, execute_condition_content, execute_operation, fixed_flag, read_flag, folder_flag, folder_id, forward_to_flag, forward_to, pending_flag, pending_type, pending_day, pending_time, auto_response_flag, auto_response, apply_to_history_mail_flag, apply_to_history_mail_true_type, execute_task_id, other_sending_rules, status, order_num as orderNum, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_transceiver_rule
+        select id, rule_type, rule_name, execute_condition, execute_condition_content, execute_operation, fixed_flag, read_flag, label_flag, label_id, folder_flag, folder_id, forward_to_flag, forward_to, pending_flag, pending_type, pending_day, pending_time, auto_response_flag, auto_response, apply_to_history_mail_flag, apply_to_history_mail_true_type, execute_task_id, other_sending_rules, status, order_num, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_transceiver_rule
     </sql>
 
     <select id="selectTransceiverRuleList" parameterType="TransceiverRule" resultMap="TransceiverRuleResult">
@@ -52,6 +54,8 @@
             <if test="executeOperation != null "> and execute_operation = #{executeOperation}</if>
             <if test="fixedFlag != null "> and fixed_flag = #{fixedFlag}</if>
             <if test="readFlag != null "> and read_flag = #{readFlag}</if>
+            <if test="labelFlag != null "> and label_flag = #{labelFlag}</if>
+            <if test="labelId != null "> and label_id = #{labelId}</if>
             <if test="folderFlag != null "> and folder_flag = #{folderFlag}</if>
             <if test="folderId != null "> and folder_id = #{folderId}</if>
             <if test="forwardToFlag != null "> and forward_to_flag = #{forwardToFlag}</if>
@@ -79,7 +83,7 @@
     </select>
 
     <select id="getById" resultType="com.ruoyi.email.domain.vo.TransceiverRuleVO">
-        select id, rule_type as ruleType, rule_name as ruleName, execute_condition as executeCondition, execute_condition_content as executeConditionContent, execute_operation as executeOperation, fixed_flag as fixedFlag, read_flag as readFlag, folder_flag as folderFlag, folder_id as folderId, forward_to_flag as forwardToFlag, forward_to as forwardTo, pending_flag as pendingFlag, pending_type as pendingType, pending_day as pendingDay, pending_time as pendingTime, auto_response_flag as autoResponseFlag, auto_response as autoResponse, apply_to_history_mail_flag as applyToHistoryMailFlag, apply_to_history_mail_true_type as applyToHistoryMailTrueType, execute_task_id as executeTaskId, other_sending_rules as otherSendingRules, status, order_num as orderNum from mailbox_transceiver_rule
+        select id, rule_type as ruleType, rule_name as ruleName, execute_condition as executeCondition, execute_condition_content as executeConditionContent, execute_operation as executeOperation, fixed_flag as fixedFlag, read_flag as readFlag, label_flag as labelFlag, label_id as labelId, folder_flag as folderFlag, folder_id as folderId, forward_to_flag as forwardToFlag, forward_to as forwardTo, pending_flag as pendingFlag, pending_type as pendingType, pending_day as pendingDay, pending_time as pendingTime, auto_response_flag as autoResponseFlag, auto_response as autoResponse, apply_to_history_mail_flag as applyToHistoryMailFlag, apply_to_history_mail_true_type as applyToHistoryMailTrueType, execute_task_id as executeTaskId, other_sending_rules as otherSendingRules, status, order_num as orderNum from mailbox_transceiver_rule
         where id = #{id} and create_id = #{createId} and del_flag = '0'
     </select>
 
@@ -93,6 +97,8 @@
             tr.execute_operation AS executeOperation,
             tr.fixed_flag AS fixedFlag,
             tr.read_flag AS readFlag,
+            tr.label_flag AS labelFlag,
+            tr.label_id AS labelId,
             tr.folder_flag AS folderFlag,
             tr.folder_id AS folderId,
             f.NAME AS folderName,
@@ -111,9 +117,9 @@
             tr.status
         FROM
             mailbox_transceiver_rule tr
-                LEFT JOIN mailbox_folder f ON f.id = tr.folder_id
+            LEFT JOIN mailbox_folder f ON f.id = tr.folder_id
         WHERE
-            tr.create_id = #{createId} and tr.del_flag = '0' and f.del_flag = '0'
+            tr.create_id = #{createId} and tr.del_flag = '0'
     </select>
 
     <select id="getPacketNameByPacketId" resultType="java.lang.String">
@@ -130,6 +136,8 @@
             <if test="executeOperation != null">execute_operation,</if>
             <if test="fixedFlag != null">fixed_flag,</if>
             <if test="readFlag != null">read_flag,</if>
+            <if test="labelFlag != null">label_flag,</if>
+            <if test="labelId != null">label_id,</if>
             <if test="folderFlag != null">folder_flag,</if>
             <if test="folderId != null">folder_id,</if>
             <if test="forwardToFlag != null">forward_to_flag,</if>
@@ -162,6 +170,8 @@
             <if test="executeOperation != null">#{executeOperation},</if>
             <if test="fixedFlag != null">#{fixedFlag},</if>
             <if test="readFlag != null">#{readFlag},</if>
+            <if test="labelFlag != null">#{labelFlag},</if>
+            <if test="labelId != null">#{labelId},</if>
             <if test="folderFlag != null">#{folderFlag},</if>
             <if test="folderId != null">#{folderId},</if>
             <if test="forwardToFlag != null">#{forwardToFlag},</if>
@@ -198,6 +208,8 @@
             <if test="executeOperation != null">execute_operation = #{executeOperation},</if>
             <if test="fixedFlag != null">fixed_flag = #{fixedFlag},</if>
             <if test="readFlag != null">read_flag = #{readFlag},</if>
+            <if test="labelFlag != null">label_flag = #{labelFlag},</if>
+            <if test="labelId != null">label_id = #{labelId},</if>
             <if test="folderFlag != null">folder_flag = #{folderFlag},</if>
             <if test="folderId != null">folder_id = #{folderId},</if>
             <if test="forwardToFlag != null">forward_to_flag = #{forwardToFlag},</if>
