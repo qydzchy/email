@@ -1,5 +1,6 @@
 package com.ruoyi.email.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +25,7 @@ import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
-import com.ruoyi.email.service.handler.email.column.ColumnContext;
+import com.ruoyi.email.service.handler.email.column.EmailColumnContext;
 import com.ruoyi.email.util.ThreadPoolPullService;
 import com.ruoyi.email.util.ThreadPoolSendService;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +70,7 @@ public class TaskServiceImpl implements ITaskService
     @Resource
     private TaskEmailMapper taskEmailMapper;
     @Resource
-    private ColumnContext columnContext;
+    private EmailColumnContext emailColumnContext;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -553,6 +554,15 @@ public class TaskServiceImpl implements ITaskService
                     continue;
                 }
 
+                Boolean fixedFlag = false;
+                Boolean readFlag = false;
+                Long labelId = null;
+                Long folderId = -1L;
+                String forwardTo = null;
+                Boolean pendingFlag = false;
+                Date pendingTime = null;
+                String content = null;
+
                 String executeConditionContent = transceiverRuleVO.getExecuteConditionContent();
                 Gson gson = new Gson();
                 try {
@@ -562,22 +572,89 @@ public class TaskServiceImpl implements ITaskService
                             "\n原因：{}", transceiverRuleVO.getId(), e);
                 }
 
-                boolean isRuleMet = false;
+                boolean isRuleMet = true;
                 for (ExecuteConditionContentBO executeConditionContentBO : executeConditionContentBOList) {
                     EmailSimpleBO emailSimpleBO = getEmailSimpleBO(universalMail);
                     // 判断条件是否成立
-                    boolean isConditionMet = columnContext.handler(executeConditionContentBO, emailSimpleBO);
+                    boolean isConditionMet = emailColumnContext.handler(executeConditionContentBO, emailSimpleBO);
 
                     if (executeConditionContentBO.getAndOr().equals("and")) {
                         if (!isConditionMet) {
                             isRuleMet = false;
                             break;
                         }
+                        isRuleMet = true;
                     } else if (executeConditionContentBO.getAndOr().equals("or")) {
                         if (isConditionMet) {
                             isRuleMet = true;
                             break;
                         }
+                        isRuleMet = false;
+                    }
+                }
+
+                if (isRuleMet) continue;
+
+
+                if (isRuleMet) {
+                    // 是否固定
+                    if (Optional.ofNullable(transceiverRuleVO.getFixedFlag()).orElse(false)) {
+                        fixedFlag = true;
+                    }
+
+                    // 是否已读
+                    if (Optional.of(transceiverRuleVO.getReadFlag()).orElse(false)) {
+                        readFlag = true;
+                    }
+
+                    // 标签
+                    if (Optional.of(transceiverRuleVO.getLabelFlag()).orElse(false)) {
+                        labelId = transceiverRuleVO.getLabelId();
+                    }
+
+                    // 文件夹
+                    if (Optional.of(transceiverRuleVO.getFolderFlag()).orElse(false)) {
+                        folderId = transceiverRuleVO.getFolderId();
+                    }
+
+                    // 转发到
+                    if (Optional.of(transceiverRuleVO.getForwardToFlag()).orElse(false)) {
+                        // 转发到
+                        forwardTo = transceiverRuleVO.getForwardTo();
+                    }
+
+                    // 标记为【待处理邮件】并设置稍后处理时间为
+                    if (Optional.of(transceiverRuleVO.getPendingFlag()).orElse(false) && transceiverRuleVO.getPendingType() != null) {
+                        Integer pendingType = transceiverRuleVO.getPendingType();
+                        pendingFlag = true;
+                        pendingTime = universalMail.getSendDate();
+                        // 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第
+                        if (pendingType.intValue() == 2) {
+                            if (transceiverRuleVO.getPendingDay() != null && transceiverRuleVO.getPendingTime() != null) {
+                                Integer day = transceiverRuleVO.getPendingDay();
+                                String time = transceiverRuleVO.getPendingTime();
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                                try {
+                                    Date parse = sdf.parse(time);
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(pendingTime);
+                                    calendar.add(Calendar.DAY_OF_MONTH, day);
+                                    calendar.set(Calendar.HOUR_OF_DAY, parse.getHours());
+                                    calendar.set(Calendar.MINUTE, parse.getMinutes());
+                                    calendar.set(Calendar.SECOND, parse.getSeconds());
+                                    pendingTime = calendar.getTime();
+                                } catch (Exception e) {
+                                    log.error("待处理时间转换异常：{}", e);
+                                }
+
+                            }
+                        }
+                    }
+
+                    // 自动回复
+                    if (Optional.ofNullable(transceiverRuleVO.getAutoResponseFlag()).orElse(false)) {
+                        content = transceiverRuleVO.getAutoResponse();
+
                     }
                 }
             }
