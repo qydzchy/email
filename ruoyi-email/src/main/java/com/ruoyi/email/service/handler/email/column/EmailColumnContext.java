@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class ColumnContext {
+public class EmailColumnContext {
 
     private Map<EmailColumnEnum, IColumnService> emailColumnMap = new HashMap<>();
 
