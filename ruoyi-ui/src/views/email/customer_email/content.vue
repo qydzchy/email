@@ -53,8 +53,8 @@
                                         </h2>
                                         <ul class="plain-list-container bordered">
                                             <li class="plain-list-item" v-for="email in data[Object.keys(data)[0]]"
-                                                :key="email.id" @click="onShowLabel"
-                                                :class="{ 'active': email.id === activeEmailId }">
+                                                :class="{ 'active': email.id === activeEmailId }" :key="email.id"
+                                                @click="onShowLabel(email.taskId)">
                                                 <div class="right-click-menu-handler">
                                                     <div class="mail-item-container mail-list-item-wrapper" draggable="true"
                                                         mail-info-icon-map="[object Object]">
@@ -145,29 +145,17 @@
                                                                                 class="subject ellipsis">re</span><span
                                                                                 class="summary summary-content ellipsis"><span
                                                                                     class="concat-line">&nbsp;-&nbsp;</span><span
-                                                                                    title="Hi Dear &nbsp; &nbsp; &nbsp; &nbsp;Dear, how did you spend your Christmas?Is Christmas your biggest holiday?That should be very grand. If you can share your happiness, by the way, if you have any parts you need to buy, please feel free to send me a message. &nbsp; &nbsp; &nbsp; Best regards, Joy &nbsp; ——————————————————————————— Hi-tech&nbsp;(HK)&nbsp;Electronics&nbsp;Co.,Ltd whatsapp:+86-13679752170 Wechat:yydbb827"
-                                                                                    class="ellipsis">Hi Dear &nbsp; &nbsp;
-                                                                                    &nbsp; &nbsp;Dear,
-                                                                                    how did you spend your Christmas?Is
-                                                                                    Christmas your biggest
-                                                                                    holiday?That should be very grand. If
-                                                                                    you can share your
-                                                                                    happiness, by the way, if you have any
-                                                                                    parts you need to
-                                                                                    buy, please feel free to send me a
-                                                                                    message. &nbsp; &nbsp;
-                                                                                    &nbsp; Best regards, Joy &nbsp;
-                                                                                    ———————————————————————————
-                                                                                    Hi-tech&nbsp;(HK)&nbsp;Electronics&nbsp;Co.,Ltd
-                                                                                    whatsapp:+86-13679752170
-                                                                                    Wechat:yydbb827</span></span></span>
+                                                                                    :title="email.extractTextFromContent"
+                                                                                    class="ellipsis">{{
+                                                                                        email.extractTextFromContent
+                                                                                    }}</span></span></span>
                                                                     </div>
                                                                 </div>
                                                                 <div></div>
                                                                 <div class="right-operations-container">
                                                                     <div class="mail-list-item-list-right"><span
-                                                                            class="time ellipsis">12-27
-                                                                            22:20</span><!---->
+                                                                            class="time ellipsis">{{ email.sendTime
+                                                                            }}</span><!---->
                                                                         <div class="pending">
                                                                             <div class="mm-popover">
                                                                                 <div><span
@@ -278,7 +266,7 @@
                                 <i class="m-icon icon-left-small"></i>
                             </span>
                             <!-- 内容 -->
-                            <PrviateListRow />
+                            <PrviateListRow :row="row" />
                         </div>
                     </template>
 
@@ -293,6 +281,13 @@ import FastWrite from './FastWrite.vue'
 import PrviateListRow from '@/components/CustomerTableRow/PrviateListRow'
 import { getCustomerEmailList } from '@/api/email/customer'
 export default {
+    props: {
+        selectedTaskId: {
+            type: String | Number,
+            default: '',
+            required: false
+        }
+    },
     components: {
         FastWrite,
         PrviateListRow
@@ -305,7 +300,9 @@ export default {
             total: 100,
             isRightPanelExpanded: true,
             activeEmailId: null,
-            list: []
+            list: [],
+            customerId: '',
+            row: ''
         }
     },
     computed: {
@@ -313,17 +310,36 @@ export default {
             return Math.ceil(this.total / this.pageSize);
         },
     },
+    watch: {
+        selectedTaskId: {
+            handler(newVal) {
+                if (newVal) {
+                    this.customerId = newVal
+                    this.getList()
+                }
+            },
+            deep: true,
+            immediate: true
+        }
+    },
     mounted() { },
     methods: {
         async getList() {
             try {
-                const res = await getCustomerEmailList()
+                const res = await getCustomerEmailList({
+                    customerId: this.customerId,
+                    pageNum: this.currentPage,
+                    pageSize: this.pageSize
+                })
                 if (res.code === 200) {
                     this.list = res.rows
                 }
             } catch { }
         },
         onShowLabel(id) {
+            this.row = {
+                id: id
+            }
             this.showHeader = false
             this.$emit('handlerHeader', true)
         },

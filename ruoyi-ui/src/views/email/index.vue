@@ -578,8 +578,7 @@
                               <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id"
                                 class="is-focusable mm-tree-node"
                                 :class="{ 'is-focusable mm-tree-node': activeMenuItem === 'CUSTOMER_' + customer.id }"
-                                @click="customerClick(customer.id)" aria-disabled="" draggable="false" role="treeitem"
-                                tabindex="-1">
+                                aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
                                 <div class="mm-tree-node-content" style="padding-left: 34px;">
                                   <span class="mm-tree-node-expand-icon-wrapper">
                                     <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24"
@@ -592,8 +591,7 @@
                                   <!---->
                                   <!---->
                                   <span class="mm-tree-node-label-wrap">
-                                    <a href="/pro/mail/customer?company_id=13952243948271"
-                                      title="precisionelectronics.net" class="link ellipsis tree-node-text">
+                                    <a @click="onCustomerSearch(customer.id)" class="link ellipsis tree-node-text">
                                       <div class="mm-popover empty-item-tooltip" props="[object Object]">
                                         <div>
                                           <span class="ellipsis name">{{ customer.name }}</span>
@@ -673,9 +671,7 @@
                                   <!---->
                                   <!---->
                                   <span class="mm-tree-node-label-wrap">
-                                    <a data-savepage-href="/pro/mail/customer?company_id=13952243948271"
-                                      href="https://crm.xiaoman.cn/pro/mail/customer?company_id=13952243948271"
-                                      title="precisionelectronics.net" class="link ellipsis tree-node-text">
+                                    <a @click="onCustomerSearch(customer.id)" class="link ellipsis tree-node-text">
                                       <div class="mm-popover empty-item-tooltip" props="[object Object]">
                                         <div>
                                           <span class="ellipsis name">{{ customer.name }}</span>
@@ -1025,7 +1021,6 @@ export default {
         this.currentLayout = 'customer_email'
         if (this.labelTypeOptions.length > 0) {
           this.selectedLabelTypeValue = this.labelTypeOptions[0].value;
-          console.log(this.selectedLabelTypeValue);
           this.labelTypeDataList(this.selectedLabelTypeValue);
         }
       } else {
@@ -1051,6 +1046,7 @@ export default {
       if (selectedValue == 1) {
         publicleadsGroupsList().then((response) => {
           this.labelTypeDatas = response.data;
+          this.selectedTaskId = this.labelTypeDatas?.[0]?.customerList?.[0]?.id || ''
         });
       } else if (selectedValue == 2) {
         packetList().then((response) => {
@@ -1077,7 +1073,10 @@ export default {
       generalList().then((response) => {
         this.generalLabelTypeDatas = response.data;
       });
-    }
+    },
+    onCustomerSearch(id) {
+      this.selectedTaskId = id
+    },
   },
 
   computed: {

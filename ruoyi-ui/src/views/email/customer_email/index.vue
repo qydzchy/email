@@ -3,7 +3,7 @@
         <div class="page-mail-list layout-extraSidebar-content" style="background-color: white;">
             <span>
                 <Header :isHide="isHide" @switch="onSwitch">
-                    <Content @handlerHeader="bool => isHide = bool" />
+                    <Content :selectedTaskId="selectedTaskId" @handlerHeader="bool => isHide = bool" />
                 </Header>
             </span>
         </div>
@@ -14,6 +14,13 @@
 import Header from './header'
 import Content from './content'
 export default {
+    props: {
+        selectedTaskId: {
+            type: String | Number,
+            default: '',
+            required: false
+        }
+    },
     components: {
         Header,
         Content
