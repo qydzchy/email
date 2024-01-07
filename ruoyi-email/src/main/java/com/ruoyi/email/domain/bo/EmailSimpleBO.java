@@ -2,6 +2,8 @@ package com.ruoyi.email.domain.bo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class EmailSimpleBO {
 
@@ -29,4 +31,9 @@ public class EmailSimpleBO {
      * 正文
      */
     private String body;
+
+    /**
+     * 发送时间
+     */
+    private Date sendDate;
 }
