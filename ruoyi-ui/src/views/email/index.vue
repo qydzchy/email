@@ -720,7 +720,7 @@
             <component v-if="currentLayout" :is="currentLayout" :key="currentLayout" :selectedEmail="selectedEmail"
               :emailData="emailData" :emailTotal="emailTotal" :selectedTaskId="selectedTaskId"
               :emailType="currentEmailType" :writeEmailType="writeEmailType" :type="isMailNavNormalContainerOpen"
-              @switch="switchLayout"></component>
+              :emailDefaultOption="emailDefaultOption" @switch="switchLayout"></component>
 
           </div>
         </div>
@@ -785,7 +785,7 @@ import { listLabel } from "@/api/email/label";
 import { countMenu } from "@/api/email/email";
 import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, ratingList, activityList } from "@/api/customer/email";
 import { EventBus } from "@/api/email/event-bus";
-
+import { getUsuallyInfo } from '@/api/email/usually'
 export default {
   data() {
     return {
@@ -835,6 +835,7 @@ export default {
         value: 6,
         label: '客户活跃度'
       }],
+      emailDefaultOption: {}
     };
   },
   components: {
@@ -847,6 +848,16 @@ export default {
     'customer_email': CustomerEmailLayout
   },
   methods: {
+    async getDefaultSetting() {
+      try {
+        const res = await getUsuallyInfo()
+        if (res.code === 200) {
+          this.emailDefaultOption = res.data
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    },
     switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
       this.currentLayout = layoutName;
       this.selectedEmail = email;
@@ -1100,6 +1111,7 @@ export default {
     this.refreshFolderList();
     this.refreshLabelList();
     this.refreshMenuCount();
+    this.getDefaultSetting()
 
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';

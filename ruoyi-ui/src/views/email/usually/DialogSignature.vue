@@ -11,7 +11,7 @@
 						<Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
 							:defaultConfig="toolbarConfig" />
 						<!-- 编辑器 -->
-						<Editor ref="editorInstance" style="height: 200px; overflow-y: hidden"
+						<Editor ref="editorInstance" style="height: 260px; overflow-y: hidden"
 							v-model="signatureForm.content" @onCreated="onCreated" mode="default" />
 					</div>
 				</el-form-item>
@@ -27,6 +27,7 @@
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { addSignature, editSignature } from '@/api/email/usually'
+import { fontSizeList } from '@/constant/editorOption'
 export default {
 	props: {
 		dialogVisible: {
@@ -71,7 +72,6 @@ export default {
 				this.signatureForm = {
 					...newVal
 				}
-				console.log(this.signatureForm);
 			}
 		},
 		deep: true,
@@ -86,21 +86,27 @@ export default {
 		onCreated(editor) {
 			let that = this
 			this.editor = Object.seal(editor);
-			this.editor.getConfig().MENU_CONF['uploadImage'] = {
-				fieldName: 'file',
-				server: '/common/upload',
-				maxFileSize: 500 * 1024, //500kb
-				base64LimitSize: 500 * 1024,
-				allowedFileTypes: ['image/*'],
-				onError(file, err, _res) {
-					let errType = ''
-					err?.message?.includes('500 KB') && (errType = 'picture')
-					switch (errType) {
-						case 'picture':
-							that.$message.error('邮件图片不能大于 500K')
-							break;
-						default:
-							break;
+			this.editor.getConfig().MENU_CONF = {
+				...this.editor.getConfig().MENU_CONF,
+				fontSize: {
+					fontSizeList
+				},
+				uploadImage: {
+					fieldName: 'file',
+					server: '/common/upload',
+					maxFileSize: 500 * 1024, //500kb
+					base64LimitSize: 500 * 1024,
+					allowedFileTypes: ['image/*'],
+					onError(file, err, _res) {
+						let errType = ''
+						err?.message?.includes('500 KB') && (errType = 'picture')
+						switch (errType) {
+							case 'picture':
+								that.$message.error('邮件图片不能大于 500K')
+								break;
+							default:
+								break;
+						}
 					}
 				}
 			}
@@ -124,15 +130,20 @@ export default {
 			} catch { }
 		},
 		onConfirm() {
-			let data = {
-				...this.signatureForm
-			}
-			if (!data.id) {
-				delete data.id
-				this.addReq(data)
-			} else {
-				this.editReq(data)
-			}
+			this.$refs.signatureFormRef.validate(res => {
+				if (!res) {
+					let data = {
+						...this.signatureForm
+					}
+					if (!data.id) {
+						delete data.id
+						this.addReq(data)
+					} else {
+						this.editReq(data)
+					}
+				}
+			})
+
 		},
 		onCancel() {
 			this.$emit('onCancel')

@@ -84,8 +84,8 @@
                         <span class="label">默认字体:</span>
                         <div class="section-inner">
                             <el-select style="width:378px;" v-model="formData.defaultFont">
-                                <el-option v-for="(ff, index) in fontFamilyOption" :key="index" :value="ff.value"
-                                    :label="ff.label"></el-option>
+                                <el-option v-for="(ff, index) in fontFamilyOption" :key="index" :value="ff"
+                                    :label="ff"></el-option>
                             </el-select>
                             <div class="tips">
                                 默认字体的最终显示依赖于收件人的操作系统与浏览器设置。
@@ -95,13 +95,12 @@
                     <div class="section-wrapper align-center">
                         <span class="label">文字大小:</span>
                         <el-select style="width:378px;" v-model="formData.fontSize">
-                            <el-option v-for="(fs, index) in fontOption" :key="index" :value="fs.value"
-                                :label="fs.label"></el-option>
+                            <el-option v-for="(fs, index) in fontOption" :key="index" :value="fs" :label="fs"></el-option>
                         </el-select>
                     </div>
                     <div class="section-wrapper font-color">
                         <span class="label">文字颜色:</span>
-                        <el-color-picker v-model="formData.fontColor"></el-color-picker>
+                        <el-color-picker v-model="formData.fontColor" color-format="rgb"></el-color-picker>
                     </div>
                     <div class="section-wrapper">
                         <span class="label">群发箱视图 <el-tooltip style="width:200px" placement="top"
@@ -391,6 +390,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import DialogSignature from "./DialogSignature.vue";
 import { getUsuallyInfo, getEmailTaskList, getSignatureList, deleteSignature, singleEmailSetting, editUsuallyInfo, editSingleEmailSetting } from '@/api/email/usually'
 import { deepClone } from '@/utils'
+import { fontSizeList, fontFamilyList } from '@/constant/editorOption'
 export default {
     components: {
         Editor,
@@ -413,7 +413,7 @@ export default {
                 massEmailDisplay: 1,
                 remind: [],
                 signatureId: '',
-                writeLetter: true,
+                writeLetter: '',
                 pasteFormat: 1,
                 autoResponseFlag: 1,
                 startTime: '',
@@ -430,16 +430,8 @@ export default {
                 { value: 50, label: '50' },
                 { value: 100, label: '100' },
             ],
-            fontFamilyOption: [
-                { value: 'Segoe UI', label: 'Segoe UI' },
-            ],
-            fontOption: [
-                { value: '16px', label: '16px' },
-                { value: '18px', label: '18px' },
-                { value: '20px', label: '20px' },
-                { value: '22px', label: '22px' },
-                { value: '24px', label: '24px' },
-            ],
+            fontFamilyOption: fontFamilyList,
+            fontOption: fontSizeList,
             dialogVisible: false,
             signatureData: {},
             curSet: 0,
@@ -509,10 +501,9 @@ export default {
                 const res = await getUsuallyInfo()
                 if (res.code === 200) {
                     let data = res.data
-                    // data.remind = !data.remind ? [] : data.remind?.split(',')
-                    // this.writeLetter = !data.writeLetter ? [] : data.writeLetter?.split(',')
+                    data.remind = !data.remind ? [] : String(data.remind)?.split(',')
+                    this.writeLetter = !data.writeLetter ? [] : String(data.writeLetter)?.split(',')
                     this.formData = { ...data }
-
                 }
             } catch (e) {
                 console.error(e.message);
@@ -521,21 +512,27 @@ export default {
         onCreated(editor) {
             let that = this
             this.editor = Object.seal(editor);
-            this.editor.getConfig().MENU_CONF['uploadImage'] = {
-                fieldName: 'file',
-                server: '/common/upload',
-                maxFileSize: 500 * 1024, //500kb
-                base64LimitSize: 500 * 1024,
-                allowedFileTypes: ['image/*'],
-                onError(file, err, _res) {
-                    let errType = ''
-                    err?.message?.includes('500 KB') && (errType = 'picture')
-                    switch (errType) {
-                        case 'picture':
-                            that.$message.error('邮件图片不能大于 500K')
-                            break;
-                        default:
-                            break;
+            this.editor.getConfig().MENU_CONF = {
+                ...this.editor.getConfig().MENU_CONF,
+                fontSize: {
+                    fontSizeList
+                },
+                uploadImage: {
+                    fieldName: 'file',
+                    server: '/common/upload',
+                    maxFileSize: 500 * 1024, //500kb
+                    base64LimitSize: 500 * 1024,
+                    allowedFileTypes: ['image/*'],
+                    onError(file, err, _res) {
+                        let errType = ''
+                        err?.message?.includes('500 KB') && (errType = 'picture')
+                        switch (errType) {
+                            case 'picture':
+                                that.$message.error('邮件图片不能大于 500K')
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -592,8 +589,8 @@ export default {
                 ...this.formData
             }
             data.remind = data.remind.join(',')
-            // let writeLetter = deepClone(this.writeLetter)
-            // data.writeLetter = writeLetter.map(val => +val).join(',')
+            let writeLetter = deepClone(this.writeLetter)
+            data.writeLetter = writeLetter.map(val => +val).join(',')
             let emailData = this.emailSetList[this.curSet]
             emailData.defaultBccFlag = +emailData.defaultBccFlag
             emailData.defaultCcFlag = +emailData.defaultCcFlag

@@ -54,7 +54,7 @@
                                         <ul class="plain-list-container bordered">
                                             <li class="plain-list-item" v-for="email in data[Object.keys(data)[0]]"
                                                 :class="{ 'active': email.id === activeEmailId }" :key="email.id"
-                                                @click="onShowLabel(email.taskId)">
+                                                @click="onShowLabel">
                                                 <div class="right-click-menu-handler">
                                                     <div class="mail-item-container mail-list-item-wrapper" draggable="true"
                                                         mail-info-icon-map="[object Object]">
@@ -266,7 +266,7 @@
                                 <i class="m-icon icon-left-small"></i>
                             </span>
                             <!-- 内容 -->
-                            <PrviateListRow :row="row" />
+                            <PrviateListRow :row="{ id: selectedTaskId }" />
                         </div>
                     </template>
 
@@ -302,7 +302,6 @@ export default {
             activeEmailId: null,
             list: [],
             customerId: '',
-            row: ''
         }
     },
     computed: {
@@ -336,10 +335,7 @@ export default {
                 }
             } catch { }
         },
-        onShowLabel(id) {
-            this.row = {
-                id: id
-            }
+        onShowLabel() {
             this.showHeader = false
             this.$emit('handlerHeader', true)
         },

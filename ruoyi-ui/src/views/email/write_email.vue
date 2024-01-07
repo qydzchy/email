@@ -1,109 +1,118 @@
 <template>
-    <div class="mm-split-pane mm-split-pane__right" style="left: 12.2835%;">
-      <form class="mail-edit-container layout-extraSidebar-content" mail-type="" folder-id="">
-        <div class="mm-spinner" style="display: none;">
-          <div class="mm-spinner-mask"></div>
-          <div class="mm-spinner-wrapper">
-            <div class="mm-loading" style="height: 40px; width: 40px; color: rgb(38, 132, 255);">
-              <svg class="circular" viewBox="25 25 50 50">
-                <circle stroke-width="2" class="path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-              </svg>
-            </div>
-            <!---->
+  <div class="mm-split-pane mm-split-pane__right" style="left: 12.2835%;">
+    <form class="mail-edit-container layout-extraSidebar-content" mail-type="" folder-id="">
+      <div class="mm-spinner" style="display: none;">
+        <div class="mm-spinner-mask"></div>
+        <div class="mm-spinner-wrapper">
+          <div class="mm-loading" style="height: 40px; width: 40px; color: rgb(38, 132, 255);">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle stroke-width="2" class="path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
+            </svg>
           </div>
+          <!---->
         </div>
-        <div class="toolbar-editor-wrapper">
-          <div class="edit-toolbar-wrapper">
-                                <span class="mm-tooltip btn-item">
-                                  <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-send" @click.prevent="sendEmail" class="mm-button mm-button__primary mm__theme mm__theme-size__medium novice-tour-groupmail-send-button edit-toolbar">
-                                      <!---->
-                                      <!---->发送
-                                      <!---->
-                                    </button>
-                                  </span>
-                                  <!---->
-                                </span>
-            <span class="mm-tooltip btn-item">
-                                  <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-draft" type="button" @click="saveAsDraft" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
-                                      <!---->
-                                      <!---->存草稿
-                                      <!---->
-                                    </button>
-                                  </span>
-              <!---->
-                                </span>
-            <span class="mm-tooltip btn-item">
-                                  <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-review" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
-                                      <!---->
-                                      <!---->预览
-                                      <!---->
-                                    </button>
-                                  </span>
-              <!---->
-                                </span>
-            <span class="mm-tooltip btn-item">
-                                  <span class="mm-tooltip-trigger">
-                                    <button id="report-stat-edit-toolbar-close" @click="showCancelPopup = true" type="button" class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
-                                      <!---->
-                                      <!---->取消
-                                      <!---->
-                                    </button>
-                                  </span>
-              <!---->
-                                </span>
-          </div>
-          <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
+      </div>
+      <div class="toolbar-editor-wrapper">
+        <div class="edit-toolbar-wrapper">
+          <span class="mm-tooltip btn-item">
+            <span class="mm-tooltip-trigger">
+              <button id="report-stat-edit-toolbar-send" @click.prevent="sendEmail"
+                class="mm-button mm-button__primary mm__theme mm__theme-size__medium novice-tour-groupmail-send-button edit-toolbar">
+                <!---->
+                <!---->发送
+                <!---->
+              </button>
+            </span>
+            <!---->
+          </span>
+          <span class="mm-tooltip btn-item">
+            <span class="mm-tooltip-trigger">
+              <button id="report-stat-edit-toolbar-draft" type="button" @click="saveAsDraft"
+                class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
+                <!---->
+                <!---->存草稿
+                <!---->
+              </button>
+            </span>
+            <!---->
+          </span>
+          <span class="mm-tooltip btn-item">
+            <span class="mm-tooltip-trigger">
+              <button id="report-stat-edit-toolbar-review" type="button"
+                class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
+                <!---->
+                <!---->预览
+                <!---->
+              </button>
+            </span>
+            <!---->
+          </span>
+          <span class="mm-tooltip btn-item">
+            <span class="mm-tooltip-trigger">
+              <button id="report-stat-edit-toolbar-close" @click="showCancelPopup = true" type="button"
+                class="mm-button mm__theme mm__theme-size__medium edit-toolbar">
+                <!---->
+                <!---->取消
+                <!---->
+              </button>
+            </span>
+            <!---->
+          </span>
+        </div>
+        <el-form ref="elForm" :model="formData" size="medium" label-width="100px">
           <div class="mail-edit-wrapper">
             <div class="mail-edit-content">
               <ul>
                 <li data-expose-tour="0" class="sender-row mail-edit-row">
-                                      <span class="sender-row-name mail-edit-row-name">发件人
-                                        <!---->
-                                      </span>
-                  <span class="mm__theme mm__theme-border__less mm-select sender-selector show-last-input editor-footer-sender">
-                                        <div class="mm-selector--single mm-selector" tabindex="0" @click="toggleSenderDropdown">
-                                          <!---->
-                                          <div class="mm-selector-rendered">
-                                            <div class="sender-selection">
-                                              <div class="email-info" style="background: rgb(233, 233, 233); color: rgb(30, 33, 38);">
-                                                <div class="mailbox-item ellipsis">
-                                                  <!---->
-                                                  <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
-                                                    <div class="public-mail-tag-content">
-                                                      <el-dropdown @command="selectEmail" trigger="click">
-                                                      <!---->
-                                                      <span class="ellipsis">{{selectedAccount}}</span>
+                  <span class="sender-row-name mail-edit-row-name">发件人
+                    <!---->
+                  </span>
+                  <span
+                    class="mm__theme mm__theme-border__less mm-select sender-selector show-last-input editor-footer-sender">
+                    <div class="mm-selector--single mm-selector" tabindex="0" @click="toggleSenderDropdown">
+                      <!---->
+                      <div class="mm-selector-rendered">
+                        <div class="sender-selection">
+                          <div class="email-info" style="background: rgb(233, 233, 233); color: rgb(30, 33, 38);">
+                            <div class="mailbox-item ellipsis">
+                              <!---->
+                              <div class="public-mail-tag-wrapper ellipsis" slots="[object Object]">
+                                <div class="public-mail-tag-content">
+                                  <el-dropdown @command="selectEmail" trigger="click">
+                                    <!---->
+                                    <span class="ellipsis">{{ selectedAccount }}</span>
 
-                                                       <el-dropdown-menu slot="dropdown">
-                                                        <el-dropdown-item v-for="task in taskList" :key="task.id" :command="task">{{ task.account }}</el-dropdown-item>
-                                                      </el-dropdown-menu>
+                                    <el-dropdown-menu slot="dropdown">
+                                      <el-dropdown-item v-for="task in taskList" :key="task.id" :command="task">{{
+                                        task.account }}</el-dropdown-item>
+                                    </el-dropdown-menu>
 
-                                                      </el-dropdown>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <span class="m-icon icon-cross-thin" style="color: rgb(157, 157, 157);"></span>
-                                              </div>
-                                            </div>
-                                            <div class="total-email-info" style="background: rgb(233, 233, 233); display: none;">
-                                              <span>共 1 个</span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </span>
+                                  </el-dropdown>
+                                </div>
+                              </div>
+                            </div>
+                            <span class="m-icon icon-cross-thin" style="color: rgb(157, 157, 157);"></span>
+                          </div>
+                        </div>
+                        <div class="total-email-info" style="background: rgb(233, 233, 233); display: none;">
+                          <span>共 1 个</span>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
                 </li>
                 <li class="receiver-row mail-edit-row novice-tour-groupmail-select-field">
                   <span class="receiver-row-name mail-edit-row-name active">收件人</span>
-                  <ReceiverInput label="收件人" placeholder="请选择收件人或输入收件人邮箱" :initialEmails="receiver" @update="updateEmailList"></ReceiverInput>
+                  <ReceiverInput label="收件人" placeholder="请选择收件人或输入收件人邮箱" :initialEmails="receiver"
+                    @update="updateEmailList"></ReceiverInput>
 
                   <div class="cc-bcc-mass-wrapper">
-                    <button type="button" @click="toggleCc" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
+                    <button type="button" @click="toggleCc"
+                      class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
                       {{ showCc ? '取消抄送' : '抄送' }}
                     </button>
-                    <button type="button" @click="toggleBcc" class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
+                    <button type="button" @click="toggleBcc"
+                      class="mm-button mm-button__text mm__theme mm__theme-size__small text-btn">
                       {{ showBcc ? '取消密送' : '密送' }}
                     </button>
                   </div>
@@ -117,9 +126,9 @@
                   <ReceiverInput label="密送人" @update="updateEmailList"></ReceiverInput>
                 </li>
                 <li data-expose-tour="1" class="subject-row mail-edit-row novice-tour-groupmail-title-field">
-                                      <span class="subject-row-name mail-edit-row-name subject">主题
-                                        <!---->
-                                      </span>
+                  <span class="subject-row-name mail-edit-row-name subject">主题
+                    <!---->
+                  </span>
                   <div class="value">
                     <input name="subject" v-model="formData.title" autocomplete="on" class="subject" value="">
                   </div>
@@ -162,32 +171,23 @@
                 </li>
 
                 <li class="mail-editor-wrapper">
-                  <Toolbar
-                    ref="editorInstance"
-                    style="border-bottom: 1px solid #ccc"
-                    :editor="editor"
-                    :defaultConfig="toolbarConfig"
-                  />
+                  <Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
+                    :defaultConfig="toolbarConfig" />
                   <!-- 编辑器 -->
-                  <Editor
-                    ref="editorInstance"
-                    style="height: 500px; overflow-y: hidden"
-                    v-model="formData.content"
-                    @onChange="onChange"
-                    @onCreated="onCreated"
-                    mode="default"
-                  />
+                  <Editor ref="editorInstanceEdit" style="height: 500px; overflow-y: hidden" v-model="formData.content"
+                    :defaultContent="defaultContent" @onChange="onChange" @onCreated="onCreated" mode="simple" />
                   <div class="component-add-toolbar">
                     <div class="mail-tool flex items-center">
                       <!---->
                       <span class="mm-tooltip tool-item flex items-center" @change="handleFileUpload">
-                          <span class="mm-tooltip-trigger">
-                              <div class="tool-item flex items-center" title="">
-                                  <img src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg" style="width: 14px; height: 14px; margin-right: 4px;">
-                                  <span @click="triggerFileInput">附件</span>
-                                  <input id="attachInput" type="file" multiple ref="fileInput" style="display:none;">
-                              </div>
-                          </span>
+                        <span class="mm-tooltip-trigger">
+                          <div class="tool-item flex items-center" title="">
+                            <img src="https://cdn.xiaoman.cn/crm_web/ks/prod/mail_subapp/static/img/appendix.f49c01fe.svg"
+                              style="width: 14px; height: 14px; margin-right: 4px;">
+                            <span @click="triggerFileInput">附件</span>
+                            <input id="attachInput" type="file" multiple ref="fileInput" style="display:none;">
+                          </div>
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -198,118 +198,135 @@
                 <div class="split"></div>
                 <div class="select">
                   <label class="mm-checkbox">
-                    <input true-value="true" v-model="formData.traceFlag" @click="handleDelayedTxShow" type="checkbox" checked="">
+                    <input true-value="true" v-model="formData.traceFlag" @click="handleDelayedTxShow" type="checkbox"
+                      checked="">
                     <span class="mm-checkbox-input"></span>
                     <span class="mm-checkbox-label">追踪邮件</span>
                   </label>
                 </div>
                 <div class="select">
-              <label class="mm-checkbox">
-                <input true-value="true" v-model="formData.delayedTxFlag" type="checkbox">
-                <span class="mm-checkbox-input"></span>
-                <span class="mm-checkbox-label">定时发送</span>
-              </label>
+                  <label class="mm-checkbox">
+                    <input true-value="true" v-model="formData.delayedTxFlag" type="checkbox">
+                    <span class="mm-checkbox-input"></span>
+                    <span class="mm-checkbox-label">定时发送</span>
+                  </label>
 
-              <DelayedTxlLayout v-if="delayedTxShow"></DelayedTxlLayout>
-            </div>
-              <div class="split"></div>
-              <div class="select-handle-time">
-                <div class="mm-popover">
-                  <div>
-                    <span class="time" @click.stop="showPending">
-                      <span class="okki-icon-wrap time-icon" color="#0064ff" v-if="pendingTime">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#0064ff">
-                          <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
-                          <path d="M12 7a1 1 0 011 1v4.423l2.964 1.711a1 1 0 01-1 1.732l-3.447-1.99a1.01 1.01 0 01-.384-.377.992.992 0 01-.133-.518V8a1 1 0 011-1z" fill="#fff"></path>
-                        </svg>
-                        <span>{{ pendingTime }}</span>
-                      </span>
-                      <span class="okki-icon-wrap time-icon" v-else>
-                        <!-- 如果ependingTime存在，显示选中的时间 -->
-                        <!-- 否则，显示SVG图标 -->
-                        <span>
-                          ​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-                                                <path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
-                                              </svg>
-                                            </span> 标记为待处理
-                      </span>
-                    </span>
-                  </div>
-                  <!---->
+                  <DelayedTxlLayout v-if="delayedTxShow"></DelayedTxlLayout>
                 </div>
-                <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: -220px; left: 95px; will-change: top, left; transform-origin: 100% bottom;">
-                  <!---->
-                  <div>
-                    <!---->
-                    <div class="mail-pending-handler">
-                      <div class="title" v-if="showPendingTime">
-                        <span>请选择稍后处理时间: </span>
-                      </div>
-                      <div class="title" v-if="showCustomTime">
-                        <span class="bold back-block">
-                          <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
+                <div class="split"></div>
+                <div class="select-handle-time">
+                  <div class="mm-popover">
+                    <div>
+                      <span class="time" @click.stop="showPending">
+                        <span class="okki-icon-wrap time-icon" color="#0064ff" v-if="pendingTime">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            aria-hidden="true" class="okki-svg-icon" fill="#0064ff">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                            <path
+                              d="M12 7a1 1 0 011 1v4.423l2.964 1.711a1 1 0 01-1 1.732l-3.447-1.99a1.01 1.01 0 01-.384-.377.992.992 0 01-.133-.518V8a1 1 0 011-1z"
+                              fill="#fff"></path>
+                          </svg>
+                          <span>{{ pendingTime }}</span>
                         </span>
+                        <span class="okki-icon-wrap time-icon" v-else>
+                          <!-- 如果ependingTime存在，显示选中的时间 -->
+                          <!-- 否则，显示SVG图标 -->
+                          <span>
+                            ​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                              aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                              <path
+                                d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z">
+                              </path>
+                              <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z">
+                              </path>
+                            </svg>
+                          </span> 标记为待处理
+                        </span>
+                      </span>
+                    </div>
+                    <!---->
+                  </div>
+                  <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end"
+                    v-if="showPendingTime || showCustomTime"
+                    style="position: absolute; top: -220px; left: 95px; will-change: top, left; transform-origin: 100% bottom;">
+                    <!---->
+                    <div>
+                      <!---->
+                      <div class="mail-pending-handler">
+                        <div class="title" v-if="showPendingTime">
+                          <span>请选择稍后处理时间: </span>
+                        </div>
+                        <div class="title" v-if="showCustomTime">
+                          <span class="bold back-block">
+                            <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
+                          </span>
+                        </div>
+                        <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime"
+                          @time-selected="handleSelectedTime"></PendingTimePopover>
+                        <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
                       </div>
-                      <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime" @time-selected="handleSelectedTime"></PendingTimePopover>
-                      <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            </div>
           </div>
-          </el-form>
-        </div>
-      </form>
-      <template>
-        <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1000;" v-portal="" v-portal-fixed="" v-if="showCancelPopup">
-          <div class="mm-modal-mask"></div>
-          <div class="mm-modal-wrapper" style="padding-top: 15vh;">
-            <div class="mm-modal-content" style="width: 424px; border-color: transparent;">
-              <svg class="mm-icon mm-icon-close mm-modal-close" @click="showCancelPopup = false" viewBox="0 0 24 24" name="close" fill="currentColor" style="height: 14px; width: 14px;">
-                <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"></path>
-              </svg>
-              <div class="mm-modal-header">
-                <div class="mm-modal-title">
-                  <span>离开确认</span>
-                </div>
-              </div>
-              <div class="mm-modal-body">
-                <h3 class="close-confirm-title">将此邮件保存为草稿吗？</h3>
-                <div class="content">
-                  <p>如果不保存为草稿，编辑的内容将会丢失</p>
-                </div>
-              </div>
-              <div class="mm-modal-footer">
-                <div class="footer">
-                  <button type="button" @click="showCancelPopup = false" class="mm-button">
-                    <!---->
-                    <!---->
-                    <span>取消</span>
-                    <!---->
-                  </button>
-                  <button type="button" @click="noSavePopup" class="mm-button">
-                    <!---->
-                    <!---->
-                    <span>不保存</span>
-                    <!---->
-                  </button>
-                  <button type="button" @click="saveAsDraftPopup" class="mm-button mm-button__primary">
-                    <!---->
-                    <!---->
-                    <span>存草稿</span>
-                    <!---->
-                  </button>
-                </div>
+        </el-form>
+      </div>
+    </form>
+    <template>
+      <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1000;" v-portal=""
+        v-portal-fixed="" v-if="showCancelPopup">
+        <div class="mm-modal-mask"></div>
+        <div class="mm-modal-wrapper" style="padding-top: 15vh;">
+          <div class="mm-modal-content" style="width: 424px; border-color: transparent;">
+            <svg class="mm-icon mm-icon-close mm-modal-close" @click="showCancelPopup = false" viewBox="0 0 24 24"
+              name="close" fill="currentColor" style="height: 14px; width: 14px;">
+              <path
+                d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z">
+              </path>
+            </svg>
+            <div class="mm-modal-header">
+              <div class="mm-modal-title">
+                <span>离开确认</span>
               </div>
             </div>
+            <div class="mm-modal-body">
+              <h3 class="close-confirm-title">将此邮件保存为草稿吗？</h3>
+              <div class="content">
+                <p>如果不保存为草稿，编辑的内容将会丢失</p>
+              </div>
+            </div>
+            <div class="mm-modal-footer">
+              <div class="footer">
+                <button type="button" @click="showCancelPopup = false" class="mm-button">
+                  <!---->
+                  <!---->
+                  <span>取消</span>
+                  <!---->
+                </button>
+                <button type="button" @click="noSavePopup" class="mm-button">
+                  <!---->
+                  <!---->
+                  <span>不保存</span>
+                  <!---->
+                </button>
+                <button type="button" @click="saveAsDraftPopup" class="mm-button mm-button__primary">
+                  <!---->
+                  <!---->
+                  <span>存草稿</span>
+                  <!---->
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </template>
+      </div>
+    </template>
 
-    </div>
+  </div>
 </template>
 <style lang="scss">
 .dropdown-email-list {
@@ -338,19 +355,22 @@
 
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import {uploadAttachments, renameAttachment, deleteAttachment} from "@/api/email/attachment";
-import {listTaskPull} from "@/api/email/task";
-import {saveSendEmail, sendEmail, uploadAttachment} from "@/api/email/email";
+import { uploadAttachments, renameAttachment, deleteAttachment } from "@/api/email/attachment";
+import { listTaskPull } from "@/api/email/task";
+import { saveSendEmail, sendEmail, uploadAttachment } from "@/api/email/email";
 import { EventBus } from '@/api/email/event-bus.js';
 import ReceiverInput from './write_email_receiver_input.vue';
 import PendingTimePopover from './pending_time.vue';
 import CustomTimePopover from './custom_time.vue';
 import DelayedTxlLayout from './write_email_delayed_tx.vue';
+import { fontSizeList } from '@/constant/editorOption'
+
 export default {
   components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover, DelayedTxlLayout },
   data() {
     return {
-      formData: {},
+      formData: {
+      },
       taskList: [],
       isDropdownVisible: false,
       selectedAccount: '',
@@ -362,6 +382,19 @@ export default {
       attachmentIds: [],
       editor: null,
       toolbarConfig: {},
+      defaultContent: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              text: '',
+              fontFamily: this.emailDefaultOption?.defaultFont || '',
+              fontSize: this.emailDefaultOption?.fontSize || '',
+              color: 'rgb(115, 209, 61)',
+            }
+          ]
+        },
+      ],
       showCancelPopup: false,
       emailData: {
         '收件人': [],
@@ -378,6 +411,8 @@ export default {
       pendingTime: null,
       pendingFlag: false,
       delayedTxShow: false,
+      defaultOption: {},
+      defaultHtml: ''
     };
   },
   props: {
@@ -389,8 +424,14 @@ export default {
       type: String,
       default: null
     },
+    emailDefaultOption: {
+      type: Object,
+      default: () => { },
+      required: false
+    }
   },
   methods: {
+
     triggerFileInput() {
       this.$refs.fileInput.click();
     },
@@ -440,6 +481,9 @@ export default {
 
     onCreated(editor) {
       this.editor = Object.seal(editor);
+      this.editor.getConfig().MENU_CONF['fontSize'] = {
+        fontSizeList: fontSizeList
+      }
       setTimeout(() => {
         this.editor.dangerouslyInsertHtml(this.htmlText);
       }, 500);
@@ -548,13 +592,13 @@ export default {
       try {
         const response = await this.saveSendEmail();
         if (response.code === 200) {
-           const id = response.data;
-           console.log("id = " + id);
+          const id = response.data;
+          console.log("id = " + id);
 
-           const data = {
-             "id": id
-           };
-           const sendResponse = await sendEmail(data);
+          const data = {
+            "id": id
+          };
+          const sendResponse = await sendEmail(data);
           if (sendResponse.code === 200) {
             EventBus.$emit('switch-send-success');  // 发出事件
             return response;
@@ -583,7 +627,7 @@ export default {
     async saveAsDraft() {
       const response = await this.saveSendEmail();
       if (response.code === 200) {
-         this.$message.success("邮件保存成功");
+        this.$message.success("邮件保存成功");
       }
     },
 
