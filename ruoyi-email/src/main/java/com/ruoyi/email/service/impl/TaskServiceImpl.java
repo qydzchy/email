@@ -6,6 +6,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -16,10 +18,12 @@ import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.ruoyi.email.domain.bo.EmailSimpleBO;
 import com.ruoyi.email.domain.bo.ExecuteConditionContentBO;
+import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.*;
@@ -69,6 +73,8 @@ public class TaskServiceImpl implements ITaskService
     private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
     private TaskEmailMapper taskEmailMapper;
+    @Resource
+    private TaskEmailLabelMapper taskEmailLabelMapper;
     @Resource
     private EmailColumnContext emailColumnContext;
     @Resource
@@ -336,7 +342,7 @@ public class TaskServiceImpl implements ITaskService
                     UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailOperateParamBO, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
-                        saveEmailData(task.getId(), universalMail, emailOperateParamBO);
+                        saveEmailData(task.getId(), universalMail, emailOperateParamBO.getTransceiverRuleList());
                     }
 
                     // 查询是否在4天内已经回复过邮件
@@ -530,8 +536,9 @@ public class TaskServiceImpl implements ITaskService
      * @param taskId
      * @param universalMail
      */
-    private void saveEmailData(Long taskId, UniversalMail universalMail, EmailOperateParamBO emailOperateParamBO) {
+    private void saveEmailData(Long taskId, UniversalMail universalMail, List<TransceiverRuleVO> transceiverRuleList) {
         TaskEmail taskEmail = new TaskEmail();
+        Date nowDate = DateUtils.getNowDate();
         // 邮件
         BeanUtils.copyProperties(universalMail, taskEmail);
         taskEmail.setTaskId(taskId);
@@ -541,10 +548,92 @@ public class TaskServiceImpl implements ITaskService
             taskEmail.setType(EmailTypeEnum.PULL.getType());
         }
         taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
-        taskEmail.setCreateTime(DateUtils.getNowDate());
+        taskEmail.setCreateTime(nowDate);
 
-        // 收邮件规则 todo 待完成
-        /*List<TransceiverRuleVO> transceiverRuleList = emailOperateParamBO.getTransceiverRuleList();
+        TransceiverRuleBO transceiverRuleBO = transceiverRuleHandler(taskId, universalMail, transceiverRuleList);
+
+        taskEmail.setFixedFlag(transceiverRuleBO.getFixedFlag());
+        taskEmail.setReadFlag(transceiverRuleBO.getReadFlag());
+        taskEmail.setFolderId(transceiverRuleBO.getFolderId());
+        taskEmail.setPendingFlag(transceiverRuleBO.getPendingFlag());
+        taskEmail.setPendingTime(transceiverRuleBO.getPendingTime());
+        taskEmail.setDelFlag(transceiverRuleBO.getDelFlag());
+        taskEmailService.insertTaskEmail(taskEmail);
+        Long emailId = taskEmail.getId();
+
+        // 保存邮件标签
+        if (transceiverRuleBO.getLabelId() != null) {
+            TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
+            taskEmailLabel.setEmailId(emailId);
+            taskEmailLabel.setLabelId(transceiverRuleBO.getLabelId());
+            taskEmailLabel.setCreateTime(nowDate);
+            taskEmailLabelMapper.insertTaskEmailLabel(taskEmailLabel);
+        }
+
+        // 邮件内容
+        TaskEmailContent emailContent = new TaskEmailContent();
+        emailContent.setEmailId(emailId);
+        emailContent.setContent(universalMail.getContent());
+        emailContent.setCreateTime(nowDate);
+        taskEmailContentService.insertTaskEmailContent(emailContent);
+
+        //附件
+        List<TaskAttachment> taskAttachmentList = new ArrayList<>();
+        List<UniversalAttachment> attachments = universalMail.getAttachments();
+        if (attachments != null) {
+            for (UniversalAttachment attachment : attachments) {
+                TaskAttachment taskAttachment = new TaskAttachment();
+                BeanUtils.copyProperties(attachment, taskAttachment);
+                taskAttachment.setCreateTime(DateUtils.getNowDate());
+                taskAttachmentList.add(taskAttachment);
+            }
+
+            if (!taskAttachmentList.isEmpty()) {
+                taskAttachmentService.batchInsertTaskAttachment(taskAttachmentList);
+
+                // 批量保存邮件附件关联数据
+                List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
+                taskAttachmentList.stream().forEach(taskAttachment -> {
+                    taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(taskAttachment.getId()).build());
+                });
+
+                taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
+            }
+        }
+
+        Task task = taskMapper.selectTaskById(taskId);
+        if (task == null) return;
+
+        // 转发
+        forwardTo(task, transceiverRuleBO.getForwardTo(), universalMail);
+
+        if (StringUtils.isBlank(transceiverRuleBO.getAutoResponse())) return;
+
+        // 查询是否在4天内已经回复过邮件
+        if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) {
+            taskEmailService.autoResponse(task, universalMail, transceiverRuleBO.getAutoResponse());
+        }
+    }
+
+    /**
+     * 收发件规则处理
+     * @param taskId
+     * @param universalMail
+     * @param transceiverRuleList
+     * @return
+     */
+    private TransceiverRuleBO transceiverRuleHandler(Long taskId, UniversalMail universalMail, List<TransceiverRuleVO> transceiverRuleList) {
+        Boolean fixedFlag = false;
+        Boolean readFlag = false;
+        Long labelId = null;
+        Long folderId = -1L;
+        String forwardTo = null;
+        Boolean pendingFlag = false;
+        Date pendingTime = null;
+        String autoResponse = null;
+        String delFlag = "0";
+
+        // 收邮件规则
         List<ExecuteConditionContentBO> executeConditionContentBOList = null;
         if (transceiverRuleList != null && !transceiverRuleList.isEmpty()) {
             for (TransceiverRuleVO transceiverRuleVO : transceiverRuleList) {
@@ -554,19 +643,10 @@ public class TaskServiceImpl implements ITaskService
                     continue;
                 }
 
-                Boolean fixedFlag = false;
-                Boolean readFlag = false;
-                Long labelId = null;
-                Long folderId = -1L;
-                String forwardTo = null;
-                Boolean pendingFlag = false;
-                Date pendingTime = null;
-                String content = null;
-
                 String executeConditionContent = transceiverRuleVO.getExecuteConditionContent();
                 Gson gson = new Gson();
                 try {
-                    executeConditionContentBOList = Arrays.asList(gson.fromJson(transceiverRuleVO.getExecuteConditionContent(), ExecuteConditionContentBO[].class));
+                    executeConditionContentBOList = Arrays.asList(gson.fromJson(executeConditionContent, ExecuteConditionContentBO[].class));
                 } catch (Exception e) {
                     log.error("执行条件内容转换异常 ID：{}" +
                             "\n原因：{}", transceiverRuleVO.getId(), e);
@@ -593,106 +673,119 @@ public class TaskServiceImpl implements ITaskService
                     }
                 }
 
-                if (isRuleMet) continue;
+                if (!isRuleMet) continue;
 
+                // 移动到【已删除邮件】
+                if (transceiverRuleVO.getExecuteOperation() != null && transceiverRuleVO.getExecuteOperation().intValue() == 2) {
+                    delFlag = "2";
+                }
 
-                if (isRuleMet) {
-                    // 是否固定
-                    if (Optional.ofNullable(transceiverRuleVO.getFixedFlag()).orElse(false)) {
-                        fixedFlag = true;
-                    }
+                // 是否固定
+                if (Optional.ofNullable(transceiverRuleVO.getFixedFlag()).orElse(false)) {
+                    fixedFlag = true;
+                }
 
-                    // 是否已读
-                    if (Optional.of(transceiverRuleVO.getReadFlag()).orElse(false)) {
-                        readFlag = true;
-                    }
+                // 是否已读
+                if (Optional.of(transceiverRuleVO.getReadFlag()).orElse(false)) {
+                    readFlag = true;
+                }
 
-                    // 标签
-                    if (Optional.of(transceiverRuleVO.getLabelFlag()).orElse(false)) {
-                        labelId = transceiverRuleVO.getLabelId();
-                    }
+                // 标签
+                if (Optional.of(transceiverRuleVO.getLabelFlag()).orElse(false)) {
+                    labelId = transceiverRuleVO.getLabelId();
+                }
 
-                    // 文件夹
-                    if (Optional.of(transceiverRuleVO.getFolderFlag()).orElse(false)) {
-                        folderId = transceiverRuleVO.getFolderId();
-                    }
+                // 文件夹
+                if (Optional.of(transceiverRuleVO.getFolderFlag()).orElse(false)) {
+                    folderId = transceiverRuleVO.getFolderId();
+                }
 
+                // 转发到
+                if (Optional.of(transceiverRuleVO.getForwardToFlag()).orElse(false)) {
                     // 转发到
-                    if (Optional.of(transceiverRuleVO.getForwardToFlag()).orElse(false)) {
-                        // 转发到
-                        forwardTo = transceiverRuleVO.getForwardTo();
-                    }
+                    forwardTo = transceiverRuleVO.getForwardTo();
+                }
 
-                    // 标记为【待处理邮件】并设置稍后处理时间为
-                    if (Optional.of(transceiverRuleVO.getPendingFlag()).orElse(false) && transceiverRuleVO.getPendingType() != null) {
-                        Integer pendingType = transceiverRuleVO.getPendingType();
-                        pendingFlag = true;
-                        pendingTime = universalMail.getSendDate();
-                        // 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第
-                        if (pendingType.intValue() == 2) {
-                            if (transceiverRuleVO.getPendingDay() != null && transceiverRuleVO.getPendingTime() != null) {
-                                Integer day = transceiverRuleVO.getPendingDay();
-                                String time = transceiverRuleVO.getPendingTime();
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                                try {
-                                    Date parse = sdf.parse(time);
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTime(pendingTime);
-                                    calendar.add(Calendar.DAY_OF_MONTH, day);
-                                    calendar.set(Calendar.HOUR_OF_DAY, parse.getHours());
-                                    calendar.set(Calendar.MINUTE, parse.getMinutes());
-                                    calendar.set(Calendar.SECOND, parse.getSeconds());
-                                    pendingTime = calendar.getTime();
-                                } catch (Exception e) {
-                                    log.error("待处理时间转换异常：{}", e);
-                                }
-
+                // 标记为【待处理邮件】并设置稍后处理时间为
+                if (Optional.of(transceiverRuleVO.getPendingFlag()).orElse(false) && transceiverRuleVO.getPendingType() != null) {
+                    Integer pendingType = transceiverRuleVO.getPendingType();
+                    pendingFlag = true;
+                    pendingTime = universalMail.getSendDate();
+                    // 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第
+                    if (pendingType.intValue() == 2) {
+                        if (transceiverRuleVO.getPendingDay() != null && transceiverRuleVO.getPendingTime() != null) {
+                            Integer day = transceiverRuleVO.getPendingDay();
+                            String time = transceiverRuleVO.getPendingTime();
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                            try {
+                                Date parse = sdf.parse(time);
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(pendingTime);
+                                calendar.add(Calendar.DAY_OF_MONTH, day);
+                                calendar.set(Calendar.HOUR_OF_DAY, parse.getHours());
+                                calendar.set(Calendar.MINUTE, parse.getMinutes());
+                                calendar.set(Calendar.SECOND, parse.getSeconds());
+                                pendingTime = calendar.getTime();
+                            } catch (Exception e) {
+                                log.error("待处理时间转换异常：{}", e);
                             }
                         }
                     }
+                }
 
-                    // 自动回复
-                    if (Optional.ofNullable(transceiverRuleVO.getAutoResponseFlag()).orElse(false)) {
-                        content = transceiverRuleVO.getAutoResponse();
-
-                    }
+                // 自动回复
+                if (Optional.ofNullable(transceiverRuleVO.getAutoResponseFlag()).orElse(false)) {
+                    autoResponse = transceiverRuleVO.getAutoResponse();
                 }
             }
-        }*/
-
-        taskEmailService.insertTaskEmail(taskEmail);
-        Long emailId = taskEmail.getId();
-
-        // 邮件内容
-        TaskEmailContent emailContent = new TaskEmailContent();
-        emailContent.setEmailId(emailId);
-        emailContent.setContent(universalMail.getContent());
-        emailContent.setCreateTime(DateUtils.getNowDate());
-        taskEmailContentService.insertTaskEmailContent(emailContent);
-
-        //附件
-        List<TaskAttachment> taskAttachmentList = new ArrayList<>();
-        List<UniversalAttachment> attachments = universalMail.getAttachments();
-        if (attachments != null) {
-            for (UniversalAttachment attachment : attachments) {
-                TaskAttachment taskAttachment = new TaskAttachment();
-                BeanUtils.copyProperties(attachment, taskAttachment);
-                taskAttachment.setCreateTime(DateUtils.getNowDate());
-                taskAttachmentList.add(taskAttachment);
-            }
-
-            if (!taskAttachmentList.isEmpty()) {
-                taskAttachmentService.batchInsertTaskAttachment(taskAttachmentList);
-
-                // 批量保存邮件附件关联数据
-                List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
-                taskAttachmentList.stream().forEach(taskAttachment -> {
-                    taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(taskAttachment.getId()).build());
-                });
-
-                taskEmailAttachmentService.batchInsertTaskEmailAttachment(taskEmailAttachmentList);
-            }
         }
+
+        TransceiverRuleBO transceiverRuleBO = new TransceiverRuleBO();
+        transceiverRuleBO.setFixedFlag(fixedFlag);
+        transceiverRuleBO.setReadFlag(readFlag);
+        transceiverRuleBO.setLabelId(labelId);
+        transceiverRuleBO.setFolderId(folderId);
+        transceiverRuleBO.setForwardTo(forwardTo);
+        transceiverRuleBO.setPendingFlag(pendingFlag);
+        transceiverRuleBO.setPendingTime(pendingTime);
+        transceiverRuleBO.setAutoResponse(autoResponse);
+        transceiverRuleBO.setDelFlag(delFlag);
+
+        return transceiverRuleBO;
+    }
+
+
+    /**
+     * 转发到
+     * @param task
+     * @param forwardTo
+     * @param universalMail
+     */
+    private void forwardTo(Task task, String forwardTo, UniversalMail universalMail) {
+        if (StringUtils.isBlank(forwardTo)) return;
+
+        JSONArray jsonA = new JSONArray();
+        JSONObject jsonO = new JSONObject();
+        jsonO.put("name", forwardTo);
+        jsonO.put("email", forwardTo);
+        jsonA.add(jsonO);
+
+        String receiver = JSONObject.toJSONString(jsonA);
+        TaskEmail taskEmail = new TaskEmail();
+        taskEmail.setUid(IdUtils.fastSimpleUUID());
+        taskEmail.setTaskId(task.getId());
+        taskEmail.setFromer(task.getAccount());
+        taskEmail.setReceiver(receiver);
+        taskEmail.setTitle(universalMail.getTitle());
+        taskEmail.setSendDate(new Date());
+        taskEmail.setType(EmailTypeEnum.SEND.getType());
+        taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmailMapper.insertTaskEmail(taskEmail);
+
+        TaskEmailContent taskEmailContent = new TaskEmailContent();
+        taskEmailContent.setEmailId(task.getId());
+        taskEmailContent.setContent(universalMail.getContent());
+        taskEmailContentService.insertTaskEmailContent(taskEmailContent);
     }
 
     /**

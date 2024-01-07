@@ -671,6 +671,11 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         int status = isSuccess ? TaskExecutionStatusEnum.SUCCESS.getStatus() : TaskExecutionStatusEnum.FAILURE.getStatus();
         // 更新邮件发送状态
         updateStatusById(status, messageId, id);
+
+        if (status == TaskExecutionStatusEnum.SUCCESS.getStatus()) {
+            // 发件规则处理
+
+        }
         return true;
     }
 
