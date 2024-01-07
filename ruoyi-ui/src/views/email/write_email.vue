@@ -195,6 +195,13 @@
               </ul>
               <!---->
               <div class="editor-footer">
+                <div>
+                  签名：
+                  <el-select style="width:100px;" size="small" v-model="formData.signatureId">
+                    <el-option v-for="(item, index) in signatureOption" :key="index" :label="item.title"
+                      :value="item.id"></el-option>
+                  </el-select>
+                </div>
                 <div class="split"></div>
                 <div class="select">
                   <label class="mm-checkbox">
@@ -364,12 +371,14 @@ import PendingTimePopover from './pending_time.vue';
 import CustomTimePopover from './custom_time.vue';
 import DelayedTxlLayout from './write_email_delayed_tx.vue';
 import { fontSizeList } from '@/constant/editorOption'
+import { getSignatureList } from '@/api/email/usually'
 
 export default {
   components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover, DelayedTxlLayout },
   data() {
     return {
       formData: {
+        signatureId: ''
       },
       taskList: [],
       isDropdownVisible: false,
@@ -390,7 +399,7 @@ export default {
               text: '',
               fontFamily: this.emailDefaultOption?.defaultFont || '',
               fontSize: this.emailDefaultOption?.fontSize || '',
-              color: 'rgb(115, 209, 61)',
+              color: 'rgb(0,0,0)',
             }
           ]
         },
@@ -412,7 +421,7 @@ export default {
       pendingFlag: false,
       delayedTxShow: false,
       defaultOption: {},
-      defaultHtml: ''
+      signatureOption: []
     };
   },
   props: {
@@ -430,8 +439,28 @@ export default {
       required: false
     }
   },
+  watch: {
+    'formData.signatureId': {
+      handler(newVal) {
+        console.log(newVal);
+        if (this.editor) {
+          let content = this.signatureOption.find(val => val.id === newVal)?.content || ''
+          this.formData.content = '\n\n' + content
+          console.log(this.formData.content);
+        }
+      }
+    }
+  },
   methods: {
-
+    async getSignatureOption() {
+      try {
+        const res = await getSignatureList()
+        if (res.code === 200) {
+          this.signatureOption = res.data
+          this.formData.signatureId = this.emailDefaultOption?.signatureId || ''
+        }
+      } catch { }
+    },
     triggerFileInput() {
       this.$refs.fileInput.click();
     },
@@ -485,7 +514,7 @@ export default {
         fontSizeList: fontSizeList
       }
       setTimeout(() => {
-        this.editor.dangerouslyInsertHtml(this.htmlText);
+        this.editor.dangerouslyInsertHtml(this?.htmlText);
       }, 500);
     },
 
@@ -946,6 +975,7 @@ export default {
     }).catch(error => {
       console.error("Error while fetching task list:", error);
     });
+    this.getSignatureOption()
   },
 
   beforeDestroy() {
