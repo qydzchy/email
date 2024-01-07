@@ -6,10 +6,13 @@ import java.util.Map;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
+import com.ruoyi.email.domain.bo.EmailSimpleBO;
+import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.domain.vo.MenuCountVO;
+import com.ruoyi.email.domain.vo.TransceiverRuleVO;
 import com.ruoyi.email.service.handler.email.UniversalMail;
 import org.springframework.data.util.Pair;
 
@@ -245,4 +248,9 @@ public interface ITaskEmailService
      * @return
      */
     List<TaskEmail> selectSendTaskEmailList(Long taskId);
+
+    /**
+     * 收发件规则处理
+     */
+    TransceiverRuleBO transceiverRuleHandler(Long taskId, EmailSimpleBO emailSimpleBO, List<TransceiverRuleVO> transceiverRuleList);
 }
