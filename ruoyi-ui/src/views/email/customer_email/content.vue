@@ -44,7 +44,7 @@
                         <div class="mail-list-scroller">
                             <div v-if="list && list.length" class="mail-list-scroll-container">
                                 <ul class="grouped-list-container bordered mail-grouped-list">
-                                    <li v-for="data in list" :key="Object.keys(data)[0]" class="grouped-list-item">
+                                    <li v-for="(data, index) in list" :key="index" class="grouped-list-item">
                                         <h2 class="grouped-list-item-title"><span class="time-title">{{
                                             Object.keys(data)[0] }}</span>
                                             <span class="mail-count">
@@ -52,8 +52,8 @@
                                             </span>
                                         </h2>
                                         <ul class="plain-list-container bordered">
-                                            <li class="plain-list-item" v-for="email in data[Object.keys(data)[0]]"
-                                                :class="{ 'active': email.id === activeEmailId }" :key="email.id"
+                                            <li class="plain-list-item" v-for="(email, index) in data[Object.keys(data)[0]]"
+                                                :class="{ 'active': email.id === activeEmailId }" :key="index + '_email'"
                                                 @click="onShowLabel(false)">
                                                 <div class="right-click-menu-handler">
                                                     <div class="mail-item-container mail-list-item-wrapper" draggable="true"
@@ -65,9 +65,10 @@
                                                         </div>
                                                         <div class="flex-grow flex-shrink-0">
                                                             <div class="mail-list-item-content">
-                                                                <div @click.stop><label
-                                                                        class="mm-checkbox mail-list-item-checkbox pr-0"><input
-                                                                            true-value="true" type="checkbox"><span
+                                                                <div @click.stop style="min-height:40px"><label
+                                                                        v-show="showHeader"
+                                                                        class="mm-checkbox mail-list-item-checkbox pr-0">
+                                                                        <input true-value="true" type="checkbox"><span
                                                                             class="mm-checkbox-input"></span></label>
                                                                 </div>
                                                                 <div>
@@ -227,7 +228,7 @@
                                 <i class="m-icon icon-left-small"></i>
                             </span>
                             <!-- 内容 -->
-                            <PrviateListRow :row="{ id: selectedTaskId }" />
+                            <PrviateListRow :row="{ id: selectedTaskId }" :indexOpt="indexOpt" />
                         </div>
                     </template>
 
@@ -241,6 +242,12 @@
 import FastWrite from './FastWrite.vue'
 import PrviateListRow from '@/components/CustomerTableRow/PrviateListRow'
 import { getCustomerEmailList } from '@/api/email/customer'
+// 客户列表选项
+import { stageList } from "@/api/company/status";
+import { getOriginList } from "@/api/company/origin";
+import { reasonList } from "@/api/company/poolRule";
+import { getCustomerTagList } from "@/api/customer/config";
+import { getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer, getSetPacketList } from "@/api/customer/publicleads";
 export default {
     props: {
         selectedTaskId: {
@@ -263,6 +270,15 @@ export default {
             activeEmailId: null,
             list: [],
             customerId: '',
+            indexOpt: {
+                groupOption: [],
+                stageOption: [],
+                originOption: [],
+                poolGroupOption: [],
+                poolReasonOption: [],
+                tagOption: [],
+                teamMemberOption: [],
+            },
         }
     },
     computed: {
@@ -276,13 +292,15 @@ export default {
                 if (newVal) {
                     this.customerId = newVal
                     this.getList()
+                    this.init()
                 }
             },
             deep: true,
             immediate: true
         }
     },
-    mounted() { },
+    mounted() {
+    },
     methods: {
         async getList() {
             try {
@@ -295,6 +313,97 @@ export default {
                     this.list = res.rows
                 }
             } catch { }
+        },
+        init() {
+            this.getGroupList()
+            this.getStageList()
+            this.getOriginList()
+            this.getPoolList()
+            this.getPoolReasonList()
+            this.getTagList()
+            this.getMemberList()
+            this.getCommonTree()
+        },
+        // 分组选项
+        async getGroupList() {
+            try {
+                const res = await getSetPacketList()
+                if (res.code === 200) {
+                    this.indexOpt.groupOption = res.data
+                }
+            } catch {
+            }
+        },
+        // 阶段选项
+        async getStageList() {
+            try {
+                const res = await stageList()
+                if (res.code === 200) {
+                    this.indexOpt.stageOption = res.data
+                }
+            } catch (e) {
+            }
+        },
+        // 来源选项
+        async getOriginList() {
+            try {
+                const res = await getOriginList()
+                if (res.code === 200) {
+                    this.indexOpt.originOption = res.data
+                }
+            } catch {
+            }
+        },
+        // 公海分组选项
+        async getPoolList() {
+            try {
+                const res = await searchGroupsCustomer()
+                if (res.code === 200) {
+                    this.indexOpt.poolGroupOption = res.data
+                }
+            } catch {
+            }
+        },
+        // 移入公海原因
+        async getPoolReasonList() {
+            try {
+                const res = await reasonList()
+                if (res.code === 200) {
+                    this.indexOpt.poolReasonOption = res.data
+                }
+            } catch {
+
+            }
+        },
+        // 客户标签选项
+        async getTagList() {
+            try {
+                const res = await getCustomerTagList()
+                if (res.code === 200) {
+                    this.indexOpt.tagOption = res.data
+                }
+            } catch {
+            }
+        },
+        // 获取选择的成员
+        async getMemberList() {
+            try {
+                const res = await getTeamMembers()
+                if (res.code === 200) {
+                    this.indexOpt.teamMemberOption = res.data
+                }
+            } catch {
+            }
+        },
+        // 获取用户列表
+        async getCommonTree() {
+            try {
+                const res = await listDeptUsersTree()
+                if (res.code === 200) {
+                    this.indexOpt.memberOption = res.data
+                }
+            } catch {
+            }
         },
         onShowLabel(bool) {
             this.showHeader = bool
