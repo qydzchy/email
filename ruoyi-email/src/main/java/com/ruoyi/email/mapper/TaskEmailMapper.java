@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmail;
+import com.ruoyi.email.domain.bo.DealingEmailListBO;
+import com.ruoyi.email.domain.vo.DealingEmailListVO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.domain.vo.MenuInboxTaskCountVO;
 import org.apache.ibatis.annotations.Param;
@@ -253,4 +255,11 @@ public interface TaskEmailMapper
      * @return
      */
     int countCustomerContactByFromer(@Param("seaType") Integer seaType, @Param("fromer") String fromer, @Param("packetId") Long packetId);
+
+    /**
+     * 客户往来邮件列表
+     * @param contactEmails
+     * @return
+     */
+    List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails);
 }

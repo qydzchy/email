@@ -35,6 +35,7 @@ import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.OtherConfigMapper;
+import com.ruoyi.email.mapper.TaskEmailLabelMapper;
 import com.ruoyi.email.mapper.TransceiverRuleMapper;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.UniversalMail;
@@ -86,6 +87,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private EmailColumnContext emailColumnContext;
     @Resource
     private TransceiverRuleMapper transceiverRuleMapper;
+    @Resource
+    private TaskEmailLabelMapper taskEmailLabelMapper;
 
     @Lazy
     @Resource
@@ -285,11 +288,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         TaskEmail taskEmail = new TaskEmail();
         BeanUtils.copyProperties(dto, taskEmail);
-        taskEmail.setPendingTime(getPendingTime(dto.getPendingTime(), userId));
+        Date pendingTime = getPendingTime(dto.getPendingTime(), userId);
+        taskEmail.setPendingTime(pendingTime);
         taskEmail.setUid(IdUtils.fastSimpleUUID());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
         taskEmail.setFolder("INBOX");
-        taskEmail.setSendDate(now);
+        taskEmail.setSendDate(pendingTime);
         taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
         taskEmail.setInReplyTo(inReplyTo);
         taskEmail.setReference(reference);
@@ -363,6 +367,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 break;
         }
 
+        sendTime = calendar.getTime();
         return sendTime;
     }
 
@@ -391,6 +396,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setReceiver(receiver);
         taskEmail.setTitle("Re: " + title);
         taskEmail.setSendDate(new Date());
+        taskEmail.setFolder("INBOX");
+        taskEmail.setFolderId(-1L);
         taskEmail.setType(EmailTypeEnum.SEND.getType());
         taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
         taskEmail.setCreateId(userId);
@@ -667,12 +674,31 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
             isSuccess = true;
 
-            // 查询收发件规则
-            List<TransceiverRuleVO> transceiverRuleList= transceiverRuleMapper.list(task.getCreateId());
+            // 查询收发件规则 todo 待调试
+            /*List<TransceiverRuleVO> transceiverRuleList= transceiverRuleMapper.list(task.getCreateId());
             transceiverRuleList = transceiverRuleList.stream().filter(transceiverRule -> transceiverRule.getRuleType().intValue() == RuleTypeEnum.PULL.getType()).filter(transceiverRule -> transceiverRule.getStatus().intValue() == 2).collect(Collectors.toList());
             // 发件规则处理
             EmailSimpleBO emailSimpleBO = getEmailSimpleBO(taskEmail, content);
-            transceiverRuleHandler(taskId, emailSimpleBO, transceiverRuleList);
+            TransceiverRuleBO transceiverRuleBO = transceiverRuleHandler(taskId, emailSimpleBO, transceiverRuleList);
+
+            taskEmail.setFixedFlag(transceiverRuleBO.getFixedFlag());
+            taskEmail.setFolderId(transceiverRuleBO.getFolderId());
+            taskEmail.setPendingFlag(transceiverRuleBO.getPendingFlag());
+            taskEmail.setPendingTime(transceiverRuleBO.getPendingTime());
+            taskEmail.setDelFlag(transceiverRuleBO.getDelFlag());*/
+            taskEmailMapper.updateTaskEmail(taskEmail);
+
+            // 保存邮件标签
+            /*if (transceiverRuleBO.getLabelId() != null) {
+                TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
+                taskEmailLabel.setEmailId(taskEmail.getId());
+                taskEmailLabel.setLabelId(transceiverRuleBO.getLabelId());
+                taskEmailLabel.setCreateTime(DateUtils.getNowDate());
+                taskEmailLabelMapper.insertTaskEmailLabel(taskEmailLabel);
+            }*/
+
+            // 转发
+          //  forwardTo(task, transceiverRuleBO.getForwardTo(), title, content);
 
         } catch (MessagingException e) {
             log.error("messagingException e:{}", e);
@@ -686,6 +712,80 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         updateStatusById(status, messageId, id);
 
         return true;
+    }
+
+    /**
+     * 转发到
+     * @param task
+     * @param forwardTo
+     * @param title
+     * @param content
+     */
+    @Override
+    public void forwardTo(Task task, String forwardTo, String title, String content) {
+        if (StringUtils.isBlank(forwardTo)) return;
+
+        JSONArray jsonA = new JSONArray();
+        JSONObject jsonO = new JSONObject();
+        jsonO.put("name", forwardTo);
+        jsonO.put("email", forwardTo);
+        jsonA.add(jsonO);
+
+        String receiver = JSONObject.toJSONString(jsonA);
+        TaskEmail taskEmail = new TaskEmail();
+        taskEmail.setUid(IdUtils.fastSimpleUUID());
+        taskEmail.setTaskId(task.getId());
+        taskEmail.setFromer(task.getAccount());
+        taskEmail.setReceiver(receiver);
+        taskEmail.setTitle(title);
+        taskEmail.setSendDate(new Date());
+        taskEmail.setType(EmailTypeEnum.SEND.getType());
+        taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmailMapper.insertTaskEmail(taskEmail);
+
+        TaskEmailContent taskEmailContent = new TaskEmailContent();
+        taskEmailContent.setEmailId(task.getId());
+        taskEmailContent.setContent(content);
+        taskEmailContentService.insertTaskEmailContent(taskEmailContent);
+    }
+
+    /**
+     * 客户往来邮件列表
+     * @param customerId
+     * @return
+     */
+    @Override
+    public List<DealingEmailListVO> dealingEmailList(Long customerId) {
+        List<String> contactEmails = taskEmailMapper.getContactEmailList(customerId);
+        if (contactEmails == null || contactEmails.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 客户往来邮件列表
+        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails);
+        Map<Long, List<DealingEmailListBO>> emailIdListMap = dealingEmailBOList.stream()
+                .collect(Collectors.groupingBy(DealingEmailListBO::getId, LinkedHashMap::new, Collectors.toList()));
+
+        List<DealingEmailListVO> dealingEmailVOList = new ArrayList<>();
+        emailIdListMap.forEach((emailId, list) -> {
+            DealingEmailListVO dealingEmailVO = new DealingEmailListVO();
+            dealingEmailVO.setId(emailId);
+            dealingEmailVO.setType(list.get(0).getType());
+            dealingEmailVO.setSendDate(list.get(0).getSendDate());
+            dealingEmailVO.setTitle(list.get(0).getTitle());
+            dealingEmailVO.setContent(list.get(0).getContent());
+
+            List<LabelListVO> labelVOList = new ArrayList<>();
+            for (DealingEmailListBO dealingEmailListBO : list) {
+                if (dealingEmailListBO.getId() == null) break;
+                labelVOList.add(LabelListVO.builder().id(dealingEmailListBO.getLabelId()).name(dealingEmailListBO.getLabelName()).color(dealingEmailListBO.getLabelColor()).type(dealingEmailListBO.getLabelType()).build());
+            }
+            dealingEmailVO.setLabelList(labelVOList);
+
+            dealingEmailVOList.add(dealingEmailVO);
+        });
+
+        return dealingEmailVOList;
     }
 
     private EmailSimpleBO getEmailSimpleBO(TaskEmail taskEmail, String content) {
@@ -843,6 +943,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 // 自动回复
                 if (Optional.ofNullable(transceiverRuleVO.getAutoResponseFlag()).orElse(false)) {
                     autoResponse = transceiverRuleVO.getAutoResponse();
+                }
+
+                // 判断其他发件规则: 1.继续执行 2.不再执行
+                Integer otherSendingRules = transceiverRuleVO.getOtherSendingRules();
+                if (otherSendingRules != null && otherSendingRules.intValue() == 2) {
+                    break;
                 }
             }
         }

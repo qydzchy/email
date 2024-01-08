@@ -312,7 +312,7 @@
     <select id="getContactEmailList" resultType="java.lang.String">
         select ccc.email from customer_customer cc
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
-        where cc.customer_id = #{customerId} and cc.del_flag = '0' and ccc.del_flag = '0'
+        where cc.id = #{customerId} and cc.del_flag = '0' and ccc.del_flag = '0'
     </select>
 
     <select id="correspondenceEmailList" resultType="com.ruoyi.email.domain.vo.EmailListVO">
@@ -356,7 +356,7 @@
     </select>
 
     <select id="countRepliedWithinFourDays" resultType="java.lang.Integer">
-        select count(te.id) from mailbox_task mt
+        select count(mte.id) from mailbox_task mt
         left join mailbox_task_email mte on mt.id = mte.task_id
         where mt.del_flag = '0' and mte.del_flag = '0'
         and mt.account = #{fromer}
@@ -369,8 +369,8 @@
 
     <select id="selectSendTaskEmailList" resultMap="TaskEmailResult">
         <include refid="selectTaskEmailVo"/>
-        WHERE task_id = #{taskId}
-        AND status = 2
+        WHERE task_id = #{taskId} and type = 2
+        AND status = 1
         AND del_flag = '0'
         AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
     </select>
@@ -382,6 +382,36 @@
         <if test="packetId == null">
             and cc.packet_id = #{packetId}
         </if>
+    </select>
+
+    <select id="dealingEmailList" resultType="com.ruoyi.email.domain.bo.DealingEmailListBO">
+        SELECT mte.id, mte.type, mte.send_date as sendDate, mte.title, mtec.content, ml.id as labelId, ml.name as labelName, ml.color as labelColor, ml.type as labelType
+        FROM mailbox_task mt
+        LEFT JOIN mailbox_task_email mte ON mt.id = mte.task_id
+        LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        LEFT JOIN mailbox_task_email_label mtel ON mte.id = mtel.email_id
+        LEFT JOIN mailbox_label ml ON mtel.label_id = ml.id
+        WHERE mt.del_flag = '0'
+        AND mte.del_flag = '0'
+        <!-- 使用动态SQL构建条件 -->
+        <if test="contactEmails != null and contactEmails.size() > 0">
+            AND mt.account IN
+            <foreach item="email" collection="contactEmails" open="(" separator="," close=")">
+                #{email}
+            </foreach>
+        </if>
+        AND mte.uid LIKE 'autoResponse_%'
+        <if test="contactEmails != null and contactEmails.size() > 0">
+            AND (
+            <!-- 使用迭代遍历emailList中的值 -->
+            <foreach item="email" collection="contactEmails" separator=" OR ">
+                mte.receiver LIKE concat( '%"email":"', #{email}, '"%' )
+                OR mte.bcc LIKE concat( '%"email":"', #{email}, '"%' )
+                OR mte.cc LIKE concat( '%"email":"', #{email}, '"%' )
+            </foreach>
+            )
+        </if>
+        order by mte.send_date desc
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">

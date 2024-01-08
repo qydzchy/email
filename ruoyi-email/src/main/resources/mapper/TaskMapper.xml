@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTaskVo">
-        select id, account, password, alias, conn_status, conn_exception_reason, protocol_type, receiving_server, receiving_port, receiving_ssl_flag, outgoing_server, outgoing_port, outgoing_ssl_flag, custom_proxy_flag, proxy_server_type, proxy_server, proxy_port, proxy_username, proxy_password, synchronize_folder_flag, del_flag, create_by, create_time, update_by, update_time from mailbox_task
+        select id, account, password, alias, conn_status, conn_exception_reason, protocol_type, receiving_server, receiving_port, receiving_ssl_flag, outgoing_server, outgoing_port, outgoing_ssl_flag, custom_proxy_flag, proxy_server_type, proxy_server, proxy_port, proxy_username, proxy_password, synchronize_folder_flag, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from mailbox_task
     </sql>
 
     <select id="selectTaskList" parameterType="Task" resultMap="TaskResult">

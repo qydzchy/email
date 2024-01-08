@@ -263,6 +263,21 @@ public class EmailCustomerController extends BaseController {
 
 
     /**
+     * 客户往来邮件列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:customer:dealing:email:list')")
+    @GetMapping(value = "/dealing/email/list")
+    public AjaxResult dealingEmailList(Long customerId)
+    {
+        if (customerId == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
+
+        return success(taskEmailService.dealingEmailList(customerId));
+    }
+
+
+    /**
      * 参数校验
      * @param customerFollowUpRecords
      */

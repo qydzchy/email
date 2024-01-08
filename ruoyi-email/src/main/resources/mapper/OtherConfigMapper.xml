@@ -50,7 +50,7 @@
 
     <select id="getByCreateId" resultType="com.ruoyi.email.domain.vo.OtherConfigVO">
         select id, delayed_mail_delivery as delayedMailDelivery, sending_interval as sendingInterval, local_real_time_time as localRealTimeTime, email_reminders_flag as emailRemindersFlag, email_translation_function_flag as emailTranslationFunctionFlag, pending_close as pendingClose, automation_pending as automationPending, abnormal_mailbox_detection as abnormalMailboxDetection from mailbox_other_config
-        where create_id = #{createId} and del_flag = '0'
+        where create_id = #{createId} and del_flag = '0' order by id asc limit 1
     </select>
 
     <insert id="insertOtherConfig" parameterType="OtherConfig" useGeneratedKeys="true" keyProperty="id">

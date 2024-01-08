@@ -5,8 +5,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
@@ -16,7 +14,6 @@ import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.ruoyi.email.domain.bo.EmailSimpleBO;
@@ -324,7 +321,7 @@ public class TaskServiceImpl implements ITaskService
             // 查询存在的uid
             List<String> existUidList = taskEmailService.getUidsByTaskId(task.getId());
 
-            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, emailOperateParamBO, existUidList);
+            List<MailItem> mailItems = mailContext.listAll(protocolTypeEnum, mailConn, existUidList);
             if (mailItems == null || mailItems.size() == 0) {
                 return null;
             }
@@ -333,17 +330,17 @@ public class TaskServiceImpl implements ITaskService
                 try {
                     String newEmailPath = emailPath.concat("/").concat(task.getAccount());
                     String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());
-                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, emailOperateParamBO, newEmailPath, newAttachmentPath);
+                    UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
                     if (universalMail.getSendDate() != null) {
                         saveEmailData(task.getId(), universalMail, emailOperateParamBO.getTransceiverRuleList());
                     }
 
-                    // 查询是否在4天内已经回复过邮件
-                    if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) {
-                        // 外出自动回复处理
-                        autoResponseHandler(task, universalMail, emailOperateParamBO);
-                    }
+                    // 查询是否在4天内已经回复过邮件 todo 需调试
+                    // if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) continue;
+
+                    // 外出自动回复处理
+                    // autoResponseHandler(task, universalMail, emailOperateParamBO);
 
                 } catch (MailPlusException e) {
                     log.error("{}", e);
@@ -377,21 +374,19 @@ public class TaskServiceImpl implements ITaskService
      */
     private void autoResponseHandler(Task task, UniversalMail universalMail, EmailOperateParamBO emailOperateParamBO) {
         // 查询外出自动回复
-        Integer autoResponseFlag = emailOperateParamBO.getAutoResponseFlag();
-        if (autoResponseFlag.intValue() == 1) {
+        Boolean autoResponseFlag = emailOperateParamBO.getAutoResponseFlag();
+        if (Optional.ofNullable(autoResponseFlag).orElse(false)) {
             Date now = DateUtils.getNowDate();
             Date startTime = emailOperateParamBO.getStartTime();
             if (now.compareTo(startTime) < 0) return;
 
-            if (emailOperateParamBO.getLastDayFlag() != null && emailOperateParamBO.getLastDayFlag().intValue() == 1
-                    && emailOperateParamBO.getLastDay() != null) {
+            if (Optional.ofNullable(emailOperateParamBO.getLastDayFlag()).orElse(false) && emailOperateParamBO.getLastDay() != null) {
                 Date lastDay = emailOperateParamBO.getLastDay();
                 if (now.compareTo(lastDay) > 0) return;
             }
 
             if (StringUtils.isBlank(emailOperateParamBO.getReContent())) return;
 
-            // 查询在4天之内已经对该邮箱自动回复过了
             taskEmailService.autoResponse(task, universalMail, emailOperateParamBO.getReContent());
         }
     }
@@ -414,11 +409,11 @@ public class TaskServiceImpl implements ITaskService
             transceiverRuleList = transceiverRuleList.stream().filter(transceiverRule -> transceiverRule.getRuleType().intValue() == RuleTypeEnum.PULL.getType()).filter(transceiverRule -> transceiverRule.getStatus().intValue() == 1).collect(Collectors.toList());
 
             if (generalVO != null) {
-                BeanUtils.copyProperties(emailOperateParamBO, generalVO);
+                BeanUtils.copyProperties(generalVO, emailOperateParamBO);
             }
 
             if (otherConfigVO != null) {
-                BeanUtils.copyProperties(emailOperateParamBO, otherConfigVO);
+                BeanUtils.copyProperties(otherConfigVO, emailOperateParamBO);
             }
 
             if (transceiverRuleList != null && !transceiverRuleList.isEmpty()) {
@@ -482,9 +477,10 @@ public class TaskServiceImpl implements ITaskService
      */
     private void sendEmail(Task task) {
         List<TaskEmail> taskEmailList = taskEmailService.selectSendTaskEmailList(task.getId());
+        if (taskEmailList == null || taskEmailList.isEmpty()) return;
+
         // 获取随机休眠时间
         int randomSleepTime = getRandomSleepTime(task.getCreateId());
-
         int finalRandomSleepTime = randomSleepTime;
         taskEmailList.stream().forEach(taskEmail -> {
             if (finalRandomSleepTime > 0) {
@@ -601,14 +597,14 @@ public class TaskServiceImpl implements ITaskService
         if (task == null) return;
 
         // 转发
-        forwardTo(task, transceiverRuleBO.getForwardTo(), universalMail);
+        taskEmailService.forwardTo(task, transceiverRuleBO.getForwardTo(), universalMail.getTitle(), universalMail.getContent());
 
         if (StringUtils.isBlank(transceiverRuleBO.getAutoResponse())) return;
 
         // 查询是否在4天内已经回复过邮件
-        if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) {
-            taskEmailService.autoResponse(task, universalMail, transceiverRuleBO.getAutoResponse());
-        }
+        if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) return;
+
+        taskEmailService.autoResponse(task, universalMail, transceiverRuleBO.getAutoResponse());
     }
 
     /**
@@ -625,39 +621,6 @@ public class TaskServiceImpl implements ITaskService
         emailSimpleBO.setBody(universalMail.getContent());
         emailSimpleBO.setSendDate(universalMail.getSendDate());
         return emailSimpleBO;
-    }
-
-    /**
-     * 转发到
-     * @param task
-     * @param forwardTo
-     * @param universalMail
-     */
-    private void forwardTo(Task task, String forwardTo, UniversalMail universalMail) {
-        if (StringUtils.isBlank(forwardTo)) return;
-
-        JSONArray jsonA = new JSONArray();
-        JSONObject jsonO = new JSONObject();
-        jsonO.put("name", forwardTo);
-        jsonO.put("email", forwardTo);
-        jsonA.add(jsonO);
-
-        String receiver = JSONObject.toJSONString(jsonA);
-        TaskEmail taskEmail = new TaskEmail();
-        taskEmail.setUid(IdUtils.fastSimpleUUID());
-        taskEmail.setTaskId(task.getId());
-        taskEmail.setFromer(task.getAccount());
-        taskEmail.setReceiver(receiver);
-        taskEmail.setTitle(universalMail.getTitle());
-        taskEmail.setSendDate(new Date());
-        taskEmail.setType(EmailTypeEnum.SEND.getType());
-        taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
-        taskEmailMapper.insertTaskEmail(taskEmail);
-
-        TaskEmailContent taskEmailContent = new TaskEmailContent();
-        taskEmailContent.setEmailId(task.getId());
-        taskEmailContent.setContent(universalMail.getContent());
-        taskEmailContentService.insertTaskEmailContent(taskEmailContent);
     }
 
     @Override

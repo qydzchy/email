@@ -10,6 +10,7 @@ import com.ruoyi.email.domain.bo.EmailSimpleBO;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
+import com.ruoyi.email.domain.vo.DealingEmailListVO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.domain.vo.MenuCountVO;
 import com.ruoyi.email.domain.vo.TransceiverRuleVO;
@@ -253,4 +254,16 @@ public interface ITaskEmailService
      * 收发件规则处理
      */
     TransceiverRuleBO transceiverRuleHandler(Long taskId, EmailSimpleBO emailSimpleBO, List<TransceiverRuleVO> transceiverRuleList);
+
+    /**
+     * 转发到
+     */
+    void forwardTo(Task task, String forwardTo, String title, String content);
+
+    /**
+     * 客户往来邮件列表
+     * @param customerId
+     * @return
+     */
+    List<DealingEmailListVO> dealingEmailList(Long customerId);
 }

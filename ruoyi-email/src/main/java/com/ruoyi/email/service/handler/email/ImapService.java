@@ -3,7 +3,6 @@ package com.ruoyi.email.service.handler.email;
 import com.ruoyi.common.enums.ProxyTypeEnum;
 import com.ruoyi.common.enums.email.ProtocolTypeEnum;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
-import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.imap.IMAPStore;
@@ -21,12 +20,12 @@ public class ImapService implements IMailService {
     public ImapService() {
     }
 
-    public UniversalMail parseEmail(MailItem mailItem, EmailOperateParamBO emailOperateParamBO, String localSavePath, String attachmentPath) throws MailPlusException {
+    public UniversalMail parseEmail(MailItem mailItem, String localSavePath, String attachmentPath) throws MailPlusException {
         return MailItemParser.parseMail(mailItem, localSavePath, attachmentPath);
     }
 
-    public List<MailItem> listAll(MailConn mailConn, EmailOperateParamBO emailOperateParamBO, List<String> existUidList) throws MailPlusException {
-        int numEmailsToFetch = emailOperateParamBO.getMaxPerPage();
+    public List<MailItem> listAll(MailConn mailConn, List<String> existUidList) throws MailPlusException {
+        int numEmailsToFetch = 100;
         IMAPStore imapStore = mailConn.getImapStore();
         List<MailItem> mList = Collections.synchronizedList(new ArrayList<>());
 

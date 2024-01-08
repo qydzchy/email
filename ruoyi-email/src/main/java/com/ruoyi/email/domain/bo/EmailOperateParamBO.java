@@ -13,20 +13,15 @@ import java.util.List;
 @Data
 public class EmailOperateParamBO {
 
-    /**
-     * 每页显示邮件数量
-     */
-    private Integer maxPerPage;
-
     /** 自动回复: 0.停用 1.启用(同一邮箱给你发送多封邮件时,4天内最多对该邮箱自动回复一次) */
-    private Integer autoResponseFlag;
+    private Boolean autoResponseFlag;
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     /** 最后一天标识 1.勾选 0未选 */
-    private Integer lastDayFlag;
+    private Boolean lastDayFlag;
 
     /** 最后一天 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -54,8 +49,4 @@ public class EmailOperateParamBO {
      * 收发件规则
      */
     private List<TransceiverRuleVO> transceiverRuleList;
-
-    public Integer getMaxPerPage() {
-        return this.maxPerPage != null ? this.maxPerPage : 100;
-    }
 }
