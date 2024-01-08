@@ -1,6 +1,7 @@
 package com.ruoyi.email.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ruoyi.email.domain.bo.EmailAttachmentBO;
 import lombok.Data;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,6 +39,12 @@ public class DealingEmailListVO {
      * @return
      */
     private List<LabelListVO> labelList;
+
+    /**
+     * 附件
+     */
+    private List<EmailAttachmentBO> emailAttachmentList;
+
     public String getExtractTextFromContent() {
         if (this.content == null) return "";
 

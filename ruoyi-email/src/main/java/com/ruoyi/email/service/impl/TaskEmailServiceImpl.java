@@ -755,7 +755,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public List<DealingEmailListVO> dealingEmailList(Long customerId) {
+    public List<DealingEmailListVO> dealingEmailList(Long customerId, Boolean attachmentFlag) {
         List<String> contactEmails = taskEmailMapper.getContactEmailList(customerId);
         if (contactEmails == null || contactEmails.isEmpty()) {
             return Collections.emptyList();
@@ -763,12 +763,26 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         // 客户往来邮件列表
         List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails);
+
+        List<Long> ids = dealingEmailBOList.stream().map(dealingEmailBO -> dealingEmailBO.getId()).collect(Collectors.toList());
+        // 查询邮件附件信息
+        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+        if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+
         Map<Long, List<DealingEmailListBO>> emailIdListMap = dealingEmailBOList.stream()
                 .collect(Collectors.groupingBy(DealingEmailListBO::getId, LinkedHashMap::new, Collectors.toList()));
-
         List<DealingEmailListVO> dealingEmailVOList = new ArrayList<>();
-        emailIdListMap.forEach((emailId, list) -> {
+
+        for (Long emailId : emailIdListMap.keySet()) {
+            List<DealingEmailListBO> list = emailIdListMap.get(emailId);
             DealingEmailListVO dealingEmailVO = new DealingEmailListVO();
+            List<EmailAttachmentBO> emailAttachmentList = attachmentGroupMap.get(emailId);
+            emailAttachmentList = emailAttachmentList == null ? Collections.emptyList() : emailAttachmentList;
+            if (Optional.ofNullable(attachmentFlag).orElse(false) && emailAttachmentList.isEmpty()) {
+                continue;
+            }
+
             dealingEmailVO.setId(emailId);
             dealingEmailVO.setType(list.get(0).getType());
             dealingEmailVO.setSendDate(list.get(0).getSendDate());
@@ -781,11 +795,50 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 labelVOList.add(LabelListVO.builder().id(dealingEmailListBO.getLabelId()).name(dealingEmailListBO.getLabelName()).color(dealingEmailListBO.getLabelColor()).type(dealingEmailListBO.getLabelType()).build());
             }
             dealingEmailVO.setLabelList(labelVOList);
+            dealingEmailVO.setEmailAttachmentList(emailAttachmentList);
 
             dealingEmailVOList.add(dealingEmailVO);
-        });
+        }
 
         return dealingEmailVOList;
+    }
+
+    /**
+     * 邮件详情
+     * @param id
+     * @return
+     */
+    @Override
+    public EmailDetailVO detail(Long id) {
+        EmailDetailVO emailDetailVO = taskEmailMapper.detail(id);
+
+        List<Long> ids = Arrays.asList(emailDetailVO.getId());
+        // 查询邮件附件信息
+        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+        if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+
+        // 查询邮件标签信息
+        List<EmailLabelBO> emailLabelBOList = labelService.listByEmailIds(ids);
+        if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
+        Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
+
+
+        if (attachmentGroupMap.containsKey(id)) {
+            List<EmailAttachmentBO> emailAttachmentGroupList = attachmentGroupMap.get(id);
+            emailDetailVO.setEmailAttachmentList(emailAttachmentGroupList);
+        } else {
+            emailDetailVO.setEmailAttachmentList(Collections.emptyList());
+        }
+
+        if (labelGroupMap.containsKey(id)) {
+            List<EmailLabelBO> emailLabelGroupList = labelGroupMap.get(id);
+            emailDetailVO.setEmailLabelList(emailLabelGroupList);
+        } else {
+            emailDetailVO.setEmailLabelList(Collections.emptyList());
+        }
+
+        return emailDetailVO;
     }
 
     private EmailSimpleBO getEmailSimpleBO(TaskEmail taskEmail, String content) {

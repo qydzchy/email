@@ -88,6 +88,17 @@ public class EmailController extends BaseController {
     }
 
     /**
+     * 邮件详情
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:detail')")
+    @Log(title = "邮件详情", businessType = BusinessType.OTHER)
+    @GetMapping("/detail")
+    public AjaxResult detail(Long id) {
+        return AjaxResult.success(taskEmailService.detail(id));
+    }
+
+    /**
      * 邮件保存-（写信）
      */
     @PreAuthorize("@ss.hasPermi('email:save')")

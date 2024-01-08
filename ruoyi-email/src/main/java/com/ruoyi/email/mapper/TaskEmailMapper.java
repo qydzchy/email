@@ -7,6 +7,7 @@ import java.util.Map;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.bo.DealingEmailListBO;
 import com.ruoyi.email.domain.vo.DealingEmailListVO;
+import com.ruoyi.email.domain.vo.EmailDetailVO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.domain.vo.MenuInboxTaskCountVO;
 import org.apache.ibatis.annotations.Param;
@@ -262,4 +263,11 @@ public interface TaskEmailMapper
      * @return
      */
     List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails);
+
+    /**
+     * 邮件详情
+     * @param id
+     * @return
+     */
+    EmailDetailVO detail(@Param("id") Long id);
 }

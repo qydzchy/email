@@ -10,10 +10,7 @@ import com.ruoyi.email.domain.bo.EmailSimpleBO;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
-import com.ruoyi.email.domain.vo.DealingEmailListVO;
-import com.ruoyi.email.domain.vo.EmailListVO;
-import com.ruoyi.email.domain.vo.MenuCountVO;
-import com.ruoyi.email.domain.vo.TransceiverRuleVO;
+import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.service.handler.email.UniversalMail;
 import org.springframework.data.util.Pair;
 
@@ -263,7 +260,15 @@ public interface ITaskEmailService
     /**
      * 客户往来邮件列表
      * @param customerId
+     * @param attachmentFlag
      * @return
      */
-    List<DealingEmailListVO> dealingEmailList(Long customerId);
+    List<DealingEmailListVO> dealingEmailList(Long customerId, Boolean attachmentFlag);
+
+    /**
+     * 邮件详情
+     * @param id
+     * @return
+     */
+    EmailDetailVO detail(Long id);
 }

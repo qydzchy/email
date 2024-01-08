@@ -267,13 +267,13 @@ public class EmailCustomerController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('email:customer:dealing:email:list')")
     @GetMapping(value = "/dealing/email/list")
-    public AjaxResult dealingEmailList(Long customerId)
+    public AjaxResult dealingEmailList(Long customerId, Boolean attachmentFlag)
     {
         if (customerId == null) {
             throw new ServiceException("客户ID不能为空");
         }
 
-        return success(taskEmailService.dealingEmailList(customerId));
+        return success(taskEmailService.dealingEmailList(customerId, attachmentFlag));
     }
 
 
