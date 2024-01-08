@@ -390,7 +390,6 @@ export default {
       taskId: null,
       attachmentIds: [],
       editor: null,
-      toolbarConfig: {},
       defaultContent: [
         {
           type: 'paragraph',
@@ -421,7 +420,13 @@ export default {
       pendingFlag: false,
       delayedTxShow: false,
       defaultOption: {},
-      signatureOption: []
+      signatureOption: [],
+      toolbarConfig: {
+        excludeKeys: [
+          'group-video',
+          'group-image'
+        ]
+      },
     };
   },
   props: {
@@ -442,7 +447,6 @@ export default {
   watch: {
     'formData.signatureId': {
       handler(newVal) {
-        console.log(newVal);
         if (this.editor) {
           let content = this.signatureOption.find(val => val.id === newVal)?.content || ''
           this.formData.content = '\n\n' + content
@@ -511,7 +515,7 @@ export default {
     onCreated(editor) {
       this.editor = Object.seal(editor);
       this.editor.getConfig().MENU_CONF['fontSize'] = {
-        fontSizeList: fontSizeList
+        fontSizeList: fontSizeList,
       }
       setTimeout(() => {
         this.editor.dangerouslyInsertHtml(this?.htmlText);
