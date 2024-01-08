@@ -9,8 +9,8 @@
                         <div class="header-wrapper" style="">
                             <div class="mail-list-header-tool-wrapper">
                                 <div class="mm-tabs mm-tabs__top mm-tabs__align-left mail-list-toggle-tab header-tab">
-                                    <div class="mm-tabs-header mm-tabs-header__top"><!---->
-                                        <div class="mm-tabs-nav-wrap mm-tabs-nav-wrap__top"><!---->
+                                    <div class="mm-tabs-header mm-tabs-header__top">
+                                        <div class="mm-tabs-nav-wrap mm-tabs-nav-wrap__top">
                                             <div class="mm-tabs-nav-scroll">
                                                 <div class="mm-tabs-nav" role="tablist" style="transform: translateX(0px);">
                                                     <div class="mm-tabs-active-bar__top mm-tabs-active-bar"
@@ -20,7 +20,7 @@
                                                         aria-selected="true" tabindex="0" refinfor="true"><span
                                                             class="mm-tooltip"><span class="mm-tooltip-trigger">全部<span
                                                                     class="mail-tab-unread">({{ list.length
-                                                                    }})</span></span><!----></span><!---->
+                                                                    }})</span></span></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -38,10 +38,10 @@
                                         <div id="pane-0" aria-hidden="true" aria-labelledby="tab-0" class="mm-tab-pane"
                                             role="tabpanel" style="display: none;"></div>
                                     </div>
-                                </div><!----><!----><!---->
+                                </div>
                             </div>
                         </div>
-                        <div class="mail-list-scroller"><!---->
+                        <div class="mail-list-scroller">
                             <div v-if="list && list.length" class="mail-list-scroll-container">
                                 <ul class="grouped-list-container bordered mail-grouped-list">
                                     <li v-for="data in list" :key="Object.keys(data)[0]" class="grouped-list-item">
@@ -54,7 +54,7 @@
                                         <ul class="plain-list-container bordered">
                                             <li class="plain-list-item" v-for="email in data[Object.keys(data)[0]]"
                                                 :class="{ 'active': email.id === activeEmailId }" :key="email.id"
-                                                @click="onShowLabel">
+                                                @click="onShowLabel(false)">
                                                 <div class="right-click-menu-handler">
                                                     <div class="mail-item-container mail-list-item-wrapper" draggable="true"
                                                         mail-info-icon-map="[object Object]">
@@ -68,7 +68,7 @@
                                                                 <div @click.stop><label
                                                                         class="mm-checkbox mail-list-item-checkbox pr-0"><input
                                                                             true-value="true" type="checkbox"><span
-                                                                            class="mm-checkbox-input"></span><!----></label>
+                                                                            class="mm-checkbox-input"></span></label>
                                                                 </div>
                                                                 <div>
                                                                     <div class="flex-shrink-0 flex items-center h-24px">
@@ -82,80 +82,41 @@
                                                                             class="email-addr-box"><span
                                                                                 class="mm-tooltip all-type-avatar-wrapper client-self small mail-tag-avatar"><span
                                                                                     class="mm-tooltip-trigger"><i
-                                                                                        class="m-icon avatar-icon icon-new-customer-avatar"></i></span><!----></span><i
+                                                                                        class="m-icon avatar-icon icon-new-customer-avatar"></i></span></span><i
                                                                                 class="m-icon contact-icon icon-mail-sent"
-                                                                                data-tips="发件"></i><!----><span
+                                                                                data-tips="发件"></i><span
                                                                                 :title="email.title"
                                                                                 class="email-nickname ellipsis customer-mail-name">
-                                                                                {{ email.title }}</span><!----></span>
+                                                                                {{ email.title }}</span></span>
                                                                         <div
                                                                             class="flex flex-nowrap flex-shrink-0 justify-end align-center mail-info-icons">
                                                                             <span class="mail-info-icon-item"><i
                                                                                     class="m-icon icon-checked-circle-line"
                                                                                     data-tips="发送成功"
-                                                                                    style="color: rgb(40, 183, 121);"></i><!----></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="addr-info-operations-wrapper"
-                                                                    style="display: none;">
-                                                                    <div class="addr-info-container open">
-                                                                        <div class="mail-list-item-addr-contact-info open">
-                                                                            <span class="email-addr-box"><span
-                                                                                    class="mm-tooltip all-type-avatar-wrapper client-self small mail-tag-avatar"><span
-                                                                                        class="mm-tooltip-trigger"><i
-                                                                                            class="m-icon avatar-icon icon-new-customer-avatar"></i></span><!----></span><i
-                                                                                    class="m-icon contact-icon icon-mail-sent"
-                                                                                    data-tips="发件"></i><!----><span
-                                                                                    title="Nick TV"
-                                                                                    class="email-nickname ellipsis customer-mail-name">Nick
-                                                                                    TV</span><!----></span>
-                                                                            <div
-                                                                                class="flex flex-nowrap flex-shrink-0 justify-end align-center mail-info-icons">
-                                                                                <span class="mail-info-icon-item"><i
-                                                                                        class="m-icon icon-checked-circle-line"
-                                                                                        data-tips="发送成功"
-                                                                                        style="color: rgb(40, 183, 121);"></i><!----></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="right-operations-container open">
-                                                                        <div class="mail-list-item-list-right open"><span
-                                                                                class="time ellipsis">12-27
-                                                                                22:20</span><!----><!---->
-                                                                            <div class="mail-pin-wrapper"><!----><span
-                                                                                    class="okki-icon-wrap mail-pin-icon">&ZeroWidthSpace;<svg
-                                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                                        width="18" height="18"
-                                                                                        viewBox="0 0 25 25"
-                                                                                        aria-hidden="true"
-                                                                                        class="okki-svg-icon"
-                                                                                        fill="currentColor">
-                                                                                        <path fill-rule="evenodd"
-                                                                                            clip-rule="evenodd"
-                                                                                            d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z">
-                                                                                        </path>
-                                                                                    </svg></span></div>
+                                                                                    style="color: rgb(40, 183, 121);"></i></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="mail-list-item-overview-content">
-                                                                    <div class="con-wrap"><!----><span
-                                                                            class="subject-summary-wrap"><span title="re"
-                                                                                class="subject ellipsis">re</span><span
-                                                                                class="summary summary-content ellipsis"><span
-                                                                                    class="concat-line">&nbsp;-&nbsp;</span><span
-                                                                                    :title="email.extractTextFromContent"
-                                                                                    class="ellipsis">{{
-                                                                                        email.extractTextFromContent
-                                                                                    }}</span></span></span>
+                                                                    <div class="con-wrap">
+                                                                        <span class="subject-summary-wrap">
+                                                                            <span class="summary summary-content ellipsis">
+                                                                                <span class="concat-line">
+                                                                                    &nbsp;-&nbsp;
+                                                                                </span>
+                                                                                <span :title="email.extractTextFromContent"
+                                                                                    class="ellipsis">
+                                                                                    {{ email.extractTextFromContent }}
+                                                                                </span>
+                                                                            </span>
+                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                                 <div></div>
                                                                 <div class="right-operations-container">
                                                                     <div class="mail-list-item-list-right"><span
                                                                             class="time ellipsis">{{ email.sendTime
-                                                                            }}</span><!---->
+                                                                            }}</span>
                                                                         <div class="pending">
                                                                             <div class="mm-popover">
                                                                                 <div><span
@@ -173,10 +134,10 @@
                                                                                                 clip-rule="evenodd"
                                                                                                 d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z">
                                                                                             </path>
-                                                                                        </svg></span></div><!---->
+                                                                                        </svg></span></div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="mail-pin-wrapper"><!----><span
+                                                                        <div class="mail-pin-wrapper"><span
                                                                                 class="okki-icon-wrap mail-pin-icon">&ZeroWidthSpace;<svg
                                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                                     width="18" height="18"
@@ -259,7 +220,7 @@
                 <div class="mm-split-pane mm-split-pane__right" :style="`left:${showHeader ? '70.8455%' : '35.2041%;'}`">
                     <template v-if="!showHeader">
                         <!-- 快捷邮件 -->
-                        <FastWrite />
+                        <FastWrite @showLabel="onShowLabel" />
                         <!-- 抽屉 -->
                         <div class="mail-side-card slide-fade" :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
                             <span class="mail-position-toogle" @click="toggleRightPanel">
@@ -335,9 +296,9 @@ export default {
                 }
             } catch { }
         },
-        onShowLabel() {
-            this.showHeader = false
-            this.$emit('handlerHeader', true)
+        onShowLabel(bool) {
+            this.showHeader = bool
+            this.$emit('handlerHeader', !bool)
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {

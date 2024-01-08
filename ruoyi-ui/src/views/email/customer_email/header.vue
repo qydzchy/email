@@ -27,7 +27,7 @@
                                 </span>
                             </span>
                         </span>
-                        <!---->
+
                     </span>
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="isIconsToggled">
                         <span class="mm-tooltip-trigger">
@@ -42,7 +42,7 @@
                                 </span>
                             </span>
                         </span>
-                        <!---->
+
                     </span>
 
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
@@ -127,7 +127,7 @@
 
                 </div>
                 <div class="mail-toolbar-right">
-                    <!---->
+
                     <div class="mail-paging tool-bar-paging">
                         <span class="total-count ellipsis">共 {{ total }} 封</span>
                         <div class="quick-jumper">
@@ -169,7 +169,7 @@
                                 </svg>
                             </span>
                         </span>
-                        <!---->
+
                     </span>
                     <span class="mm-tooltip mail-toolbar-btn-item">
                         <span class="mm-tooltip-trigger">
@@ -182,12 +182,11 @@
                                 </svg>
                             </span>
                         </span>
-                        <!---->
+
                     </span>
                     <span class="mm-tooltip mail-toolbar-btn-item">
                         <span class="mm-tooltip-trigger">
-                            <a href="#" @click.prevent="$emit('switch', 'setup')" class="mail-toolbar-btn-item noright"
-                                tag="div">
+                            <a href="#" @click.prevent="onSwitchSetup" class="mail-toolbar-btn-item noright" tag="div">
                                 <span class="okki-icon-wrap setting-icon">​<svg xmlns="http://www.w3.org/2000/svg"
                                         width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
                                         fill="currentColor">
@@ -198,7 +197,7 @@
                                 </span>
                             </a>
                         </span>
-                        <!---->
+
                     </span>
                     <div :class="['show', 'main-toolbar-search-pin', 'mail-toolbar-btn-item', { 'active': fixedFlag }]"
                         @click="switchFixed">
@@ -215,7 +214,7 @@
                             </a>
                         </div>
                     </div>
-                    <!---->
+
                 </div>
 
 
@@ -228,11 +227,11 @@
                         ]" @click="readOrSpanEmails(index)" @mouseover="hoveredItem = index"
                             @mouseleave="hoveredItem = null">
                             <span class="mail-drop-menu-text ellipsis">
-                                <!---->
+
                                 <span class="">{{ item }}</span>
                             </span>
                             <span>
-                                <!---->
+
                             </span>
                         </li>
                     </ul>
@@ -246,9 +245,6 @@
                             </a> 封邮件</a>
                     </div>
                 </div>
-                <!---->
-                <!---->
-                <!---->
             </div>
         </div>
 
@@ -263,7 +259,7 @@
                         </circle>
                     </svg>
                 </div>
-                <!---->
+
             </div>
         </div>
     </div>
@@ -734,7 +730,11 @@ export default {
             } else {
                 this.emailSlideStatus[emailId].left = 0;
             }
-        }
+        },
+        // 切换到设置页
+        onSwitchSetup() {
+            this.$router.replace('/email/index?type=setting_email')
+        },
     }
 }
 </script>

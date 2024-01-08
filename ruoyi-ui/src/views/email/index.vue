@@ -795,7 +795,7 @@ export default {
       folders: [],
       labels: [],
       activeMenuItem: null,
-      currentLayout: 'email_header',
+      currentLayout: '',
       isLeftPaneVisible: true,
       selectedTaskId: null,
       currentEmailType: '',
@@ -970,7 +970,7 @@ export default {
     },
 
     switchWriteEmailPage() {
-      this.currentLayout = 'write_email';
+      this.$router.push('/email/index?type=write_email')
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
@@ -1027,16 +1027,15 @@ export default {
     },
 
     toggleType(isMailNavNormalContainerOpen) {
-      this.isMailNavNormalContainerOpen = isMailNavNormalContainerOpen;
-      if (!this.isMailNavNormalContainerOpen) {
-        this.currentLayout = 'customer_email'
-        if (this.labelTypeOptions.length > 0) {
-          this.selectedLabelTypeValue = this.labelTypeOptions[0].value;
-          this.labelTypeDataList(this.selectedLabelTypeValue);
-        }
-      } else {
-        this.allReceivedClick()
-      }
+
+      this.$router.replace(`/email/index?type=${isMailNavNormalContainerOpen ? 'default' : 'customer_email'}`)
+      // this.isMailNavNormalContainerOpen = isMailNavNormalContainerOpen;
+      // if (!this.isMailNavNormalContainerOpen) {
+      //   this.currentLayout = 'customer_email'
+
+      // } else {
+      //   this.allReceivedClick()
+      // }
     },
 
     getTaskCount(taskId) {
@@ -1099,13 +1098,42 @@ export default {
     }
   },
 
-  mounted() {
-    const { type } = this.$route.query
-    if (type === 'write_email') {
-      this.currentLayout = type
-    } else {
-      this.allReceivedClick();  // 触发事件
+  watch: {
+    "$route.query": {
+      handler(newVal) {
+        if (newVal.type) {
+          switch (newVal.type) {
+            case "write_email":
+              this.currentLayout = newVal.type
+              break;
+            case "default":
+              this.isMailNavNormalContainerOpen = true
+              this.currentLayout = 'email_header'
+              this.allReceivedClick();  // 触发事件
+              break;
+            case "customer_email":
+              this.isMailNavNormalContainerOpen = false
+              this.currentLayout = newVal.type
+              if (this.labelTypeOptions.length > 0) {
+                this.selectedLabelTypeValue = this.labelTypeOptions[0].value;
+                this.labelTypeDataList(this.selectedLabelTypeValue);
+              }
+              break;
+            case "setting_email":
+              this.currentLayout = 'setup'
+              break;
+            default:
+              this.$router.replace('/email/index?type=default')
+              break;
+          }
+        }
+      },
+      deep: true,
+      immediate: true,
     }
+  },
+
+  mounted() {
     this.refreshPullEmailList();
     this.refreshSendEmailList();
     this.refreshFolderList();
