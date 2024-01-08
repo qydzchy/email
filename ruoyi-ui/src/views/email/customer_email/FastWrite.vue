@@ -3,7 +3,7 @@
         <div class="promotion-wrapper"></div>
         <div class="mail-toolbar-wrapper open-detail">
             <div class="mail-toolbar-left">
-                <!---->
+
                 <span class="mm-tooltip mail-toolbar-btn-item" @click="toggleEmailHeader">
                     <span class="mm-tooltip-trigger">
                         <span>
@@ -19,7 +19,7 @@
                             </span>
                         </span>
                     </span>
-                    <!---->
+
                 </span>
                 <span class="mm-tooltip mail-toolbar-btn-item">
                     <span class="mm-tooltip-trigger">
@@ -41,9 +41,9 @@
                             </div>
                         </div>
                     </span>
-                    <!---->
+
                 </span>
-                <!---->
+
                 <span class="mm-tooltip mail-toolbar-btn-item" @click="deleteEmails">
                     <span class="mm-tooltip-trigger">
                         <span>
@@ -57,7 +57,7 @@
                             </span>
                         </span>
                     </span>
-                    <!---->
+
                 </span>
                 <span class="mm-tooltip mail-toolbar-btn-item" @click="handleLabel">
                     <span class="mm-tooltip-trigger">
@@ -73,7 +73,7 @@
                             </span>
                         </span>
                     </span>
-                    <!---->
+
                 </span>
                 <span class="mm-tooltip mail-toolbar-btn-item">
                     <span class="mm-tooltip-trigger">
@@ -88,7 +88,7 @@
                             </span>
                         </span>
                     </span>
-                    <!---->
+
                 </span>
                 <span class="mm-tooltip mail-toolbar-btn-item" @click="toggleDropdown">
                     <span class="mm-tooltip-trigger">
@@ -103,14 +103,14 @@
                             </span>
                         </span>
                     </span>
-                    <!---->
+
                 </span>
             </div>
             <div class="mail-toolbar-right">
-                <!---->
+
                 <div class="mail-paging tool-bar-paging">
                     <span class="total-count ellipsis" title="共 759 封">共 759 封</span>
-                    <!---->
+
                     <div class="mail-paging-btn left-btn disabled">
                         <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                 viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -130,7 +130,7 @@
                         </span>
                     </div>
                 </div>
-                <!---->
+
                 <span class="mm-tooltip mail-toolbar-btn-item">
                     <span class="mm-tooltip-trigger">
                         <a href="#" @click.prevent="$emit('switch', 'setup')" class="mail-toolbar-btn-item noright"
@@ -145,10 +145,10 @@
                             </span>
                         </a>
                     </span>
-                    <!---->
+
                 </span>
-                <!---->
-                <!---->
+
+
             </div>
             <div class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 205px;" :style="dropdownStyle">
                 <ul class="mail-drop-menu" style="height: 160px;">
@@ -158,11 +158,11 @@
                         { 'mail-drop-menu-item-active': hoveredItem === index }
                     ]" @click="moreItemClick(index)" @mouseover="hoveredItem = index" @mouseleave="hoveredItem = null">
                         <span class="mail-drop-menu-text ellipsis">
-                            <!---->
+
                             <span class="">{{ item }}</span>
                         </span>
                         <span>
-                            <!---->
+
                         </span>
                     </li>
                 </ul>
@@ -178,10 +178,10 @@
                             </circle>
                         </svg>
                     </div>
-                    <!---->
+
                 </div>
             </div>
-            <!---->
+
             <div class="mail-detail-fixed-header mail-detail-header">
                 <h1 class="mail-detail-fixed-header--title ellipsis">{{ currentEmailDetail.title }}</h1>
                 <div class="mail-detail-fixed-header--opts__left">
@@ -235,7 +235,7 @@
                                             </svg>
                                         </span>
                                     </div>
-                                    <!---->
+
                                 </div>
                             </span>
                             <span class="time">{{ currentEmailDetail.pendingTime }}</span>
@@ -243,8 +243,8 @@
                     </div>
 
 
-                    <!---->
-                    <!---->
+
+
                     <div class="mail-detail-operations">
                         <div class="selected">
                             <span class="ellipsis value time">{{ currentEmailDetail.sendDate }}</span>
@@ -253,14 +253,14 @@
                                     @click="toggleWriteEmail(currentEmailDetail, 'reply')"></i>
                                 <i class="icon-reply-all-line m-icon"
                                     @click="toggleWriteEmail(currentEmailDetail, 'reply_all')"></i>
-                                <!---->
-                                <!---->
+
+
                             </div>
                             <div class="mm-popover" @click="toggleEmailDropdown">
                                 <div>
                                     <span class="icon-caret-down m-icon"></span>
                                 </div>
-                                <!---->
+
                             </div>
                         </div>
                     </div>
@@ -269,25 +269,25 @@
                 <div class="mm-outside mail-detail-tool-popover mm-popover-popper" x-placement="bottom-end"
                     style="position: absolute; will-change: top, left; transform-origin: 100% top; top: 100px; left: 600px;"
                     :style="dropdownEmailStyle">
-                    <!---->
+
                     <div>
-                        <!---->
+
                         <div class="mail-drop-menu-wrapper" style="width: 220px; top: 0px; left: 0px;">
                             <ul class="mail-drop-menu">
-                                <!---->
+
                                 <li :class="[
                                     'mail-drop-menu-item',
                                     `DROPMENU_90471_ITEM_0`,
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '回复' }
                                 ]" @mouseover="emailHoveredItem = '回复'" @mouseleave="emailHoveredItem = null"
                                     @click="toggleWriteEmail(currentEmailDetail, 'reply')">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="回复" class="">回复</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -296,13 +296,13 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '回复全部' }
                                 ]" @mouseover="emailHoveredItem = '回复全部'" @mouseleave="emailHoveredItem = null"
                                     @click="toggleWriteEmail(currentEmailDetail, 'reply_all')">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="回复全部" class="">回复全部</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -311,13 +311,13 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '带附件回复' }
                                 ]" @mouseover="emailHoveredItem = '带附件回复'" @mouseleave="emailHoveredItem = null"
                                     @click="toggleWriteEmail(currentEmailDetail, 'reply_with_attachments')">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="带附件回复" class="">带附件回复</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -326,13 +326,13 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '带附件回复全部' }
                                 ]" @mouseover="emailHoveredItem = '带附件回复全部'" @mouseleave="emailHoveredItem = null"
                                     @click="toggleWriteEmail(currentEmailDetail, 'reply_all_with_attachments')">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="带附件回复全部" class="">带附件回复全部</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -341,13 +341,13 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '转发' }
                                 ]" @mouseover="emailHoveredItem = '转发'" @mouseleave="emailHoveredItem = null"
                                     @click="toggleWriteEmail(currentEmailDetail, 'forward')">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="转发" class="">转发</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -356,13 +356,13 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '作为附件转发' }
                                 ]" @mouseover="emailHoveredItem = '作为附件转发'" @mouseleave="emailHoveredItem = null"
                                     @click="toggleWriteEmail(currentEmailDetail, 'forward_as_attachment')">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="作为附件转发" class="">作为附件转发</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -372,7 +372,7 @@
                                 ]" @mouseover="emailHoveredItem = '待处理'" @mouseleave="emailHoveredItem = null">
                                     <span class="mail-drop-menu-divider"></span>
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="待处理" class="">待处理</span>
                                     </span>
                                     <span>
@@ -385,13 +385,13 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '标为未读' }
                                 ]" @mouseover="emailHoveredItem = '标为未读'" @mouseleave="emailHoveredItem = null"
                                     @click="handleUnReadEmail">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="标为未读" class="">标为未读</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -399,9 +399,9 @@
                                     `DROPMENU_90471_ITEM_11`,
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '移动到' }
                                 ]" @mouseover="emailHoveredItem = '移动到'" @mouseleave="emailHoveredItem = null">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="移动到" class="">移动到</span>
                                     </span>
                                     <span>
@@ -416,11 +416,11 @@
                                     @click="handleExportEmail">
                                     <span class="mail-drop-menu-divider"></span>
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="导出邮件" class="">导出邮件</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -431,11 +431,11 @@
                                     @click="handleSpamEmail">
                                     <span class="mail-drop-menu-divider"></span>
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="标为垃圾邮件" class="">标为垃圾邮件</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                                 <li :class="[
@@ -444,19 +444,19 @@
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '删除' }
                                 ]" @mouseover="emailHoveredItem = '删除'" @mouseleave="emailHoveredItem = null"
                                     @click="deleteEmails">
-                                    <!---->
+
                                     <span class="mail-drop-menu-text ellipsis">
-                                        <!---->
+
                                         <span title="删除" class="">删除</span>
                                     </span>
                                     <span>
-                                        <!---->
+
                                     </span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <!---->
+
                 </div>
 
             </div>
@@ -468,7 +468,7 @@
                 <i class="m-icon icon-top go-bottom" style="display: none;"></i>
             </div>
             <div class="quick-reply-container" contact-list="[object Object]">
-                <!---->
+
                 <div v-if="!isReplying" class="mail-detail-quick-reply" @click="toggleQuickReply">
                     <div class="expand-trigger">快速回复</div>
                 </div>
@@ -487,14 +487,14 @@
                     </button>
                 </div>
             </div>
-            <!---->
+
         </div>
         <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end"
             v-if="showPendingTime || showCustomTime"
             style="position: absolute; top: 40px; left: 425px; will-change: top, left; transform-origin: 100% bottom;">
-            <!---->
+
             <div>
-                <!---->
+
                 <div class="mail-pending-handler">
                     <div class="title" v-if="showPendingTime">
                         <span>请选择稍后处理时间: </span>
@@ -621,9 +621,8 @@ export default {
             //     this.isDropdownEmailShown = false;
             // });
         },
-        // 跳转到header页面
         toggleEmailHeader() {
-            // EventBus.$emit('switch-email-header', this.currentEmailType, this.currentPage);
+            this.$emit('showLabel', true)
         },
         // 跳转到写信页面
         toggleWriteEmail(email, writeEmailType) {

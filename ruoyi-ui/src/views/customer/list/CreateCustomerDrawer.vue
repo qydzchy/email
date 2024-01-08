@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-drawer :visible.sync="customerVisible" :wrapperClosable="false" destroy-on-close :show-close="false"
-               @close="onHideDrawer">
+      @close="onHideDrawer">
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
@@ -10,7 +10,7 @@
           <el-row class="flex-middle">
             <el-row class="flex-middle gap-16">
               <el-tooltip placement="top" content="关注" v-if="row && row.id">
-                <svg-icon class="pointer" icon-class="like"/>
+                <svg-icon class="pointer" icon-class="like" />
               </el-tooltip>
               <i class="el-icon-close pointer fs-16" @click="onHideDrawer"></i>
             </el-row>
@@ -26,25 +26,25 @@
                 <span>公司常用信息</span>
               </div>
               <formCreate v-model="customerForm" :value.sync="customerFormValue" :rule="rule" :option="option"
-                          @change="handleCountry"/>
+                @change="handleCountry" />
             </div>
             <div v-show="showOtherForm">
               <div class="fs-16 bold my-10">
                 <span>公司其他信息</span>
               </div>
               <formCreate v-model="customerOtherForm" :value.sync="customerOtherFormValue" :rule="otherRule"
-                          :option="option"/>
+                :option="option" />
             </div>
             <div>
               <div class="collapse flex-middle flex-center fs-12 mt-10 pointer" @click="showOtherForm = !showOtherForm">
                 {{ showOtherForm ? '收起' : '展开全部(选填)' }}
-                <i class="ml-6" :class="showOtherForm ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i>
+                <i class="ml-6" :class="showOtherForm ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
               </div>
             </div>
           </el-col>
           <!--    联系人     -->
           <el-col :span="14" class="px-16">
-            <ContactCard ref="contact-card" :contact-list="contactList"/>
+            <ContactCard ref="contact-card" :contact-list="contactList" />
           </el-col>
         </el-row>
       </div>
@@ -60,12 +60,12 @@
 </template>
 
 <script>
-import {UsuallyInfoRule, OtherInfoRule} from './CreateCustomerOption'
-import {formOption} from "@/constant/form"
+import { UsuallyInfoRule, OtherInfoRule } from './CreateCustomerOption'
+import { formOption } from "@/constant/form"
 import ContactCard from './CustomerContactCard.vue'
-import {addCustomer, editCustomer} from "@/api/customer/publicleads";
-import {deepClone} from "@/utils";
-import {mapTimezone} from "@/assets/data/countryData";
+import { addCustomer, editCustomer } from "@/api/customer/publicleads";
+import { deepClone } from "@/utils";
+import { mapTimezone } from "@/assets/data/countryData";
 
 export default {
   props: {
@@ -133,8 +133,8 @@ export default {
       handler(newVal) {
         try {
           if (newVal?.id) {
-            this.customerFormValue = {...deepClone(newVal)}
-            this.customerOtherFormValue = {...deepClone(newVal)}
+            this.customerFormValue = { ...deepClone(newVal) }
+            this.customerOtherFormValue = { ...deepClone(newVal) }
             // let contactList = this.generateContactList(newVal.contactList)
             this.contactList = deepClone(newVal.contactList)
           }
@@ -207,7 +207,8 @@ export default {
           return val
         })
       },
-      deep: true
+      deep: true,
+      immediate: true,
     }
   },
   methods: {
@@ -215,7 +216,7 @@ export default {
       try {
         this.btnLoading = true
         this.containerLoading = true
-        const res = await addCustomer({...data}).finally(() => {
+        const res = await addCustomer({ ...data }).finally(() => {
           this.btnLoading = false
           this.containerLoading = false
         })
@@ -231,7 +232,7 @@ export default {
       this.btnLoading = true
       this.containerLoading = true
       try {
-        const res = await editCustomer({...data}).finally(() => {
+        const res = await editCustomer({ ...data }).finally(() => {
           this.btnLoading = false
           this.containerLoading = false
         })
@@ -279,7 +280,7 @@ export default {
       })
 
     },
-    confirmResetValue(){
+    confirmResetValue() {
       this.customerFormValue = {}
       this.customerOtherFormValue = {}
     },
@@ -301,9 +302,9 @@ export default {
           if (country[0]) {
             const options = tempOpt.filter(val => val.value === mapTimezone[country[0]])
             const value = mapTimezone[country[0]]
-            this.customerOtherForm.updateRule('timezone', {options, value})
+            this.customerOtherForm.updateRule('timezone', { options, value })
           } else {
-            this.customerOtherForm.updateRule('timezone', {options: tempOpt, value: ''})
+            this.customerOtherForm.updateRule('timezone', { options: tempOpt, value: '' })
           }
           break;
       }
@@ -365,7 +366,7 @@ export default {
     justify-content: space-between;
   }
 
-  .drawer-operate > .wrap {
+  .drawer-operate>.wrap {
     width: 100%;
   }
 }
@@ -379,10 +380,10 @@ export default {
 }
 
 ::v-deep .el-form-item__content {
-  .el-select, .el-cascader {
+
+  .el-select,
+  .el-cascader {
     width: 100%;
   }
 }
-
-
 </style>

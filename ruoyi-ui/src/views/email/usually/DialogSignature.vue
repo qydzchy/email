@@ -11,8 +11,8 @@
 						<Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
 							:defaultConfig="toolbarConfig" />
 						<!-- 编辑器 -->
-						<Editor ref="editorInstance" style="height: 260px; overflow-y: hidden"
-							v-model="signatureForm.content" @onCreated="onCreated" mode="default" />
+						<Editor ref="editorInstance" style="height: 260px" v-model="signatureForm.content"
+							@onCreated="onCreated" mode="default" />
 					</div>
 				</el-form-item>
 			</el-form>
@@ -131,7 +131,7 @@ export default {
 		},
 		onConfirm() {
 			this.$refs.signatureFormRef.validate(res => {
-				if (!res) {
+				if (res) {
 					let data = {
 						...this.signatureForm
 					}
@@ -152,4 +152,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-form-item__content {
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+</style>

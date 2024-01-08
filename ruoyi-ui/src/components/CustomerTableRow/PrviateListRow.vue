@@ -50,7 +50,8 @@
             </div>
             <el-backtop target=".el-tabs__content" :visibility-height="100" />
         </div>
-        <CreateCustomerDrawer :visible.sync="editVisible" :row.sync="rowData" @load="onHideCreateDrawer" />
+        <CreateCustomerDrawer :visible.sync="editVisible" :row.sync="rowData" :index-opt="indexOpt"
+            @load="onHideCreateDrawer" />
     </div>
 </template>
 
@@ -63,6 +64,12 @@ import CellOperate from "@/views/customer/list/CellOperate.vue";
 import OperateMenu from "@/views/customer/list/OperateMenu.vue";
 import { editFocusFlagCustomer, getCustomerDetail } from "@/api/customer/publicleads";
 import { deepClone } from "@/utils";
+// 客户列表选项
+import { stageList } from "@/api/company/status";
+import { getOriginList } from "@/api/company/origin";
+import { reasonList } from "@/api/company/poolRule";
+import { getCustomerTagList } from "@/api/customer/config";
+import { getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer, getSetPacketList } from "@/api/customer/publicleads";
 export default {
     props: {
         row: {
@@ -119,7 +126,7 @@ export default {
                 packet: [],
             },
             defaultCurTab: 'TableRowDealingsEmailTab',
-            defaultTabs: ['TableRowActivityTab', 'TableRowDatumTab', 'TableRowTradeTab', 'TableRowTipsTab', 'TableRowDocTab', 'TableRowDealingsEmailTab']
+            defaultTabs: ['TableRowActivityTab', 'TableRowDatumTab', 'TableRowTradeTab', 'TableRowTipsTab', 'TableRowDocTab', 'TableRowDealingsEmailTab'],
         }
     },
     watch: {
@@ -132,6 +139,8 @@ export default {
             },
             immediate: true,
         },
+    },
+    mounted() {
     },
     methods: {
         async getDetailData() {
