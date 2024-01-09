@@ -1741,6 +1741,16 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
+     * 搜索列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<EmailCustomerVO> selectEmailCountGroupBySearch(Long userId, String keyword) {
+        return customerMapper.selectEmailCountGroupBySearch(userId, keyword);
+    }
+
+    /**
      * 去重
      * @param list
      * @return

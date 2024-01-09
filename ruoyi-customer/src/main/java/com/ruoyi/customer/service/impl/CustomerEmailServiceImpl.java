@@ -414,4 +414,17 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
 
         return emailStageVOList;
     }
+
+    /**
+     * 搜索列表
+     * @param keyword
+     * @return
+     */
+    @Override
+    public List<EmailCustomerVO> searchList(String keyword) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        // 客户邮件数量
+        return customerService.selectEmailCountGroupBySearch(userId, keyword);
+    }
 }

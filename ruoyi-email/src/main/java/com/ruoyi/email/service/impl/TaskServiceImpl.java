@@ -332,15 +332,12 @@ public class TaskServiceImpl implements ITaskService
                     String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());
                     UniversalMail universalMail = mailContext.parseEmail(protocolTypeEnum, mailItem, newEmailPath, newAttachmentPath);
                     // 保存邮件信息
-                    if (universalMail.getSendDate() != null) {
-                        saveEmailData(task.getId(), universalMail, emailOperateParamBO.getTransceiverRuleList());
-                    }
+                    if (universalMail.getSendDate() == null) continue;
 
-                    // 查询是否在4天内已经回复过邮件 todo 需调试
-                    // if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) continue;
+                    saveEmailData(task.getId(), universalMail, emailOperateParamBO.getTransceiverRuleList());
 
                     // 外出自动回复处理
-                    // autoResponseHandler(task, universalMail, emailOperateParamBO);
+                     autoResponseHandler(task, universalMail, emailOperateParamBO);
 
                 } catch (MailPlusException e) {
                     log.error("{}", e);
@@ -386,6 +383,9 @@ public class TaskServiceImpl implements ITaskService
             }
 
             if (StringUtils.isBlank(emailOperateParamBO.getReContent())) return;
+
+            // 查询是否在4天内已经回复过邮件 todo 需调试
+            if (checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) return;
 
             taskEmailService.autoResponse(task, universalMail, emailOperateParamBO.getReContent());
         }

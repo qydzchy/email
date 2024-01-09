@@ -47,4 +47,11 @@ public interface ICustomerEmailService {
      * @return
      */
     List<EmailStageListVO> stageList();
+
+    /**
+     * 搜索列表
+     * @param keyword
+     * @return
+     */
+    List<EmailCustomerVO> searchList(String keyword);
 }

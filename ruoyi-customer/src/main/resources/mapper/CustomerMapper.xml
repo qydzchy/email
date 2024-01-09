@@ -367,78 +367,123 @@
 
     <select id="selectEmailCountGroupByRating"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByRatingBO">
-        select cc.id as customerId, cc.company_name as companyName, cc.rating, count(1) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, cc.rating, COUNT(CASE WHEN mte.read_flag = 0 THEN 1 END) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, rating
+        join mailbox_task mt on mt.id = mte.task_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, rating
     </select>
 
     <select id="selectEmailCountGroupByPublicleadsGroups"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPublicleadsGroupsBO">
-        select cc.id as customerId, cc.company_name as companyName, cc.publicleads_groups_id as publicleadsGroupsId, count(1) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, cc.publicleads_groups_id as publicleadsGroupsId, COUNT(CASE WHEN mte.read_flag = 0 THEN 1 END) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and cc.publicleads_groups_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.publicleads_groups_id order by cc.create_time desc
+        join mailbox_task mt on mt.id = mte.task_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and cc.publicleads_groups_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.publicleads_groups_id order by cc.create_time desc
     </select>
 
     <select id="selectEmailCountGroupByPacket"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByPacketBO">
-        select cc.id as customerId, cc.company_name as companyName, cc.packet_id as packetId, count(1) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, cc.packet_id as packetId, COUNT(CASE WHEN mte.read_flag = 0 THEN 1 END) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and cc.packet_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.packet_id order by cc.create_time desc
+            join mailbox_task mt on mt.id = mte.task_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and cc.packet_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.packet_id order by cc.create_time desc
     </select>
 
     <select id="selectEmailCountGroupBySource"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupBySourceBO">
-        select cc.id as customerId, cc.company_name as companyName, ccs.source_id as sourceId, count(DISTINCT mte.id) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, ccs.source_id as sourceId, COUNT(DISTINCT CASE WHEN mte.read_flag = 0 THEN mte.id END) as count from customer_customer cc
         left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
         join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
+        join mailbox_task mt on mt.id = mte.task_id
         left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccs.source_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, ccs.source_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and ccs.source_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, ccs.source_id
     </select>
 
     <select id="selectEmailCountGroupByCustomer"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByCustomerBO">
-        select cc.id as customerId, cc.company_name as companyName, cc.last_contacted_at as lastContactedAt, count(DISTINCT mte.id) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, cc.last_contacted_at as lastContactedAt, COUNT(DISTINCT CASE WHEN mte.read_flag = 0 THEN mte.id END) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
+            join mailbox_task mt on mt.id = mte.task_id
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.last_contacted_at order by cc.last_contacted_at desc
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.last_contacted_at order by cc.last_contacted_at desc
     </select>
 
     <select id="selectRecentInteractions7Days"
             resultType="com.ruoyi.customer.domain.bo.EmailCountByRecentInteractions7DaysBO">
-        select cc.id as customerId, cc.company_name as companyName, count(DISTINCT mte.id) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, COUNT(DISTINCT CASE WHEN mte.read_flag = 0 THEN mte.id END) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
+            join mailbox_task mt on mt.id = mte.task_id
             left join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and ccfup.user_id = #{userId} AND cc.last_contacted_at >= CURDATE() - INTERVAL 7 DAY group by cc.id, cc.company_name order by cc.last_contacted_at desc
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and ccfup.user_id = #{userId} AND cc.last_contacted_at >= CURDATE() - INTERVAL 7 DAY group by cc.id, cc.company_name order by cc.last_contacted_at desc
     </select>
 
     <select id="selectEmailCountGroupByFocusFlag"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByFocusFlagBO">
-        select cc.id as customerId, cc.company_name as companyName, count(DISTINCT mte.id) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, COUNT(DISTINCT CASE WHEN mte.read_flag = 0 THEN mte.id END) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             left join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
             join customer_customer_source ccs ON cc.id = ccs.customer_id
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and cc.focus_flag = 1 and mte.read_flag = 0 and ccfup.user_id = #{userId} group by cc.id, cc.company_name
+            join mailbox_task mt on mt.id = mte.task_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and cc.focus_flag = 1 and ccfup.user_id = #{userId} group by cc.id, cc.company_name
     </select>
 
     <select id="selectEmailCountGroupByStage"
             resultType="com.ruoyi.customer.domain.bo.EmailCountGroupByStageBO">
-        select cc.id as customerId, cc.company_name as companyName, cc.stage_id as stageId, count(1) as count from customer_customer cc
+        select cc.id as customerId, cc.company_name as companyName, cc.stage_id as stageId, COUNT(CASE WHEN mte.read_flag = 0 THEN 1 END) as count from customer_customer cc
             left join customer_customer_follow_up_personnel  ccfup on cc.id = ccfup.customer_id
             left join customer_customer_contact ccc on cc.id = ccc.customer_id
             join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
-        where cc.del_flag = '0' and ccc.del_flag = '0' and mte.del_flag = '0' and mte.read_flag = 0 and cc.stage_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.stage_id order by cc.create_time desc
+            join mailbox_task mt on mt.id = mte.task_id
+        where cc.del_flag = '0' and ccc.del_flag = '0' and mt.del_flag = '0' and mte.del_flag = '0' and cc.stage_id is not null and ccfup.user_id = #{userId} group by cc.id, cc.company_name, cc.stage_id order by cc.create_time desc
+    </select>
+
+    <select id="selectEmailCountGroupBySearch" resultType="com.ruoyi.customer.domain.vo.EmailCustomerVO">
+        SELECT cc.id AS id,
+               cc.company_name AS name,
+               COUNT(CASE WHEN mte.read_flag = 0 THEN 1 END) AS unReadEmailCount,
+               1 AS customerCount
+        FROM
+            customer_customer cc
+            LEFT JOIN customer_customer_follow_up_personnel ccfup
+        ON cc.id = ccfup.customer_id
+            LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+            JOIN mailbox_task_email mte ON (ccc.email = mte.fromer
+            OR mte.receiver LIKE concat( '%"email":"', ccc.email, '"%' )
+            OR mte.bcc LIKE concat( '%"email":"', ccc.email, '"%' )
+            OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' ))
+            JOIN mailbox_task mt ON mt.id = mte.task_id
+        WHERE
+            cc.del_flag = '0'
+          AND ccc.del_flag = '0'
+          AND mt.del_flag = '0'
+          AND mte.del_flag = '0'
+          AND ccfup.user_id = #{userId}
+          AND
+            (cc.company_name LIKE concat( '%'
+            , #{keyword}
+            , '%' )
+           OR cc.customer_no = #{keyword}
+           OR ccc.email LIKE concat( '%'
+            , #{keyword}
+            , '%' )
+           OR ccc.nick_name LIKE concat( '%'
+            , #{keyword}
+            , '%' )
+            )
+        group by cc.id, cc.company_name
+        order by cc.create_time desc
     </select>
 
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">

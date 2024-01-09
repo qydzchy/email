@@ -112,6 +112,19 @@ public class EmailCustomerController extends BaseController {
     }
 
     /**
+     * 客户模块-搜索的客户列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:customer:search:list')")
+    @GetMapping("/search/list")
+    public AjaxResult searchList(String keyword) {
+        if (StringUtils.isBlank(keyword)) {
+            throw new ServiceException("搜索关键字不能为空");
+        }
+
+        return success(customerEmailService.searchList(keyword));
+    }
+
+    /**
      * 客户模块-客户邮件列表（分页）
      */
     @PreAuthorize("@ss.hasPermi('email:customer:email:list')")

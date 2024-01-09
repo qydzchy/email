@@ -307,4 +307,11 @@ public interface CustomerMapper
      * @return
      */
     List<EmailCountGroupByStageBO> selectEmailCountGroupByStage(@Param("userId") Long userId);
+
+    /**
+     * 搜索列表
+     * @param userId
+     * @return
+     */
+    List<EmailCustomerVO> selectEmailCountGroupBySearch(@Param("userId") Long userId, @Param("keyword") String keyword);
 }
