@@ -3,11 +3,14 @@ package com.ruoyi.email.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.Task;
+import com.ruoyi.email.domain.TaskSingleSetting;
+import com.ruoyi.email.domain.dto.email.GeneralSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.GeneralVO;
 import com.ruoyi.email.domain.vo.TaskListVO;
 import com.ruoyi.email.mapper.TaskMapper;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.GeneralMapper;
 import com.ruoyi.email.domain.General;
 import com.ruoyi.email.service.IGeneralService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -72,25 +76,38 @@ public class GeneralServiceImpl implements IGeneralService
     /**
      * 修改邮箱常规
      * 
-     * @param general 邮箱常规
+     * @param generalSaveOrUpdateDTO 邮箱常规
      * @return 结果
      */
-    @Override
-    public int updateGeneral(General general)
+    @Override //todo 待完成
+    @Transactional(rollbackFor = Exception.class)
+    public int updateGeneral(GeneralSaveOrUpdateDTO generalSaveOrUpdateDTO)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
         Date now = DateUtils.getNowDate();
 
+        General general = new General();
         general.setUpdateId(userId);
         general.setUpdateBy(username);
         general.setUpdateTime(now);
 
-        if (general.getId() == null) {
+        if (generalSaveOrUpdateDTO.getId() == null) {
             general.setCreateId(userId);
             general.setCreateBy(username);
             general.setCreateTime(now);
+        }
+
+        List<TaskSingleSetting> taskSingleSettingList = generalSaveOrUpdateDTO.getTaskSingleSettingList();
+        List<TaskSingleSetting> insertTaskSingleSettingList = taskSingleSettingList.stream().filter(taskSingleSetting -> taskSingleSetting.getId() == null).collect(Collectors.toList());
+        List<TaskSingleSetting> updateTaskSingleSettingList = taskSingleSettingList.stream().filter(taskSingleSetting -> taskSingleSetting.getId() != null).collect(Collectors.toList());
+
+
+
+
+        if (general.getId() == null) {
+
             return generalMapper.insertGeneral(general);
         }
 

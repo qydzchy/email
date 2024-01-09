@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TaskSingleSettingMapper;
 import com.ruoyi.email.domain.TaskSingleSetting;
 import com.ruoyi.email.service.ITaskSingleSettingService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -66,33 +67,37 @@ public class TaskSingleSettingServiceImpl implements ITaskSingleSettingService
     /**
      * 修改单个邮箱设置
      * 
-     * @param taskSingleSetting 单个邮箱设置
+     * @param taskSingleSettingList 单个邮箱设置
      * @return 结果
      */
     @Override
-    public int updateTaskSingleSetting(TaskSingleSetting taskSingleSetting)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateTaskSingleSetting(List<TaskSingleSetting> taskSingleSettingList)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
         Date now = DateUtils.getNowDate();
 
-        if (taskSingleSetting.getId() == null) {
-            taskSingleSetting.setCreateId(userId);
-            taskSingleSetting.setCreateBy(username);
-            taskSingleSetting.setCreateTime(now);
-            taskSingleSetting.setUpdateId(userId);
-            taskSingleSetting.setUpdateBy(username);
-            taskSingleSetting.setUpdateTime(now);
-            return taskSingleSettingMapper.insertTaskSingleSetting(taskSingleSetting);
+        for (TaskSingleSetting taskSingleSetting : taskSingleSettingList) {
+            if (taskSingleSetting.getId() == null) {
+                taskSingleSetting.setCreateId(userId);
+                taskSingleSetting.setCreateBy(username);
+                taskSingleSetting.setCreateTime(now);
+                taskSingleSetting.setUpdateId(userId);
+                taskSingleSetting.setUpdateBy(username);
+                taskSingleSetting.setUpdateTime(now);
+                taskSingleSettingMapper.insertTaskSingleSetting(taskSingleSetting);
 
-        } else {
-            taskSingleSetting.setUpdateId(userId);
-            taskSingleSetting.setUpdateBy(username);
-            taskSingleSetting.setUpdateTime(now);
-            return taskSingleSettingMapper.updateTaskSingleSetting(taskSingleSetting);
-
+            } else {
+                taskSingleSetting.setUpdateId(userId);
+                taskSingleSetting.setUpdateBy(username);
+                taskSingleSetting.setUpdateTime(now);
+                taskSingleSettingMapper.updateTaskSingleSetting(taskSingleSetting);
+            }
         }
+
+        return true;
     }
 
     /**

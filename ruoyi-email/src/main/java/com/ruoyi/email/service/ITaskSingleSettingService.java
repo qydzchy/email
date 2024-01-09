@@ -39,10 +39,10 @@ public interface ITaskSingleSettingService
     /**
      * 修改单个邮箱设置
      * 
-     * @param taskSingleSetting 单个邮箱设置
+     * @param taskSingleSettingList 单个邮箱设置
      * @return 结果
      */
-    public int updateTaskSingleSetting(TaskSingleSetting taskSingleSetting);
+    public boolean updateTaskSingleSetting(List<TaskSingleSetting> taskSingleSettingList);
 
     /**
      * 批量删除单个邮箱设置

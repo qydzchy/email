@@ -2,6 +2,7 @@ package com.ruoyi.email.service;
 
 import java.util.List;
 import com.ruoyi.email.domain.General;
+import com.ruoyi.email.domain.dto.email.GeneralSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.GeneralVO;
 import com.ruoyi.email.domain.vo.TaskListVO;
 
@@ -40,10 +41,10 @@ public interface IGeneralService
     /**
      * 修改邮箱常规
      * 
-     * @param general 邮箱常规
+     * @param generalSaveOrUpdateDTO 邮箱常规
      * @return 结果
      */
-    public int updateGeneral(General general);
+    public int updateGeneral(GeneralSaveOrUpdateDTO generalSaveOrUpdateDTO);
 
     /**
      * 批量删除邮箱常规

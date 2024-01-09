@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.email;
 import java.util.List;
 import javax.annotation.Resource;
 
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.vo.TaskSingleSettingListVO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -43,9 +45,15 @@ public class TaskSingleSettingController extends BaseController
     @PreAuthorize("@ss.hasPermi('email:setting:edit')")
     @Log(title = "修改单个邮箱设置", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody TaskSingleSetting taskSingleSetting)
+    public AjaxResult edit(@RequestBody List<TaskSingleSetting> taskSingleSettingList)
     {
-        return toAjax(taskSingleSettingService.updateTaskSingleSetting(taskSingleSetting));
+        for (TaskSingleSetting taskSingleSetting : taskSingleSettingList) {
+            if (taskSingleSetting.getTaskId() == null) {
+                throw new ServiceException("任务id不能为空");
+            }
+        }
+
+        return toAjax(taskSingleSettingService.updateTaskSingleSetting(taskSingleSettingList));
     }
 
 }
