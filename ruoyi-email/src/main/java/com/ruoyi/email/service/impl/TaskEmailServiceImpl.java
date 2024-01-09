@@ -765,10 +765,13 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails);
 
         List<Long> ids = dealingEmailBOList.stream().map(dealingEmailBO -> dealingEmailBO.getId()).collect(Collectors.toList());
-        // 查询邮件附件信息
-        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
-        if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
-        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = new HashMap<>();
+        if (ids != null && !ids.isEmpty()) {
+            // 查询邮件附件信息
+            List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+            if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+            attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+        }
 
         Map<Long, List<DealingEmailListBO>> emailIdListMap = dealingEmailBOList.stream()
                 .collect(Collectors.groupingBy(DealingEmailListBO::getId, LinkedHashMap::new, Collectors.toList()));
