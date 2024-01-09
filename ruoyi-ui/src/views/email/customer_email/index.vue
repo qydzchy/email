@@ -3,7 +3,8 @@
         <div class="page-mail-list layout-extraSidebar-content" style="background-color: white;">
             <span>
                 <Header :isHide="isHide" @switch="onSwitch">
-                    <Content :selectedTaskId="selectedTaskId" @handlerHeader="bool => isHide = bool" />
+                    <Content ref="customerContent" :selectedTaskId="selectedTaskId"
+                        @handlerHeader="bool => isHide = bool" />
                 </Header>
             </span>
         </div>

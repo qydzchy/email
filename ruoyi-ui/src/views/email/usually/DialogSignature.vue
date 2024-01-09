@@ -27,7 +27,7 @@
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { addSignature, editSignature } from '@/api/email/usually'
-import { fontSizeList } from '@/constant/editorOption'
+import { fontSizeList, fontFamilyList, colors } from '@/constant/editorOption'
 export default {
 	props: {
 		dialogVisible: {
@@ -90,6 +90,12 @@ export default {
 				...this.editor.getConfig().MENU_CONF,
 				fontSize: {
 					fontSizeList
+				},
+				fontFamily: {
+					fontFamilyList
+				},
+				color: {
+					colors
 				},
 				uploadImage: {
 					fieldName: 'file',

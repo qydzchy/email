@@ -2,7 +2,7 @@
     <div class="contact-mail-tab-container">
         <div class="list">
             <div class="total">
-                <span>共44封邮件</span>
+                <span>共{{ emailList.length }}封邮件</span>
                 <span class="okki-icon-wrap attachment-btn">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                         viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -14,33 +14,83 @@
             <ul class="contact-mail-list" cur-active-mail-id="" size="mini" module="mail" company-fields="[object Object]"
                 is-owner="true" flow-link="[object Object]" contact-info="[object Object]" company-info="[object Object]"
                 new-tips-count="0" identity-id="2339700037308" first-identity-id="2339700037308">
-                <li class="contact-mail-item">
+                <li class="contact-mail-item" v-for="(item, index) in emailList" :key="index">
                     <div class="title-wrapper">
-                        <h1 class="ellipsis" title="小满账号异常登录提醒">小满账号异常登录提醒</h1>
-                        <i class="contact-icon m-icon icon-mail-receive" title="收件"></i>
+                        <h1 class="ellipsis" :title="item.title">{{ item.title }}</h1>
+                        <i class="contact-icon m-icon icon-mail-receive" :title="generateEmailType(item.type)"></i>
                     </div>
                     <div class="info-wrapper">
-                        <div class="summary ellipsis">Email Rox! 亲爱的小满用户 您好：
-                            您的小满账号 sales17@allxchips.com 有异常登录行为
-                            登录时间 登录IP 登录地址 操作系统 浏览器
-                            2023-08-01 15:</div>
+                        <div class="summary ellipsis">{{ item.extractTextFormContent }}</div>
                         <div class="icons">
                             <!---->
                             <!---->
                         </div>
-                        <div class="time">15:17</div>
+                        <div class="time">{{ item.sendDate }}</div>
                     </div>
                     <!---->
                 </li>
             </ul>
-            <div class="show-more">查看更多</div>
+            <!-- <div class="show-more">查看更多</div> -->
         </div>
     </div>
 </template>
 
 <script>
+import { getCustomerEmailList } from '@/api/customer/email'
 export default {
-
+    props: {
+        row: {
+            type: Object,
+            default: () => {
+            },
+            required: false
+        },
+        options: {
+            type: Object,
+            default: () => {
+                return {
+                    isShowSchedule: true
+                }
+            },
+            required: false
+        }
+    },
+    data() {
+        return {
+            emailList: [],
+        }
+    },
+    watch: {
+        row: {
+            handler(newVal) {
+                if (!newVal?.customerId) {
+                    return
+                }
+                this.getList(newVal.customerId)
+            },
+            deep: true,
+            immediate: true
+        }
+    },
+    methods: {
+        async getList(customerId) {
+            try {
+                const res = await getCustomerEmailList({
+                    customerId
+                })
+                if (res.code === 200) {
+                    this.emailList = res.data
+                }
+            } catch { }
+        },
+        generateEmailType(type) {
+            const mapType = {
+                1: '收件',
+                2: '发件'
+            }
+            return mapType[type] || '---'
+        }
+    }
 }
 </script>
 

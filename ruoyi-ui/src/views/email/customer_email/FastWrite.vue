@@ -518,6 +518,14 @@ import emailContentDetailInfoLayout from '../email_content_detail_info';
 import CustomTimePopover from "../custom_time.vue";
 import PendingTimePopover from "../pending_time.vue";
 export default {
+    props: {
+        info: {
+            type: Object,
+            default: () => {
+            },
+            required: false
+        }
+    },
     components: {
         'email_content_detail_info': emailContentDetailInfoLayout
     },
@@ -553,6 +561,15 @@ export default {
         },
         dropdownEmailStyle() {
             return this.isDropdownEmailShown ? '' : 'display: none;';
+        }
+    },
+    watch: {
+        info: {
+            handler(newVal) {
+                this.currentEmailDetail = newVal
+            },
+            deep: true,
+            immediate: true
         }
     },
     methods: {

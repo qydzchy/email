@@ -398,25 +398,15 @@ export default {
             });
         },
 
-        toggleActive(email) {
-            // 将状态改成已读
-            this.readEmail(email);
-
-            this.activeEmailId = email.id;
-            this.$emit('switch', 'email_content', email, this.localEmailList, this.total, this.currentEmailType);
-        },
-
         nextPage() {
             if (this.currentPage < this.totalPages) {
                 this.currentPage = Number(this.currentPage) + 1;
-                this.fetchEmailData(this.currentEmailType);
             }
         },
 
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage = Number(this.currentPage) - 1;
-                this.fetchEmailData(this.currentEmailType);
             }
         },
 
@@ -436,42 +426,6 @@ export default {
                 this.currentPage = this.totalPages;
             } else if (inputValue < 1) {
                 this.currentPage = 1;
-            }
-        },
-
-        fetchEmailData(selectedEmailType) {
-            this.currentEmailType = selectedEmailType;
-            if (selectedEmailType === 'ALL_RECEIVED') {
-                this.fetchEmailList(null, 1, null, null, null, null, null, null);
-            } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
-                this.fetchEmailList(null, 2, null, null, null, null, null, null);
-            } else if (selectedEmailType === 'PENDING_MAIL') {
-                this.fetchEmailList(null, null, null, true, null, null, null, null);
-            } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
-                this.fetchEmailList(null, 1, false, null, null, null, null, null);
-            } else if (selectedEmailType === 'DELETED_MAIL') {
-                this.fetchEmailList(null, null, null, null, true, null, null, null);
-            } else if (selectedEmailType === 'DRAFTS') {
-                this.fetchEmailList(null, 2, null, null, null, true, null, null);
-            } else if (selectedEmailType === 'SPAM_MAIL') {
-                this.fetchEmailList(null, null, null, null, null, null, true, null);
-            } else if (selectedEmailType === 'TRACE_INFORMATION') {
-                this.fetchEmailList(null, null, null, null, null, null, null, true);
-            } else if (/^PULL_(.+)$/.test(selectedEmailType)) {
-                const taskId = RegExp.$1;
-                this.fetchEmailList(taskId, 1, null, null, null, null, null, null);
-            } else if (/^SEND_(.+)$/.test(selectedEmailType)) {
-                const taskId = RegExp.$1;
-                this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
-            } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
-                const folderId = RegExp.$1;
-                this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
-            } else if (/^LABEL_(.+)$/.test(selectedEmailType)) {
-                const labelId = RegExp.$1;
-                this.fetchEmailList(null, null, null, null, null, null, null, null, null, labelId);
-            } else if (/^CUSTOMER_(.+)$/.test(selectedEmailType)) {
-                const customerId = RegExp.$1;
-                this.fetchCustomerEmailList(customerId);
             }
         },
 
@@ -544,7 +498,6 @@ export default {
         refresh() {
             this.$message.info("正在加载");
             this.currentPage = 1;
-            this.fetchEmailData(this.currentEmailType);
         },
 
         toggleDropdown() {
@@ -572,7 +525,6 @@ export default {
             this.toggleAllEmails();
             // 刷新邮件列表
             this.currentPage = 1;
-            this.fetchEmailData(this.currentEmailType);
         },
 
         getSelectedEmailIds() {
@@ -708,14 +660,12 @@ export default {
         switchFixed() {
             this.fixedFlag = !this.fixedFlag;
             this.currentPage = 1;
-            this.fetchEmailData(this.currentEmailType);
         },
 
         // 附件总开关
         switchAttachment() {
             this.attachmentFlag = !this.attachmentFlag;
             this.currentPage = 1;
-            this.fetchEmailData(this.currentEmailType);
         },
 
         toggleSlide(emailId, direction) {

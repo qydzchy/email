@@ -127,13 +127,15 @@ export default {
             },
             defaultCurTab: 'TableRowDealingsEmailTab',
             defaultTabs: ['TableRowActivityTab', 'TableRowDatumTab', 'TableRowTradeTab', 'TableRowTipsTab', 'TableRowDocTab', 'TableRowDealingsEmailTab'],
+            customerId: ''
         }
     },
     watch: {
         row: {
             handler(newVal) {
                 this.focusFlag = Boolean(newVal.focusFlag)
-                if (newVal?.id) {
+                if (newVal?.id && newVal.id !== this.customerId) {
+                    this.customerId = newVal.id
                     this.getDetailData()
                 }
             },

@@ -71,3 +71,13 @@ export function customerEmailList(query) {
     params: query
   })
 }
+
+// 往来邮件
+export function getCustomerEmailList(params) {
+  return request({
+    url: '/email/customer/dealing/email/list',
+    method: 'get',
+    params
+  })
+}
+

@@ -8,7 +8,7 @@
                     <span class="label">默认邮箱:</span>
                     <div class="section-inner">
                         <span>
-                            <el-select style="width:378px;" v-model="formData.defaultTaskId">
+                            <el-select style="width:378px;" v-model="formData.defaultTaskId" :popper-append-to-body="false">
                                 <el-option v-for="(email, index) in emailOption" :key="index" :value="email.id"
                                     :label="email.account"></el-option>
                             </el-select>
@@ -22,7 +22,7 @@
                 <div class="conventional-look">
                     <div class="section-wrapper" style="align-items: center">
                         <span class="label">每页显示邮件数量:</span>
-                        <el-select style="width:378px;" v-model="formData.maxPerPage">
+                        <el-select style="width:378px;" v-model="formData.maxPerPage" :popper-append-to-body="false">
                             <el-option v-for="(count, index) in emailCountOption" :key="index" :value="count.value"
                                 :label="count.label"></el-option>
                         </el-select>
@@ -83,7 +83,7 @@
                     <div class="section-wrapper">
                         <span class="label">默认字体:</span>
                         <div class="section-inner">
-                            <el-select style="width:378px;" v-model="formData.defaultFont">
+                            <el-select style="width:378px;" v-model="formData.defaultFont" :popper-append-to-body="false">
                                 <el-option v-for="(ff, index) in fontFamilyOption" :key="index" :value="ff"
                                     :label="ff"></el-option>
                             </el-select>
@@ -94,13 +94,21 @@
                     </div>
                     <div class="section-wrapper align-center">
                         <span class="label">文字大小:</span>
-                        <el-select style="width:378px;" v-model="formData.fontSize">
+                        <el-select style="width:378px;" v-model="formData.fontSize" :popper-append-to-body="false">
                             <el-option v-for="(fs, index) in fontOption" :key="index" :value="fs" :label="fs"></el-option>
                         </el-select>
                     </div>
                     <div class="section-wrapper font-color">
                         <span class="label">文字颜色:</span>
-                        <el-color-picker v-model="formData.fontColor" color-format="rgb"></el-color-picker>
+                        <el-select style="width:378px;" v-model="formData.fontColor" placeholder="请选择"
+                            :popper-append-to-body="false">
+                            <el-option v-for="(color, index) in colorOption" :key="index" :value="color">
+                                <span
+                                    :style="{ width: '10px', height: '10px', display: 'inline-block', backgroundColor: color }"></span>
+                                <span class="ml-4">{{ color }}</span>
+                            </el-option>
+                        </el-select>
+                        <!-- <el-color-picker v-model="formData.fontColor" color-format="rgb"></el-color-picker> -->
                     </div>
                     <div class="section-wrapper">
                         <span class="label">群发箱视图 <el-tooltip style="width:200px" placement="top"
@@ -169,7 +177,8 @@
                         <span class="label">个性签名:</span>
                         <div class="section-inner">
                             <div>
-                                <el-select style="width:378px;" v-model="formData.signatureId">
+                                <el-select style="width:378px;" v-model="formData.signatureId"
+                                    :popper-append-to-body="false">
                                     <el-option v-for="(item, index) in signatureOption" :key="index" :label="item.title"
                                         :value="item.id"></el-option>
                                 </el-select>
@@ -263,7 +272,8 @@
                                 <div class="config-item">
                                     <div class="left">默认签名</div>
                                     <div class="right">
-                                        <el-select style="width:378px;" v-model="emailSetList[curSet].defaultSignatureId">
+                                        <el-select style="width:378px;" v-model="emailSetList[curSet].defaultSignatureId"
+                                            :popper-append-to-body="false">
                                             <el-option label="不使用" :value="0"></el-option>
                                             <el-option v-for="(item, index) in signatureOption" :key="index"
                                                 :label="item.title" :value="item.id"></el-option>
@@ -273,7 +283,8 @@
                                 <div class="config-item">
                                     <div class="left">回复/转发签名</div>
                                     <div class="right">
-                                        <el-select style="width:378px;" v-model="emailSetList[curSet].replySignatureId">
+                                        <el-select style="width:378px;" v-model="emailSetList[curSet].replySignatureId"
+                                            :popper-append-to-body="false">
                                             <el-option label="不使用" :value="0"></el-option>
                                             <el-option v-for="(item, index) in signatureOption" :key="index"
                                                 :label="item.title" :value="item.id"></el-option>
@@ -390,7 +401,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import DialogSignature from "./DialogSignature.vue";
 import { getUsuallyInfo, getEmailTaskList, getSignatureList, deleteSignature, singleEmailSetting, editUsuallyInfo, editSingleEmailSetting } from '@/api/email/usually'
 import { deepClone } from '@/utils'
-import { fontSizeList, fontFamilyList } from '@/constant/editorOption'
+import { fontSizeList, fontFamilyList, colors } from '@/constant/editorOption'
 export default {
     components: {
         Editor,
@@ -432,6 +443,7 @@ export default {
             ],
             fontFamilyOption: fontFamilyList,
             fontOption: fontSizeList,
+            colorOption: colors,
             dialogVisible: false,
             signatureData: {},
             curSet: 0,
@@ -517,6 +529,12 @@ export default {
                 fontSize: {
                     fontSizeList
                 },
+                fontFamily: {
+                    fontFamilyList
+                },
+                color: {
+                    colors
+                },
                 uploadImage: {
                     fieldName: 'file',
                     server: '/common/upload',
@@ -586,7 +604,7 @@ export default {
         },
         onSave() {
             const data = {
-                ...this.formData
+                ...this.formData,
             }
             data.remind = data.remind.join(',')
             let writeLetter = deepClone(this.writeLetter)
@@ -597,7 +615,7 @@ export default {
             this.editInfoReq(data, emailData)
         },
         onCancel() {
-            this.$emit('backToHeader')
+            this.$router.replace('/email/index?type=default')
         },
     }
 };

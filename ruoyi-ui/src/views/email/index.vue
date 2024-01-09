@@ -527,7 +527,8 @@
                                 </path>
                               </svg>
                             </span>
-                            <input placeholder="客户名称/编号/邮箱/联系人昵称" type="text" class="mm-input-inner" value="">
+                            <input placeholder="客户名称/编号/邮箱/联系人昵称" type="text" class="mm-input-inner"
+                              v-model="searchCustomer" />
                             <!---->
                           </span>
                           <!---->
@@ -542,7 +543,8 @@
                         </el-select>
                       </div>
                       <div class="nav-wrap">
-                        <div class="mm-tree--highlight-current mm-tree customer-mail-nav-tree" role="tree">
+                        <div v-if="searchCustomerList && !searchCustomerList.length"
+                          class="mm-tree--highlight-current mm-tree customer-mail-nav-tree" role="tree">
                           <div v-for="generalLabelTypeData in generalLabelTypeDatas" :key="generalLabelTypeData.id"
                             :class="['is-focusable mm-tree-node', generalLabelTypeData.showGeneralChildren ? 'is-expanded' : '']"
                             @click="toggleGeneralChildren(generalLabelTypeData)" aria-disabled="" draggable="false"
@@ -689,6 +691,9 @@
                           <!---->
                           <div class="mm-tree-drop-indicator" style="display: none;"></div>
                         </div>
+                        <div v-else class="mm-tree--highlight-current mm-tree customer-mail-nav-tree">
+                          <div class="mm-tree-node-content" style="padding-left: 14px;"></div>
+                        </div>
                       </div>
                       <div class="nav-max-customer-tip ellipsis" title="为了性能，每组最多展示200个客户，客户过多时建议直接搜索">
                         为了性能，每组最多展示200个客户，客户过多时建议直接搜索</div>
@@ -786,6 +791,7 @@ import { countMenu } from "@/api/email/email";
 import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, ratingList, activityList } from "@/api/customer/email";
 import { EventBus } from "@/api/email/event-bus";
 import { getUsuallyInfo } from '@/api/email/usually'
+import { getCustomerSearchList } from '@/api/email/customer'
 export default {
   data() {
     return {
@@ -835,7 +841,9 @@ export default {
         value: 6,
         label: '客户活跃度'
       }],
-      emailDefaultOption: {}
+      emailDefaultOption: {},
+      searchCustomer: '',//查询客户名称
+      searchCustomerList: [],
     };
   },
   components: {
@@ -1128,6 +1136,15 @@ export default {
       },
       deep: true,
       immediate: true,
+    },
+    searchCustomer: {
+      handler(newVal) {
+        if (newVal) {
+
+        } else {
+          this.searchCustomerList = []
+        }
+      }
     }
   },
 

@@ -170,7 +170,7 @@
                   </ul>
                 </li>
 
-                <li class="mail-editor-wrapper">
+                <li class="editor-wrapper">
                   <Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
                     :defaultConfig="toolbarConfig" />
                   <!-- 编辑器 -->
@@ -349,6 +349,10 @@
   left: 75px;
 }
 
+.editor-wrapper {
+  z-index: 1002 !important;
+}
+
 @import '../../static/scss/email/index/92270.59786a6e.css';
 @import '../../static/scss/email/index/43960.b19a070c.css';
 @import '../../static/scss/email/index/64147.480300b1.css';
@@ -370,7 +374,7 @@ import ReceiverInput from './write_email_receiver_input.vue';
 import PendingTimePopover from './pending_time.vue';
 import CustomTimePopover from './custom_time.vue';
 import DelayedTxlLayout from './write_email_delayed_tx.vue';
-import { fontSizeList } from '@/constant/editorOption'
+import { fontSizeList, fontFamilyList, colors } from '@/constant/editorOption'
 import { getSignatureList } from '@/api/email/usually'
 
 export default {
@@ -438,6 +442,7 @@ export default {
       type: String,
       default: null
     },
+    // 邮件默认配置项
     emailDefaultOption: {
       type: Object,
       default: () => { },
@@ -447,10 +452,21 @@ export default {
   watch: {
     'formData.signatureId': {
       handler(newVal) {
+
         if (this.editor) {
+          const defaultSpan = `
+          <span style=" font-size:${this.emailDefaultOption?.fontSize || ''};
+              font-family:${this.emailDefaultOption?.defaultFont || ''};
+              color:rgb(0,0,0)">&ZeroWidthSpace;</span>\n\n\n`
+          if (newVal === -1) {
+            this.formData.content = `<span style=" font-size:${this.emailDefaultOption?.fontSize || ''};
+              font-family:${this.emailDefaultOption?.defaultFont || ''};
+              color:rgb(0,0,0)">&ZeroWidthSpace;</span>`
+            return
+          }
           let content = this.signatureOption.find(val => val.id === newVal)?.content || ''
-          this.formData.content = '\n\n' + content
-          console.log(this.formData.content);
+          // 默认内容
+          this.formData.content = `<p>${defaultSpan}${content}</p > `
         }
       }
     }
@@ -460,8 +476,10 @@ export default {
       try {
         const res = await getSignatureList()
         if (res.code === 200) {
-          this.signatureOption = res.data
-          this.formData.signatureId = this.emailDefaultOption?.signatureId || ''
+          this.signatureOption = [{ id: -1, title: '不使用', content: '' }, ...res.data]
+          this.$watch('emailDefaultOption.signatureId', (newVal) => {
+            this.formData.signatureId = newVal || ''
+          })
         }
       } catch { }
     },
@@ -514,8 +532,17 @@ export default {
 
     onCreated(editor) {
       this.editor = Object.seal(editor);
-      this.editor.getConfig().MENU_CONF['fontSize'] = {
-        fontSizeList: fontSizeList,
+      this.editor.getConfig().MENU_CONF = {
+        ...this.editor.getConfig().MENU_CONF,
+        fontSize: {
+          fontSizeList
+        },
+        fontFamily: {
+          fontFamilyList
+        },
+        color: {
+          colors
+        }
       }
       setTimeout(() => {
         this.editor.dangerouslyInsertHtml(this?.htmlText);
@@ -668,7 +695,8 @@ export default {
     async saveAsDraftPopup() {
       const response = await this.saveSendEmail();
       if (response.code === 200) {
-        EventBus.$emit('switch-index');  // 发出事件
+        // EventBus.$emit('switch-index');  // 发出事件
+        this.$router.replace('/email/index?type=default')
       } else {
         this.$message.error("执行失败");
       }
@@ -676,7 +704,8 @@ export default {
 
     // 弹窗-不保存
     noSavePopup() {
-      EventBus.$emit('switch-index');  // 发出事件
+      this.$router.replace('/email/index?type=default')
+      // EventBus.$emit('switch-index');  // 发出事件
     },
 
     updateEmailList({ label, emails }) {
@@ -716,7 +745,7 @@ export default {
         throw error;
       }
 
-      this.$set(file, 'name', `${file.newName}.${this.getFileExtension(file.name)}`);
+      this.$set(file, 'name', `${file.newName}.${this.getFileExtension(file.name)} `);
       this.$set(file, 'isRenaming', false);
     },
 
@@ -752,21 +781,21 @@ export default {
     },
     formattedEmailContent() {
       let emailContent = `
-      <div style="font-size: 12px;background:#efefef;padding:8px;">
+  < div style = "font-size: 12px;background:#efefef;padding:8px;" >
         <div><b>From: </b>&nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
         <div><b>Send time: </b>${this.formatDate(this.selectedEmail.sendDate)}</div>
-    `;
+`;
 
       if (this.selectedEmail.receiver) {
-        emailContent += `<div><b>To: </b>&nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.receiver))}</div>`;
+        emailContent += `< div > <b>To: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.receiver))}</div > `;
       }
 
       if (this.selectedEmail.cc) {
-        emailContent += `<div><b>Cc: </b>&nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.cc))}</div>`;
+        emailContent += `< div > <b>Cc: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.cc))}</div > `;
       }
 
       if (this.selectedEmail.title) {
-        emailContent += `<div><b>Subject: </b>&nbsp;${this.selectedEmail.title}</div>`;
+        emailContent += `< div > <b>Subject: </b> & nbsp;${this.selectedEmail.title}</div > `;
       }
 
       emailContent += '</div>';
@@ -774,7 +803,7 @@ export default {
     },
 
     formatEmailRecipients(emails) {
-      return emails.map(email => `<a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${email}</a>`).join('; ');
+      return emails.map(email => `< a href = "mailto:${email}" style = "color: #1e7bf9; text-decoration: none;" target = "_blank" > ${email}</a > `).join('; ');
     },
 
     parseEmailString(emailString) {
@@ -804,7 +833,7 @@ export default {
       hours = hours ? hours : 12; // the hour '0' should be '12'
       const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
 
-      return `${dayName}, ${monthName} ${dayOfMonth}, ${year} ${hours}:${minutes} ${ampm}`;
+      return `${dayName}, ${monthName} ${dayOfMonth}, ${year} ${hours}:${minutes} ${ampm} `;
     },
 
     showPending() {

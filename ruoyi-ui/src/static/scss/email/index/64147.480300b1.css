@@ -2553,7 +2553,7 @@ body {
   padding: 0;
   border: 1px solid #f0f0f0;
   border-bottom: none;
-  flex: 1
+  flex: 1;
 }
 
 .mail-edit-container .mail-edit-wrapper .mail-edit-content>ul .mail-editor-wrapper .mail-editor {
