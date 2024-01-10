@@ -367,14 +367,6 @@
           AND <![CDATA[ DATEDIFF(NOW(), mte.send_date) <= 4 ]]>;
     </select>
 
-    <select id="selectSendTaskEmailList" resultMap="TaskEmailResult">
-        <include refid="selectTaskEmailVo"/>
-        WHERE task_id = #{taskId} and type = 2
-        AND status = 1
-        AND del_flag = '0'
-        AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
-    </select>
-
     <select id="countCustomerContactByFromer" resultType="java.lang.Integer">
         select count(distinct (cc.id)) from customer_customer cc
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
@@ -421,6 +413,11 @@
         FROM mailbox_task_email mte
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE mte.id = #{id}
+    </select>
+
+    <select id="selectByUnSentStatus" resultType="com.ruoyi.email.domain.TaskEmail">
+        <include refid="selectTaskEmailVo"/>
+         where task_id = #{taskId} and status = 2 and del_flag = '0' and type = 2
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
@@ -569,6 +566,13 @@
         <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}
         </foreach> and del_flag = '0'
+    </update>
+    <update id="updateTaskSendEmailStatus">
+        update mailbox_task_email set status = 2
+        WHERE task_id = #{taskId} and type = 2
+        AND status = 1
+        AND del_flag = '0'
+        AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
     </update>
 
     <delete id="deleteTaskEmailById" parameterType="Long">

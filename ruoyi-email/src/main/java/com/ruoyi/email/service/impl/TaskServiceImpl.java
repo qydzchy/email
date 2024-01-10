@@ -476,8 +476,14 @@ public class TaskServiceImpl implements ITaskService
      * @param task
      */
     private void sendEmail(Task task) {
-        List<TaskEmail> taskEmailList = taskEmailService.selectSendTaskEmailList(task.getId());
-        if (taskEmailList == null || taskEmailList.isEmpty()) return;
+        // 更新邮件为发送中
+        taskEmailService.updateTaskSendEmailStatus(task.getId());
+
+        List<TaskEmail> taskEmailList = new ArrayList<>();
+        synchronized (task.getId()) {
+            taskEmailList = taskEmailService.selectByUnSentStatus(task.getId());
+            if (taskEmailList == null || taskEmailList.isEmpty()) return;
+        }
 
         // 获取随机休眠时间
         int randomSleepTime = getRandomSleepTime(task.getCreateId());

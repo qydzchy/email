@@ -243,12 +243,6 @@ public interface TaskEmailMapper
     int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver);
 
     /**
-     * 查询发送任务邮件列表
-     * @return
-     */
-    List<TaskEmail> selectSendTaskEmailList(Long taskId);
-
-    /**
      * 查询发件人邮箱是否存在客户联系人中
      * @param seaType
      * @param fromer
@@ -270,4 +264,17 @@ public interface TaskEmailMapper
      * @return
      */
     EmailDetailVO detail(@Param("id") Long id);
+
+    /**
+     * 更新任务发送邮件状态
+     * @param taskId
+     */
+    void updateTaskSendEmailStatus(@Param("taskId") Long taskId);
+
+    /**
+     * 查询未发送状态邮件
+     * @param taskId
+     * @return
+     */
+    List<TaskEmail> selectByUnSentStatus(@Param("taskId") Long taskId);
 }

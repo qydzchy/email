@@ -427,16 +427,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     /**
-     * 查询发送任务邮件列表
-     * @return
-     */
-    @Override
-    public List<TaskEmail> selectSendTaskEmailList(Long taskId) {
-        return taskEmailMapper.selectSendTaskEmailList(taskId);
-    }
-
-
-    /**
      * 邮件发送-（写信）
      *
      * @param id
@@ -842,6 +832,25 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         }
 
         return emailDetailVO;
+    }
+
+    /**
+     * 更新任务发送邮件状态
+     * @param taskId
+     */
+    @Override
+    public void updateTaskSendEmailStatus(Long taskId) {
+        taskEmailMapper.updateTaskSendEmailStatus(taskId);
+    }
+
+    /**
+     * 查询未发送状态邮件
+     * @param taskId
+     * @return
+     */
+    @Override
+    public List<TaskEmail> selectByUnSentStatus(Long taskId) {
+        return taskEmailMapper.selectByUnSentStatus(taskId);
     }
 
     private EmailSimpleBO getEmailSimpleBO(TaskEmail taskEmail, String content) {

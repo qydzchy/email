@@ -12,6 +12,7 @@ import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.service.handler.email.UniversalMail;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.util.Pair;
 
 
@@ -242,12 +243,6 @@ public interface ITaskEmailService
     void autoResponse(Task task, UniversalMail universalMail, String reContent);
 
     /**
-     * 查询发送任务邮件列表
-     * @return
-     */
-    List<TaskEmail> selectSendTaskEmailList(Long taskId);
-
-    /**
      * 收发件规则处理
      */
     TransceiverRuleBO transceiverRuleHandler(Long taskId, EmailSimpleBO emailSimpleBO, List<TransceiverRuleVO> transceiverRuleList);
@@ -271,4 +266,17 @@ public interface ITaskEmailService
      * @return
      */
     EmailDetailVO detail(Long id);
+
+    /**
+     * 更新任务邮件发送状态
+     * @param taskId
+     */
+    void updateTaskSendEmailStatus(Long taskId);
+
+    /**
+     * 查询未发送状态邮件
+     * @param taskId
+     * @return
+     */
+    List<TaskEmail> selectByUnSentStatus(Long taskId);
 }
