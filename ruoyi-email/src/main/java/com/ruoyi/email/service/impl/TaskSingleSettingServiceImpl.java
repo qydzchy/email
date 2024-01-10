@@ -79,24 +79,21 @@ public class TaskSingleSettingServiceImpl implements ITaskSingleSettingService
         String username = loginUser.getUsername();
         Date now = DateUtils.getNowDate();
 
-        for (TaskSingleSetting taskSingleSetting : taskSingleSettingList) {
-            if (taskSingleSetting.getId() == null) {
-                taskSingleSetting.setCreateId(userId);
-                taskSingleSetting.setCreateBy(username);
-                taskSingleSetting.setCreateTime(now);
-                taskSingleSetting.setUpdateId(userId);
-                taskSingleSetting.setUpdateBy(username);
-                taskSingleSetting.setUpdateTime(now);
-                taskSingleSettingMapper.insertTaskSingleSetting(taskSingleSetting);
+        // 删除所有的单个邮箱设置
+        taskSingleSettingMapper.deleteTaskSingleSettingByUserId(userId, userId, username);
 
-            } else {
-                taskSingleSetting.setUpdateId(userId);
-                taskSingleSetting.setUpdateBy(username);
-                taskSingleSetting.setUpdateTime(now);
-                taskSingleSettingMapper.updateTaskSingleSetting(taskSingleSetting);
-            }
-        }
 
+        taskSingleSettingList.stream().forEach(taskSingleSetting -> {
+            taskSingleSetting.setCreateId(userId);
+            taskSingleSetting.setCreateBy(username);
+            taskSingleSetting.setCreateTime(now);
+            taskSingleSetting.setUpdateId(userId);
+            taskSingleSetting.setUpdateBy(username);
+            taskSingleSetting.setUpdateTime(now);
+        });
+
+        // 批量插入
+        taskSingleSettingMapper.batchInsert(taskSingleSettingList);
         return true;
     }
 

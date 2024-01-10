@@ -34,9 +34,7 @@ import com.ruoyi.email.domain.bo.*;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
-import com.ruoyi.email.mapper.OtherConfigMapper;
-import com.ruoyi.email.mapper.TaskEmailLabelMapper;
-import com.ruoyi.email.mapper.TransceiverRuleMapper;
+import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.UniversalMail;
 import com.ruoyi.email.service.handler.email.column.EmailColumnContext;
@@ -46,7 +44,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import com.ruoyi.email.mapper.TaskEmailMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
@@ -89,6 +86,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
     private TaskEmailLabelMapper taskEmailLabelMapper;
+    @Resource
+    private LabelMapper labelMapper;
 
     @Lazy
     @Resource
@@ -425,16 +424,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmailContent.setContent(reContent);
         taskEmailContentService.insertTaskEmailContent(taskEmailContent);
     }
-
-    /**
-     * 查询发送任务邮件列表
-     * @return
-     */
-    @Override
-    public List<TaskEmail> selectSendTaskEmailList(Long taskId) {
-        return taskEmailMapper.selectSendTaskEmailList(taskId);
-    }
-
 
     /**
      * 邮件发送-（写信）
@@ -844,6 +833,25 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         return emailDetailVO;
     }
 
+    /**
+     * 更新任务发送邮件状态
+     * @param taskId
+     */
+    @Override
+    public void updateTaskSendEmailStatus(Long taskId) {
+        taskEmailMapper.updateTaskSendEmailStatus(taskId);
+    }
+
+    /**
+     * 查询未发送状态邮件
+     * @param taskId
+     * @return
+     */
+    @Override
+    public List<TaskEmail> selectByUnSentStatus(Long taskId) {
+        return taskEmailMapper.selectByUnSentStatus(taskId);
+    }
+
     private EmailSimpleBO getEmailSimpleBO(TaskEmail taskEmail, String content) {
         EmailSimpleBO emailSimpleBO = new EmailSimpleBO();
         emailSimpleBO.setFromer(taskEmail.getFromer());
@@ -1197,15 +1205,15 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean attachmentFlag, Integer pageNum, Integer pageSize) {
-        int count = taskEmailMapper.customerEmailCount(customerId, attachmentFlag);
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize) {
+        int count = taskEmailMapper.customerEmailCount(customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(customerId, attachmentFlag, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }

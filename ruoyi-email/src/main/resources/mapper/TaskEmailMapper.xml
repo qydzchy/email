@@ -245,7 +245,9 @@
     <select id="customerEmailCount" resultType="java.lang.Integer">
         select count(DISTINCT(mte.id)) from customer_customer_contact ccc
         left join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
-        where ccc.customer_id = ${customerId}
+        LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        WHERE
+        ccc.customer_id = #{customerId}
         AND ccc.del_flag = '0'
         AND mte.del_flag = '0'
         <if test="attachmentFlag != null and attachmentFlag == true">
@@ -254,6 +256,72 @@
             FROM mailbox_task_email_attachment mtea
             WHERE mte.id = mtea.email_id
             )
+        </if>
+        <if test="fixedFlag != null and fixedFlag">
+            AND mte.fixed_flag = true
+        </if>
+        <if test="type != null">
+            AND mte.type = #{type}
+        </if>
+        <!-- 联系人筛选 -->
+        <if test="emailList != null and emailList.size() > 0">
+            AND (
+            mte.fromer IN
+            <foreach item="email" collection="emailList" open="(" separator="," close=")">
+                #{email}
+            </foreach>
+            OR
+            <foreach item="email" collection="emailList" separator=" OR ">
+                mte.receiver LIKE concat( '%"email":"', #{email}, '"%' )
+                OR mte.bcc LIKE concat( '%"email":"', #{email}, '"%' )
+                OR mte.cc LIKE concat( '%"email":"', #{email}, '"%' )
+            </foreach>
+            )
+        </if>
+        <!-- 标签筛选 -->
+        <if test="labelIdList != null and labelIdList.size() > 0">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_label mtl
+            WHERE mte.id = mtl.email_id
+            AND mtl.label_id IN
+            <foreach item="labelId" collection="labelIdList" open="(" separator="," close=")">
+                #{labelId}
+            </foreach>
+            )
+        </if>
+        <!-- 邮件标题、正文、附件名筛选 -->
+        <if test="keyword != null and keyword != ''">
+            <if test="keywordType == null">
+                AND (
+                mte.title like concat('%', #{keyword}, '%')
+                OR mtec.content like concat('%', #{keyword}, '%')
+                OR EXISTS (
+                SELECT 1
+                FROM mailbox_task_email_attachment mtea
+                LEFT JOIN mailbox_task_attachment mta ON mtea.attachment_id = mta.id
+                WHERE mte.id = mtea.email_id
+                AND mta.name LIKE CONCAT('%', #{keyword}, '%')
+                )
+                )
+            </if>
+            <if test="keywordType != null">
+                <if test="keywordType == 1">
+                    AND mte.title like concat('%', #{keyword}, '%')
+                </if>
+                <if test="keywordType == 2">
+                    AND mtec.content like concat('%', #{keyword}, '%')
+                </if>
+                <if test="keywordType == 3">
+                    AND EXISTS (
+                    SELECT 1
+                    FROM mailbox_task_email_attachment mtea
+                    LEFT JOIN mailbox_task_attachment mta ON mtea.attachment_id = mta.id
+                    WHERE mte.id = mtea.email_id
+                    AND mta.name LIKE CONCAT('%', #{keyword}, '%')
+                    )
+                </if>
+            </if>
         </if>
     </select>
 
@@ -290,7 +358,7 @@
             OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
             LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
-            ccc.customer_id = ${customerId}
+            ccc.customer_id = #{customerId}
             AND ccc.del_flag = '0'
             AND mte.del_flag = '0'
             <if test="attachmentFlag != null and attachmentFlag == true">
@@ -299,6 +367,72 @@
                 FROM mailbox_task_email_attachment mtea
                 WHERE mte.id = mtea.email_id
                 )
+            </if>
+            <if test="fixedFlag != null and fixedFlag">
+                AND mte.fixed_flag = true
+            </if>
+            <if test="type != null">
+                AND mte.type = #{type}
+            </if>
+            <!-- 联系人筛选 -->
+            <if test="emailList != null and emailList.size() > 0">
+                AND (
+                    mte.fromer IN
+                    <foreach item="email" collection="emailList" open="(" separator="," close=")">
+                        #{email}
+                    </foreach>
+                    OR
+                    <foreach item="email" collection="emailList" separator=" OR ">
+                        mte.receiver LIKE concat( '%"email":"', #{email}, '"%' )
+                        OR mte.bcc LIKE concat( '%"email":"', #{email}, '"%' )
+                        OR mte.cc LIKE concat( '%"email":"', #{email}, '"%' )
+                    </foreach>
+                )
+            </if>
+           <!-- 标签筛选 -->
+            <if test="labelIdList != null and labelIdList.size() > 0">
+                AND EXISTS (
+                    SELECT 1
+                    FROM mailbox_task_email_label mtl
+                    WHERE mte.id = mtl.email_id
+                    AND mtl.label_id IN
+                    <foreach item="labelId" collection="labelIdList" open="(" separator="," close=")">
+                        #{labelId}
+                    </foreach>
+                )
+            </if>
+            <!-- 邮件标题、正文、附件名筛选 -->
+            <if test="keyword != null and keyword != ''">
+                <if test="keywordType == null">
+                    AND (
+                        mte.title like concat('%', #{keyword}, '%')
+                        OR mtec.content like concat('%', #{keyword}, '%')
+                        OR EXISTS (
+                            SELECT 1
+                            FROM mailbox_task_email_attachment mtea
+                            LEFT JOIN mailbox_task_attachment mta ON mtea.attachment_id = mta.id
+                            WHERE mte.id = mtea.email_id
+                            AND mta.name LIKE CONCAT('%', #{keyword}, '%')
+                        )
+                    )
+                </if>
+                <if test="keywordType != null">
+                    <if test="keywordType == 1">
+                        AND mte.title like concat('%', #{keyword}, '%')
+                    </if>
+                    <if test="keywordType == 2">
+                        AND mtec.content like concat('%', #{keyword}, '%')
+                    </if>
+                    <if test="keywordType == 3">
+                        AND EXISTS (
+                        SELECT 1
+                        FROM mailbox_task_email_attachment mtea
+                        LEFT JOIN mailbox_task_attachment mta ON mtea.attachment_id = mta.id
+                        WHERE mte.id = mtea.email_id
+                        AND mta.name LIKE CONCAT('%', #{keyword}, '%')
+                        )
+                    </if>
+                </if>
             </if>
         ORDER BY
             mte.send_date DESC
@@ -367,14 +501,6 @@
           AND <![CDATA[ DATEDIFF(NOW(), mte.send_date) <= 4 ]]>;
     </select>
 
-    <select id="selectSendTaskEmailList" resultMap="TaskEmailResult">
-        <include refid="selectTaskEmailVo"/>
-        WHERE task_id = #{taskId} and type = 2
-        AND status = 1
-        AND del_flag = '0'
-        AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
-    </select>
-
     <select id="countCustomerContactByFromer" resultType="java.lang.Integer">
         select count(distinct (cc.id)) from customer_customer cc
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
@@ -421,6 +547,11 @@
         FROM mailbox_task_email mte
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE mte.id = #{id}
+    </select>
+
+    <select id="selectByUnSentStatus" resultType="com.ruoyi.email.domain.TaskEmail">
+        <include refid="selectTaskEmailVo"/>
+         where task_id = #{taskId} and status = 2 and del_flag = '0' and type = 2
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
@@ -569,6 +700,13 @@
         <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}
         </foreach> and del_flag = '0'
+    </update>
+    <update id="updateTaskSendEmailStatus">
+        update mailbox_task_email set status = 2
+        WHERE task_id = #{taskId} and type = 2
+        AND status = 1
+        AND del_flag = '0'
+        AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
     </update>
 
     <delete id="deleteTaskEmailById" parameterType="Long">

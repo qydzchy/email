@@ -207,7 +207,7 @@ public interface TaskEmailMapper
      * @param customerId
      * @return
      */
-    int customerEmailCount(@Param("customerId") Long customerId, @Param("attachmentFlag") Boolean attachmentFlag);
+    int customerEmailCount(@Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword);
 
     /**
      * 客户邮件列表
@@ -216,7 +216,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("attachmentFlag") Boolean attachmentFlag, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 判断邮件是否存在
@@ -243,12 +243,6 @@ public interface TaskEmailMapper
     int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver);
 
     /**
-     * 查询发送任务邮件列表
-     * @return
-     */
-    List<TaskEmail> selectSendTaskEmailList(Long taskId);
-
-    /**
      * 查询发件人邮箱是否存在客户联系人中
      * @param seaType
      * @param fromer
@@ -270,4 +264,17 @@ public interface TaskEmailMapper
      * @return
      */
     EmailDetailVO detail(@Param("id") Long id);
+
+    /**
+     * 更新任务发送邮件状态
+     * @param taskId
+     */
+    void updateTaskSendEmailStatus(@Param("taskId") Long taskId);
+
+    /**
+     * 查询未发送状态邮件
+     * @param taskId
+     * @return
+     */
+    List<TaskEmail> selectByUnSentStatus(@Param("taskId") Long taskId);
 }

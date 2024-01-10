@@ -66,4 +66,16 @@ public interface TaskSingleSettingMapper
      * @return
      */
     List<TaskSingleSettingListVO> list(@Param("createId") Long createId);
+
+
+    /**
+     * 批量新增单个邮箱设置
+     */
+    int batchInsert(@Param("list") List<TaskSingleSetting> list);
+
+    /**
+     * 删除单个邮箱设置
+     * @param createId
+     */
+    void deleteTaskSingleSettingByUserId(@Param("createId") Long createId, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

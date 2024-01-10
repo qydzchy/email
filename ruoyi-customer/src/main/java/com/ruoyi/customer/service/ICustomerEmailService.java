@@ -54,4 +54,10 @@ public interface ICustomerEmailService {
      * @return
      */
     List<EmailCustomerVO> searchList(String keyword);
+
+    /**
+     * 联系人列表
+     * @return
+     */
+    List<String> contactEmailList(Long customerId);
 }

@@ -12,6 +12,7 @@ import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.service.handler.email.UniversalMail;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.util.Pair;
 
 
@@ -231,7 +232,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean attachmentFlag, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize);
 
     /**
      * 自动回复
@@ -240,12 +241,6 @@ public interface ITaskEmailService
      * @param reContent
      */
     void autoResponse(Task task, UniversalMail universalMail, String reContent);
-
-    /**
-     * 查询发送任务邮件列表
-     * @return
-     */
-    List<TaskEmail> selectSendTaskEmailList(Long taskId);
 
     /**
      * 收发件规则处理
@@ -271,4 +266,18 @@ public interface ITaskEmailService
      * @return
      */
     EmailDetailVO detail(Long id);
+
+    /**
+     * 更新任务邮件发送状态
+     * @param taskId
+     */
+    void updateTaskSendEmailStatus(Long taskId);
+
+    /**
+     * 查询未发送状态邮件
+     * @param taskId
+     * @return
+     */
+    List<TaskEmail> selectByUnSentStatus(Long taskId);
+
 }

@@ -27,6 +27,14 @@
         where id = #{id}
     </select>
 
+    <select id="selectCustomerSegmentIdByCustomerIdAndSegmentIds" resultType="java.lang.Long">
+        select id from customer_customer_segment where customer_id = #{customerId}
+        and segment_id in
+        <foreach item="segmentId" collection="segmentIdList" open="(" separator="," close=")">
+            #{segmentId}
+        </foreach>
+    </select>
+
     <insert id="insertCustomerSegment" parameterType="CustomerSegment" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer_segment
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -67,11 +75,4 @@
         </foreach>
     </delete>
 
-    <delete id="deleteCustomerSegmentByCustomerIdAndSegmentIds">
-        delete from customer_customer_segment where customer_id = #{customerId}
-        and segment_id in
-        <foreach item="segmentId" collection="segmentIdList" open="(" separator="," close=")">
-            #{segmentId}
-        </foreach>
-    </delete>
 </mapper>

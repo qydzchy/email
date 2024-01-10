@@ -2,7 +2,6 @@ package com.ruoyi.web.controller.email;
 
 import javax.annotation.Resource;
 
-import com.ruoyi.email.domain.dto.email.GeneralSaveOrUpdateDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -52,9 +51,9 @@ public class GeneralController extends BaseController
     @PreAuthorize("@ss.hasPermi('email:general:edit')")
     @Log(title = "修改邮箱常规", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody GeneralSaveOrUpdateDTO generalSaveOrUpdateDTO)
+    public AjaxResult edit(@RequestBody General general)
     {
-        return toAjax(generalService.updateGeneral(generalSaveOrUpdateDTO));
+        return toAjax(generalService.updateGeneral(general));
     }
 
 }

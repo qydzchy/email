@@ -6,17 +6,16 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.Source;
 import com.ruoyi.customer.domain.bo.*;
 import com.ruoyi.customer.domain.vo.*;
+import com.ruoyi.customer.mapper.CustomerContactMapper;
 import com.ruoyi.customer.mapper.SourceMapper;
 import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.customer.service.ICustomerEmailService;
 import com.ruoyi.customer.service.IPacketService;
-import org.springframework.data.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +28,8 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
     private IPacketService packetService;
     @Resource
     private SourceMapper sourceMapper;
+    @Resource
+    private CustomerContactMapper customerContactMapper;
 
     /**
      * 公海分组列表
@@ -426,5 +427,24 @@ public class CustomerEmailServiceImpl implements ICustomerEmailService {
         Long userId = loginUser.getUserId();
         // 客户邮件数量
         return customerService.selectEmailCountGroupBySearch(userId, keyword);
+    }
+
+    /**
+     * 联系人列表
+     * @param customerId
+     * @return
+     */
+    @Override
+    public List<String> contactEmailList(Long customerId) {
+        List<CustomerContactBO> customerContactBOList = customerContactMapper.selectCustomerContactByCustomerId(customerId);
+        List<String> emailList = new ArrayList<>();
+        for (CustomerContactBO customerContactBO : customerContactBOList) {
+            String email = customerContactBO.getEmail();
+            if (StringUtils.isNotBlank(email)) {
+                emailList.add(email);
+            }
+        }
+
+        return emailList;
     }
 }

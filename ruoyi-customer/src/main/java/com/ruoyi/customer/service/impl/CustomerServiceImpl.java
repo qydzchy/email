@@ -1172,7 +1172,11 @@ public class CustomerServiceImpl implements ICustomerService {
                 }
 
                 // 删除客户和客群的关系
-                customerSegmentMapper.deleteCustomerSegmentByCustomerIdAndSegmentIds(customerId, deleteSegmentIdList);
+                List<Long> idList = customerSegmentMapper.selectCustomerSegmentIdByCustomerIdAndSegmentIds(customerId, deleteSegmentIdList);
+                if (idList != null && !idList.isEmpty()) {
+                    Long[] ids = idList.stream().toArray(Long[]::new);
+                    customerSegmentMapper.deleteCustomerSegmentByIds(ids);
+                }
 
                 if (!segmentIdList.isEmpty()) {
                     // 批量保存客户和客群的关系
