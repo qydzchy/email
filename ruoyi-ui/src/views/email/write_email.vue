@@ -284,7 +284,7 @@
       </div>
     </form>
     <template>
-      <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1000;" v-portal=""
+      <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1004;" v-portal=""
         v-portal-fixed="" v-if="showCancelPopup">
         <div class="mm-modal-mask"></div>
         <div class="mm-modal-wrapper" style="padding-top: 15vh;">
@@ -337,7 +337,7 @@
 </template>
 <style lang="scss">
 .dropdown-email-list {
-  z-index: 1000;
+  z-index: 1004;
   position: absolute;
 }
 
@@ -402,7 +402,7 @@ export default {
               text: '',
               fontFamily: this.emailDefaultOption?.defaultFont || '',
               fontSize: this.emailDefaultOption?.fontSize || '',
-              color: 'rgb(0,0,0)',
+              color: this.emailDefaultOption?.fontColor || '',
             }
           ]
         },
@@ -457,11 +457,11 @@ export default {
           const defaultSpan = `
           <span style=" font-size:${this.emailDefaultOption?.fontSize || ''};
               font-family:${this.emailDefaultOption?.defaultFont || ''};
-              color:rgb(0,0,0)">&ZeroWidthSpace;</span>\n\n\n`
+              color:${this.emailDefaultOption?.fontColor};">&ZeroWidthSpace;</span>\n\n\n`
           if (newVal === -1) {
             this.formData.content = `<span style=" font-size:${this.emailDefaultOption?.fontSize || ''};
               font-family:${this.emailDefaultOption?.defaultFont || ''};
-              color:rgb(0,0,0)">&ZeroWidthSpace;</span>`
+              color:${this.emailDefaultOption?.fontColor};">&ZeroWidthSpace;</span>`
             return
           }
           let content = this.signatureOption.find(val => val.id === newVal)?.content || ''

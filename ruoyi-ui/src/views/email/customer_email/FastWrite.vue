@@ -133,7 +133,7 @@
 
                 <span class="mm-tooltip mail-toolbar-btn-item">
                     <span class="mm-tooltip-trigger">
-                        <a href="#" @click.prevent="$emit('switch', 'setup')" class="mail-toolbar-btn-item noright"
+                        <a href="#" @click.prevent="onSwitchSetup" class="mail-toolbar-btn-item noright"
                             tag="div">
                             <span class="okki-icon-wrap setting-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="18"
                                     height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon"
@@ -825,6 +825,10 @@ export default {
                         console.warn("Unknown menu item");
                 }
             }
+        },
+        // 切换到设置页
+        onSwitchSetup() {
+            this.$router.replace('/email/index?type=setting_email')
         },
 
     }

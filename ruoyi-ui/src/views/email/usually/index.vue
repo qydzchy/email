@@ -594,6 +594,7 @@ export default {
             try {
                 const res = await editUsuallyInfo(data)
                 if (res.code === 200) {
+                    this.$store.dispatch('emailSetting/GetUsuallyInfo')
                     let emailData = deepClone(this.emailSetList)
                     emailData = emailData.map(val => {
                         val.defaultBccFlag = +val.defaultBccFlag
