@@ -41,10 +41,10 @@ public interface IGeneralService
     /**
      * 修改邮箱常规
      * 
-     * @param generalSaveOrUpdateDTO 邮箱常规
+     * @param general 邮箱常规
      * @return 结果
      */
-    public int updateGeneral(GeneralSaveOrUpdateDTO generalSaveOrUpdateDTO);
+    public boolean updateGeneral(General general);
 
     /**
      * 批量删除邮箱常规
