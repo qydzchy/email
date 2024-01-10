@@ -102,7 +102,7 @@
 								<th class="list-time">导入时间</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody v-loading="tableLoading">
 							<tr v-for="(item, index) in  list " :key="index">
 								<td>
 									<p :title="item.fileName" class="ellipsis">
@@ -277,6 +277,7 @@ export default {
 			},
 			uploadFileName: '',
 			uploadStatus: false,
+			tableLoading: false
 		}
 	},
 	computed: {
@@ -316,11 +317,14 @@ export default {
 			} catch { }
 		},
 		async getImportEmailList() {
+			this.tableLoading = true
 			const { current, pageSize } = this.pagination
 			try {
 				const res = await getEmailImportList({
 					pageNum: current,
 					pageSize: pageSize
+				}).finally(() => {
+					this.tableLoading = false
 				})
 				if (res.code === 200) {
 					this.list = res.rows

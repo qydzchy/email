@@ -534,7 +534,7 @@
                           <!---->
                         </span>
                       </div>
-                      <div class="select-wrapper">
+                      <div class="select-wrapper" v-show="searchCustomerList && !searchCustomerList.length">
                         <el-select v-model="selectedLabelTypeValue" placeholder="请选择"
                           @change="handleLabelTypeSelectChange">
                           <el-option v-for="item in labelTypeOptions" :key="item.value" :label="item.label"
@@ -543,7 +543,7 @@
                         </el-select>
                       </div>
                       <div class="nav-wrap">
-                        <div v-if="searchCustomerList && !searchCustomerList.length"
+                        <div v-show="searchCustomerList && !searchCustomerList.length"
                           class="mm-tree--highlight-current mm-tree customer-mail-nav-tree" role="tree">
                           <div v-for="generalLabelTypeData in generalLabelTypeDatas" :key="generalLabelTypeData.id"
                             :class="['is-focusable mm-tree-node', generalLabelTypeData.showGeneralChildren ? 'is-expanded' : '']"
@@ -579,8 +579,8 @@
                               role="group">
                               <div v-for="customer in generalLabelTypeData.customerList" :key="customer.id"
                                 class="is-focusable mm-tree-node"
-                                :class="{ 'is-focusable mm-tree-node': activeMenuItem === 'CUSTOMER_' + customer.id }"
-                                aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
+                                :class="{ 'is-current': selectedTaskId === customer.id }" aria-disabled=""
+                                draggable="false" role="treeitem" tabindex="-1">
                                 <div class="mm-tree-node-content" style="padding-left: 34px;">
                                   <span class="mm-tree-node-expand-icon-wrapper">
                                     <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24"
@@ -593,7 +593,7 @@
                                   <!---->
                                   <!---->
                                   <span class="mm-tree-node-label-wrap">
-                                    <a @click="onCustomerSearch(customer.id)" class="link ellipsis tree-node-text">
+                                    <a @click.stop="onCustomerSearch(customer.id)" class="link ellipsis tree-node-text">
                                       <div class="mm-popover empty-item-tooltip" props="[object Object]">
                                         <div>
                                           <span class="ellipsis name">{{ customer.name }}</span>
@@ -659,8 +659,9 @@
                             </div>
                             <div v-if="labelTypeData.showChildren" class="mm-tree-node-children" role="group">
                               <div v-for="customer in labelTypeData.customerList" :key="customer.id"
-                                class="is-focusable mm-tree-node" aria-disabled="" draggable="false" role="treeitem"
-                                tabindex="-1">
+                                class="is-focusable mm-tree-node"
+                                :class="{ 'is-current': selectedTaskId === customer.id }" aria-disabled=""
+                                aria-disabled="" draggable="false" role="treeitem" tabindex="-1">
                                 <div class="mm-tree-node-content" style="padding-left: 34px;">
                                   <span class="mm-tree-node-expand-icon-wrapper">
                                     <svg class="mm-icon mm-icon-chevrondown tree-expand-icon is-leaf" viewBox="0 0 24 24"
@@ -673,7 +674,7 @@
                                   <!---->
                                   <!---->
                                   <span class="mm-tree-node-label-wrap">
-                                    <a @click="onCustomerSearch(customer.id)" class="link ellipsis tree-node-text">
+                                    <a @click.stop="onCustomerSearch(customer.id)" class="link ellipsis tree-node-text">
                                       <div class="mm-popover empty-item-tooltip" props="[object Object]">
                                         <div>
                                           <span class="ellipsis name">{{ customer.name }}</span>
@@ -691,9 +692,19 @@
                           <!---->
                           <div class="mm-tree-drop-indicator" style="display: none;"></div>
                         </div>
-                        <div v-else class="mm-tree--highlight-current mm-tree customer-mail-nav-tree">
-                          <div class="mm-tree-node-content" style="padding-left: 14px;"></div>
-                        </div>
+                        <ul v-show="searchCustomerList && searchCustomerList.length" class="search-res-list">
+                          <li class="search-res-item" v-for="(item, index) in searchCustomerList" :key="index">
+                            <div class="mm-popover" props="[object Object]" style="width: 100%;">
+                              <div>
+                                <a aria-current="page"
+                                  class="router-link-active router-link-exact-active customer-group-item link ellipsis"
+                                  @click="onCustomerSearch(item.id)">
+                                  {{ item.name }} （{{ item.customerCount }}）
+                                </a>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
                       </div>
                       <div class="nav-max-customer-tip ellipsis" title="为了性能，每组最多展示200个客户，客户过多时建议直接搜索">
                         为了性能，每组最多展示200个客户，客户过多时建议直接搜索</div>
@@ -792,6 +803,8 @@ import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, 
 import { EventBus } from "@/api/email/event-bus";
 import { getUsuallyInfo } from '@/api/email/usually'
 import { getCustomerSearchList } from '@/api/email/customer'
+import { debounce } from '@/utils'
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -841,7 +854,6 @@ export default {
         value: 6,
         label: '客户活跃度'
       }],
-      emailDefaultOption: {},
       searchCustomer: '',//查询客户名称
       searchCustomerList: [],
     };
@@ -856,15 +868,15 @@ export default {
     'customer_email': CustomerEmailLayout
   },
   methods: {
-    async getDefaultSetting() {
+    async getCustomerOptionList() {
       try {
-        const res = await getUsuallyInfo()
+        const res = await getCustomerSearchList({
+          keyword: this.searchCustomer
+        })
         if (res.code === 200) {
-          this.emailDefaultOption = res.data
+          this.searchCustomerList = res.data
         }
-      } catch (e) {
-        console.error(e.message);
-      }
+      } catch { }
     },
     switchLayout(layoutName, email, emailData, emailTotal, currentEmailType) {
       this.currentLayout = layoutName;
@@ -1019,6 +1031,7 @@ export default {
     },
 
     toggleGeneralChildren(generalLabelTypeData) {
+      console.log(generalLabelTypeData);
       if (!generalLabelTypeData.hasOwnProperty('showGeneralChildren')) {
         this.$set(generalLabelTypeData, 'showGeneralChildren', false);
       }
@@ -1063,33 +1076,36 @@ export default {
     labelTypeDataList(selectedValue) {
       if (selectedValue == 1) {
         publicleadsGroupsList().then((response) => {
-          this.labelTypeDatas = response.data;
-          this.selectedTaskId = this.labelTypeDatas?.[0]?.customerList?.[0]?.id || ''
+          this.labelTypeDatas = response.data
         });
       } else if (selectedValue == 2) {
         packetList().then((response) => {
-          this.labelTypeDatas = response.data;
+          this.labelTypeDatas = response.data
         });
       } else if (selectedValue == 3) {
         sourceList().then((response) => {
-          this.labelTypeDatas = response.data;
+          this.labelTypeDatas = response.data
         });
       } else if (selectedValue == 4) {
         stageList().then((response) => {
-          this.labelTypeDatas = response.data;
+          this.labelTypeDatas = response.data
         });
       } else if (selectedValue == 5) {
         ratingList().then((response) => {
-          this.labelTypeDatas = response.data;
+          this.labelTypeDatas = response.data
         });
       } else if (selectedValue == 6) {
         activityList().then((response) => {
-          this.labelTypeDatas = response.data;
+          this.labelTypeDatas = response.data
         });
       }
 
       generalList().then((response) => {
-        this.generalLabelTypeDatas = response.data;
+        this.generalLabelTypeDatas = response.data?.map(val => {
+          val.showGeneralChildren = true
+          return val
+        })
+        this.selectedTaskId = this.generalLabelTypeDatas?.[0]?.customerList?.[0]?.id || ''
       });
     },
     onCustomerSearch(id) {
@@ -1098,6 +1114,9 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      emailDefaultOption: state => state.emailSetting.usuallySetting
+    }),
     systemLabels() {
       return this.labels.filter(label => label.type === 1);
     },
@@ -1140,7 +1159,7 @@ export default {
     searchCustomer: {
       handler(newVal) {
         if (newVal) {
-
+          this.getCustomerOptionList()
         } else {
           this.searchCustomerList = []
         }
@@ -1154,7 +1173,7 @@ export default {
     this.refreshFolderList();
     this.refreshLabelList();
     this.refreshMenuCount();
-    this.getDefaultSetting()
+    this.$store.dispatch('emailSetting/GetUsuallyInfo')
 
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';

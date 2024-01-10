@@ -15,6 +15,7 @@ const getters = {
     topbarRouters: state => state.permission.topbarRouters,
     defaultRoutes: state => state.permission.defaultRoutes,
     sidebarRouters: state => state.permission.sidebarRouters,
-    companyCustomerSetting: state => state.company.settings
+    companyCustomerSetting: state => state.company.settings,
+    emailUsuallySetting: state => state.emailSetting.usuallySetting
 }
 export default getters

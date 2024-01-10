@@ -5,7 +5,7 @@
                 <!-- 列表 -->
                 <div class="mm-split-pane mm-split-pane__left" :style="`right: ${showHeader ? '29.1545%' : '64.7959%;'}`">
 
-                    <div class="mail-list-scroll-container mail-list-wrap">
+                    <div class="mail-list-scroll-container mail-list-wrap" v-loading="loading">
                         <div class="header-wrapper" style="">
                             <div class="mail-list-header-tool-wrapper">
                                 <div class="mm-tabs mm-tabs__top mm-tabs__align-left mail-list-toggle-tab header-tab">
@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mail-list-scroller" v-loading="loading">
+                        <div class="mail-list-scroller">
                             <div v-if="list && list.length" class="mail-list-scroll-container">
                                 <ul class="grouped-list-container bordered mail-grouped-list">
                                     <li v-for="(data, index) in list" :key="index" class="grouped-list-item">
@@ -127,7 +127,7 @@
                                                                         <span class="time ellipsis">
                                                                             {{ email.sendTime }}
                                                                         </span>
-                                                                        <div class="pending">
+                                                                        <div class="pending" v-show="showHeader">
                                                                             <div class="mm-popover">
                                                                                 <div>
                                                                                     <span
@@ -196,7 +196,7 @@
                         <div class="mail-paging list-page-wrap" v-if="!showHeader && totalPages">
                             <span class="total-count ellipsis">共 {{ total }} 封</span>
                             <div class="quick-jumper">
-                                <input :max="totalPages" class="mail-paging-input" v-model="currentPage"
+                                <input :max="totalPages" class="mail-paging-input" type="number" :value.sync="currentPage"
                                     @blur="handlePageInputBlur" @input="handlePageInputChange">
                                 <span class="mail-paging-slash"> / </span>
                                 <span class="page-unit">{{ totalPages }}  页</span>
@@ -243,7 +243,8 @@
                         <!-- 快捷邮件 -->
                         <FastWrite :info="fastInfo" @showLabel="onShowLabel" />
                         <!-- 抽屉 -->
-                        <div class="mail-side-card slide-fade" :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
+                        <div v-if="Boolean(emailReadingModeFlag)" class="mail-side-card slide-fade"
+                            :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
                             <span class="mail-position-toogle" @click="toggleRightPanel">
                                 <i class="m-icon icon-left-small"></i>
                             </span>
@@ -259,6 +260,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import FastWrite from './FastWrite.vue'
 import PrviateListRow from '@/components/CustomerTableRow/PrviateListRow'
 import { getCustomerEmailList, getCustomerEmailInfo } from '@/api/email/customer'
@@ -268,13 +270,24 @@ import { getOriginList } from "@/api/company/origin";
 import { reasonList } from "@/api/company/poolRule";
 import { getCustomerTagList } from "@/api/customer/config";
 import { getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer, getSetPacketList } from "@/api/customer/publicleads";
+
 export default {
     props: {
         selectedTaskId: {
             type: String | Number,
             default: '',
             required: false
-        }
+        },
+        total: {
+            type: Number,
+            default: 0,
+            required: true
+        },
+        currentPage: {
+            type: Number,
+            default: 1,
+            required: true
+        },
     },
     components: {
         FastWrite,
@@ -282,11 +295,8 @@ export default {
     },
     data() {
         return {
-            loading: true,
+            loading: false,
             showHeader: true,
-            currentPage: 1,
-            pageSize: 30,
-            total: 0,
             isRightPanelExpanded: true,
             activeEmailId: null,
             list: [],
@@ -300,10 +310,15 @@ export default {
                 tagOption: [],
                 teamMemberOption: [],
             },
-            fastInfo: {}
+            fastInfo: {},
+            firstReq: true
         }
     },
     computed: {
+        ...mapState({
+            pageSize: state => state.emailSetting.usuallySetting?.maxPerPage,
+            emailReadingModeFlag: state => state.emailSetting.usuallySetting?.emailReadingModeFlag
+        }),
         totalPages() {
             return Math.ceil(this.total / this.pageSize);
         },
@@ -314,24 +329,38 @@ export default {
                 if (newVal) {
                     this.onShowLabel(true)
                     this.customerId = newVal
-                    this.getList()
+                    this.$watch('pageSize', (newVal, oldVal) => {
+                        if (!newVal && !oldVal) {
+                            return
+                        }
+                        this.getList()
+                        this.firstReq = false
+                    }, { immediate: true })
+
                 }
             },
             deep: true,
             immediate: true
+        },
+        currentPage: {
+            handler(newVal) {
+                if (!this.firstReq) {
+                    this.getList()
+                }
+            }
         }
     },
     mounted() {
-        setTimeout(() => {
-            this.init()
-        }, 400)
+        this.init()
     },
     methods: {
         // 列表
         async getList() {
             try {
+                this.loading = true
                 const res = await getCustomerEmailList({
                     customerId: this.customerId,
+                    fixedFlag: true,
                     pageNum: this.currentPage,
                     pageSize: this.pageSize
                 }).finally(() => {
@@ -339,13 +368,12 @@ export default {
                 })
                 if (res.code === 200) {
                     this.list = res.rows
-                    this.total = res.total
+                    this.$emit('update:total', res.total)
                 }
             } catch { }
         },
         // 详情
         async getInfo(id) {
-            console.log(id);
             try {
                 const res = await getCustomerEmailInfo({
                     id
@@ -454,28 +482,32 @@ export default {
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {
-                this.currentPage = Number(this.currentPage) + 1;
+                const currentPage = Number(this.currentPage) + 1;
+                this.handleCurrentPage(currentPage)
             }
         },
 
         prevPage() {
             if (this.currentPage > 1) {
-                this.currentPage = Number(this.currentPage) - 1;
+                const currentPage = Number(this.currentPage) - 1;
+                this.handleCurrentPage(currentPage)
             }
         },
         handlePageInputBlur() {
             if (!this.currentPage) {
-                this.currentPage = 1;
+                this.handleCurrentPage(1)
             }
         },
         handlePageInputChange(event) {
-            let inputValue = parseInt(event.target.value, 10);
-
+            let inputValue = parseInt(+event.target.value, 10);
+            if (!inputValue) {
+                return
+            }
             // 检查输入值是否超出范围，并进行调整
             if (inputValue > this.totalPages) {
-                this.currentPage = this.totalPages;
-            } else if (inputValue < 1) {
-                this.currentPage = 1;
+                this.handleCurrentPage(this.totalPages)
+            } else {
+                this.handleCurrentPage(inputValue)
             }
         },
         toggleRightPanel() {
@@ -487,9 +519,27 @@ export default {
                 2: '发件'
             }
             return sendType[type]
-        }
+        },
+        handleCurrentPage(value) {
+            this.$emit('update:currentPage', value)
+        },
     }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.mail-list-container {
+    .quick-jumper {
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    }
+}
+</style>

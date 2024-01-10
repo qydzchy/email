@@ -131,7 +131,7 @@
                     <div class="mail-paging tool-bar-paging">
                         <span class="total-count ellipsis">共 {{ total }} 封</span>
                         <div class="quick-jumper">
-                            <input :max="totalPages" class="mail-paging-input" v-model="currentPage"
+                            <input :max="totalPages" class="mail-paging-input" :value.sync="currentPage" type="number"
                                 @blur="handlePageInputBlur" @input="handlePageInputChange">
                             <span class="mail-paging-slash"> / </span>
                             <span class="page-unit">{{ totalPages }}  页</span>
@@ -267,7 +267,6 @@
 <script>
 import { EventBus } from "@/api/email/event-bus";
 import {
-    list,
     fixedEmail,
     readEmail,
     spamEmail,
@@ -276,6 +275,7 @@ import {
 import {
     customerEmailList
 } from "@/api/customer/email";
+import { mapState } from "vuex";
 
 export default {
     props: {
@@ -284,13 +284,20 @@ export default {
             default: false
         },
         emailList: Array,
+        total: {
+            type: Number,
+            default: 0,
+            required: true
+        },
+        currentPage: {
+            type: Number,
+            default: 1,
+            required: true
+        },
     },
     data() {
         return {
             activeEmailId: null,
-            currentPage: 1,
-            pageSize: 30,
-            total: 0,
             taskId: null,
             type: null,
             readFlag: null,
@@ -304,7 +311,6 @@ export default {
             selectAll: false,
             isIconsToggled: true,  // 用于控制图标的显示状态
             isDropdownShown: false,  // 保存下拉菜单的显示状态
-
             selectedItem: null,
             hoveredItem: null, // 当前悬停的列表项的索引
             menuItems: [
@@ -319,6 +325,9 @@ export default {
     },
 
     computed: {
+        ...mapState({
+            pageSize: state => state.emailSetting.usuallySetting?.maxPerPage
+        }),
         totalPages() {
             return Math.ceil(this.total / this.pageSize);
         },
@@ -334,11 +343,6 @@ export default {
             }
         }
     },
-
-    // 在B组件中
-    created() {
-    },
-
     watch: {
         emailList(newList) {
             this.localEmailList = [...newList];
@@ -350,82 +354,38 @@ export default {
     },
 
     methods: {
-        fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId, labelId) {
-            this.taskId = taskId;
-            this.type = type;
-            const query = {
-                taskId: this.taskId,
-                // 邮件类型 1.收取 2.发送
-                type: this.type,
-                readFlag: readFlag,
-                pendingFlag: pendingFlag,
-                delFlag: delFlag,
-                draftsFlag: draftsFlag,
-                spamFlag: spamFlag,
-                traceFlag: traceFlag,
-                folderId: folderId,
-                labelId: labelId,
-                attachmentFlag: this.attachmentFlag,
-                fixedFlag: this.fixedFlag,
-                pageNum: this.currentPage,
-                pageSize: this.pageSize
-            }
-
-            list(query).then(response => {
-                this.localEmailList = response.rows;
-                this.total = response.total;
-            }).catch(error => {
-                console.error("Failed to fetch emails:", error);
-            });
-        },
-
-        /**
-         * 获取客户邮件列表
-         * @param customerId
-         */
-        fetchCustomerEmailList(customerId) {
-            const query = {
-                customerId: customerId,
-                pageNum: this.currentPage,
-                pageSize: this.pageSize
-            }
-
-            customerEmailList(query).then(response => {
-                this.localEmailList = response.rows;
-                this.total = response.total;
-            }).catch(error => {
-                console.error("Failed to fetch emails:", error);
-            });
-        },
 
         nextPage() {
             if (this.currentPage < this.totalPages) {
-                this.currentPage = Number(this.currentPage) + 1;
+                const currentPage = Number(this.currentPage) + 1;
+                this.handleCurrentPage(currentPage)
             }
         },
 
         prevPage() {
             if (this.currentPage > 1) {
-                this.currentPage = Number(this.currentPage) - 1;
+                const currentPage = Number(this.currentPage) - 1;
+                this.handleCurrentPage(currentPage)
             }
         },
 
         handlePageInputBlur() {
-            if (this.currentPage === undefined || this.currentPage === null || this.currentPage === '') {
-                this.currentPage = 1;
+            if (!this.currentPage) {
+                this.handleCurrentPage(1)
             }
-
-            this.fetchEmailList(this.taskId, this.type);
         },
 
         handlePageInputChange(event) {
-            let inputValue = parseInt(event.target.value, 10);
-
+            let inputValue = parseInt(+event.target.value, 10);
+            if (!inputValue) {
+                return
+            }
             // 检查输入值是否超出范围，并进行调整
             if (inputValue > this.totalPages) {
-                this.currentPage = this.totalPages;
-            } else if (inputValue < 1) {
-                this.currentPage = 1;
+                const currentPage = this.totalPages;
+                this.handleCurrentPage(currentPage)
+            } else {
+                this.handleCurrentPage(inputValue)
             }
         },
 
@@ -496,8 +456,7 @@ export default {
         },
 
         refresh() {
-            this.$message.info("正在加载");
-            this.currentPage = 1;
+            this.$emit('reloadList')
         },
 
         toggleDropdown() {
@@ -659,13 +618,13 @@ export default {
         // 固定总开关
         switchFixed() {
             this.fixedFlag = !this.fixedFlag;
-            this.currentPage = 1;
+            this.handleCurrentPage(1)
         },
 
         // 附件总开关
         switchAttachment() {
             this.attachmentFlag = !this.attachmentFlag;
-            this.currentPage = 1;
+            this.handleCurrentPage(1)
         },
 
         toggleSlide(emailId, direction) {
@@ -685,6 +644,9 @@ export default {
         onSwitchSetup() {
             this.$router.replace('/email/index?type=setting_email')
         },
+        handleCurrentPage(value) {
+            this.$emit('update:currentPage', value)
+        },
     }
 }
 </script>
@@ -696,5 +658,20 @@ export default {
     margin-bottom: 5px;
     margin-top: 14px;
     padding-left: 14px;
+}
+
+.view-mode-three {
+    .quick-jumper {
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    }
 }
 </style>

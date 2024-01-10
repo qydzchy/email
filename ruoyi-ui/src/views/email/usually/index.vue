@@ -358,7 +358,7 @@
                                         <el-checkbox v-model="formData.lastDayFlag">最后一天</el-checkbox>
                                     </span>
                                     <el-date-picker v-model="formData.lastDay" clearable
-                                        :disabled="formData.auto !== 1 || !formData.lastDayFlag" type="date"
+                                        :disabled="formData.autoResponseFlag !== 1 || !formData.lastDayFlag" type="date"
                                         placeholder="选择日期">
                                     </el-date-picker>
                                 </div>
@@ -413,7 +413,7 @@ export default {
             formData: {
                 id: '',
                 defaultTaskId: '',
-                maxPrePage: 20,
+                maxPerPage: 20,
                 emailReadingModeFlag: 0,
                 moveDeleteReport: 1,
                 language: 1,
@@ -594,6 +594,12 @@ export default {
             try {
                 const res = await editUsuallyInfo(data)
                 if (res.code === 200) {
+                    let emailData = deepClone(this.emailSetList)
+                    emailData = emailData.map(val => {
+                        val.defaultBccFlag = +val.defaultBccFlag
+                        val.defaultCcFlag = +val.defaultCcFlag
+                        return val
+                    })
                     // 保存单个邮箱设置
                     const emailSetting = await editSingleEmailSetting(emailData)
                     if (emailSetting.code === 200) {
@@ -609,10 +615,7 @@ export default {
             data.remind = data.remind.join(',')
             let writeLetter = deepClone(this.writeLetter)
             data.writeLetter = writeLetter.map(val => +val).join(',')
-            let emailData = this.emailSetList[this.curSet]
-            emailData.defaultBccFlag = +emailData.defaultBccFlag
-            emailData.defaultCcFlag = +emailData.defaultCcFlag
-            this.editInfoReq(data, emailData)
+            this.editInfoReq(data)
         },
         onCancel() {
             this.$router.replace('/email/index?type=default')
@@ -638,7 +641,7 @@ export default {
 }
 
 ::v-deep .holiday-wrapper .editor-box {
-    z-index: 9999 !important;
+    z-index: 1002 !important;
 }
 </style>
 <style src="@wangeditor/editor/dist/css/style.css"></style>
