@@ -232,7 +232,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean attachmentFlag, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize);
 
     /**
      * 自动回复
@@ -279,4 +279,5 @@ public interface ITaskEmailService
      * @return
      */
     List<TaskEmail> selectByUnSentStatus(Long taskId);
+
 }

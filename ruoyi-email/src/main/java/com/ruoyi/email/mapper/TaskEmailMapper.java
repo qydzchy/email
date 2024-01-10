@@ -207,7 +207,7 @@ public interface TaskEmailMapper
      * @param customerId
      * @return
      */
-    int customerEmailCount(@Param("customerId") Long customerId, @Param("attachmentFlag") Boolean attachmentFlag);
+    int customerEmailCount(@Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword);
 
     /**
      * 客户邮件列表
@@ -216,7 +216,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("attachmentFlag") Boolean attachmentFlag, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 判断邮件是否存在

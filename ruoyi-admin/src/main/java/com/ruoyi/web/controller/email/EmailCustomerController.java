@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -125,16 +126,51 @@ public class EmailCustomerController extends BaseController {
     }
 
     /**
+     * 联系人列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:customer:contact:email:list')")
+    @GetMapping("/contact/email/list")
+    public AjaxResult contactEmailList(Long customerId) {
+        if (customerId == null) {
+            throw new ServiceException("客户ID不能为空");
+        }
+
+        return success(customerEmailService.contactEmailList(customerId));
+    }
+
+    /**
      * 客户模块-客户邮件列表（分页）
      */
     @PreAuthorize("@ss.hasPermi('email:customer:email:list')")
     @GetMapping("/email/list")
     public TableDataInfo emailList(@NotNull(message = "客户ID不能为空") Long customerId,
                               Boolean attachmentFlag,
+                              Boolean fixedFlag,
+                              String emails,
+                              Integer type,
+                              String labelIds,
+                              Integer keywordType,
+                              String keyword,
                               @NotNull(message = "页数不能为空") Integer pageNum,
                               @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, attachmentFlag, pageNum, pageSize);
+        List<String> emailList = new ArrayList<>();
+        if (StringUtils.isNotBlank(emails)) {
+            String[] emailArr = emails.split(",");
+            for (String email : emailArr) {
+                emailList.add(email);
+            }
+        }
+
+        List<Long> labelIdList = new ArrayList<>();
+        if (StringUtils.isNotBlank(labelIds)) {
+            String[] labelIdArr = labelIds.split(",");
+            for (String labelId : labelIdArr) {
+                labelIdList.add(Long.valueOf(labelId));
+            }
+        }
+
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 
