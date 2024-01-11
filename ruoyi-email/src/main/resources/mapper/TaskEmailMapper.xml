@@ -245,9 +245,12 @@
     <select id="customerEmailCount" resultType="java.lang.Integer">
         select count(DISTINCT(mte.id)) from customer_customer_contact ccc
         left join mailbox_task_email mte on ccc.email = mte.fromer or mte.receiver like concat('%"email":"', ccc.email ,'"%') or mte.bcc like concat('%"email":"', ccc.email ,'"%') or mte.cc like concat('%"email":"', ccc.email ,'"%')
+        left join mailbox_task mt on mte.task_id = mt.id
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
         ccc.customer_id = #{customerId}
+        AND mt.create_id = #{createId}
+        AND mt.del_flag = '0'
         AND ccc.del_flag = '0'
         AND mte.del_flag = '0'
         <if test="attachmentFlag != null and attachmentFlag == true">
@@ -353,12 +356,15 @@
         FROM
             customer_customer_contact ccc
             LEFT JOIN mailbox_task_email mte ON ccc.email = mte.fromer
+            LEFT JOIN mailbox_task mt ON mte.task_id = mt.id
             OR mte.receiver LIKE concat( '%"email":"', ccc.email, '"%' )
             OR mte.bcc LIKE concat( '%"email":"', ccc.email, '"%' )
             OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
             LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
             ccc.customer_id = #{customerId}
+            AND mt.create_id = #{createId}
+            AND mt.del_flag = '0'
             AND ccc.del_flag = '0'
             AND mte.del_flag = '0'
             <if test="attachmentFlag != null and attachmentFlag == true">
@@ -449,56 +455,17 @@
         where cc.id = #{customerId} and cc.del_flag = '0' and ccc.del_flag = '0'
     </select>
 
-    <select id="correspondenceEmailList" resultType="com.ruoyi.email.domain.vo.EmailListVO">
-        SELECT
-            mte.id,
-            mte.type,
-            mte.status,
-            mte.task_id AS taskId,
-            mte.uid,
-            mte.fromer,
-            mte.receiver,
-            mte.bcc,
-            mte.cc,
-            mte.folder,
-            mte.folder_id AS folderId,
-            mte.title,
-            mte.send_date AS sendDate,
-            mte.eml_path AS emlPath,
-            mte.read_flag AS readFlag,
-            mte.pending_flag AS pendingFlag,
-            mte.pending_time AS pendingTime,
-            mte.fixed_flag AS fixedFlag,
-            mte.spam_flag AS spamFlag,
-            mte.message_id AS messageId,
-            mte.in_reply_to AS inReplyTo,
-            mte.reference,
-            mtec.content
-        FROM
-            customer_customer_contact ccc
-                LEFT JOIN mailbox_task_email mte ON ccc.email = mte.fromer
-                OR mte.receiver LIKE concat( '%"email":"', ccc.email, '"%' )
-                OR mte.bcc LIKE concat( '%"email":"', ccc.email, '"%' )
-                OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
-                LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
-        WHERE
-            ccc.del_flag = '0'
-          AND mte.del_flag = '0'
-        ORDER BY
-            mte.send_date DESC
-            LIMIT #{offset}, #{limit}
-    </select>
-
     <select id="countRepliedWithinFourDays" resultType="java.lang.Integer">
         select count(mte.id) from mailbox_task mt
         left join mailbox_task_email mte on mt.id = mte.task_id
         where mte.type = 2 and  mt.del_flag = '0' and mte.del_flag = '0'
         and mt.account = #{fromer}
+        and mt.create_id = #{createId}
         and mte.uid LIKE 'autoResponse_%'
         and (mte.receiver LIKE concat( '%"email":"', #{receiver}, '"%' )
             OR mte.bcc LIKE concat( '%"email":"', #{receiver}, '"%' )
             OR mte.cc LIKE concat( '%"email":"', #{receiver}, '"%' ))
-          AND <![CDATA[ DATEDIFF(NOW(), mte.send_date) <= 4 ]]>;
+          AND <![CDATA[ DATEDIFF(NOW(), mte.send_date) <= 4 ]]>
     </select>
 
     <select id="countCustomerContactByFromer" resultType="java.lang.Integer">
@@ -519,10 +486,7 @@
         LEFT JOIN mailbox_label ml ON mtel.label_id = ml.id
         WHERE mt.del_flag = '0'
         AND mte.del_flag = '0'
-        AND mt.id IN
-        <foreach item="taskId" collection="taskIds" open="(" separator="," close=")">
-            #{taskId}
-        </foreach>
+        AND mt.create_id = #{createId}
         <if test="contactEmails != null and contactEmails.size() > 0">
             AND (
             <foreach item="email" collection="contactEmails" separator=" OR ">

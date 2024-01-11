@@ -207,7 +207,7 @@ public interface TaskEmailMapper
      * @param customerId
      * @return
      */
-    int customerEmailCount(@Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword);
+    int customerEmailCount(@Param("createId") Long createId, @Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword);
 
     /**
      * 客户邮件列表
@@ -216,7 +216,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> customerEmailList(@Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> customerEmailList(@Param("createId") Long createId, @Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 判断邮件是否存在
@@ -240,7 +240,7 @@ public interface TaskEmailMapper
      * @param receiver
      * @return
      */
-    int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver);
+    int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver, @Param("createId") Long createId);
 
     /**
      * 查询发件人邮箱是否存在客户联系人中
@@ -256,7 +256,7 @@ public interface TaskEmailMapper
      * @param contactEmails
      * @return
      */
-    List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails, @Param("taskIds") List<Long> taskIds);
+    List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails, @Param("createId") Long createId);
 
     /**
      * 邮件详情

@@ -754,10 +754,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
-        List<Long> taskIds = taskMapper.listIdByUserId(userId);
 
         // 客户往来邮件列表
-        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails, taskIds);
+        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails, userId);
 
         List<Long> ids = dealingEmailBOList.stream().map(dealingEmailBO -> dealingEmailBO.getId()).collect(Collectors.toList());
         Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = new HashMap<>();
@@ -1212,14 +1211,16 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      */
     @Override
     public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize) {
-        int count = taskEmailMapper.customerEmailCount(customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        int count = taskEmailMapper.customerEmailCount(userId, customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(userId, customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }

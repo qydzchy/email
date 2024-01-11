@@ -358,8 +358,8 @@ public class TaskServiceImpl implements ITaskService
      * @param fromer
      * @param receiver
      */
-    private boolean checkRepliedWithinFourDays(String fromer, String receiver) {
-        int count = taskEmailMapper.countRepliedWithinFourDays(fromer, receiver);
+    private boolean checkRepliedWithinFourDays(String fromer, String receiver, Long createId) {
+        int count = taskEmailMapper.countRepliedWithinFourDays(fromer, receiver, createId);
         return count > 0 ? true : false;
     }
 
@@ -385,7 +385,7 @@ public class TaskServiceImpl implements ITaskService
             if (StringUtils.isBlank(emailOperateParamBO.getReContent())) return;
 
             // 查询是否在4天内已经回复过邮件 todo 需调试
-            if (checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) return;
+            if (checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount(), task.getCreateId())) return;
 
             taskEmailService.autoResponse(task, universalMail, emailOperateParamBO.getReContent());
         }
@@ -608,7 +608,7 @@ public class TaskServiceImpl implements ITaskService
         if (StringUtils.isBlank(transceiverRuleBO.getAutoResponse())) return;
 
         // 查询是否在4天内已经回复过邮件
-        if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount())) return;
+        if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount(), task.getCreateId())) return;
 
         taskEmailService.autoResponse(task, universalMail, transceiverRuleBO.getAutoResponse());
     }
