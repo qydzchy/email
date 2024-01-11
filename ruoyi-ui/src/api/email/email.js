@@ -145,3 +145,12 @@ export function countMenu(query) {
     params: query
   })
 }
+
+// 邮件详情
+export function emailDetail(params) {
+  return request({
+    url: '/email/info/detail',
+    method: 'get',
+    params
+  })
+}
