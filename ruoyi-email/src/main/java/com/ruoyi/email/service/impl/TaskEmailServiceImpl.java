@@ -88,6 +88,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private TaskEmailLabelMapper taskEmailLabelMapper;
     @Resource
     private LabelMapper labelMapper;
+    @Resource
+    private TaskMapper taskMapper;
 
     @Lazy
     @Resource
@@ -750,8 +752,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             return Collections.emptyList();
         }
 
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        List<Long> taskIds = taskMapper.listIdByUserId(userId);
+
         // 客户往来邮件列表
-        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails);
+        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails, taskIds);
 
         List<Long> ids = dealingEmailBOList.stream().map(dealingEmailBO -> dealingEmailBO.getId()).collect(Collectors.toList());
         Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = new HashMap<>();

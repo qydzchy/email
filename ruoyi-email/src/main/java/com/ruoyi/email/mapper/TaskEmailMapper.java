@@ -256,7 +256,7 @@ public interface TaskEmailMapper
      * @param contactEmails
      * @return
      */
-    List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails);
+    List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails, @Param("taskIds") List<Long> taskIds);
 
     /**
      * 邮件详情
