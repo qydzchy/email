@@ -23,6 +23,7 @@ import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
+import com.ruoyi.email.util.Constant;
 import com.ruoyi.email.util.ThreadPoolPullService;
 import com.ruoyi.email.util.ThreadPoolSendService;
 import lombok.extern.slf4j.Slf4j;
@@ -359,7 +360,7 @@ public class TaskServiceImpl implements ITaskService
      * @param receiver
      */
     private boolean checkRepliedWithinFourDays(String fromer, String receiver, Long createId) {
-        int count = taskEmailMapper.countRepliedWithinFourDays(fromer, receiver, createId);
+        int count = taskEmailMapper.countRepliedWithinFourDays(fromer, receiver, createId, Constant.AUTO_RESPONSE_PREFIX);
         return count > 0 ? true : false;
     }
 
@@ -387,7 +388,7 @@ public class TaskServiceImpl implements ITaskService
             // 查询是否在4天内已经回复过邮件 todo 需调试
             if (checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount(), task.getCreateId())) return;
 
-            taskEmailService.autoResponse(task, universalMail, emailOperateParamBO.getReContent());
+            taskEmailService.autoResponse(task, universalMail.getFromer(), universalMail.getTitle(), emailOperateParamBO.getReContent(), universalMail.getMessageId());
         }
     }
 
@@ -545,6 +546,19 @@ public class TaskServiceImpl implements ITaskService
         }
         taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
         taskEmail.setCreateTime(nowDate);
+        taskEmail.setUpdateTime(nowDate);
+        taskEmailService.insertTaskEmail(taskEmail);
+        Long emailId = taskEmail.getId();
+
+        // 邮件内容
+        TaskEmailContent emailContent = new TaskEmailContent();
+        emailContent.setEmailId(emailId);
+        emailContent.setContent(universalMail.getContent());
+        emailContent.setCreateTime(nowDate);
+        taskEmailContentService.insertTaskEmailContent(emailContent);
+
+
+        if (transceiverRuleList == null || transceiverRuleList.isEmpty()) return;
 
         // 收件规则处理
         EmailSimpleBO emailSimpleBO = getEmailSimpleBO(universalMail);
@@ -556,8 +570,7 @@ public class TaskServiceImpl implements ITaskService
         taskEmail.setPendingFlag(transceiverRuleBO.getPendingFlag());
         taskEmail.setPendingTime(transceiverRuleBO.getPendingTime());
         taskEmail.setDelFlag(transceiverRuleBO.getDelFlag());
-        taskEmailService.insertTaskEmail(taskEmail);
-        Long emailId = taskEmail.getId();
+        taskEmailService.updateTaskEmail(taskEmail);
 
         // 保存邮件标签
         if (transceiverRuleBO.getLabelId() != null) {
@@ -568,13 +581,6 @@ public class TaskServiceImpl implements ITaskService
             taskEmailLabelMapper.insertTaskEmailLabel(taskEmailLabel);
         }
 
-        // 邮件内容
-        TaskEmailContent emailContent = new TaskEmailContent();
-        emailContent.setEmailId(emailId);
-        emailContent.setContent(universalMail.getContent());
-        emailContent.setCreateTime(nowDate);
-        taskEmailContentService.insertTaskEmailContent(emailContent);
-
         //附件
         List<TaskAttachment> taskAttachmentList = new ArrayList<>();
         List<UniversalAttachment> attachments = universalMail.getAttachments();
@@ -582,7 +588,8 @@ public class TaskServiceImpl implements ITaskService
             for (UniversalAttachment attachment : attachments) {
                 TaskAttachment taskAttachment = new TaskAttachment();
                 BeanUtils.copyProperties(attachment, taskAttachment);
-                taskAttachment.setCreateTime(DateUtils.getNowDate());
+                taskAttachment.setCreateTime(nowDate);
+                taskAttachment.setUpdateTime(nowDate);
                 taskAttachmentList.add(taskAttachment);
             }
 
@@ -610,7 +617,7 @@ public class TaskServiceImpl implements ITaskService
         // 查询是否在4天内已经回复过邮件
         if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount(), task.getCreateId())) return;
 
-        taskEmailService.autoResponse(task, universalMail, transceiverRuleBO.getAutoResponse());
+        taskEmailService.autoResponse(task, universalMail.getFromer(), universalMail.getTitle(), transceiverRuleBO.getAutoResponse(), universalMail.getMessageId());
     }
 
     /**

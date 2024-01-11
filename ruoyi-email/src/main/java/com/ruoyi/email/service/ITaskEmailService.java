@@ -237,10 +237,12 @@ public interface ITaskEmailService
     /**
      * 自动回复
      * @param task
-     * @param universalMail
+     * @param fromer
+     * @param title
      * @param reContent
+     * @param messageId
      */
-    void autoResponse(Task task, UniversalMail universalMail, String reContent);
+    void autoResponse(Task task, String fromer, String title, String reContent, String messageId);
 
     /**
      * 收发件规则处理
