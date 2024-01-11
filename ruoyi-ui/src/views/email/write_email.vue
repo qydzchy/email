@@ -696,7 +696,7 @@ export default {
       const response = await this.saveSendEmail();
       if (response.code === 200) {
         // EventBus.$emit('switch-index');  // 发出事件
-        this.$router.replace('/email/index?type=default')
+        this.$router.push('/email/index?type=default')
       } else {
         this.$message.error("执行失败");
       }
@@ -704,7 +704,7 @@ export default {
 
     // 弹窗-不保存
     noSavePopup() {
-      this.$router.replace('/email/index?type=default')
+      this.$router.push('/email/index?type=default')
       // EventBus.$emit('switch-index');  // 发出事件
     },
 

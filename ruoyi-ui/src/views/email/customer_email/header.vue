@@ -642,7 +642,7 @@ export default {
         },
         // 切换到设置页
         onSwitchSetup() {
-            this.$router.replace('/email/index?type=setting_email')
+            this.$router.push('/email/index?type=setting_email')
         },
         handleCurrentPage(value) {
             this.$emit('update:currentPage', value)

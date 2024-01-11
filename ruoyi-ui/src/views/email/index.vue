@@ -1049,7 +1049,7 @@ export default {
 
     toggleType(isMailNavNormalContainerOpen) {
 
-      this.$router.replace(`/email/index?type=${isMailNavNormalContainerOpen ? 'default' : 'customer_email'}`)
+      this.$router.push(`/email/index?type=${isMailNavNormalContainerOpen ? 'default' : 'customer_email'}`)
       // this.isMailNavNormalContainerOpen = isMailNavNormalContainerOpen;
       // if (!this.isMailNavNormalContainerOpen) {
       //   this.currentLayout = 'customer_email'
