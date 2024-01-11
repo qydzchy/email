@@ -619,7 +619,12 @@ export default {
             this.editInfoReq(data)
         },
         onCancel() {
-            this.$router.replace('/email/index?type=default')
+            if (window.history.length <= 1) {
+                this.$router.push('/email/index?type=default')
+                return false
+            } else {
+                this.$router.go(-1)
+            }
         },
     }
 };
