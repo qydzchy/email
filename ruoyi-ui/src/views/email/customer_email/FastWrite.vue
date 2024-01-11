@@ -109,7 +109,7 @@
             <div class="mail-toolbar-right">
 
                 <div class="mail-paging tool-bar-paging">
-                    <span class="total-count ellipsis" title="共 759 封">共 759 封</span>
+                    <!-- <span class="total-count ellipsis" title="共 759 封">共 759 封</span> -->
 
                     <div class="mail-paging-btn left-btn disabled">
                         <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
@@ -490,7 +490,7 @@
         </div>
         <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end"
             v-if="showPendingTime || showCustomTime"
-            style="position: absolute; top: 40px; left: 425px; will-change: top, left; transform-origin: 100% bottom;">
+            style="position: absolute; top: 40px; left: 50px; will-change: top, left; transform-origin: 100% bottom;">
 
             <div>
 
@@ -514,8 +514,9 @@
 
 <script>
 import emailContentDetailInfoLayout from '../email_content_detail_info';
-import CustomTimePopover from "../custom_time.vue";
-import PendingTimePopover from "../pending_time.vue";
+import CustomTimePopover from "@/views/email/custom_time.vue";
+import PendingTimePopover from "@/views/email/pending_time.vue";
+import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
 export default {
     props: {
         info: {
@@ -526,6 +527,8 @@ export default {
         }
     },
     components: {
+        CustomTimePopover,
+        PendingTimePopover,
         'email_content_detail_info': emailContentDetailInfoLayout
     },
     data() {
@@ -578,18 +581,18 @@ export default {
                 "ids": emailIds,
                 "readFlag": false
             };
-            // try {
-            //     const response = await readEmail(data);
-            //     if (response.code === 200) {
-            //         this.$message.success("成功标记为未读");
-            //         this.isDropdownShown = false;
-            //         this.isDropdownEmailShown = false;
-            //         return;
-            //     }
-            // } catch (error) {
-            //     console.error('标记为未读出现错误:', error);
-            //     throw error;
-            // }
+            try {
+                const response = await readEmail(data);
+                if (response.code === 200) {
+                    this.$message.success("成功标记为未读");
+                    this.isDropdownShown = false;
+                    this.isDropdownEmailShown = false;
+                    return;
+                }
+            } catch (error) {
+                console.error('标记为未读出现错误:', error);
+                throw error;
+            }
         },
         // 标为未读邮件
         handleUnReadEmail() {
@@ -620,22 +623,22 @@ export default {
         },
         // 导出邮件
         handleExportEmail() {
-            // exportEmail(this.activeEmailId).then((response) => {
-            //     // 处理文件下载逻辑，比如使用 blob 来下载
-            //     const url = window.URL.createObjectURL(new Blob([response]));
-            //     const link = document.createElement('a');
-            //     link.href = url;
-            //     let filename = 'email.eml';
-            //     if (this.currentEmailDetail.title) {
-            //         filename = this.currentEmailDetail.title + '.eml';
-            //     }
-            //     link.setAttribute('download', filename);
-            //     document.body.appendChild(link);
-            //     link.click();
+            exportEmail(this.activeEmailId).then((response) => {
+                // 处理文件下载逻辑，比如使用 blob 来下载
+                const url = window.URL.createObjectURL(new Blob([response]));
+                const link = document.createElement('a');
+                link.href = url;
+                let filename = 'email.eml';
+                if (this.currentEmailDetail.title) {
+                    filename = this.currentEmailDetail.title + '.eml';
+                }
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
 
-            //     this.isDropdownShown = false;
-            //     this.isDropdownEmailShown = false;
-            // });
+                this.isDropdownShown = false;
+                this.isDropdownEmailShown = false;
+            });
         },
         toggleEmailHeader() {
             this.$emit('showLabel', true)
@@ -643,6 +646,7 @@ export default {
         // 跳转到写信页面
         toggleWriteEmail(email, writeEmailType) {
             // 触发事件并传递参数
+            console.log(email);
             // EventBus.$emit('switch-write-email', email, writeEmailType);
         },
         // 固定
@@ -652,18 +656,18 @@ export default {
                 "id": email.id,
                 "fixedFlag": !email.fixedFlag
             };
-            // try {
-            //     const response = await fixedEmail(data);
-            //     if (response.code !== 200) {
-            //         this.$message.error("执行失败");
-            //         return;
-            //     }
+            try {
+                const response = await fixedEmail(data);
+                if (response.code !== 200) {
+                    this.$message.error("执行失败");
+                    return;
+                }
 
-            //     email.fixedFlag = !email.fixedFlag;
-            // } catch (error) {
-            //     console.error('固定邮件出现错误:', error);
-            //     throw error;
-            // }
+                email.fixedFlag = !email.fixedFlag;
+            } catch (error) {
+                console.error('固定邮件出现错误:', error);
+                throw error;
+            }
         },
         handleCustomTime() {
             this.showPendingTime = false;
@@ -718,19 +722,19 @@ export default {
                 "pendingFlag": pendingFlag,
                 "pendingTime": pendingTime
             };
-            // try {
-            //     const response = await pendingEmail(data);
-            //     if (response.code === 200) {
-            //         this.showPendingTime = false;
-            //         this.showCustomTime = false;
-            //         this.$set(email, 'pendingFlag', pendingFlag);
-            //         this.$set(email, 'pendingTime', pendingTime);
-            //         return;
-            //     }
-            // } catch (error) {
-            //     console.error('标记为待处理出现错误:', error);
-            //     throw error;
-            // }
+            try {
+                const response = await pendingEmail(data);
+                if (response.code === 200) {
+                    this.showPendingTime = false;
+                    this.showCustomTime = false;
+                    this.$set(email, 'pendingFlag', pendingFlag);
+                    this.$set(email, 'pendingTime', pendingTime);
+                    return;
+                }
+            } catch (error) {
+                console.error('标记为待处理出现错误:', error);
+                throw error;
+            }
         },
         // 删除邮件
         async deleteEmails() {

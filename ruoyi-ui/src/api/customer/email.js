@@ -81,3 +81,11 @@ export function getCustomerEmailList(params) {
   })
 }
 
+// 附件下载
+export function downloadAttachment(id) {
+  return request({
+    url: `/email/attachment//download/${id}`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
