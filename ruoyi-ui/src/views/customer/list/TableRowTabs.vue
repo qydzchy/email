@@ -2,7 +2,8 @@
   <div class="row-tabs">
     <el-tabs v-model="curTab" v-loading="cardLoading" :class="options.isTabSetHeight ? 'tabs-height' : ''">
       <el-tab-pane v-for="tab in tabList" :key="tab.is" :label="tab.label" :name="tab.is">
-        <component :row="row" :options="options" :is="tab.is" @reload="reload" />
+        <component :row="row" :options="options" :is="tab.is" @reload="reload"
+          @emailInfo="(id) => $emit('selectId', id)" />
       </el-tab-pane>
     </el-tabs>
     <!--    <div class="operate-history flex-middle pointer" @click="operateHistoryVisible=true">-->

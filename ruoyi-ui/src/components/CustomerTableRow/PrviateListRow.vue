@@ -45,7 +45,7 @@
                 </div>
                 <div class="tabs mt-10">
                     <TableRowTabs :row="rowData" :options="options" :defaultCurTab="defaultCurTab"
-                        :defaultTabs="defaultTabs" @reload="reload" />
+                        :defaultTabs="defaultTabs" @reload="reload" @selectId="onSelectId" />
                 </div>
             </div>
             <el-backtop target=".el-tabs__content" :visibility-height="100" />
@@ -193,6 +193,9 @@ export default {
                 this.getDetailData()
                 this.$emit('load')
             }, 400)
+        },
+        onSelectId(id) {
+            this.$emit('selectId', id)
         },
         generateContactList(arr) {
             if (arr && !arr.length) {

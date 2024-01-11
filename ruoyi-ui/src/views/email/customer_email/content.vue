@@ -249,7 +249,8 @@
                                 <i class="m-icon icon-left-small"></i>
                             </span>
                             <!-- 内容 -->
-                            <PrviateListRow :row="{ id: selectedTaskId }" :indexOpt="indexOpt" />
+                            <PrviateListRow :row="{ id: selectedTaskId }" :indexOpt="indexOpt"
+                                @selectId="(id) => getInfo(id)" />
                         </div>
                     </template>
 

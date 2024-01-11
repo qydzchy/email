@@ -14,7 +14,8 @@
             <ul class="contact-mail-list" cur-active-mail-id="" size="mini" module="mail" company-fields="[object Object]"
                 is-owner="true" flow-link="[object Object]" contact-info="[object Object]" company-info="[object Object]"
                 new-tips-count="0" identity-id="2339700037308" first-identity-id="2339700037308">
-                <li class="contact-mail-item" v-for="(item, index) in emailList" :key="index">
+                <li class="contact-mail-item" v-for="(item, index) in emailList" :key="index"
+                    @click="onSelectEmail(item.id)">
                     <div class="title-wrapper">
                         <h1 class="ellipsis" :title="item.title">{{ item.title }}</h1>
                         <i class="contact-icon m-icon icon-mail-receive" :title="generateEmailType(item.type)"></i>
@@ -89,6 +90,9 @@ export default {
                 2: '发件'
             }
             return mapType[type] || '---'
+        },
+        onSelectEmail(id) {
+            this.$emit('emailInfo', id)
         }
     }
 }
