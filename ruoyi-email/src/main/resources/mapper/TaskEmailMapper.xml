@@ -519,21 +519,20 @@
         LEFT JOIN mailbox_label ml ON mtel.label_id = ml.id
         WHERE mt.del_flag = '0'
         AND mte.del_flag = '0'
-        <!-- 使用动态SQL构建条件 -->
-        <if test="contactEmails != null and contactEmails.size() > 0">
-            AND mt.account IN
-            <foreach item="email" collection="contactEmails" open="(" separator="," close=")">
-                #{email}
-            </foreach>
-        </if>
-        AND mte.uid LIKE 'autoResponse_%'
+        AND mt.id IN
+        <foreach item="taskId" collection="taskIds" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
         <if test="contactEmails != null and contactEmails.size() > 0">
             AND (
-            <!-- 使用迭代遍历emailList中的值 -->
             <foreach item="email" collection="contactEmails" separator=" OR ">
                 mte.receiver LIKE concat( '%"email":"', #{email}, '"%' )
                 OR mte.bcc LIKE concat( '%"email":"', #{email}, '"%' )
                 OR mte.cc LIKE concat( '%"email":"', #{email}, '"%' )
+            </foreach>
+            OR mt.account IN
+            <foreach item="email" collection="contactEmails" open="(" separator="," close=")">
+                #{email}
             </foreach>
             )
         </if>
