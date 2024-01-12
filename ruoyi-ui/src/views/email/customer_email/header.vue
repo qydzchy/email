@@ -46,7 +46,7 @@
                     </span>
 
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
-                        <span class="mm-tooltip-trigger">
+                        <span class="mm-tooltip-trigger" @click.stop="handlePendingTime">
                             <div class="mm-popover">
                                 <div>
                                     <span>
@@ -110,7 +110,7 @@
                             </span>
                         </span>
                     </span>
-                    <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="toggleDropdown">
+                    <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click.stop="toggleDropdown">
                         <span class="mm-tooltip-trigger">
                             <span>
                                 <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg"
@@ -217,8 +217,8 @@
 
                 </div>
 
-
-                <div class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 215px;" :style="dropdownStyle">
+                <div class="mail-drop-menu-wrapper" v-clickOutside="toggleDropdown" v-if="isDropdownShown"
+                    :style="{ width: '220px', top: '40px', left: '215px' }">
                     <ul class="mail-drop-menu" style="height: 96px;">
                         <li v-for="(item, index) in menuItems" :key="index" :class="[
                             'mail-drop-menu-item',
@@ -262,20 +262,39 @@
 
             </div>
         </div>
+
+        <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end"
+            v-if="showPendingTime || showCustomTime" v-clickOutside="closeTimeModal"
+            style="position: absolute; top: 40px; left: 50px; will-change: top, left; transform-origin: 100% bottom;">
+
+            <div>
+
+                <div class="mail-pending-handler">
+                    <div class="title" v-if="showPendingTime">
+                        <span>请选择稍后处理时间: </span>
+                    </div>
+                    <div class="title" v-if="showCustomTime">
+                        <span class="bold back-block">
+                            <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
+                        </span>
+                    </div>
+                    <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime"
+                        @time-selected="handleSelectedTime"></PendingTimePopover>
+                    <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 import { EventBus } from "@/api/email/event-bus";
-import {
-    fixedEmail,
-    readEmail,
-    spamEmail,
-    deleteEmail,
-} from "@/api/email/email";
+import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
 import {
     customerEmailList
 } from "@/api/customer/email";
 import { mapState } from "vuex";
+import CustomTimePopover from "@/views/email/custom_time.vue";
+import PendingTimePopover from "@/views/email/pending_time.vue";
 
 export default {
     props: {
@@ -294,6 +313,10 @@ export default {
             default: 1,
             required: true
         },
+    },
+    components: {
+        CustomTimePopover,
+        PendingTimePopover,
     },
     data() {
         return {
@@ -320,7 +343,9 @@ export default {
             ],
             fixedFlag: false,
             attachmentFlag: false,
-            emailSlideStatus: {}
+            emailSlideStatus: {},
+            showPendingTime: false,
+            showCustomTime: false,
         }
     },
 
@@ -330,9 +355,6 @@ export default {
         }),
         totalPages() {
             return Math.ceil(this.total / this.pageSize);
-        },
-        dropdownStyle() {
-            return this.isDropdownShown ? '' : 'display: none;';
         },
         getLeftSlideStatus() {
             return (id) => {
@@ -646,6 +668,42 @@ export default {
         },
         handleCurrentPage(value) {
             this.$emit('update:currentPage', value)
+        },
+        handleCustomTime() {
+            this.showPendingTime = false;
+            this.showCustomTime = true;
+        },
+        handlePendingTime() {
+            this.showPendingTime = true;
+            this.showCustomTime = false;
+        },
+        closeTimeModal() {
+            this.showPendingTime = false;
+            this.showCustomTime = false;
+        },
+        handleSelectedTime(time) {
+            this.pendingEmail(this.currentEmailDetail, true, time);
+        },
+        // 标记待处理
+        async pendingEmail(email, pendingFlag, pendingTime) {
+            const data = {
+                "id": email.id,
+                "pendingFlag": pendingFlag,
+                "pendingTime": pendingTime
+            };
+            try {
+                const response = await pendingEmail(data);
+                if (response.code === 200) {
+                    this.showPendingTime = false;
+                    this.showCustomTime = false;
+                    this.$set(email, 'pendingFlag', pendingFlag);
+                    this.$set(email, 'pendingTime', pendingTime);
+                    return;
+                }
+            } catch (error) {
+                console.error('标记为待处理出现错误:', error);
+                throw error;
+            }
         },
     }
 }
