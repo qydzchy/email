@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.customer.AndOrEnum;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.enums.email.RuleTypeEnum;
 import com.ruoyi.common.enums.email.TaskExecutionStatusEnum;
@@ -180,7 +181,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Boolean customerFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize) {
         if (taskIdList.isEmpty()) {
             return Pair.of(0, new ArrayList<>());
         }
@@ -194,14 +195,14 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         folderId = folderId != null ? folderId : -1L;
 
-        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, folderId, labelId, statusList);
+        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, folderId, labelId, statusList, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }
@@ -216,7 +217,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         List<EmailLabelBO> emailLabelBOList = labelService.listByEmailIds(ids);
         if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
         Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
-
 
         emailListVOList.stream().forEach(emailListVO -> {
             Long id = emailListVO.getId();
@@ -923,18 +923,19 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                     EmailSimpleBO emailSimpleBO = EmailSimpleBO.builder().fromer(taskEmail.getFromer()).receiver(taskEmail.getReceiver()).cc(taskEmail.getCc()).subject(taskEmail.getTitle()).sendDate(taskEmail.getSendDate()).body(content).build();
                     boolean isConditionMet = emailColumnContext.handler(executeConditionContentBO, emailSimpleBO);
 
-                    if (executeConditionContentBO.getAndOr().equals("and")) {
+                    String andOr = executeConditionContentBO.getAndOr();
+                    if (andOr.equals(AndOrEnum.AND)) {
                         if (!isConditionMet) {
                             isRuleMet = false;
                             break;
                         }
-                        isRuleMet = true;
-                    } else if (executeConditionContentBO.getAndOr().equals("or")) {
+                    } else if (andOr.equals(AndOrEnum.OR)) {
                         if (isConditionMet) {
                             isRuleMet = true;
                             break;
+                        } else {
+                            isRuleMet = false;
                         }
-                        isRuleMet = false;
                     }
                 }
 
