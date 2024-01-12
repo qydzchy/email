@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
 import com.ruoyi.email.domain.bo.EmailLabelBO;
 import lombok.Data;
@@ -56,9 +55,6 @@ public class EmailListVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date sendDate;
 
-    /** 原始邮件存储路径 */
-    private String emlPath;
-
     /** 状态: 1.未发送(草稿箱) 2.发送中 3.发送成功 4.发送失败 */
     private Integer status;
 
@@ -90,15 +86,6 @@ public class EmailListVO {
 
     /** 垃圾邮件: 0.否 1.是 */
     private Integer spamFlag;
-
-    /** 每封邮件都应该有一个唯一的 Message-ID */
-    private String messageId;
-
-    /** 当你回复一封邮件时，你应该设置 In-Reply-To 头为原始邮件的 Message-ID。 */
-    private String inReplyTo;
-
-    /** 邮件链的列表 */
-    private String references;
 
     /**
      * 邮件内容
