@@ -67,6 +67,7 @@ public class EmailController extends BaseController {
                                         Boolean traceFlag,
                                         Boolean fixedFlag,
                                         Boolean attachmentFlag,
+                                        Boolean customerFlag,
                                         Long folderId,
                                         Long labelId,
                                         Integer type,
@@ -75,7 +76,7 @@ public class EmailController extends BaseController {
     {
         List<Long> taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
 
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, attachmentFlag, folderId, labelId, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 
