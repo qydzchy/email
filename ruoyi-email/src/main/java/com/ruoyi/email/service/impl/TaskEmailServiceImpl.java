@@ -36,7 +36,6 @@ import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
-import com.ruoyi.email.service.handler.email.UniversalMail;
 import com.ruoyi.email.service.handler.email.column.EmailColumnContext;
 import com.ruoyi.email.util.Constant;
 import com.ruoyi.email.util.DateUtil;

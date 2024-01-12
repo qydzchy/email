@@ -3,17 +3,13 @@ package com.ruoyi.email.service;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
-import com.ruoyi.email.domain.bo.EmailSimpleBO;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
-import com.ruoyi.email.service.handler.email.UniversalMail;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.util.Pair;
 
 
