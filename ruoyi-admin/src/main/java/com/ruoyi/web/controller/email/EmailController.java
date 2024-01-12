@@ -109,7 +109,6 @@ public class EmailController extends BaseController {
         return AjaxResult.success(taskEmailService.save(dto));
     }
 
-
     /**
      * 邮件发送-（写信）
      */

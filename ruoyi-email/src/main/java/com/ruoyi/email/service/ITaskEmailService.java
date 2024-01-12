@@ -3,6 +3,7 @@ package com.ruoyi.email.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
@@ -247,12 +248,26 @@ public interface ITaskEmailService
     /**
      * 收发件规则处理
      */
-    TransceiverRuleBO transceiverRuleHandler(Long taskId, EmailSimpleBO emailSimpleBO, List<TransceiverRuleVO> transceiverRuleList);
+    void transceiverRuleHandler(TaskEmail taskEmail, String content, List<TransceiverRuleVO> transceiverRuleList);
+
+    /**
+     * 收发件规则条件处理
+     */
+    TransceiverRuleBO transceiverRuleConditionHandler(TaskEmail taskEmail, String content, List<TransceiverRuleVO> transceiverRuleList);
 
     /**
      * 转发到
      */
     void forwardTo(Task task, String forwardTo, String title, String content);
+
+    /**
+     * 查询是否在4天内已经回复过邮件
+     * @param fromer
+     * @param receiver
+     * @param createId
+     * @return
+     */
+    boolean checkRepliedWithinFourDays(String fromer, String receiver, Long createId);
 
     /**
      * 客户往来邮件列表
