@@ -40,15 +40,15 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否固定: 0.否 1.是 */
     @Excel(name = "是否固定: 0.否 1.是")
-    private Integer fixedFlag;
+    private Boolean fixedFlag;
 
     /** 是否已读: 0.否 1.是 */
     @Excel(name = "是否已读: 0.否 1.是")
-    private Integer readFlag;
+    private Boolean readFlag;
 
     /** 是否分类: 0.否 1.是 */
     @Excel(name = "是否分类: 0.否 1.是")
-    private Integer labelFlag;
+    private Boolean labelFlag;
 
     /** 分类ID */
     @Excel(name = "分类ID")
@@ -56,7 +56,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否移动至：0.否 1.是 */
     @Excel(name = "是否移动至：0.否 1.是")
-    private Integer folderFlag;
+    private Boolean folderFlag;
 
     /** 文件夹ID */
     @Excel(name = "文件夹ID")
@@ -64,7 +64,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否转发至：0.否 1.是 */
     @Excel(name = "是否转发至：0.否 1.是")
-    private Integer forwardToFlag;
+    private Boolean forwardToFlag;
 
     /** 转发至 */
     @Excel(name = "转发至")
@@ -72,7 +72,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否待处理: 0.否 1.是 */
     @Excel(name = "是否待处理: 0.否 1.是")
-    private Integer pendingFlag;
+    private Boolean pendingFlag;
 
     /** 待处理类型 1.邮件接收时间 2.邮件接收时间之后的第 */
     @Excel(name = "待处理类型 1.邮件接收时间 2.邮件接收时间之后的第")
@@ -88,7 +88,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 是否自动回复：0.否 1.是 */
     @Excel(name = "是否自动回复：0.否 1.是")
-    private Integer autoResponseFlag;
+    private Boolean autoResponseFlag;
 
     /** 自动回复 */
     @Excel(name = "自动回复")
@@ -96,7 +96,7 @@ public class TransceiverRule extends BaseEntity
 
     /** 应用于历史邮件: 0.否 1.是 */
     @Excel(name = "应用于历史邮件: 0.否 1.是")
-    private Integer applyToHistoryMailFlag;
+    private Boolean applyToHistoryMailFlag;
 
     /** 应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除） */
     @Excel(name = "应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件", readConverterExp = "不=包括已删除")
@@ -183,33 +183,7 @@ public class TransceiverRule extends BaseEntity
     {
         return executeOperation;
     }
-    public void setFixedFlag(Integer fixedFlag)
-    {
-        this.fixedFlag = fixedFlag;
-    }
 
-    public Integer getFixedFlag()
-    {
-        return fixedFlag;
-    }
-    public void setReadFlag(Integer readFlag)
-    {
-        this.readFlag = readFlag;
-    }
-
-    public Integer getReadFlag()
-    {
-        return readFlag;
-    }
-    public void setLabelFlag(Integer labelFlag)
-    {
-        this.labelFlag = labelFlag;
-    }
-
-    public Integer getLabelFlag()
-    {
-        return labelFlag;
-    }
     public void setLabelId(Long labelId)
     {
         this.labelId = labelId;
@@ -219,15 +193,7 @@ public class TransceiverRule extends BaseEntity
     {
         return labelId;
     }
-    public void setFolderFlag(Integer folderFlag)
-    {
-        this.folderFlag = folderFlag;
-    }
 
-    public Integer getFolderFlag()
-    {
-        return folderFlag;
-    }
     public void setFolderId(Long folderId)
     {
         this.folderId = folderId;
@@ -237,15 +203,55 @@ public class TransceiverRule extends BaseEntity
     {
         return folderId;
     }
-    public void setForwardToFlag(Integer forwardToFlag)
-    {
+
+    public Boolean getFixedFlag() {
+        return fixedFlag;
+    }
+
+    public void setFixedFlag(Boolean fixedFlag) {
+        this.fixedFlag = fixedFlag;
+    }
+
+    public Boolean getReadFlag() {
+        return readFlag;
+    }
+
+    public void setReadFlag(Boolean readFlag) {
+        this.readFlag = readFlag;
+    }
+
+    public Boolean getLabelFlag() {
+        return labelFlag;
+    }
+
+    public void setLabelFlag(Boolean labelFlag) {
+        this.labelFlag = labelFlag;
+    }
+
+    public Boolean getFolderFlag() {
+        return folderFlag;
+    }
+
+    public void setFolderFlag(Boolean folderFlag) {
+        this.folderFlag = folderFlag;
+    }
+
+    public Boolean getForwardToFlag() {
+        return forwardToFlag;
+    }
+
+    public void setForwardToFlag(Boolean forwardToFlag) {
         this.forwardToFlag = forwardToFlag;
     }
 
-    public Integer getForwardToFlag()
-    {
-        return forwardToFlag;
+    public void setPendingFlag(Boolean pendingFlag) {
+        this.pendingFlag = pendingFlag;
     }
+
+    public void setApplyToHistoryMailFlag(Boolean applyToHistoryMailFlag) {
+        this.applyToHistoryMailFlag = applyToHistoryMailFlag;
+    }
+
     public void setForwardTo(String forwardTo)
     {
         this.forwardTo = forwardTo;
@@ -255,15 +261,7 @@ public class TransceiverRule extends BaseEntity
     {
         return forwardTo;
     }
-    public void setPendingFlag(Integer pendingFlag)
-    {
-        this.pendingFlag = pendingFlag;
-    }
 
-    public Integer getPendingFlag()
-    {
-        return pendingFlag;
-    }
     public void setPendingType(Integer pendingType)
     {
         this.pendingType = pendingType;
@@ -291,15 +289,15 @@ public class TransceiverRule extends BaseEntity
     {
         return pendingTime;
     }
-    public void setAutoResponseFlag(Integer autoResponseFlag)
-    {
+
+    public Boolean getAutoResponseFlag() {
+        return autoResponseFlag;
+    }
+
+    public void setAutoResponseFlag(Boolean autoResponseFlag) {
         this.autoResponseFlag = autoResponseFlag;
     }
 
-    public Integer getAutoResponseFlag()
-    {
-        return autoResponseFlag;
-    }
     public void setAutoResponse(String autoResponse)
     {
         this.autoResponse = autoResponse;
@@ -309,15 +307,7 @@ public class TransceiverRule extends BaseEntity
     {
         return autoResponse;
     }
-    public void setApplyToHistoryMailFlag(Integer applyToHistoryMailFlag)
-    {
-        this.applyToHistoryMailFlag = applyToHistoryMailFlag;
-    }
 
-    public Integer getApplyToHistoryMailFlag()
-    {
-        return applyToHistoryMailFlag;
-    }
     public void setApplyToHistoryMailTrueType(Integer applyToHistoryMailTrueType)
     {
         this.applyToHistoryMailTrueType = applyToHistoryMailTrueType;
@@ -357,6 +347,14 @@ public class TransceiverRule extends BaseEntity
     public void setOrderNum(Long orderNum)
     {
         this.orderNum = orderNum;
+    }
+
+    public Boolean getPendingFlag() {
+        return pendingFlag;
+    }
+
+    public Boolean getApplyToHistoryMailFlag() {
+        return applyToHistoryMailFlag;
     }
 
     public Long getOrderNum()

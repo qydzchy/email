@@ -6,13 +6,10 @@ import java.util.Map;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
-import com.ruoyi.email.domain.bo.EmailSimpleBO;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
-import com.ruoyi.email.service.handler.email.UniversalMail;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.util.Pair;
 
 
@@ -237,20 +234,36 @@ public interface ITaskEmailService
     /**
      * 自动回复
      * @param task
-     * @param universalMail
+     * @param fromer
+     * @param title
      * @param reContent
+     * @param messageId
      */
-    void autoResponse(Task task, UniversalMail universalMail, String reContent);
+    void autoResponse(Task task, String fromer, String title, String reContent, String messageId);
 
     /**
      * 收发件规则处理
      */
-    TransceiverRuleBO transceiverRuleHandler(Long taskId, EmailSimpleBO emailSimpleBO, List<TransceiverRuleVO> transceiverRuleList);
+    void transceiverRuleHandler(TaskEmail taskEmail, String content, List<TransceiverRuleVO> transceiverRuleList);
+
+    /**
+     * 收发件规则条件处理
+     */
+    TransceiverRuleBO transceiverRuleConditionHandler(TaskEmail taskEmail, String content, List<TransceiverRuleVO> transceiverRuleList);
 
     /**
      * 转发到
      */
     void forwardTo(Task task, String forwardTo, String title, String content);
+
+    /**
+     * 查询是否在4天内已经回复过邮件
+     * @param fromer
+     * @param receiver
+     * @param createId
+     * @return
+     */
+    boolean checkRepliedWithinFourDays(String fromer, String receiver, Long createId);
 
     /**
      * 客户往来邮件列表

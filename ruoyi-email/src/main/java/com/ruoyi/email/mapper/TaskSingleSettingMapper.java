@@ -71,7 +71,7 @@ public interface TaskSingleSettingMapper
     /**
      * 批量新增单个邮箱设置
      */
-    int batchInsert(@Param("list") List<TaskSingleSetting> list);
+    int batchInsert(@Param("taskSingleSettingList") List<TaskSingleSetting> taskSingleSettingList);
 
     /**
      * 删除单个邮箱设置

@@ -240,7 +240,7 @@ public interface TaskEmailMapper
      * @param receiver
      * @return
      */
-    int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver, @Param("createId") Long createId);
+    int countRepliedWithinFourDays(@Param("fromer") String fromer, @Param("receiver") String receiver, @Param("createId") Long createId, @Param("uidPrefix") String uidPrefix);
 
     /**
      * 查询发件人邮箱是否存在客户联系人中

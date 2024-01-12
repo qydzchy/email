@@ -461,7 +461,7 @@
         where mte.type = 2 and  mt.del_flag = '0' and mte.del_flag = '0'
         and mt.account = #{fromer}
         and mt.create_id = #{createId}
-        and mte.uid LIKE 'autoResponse_%'
+        and mte.uid LIKE concat(#{uidPrefix}, '%')
         and (mte.receiver LIKE concat( '%"email":"', #{receiver}, '"%' )
             OR mte.bcc LIKE concat( '%"email":"', #{receiver}, '"%' )
             OR mte.cc LIKE concat( '%"email":"', #{receiver}, '"%' ))
@@ -512,7 +512,7 @@
         WHERE mte.id = #{id}
     </select>
 
-    <select id="selectByUnSentStatus" resultType="com.ruoyi.email.domain.TaskEmail">
+    <select id="selectByUnSentStatus" resultMap="TaskEmailResult">
         <include refid="selectTaskEmailVo"/>
          where task_id = #{taskId} and status = 2 and del_flag = '0' and type = 2
     </select>
