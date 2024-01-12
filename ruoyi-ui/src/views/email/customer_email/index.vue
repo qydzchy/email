@@ -2,10 +2,12 @@
     <div class="mm-split-pane mm-split-pane__right" style="left: 12.2835%;">
         <div class="page-mail-list layout-extraSidebar-content" style="background-color: white;">
             <span>
-                <Header :isHide="isHide" :total="total" :currentPage.sync="currentPage" @switch="onSwitch"
+                <Header :isHide="isHide" :total="total" :currentPage.sync="currentPage" :fixedFlag.sync="fixedFlag"
+                    :attachmentFlag.sync="attachmentFlag" @updateFlag="updateFlag" @switch="onSwitch"
                     @reloadList="onReload">
                     <Content ref="customerContent" :total.sync="total" :currentPage.sync="currentPage"
-                        :selectedTaskId="selectedTaskId" @handlerHeader="bool => isHide = bool" />
+                        :selectedTaskId="selectedTaskId" :fixedFlag="fixedFlag" :attachmentFlag="attachmentFlag"
+                        @handlerHeader="bool => isHide = bool" />
                 </Header>
             </span>
         </div>
@@ -32,6 +34,8 @@ export default {
             isHide: false,
             total: 0,
             currentPage: 1,
+            fixedFlag: false,
+            attachmentFlag: false,
         }
     },
     methods: {
@@ -41,6 +45,13 @@ export default {
         onReload() {
             this.$refs.customerContent.getList()
         },
+        updateFlag(type, value) {
+            this[type] = value
+            this.currentPage = 1
+            setTimeout(() => {
+                this.onReload()
+            }, 400)
+        }
     }
 }
 </script>

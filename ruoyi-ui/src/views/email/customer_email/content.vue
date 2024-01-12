@@ -255,7 +255,7 @@
                 <div class="mm-split-pane mm-split-pane__right" :style="`left:${showHeader ? '70.8455%' : '35.2041%;'}`">
                     <template v-if="!showHeader">
                         <!-- 快捷邮件 -->
-                        <FastWrite :info="fastInfo" @showLabel="onShowLabel" />
+                        <FastWrite :info="fastInfo" @showLabel="(bool) => onShowLabel(bool, 'write')" @reload="getList" />
                         <!-- 抽屉 -->
                         <div v-if="Boolean(emailReadingModeFlag)" class="mail-side-card slide-fade"
                             :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
@@ -303,6 +303,16 @@ export default {
             default: 1,
             required: true
         },
+        fixedFlag: {
+            type: Boolean,
+            default: false,
+            required: false
+        },
+        attachmentFlag: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     },
     components: {
         FastWrite,
@@ -375,7 +385,13 @@ export default {
                 this.loading = true
                 const res = await getCustomerEmailList({
                     customerId: this.customerId,
-                    fixedFlag: true,
+                    fixedFlag: this.fixedFlag,
+                    attachmentFlag: this.attachmentFlag,
+                    emails: '',
+                    type: '',
+                    labelIds: '',
+                    keywordType: '',
+                    keyword: '',
                     pageNum: this.currentPage,
                     pageSize: this.pageSize
                 }).finally(() => {
@@ -491,9 +507,12 @@ export default {
             } catch {
             }
         },
-        onShowLabel(bool) {
+        onShowLabel(bool, type) {
             this.showHeader = bool
             this.$emit('handlerHeader', !bool)
+            if (type === 'write') {
+                this.getList()
+            }
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {

@@ -313,6 +313,16 @@ export default {
             default: 1,
             required: true
         },
+        fixedFlag: {
+            type: Boolean,
+            default: false,
+            required: false
+        },
+        attachmentFlag: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     },
     components: {
         CustomTimePopover,
@@ -341,8 +351,6 @@ export default {
                 '标为未读',
                 '标为垃圾邮件',
             ],
-            fixedFlag: false,
-            attachmentFlag: false,
             emailSlideStatus: {},
             showPendingTime: false,
             showCustomTime: false,
@@ -639,14 +647,12 @@ export default {
 
         // 固定总开关
         switchFixed() {
-            this.fixedFlag = !this.fixedFlag;
-            this.handleCurrentPage(1)
+            this.$emit('updateFlag', 'fixedFlag', !this.fixedFlag)
         },
 
         // 附件总开关
         switchAttachment() {
-            this.attachmentFlag = !this.attachmentFlag;
-            this.handleCurrentPage(1)
+            this.$emit('updateFlag', 'attachmentFlag', !this.attachmentFlag)
         },
 
         toggleSlide(emailId, direction) {

@@ -662,8 +662,8 @@ export default {
                     this.$message.error("执行失败");
                     return;
                 }
-
                 email.fixedFlag = !email.fixedFlag;
+                this.$emit('reload')
             } catch (error) {
                 console.error('固定邮件出现错误:', error);
                 throw error;
