@@ -157,6 +157,7 @@
         ORDER BY mte.send_date DESC
         LIMIT #{offset}, #{limit}
     </select>
+
     <select id="getTaskEmailById" resultMap="TaskEmailResult">
         <include refid="selectTaskEmailVo"/>
         where id = #{id} and create_id = #{createId} and del_flag = '0'

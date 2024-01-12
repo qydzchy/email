@@ -3799,15 +3799,15 @@ DROP TABLE IF EXISTS `mailbox_task_single_setting`;
 CREATE TABLE `mailbox_task_single_setting`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `task_id` bigint(20) NOT NULL COMMENT '任务ID',
-  `letter_nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '写信昵称',
+  `letter_nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '写信昵称',
   `default_signature_id` bigint(20) NULL DEFAULT NULL COMMENT '默认签名',
   `reply_signature_id` bigint(20) NULL DEFAULT NULL COMMENT '回复/转发签名',
-  `default_cc_flag` tinyint(1) NOT NULL COMMENT '默认抄送: 0.关闭 1.启用',
+  `default_cc_flag` tinyint(1) NULL DEFAULT NULL COMMENT '默认抄送: 0.关闭 1.启用',
   `default_cc` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '默认抄送,请使用\";\"分隔多个邮箱',
-  `default_bcc_flag` tinyint(1) NOT NULL COMMENT '默认密送: 0.关闭 1.启用',
+  `default_bcc_flag` tinyint(1) NULL DEFAULT NULL COMMENT '默认密送: 0.关闭 1.启用',
   `default_bcc` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '默认密送,请使用\";\"分隔多个邮箱',
-  `trace_flag` tinyint(1) NOT NULL COMMENT '是否追踪邮件: 0.否 1.是',
-  `return_receipt_flag` tinyint(1) NOT NULL COMMENT '是否回执: 0.否 1.是',
+  `trace_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否追踪邮件: 0.否 1.是',
+  `return_receipt_flag` tinyint(1) NULL DEFAULT 0 COMMENT '是否回执: 0.否 1.是',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
@@ -3815,8 +3815,9 @@ CREATE TABLE `mailbox_task_single_setting`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '单个邮箱设置表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_task_id`(`task_id`) USING BTREE COMMENT '任务索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '单个邮箱设置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mailbox_host
@@ -4100,14 +4101,12 @@ CREATE TABLE `mailbox_task_email`  (
   INDEX `idx_task_id`(`task_id`) USING BTREE COMMENT '任务索引',
   INDEX `idx_type`(`type`) USING BTREE COMMENT '邮件类型索引',
   INDEX `idx_status`(`status`) USING BTREE COMMENT '邮件状态索引',
-  INDEX `idx_messageId_inReplyTo`(`message_id`, `in_reply_to`) USING BTREE COMMENT '发送消息组合索引',
   INDEX `idx_folder`(`folder`) USING BTREE COMMENT '邮件文件夹索引',
-  INDEX `idx_uid`(`uid`) USING BTREE COMMENT '邮件唯一id索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 18696 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of mailbox_task_email
--- ----------------------------
+  INDEX `idx_uid`(`uid`) USING BTREE COMMENT '邮件唯一id索引',
+  INDEX `idx_folder_id`(`folder_id`) USING BTREE COMMENT '文件夹id索引',
+  INDEX `idx_fixed_flag`(`fixed_flag`) USING BTREE COMMENT '固定索引',
+  INDEX `idx_del_flag`(`del_flag`) USING BTREE COMMENT '删除索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 28265 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mailbox_task_email_attachment
@@ -4892,8 +4891,9 @@ CREATE TABLE `mailbox_task_email_content`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21156 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件内容表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_email_id`(`email_id`) USING BTREE COMMENT '邮件id索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 28209 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件内容表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mailbox_task_email_content
@@ -4935,7 +4935,9 @@ CREATE TABLE `mailbox_task_email_label`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_email_id`(`email_id`) USING BTREE COMMENT '邮件索引',
+  INDEX `idx_label_id`(`label_id`) USING BTREE COMMENT '标签索引'
 ) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件标签表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -4968,14 +4970,15 @@ INSERT INTO `mailbox_task_email_label` VALUES (21, 15695, 7, '0', 1, 'admin', '2
 -- ----------------------------
 DROP TABLE IF EXISTS `mailbox_task_email_trace`;
 CREATE TABLE `mailbox_task_email_trace`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `email_id` bigint(20) NOT NULL COMMENT '发送邮件ID',
-  `beijing_time` datetime(0) NOT NULL COMMENT '北京时间',
-  `local_time` datetime(0) NOT NULL COMMENT '当地时间',
-  `ip` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'IP地址',
-  `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '位置',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '删除标志(0代表存在2代表删除)',
-  PRIMARY KEY (`id`) USING BTREE
+ `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+ `email_id` bigint(20) NOT NULL COMMENT '发送邮件ID',
+ `beijing_time` datetime(0) NOT NULL COMMENT '北京时间',
+ `local_time` datetime(0) NOT NULL COMMENT '当地时间',
+ `ip` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'IP地址',
+ `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '位置',
+ `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '删除标志(0代表存在2代表删除)',
+ PRIMARY KEY (`id`) USING BTREE,
+ INDEX `idx_email_id`(`email_id`) USING BTREE COMMENT '邮件索引'
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件追踪表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------

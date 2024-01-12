@@ -1262,17 +1262,29 @@ public class CustomerServiceImpl implements ICustomerService {
             return false;
         }
 
-        // todo 有问题，需要修改
+        // todo 待测试
+        boolean isRuleMet = true;
         for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
             boolean isConditionMet = columnContext.handler(customerDetail, segmentConditionRuleBO);
-            if (!isConditionMet) return false;
 
-            // 多条件如果是或条件，则只要有一个条件成立就返回true
             String andOr = segmentConditionRuleBO.getAndOr();
-            if (AndOrEnum.OR.getAndOr().equals(andOr)) return true;
+
+            if (andOr.equals(AndOrEnum.AND)) {
+                if (!isConditionMet) {
+                    isRuleMet = false;
+                    break;
+                }
+            } else if (andOr.equals(AndOrEnum.OR)) {
+                if (isConditionMet) {
+                    isRuleMet = true;
+                    break;
+                } else {
+                    isRuleMet = false;
+                }
+            }
         }
 
-        return true;
+        return isRuleMet;
     }
 
 

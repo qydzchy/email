@@ -3,6 +3,7 @@ package com.ruoyi.email.domain.vo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
@@ -102,6 +103,7 @@ public class EmailListVO {
     /**
      * 邮件内容
      */
+    @JsonIgnore
     private String content;
 
     /**
@@ -171,6 +173,11 @@ public class EmailListVO {
         if (this.content == null) return "";
 
         Document doc = Jsoup.parse(this.content);
-        return doc.text();
+        String text = doc.text();
+        if (text.length() > 100) {
+            return text.substring(0, 100);
+        }
+
+        return text;
     }
 }
