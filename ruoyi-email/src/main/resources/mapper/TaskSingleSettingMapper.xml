@@ -140,12 +140,12 @@
     </update>
 
     <insert id="batchInsert" parameterType="java.util.List">
-        <foreach collection="list" item="item" separator=";">
-            INSERT INTO mailbox_task_single_setting
-            (task_id, letter_nickname, default_signature_id, reply_signature_id, default_cc_flag, default_cc,
-            default_bcc_flag, default_bcc, trace_flag, return_receipt_flag, del_flag, create_id, create_by,
-            create_time, update_id, update_by, update_time)
-            VALUES
+        INSERT INTO mailbox_task_single_setting
+        (task_id, letter_nickname, default_signature_id, reply_signature_id, default_cc_flag, default_cc,
+        default_bcc_flag, default_bcc, trace_flag, return_receipt_flag, del_flag, create_id, create_by,
+        create_time, update_id, update_by, update_time)
+        VALUES
+        <foreach collection="taskSingleSettingList" item="item" index="index" separator=",">
             (#{item.taskId}, #{item.letterNickname}, #{item.defaultSignatureId}, #{item.replySignatureId},
             #{item.defaultCcFlag}, #{item.defaultCc}, #{item.defaultBccFlag}, #{item.defaultBcc},
             #{item.traceFlag}, #{item.returnReceiptFlag}, #{item.delFlag}, #{item.createId}, #{item.createBy},

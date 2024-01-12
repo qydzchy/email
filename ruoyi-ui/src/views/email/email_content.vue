@@ -989,6 +989,7 @@ import emailHeaderLayout from "./email_header.vue";
 import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
 import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail} from "@/api/email/email";
+import {  getCustomerEmailInfo } from '@/api/email/customer'
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";
@@ -1055,10 +1056,6 @@ export default {
       type: String,
       default: ''
     },
-    labels: {
-      type: Array,
-      default: () => []
-    }
   },
   computed: {
     totalPages() {
@@ -1075,11 +1072,12 @@ export default {
   // 在B组件中
   created() {
     this.activeEmailId = this.selectedEmail.id;
-    this.currentEmailDetail = this.selectedEmail;
     this.localEmailList = this.emailData;
     this.total = this.emailTotal;
     this.taskId = this.selectedTaskId;
     this.currentEmailType = this.emailType;
+    this.getEmailInfo(this.activeEmailId)
+    // this.currentEmailDetail = this.selectedEmail;
     this.refreshLabelList();
   },
 
@@ -1090,9 +1088,24 @@ export default {
   },
 
   methods: {
+    async getEmailInfo(id){
+      if(!id){
+          return
+      }
+      try {
+          const res = await getCustomerEmailInfo({
+              id
+          })
+          if (res.code === 200) {
+              this.currentEmailDetail = res.data
+          }
+      } catch (e) {
+          console.error(e.message);
+      }
+    },
     toggleActive(email) {
       this.activeEmailId = email.id;
-      this.currentEmailDetail = email;
+      this.getEmailInfo(email.id)
       // 将状态改成已读
       this.readEmail(email);
     },

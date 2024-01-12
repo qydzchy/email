@@ -26,7 +26,7 @@
                         <div class="mm-popover">
                             <div>
                                 <span class="">
-                                    <span class="okki-icon-wrap tool-bar-icon-item" @click="handlePendingTime">​<svg
+                                    <span class="okki-icon-wrap tool-bar-icon-item" @click.stop="handlePendingTime">​<svg
                                             xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                             aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                             <path
@@ -489,7 +489,7 @@
 
         </div>
         <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end"
-            v-if="showPendingTime || showCustomTime"
+            v-if="showPendingTime || showCustomTime" v-clickOutside="closeTimeModal"
             style="position: absolute; top: 40px; left: 50px; will-change: top, left; transform-origin: 100% bottom;">
 
             <div>
@@ -662,8 +662,8 @@ export default {
                     this.$message.error("执行失败");
                     return;
                 }
-
                 email.fixedFlag = !email.fixedFlag;
+                this.$emit('reload')
             } catch (error) {
                 console.error('固定邮件出现错误:', error);
                 throw error;
@@ -680,7 +680,10 @@ export default {
         handleSelectedTime(time) {
             this.pendingEmail(this.currentEmailDetail, true, time);
         },
-
+        closeTimeModal() {
+            this.showPendingTime = false;
+            this.showCustomTime = false;
+        },
         // 快速回复-富文本框
         toggleQuickReply() {
             this.isReplying = !this.isReplying;
@@ -744,53 +747,53 @@ export default {
                 const data = {
                     "ids": emailIds
                 };
-                // try {
-                //     const response = await deleteEmail(data);
-                //     if (response.code === 200) {
-                //         let found = false;
-                //         for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
-                //             const monthGroup = this.localEmailList[groupIndex];
-                //             for (const month in monthGroup) {
-                //                 const emails = monthGroup[month];
-                //                 const index = emails.findIndex(email => email.id === this.activeEmailId);
-                //                 if (index > -1) {
-                //                     emails.splice(index, 1);
-                //                     this.total -= 1;
+                try {
+                    const response = await deleteEmail(data);
+                    if (response.code === 200) {
+                        let found = false;
+                        for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+                            const monthGroup = this.localEmailList[groupIndex];
+                            for (const month in monthGroup) {
+                                const emails = monthGroup[month];
+                                const index = emails.findIndex(email => email.id === this.activeEmailId);
+                                if (index > -1) {
+                                    emails.splice(index, 1);
+                                    this.total -= 1;
 
-                //                     if (emails.length === 0) {
-                //                         // 如果该monthGroup没有邮件了，从localEmailList中移除
-                //                         this.localEmailList.splice(groupIndex, 1);
+                                    if (emails.length === 0) {
+                                        // 如果该monthGroup没有邮件了，从localEmailList中移除
+                                        this.localEmailList.splice(groupIndex, 1);
 
-                //                         // 尝试从下一个monthGroup获取最新邮件
-                //                         if (this.localEmailList[groupIndex]) {
-                //                             this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
-                //                         } else {
-                //                             this.currentEmailDetail = {};
-                //                         }
-                //                     } else if (emails[index]) {
-                //                         this.currentEmailDetail = emails[index];
-                //                     } else if (emails[index - 1]) {
-                //                         this.currentEmailDetail = emails[index - 1];
-                //                     } else {
-                //                         this.currentEmailDetail = {};
-                //                     }
+                                        // 尝试从下一个monthGroup获取最新邮件
+                                        if (this.localEmailList[groupIndex]) {
+                                            this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                                        } else {
+                                            this.currentEmailDetail = {};
+                                        }
+                                    } else if (emails[index]) {
+                                        this.currentEmailDetail = emails[index];
+                                    } else if (emails[index - 1]) {
+                                        this.currentEmailDetail = emails[index - 1];
+                                    } else {
+                                        this.currentEmailDetail = {};
+                                    }
 
-                //                     this.activeEmailId = this.currentEmailDetail.id || null;
-                //                     found = true;
-                //                     break;
-                //                 }
-                //             }
-                //             if (found) break;
-                //         }
+                                    this.activeEmailId = this.currentEmailDetail.id || null;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) break;
+                        }
 
-                //         this.isDropdownEmailShown = false;
-                //     } else {
-                //         this.$message.error('删除失败');
-                //     }
-                // } catch (error) {
-                //     console.error('邮件删除出现错误:', error);
-                //     throw error;
-                // }
+                        this.isDropdownEmailShown = false;
+                    } else {
+                        this.$message.error('删除失败');
+                    }
+                } catch (error) {
+                    console.error('邮件删除出现错误:', error);
+                    throw error;
+                }
             }
         },
         handleLabel() {

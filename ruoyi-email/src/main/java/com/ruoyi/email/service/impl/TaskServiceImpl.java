@@ -16,14 +16,11 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
-import com.ruoyi.email.domain.bo.EmailSimpleBO;
-import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
 import com.ruoyi.email.domain.vo.*;
 import com.ruoyi.email.mapper.*;
 import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.*;
-import com.ruoyi.email.util.Constant;
 import com.ruoyi.email.util.ThreadPoolPullService;
 import com.ruoyi.email.util.ThreadPoolSendService;
 import lombok.extern.slf4j.Slf4j;
@@ -65,10 +62,6 @@ public class TaskServiceImpl implements ITaskService
     private OtherConfigMapper otherConfigMapper;
     @Resource
     private TransceiverRuleMapper transceiverRuleMapper;
-    @Resource
-    private TaskEmailMapper taskEmailMapper;
-    @Resource
-    private TaskEmailLabelMapper taskEmailLabelMapper;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -338,7 +331,7 @@ public class TaskServiceImpl implements ITaskService
                     saveEmailData(task.getId(), universalMail, emailOperateParamBO.getTransceiverRuleList());
 
                     // 外出自动回复处理
-                     autoResponseHandler(task, universalMail, emailOperateParamBO);
+                    autoResponseHandler(task, universalMail, emailOperateParamBO);
 
                 } catch (MailPlusException e) {
                     log.error("{}", e);
@@ -352,16 +345,6 @@ public class TaskServiceImpl implements ITaskService
         }
 
         return null;
-    }
-
-    /**
-     * 查询是否在4天内已经回复过邮件
-     * @param fromer
-     * @param receiver
-     */
-    private boolean checkRepliedWithinFourDays(String fromer, String receiver, Long createId) {
-        int count = taskEmailMapper.countRepliedWithinFourDays(fromer, receiver, createId, Constant.AUTO_RESPONSE_PREFIX);
-        return count > 0 ? true : false;
     }
 
     /**
@@ -384,9 +367,6 @@ public class TaskServiceImpl implements ITaskService
             }
 
             if (StringUtils.isBlank(emailOperateParamBO.getReContent())) return;
-
-            // 查询是否在4天内已经回复过邮件 todo 需调试
-            if (checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount(), task.getCreateId())) return;
 
             taskEmailService.autoResponse(task, universalMail.getFromer(), universalMail.getTitle(), emailOperateParamBO.getReContent(), universalMail.getMessageId());
         }
@@ -551,35 +531,12 @@ public class TaskServiceImpl implements ITaskService
         Long emailId = taskEmail.getId();
 
         // 邮件内容
+        String content = universalMail.getContent();
         TaskEmailContent emailContent = new TaskEmailContent();
         emailContent.setEmailId(emailId);
-        emailContent.setContent(universalMail.getContent());
+        emailContent.setContent(content);
         emailContent.setCreateTime(nowDate);
         taskEmailContentService.insertTaskEmailContent(emailContent);
-
-
-        if (transceiverRuleList == null || transceiverRuleList.isEmpty()) return;
-
-        // 收件规则处理
-        EmailSimpleBO emailSimpleBO = getEmailSimpleBO(universalMail);
-        TransceiverRuleBO transceiverRuleBO = taskEmailService.transceiverRuleHandler(taskId, emailSimpleBO, transceiverRuleList);
-
-        taskEmail.setFixedFlag(transceiverRuleBO.getFixedFlag());
-        taskEmail.setReadFlag(transceiverRuleBO.getReadFlag());
-        taskEmail.setFolderId(transceiverRuleBO.getFolderId());
-        taskEmail.setPendingFlag(transceiverRuleBO.getPendingFlag());
-        taskEmail.setPendingTime(transceiverRuleBO.getPendingTime());
-        taskEmail.setDelFlag(transceiverRuleBO.getDelFlag());
-        taskEmailService.updateTaskEmail(taskEmail);
-
-        // 保存邮件标签
-        if (transceiverRuleBO.getLabelId() != null) {
-            TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
-            taskEmailLabel.setEmailId(emailId);
-            taskEmailLabel.setLabelId(transceiverRuleBO.getLabelId());
-            taskEmailLabel.setCreateTime(nowDate);
-            taskEmailLabelMapper.insertTaskEmailLabel(taskEmailLabel);
-        }
 
         //附件
         List<TaskAttachment> taskAttachmentList = new ArrayList<>();
@@ -606,35 +563,10 @@ public class TaskServiceImpl implements ITaskService
             }
         }
 
-        Task task = taskMapper.selectTaskById(taskId);
-        if (task == null) return;
-
-        // 转发
-        taskEmailService.forwardTo(task, transceiverRuleBO.getForwardTo(), universalMail.getTitle(), universalMail.getContent());
-
-        if (StringUtils.isBlank(transceiverRuleBO.getAutoResponse())) return;
-
-        // 查询是否在4天内已经回复过邮件
-        if (!checkRepliedWithinFourDays(universalMail.getFromer(), task.getAccount(), task.getCreateId())) return;
-
-        taskEmailService.autoResponse(task, universalMail.getFromer(), universalMail.getTitle(), transceiverRuleBO.getAutoResponse(), universalMail.getMessageId());
+        // 收件规则处理
+        taskEmailService.transceiverRuleHandler(taskEmail, content, transceiverRuleList);
     }
 
-    /**
-     * 获取邮件参数
-     * @param universalMail
-     * @return
-     */
-    private EmailSimpleBO getEmailSimpleBO(UniversalMail universalMail) {
-        EmailSimpleBO emailSimpleBO = new EmailSimpleBO();
-        emailSimpleBO.setFromer(universalMail.getFromer());
-        emailSimpleBO.setReceiver(universalMail.getReceiver());
-        emailSimpleBO.setCc(universalMail.getCc());
-        emailSimpleBO.setSubject(universalMail.getTitle());
-        emailSimpleBO.setBody(universalMail.getContent());
-        emailSimpleBO.setSendDate(universalMail.getSendDate());
-        return emailSimpleBO;
-    }
 
     @Override
     public void saveEmailData(Long taskId, Long folderId, Integer type, UniversalMail universalMail) {

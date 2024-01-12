@@ -6,13 +6,10 @@ import java.util.Map;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
-import com.ruoyi.email.domain.bo.EmailSimpleBO;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
-import com.ruoyi.email.service.handler.email.UniversalMail;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.util.Pair;
 
 
@@ -84,7 +81,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Boolean customerFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize);
 
     /**
      * 保存发送邮件
@@ -247,12 +244,26 @@ public interface ITaskEmailService
     /**
      * 收发件规则处理
      */
-    TransceiverRuleBO transceiverRuleHandler(Long taskId, EmailSimpleBO emailSimpleBO, List<TransceiverRuleVO> transceiverRuleList);
+    void transceiverRuleHandler(TaskEmail taskEmail, String content, List<TransceiverRuleVO> transceiverRuleList);
+
+    /**
+     * 收发件规则条件处理
+     */
+    TransceiverRuleBO transceiverRuleConditionHandler(TaskEmail taskEmail, String content, List<TransceiverRuleVO> transceiverRuleList);
 
     /**
      * 转发到
      */
     void forwardTo(Task task, String forwardTo, String title, String content);
+
+    /**
+     * 查询是否在4天内已经回复过邮件
+     * @param fromer
+     * @param receiver
+     * @param createId
+     * @return
+     */
+    boolean checkRepliedWithinFourDays(String fromer, String receiver, Long createId);
 
     /**
      * 客户往来邮件列表
