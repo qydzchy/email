@@ -854,6 +854,15 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         return taskEmailMapper.selectByUnSentStatus(taskId);
     }
 
+    /**
+     * 下属列表
+     * @return
+     */
+    @Override //todo 待开发
+    public List<UserInfoVO2> userList() {
+        return null;
+    }
+
     @Override
     public List<EmailListVO> correspondence(Long id) {
         TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
