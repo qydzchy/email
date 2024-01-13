@@ -376,6 +376,8 @@ import CustomTimePopover from './custom_time.vue';
 import DelayedTxlLayout from './write_email_delayed_tx.vue';
 import { fontSizeList, fontFamilyList, colors } from '@/constant/editorOption'
 import { getSignatureList } from '@/api/email/usually'
+// 邮箱详情
+import { getCustomerEmailInfo } from '@/api/email/customer'
 
 export default {
   components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover, DelayedTxlLayout },
@@ -469,9 +471,29 @@ export default {
           this.formData.content = `<p>${defaultSpan}${content}</p > `
         }
       }
+    },
+    "$route.query": {
+      handler(newVal) {
+        if (newVal?.id) {
+          this.getEmailInfo(newVal.id)
+        }
+      },
+      immediate: true
     }
   },
   methods: {
+    async getEmailInfo(id) {
+      try {
+        const res = await getCustomerEmailInfo({
+          id
+        })
+        if (res.code === 200) {
+          this.handleReplyEmail(res.data)
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    },
     async getSignatureOption() {
       try {
         const res = await getSignatureList()
@@ -880,6 +902,35 @@ export default {
         let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
         this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
       }
+    },
+    handleReplyEmail(data) {
+      if (data.id) {
+        this.formData.id = data.id;
+        this.taskId = data.taskId;
+      }
+
+      if (data.receiver) {
+        this.receiver.push(data.fromer);
+        this.receiverEmails = JSON.parse(data.receiver);
+        this.receiverEmails.forEach(receiver => {
+          const email = receiver.email;
+          // 有问题 this.selectedAccount获取不到。
+          if (email !== this.selectedAccount) {
+            this.receiver.push(email);
+          }
+        });
+      }
+
+      if (data.cc) {
+        this.ccEmails = JSON.parse(data.cc);
+        this.ccEmails.forEach(receiver => {
+          const email = receiver.email;
+          if (email !== this.selectedAccount) {
+            this.cc.push(email);
+          }
+        });
+      }
+
     },
 
     // 回复全部
