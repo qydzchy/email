@@ -12,15 +12,43 @@
                                     <div class="mm-tabs-header mm-tabs-header__top">
                                         <div class="mm-tabs-nav-wrap mm-tabs-nav-wrap__top">
                                             <div class="mm-tabs-nav-scroll">
-                                                <div class="mm-tabs-nav" role="tablist" style="transform: translateX(0px);">
-                                                    <div class="mm-tabs-active-bar__top mm-tabs-active-bar"
-                                                        style="width: 96px; transform: translateX(0px);"></div>
-                                                    <div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active"
-                                                        id="tab-all" aria-controls="pane-all" role="tab"
-                                                        aria-selected="true" tabindex="0" refinfor="true"><span
-                                                            class="mm-tooltip"><span
-                                                                class="mm-tooltip-trigger">全部</span></span>
-                                                    </div>
+                                                <div class="mm-tabs-nav" role="tablist" style="width:100%">
+                                                    <el-row align="center" type="flex" class="py-15">
+                                                        <el-col :span="6">
+                                                            <span class="px-10">联系人</span>
+                                                            <el-select v-model="searchForm.emails" style="width:76%"
+                                                                multiple collapse-tags clearable @clear="getList"
+                                                                @visible-change="handleSelectHide">
+                                                                <el-option v-for="(email, index) in emailOption"
+                                                                    :key="index" :value="email.id"
+                                                                    :label="email.account"></el-option>
+                                                            </el-select>
+                                                        </el-col>
+                                                        <el-col :span="6">
+                                                            <span class="px-10">邮件类型</span>
+                                                            <el-select v-model="searchForm.type" style="width:76%" clearable
+                                                                @clear="getList" @visible-change="handleSelectHide">
+                                                                <el-option label="不限" value=""></el-option>
+                                                                <el-option label="收件" :value="1"></el-option>
+                                                                <el-option label="发件" :value="2"></el-option>
+                                                            </el-select>
+                                                        </el-col>
+                                                        <el-col :span="6">
+                                                            <span class="px-10">邮件标签</span>
+                                                            <el-select v-model="searchForm.labelIds" style="width:76%"
+                                                                multiple collapse-tags clearable @clear="getList"
+                                                                @visible-change="handleSelectHide">
+                                                                <el-option v-for="(label, index) in labels" :key="index"
+                                                                    :value="label.id" :label="label.name"></el-option>
+                                                            </el-select>
+                                                        </el-col>
+                                                        <el-col :span="5" :offset="1">
+                                                            <el-input v-model="searchForm.keyword" @blur="handleKeywordBlur"
+                                                                clearable @clear="getList" style="width:100%"
+                                                                placeholder="邮件标题/正文/附件名"></el-input>
+                                                        </el-col>
+                                                    </el-row>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -69,11 +97,10 @@
                                                         </div>
                                                         <div class="flex-grow flex-shrink-0">
                                                             <div class="mail-list-item-content">
-                                                                <div @click.stop style="min-height:40px"><label
-                                                                        v-show="showHeader"
-                                                                        class="mm-checkbox mail-list-item-checkbox pr-0">
-                                                                        <input true-value="true" type="checkbox"><span
-                                                                            class="mm-checkbox-input"></span></label>
+                                                                <div @click.stop style="min-height:40px">
+                                                                    <el-checkbox v-show="showHeader"
+                                                                        class="mm-checkbox mail-list-item-checkbox pr-0"
+                                                                        v-model="email.selected"></el-checkbox>
                                                                 </div>
                                                                 <div>
                                                                     <div class="flex-shrink-0 flex items-center h-24px">
@@ -274,7 +301,8 @@
                 <div class="mm-split-pane mm-split-pane__right" :style="`left:${showHeader ? '70.8455%' : '35.2041%;'}`">
                     <template v-if="!showHeader">
                         <!-- 快捷邮件 -->
-                        <FastWrite :info="fastInfo" @showLabel="(bool) => onShowLabel(bool, 'write')" @reload="getList" />
+                        <FastWrite :info="fastInfo" :total="total" :labels="labels"
+                            @showLabel="(bool) => onShowLabel(bool, 'write')" @reload="getList" />
                         <!-- 抽屉 -->
                         <div v-if="Boolean(emailReadingModeFlag)" class="mail-side-card slide-fade"
                             :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
@@ -305,6 +333,7 @@ import { reasonList } from "@/api/company/poolRule";
 import { getCustomerTagList } from "@/api/customer/config";
 import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
 import { getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer, getSetPacketList } from "@/api/customer/publicleads";
+import { getEmailTaskList } from '@/api/email/usually'
 
 export default {
     props: {
@@ -332,7 +361,15 @@ export default {
             type: Boolean,
             default: false,
             required: false
-        }
+        },
+        labels: {
+            type: Array,
+            default: () => {
+                return []
+            },
+            required: false
+        },
+        ids: [],
     },
     components: {
         FastWrite,
@@ -355,8 +392,16 @@ export default {
                 tagOption: [],
                 teamMemberOption: [],
             },
+            searchForm: {
+                emails: [],
+                type: '',
+                labelIds: [],
+                keyword: '',
+                keywordType: ''
+            },
+            emailOption: [],
             fastInfo: {},
-            firstReq: true
+            firstReq: true,
         }
     },
     computed: {
@@ -393,6 +438,11 @@ export default {
                     this.getList()
                 }
             }
+        },
+        ids: {
+            handler(newVal) {
+
+            }
         }
     },
     mounted() {
@@ -403,15 +453,16 @@ export default {
         async getList() {
             try {
                 this.loading = true
+                const { emails, type, labelIds, keywordType, keyword } = this.searchForm
                 const res = await getCustomerEmailList({
                     customerId: this.customerId,
                     fixedFlag: this.fixedFlag,
                     attachmentFlag: this.attachmentFlag,
-                    emails: '',
-                    type: '',
-                    labelIds: '',
-                    keywordType: '',
-                    keyword: '',
+                    emails: emails?.join(','),
+                    type,
+                    labelIds: labelIds?.join(','),
+                    keywordType,
+                    keyword,
                     pageNum: this.currentPage,
                     pageSize: this.pageSize
                 }).finally(() => {
@@ -437,6 +488,7 @@ export default {
             }
         },
         init() {
+            this.getEmailOption()
             this.getGroupList()
             this.getStageList()
             this.getOriginList()
@@ -445,6 +497,15 @@ export default {
             this.getTagList()
             this.getMemberList()
             this.getCommonTree()
+        },
+        // 联系人选项
+        async getEmailOption() {
+            try {
+                const res = await getEmailTaskList()
+                if (res.code === 200) {
+                    this.emailOption = res.data
+                }
+            } catch { }
         },
         // 分组选项
         async getGroupList() {
@@ -614,6 +675,18 @@ export default {
         handleCurrentPage(value) {
             this.$emit('update:currentPage', value)
         },
+        // 下拉框隐藏 
+        handleSelectHide(bool) {
+            if (!bool) {
+                this.getList()
+            }
+        },
+        // 输入框失去聚焦
+        handleKeywordBlur() {
+            if (this.searchForm.keyword) {
+                this.getList()
+            }
+        }
     }
 }
 </script>

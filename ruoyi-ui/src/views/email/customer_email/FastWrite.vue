@@ -109,7 +109,7 @@
             <div class="mail-toolbar-right">
 
                 <div class="mail-paging tool-bar-paging">
-                    <!-- <span class="total-count ellipsis" title="共 759 封">共 759 封</span> -->
+                    <span class="total-count ellipsis">共 {{ total }} 封</span>
 
                     <div class="mail-paging-btn left-btn disabled">
                         <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
@@ -523,7 +523,6 @@ import PendingTimePopover from "@/views/email/pending_time.vue";
 import emailHeaderLabelLayout from '@/views/email/email_content_label.vue';
 
 import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
-import { listLabel } from "@/api/email/label";
 export default {
     props: {
         info: {
@@ -531,7 +530,19 @@ export default {
             default: () => {
             },
             required: false
-        }
+        },
+        total: {
+            type: Number,
+            default: 0,
+            required: true
+        },
+        labels: {
+            type: Array,
+            default: () => {
+                return []
+            },
+            required: false
+        },
     },
     components: {
         CustomTimePopover,
@@ -562,7 +573,6 @@ export default {
                 '新建日程',
                 '标为垃圾邮件'
             ],
-            labels: []
         }
     },
     computed: {
@@ -582,9 +592,6 @@ export default {
             deep: true,
             immediate: true
         }
-    },
-    created() {
-        this.refreshLabelList()
     },
     methods: {
         // 标记为未读邮件
@@ -698,18 +705,6 @@ export default {
             } catch (error) {
                 console.error('固定邮件出现错误:', error);
                 throw error;
-            }
-        },
-
-        // 获取标签
-        async refreshLabelList() {
-            try {
-                const res = await listLabel()
-                if (res.code === 200) {
-                    this.labels = res.data
-                }
-            } catch (e) {
-                console.error(e.message);
             }
         },
 

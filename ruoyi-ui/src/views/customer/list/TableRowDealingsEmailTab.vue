@@ -1,5 +1,5 @@
 <template>
-    <div class="contact-mail-tab-container">
+    <div class="contact-mail-tab-container" v-loading="loading">
         <div class="list">
             <div class="total">
                 <span v-if="!accActive">共{{ emailList.length }}封邮件</span>
@@ -36,39 +36,44 @@
             </ul>
             <ul v-else class="contact-attach-list">
                 <template v-if="emailList && emailList.length">
-                    <li v-for="(item, index) in emailList" :key="index"
-                        title="Need Quote for Cycloidal Reduction Gear - FAS25-119" class="contact-attach-wrapper">
-                        <span class="time">{{ item.sendDate }}</span>
-                        <div class="contact-attach-item" v-for="(attach, idx) in item.emailAttachmentList" :key="idx">
-                            <svg class="mm-icon mm-icon-file-jpg file-type" viewBox="0 0 200 200" name="file_jpg"
-                                xmlns="XMLNS" fill="currentColor" style="height: 35px; width: 35px;">
-                                <path
-                                    d="M115.3,80.3h34.4c13.7,0,18.1,9.2,18.1,19.1c0,9.4-5.5,18.9-18,18.9H127v23.4h-11.7V80.3z M127,108.8h18.9  c6.7,0,10.3-2,10.3-9.2c0-7.5-4.8-9.4-9.4-9.4H127V108.8z"
-                                    fill="#FFFFFF"></path>
-                                <path
-                                    d="M32.2,6.2c-2.3,0-4.8,0.9-6.6,2.8c-1.7,1.9-2.8,4.2-2.8,6.6v168.8c0,2.3,0.9,4.8,2.8,6.6  c1.9,1.9,4.2,2.8,6.6,2.8h137.5c2.3,0,4.8-0.9,6.6-2.8c1.9-1.9,2.8-4.2,2.8-6.6v-125L126,6.2H32.2z"
-                                    fill="#6CCBFF"></path>
-                                <path d="M179.1,59.4h-43.8c-2.3,0-4.8-0.9-6.6-2.8c-1.9-1.7-2.8-4.2-2.8-6.6V6.2L179.1,59.4z"
-                                    fill="#C4EAFF"></path>
-                                <path
-                                    d="M155.1,144.7l-21.9-34c-0.7-1.1-1.8-1.6-3-1.6c-1.2,0-2.3,0.7-3,1.6L115.5,129L89.2,86.4  c-0.7-1.1-1.8-1.6-3-1.6s-2.3,0.7-3,1.6l-36.1,58.4c-0.7,1.1-0.7,2.5,0,3.5c0.7,1.2,1.8,1.8,3,1.8h102c1.2,0,2.5-0.7,3.2-1.8  C155.8,147,155.8,145.6,155.1,144.7L155.1,144.7z"
-                                    fill="#FFFFFF"></path>
-                                <path
-                                    d="M125.3,80.4c0,4.8,3.9,8.8,8.8,8.8c4.8,0,8.8-3.9,8.8-8.8s-3.9-8.8-8.8-8.8C129.2,71.7,125.3,75.6,125.3,80.4z"
-                                    fill="#FFFFFF"></path>
-                            </svg>
-                            <div class="file-info">
-                                <h1 :title="attach.name" class="ellipsis">{{ attach.name }}</h1>
-                                <div>
-                                    <span class="file-size ellipsis">{{ attach.size }}</span>
-                                    <span class="operations">
-                                        <a class="c-link" @click="downloadFile(attach)">下载</a>
-                                        <!-- <a class="c-link">预览</a> -->
-                                    </span>
+                    <template v-for="(item, index) in emailList">
+                        <li v-if="item.emailAttachmentList && item.emailAttachmentList.length" :key="index"
+                            class="contact-attach-wrapper">
+                            <span class="time">{{ item.sendDate }}</span>
+                            <div class="contact-attach-item" v-for="(attach, idx) in item.emailAttachmentList" :key="idx">
+                                <svg class="mm-icon mm-icon-file-jpg file-type" viewBox="0 0 200 200" name="file_jpg"
+                                    xmlns="XMLNS" fill="currentColor" style="height: 35px; width: 35px;">
+                                    <path
+                                        d="M115.3,80.3h34.4c13.7,0,18.1,9.2,18.1,19.1c0,9.4-5.5,18.9-18,18.9H127v23.4h-11.7V80.3z M127,108.8h18.9  c6.7,0,10.3-2,10.3-9.2c0-7.5-4.8-9.4-9.4-9.4H127V108.8z"
+                                        fill="#FFFFFF"></path>
+                                    <path
+                                        d="M32.2,6.2c-2.3,0-4.8,0.9-6.6,2.8c-1.7,1.9-2.8,4.2-2.8,6.6v168.8c0,2.3,0.9,4.8,2.8,6.6  c1.9,1.9,4.2,2.8,6.6,2.8h137.5c2.3,0,4.8-0.9,6.6-2.8c1.9-1.9,2.8-4.2,2.8-6.6v-125L126,6.2H32.2z"
+                                        fill="#6CCBFF"></path>
+                                    <path
+                                        d="M179.1,59.4h-43.8c-2.3,0-4.8-0.9-6.6-2.8c-1.9-1.7-2.8-4.2-2.8-6.6V6.2L179.1,59.4z"
+                                        fill="#C4EAFF"></path>
+                                    <path
+                                        d="M155.1,144.7l-21.9-34c-0.7-1.1-1.8-1.6-3-1.6c-1.2,0-2.3,0.7-3,1.6L115.5,129L89.2,86.4  c-0.7-1.1-1.8-1.6-3-1.6s-2.3,0.7-3,1.6l-36.1,58.4c-0.7,1.1-0.7,2.5,0,3.5c0.7,1.2,1.8,1.8,3,1.8h102c1.2,0,2.5-0.7,3.2-1.8  C155.8,147,155.8,145.6,155.1,144.7L155.1,144.7z"
+                                        fill="#FFFFFF"></path>
+                                    <path
+                                        d="M125.3,80.4c0,4.8,3.9,8.8,8.8,8.8c4.8,0,8.8-3.9,8.8-8.8s-3.9-8.8-8.8-8.8C129.2,71.7,125.3,75.6,125.3,80.4z"
+                                        fill="#FFFFFF"></path>
+                                </svg>
+                                <div class="file-info">
+                                    <h1 :title="attach.name" class="ellipsis">{{ attach.name }}</h1>
+                                    <div>
+                                        <span class="file-size ellipsis">{{ attach.size }}</span>
+                                        <span class="operations">
+                                            <a class="c-link" @click="downloadFile(attach)">下载</a>
+                                            <!-- <a class="c-link">预览</a> -->
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
+
+                        </li>
+                    </template>
+
                 </template>
 
 
@@ -102,7 +107,8 @@ export default {
         return {
             emailList: [],
             accActive: false,
-            attachLen: 0
+            attachLen: 0,
+            loading: false
         }
     },
     watch: {
@@ -120,8 +126,11 @@ export default {
     methods: {
         async getList(customerId) {
             try {
+                this.loading = true
                 const res = await getCustomerEmailList({
                     customerId
+                }).finally(() => {
+                    this.loading = false
                 })
                 if (res.code === 200) {
                     this.emailList = res.data
