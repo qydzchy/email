@@ -54,9 +54,10 @@
                                             <li class="plain-list-item" v-for="(email, index) in data[Object.keys(data)[0]]"
                                                 :class="{ 'active': email.id === activeEmailId }" :key="index + '_email'"
                                                 @click="() => {
+                                                    activeEmailId = email.id
                                                     onShowLabel(false);
-                                                    activeEmailId = email.id;
-                                                    getInfo(email.id)
+                                                    !email.readFlag && readEmail(email);
+                                                    getInfo(email.id);
                                                 }">
                                                 <div class="right-click-menu-handler">
                                                     <div class="mail-item-container mail-list-item-wrapper" draggable="true"
@@ -152,10 +153,11 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mail-pin-wrapper" @click.stop>
-                                                                            <span class="okki-icon-wrap mail-pin-icon">
+                                                                            <span class="okki-icon-wrap mail-pin-icon"
+                                                                                @click="toggleFixed(email)">
                                                                                 &ZeroWidthSpace;
                                                                                 <el-tooltip
-                                                                                    :content="email.fixedFlag ? '固定' : '取消固定'"
+                                                                                    :content="!email.fixedFlag ? '固定' : '取消固定'"
                                                                                     placement="bottom">
                                                                                     <svg v-if="!email.fixedFlag"
                                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +171,7 @@
                                                                                             d="M16.606 3.292a1 1 0 00-1.414 0 4.508 4.508 0 00-1.314 3.428l-3.094 2.253c-2.258-.538-4.729.057-6.484 1.812a1 1 0 000 1.415l3.545 3.544-2.828 2.829a1 1 0 101.414 1.414l2.828-2.828 3.536 3.535a1 1 0 001.414 0c1.774-1.774 2.363-4.279 1.794-6.557l2.198-3.025a4.51 4.51 0 003.502-1.31 1 1 0 000-1.414l-5.097-5.096zm-6.634 11.75L13.43 18.5a4.93 4.93 0 00.529-4.24 1 1 0 01.14-.902l2.837-3.904a1 1 0 011.02-.39 2.57 2.57 0 001.479-.115L16.046 5.56c-.177.453-.22.95-.125 1.431a1 1 0 01-.392 1.001l-3.957 2.882a1 1 0 01-.892.144 4.929 4.929 0 00-4.185.548l3.466 3.466.006.005a.226.226 0 01.005.006z">
                                                                                         </path>
                                                                                     </svg>
-                                                                                    <svg v-else data-tips="取消固定"
+                                                                                    <svg v-else
                                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                                         width="16" height="16"
                                                                                         viewBox="0 0 24 24"
@@ -188,9 +190,26 @@
                                                                 </div>
                                                             </div>
                                                             <div class="attachment-list-container"></div>
+                                                            <ul class="mail-list-item-tag-wrapper">
+                                                                <li v-for="label in email.emailLabelList" :key="label.id"
+                                                                    class="tag-wrapper system-tag"
+                                                                    :style="{ background: `rgba(${label.color},0.2)`, color: `rgb(${label.color})` }">
+                                                                    <a href="/pro/mail/tag?tag_id=19" class="ellipsis">
+                                                                        <span class="ai-stamp-container">
+                                                                            <!---->
+                                                                            <span class="ellipsis tag-name-text">{{
+                                                                                label.name }}</span>
+                                                                        </span>
+                                                                    </a>
+                                                                    <!---->
+                                                                </li>
+                                                            </ul>
                                                         </div>
                                                     </div>
+
+
                                                 </div>
+
                                             </li>
                                         </ul>
                                     </li>
@@ -284,6 +303,7 @@ import { stageList } from "@/api/company/status";
 import { getOriginList } from "@/api/company/origin";
 import { reasonList } from "@/api/company/poolRule";
 import { getCustomerTagList } from "@/api/customer/config";
+import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
 import { getPrivateSegmentMenu, getTeamMembers, searchGroupsCustomer, getSetPacketList } from "@/api/customer/publicleads";
 
 export default {
@@ -505,6 +525,43 @@ export default {
                     this.indexOpt.memberOption = res.data
                 }
             } catch {
+            }
+        },
+        // 标记为已读文件
+        async readEmail(email) {
+            const emailIds = [];
+            emailIds.push(email.id);
+            const data = {
+                "ids": emailIds,
+                "readFlag": true
+            };
+            try {
+                const response = await readEmail(data);
+                if (response.code === 200) {
+                    this.$set(email, 'readFlag', true);
+                    return;
+                }
+            } catch (error) {
+                console.error('标记为已读出现错误:', error);
+                throw error;
+            }
+        },
+        // 固定
+        async toggleFixed(email) {
+            const data = {
+                "id": email.id,
+                "fixedFlag": !email.fixedFlag
+            };
+            try {
+                const response = await fixedEmail(data);
+                if (response.code !== 200) {
+                    this.$message.error("执行失败");
+                    return;
+                }
+                email.fixedFlag = !email.fixedFlag;
+            } catch (error) {
+                console.error('固定邮件出现错误:', error);
+                throw error;
             }
         },
         onShowLabel(bool, type) {

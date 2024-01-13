@@ -203,7 +203,7 @@ export default {
     color: #0884f3
 }
 
-.contact-mail-tab-container .list .total .contact-mail-list {
-    min-height: 100px;
+.contact-mail-list {
+    min-height: 100px !important;
 }
 </style>
