@@ -1,52 +1,25 @@
 <template>
   <div class="schedule-dialog">
-    <el-dialog
-        width="600px"
-        :title="formData.scheduleId ? '编辑日程':'新建日程'"
-        :visible.sync="scheduleDialog"
-        :close-on-click-modal="false"
-        :append-to-body="true"
-        @close="onCancel">
+    <el-dialog width="600px" :title="formData.scheduleId ? '编辑日程' : '新建日程'" :visible.sync="scheduleDialog"
+      :close-on-click-modal="false" :append-to-body="true" @close="onCancel">
       <div class="container">
         <el-form :model="scheduleForm" label-position="top" class="schedule-form">
           <el-form-item label="日程内容" required>
-            <el-input v-model="scheduleForm.scheduleContent" placeholder="请输入"/>
+            <el-input v-model="scheduleForm.scheduleContent" placeholder="请输入" />
           </el-form-item>
           <el-form-item>
-            <SelectTagColor is-hover :checked-color.sync="scheduleForm.color" :color-map="colorMap"/>
+            <SelectTagColor is-hover :checked-color.sync="scheduleForm.color" :color-map="colorMap" />
           </el-form-item>
           <el-form-item label="日程时间" required>
             <el-row type="flex">
               <el-col :span="18">
-                <el-date-picker
-                    v-if="!!scheduleForm.allDayFlag"
-                    key="isFullDay"
-                    style="width:100%"
-                    size="small"
-                    v-model="scheduleForm.dates"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    clearable
-                    format="yyyy-MM-dd"
-                    :picker-options="pickerOptions"
-                    align="left"
-                ></el-date-picker>
-                <el-date-picker
-                    v-else
-                    key="isNotFullDay"
-                    style="width:100%"
-                    size="small"
-                    v-model="scheduleForm.dates"
-                    type="datetimerange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    clearable
-                    :picker-options="pickerOptions"
-                    align="left"
-                ></el-date-picker>
+                <el-date-picker v-if="!!scheduleForm.allDayFlag" key="isFullDay" style="width:100%" size="small"
+                  v-model="scheduleForm.dates" type="daterange" range-separator="至" start-placeholder="开始日期"
+                  end-placeholder="结束日期" clearable format="yyyy-MM-dd" :picker-options="pickerOptions"
+                  align="left"></el-date-picker>
+                <el-date-picker v-else key="isNotFullDay" style="width:100%" size="small" v-model="scheduleForm.dates"
+                  type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable
+                  :picker-options="pickerOptions" align="left"></el-date-picker>
               </el-col>
               <el-col :span="4" class="pl-10">
                 <el-checkbox v-model="scheduleForm.allDayFlag">全天</el-checkbox>
@@ -56,55 +29,37 @@
           <el-form-item label="周期性日程">
             <el-row type="flex">
               <el-col :span="12">
-                <SelectNext
-                    :value.sync="scheduleForm.recurringSchedule"
-                    :select-options="{options:recurringScheduleOption}"/>
+                <SelectNext :value.sync="scheduleForm.recurringSchedule"
+                  :select-options="{ options: recurringScheduleOption }" />
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="自定义周期" v-if="scheduleForm.recurringSchedule === 5">
             <el-row type="flex">
               <el-col :span="6">
-                <el-input-number
-                    size="small"
-                    controls-position="right"
-                    v-model="scheduleForm.customCycleValue"
-                    :min="1">
+                <el-input-number size="small" controls-position="right" v-model="scheduleForm.customCycleValue" :min="1">
                 </el-input-number>
               </el-col>
               <el-col :span="6">
-                <SelectNext
-                    :value.sync="scheduleForm.customCycleType"
-                    :select-options="{options:customCycleTypeOption}"/>
+                <SelectNext :value.sync="scheduleForm.customCycleType"
+                  :select-options="{ options: customCycleTypeOption }" />
               </el-col>
             </el-row>
           </el-form-item>
-          <el-form-item label="周期结束时间" v-if="scheduleForm.recurringSchedule !==1">
-            <el-date-picker
-                v-model="scheduleForm.cycleEndTime"
-                type="datetime"
-                clearable
-                format="yyyy-MM-dd HH:mm:ss"
-                placeholder="选择日期时间">
+          <el-form-item label="周期结束时间" v-if="scheduleForm.recurringSchedule !== 1">
+            <el-date-picker v-model="scheduleForm.cycleEndTime" type="datetime" clearable format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期时间">
             </el-date-picker>
 
           </el-form-item>
           <el-form-item label="提醒时间">
-            <el-row type="flex" align="middle" v-for="(item,index) in reminderTimeList" :key="index">
+            <el-row type="flex" align="middle" v-for="(item, index) in reminderTimeList" :key="index">
               <el-col :span="10">
-                <SelectNext
-                    :value.sync="item.reminderTimeType"
-                    :select-options="{options:reminderTimeOption}"
-                />
+                <SelectNext :value.sync="item.reminderTimeType" :select-options="{ options: reminderTimeOption }" />
               </el-col>
               <el-col :span="10" :offset="1">
-                <el-date-picker
-                    v-if="item.reminderTimeType === 6"
-                    v-model="item.reminderTimeValue"
-                    type="datetime"
-                    clearable
-                    format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="选择日期时间"/>
+                <el-date-picker v-if="item.reminderTimeType === 6" v-model="item.reminderTimeValue" type="datetime"
+                  clearable format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" />
               </el-col>
               <el-col :span="1" :offset="1">
                 <i class="pointer el-icon-remove-outline" @click="onDeleteRow(item.id)"></i>
@@ -129,19 +84,16 @@
             </el-row>
 
           </el-form-item>
-          <el-form-item label="参与人" required>
+          <el-form-item label="参与人" required v-if="scheduleType !== 'email'">
             <el-select v-model="scheduleForm.userIds" multiple filterable>
-              <el-option
-                  v-for="(item,index) in followPersonList"
-                  :key="index"
-                  :label="item.nickName"
-                  :value="item.userId">
+              <el-option v-for="(item, index) in followPersonList" :key="index" :label="item.nickName"
+                :value="item.userId">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model="scheduleForm.remark" placeholder="请输入内容" type="textarea" resize="none"
-                      :rows="3"></el-input>
+              :rows="3"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -157,9 +109,9 @@
 <script>
 import SelectTagColor from "@/views/components/SelectTagColor/index.vue";
 import SelectNext from "@/components/SelectNext/index.vue";
-import {deepClone, formatDate, formatDateSimple} from "@/utils";
-import {addSchedule, editSchedule} from "@/api/customer/schedule";
-import {searchFollowerCustomer} from "@/api/customer/publicleads";
+import { deepClone, formatDate, formatDateSimple } from "@/utils";
+import { addSchedule, editSchedule } from "@/api/customer/schedule";
+import { searchFollowerCustomer } from "@/api/customer/publicleads";
 
 const initForm = {
   customerId: "", //客户ID
@@ -178,7 +130,7 @@ const initForm = {
   dates: [+new Date(), +new Date()]
 }
 export default {
-  components: {SelectTagColor, SelectNext},
+  components: { SelectTagColor, SelectNext },
   props: {
     formData: {
       type: Object,
@@ -189,6 +141,11 @@ export default {
     visible: {
       type: Boolean,
       default: false,
+      required: false
+    },
+    scheduleType: {
+      type: String,
+      default: 'default',
       required: false
     }
   },
@@ -251,24 +208,24 @@ export default {
         '#9999ff'
       ],
       recurringScheduleOption: [
-        {value: 1, label: '不设置'},
-        {value: 2, label: '每天'},
-        {value: 3, label: '每周'},
-        {value: 4, label: '每月'},
-        {value: 5, label: '自定义'},
+        { value: 1, label: '不设置' },
+        { value: 2, label: '每天' },
+        { value: 3, label: '每周' },
+        { value: 4, label: '每月' },
+        { value: 5, label: '自定义' },
       ],
       customCycleTypeOption: [
-        {value: 1, label: '天'},
-        {value: 2, label: '周'},
-        {value: 3, label: '月'},
+        { value: 1, label: '天' },
+        { value: 2, label: '周' },
+        { value: 3, label: '月' },
       ],
       reminderTimeOption: [
-        {value: 1, label: '不提醒'},
-        {value: 2, label: '当天开始(上午9:00)'},
-        {value: 3, label: '1天前(上午9:00)'},
-        {value: 4, label: '2天前(上午9:00)'},
-        {value: 5, label: '1周前(上午9:00)'},
-        {value: 6, label: '自定义'},
+        { value: 1, label: '不提醒' },
+        { value: 2, label: '当天开始(上午9:00)' },
+        { value: 3, label: '1天前(上午9:00)' },
+        { value: 4, label: '2天前(上午9:00)' },
+        { value: 5, label: '1周前(上午9:00)' },
+        { value: 6, label: '自定义' },
       ],
       followPersonList: [],
       reminderTimeList: [
@@ -321,7 +278,7 @@ export default {
     async addFormSchedule(data) {
       try {
         this.btnLoading = true
-        const res = await addSchedule({...data}).finally(() => {
+        const res = await addSchedule({ ...data }).finally(() => {
           this.btnLoading = false
         })
         if (res.code === 200) {
@@ -334,7 +291,7 @@ export default {
     async editFormSchedule(data) {
       try {
         this.btnLoading = true
-        const res = await editSchedule({...data}).finally(() => {
+        const res = await editSchedule({ ...data }).finally(() => {
           this.btnLoading = false
         })
         if (res.code === 200) {
@@ -373,10 +330,10 @@ export default {
         reminderTime: this.generateReminderTime(this.reminderTimeList)
       }
       if (!this.formData.scheduleId) {
-        config = {...config, customerId: this.formData.customerId}
+        config = { ...config, customerId: this.formData.customerId }
         this.addFormSchedule(config)
       } else {
-        config = {...config, id: this.formData.scheduleId}
+        config = { ...config, id: this.formData.scheduleId }
         this.editFormSchedule(config)
       }
     },
@@ -425,6 +382,4 @@ export default {
     padding-top: 0;
   }
 }
-
-
 </style>

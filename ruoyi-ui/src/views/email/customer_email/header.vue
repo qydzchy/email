@@ -6,10 +6,8 @@
             <div class="mail-toolbar-wrapper">
                 <div class="mail-toolbar-left">
                     <span class="mail-toolbar-btn-item">
-                        <label class="mm-checkbox">
-                            <input v-model="selectAll" @change="toggleAllEmails" true-value="true" type="checkbox">
-                            <span class="mm-checkbox-input"></span>
-                        </label>
+                        <el-checkbox class="mm-checkbox" :disabled="!total" v-model="selectAll"
+                            :indeterminate="indeterminate" @change="toggleAllEmails"></el-checkbox>
                     </span>
 
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="isIconsToggled" @click="refresh">
@@ -96,20 +94,7 @@
                             </span>
                         </span>
                     </span>
-                    <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
-                        <span class="mm-tooltip-trigger">
-                            <span>
-                                <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg"
-                                        width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"
-                                        class="okki-svg-icon">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M2 6a3 3 0 013-3h4.379a3 3 0 012.108.866l1.824 1.8H19a3 3 0 013 3V18a3 3 0 01-3 3H5a3 3 0 01-3-3V6zm2 0a1 1 0 011-1h4.379a1 1 0 01.703.289l1.823 1.8a2 2 0 001.406.578H19a1 1 0 011 1V10H4V6zm16 6v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6h16z">
-                                        </path>
-                                    </svg>
-                                </span>
-                            </span>
-                        </span>
-                    </span>
+                    <SelectFolderPopover v-show="!isIconsToggled" :ids="[]" />
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click.stop="toggleDropdown">
                         <span class="mm-tooltip-trigger">
                             <span>
@@ -299,6 +284,7 @@ import { mapState } from "vuex";
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import emailHeaderLabelLayout from '@/views/email/email_content_label.vue';
+import SelectFolderPopover from "@/views/email/customer_email/SelectFolderPopover.vue";
 
 export default {
     props: {
@@ -338,7 +324,8 @@ export default {
     components: {
         CustomTimePopover,
         PendingTimePopover,
-        emailHeaderLabelLayout
+        emailHeaderLabelLayout,
+        SelectFolderPopover
     },
     data() {
         return {
@@ -353,7 +340,6 @@ export default {
             localEmailList: [],
             currentEmailDetail: {},
             currentEmailType: '',
-            selectAll: false,
             isIconsToggled: true,  // 用于控制图标的显示状态
             isDropdownShown: false,  // 保存下拉菜单的显示状态
             selectedItem: null,
@@ -367,6 +353,9 @@ export default {
             showPendingTime: false,
             showCustomTime: false,
             showLabel: false,
+            selectAll: false,
+            indeterminate: false,
+            ids: [],
         }
     },
 
@@ -387,12 +376,44 @@ export default {
         }
     },
     watch: {
-        emailList(newList) {
-            this.localEmailList = [...newList];
-        },
+        emailList: {
+            handler(newList) {
+                this.localEmailList = [...newList];
+                let checkedValid = []
+                let ids = []
+                this.localEmailList.forEach(dateGroup => {
+                    for (const date in dateGroup) {
+                        if (dateGroup.hasOwnProperty(date)) {
+                            dateGroup[date].map(email => {
+                                if (email.selected) {
+                                    ids.push(email.id)
+                                }
+                                checkedValid.push(email.selected)
+                            });
 
-        masterCheckbox(newValue) {
-            this.setSelected(newValue);
+                        }
+                    }
+                });
+
+                const valid = checkedValid.every(val => val)
+                if (valid) {
+                    this.indeterminate = false
+                    this.selectAll = true
+                    this.isIconsToggled = false
+                } else {
+                    const secondValid = checkedValid.some(val => val)
+                    if (secondValid) {
+                        this.indeterminate = true
+                        this.isIconsToggled = false
+                    } else {
+                        this.indeterminate = false
+                        this.selectAll = false
+                        this.isIconsToggled = true
+                    }
+                }
+                this.ids = ids
+            },
+            deep: true,
         }
     },
 
@@ -464,7 +485,7 @@ export default {
                 }
             });
 
-            this.isIconsToggled = !this.isIconsToggled;
+            this.$emit('update:emailList', this.localEmailList)
         },
 
         // 存在选中的邮件
@@ -486,18 +507,6 @@ export default {
             return hasSelected; // 返回这个变量
         },
 
-        setSelected(newValue) {
-            this.localEmailList.forEach(dateGroup => {
-                for (const date in dateGroup) {
-                    if (dateGroup.hasOwnProperty(date)) {
-                        dateGroup[date].forEach(email => {
-                            email.selected = newValue;
-                        });
-                    }
-                }
-            });
-        },
-
         refresh() {
             this.$emit('reloadList')
         },
@@ -509,7 +518,7 @@ export default {
         readOrSpanEmails(index) {
             this.selectedItem = index;
 
-            const selectedEmails = this.getSelectedEmailIds();
+            const selectedEmails = this.ids;
             if (selectedEmails.length) {
                 if (this.menuItems[index] === '标为已读') {
                     this.readEmails(selectedEmails);
@@ -525,24 +534,7 @@ export default {
             this.selectAll = false;
             this.isDropdownShown = false;
             this.toggleAllEmails();
-            // 刷新邮件列表
-            this.currentPage = 1;
-        },
-
-        getSelectedEmailIds() {
-            const selectedIds = [];
-            this.localEmailList.forEach(dateGroup => {
-                for (const date in dateGroup) {
-                    if (dateGroup.hasOwnProperty(date)) {
-                        dateGroup[date].forEach(email => {
-                            if (email.selected) {
-                                selectedIds.push(email.id);
-                            }
-                        });
-                    }
-                }
-            });
-            return selectedIds;
+            this.refresh()
         },
 
         // 标记为已读文件
@@ -623,7 +615,7 @@ export default {
 
         // 删除邮件
         async deleteEmails() {
-            const emailIds = this.getSelectedEmailIds();
+            const emailIds = this.ids
             if (emailIds.length) {
                 const data = {
                     "ids": emailIds
@@ -696,12 +688,12 @@ export default {
             this.showCustomTime = false;
         },
         handleSelectedTime(time) {
-            this.pendingEmail(this.currentEmailDetail, true, time);
+            this.pendingEmail(true, time);
         },
         // 标记待处理
-        async pendingEmail(email, pendingFlag, pendingTime) {
+        async pendingEmail(pendingFlag, pendingTime) {
             const data = {
-                "id": email.id,
+                "id": this.ids,
                 "pendingFlag": pendingFlag,
                 "pendingTime": pendingTime
             };
@@ -738,9 +730,7 @@ export default {
                 const response = await moveEmailToLabel(data);
                 if (response.code === 200) {
                     this.showLabel = false;
-                    if (this.currentEmailDetail && this.currentEmailDetail.id === email.id) {
-                        this.currentEmailDetail.emailLabelList.push(label);
-                    }
+                    this.refresh()
                 }
             } catch (error) {
                 console.error('操作失败:', error);
