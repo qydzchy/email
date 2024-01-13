@@ -509,14 +509,21 @@
                 </div>
             </div>
         </div>
+        <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 44px; left: 125px;">
+            <emailHeaderLabelLayout :labels="labels" @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
+        </div>
     </div>
 </template>
 
 <script>
-import emailContentDetailInfoLayout from '../email_content_detail_info';
+import { EventBus } from "@/api/email/event-bus";
+import emailContentDetailInfoLayout from '@/views/email/email_content_detail_info';
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
+import emailHeaderLabelLayout from '@/views/email/email_content_label.vue';
+
 import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
+import { listLabel } from "@/api/email/label";
 export default {
     props: {
         info: {
@@ -529,7 +536,8 @@ export default {
     components: {
         CustomTimePopover,
         PendingTimePopover,
-        'email_content_detail_info': emailContentDetailInfoLayout
+        emailHeaderLabelLayout,
+        'email_content_detail_info': emailContentDetailInfoLayout,
     },
     data() {
         return {
@@ -553,8 +561,8 @@ export default {
                 '导出邮件',
                 '新建日程',
                 '标为垃圾邮件'
-            ]
-
+            ],
+            labels: []
         }
     },
     computed: {
@@ -569,10 +577,14 @@ export default {
         info: {
             handler(newVal) {
                 this.currentEmailDetail = newVal
+                this.activeEmailId = this.currentEmailDetail?.id || ''
             },
             deep: true,
             immediate: true
         }
+    },
+    created() {
+        this.refreshLabelList()
     },
     methods: {
         // 标记为未读邮件
@@ -602,6 +614,26 @@ export default {
                 this.unReadEmails(ids);
             }
         },
+        // 移动邮件到标签
+        async moveEmailToLabel(email, label) {
+            const data = {
+                "id": email.id,
+                "labelId": label.id
+            };
+            try {
+                const response = await moveEmailToLabel(data);
+                if (response.code === 200) {
+                    this.showLabel = false;
+                    if (this.currentEmailDetail && this.currentEmailDetail.id === email.id) {
+                        this.currentEmailDetail.emailLabelList.push(label);
+                    }
+                }
+            } catch (error) {
+                console.error('操作失败:', error);
+                throw error;
+            }
+        },
+
         // 标识为垃圾邮件
         async spamEmails(emailIds) {
             const data = {
@@ -646,8 +678,7 @@ export default {
         // 跳转到写信页面
         toggleWriteEmail(email, writeEmailType) {
             // 触发事件并传递参数
-            console.log(email);
-            // EventBus.$emit('switch-write-email', email, writeEmailType);
+            EventBus.$emit('switch-write-email', email, writeEmailType);
         },
         // 固定
         async toggleFixed(email, event) {
@@ -667,6 +698,27 @@ export default {
             } catch (error) {
                 console.error('固定邮件出现错误:', error);
                 throw error;
+            }
+        },
+
+        // 获取标签
+        async refreshLabelList() {
+            try {
+                const res = await listLabel()
+                if (res.code === 200) {
+                    this.labels = res.data
+                }
+            } catch (e) {
+                console.error(e.message);
+            }
+        },
+
+        handleSelectedLabel(label) {
+            const isLabelAlreadyPresent = this.currentEmailDetail.emailLabelList.some(existingLabel => existingLabel.id === label.id);
+            if (!isLabelAlreadyPresent) {
+                this.moveEmailToLabel(this.currentEmailDetail, label);
+            } else {
+                this.showLabel = false;
             }
         },
         handleCustomTime() {
