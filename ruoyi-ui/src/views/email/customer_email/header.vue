@@ -81,7 +81,7 @@
                             </span>
                         </span>
                     </span>
-                    <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="removeEmailToLabel">
+                    <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="showLabel = !showLabel">
                         <span class="mm-tooltip-trigger">
                             <span>
                                 <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg"
@@ -284,6 +284,9 @@
                 </div>
             </div>
         </div>
+        <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 44px; left: 125px;">
+            <emailHeaderLabelLayout :labels="labels" @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
+        </div>
     </div>
 </template>
 <script>
@@ -295,6 +298,7 @@ import {
 import { mapState } from "vuex";
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
+import emailHeaderLabelLayout from '@/views/email/email_content_label.vue';
 
 export default {
     props: {
@@ -322,11 +326,19 @@ export default {
             type: Boolean,
             default: false,
             required: false
-        }
+        },
+        labels: {
+            type: Array,
+            default: () => {
+                return []
+            },
+            required: false
+        },
     },
     components: {
         CustomTimePopover,
         PendingTimePopover,
+        emailHeaderLabelLayout
     },
     data() {
         return {
@@ -354,6 +366,7 @@ export default {
             emailSlideStatus: {},
             showPendingTime: false,
             showCustomTime: false,
+            showLabel: false,
         }
     },
 
@@ -629,11 +642,6 @@ export default {
             }
         },
 
-        // 移动邮件到标签
-        async removeEmailToLabel() {
-
-        },
-
         toggleEmailSelection() {
             let existSelected = this.existSelectedEmail();
             if (existSelected) {
@@ -708,6 +716,34 @@ export default {
                 }
             } catch (error) {
                 console.error('标记为待处理出现错误:', error);
+                throw error;
+            }
+        },
+        // 标签
+        handleSelectedLabel(label) {
+            const isLabelAlreadyPresent = this.currentEmailDetail.emailLabelList.some(existingLabel => existingLabel.id === label.id);
+            if (!isLabelAlreadyPresent) {
+                this.moveEmailToLabel(this.currentEmailDetail, label);
+            } else {
+                this.showLabel = false;
+            }
+        },
+        // 移动邮件到标签
+        async moveEmailToLabel(email, label) {
+            const data = {
+                "id": email.id,
+                "labelId": label.id
+            };
+            try {
+                const response = await moveEmailToLabel(data);
+                if (response.code === 200) {
+                    this.showLabel = false;
+                    if (this.currentEmailDetail && this.currentEmailDetail.id === email.id) {
+                        this.currentEmailDetail.emailLabelList.push(label);
+                    }
+                }
+            } catch (error) {
+                console.error('操作失败:', error);
                 throw error;
             }
         },
