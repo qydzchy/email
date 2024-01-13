@@ -3,11 +3,11 @@
         <div class="page-mail-list layout-extraSidebar-content" style="background-color: white;">
             <span>
                 <Header :isHide="isHide" :total="total" :currentPage.sync="currentPage" :fixedFlag.sync="fixedFlag"
-                    :attachmentFlag.sync="attachmentFlag" @updateFlag="updateFlag" @switch="onSwitch"
+                    :attachmentFlag.sync="attachmentFlag" :labels="labels" @updateFlag="updateFlag" @switch="onSwitch"
                     @reloadList="onReload">
                     <Content ref="customerContent" :total.sync="total" :currentPage.sync="currentPage"
                         :selectedTaskId="selectedTaskId" :fixedFlag="fixedFlag" :attachmentFlag="attachmentFlag"
-                        @handlerHeader="bool => isHide = bool" />
+                        :labels="labels" @handlerHeader="bool => isHide = bool" />
                 </Header>
             </span>
         </div>
@@ -17,6 +17,7 @@
 <script>
 import Header from './header'
 import Content from './content'
+import { listLabel } from "@/api/email/label";
 export default {
     props: {
         selectedTaskId: {
@@ -36,9 +37,24 @@ export default {
             currentPage: 1,
             fixedFlag: false,
             attachmentFlag: false,
+            labels: [],
         }
     },
+    mounted() {
+        this.refreshLabelList()
+    },
     methods: {
+        // 获取标签
+        async refreshLabelList() {
+            try {
+                const res = await listLabel()
+                if (res.code === 200) {
+                    this.labels = res.data
+                }
+            } catch (e) {
+                console.error(e.message);
+            }
+        },
         onSwitch(value) {
             this.$emit('switch', ...[value])
         },
