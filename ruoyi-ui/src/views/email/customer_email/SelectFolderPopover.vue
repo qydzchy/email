@@ -1,6 +1,6 @@
 <template>
     <span class="mm-tooltip mail-toolbar-btn-item">
-        <el-popover v-model="visible" placement="bottom" width="100%" trigger="manual">
+        <el-popover v-model="visible" placement="bottom" width="100%" trigger="manual" :append-to-body="false">
             <div class="content" v-clickOutside="closePopover">
                 <div class="fs-16 bold py-8">移动至</div>
                 <el-cascader-panel v-model="selectFolder" :options="folderOption" :props="cascaderProps"
@@ -51,7 +51,7 @@ export default {
             folderOption: []
         }
     },
-    mounted(){
+    mounted() {
         this.getFolderList()
     },
     methods: {
@@ -76,4 +76,21 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-radio__inner {
+    border-radius: 0;
+    border: 0;
+    width: 170px;
+    height: 34px;
+    background-color: transparent;
+    cursor: pointer;
+    box-sizing: border-box;
+    position: absolute;
+    top: -18px;
+    left: -19px;
+}
+
+::v-deep .el-radio__input.is-checked .el-radio__inner {
+    background: transparent;
+}
+</style>
