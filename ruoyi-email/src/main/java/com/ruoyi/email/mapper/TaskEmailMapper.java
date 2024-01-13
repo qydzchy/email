@@ -78,7 +78,7 @@ public interface TaskEmailMapper
      * @param statusList
      * @return
      */
-    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList);
+    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList, @Param("createId") Long createId);
 
     /**
      * 查询邮件列表数据（首页）
@@ -92,7 +92,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList, @Param("createId") Long createId, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 根据id获取邮件信息

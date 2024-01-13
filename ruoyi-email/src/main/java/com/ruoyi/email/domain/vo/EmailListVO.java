@@ -94,6 +94,11 @@ public class EmailListVO {
     private String content;
 
     /**
+     * 昵称
+     */
+    private String nickName;
+
+    /**
      * 附件
      */
     private List<EmailAttachmentBO> emailAttachmentList;

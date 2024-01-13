@@ -182,6 +182,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      */
     @Override
     public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Boolean customerFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
         if (taskIdList.isEmpty()) {
             return Pair.of(0, new ArrayList<>());
         }
@@ -195,14 +198,14 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         folderId = folderId != null ? folderId : -1L;
 
-        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList);
+        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, userId);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, userId, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }
