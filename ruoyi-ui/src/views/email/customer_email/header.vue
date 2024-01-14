@@ -713,24 +713,22 @@ export default {
         },
         // 标签
         handleSelectedLabel(label) {
-            const isLabelAlreadyPresent = this.currentEmailDetail.emailLabelList.some(existingLabel => existingLabel.id === label.id);
-            if (!isLabelAlreadyPresent) {
-                this.moveEmailToLabel(this.currentEmailDetail, label);
-            } else {
-                this.showLabel = false;
-            }
+            this.moveEmailToLabel(label);
         },
         // 移动邮件到标签
-        async moveEmailToLabel(email, label) {
+        async moveEmailToLabel(label) {
             const data = {
-                "id": email.id,
+                "id": this.ids,
                 "labelId": label.id
             };
             try {
                 const response = await moveEmailToLabel(data);
                 if (response.code === 200) {
+                    this.$emit('标签添加成功')
                     this.showLabel = false;
-                    this.refresh()
+                    setTimeout(() => {
+                        this.refresh()
+                    }, 400)
                 }
             } catch (error) {
                 console.error('操作失败:', error);
