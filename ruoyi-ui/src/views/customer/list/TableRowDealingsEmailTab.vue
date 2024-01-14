@@ -26,12 +26,15 @@
                     <div class="info-wrapper">
                         <div class="summary ellipsis">{{ item.extractTextFormContent }}</div>
                         <div class="icons">
-                            <!---->
-                            <!---->
                         </div>
                         <div class="time">{{ item.sendDate }}</div>
                     </div>
-                    <!---->
+                    <div class="mail-plus-tag-list">
+                        <span class="tag-wrapper" v-for="(label, idx) in item.labelList" :key="idx" :title="label.name"
+                            :style="{ background: `rgba(${label.color},0.2)`, color: `rgb(${label.color})` }">
+                            <span class="ai-stamp-container">{{ label.name }}</span>
+                        </span>
+                    </div>
                 </li>
             </ul>
             <ul v-else class="contact-attach-list">
