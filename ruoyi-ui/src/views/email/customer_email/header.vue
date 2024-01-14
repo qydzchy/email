@@ -94,7 +94,7 @@
                             </span>
                         </span>
                     </span>
-                    <SelectFolderPopover v-show="!isIconsToggled" :ids="[]" />
+                    <SelectFolderPopover v-show="!isIconsToggled" :ids="ids" />
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click.stop="toggleDropdown">
                         <span class="mm-tooltip-trigger">
                             <span>
