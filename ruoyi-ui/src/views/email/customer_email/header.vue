@@ -94,7 +94,7 @@
                             </span>
                         </span>
                     </span>
-                    <SelectFolderPopover v-show="!isIconsToggled" :ids="ids" />
+                    <PopoverSelectFolder v-show="!isIconsToggled" :ids="ids" />
                     <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click.stop="toggleDropdown">
                         <span class="mm-tooltip-trigger">
                             <span>
@@ -284,7 +284,7 @@ import { mapState } from "vuex";
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import emailHeaderLabelLayout from '@/views/email/email_content_label.vue';
-import SelectFolderPopover from "@/views/email/customer_email/SelectFolderPopover.vue";
+import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 
 export default {
     props: {
@@ -325,7 +325,7 @@ export default {
         CustomTimePopover,
         PendingTimePopover,
         emailHeaderLabelLayout,
-        SelectFolderPopover
+        PopoverSelectFolder
     },
     data() {
         return {

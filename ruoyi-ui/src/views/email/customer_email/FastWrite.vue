@@ -75,7 +75,7 @@
                     </span>
 
                 </span>
-                <SelectFolderPopover :ids="[activeEmailId]" />
+                <PopoverSelectFolder :ids="[activeEmailId]" />
                 <span class="mm-tooltip mail-toolbar-btn-item" @click="toggleDropdown">
                     <span class="mm-tooltip-trigger">
                         <span>
@@ -513,7 +513,7 @@ import PendingTimePopover from "@/views/email/pending_time.vue";
 import emailHeaderLabelLayout from '@/views/email/email_content_label.vue';
 
 import DialogSchedule from "@/views/customer/list/DialogSchedule.vue";
-import SelectFolderPopover from "@/views/email/customer_email/SelectFolderPopover.vue";
+import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 
 import { fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail } from "@/api/email/email";
 export default {
@@ -542,7 +542,7 @@ export default {
         PendingTimePopover,
         emailHeaderLabelLayout,
         DialogSchedule,
-        SelectFolderPopover,
+        PopoverSelectFolder,
         'email_content_detail_info': emailContentDetailInfoLayout,
     },
     data() {
