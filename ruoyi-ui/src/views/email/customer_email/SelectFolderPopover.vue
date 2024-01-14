@@ -28,6 +28,7 @@
 
 <script>
 import { listFolder } from "@/api/email/folder";
+import { emailMoveFolder } from '@/api/email/email'
 export default {
     props: {
         ids: {
@@ -63,10 +64,25 @@ export default {
                 }
             } catch { }
         },
-        handleSelectFolder(value) {
-            console.log(this.ids);
-            console.log(value);
-            this.closePopover()
+        async handleSelectFolder(value) {
+            if (value && !value.length) {
+                return
+            }
+            try {
+                const data = {
+                    ids: this.ids,
+                    folderId: value[value.length - 1]
+                }
+                console.log(data);
+                const res = await emailMoveFolder(data)
+                if (res.code === 200) {
+                    this.$message.success('移动成功')
+                    this.closePopover()
+                }
+            } catch (e) {
+                console.error(e.message);
+            }
+
         },
         closePopover() {
             this.visible = false
