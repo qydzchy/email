@@ -293,4 +293,9 @@ public interface ITaskEmailService
      */
     List<TaskEmail> selectByUnSentStatus(Long taskId);
 
+    /**
+     * 下属列表
+     * @return
+     */
+    List<UserInfoVO2> userList();
 }
