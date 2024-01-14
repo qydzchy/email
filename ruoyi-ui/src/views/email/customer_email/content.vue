@@ -13,7 +13,19 @@
                                         <div class="mm-tabs-nav-wrap mm-tabs-nav-wrap__top">
                                             <div class="mm-tabs-nav-scroll">
                                                 <div class="mm-tabs-nav" role="tablist" style="width:100%">
-                                                    <el-row align="center" type="flex" class="py-15">
+                                                    <el-row v-if="!showHeader" class="py-15">
+                                                        <el-col :span="24">
+                                                            <span class="px-10">联系人</span>
+                                                            <el-select v-model="searchForm.emails" style="width:76%"
+                                                                multiple collapse-tags clearable @clear="getList"
+                                                                @visible-change="handleSelectHide">
+                                                                <el-option v-for="(email, index) in emailOption"
+                                                                    :key="index" :value="email.id"
+                                                                    :label="email.account"></el-option>
+                                                            </el-select>
+                                                        </el-col>
+                                                    </el-row>
+                                                    <el-row v-else align="center" type="flex" class="py-15">
                                                         <el-col :span="6">
                                                             <span class="px-10">联系人</span>
                                                             <el-select v-model="searchForm.emails" style="width:76%"
@@ -43,8 +55,8 @@
                                                             </el-select>
                                                         </el-col>
                                                         <el-col :span="5" :offset="1">
-                                                            <el-input v-model="searchForm.keyword" @blur="handleKeywordBlur"
-                                                                clearable @clear="getList" style="width:100%"
+                                                            <el-input v-model="searchForm.keyword" @blur="getList" clearable
+                                                                @clear="getList" style="width:100%"
                                                                 placeholder="邮件标题/正文/附件名"></el-input>
                                                         </el-col>
                                                     </el-row>
@@ -100,7 +112,8 @@
                                                                 <div @click.stop style="min-height:40px">
                                                                     <el-checkbox v-show="showHeader"
                                                                         class="mm-checkbox mail-list-item-checkbox pr-0"
-                                                                        v-model="email.selected"></el-checkbox>
+                                                                        :value.sync="email.selected"
+                                                                        @change="value => handleCheckItem(email, value)"></el-checkbox>
                                                                 </div>
                                                                 <div>
                                                                     <div class="flex-shrink-0 flex items-center h-24px">
@@ -369,7 +382,13 @@ export default {
             },
             required: false
         },
-        ids: [],
+        list: {
+            type: Array,
+            default: () => {
+                return []
+            },
+            required: false
+        }
     },
     components: {
         FastWrite,
@@ -381,7 +400,6 @@ export default {
             showHeader: true,
             isRightPanelExpanded: true,
             activeEmailId: null,
-            list: [],
             customerId: '',
             indexOpt: {
                 groupOption: [],
@@ -439,11 +457,6 @@ export default {
                 }
             }
         },
-        ids: {
-            handler(newVal) {
-
-            }
-        }
     },
     mounted() {
         this.init()
@@ -469,7 +482,19 @@ export default {
                     this.loading = false
                 })
                 if (res.code === 200) {
-                    this.list = res.rows
+                    let result = res?.rows || []
+                    result = result.map(dateGroup => {
+                        for (const date in dateGroup) {
+                            if (dateGroup.hasOwnProperty(date)) {
+                                dateGroup[date].map(email => {
+                                    email.selected = false;
+                                    return email
+                                });
+                            }
+                        }
+                        return dateGroup
+                    });
+                    this.$emit('update:list', result)
                     this.$emit('update:total', res.total)
                 }
             } catch { }
@@ -681,11 +706,8 @@ export default {
                 this.getList()
             }
         },
-        // 输入框失去聚焦
-        handleKeywordBlur() {
-            if (this.searchForm.keyword) {
-                this.getList()
-            }
+        handleCheckItem(item, value) {
+            this.$set(item, 'selected', value)
         }
     }
 }

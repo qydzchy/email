@@ -113,7 +113,7 @@ export function deleteEmail(data) {
 // 导出邮件
 export function exportEmail(data) {
   return request({
-    url: '/email/info/export/'+ data,
+    url: '/email/info/export/' + data,
     method: 'get',
     responseType: 'blob'
   })
@@ -131,7 +131,7 @@ export function uploadAttachment(data) {
 // 下载邮件附件
 export function downloadEmailAttachment(data) {
   return request({
-    url: '/email/info/attachment/download/'+ data,
+    url: '/email/info/attachment/download/' + data,
     method: 'get',
     responseType: 'blob'
   })
@@ -146,11 +146,11 @@ export function countMenu(query) {
   })
 }
 
-// 邮件详情
-export function emailDetail(params) {
+// 移动邮件到文件夹
+export function emailMoveFolder(data) {
   return request({
-    url: '/email/info/detail',
-    method: 'get',
-    params
+    url: '/email/info/move/email/to/folder',
+    method: 'post',
+    data
   })
 }

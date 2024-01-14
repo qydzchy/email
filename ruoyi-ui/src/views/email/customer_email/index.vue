@@ -3,11 +3,11 @@
         <div class="page-mail-list layout-extraSidebar-content" style="background-color: white;">
             <span>
                 <Header :isHide="isHide" :total="total" :currentPage.sync="currentPage" :fixedFlag.sync="fixedFlag"
-                    :attachmentFlag.sync="attachmentFlag" :labels="labels" @updateFlag="updateFlag" @switch="onSwitch"
-                    @reloadList="onReload">
+                    :attachmentFlag.sync="attachmentFlag" :emailList.sync="list" :labels="labels" @updateFlag="updateFlag"
+                    @switch="onSwitch" @reloadList="onReload">
                     <Content ref="customerContent" :total.sync="total" :currentPage.sync="currentPage"
                         :selectedTaskId="selectedTaskId" :fixedFlag="fixedFlag" :attachmentFlag="attachmentFlag"
-                        :labels="labels" @handlerHeader="bool => isHide = bool" />
+                        :labels="labels" :list.sync="list" @handlerHeader="bool => isHide = bool" />
                 </Header>
             </span>
         </div>
@@ -38,6 +38,7 @@ export default {
             fixedFlag: false,
             attachmentFlag: false,
             labels: [],
+            list: [],
         }
     },
     mounted() {
