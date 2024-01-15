@@ -63,6 +63,8 @@ public class TaskServiceImpl implements ITaskService
     @Resource
     private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
+    private BlacklistMapper blacklistMapper;
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     @Value("${email.pull.path}")
@@ -328,7 +330,7 @@ public class TaskServiceImpl implements ITaskService
                     // 保存邮件信息
                     if (universalMail.getSendDate() == null) continue;
 
-                    saveEmailData(task.getId(), universalMail, emailOperateParamBO.getTransceiverRuleList());
+                    saveEmailData(task, universalMail, emailOperateParamBO.getTransceiverRuleList());
 
                     // 外出自动回复处理
                     autoResponseHandler(task, universalMail, emailOperateParamBO);
@@ -510,15 +512,15 @@ public class TaskServiceImpl implements ITaskService
 
     /**
      * 保存邮件数据
-     * @param taskId
+     * @param task
      * @param universalMail
      */
-    private void saveEmailData(Long taskId, UniversalMail universalMail, List<TransceiverRuleVO> transceiverRuleList) {
+    private void saveEmailData(Task task, UniversalMail universalMail, List<TransceiverRuleVO> transceiverRuleList) {
         TaskEmail taskEmail = new TaskEmail();
         Date nowDate = DateUtils.getNowDate();
         // 邮件
         BeanUtils.copyProperties(universalMail, taskEmail);
-        taskEmail.setTaskId(taskId);
+        taskEmail.setTaskId(task.getId());
         if (taskEmail.getFolder().equals("已发送")) {
             taskEmail.setType(EmailTypeEnum.SEND.getType());
         } else {
@@ -563,8 +565,38 @@ public class TaskServiceImpl implements ITaskService
             }
         }
 
+        // 黑名单处理
+        blacklistHandler(taskEmail, task.getCreateId());
+
+
         // 收件规则处理
         taskEmailService.transceiverRuleHandler(taskEmail, content, transceiverRuleList);
+    }
+
+    /**
+     * 黑名单处理 todo 待测试
+     * @param createId
+     */
+    private void blacklistHandler(TaskEmail taskEmail, Long createId) {
+        // 黑名单列表
+        String fromer = taskEmail.getFromer();
+        boolean isGone = false;
+        Integer emailCount = blacklistMapper.countBlacklistListByEmail(createId, fromer);
+        if (emailCount.intValue() > 0) {
+            isGone = true;
+        }
+
+        if (isGone) {
+            Integer domainCount = blacklistMapper.countBlacklistListByDomain(createId, fromer);
+            if (domainCount.intValue() > 0) {
+                isGone = true;
+            }
+        }
+
+        if (isGone) {
+            taskEmail.setSpamFlag(true);
+            taskEmailService.updateTaskEmail(taskEmail);
+        }
     }
 
 
