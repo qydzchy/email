@@ -49,9 +49,12 @@ public class FromerColumn implements IColumnService {
             case BELONGS_TO:
                 // 私海/公海类型 1.私海 2.公海
                 if (value.equals("1")) {
-                    Long packetId = executeConditionContentBO.getPacketId();
-                    int count = taskEmailMapper.countCustomerContactByFromer(1, fromer, packetId);
-                    return count > 0;
+                    String packetIdStr = executeConditionContentBO.getPacketId();
+                    if (StringUtils.isNotBlank(packetIdStr)) {
+                        Long packetId = Long.parseLong(packetIdStr);
+                        int count = taskEmailMapper.countCustomerContactByFromer(1, fromer, packetId);
+                        return count > 0;
+                    }
 
                 } else if (value.equals("2")) {
                     int count = taskEmailMapper.countCustomerContactByFromer(2, fromer, null);

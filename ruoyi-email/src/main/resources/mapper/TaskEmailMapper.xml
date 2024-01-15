@@ -510,6 +510,19 @@
          where task_id = #{taskId} and status = 2 and del_flag = '0' and type = 2
     </select>
 
+    <select id="selectTaskEmailByTaskIds" resultMap="TaskEmailResult">
+        <include refid="selectTaskEmailVo"/>
+        WHERE task_id IN
+        <foreach item="taskId" collection="taskIds" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        AND type = #{type}
+        <if test="folderId != null">
+            AND folder_id = #{folderId}
+        </if>
+        AND del_flag = '0'
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">

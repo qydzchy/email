@@ -277,4 +277,11 @@ public interface TaskEmailMapper
      * @return
      */
     List<TaskEmail> selectByUnSentStatus(@Param("taskId") Long taskId);
+
+    /**
+     * 查询所有任务邮件
+     * @param taskIds
+     * @return
+     */
+    List<TaskEmail> selectTaskEmailByTaskIds(@Param("taskIds") List<Long> taskIds, @Param("type") Integer type, @Param("folderId") Long folderId);
 }

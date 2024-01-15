@@ -1269,12 +1269,12 @@ public class CustomerServiceImpl implements ICustomerService {
 
             String andOr = segmentConditionRuleBO.getAndOr();
 
-            if (andOr.equals(AndOrEnum.AND)) {
+            if (andOr.equals(AndOrEnum.AND.getAndOr())) {
                 if (!isConditionMet) {
                     isRuleMet = false;
                     break;
                 }
-            } else if (andOr.equals(AndOrEnum.OR)) {
+            } else if (andOr.equals(AndOrEnum.OR.getAndOr())) {
                 if (isConditionMet) {
                     isRuleMet = true;
                     break;

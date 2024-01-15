@@ -861,6 +861,67 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         return null;
     }
 
+    /**
+     * 针对收件箱的历史邮件
+     */
+    @Override
+    public void applyToHistoryMailForInbox(TransceiverRule transceiverRule) {
+        applyToHistoryMail(transceiverRule, -1L);
+    }
+
+    /**
+     * 针对收件箱及所有文件夹的历史邮件（不包括已删除）
+     * @param transceiverRule
+     */
+    @Override
+    public void applyToHistoryMailForInboxAndAllFolder(TransceiverRule transceiverRule) {
+        applyToHistoryMail(transceiverRule, null);
+    }
+
+
+    /**
+     * 应用历史邮件
+     * @param transceiverRule
+     */
+    private void applyToHistoryMail(TransceiverRule transceiverRule, Long folderId) {
+        Long createId = transceiverRule.getCreateId();
+        Task taskParam = new Task();
+        taskParam.setCreateId(createId);
+        taskParam.setDelFlag("0");
+
+        Long executeTaskId = transceiverRule.getExecuteTaskId();
+        List<Long> taskIds = new ArrayList<>();
+        if (executeTaskId.longValue() == 0) {
+            taskIds = taskMapper.selectAllTaskIds(createId);
+        } else {
+            taskIds.add(executeTaskId);
+        }
+
+        if (taskIds == null || taskIds.isEmpty()) {
+            return;
+        }
+
+        // 规则类型: 1.收件规则 2.发件规则
+        Integer ruleType = transceiverRule.getRuleType();
+        // 查询所有任务邮件
+        List<TaskEmail> taskEmailList = taskEmailMapper.selectTaskEmailByTaskIds(taskIds, ruleType, folderId);
+
+        if (taskEmailList == null || taskEmailList.isEmpty()) {
+            return;
+        }
+
+        TransceiverRuleVO transceiverRuleVO = new TransceiverRuleVO();
+        BeanUtils.copyProperties(transceiverRule, transceiverRuleVO);
+
+        taskEmailList.stream().forEach(taskEmail -> {
+            // 查询邮件内容
+            TaskEmailContent taskEmailContent = taskEmailContentService.selectTaskEmailContentById(taskEmail.getId());
+            String content = taskEmailContent != null ? taskEmailContent.getContent() : "";
+            // 收发件规则处理
+            transceiverRuleHandler(taskEmail, content, Arrays.asList(transceiverRuleVO));
+        });
+    }
+
     @Override
     public List<EmailListVO> correspondence(Long id) {
         TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
@@ -931,12 +992,12 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                     boolean isConditionMet = emailColumnContext.handler(executeConditionContentBO, emailSimpleBO);
 
                     String andOr = executeConditionContentBO.getAndOr();
-                    if (andOr.equals(AndOrEnum.AND)) {
+                    if (andOr.equals(AndOrEnum.AND.getAndOr())) {
                         if (!isConditionMet) {
                             isRuleMet = false;
                             break;
                         }
-                    } else if (andOr.equals(AndOrEnum.OR)) {
+                    } else if (andOr.equals(AndOrEnum.OR.getAndOr())) {
                         if (isConditionMet) {
                             isRuleMet = true;
                             break;

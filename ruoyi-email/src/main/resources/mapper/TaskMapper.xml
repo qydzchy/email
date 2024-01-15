@@ -93,6 +93,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="listIdByUserId" resultType="java.lang.Long">
         select id from mailbox_task where create_id = #{createId} and del_flag = '0'
     </select>
+    <select id="selectAllTaskIds" resultType="java.lang.Long">
+        select id from mailbox_task where create_id = #{createId} and del_flag = '0'
+    </select>
 
     <insert id="insertTask" parameterType="Task" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task

@@ -79,7 +79,7 @@
 
     <select id="selectTransceiverRuleById" parameterType="Long" resultMap="TransceiverRuleResult">
         <include refid="selectTransceiverRuleVo"/>
-        where id = #{id}
+        where id = #{id} and del_flag = '0'
     </select>
 
     <select id="getById" resultType="com.ruoyi.email.domain.vo.TransceiverRuleVO">
@@ -123,7 +123,7 @@
     </select>
 
     <select id="getPacketNameByPacketId" resultType="java.lang.String">
-        select name from customer_packet where id = #{id} and create_id = #{createId} and del_flag = '0'
+        select name from customer_packet where id = #{packetId} and create_id = #{createId} and del_flag = '0'
     </select>
 
     <insert id="insertTransceiverRule" parameterType="TransceiverRule" useGeneratedKeys="true" keyProperty="id">
@@ -239,10 +239,6 @@
 
     <update id="deleteTransceiverRuleById">
         update mailbox_transceiver_rule set del_flag = '2', update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id}
-    </update>
-
-    <update id="updateStatus">
-        update mailbox_transceiver_rule set status = !status, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW() where id = #{id} and del_flag = '0'
     </update>
 
     <delete id="deleteTransceiverRuleByIds" parameterType="String">
