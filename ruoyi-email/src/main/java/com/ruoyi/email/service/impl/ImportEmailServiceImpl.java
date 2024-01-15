@@ -94,11 +94,6 @@ public class ImportEmailServiceImpl implements IImportEmailService
         return importEmailMapper.selectImportEmailList(importEmail);
     }
 
-    public static void main(String[] args) {
-        System.out.println(UUID.fastUUID());
-        System.out.println(UUID.randomUUID());
-    }
-
     /**
      * 新增导入邮件
      * 
@@ -401,7 +396,13 @@ public class ImportEmailServiceImpl implements IImportEmailService
      */
     @Override
     public List<TaskListVO> getTaskList() {
-        List<Task> taskList = taskMapper.selectTaskList(new Task());
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        Task taskParam = new Task();
+        taskParam.setCreateId(userId);
+        taskParam.setDelFlag("0");
+        List<Task> taskList = taskMapper.selectTaskList(taskParam);
         List<TaskListVO> taskVOList = new ArrayList<>();
         for (Task task : taskList) {
             TaskListVO taskListVO = new TaskListVO();

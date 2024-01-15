@@ -35,7 +35,7 @@ public interface ITransceiverRuleService
      * @param transceiverRule 收发件规则
      * @return 结果
      */
-    public int insertTransceiverRule(TransceiverRule transceiverRule);
+    public boolean insertTransceiverRule(TransceiverRule transceiverRule);
 
     /**
      * 修改收发件规则
@@ -43,7 +43,7 @@ public interface ITransceiverRuleService
      * @param transceiverRule 收发件规则
      * @return 结果
      */
-    public int updateTransceiverRule(TransceiverRule transceiverRule);
+    public boolean updateTransceiverRule(TransceiverRule transceiverRule);
 
     /**
      * 批量删除收发件规则
@@ -72,7 +72,7 @@ public interface ITransceiverRuleService
      * @param id
      * @return
      */
-    int updateStatus(Long id);
+    boolean updateStatus(Long id);
 
     /**
      * 根据ID查询收发件规则详情

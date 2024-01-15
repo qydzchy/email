@@ -80,4 +80,9 @@ public class TransceiverRuleVO {
 
     /** 顺序 */
     private Long orderNum;
+
+    /**
+     * 创建者ID
+     */
+    private Long createId;
 }

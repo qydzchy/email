@@ -105,4 +105,11 @@ public interface TaskMapper
      * @return
      */
     List<Long> listIdByUserId(@Param("createId") Long userId);
+
+    /**
+     * 查询当前用户所有任务id
+     * @param createId
+     * @return
+     */
+    List<Long> selectAllTaskIds(@Param("createId") Long createId);
 }

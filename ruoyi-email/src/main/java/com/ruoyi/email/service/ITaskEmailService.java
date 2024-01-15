@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ruoyi.email.domain.Task;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
+import com.ruoyi.email.domain.TransceiverRule;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
@@ -298,4 +299,15 @@ public interface ITaskEmailService
      * @return
      */
     List<UserInfoVO2> userList();
+
+    /**
+     * 针对收件箱的历史邮件
+     */
+    void applyToHistoryMailForInbox(TransceiverRule transceiverRule);
+
+    /**
+     * 针对收件箱及所有文件夹的历史邮件（不包括已删除）
+     * @param transceiverRule
+     */
+    void applyToHistoryMailForInboxAndAllFolder(TransceiverRule transceiverRule);
 }

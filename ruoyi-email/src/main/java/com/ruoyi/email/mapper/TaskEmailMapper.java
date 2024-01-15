@@ -249,7 +249,7 @@ public interface TaskEmailMapper
      * @param packetId
      * @return
      */
-    int countCustomerContactByFromer(@Param("seaType") Integer seaType, @Param("fromer") String fromer, @Param("packetId") Long packetId);
+    int countCustomerContactByFromer(@Param("seaType") Integer seaType, @Param("fromer") String fromer, @Param("packetId") Long packetId, @Param("createId") Long createId);
 
     /**
      * 客户往来邮件列表
@@ -277,4 +277,11 @@ public interface TaskEmailMapper
      * @return
      */
     List<TaskEmail> selectByUnSentStatus(@Param("taskId") Long taskId);
+
+    /**
+     * 查询所有任务邮件
+     * @param taskIds
+     * @return
+     */
+    List<TaskEmail> selectTaskEmailByTaskIds(@Param("taskIds") List<Long> taskIds, @Param("type") Integer type, @Param("folderId") Long folderId);
 }

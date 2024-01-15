@@ -63,15 +63,6 @@ public interface TransceiverRuleMapper
     public int deleteTransceiverRuleByIds(Long[] ids);
 
     /**
-     * 更新收发件规则状态
-     * @param id
-     * @param updateId
-     * @param updateBy
-     * @return
-     */
-    int updateStatus(@Param("id") Long id, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
-
-    /**
      * 根据id查询收发件规则
      * @param id
      * @param createId

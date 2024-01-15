@@ -1,19 +1,24 @@
 package com.ruoyi.email.service.impl;
 
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.email.TransceiverRuleColumnNameEnum;
 import com.ruoyi.common.enums.email.TransceiverRuleConditionTypeEnum;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.domain.bo.ExecuteConditionContentBO;
 import com.ruoyi.email.domain.vo.TransceiverRuleListVO;
 import com.ruoyi.email.domain.vo.TransceiverRuleVO;
 import com.ruoyi.email.mapper.FolderMapper;
+import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITransceiverRuleService;
+import com.ruoyi.email.util.ThreadPoolTransceiverRuleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.TransceiverRuleMapper;
@@ -31,6 +36,8 @@ import javax.annotation.Resource;
 @Service
 public class TransceiverRuleServiceImpl implements ITransceiverRuleService
 {
+    @Resource
+    private ITaskEmailService taskEmailService;
     @Resource
     private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
@@ -67,7 +74,7 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
      * @return 结果
      */
     @Override
-    public int insertTransceiverRule(TransceiverRule transceiverRule)
+    public boolean insertTransceiverRule(TransceiverRule transceiverRule)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
@@ -80,7 +87,11 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
         transceiverRule.setUpdateId(userId);
         transceiverRule.setUpdateBy(username);
         transceiverRule.setUpdateTime(now);
-        return transceiverRuleMapper.insertTransceiverRule(transceiverRule);
+        transceiverRuleMapper.insertTransceiverRule(transceiverRule);
+
+        // 是否应用于历史邮件
+        applyToHistoryMail(transceiverRule);
+        return true;
     }
 
     /**
@@ -90,7 +101,7 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
      * @return 结果
      */
     @Override
-    public int updateTransceiverRule(TransceiverRule transceiverRule)
+    public boolean updateTransceiverRule(TransceiverRule transceiverRule)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
@@ -100,7 +111,40 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
         transceiverRule.setUpdateId(userId);
         transceiverRule.setUpdateBy(username);
         transceiverRule.setUpdateTime(now);
-        return transceiverRuleMapper.updateTransceiverRule(transceiverRule);
+        transceiverRuleMapper.updateTransceiverRule(transceiverRule);
+
+        // 是否应用于历史邮件
+        applyToHistoryMail(transceiverRule);
+        return true;
+    }
+
+    /**
+     * 是否应用于历史邮件（异步）
+     */
+    private void applyToHistoryMail(TransceiverRule transceiverRule) {
+        // 状态 1.开启 0.关闭
+        if (transceiverRule.getStatus().intValue() != 1) {
+            return;
+        }
+
+        ThreadPoolExecutor instance = ThreadPoolTransceiverRuleService.getInstance();
+        instance.execute(() -> {
+            // 应用于历史邮件: 0.否 1.是
+            if (!Optional.ofNullable(transceiverRule.getApplyToHistoryMailFlag()).orElse(false)) {
+                return;
+            }
+
+            // 应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除
+            Integer applyToHistoryMailTrueType = transceiverRule.getApplyToHistoryMailTrueType();
+
+            if (applyToHistoryMailTrueType.equals(1)) {
+                // 针对收件箱的历史邮件
+                taskEmailService.applyToHistoryMailForInbox(transceiverRule);
+            } else if (applyToHistoryMailTrueType.equals(2)) {
+                // 针对收件箱及所有文件夹的历史邮件（不包括已删除）
+                taskEmailService.applyToHistoryMailForInboxAndAllFolder(transceiverRule);
+            }
+        });
     }
 
     /**
@@ -187,12 +231,16 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
                     if (value.equals("1")) {
                         value = "私海";
 
-                        Long packetId = executeConditionContentBO.getPacketId();
-                        if (packetId != null) {
-                            // 查询客户分组名称
-                            String packetName = transceiverRuleMapper.getPacketNameByPacketId(packetId, createId);
-                            value += packetName;
+                        String packetIdStr = executeConditionContentBO.getPacketId();
+                        if (StringUtils.isNotBlank(packetIdStr)) {
+                            Long packetId = Long.parseLong(packetIdStr);
+                            if (packetId != null) {
+                                // 查询客户分组名称
+                                String packetName = transceiverRuleMapper.getPacketNameByPacketId(packetId, createId);
+                                value += packetName;
+                            }
                         }
+
                     } else if (value.equals("2")) {
                         value = "公海";
                     }
@@ -251,12 +299,26 @@ public class TransceiverRuleServiceImpl implements ITransceiverRuleService
      * @return
      */
     @Override
-    public int updateStatus(Long id) {
+    public boolean updateStatus(Long id) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
+        TransceiverRule transceiverRule = transceiverRuleMapper.selectTransceiverRuleById(id);
+        if (transceiverRule == null) {
+            throw new ServiceException("收发件规则不存在");
+        }
 
-        return transceiverRuleMapper.updateStatus(id, userId, username);
+        Integer status = transceiverRule.getStatus();
+        Integer newStatus = status.intValue() == 1 ? 0 : 1;
+        transceiverRule.setStatus(newStatus);
+        transceiverRule.setUpdateId(userId);
+        transceiverRule.setUpdateBy(username);
+        transceiverRule.setUpdateTime(DateUtils.getNowDate());
+        transceiverRuleMapper.updateTransceiverRule(transceiverRule);
+
+        // 是否应用于历史邮件
+        applyToHistoryMail(transceiverRule);
+        return true;
     }
 
     /**

@@ -28,5 +28,5 @@ public class ExecuteConditionContentBO {
     /**
      * 客户分组ID
      */
-    private Long packetId;
+    private String packetId;
 }

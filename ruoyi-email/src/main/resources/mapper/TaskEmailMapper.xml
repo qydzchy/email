@@ -464,7 +464,7 @@
     <select id="countCustomerContactByFromer" resultType="java.lang.Integer">
         select count(distinct (cc.id)) from customer_customer cc
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
-        where ccc.email = #{fromer} and cc.del_flag = '0' and ccc.del_flag = '0' and cc.sea_type = #{seaType}
+        where ccc.email = #{fromer} and cc.del_flag = '0' and ccc.del_flag = '0' and cc.sea_type = #{seaType} and cc.create_id = #{createId}
         <if test="packetId == null">
             and cc.packet_id = #{packetId}
         </if>
@@ -508,6 +508,19 @@
     <select id="selectByUnSentStatus" resultMap="TaskEmailResult">
         <include refid="selectTaskEmailVo"/>
          where task_id = #{taskId} and status = 2 and del_flag = '0' and type = 2
+    </select>
+
+    <select id="selectTaskEmailByTaskIds" resultMap="TaskEmailResult">
+        <include refid="selectTaskEmailVo"/>
+        WHERE task_id IN
+        <foreach item="taskId" collection="taskIds" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        AND type = #{type}
+        <if test="folderId != null">
+            AND folder_id = #{folderId}
+        </if>
+        AND del_flag = '0'
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
