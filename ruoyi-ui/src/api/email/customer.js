@@ -26,3 +26,12 @@ export function getCustomerSearchList(query) {
         params: query
     })
 }
+
+// 客户详情
+export function getCustomerDetail(query) {
+    return request({
+        url: '/email/customer/detail',
+        method: 'get',
+        params: query
+    })
+}

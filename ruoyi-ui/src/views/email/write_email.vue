@@ -189,6 +189,15 @@
                           </div>
                         </span>
                       </span>
+                      <div class="mm-divider-vertical solid"></div>
+                      <div class="tool-item novice-tour-groupmail-content-field flex items-center"
+                        @click="onShowTemplateDialog">
+                        <img src="https://cdn.xiaoman.cn/crm_web/ks/grey/mail_subapp/static/img/template.b98c6551.svg"
+                          style="width: 14px; height: 14px; margin-right: 4px;"> 模板
+                      </div>
+                      <div class="tool-item flex items-center" @click="onShowQuickTextDialog"><img
+                          src="https://cdn.xiaoman.cn/crm_web/ks/grey/mail_subapp/static/img/fast-text.573b9be5.svg"
+                          style="width: 14px; height: 14px; margin-right: 4px;"> 快速文本</div>
                     </div>
                   </div>
                 </li>
@@ -284,8 +293,8 @@
       </div>
     </form>
     <template>
-      <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1004;" v-portal=""
-        v-portal-fixed="" v-if="showCancelPopup">
+      <div class="mm-modal--mask mm-modal edit-close-dialog" id="report-stat-mail-edit" style="z-index: 1004;"
+        v-if="showCancelPopup">
         <div class="mm-modal-mask"></div>
         <div class="mm-modal-wrapper" style="padding-top: 15vh;">
           <div class="mm-modal-content" style="width: 424px; border-color: transparent;">
@@ -330,9 +339,12 @@
             </div>
           </div>
         </div>
+
       </div>
     </template>
-
+    <DialogTemplate v-if="templateDialogVisible" :dialogVisible.sync="templateDialogVisible"
+      @onConfirm="onTemplateConfirm" />
+    <DialogQuickText v-if="quickDialogVisible" :dialogVisible.sync="quickDialogVisible" @onConfirm="onQuickTextConfirm" />
   </div>
 </template>
 <style lang="scss">
@@ -365,6 +377,7 @@
 
 
 <script>
+import { mapState } from 'vuex'
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { uploadAttachments, renameAttachment, deleteAttachment } from "@/api/email/attachment";
 import { listTaskPull } from "@/api/email/task";
@@ -377,10 +390,13 @@ import DelayedTxlLayout from './write_email_delayed_tx.vue';
 import { fontSizeList, fontFamilyList, colors } from '@/constant/editorOption'
 import { getSignatureList } from '@/api/email/usually'
 // 邮箱详情
-import { getCustomerEmailInfo } from '@/api/email/customer'
+import { getCustomerDetail } from '@/api/email/customer'
+
+import DialogTemplate from './write_email/DialogTemplate.vue';
+import DialogQuickText from './write_email/DialogQuickText.vue';
 
 export default {
-  components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover, DelayedTxlLayout },
+  components: { Editor, Toolbar, ReceiverInput, PendingTimePopover, CustomTimePopover, DelayedTxlLayout, DialogTemplate, DialogQuickText },
   data() {
     return {
       formData: {
@@ -433,6 +449,8 @@ export default {
           'group-image'
         ]
       },
+      templateDialogVisible: false,
+      quickDialogVisible: false,
     };
   },
   props: {
@@ -481,10 +499,15 @@ export default {
       immediate: true
     }
   },
+  computed: {
+    ...mapState({
+      defaultTaskId: state => state.emailSetting.usuallySetting?.defaultTaskId,
+    }),
+  },
   methods: {
     async getEmailInfo(id) {
       try {
-        const res = await getCustomerEmailInfo({
+        const res = await getCustomerDetail({
           id
         })
         if (res.code === 200) {
@@ -528,8 +551,14 @@ export default {
 
         // 如果selectedAccount不存在（意味着上面没有找到对应的任务，或者taskId本来就为空），则使用第一个任务的信息
         if (!this.selectedAccount && this.taskList.length > 0) {
-          this.selectedAccount = this.taskList[0].account;
-          this.taskId = this.taskList[0].id;
+          this.$watch('defaultTaskId', (newVal) => {
+            const item = this.taskList.find(val => val.id === newVal)
+            this.selectedAccount = item?.account || ''
+            this.taskId = item?.id || ''
+          }, {
+            immediate: true
+          })
+
         }
 
         return response;
@@ -599,6 +628,22 @@ export default {
       } catch (error) {
         console.error('上传过程中出现错误:', error);
       }
+    },
+    onShowTemplateDialog() {
+      this.templateDialogVisible = true
+    },
+    onShowQuickTextDialog() {
+      this.quickDialogVisible = true
+    },
+    onTemplateConfirm(item) {
+      this.editor.restoreSelection()
+      this.editor.dangerouslyInsertHtml(item.content)
+      this.templateDialogVisible = false
+    },
+    onQuickTextConfirm(item) {
+      this.editor.restoreSelection()
+      this.editor.dangerouslyInsertHtml(item.html)
+      this.quickDialogVisible = false
     },
 
     formatSize(size) {
