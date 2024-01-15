@@ -4,7 +4,8 @@
             :append-to-body="false">
             <div class="quick-text-picker">
                 <ul class="quick-text-list" v-loading="loading">
-                    <li class="text-item" data-draggable="true" v-for="(item, index) in list" :key="index">
+                    <li class="text-item pointer" data-draggable="true" v-for="(item, index) in list" :key="index"
+                        @click="selectQuickTextId = item.id">
                         <i class="m-icon icon-move-btn"></i>
                         <el-radio v-model="selectQuickTextId" :label="item.id">
                             {{ item.title }}
