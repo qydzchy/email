@@ -272,12 +272,20 @@
                                             </el-radio-group>
 
                                         </div>
-                                        <div class="operation-list block field-block">
+                                        <div class="operation-list block field-block" v-if="!ruleData.executeOperation">
                                             <div class="item-value">
                                                 <el-checkbox v-model="ruleData.fixedFlag">打钉</el-checkbox>
                                             </div>
                                             <div class="item-value">
                                                 <el-checkbox v-model="ruleData.readFlag">标记为【已读】</el-checkbox>
+                                            </div>
+                                            <div class="item-value">
+                                                <el-checkbox v-model="ruleData.labelFlag">标记为</el-checkbox>
+                                                <el-select v-model="ruleData.labelId" class="ml-6" style="width:240px;"
+                                                    placeholder="请选择分类">
+                                                    <el-option v-for="(label, index) in labelOption" :key="index"
+                                                        :label="label.name" :value="label.id"></el-option>
+                                                </el-select>
                                             </div>
                                             <div class="item-value">
                                                 <el-checkbox v-model="ruleData.folderFlag">移动到</el-checkbox>
@@ -423,6 +431,7 @@
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { getEmailTaskList, getImportFolderList } from '@/api/email/emailImport'
 import { getDispatcherRuleList, updateDispatcherRuleInfo, dispatcherRuleInfo, deleteDispatcherRuleInfo, getSetPacketList, addDispatcherRule, editDispatcherRule } from '@/api/email/dispatcherRules'
+import { listLabel } from "@/api/email/label";
 import { deepClone } from '@/utils'
 const initData = {
     id: '',
@@ -433,6 +442,8 @@ const initData = {
     executeConditionContent: [],
     fixedFlag: false,
     readFlag: false,
+    labelFlag: false,
+    labelId: '',
     folderFlag: false,
     folderId: '',
     forwardToFlag: false,
@@ -467,6 +478,7 @@ export default {
             emailOption: [],
             folderOption: [],
             packetOption: [],
+            labelOption: [],
             executeConditionContent: [
                 {
                     oddId: +new Date(),
@@ -484,7 +496,7 @@ export default {
                     'group-image'
                 ]
             },
-            flagFields: ['fixedFlag', 'readFlag', 'folderFlag', 'forwardToFlag', 'pendingFlag', 'autoResponseFlag', 'applyToHistoryMailFlag']
+            flagFields: ['fixedFlag', 'readFlag', 'labelFlag', 'folderFlag', 'forwardToFlag', 'pendingFlag', 'autoResponseFlag', 'applyToHistoryMailFlag']
         }
     },
     mounted() {
@@ -495,6 +507,7 @@ export default {
             this.getList()
             this.getEmailOption()
             this.getFolderOption()
+            this.getLabelOption()
             this.getGroupList()
         },
         async getList() {
@@ -533,6 +546,15 @@ export default {
                 }
             } catch {
             }
+        },
+        // 
+        async getLabelOption() {
+            try {
+                const res = await listLabel()
+                if (res.code === 200) {
+                    this.labelOption = res.data
+                }
+            } catch { }
         },
         async handleStatus(item) {
             try {

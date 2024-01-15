@@ -21,16 +21,18 @@ export default {
   },
   data() {
     return {
-      currentTab: ''  // 你可以设置为第一个标签的名字，例如 "常规"
+      currentTab: '常规'  // 你可以设置为第一个标签的名字，例如 "常规"
     };
   },
   watch: {
     "$route.query": {
       handler(newVal) {
+        if(!newVal?.tab){
+          return
+        }
         const mapTab = {
           'template': '模板',
           'usually': '常规',
-          '': '常规',
         }
         this.currentTab = mapTab[newVal.tab]
         this.changeTab(this.currentTab)
