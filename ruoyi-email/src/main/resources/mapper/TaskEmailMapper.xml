@@ -464,7 +464,7 @@
     <select id="countCustomerContactByFromer" resultType="java.lang.Integer">
         select count(distinct (cc.id)) from customer_customer cc
         left join customer_customer_contact ccc on cc.id = ccc.customer_id
-        where ccc.email = #{fromer} and cc.del_flag = '0' and ccc.del_flag = '0' and cc.sea_type = #{seaType}
+        where ccc.email = #{fromer} and cc.del_flag = '0' and ccc.del_flag = '0' and cc.sea_type = #{seaType} and cc.create_id = #{createId}
         <if test="packetId == null">
             and cc.packet_id = #{packetId}
         </if>

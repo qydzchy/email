@@ -38,4 +38,9 @@ public class EmailSimpleBO {
      * 发送时间
      */
     private Date sendDate;
+
+    /**
+     * 创建ID
+     */
+    private Long createId;
 }

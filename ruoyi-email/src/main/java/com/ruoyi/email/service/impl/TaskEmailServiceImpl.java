@@ -988,7 +988,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
                 boolean isRuleMet = true;
                 for (ExecuteConditionContentBO executeConditionContentBO : executeConditionContentBOList) {
                     // 判断条件是否成立
-                    EmailSimpleBO emailSimpleBO = EmailSimpleBO.builder().fromer(taskEmail.getFromer()).receiver(taskEmail.getReceiver()).cc(taskEmail.getCc()).subject(taskEmail.getTitle()).sendDate(taskEmail.getSendDate()).body(content).build();
+                    EmailSimpleBO emailSimpleBO = EmailSimpleBO.builder().fromer(taskEmail.getFromer()).receiver(taskEmail.getReceiver()).cc(taskEmail.getCc()).subject(taskEmail.getTitle()).sendDate(taskEmail.getSendDate()).body(content).createId(transceiverRuleVO.getCreateId()).build();
                     boolean isConditionMet = emailColumnContext.handler(executeConditionContentBO, emailSimpleBO);
 
                     String andOr = executeConditionContentBO.getAndOr();

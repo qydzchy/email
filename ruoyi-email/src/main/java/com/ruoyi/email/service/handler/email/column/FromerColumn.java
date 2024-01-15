@@ -52,12 +52,12 @@ public class FromerColumn implements IColumnService {
                     String packetIdStr = executeConditionContentBO.getPacketId();
                     if (StringUtils.isNotBlank(packetIdStr)) {
                         Long packetId = Long.parseLong(packetIdStr);
-                        int count = taskEmailMapper.countCustomerContactByFromer(1, fromer, packetId);
+                        int count = taskEmailMapper.countCustomerContactByFromer(1, fromer, packetId, emailSimpleBO.getCreateId());
                         return count > 0;
                     }
 
                 } else if (value.equals("2")) {
-                    int count = taskEmailMapper.countCustomerContactByFromer(2, fromer, null);
+                    int count = taskEmailMapper.countCustomerContactByFromer(2, fromer, null, emailSimpleBO.getCreateId());
                     return count > 0;
 
                 }

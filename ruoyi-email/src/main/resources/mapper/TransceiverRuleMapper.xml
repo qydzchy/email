@@ -114,7 +114,8 @@
             tr.apply_to_history_mail_true_type AS applyToHistoryMailTrueType,
             tr.execute_task_id AS executeTaskId,
             tr.other_sending_rules AS otherSendingRules,
-            tr.status
+            tr.status,
+            tr.create_id as createId
         FROM
             mailbox_transceiver_rule tr
             LEFT JOIN mailbox_folder f ON f.id = tr.folder_id

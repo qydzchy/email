@@ -249,7 +249,7 @@ public interface TaskEmailMapper
      * @param packetId
      * @return
      */
-    int countCustomerContactByFromer(@Param("seaType") Integer seaType, @Param("fromer") String fromer, @Param("packetId") Long packetId);
+    int countCustomerContactByFromer(@Param("seaType") Integer seaType, @Param("fromer") String fromer, @Param("packetId") Long packetId, @Param("createId") Long createId);
 
     /**
      * 客户往来邮件列表
