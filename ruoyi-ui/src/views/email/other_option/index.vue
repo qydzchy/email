@@ -264,6 +264,8 @@ export default {
 				const res = await otherConfigEdit(data)
 				if (res.code === 200) {
 					this.$message.success('保存成功')
+					// 更新状态
+					this.$store.dispatch('otherSetting/GetOtherInfo')
 				}
 			} catch {
 
