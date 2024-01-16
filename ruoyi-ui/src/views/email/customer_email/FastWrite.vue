@@ -97,7 +97,7 @@
                 <div class="mail-paging tool-bar-paging">
                     <span class="total-count ellipsis">共 {{ total }} 封</span>
 
-                    <div class="mail-paging-btn left-btn disabled">
+                    <div class="mail-paging-btn left-btn" @click="$emit('viewNewEmail', activeEmailId, 'pre')">
                         <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                 viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -106,7 +106,7 @@
                             </svg>
                         </span>
                     </div>
-                    <div class="mail-paging-btn right-btn">
+                    <div class="mail-paging-btn right-btn" @click="$emit('viewNewEmail', activeEmailId, 'next')">
                         <span class="okki-icon-wrap m-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                 viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                 <path fill-rule="evenodd" clip-rule="evenodd"

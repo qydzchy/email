@@ -1,45 +1,39 @@
 <template>
   <div v-if="addQuickTextPage">
-    <div class="mm-drawer--right mm-drawer mail-config-dialog create-text" id="report-stat-sub-routes-text-create-text" style="z-index: 1000;">
+    <div class="mm-drawer--right mm-drawer mail-config-dialog create-text" id="report-stat-sub-routes-text-create-text"
+      style="z-index: 2024;">
       <div class="mm-drawer-mask"></div>
       <div class="mm-drawer-main" style="width: 600px;">
         <div class="mm-drawer-header">
-          <div class="title">新建文本</div>
-          <svg @click="close" class="mm-icon mm-icon-close mm-drawer-close" viewBox="0 0 24 24" fill="currentColor" style="height: 12px; width: 12px;">
-            <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"></path>
+          <div class="title">{{ id ? '编辑' : '新建' }}文本</div>
+          <svg @click="close" class="mm-icon mm-icon-close mm-drawer-close" viewBox="0 0 24 24" fill="currentColor"
+            style="height: 12px; width: 12px;">
+            <path
+              d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z">
+            </path>
           </svg>
         </div>
         <div class="mm-drawer-body">
           <div class="text-field">
             <div class="item-name"> 标题：</div>
             <div style="flex: 1 1 0%;">
-            <span class="mm-input">
-              <!---->
-              <span class="mm-input-affix-wrapper">
+              <span class="mm-input">
                 <!---->
-                <input v-model="title" type="text" class="mm-input-inner">
+                <span class="mm-input-affix-wrapper">
+                  <!---->
+                  <input v-model="title" type="text" class="mm-input-inner">
+                  <!---->
+                </span>
                 <!---->
               </span>
-              <!---->
-            </span>
             </div>
           </div>
           <!---->
-          <Toolbar
-            ref="editorInstance"
-            style="border-bottom: 1px solid #ccc"
-            :editor="editor"
-            :defaultConfig="toolbarConfig"
-          />
+          <Toolbar ref="editorInstance" style="border-bottom: 1px solid #ccc" :editor="editor"
+            :defaultConfig="toolbarConfig" />
           <!-- 编辑器 -->
-          <Editor
-            ref="editorInstance"
-            style="height: 100%; overflow-y: hidden"
-            v-model="html"
-            @onChange="onChange"
-            @onCreated="onCreated"
-            mode="default"
-          />
+          <Editor ref="editorInstance" style="height: 100%; overflow-y: hidden" v-model="html" @onChange="onChange"
+            @onCreated="onCreated" mode="default" />
           <div style="margin-top: 8px; text-align: center;">
             <p>写邮件时，输入 <span style="color: red;">&amp;</span>标题关键词，联想出快速文本，快捷插入</p>
           </div>
@@ -70,8 +64,8 @@
 <style src="@wangeditor/editor/dist/css/style.css"></style>
 <script>
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import {addQuickText, editQuickText} from "@/api/email/quickText";
-import {EventBus} from "@/api/email/event-bus";
+import { addQuickText, editQuickText } from "@/api/email/quickText";
+import { EventBus } from "@/api/email/event-bus";
 
 export default {
   data() {
@@ -83,11 +77,16 @@ export default {
       htmlText: null,
       addQuickTextPage: false,
       editor: null,
-      toolbarConfig: {},
+      toolbarConfig: {
+        excludeKeys: [
+          'group-video',
+          'group-image'
+        ]
+      },
     }
   },
 
-  components: { Editor, Toolbar},
+  components: { Editor, Toolbar },
 
   methods: {
     open(quickText) {
@@ -151,6 +150,7 @@ export default {
           this.close();
           // 刷新列表
           EventBus.$emit('refresh-quick-text-list');
+          this.$emit('refresh')
         } else {
           this.$message.error("保存失败");
         }
@@ -184,6 +184,7 @@ export default {
           this.close();
           // 刷新列表
           EventBus.$emit('refresh-quick-text-list');
+          this.$emit('refresh')
         } else {
           this.$message.error("保存失败");
         }

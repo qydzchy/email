@@ -315,7 +315,8 @@
                     <template v-if="!showHeader">
                         <!-- 快捷邮件 -->
                         <FastWrite :info="fastInfo" :total="total" :labels="labels"
-                            @showLabel="(bool) => onShowLabel(bool, 'write')" @reload="getList" />
+                            @showLabel="(bool) => onShowLabel(bool, 'write')" @viewNewEmail="viewNewEmail"
+                            @reload="getList" />
                         <!-- 抽屉 -->
                         <div v-if="Boolean(emailReadingModeFlag)" class="mail-side-card slide-fade"
                             :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
@@ -708,6 +709,15 @@ export default {
         },
         handleCheckItem(item, value) {
             this.$set(item, 'selected', value)
+        },
+        // 查看新的邮件
+        viewNewEmail(curEmailId, type) {
+            const curIndex = this.list.findIndex(val => val.id === curEmailId)
+            if (type === 'pre') {
+                if (curIndex === 0) { return }
+            } else if (type === 'next') {
+                if (curIndex === (this.list.length - 1)) { return }
+            }
         }
     }
 }
