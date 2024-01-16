@@ -113,6 +113,17 @@
         <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
         <if test="fixedFlag != null and fixedFlag == true"> and fixed_flag = true</if>
         <if test="folderId != null "> and folder_id = #{folderId}</if>
+        <if test="customerFlag != null and customerFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM customer_customer cc
+            LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+            WHERE mte.fromer = ccc.email
+            AND cc.create_id = #{createId}
+            AND cc.del_flag = '0'
+            AND ccc.del_flag = '0'
+            )
+        </if>
         and del_flag = #{delFlag}
     </select>
 
@@ -120,9 +131,15 @@
         SELECT
         mte.id, mte.type, mte.status, mte.task_id as taskId, mte.fromer, mte.receiver, mte.folder_id as folderId, mte.title,
         mte.send_date as sendDate, mte.read_flag as readFlag, mte.pending_flag as pendingFlag, mte.pending_time as pendingTime,
-        mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content
+        mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content, ccc.nick_name as nickName
         FROM mailbox_task_email mte
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        LEFT JOIN (
+        SELECT customer_id, email, MIN(nick_name) as nick_name
+        FROM customer_customer_contact where del_flag = '0'
+        GROUP BY email
+        ) ccc ON mte.fromer = ccc.email
+        LEFT JOIN customer_customer cc ON ccc.customer_id = cc.id AND cc.create_id = #{createId} AND cc.del_flag = '0'
         WHERE
         mte.task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
@@ -153,6 +170,17 @@
         <if test="traceFlag != null"> AND mte.trace_flag = #{traceFlag}</if>
         <if test="fixedFlag != null and fixedFlag == true"> AND fixed_flag = true</if>
         <if test="folderId != null"> AND mte.folder_id = #{folderId}</if>
+        <if test="customerFlag != null and customerFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM customer_customer cc
+            LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+            WHERE mte.fromer = ccc.email
+            AND cc.create_id = #{createId}
+            AND cc.del_flag = '0'
+            AND ccc.del_flag = '0'
+            )
+        </if>
         AND mte.del_flag = #{delFlag}
         ORDER BY mte.send_date DESC
         LIMIT #{offset}, #{limit}
