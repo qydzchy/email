@@ -3709,9 +3709,9 @@ CREATE TABLE `mailbox_blacklist`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '黑名单表' ROW_FORMAT = Dynamic;
-
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_type`(`type`) USING BTREE COMMENT '类型索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '黑名单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mailbox_folder
@@ -3769,7 +3769,7 @@ CREATE TABLE `mailbox_general`  (
   `font_color` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文字颜色',
   `group_box_view` tinyint(1) NULL DEFAULT 1 COMMENT '群发箱视图​: 1.任务视图 2.邮件视图',
   `mass_email_display` tinyint(1) NULL DEFAULT NULL COMMENT '群发邮件展示 1.仅在群发箱 2.发件箱与群发箱',
-  `remind` tinyint(1) NULL DEFAULT NULL COMMENT '提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒',
+  `remind` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒: 1.禁止新邮件到达时在页面弹出通知 2.禁止发送邮件在页面弹出附件提醒',
   `signature_id` bigint(20) NULL DEFAULT NULL COMMENT '签名ID',
   `write_letter` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '写信,逗号分隔: 1.正文拼写检查(编辑器会以红色波浪线提示正文中的拼写错误) 2.新窗口写信 (将在下次打开邮件时生效) 3.发送后返回上一页',
   `paste_format` tinyint(1) NULL DEFAULT NULL COMMENT '粘贴格式 1,始终移除格式 2.始终保持格式 3.每次粘贴提醒',
@@ -3785,8 +3785,9 @@ CREATE TABLE `mailbox_general`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮箱常规表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_default_task_id`(`default_task_id`) USING BTREE COMMENT '默认邮箱'
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮箱常规表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mailbox_general
@@ -3817,7 +3818,7 @@ CREATE TABLE `mailbox_task_single_setting`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_task_id`(`task_id`) USING BTREE COMMENT '任务索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '单个邮箱设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 321 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '单个邮箱设置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mailbox_host
@@ -3889,8 +3890,10 @@ CREATE TABLE `mailbox_import_email`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '导入邮件表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_task_id`(`task_id`) USING BTREE COMMENT '任务ID索引',
+  INDEX `idx_create_id`(`create_id`) USING BTREE COMMENT '创建者ID索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '导入邮件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mailbox_label
@@ -3943,7 +3946,7 @@ CREATE TABLE `mailbox_other_config`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '其他配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '其他配置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mailbox_other_config
@@ -3994,7 +3997,7 @@ CREATE TABLE `mailbox_signature`  (
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '个性签名表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '个性签名表' ROW_FORMAT = Dynamic;
 
 
 -- ----------------------------
@@ -5050,6 +5053,8 @@ CREATE TABLE `mailbox_transceiver_rule`  (
   `execute_operation` tinyint(1) NOT NULL COMMENT '执行操作: 1.执行以下操作 2.移动到【已删除邮件】',
   `fixed_flag` tinyint(1) NULL DEFAULT 0 COMMENT '是否固定: 0.否 1.是',
   `read_flag` tinyint(1) NULL DEFAULT 0 COMMENT '是否已读: 0.否 1.是',
+  `label_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否分类: 0.否 1.是',
+  `label_id` bigint(20) NULL DEFAULT NULL COMMENT '分类ID',
   `folder_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否移动至：0.否 1.是',
   `folder_id` bigint(20) NULL DEFAULT -1 COMMENT '文件夹ID',
   `forward_to_flag` tinyint(1) NULL DEFAULT NULL COMMENT '是否转发至：0.否 1.是',
@@ -5062,7 +5067,7 @@ CREATE TABLE `mailbox_transceiver_rule`  (
   `auto_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '自动回复',
   `apply_to_history_mail_flag` tinyint(1) NOT NULL DEFAULT 1 COMMENT '应用于历史邮件: 0.否 1.是',
   `apply_to_history_mail_true_type` tinyint(1) NULL DEFAULT NULL COMMENT '应用于历史邮件类型：1.针对收件箱的历史邮件 2.针对收件箱及所有文件夹的历史邮件（不包括已删除）',
-  `execute_task_id` bigint(20) NULL DEFAULT 0 COMMENT '执行邮箱ID: 0.表示全部邮箱',
+  `execute_task_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '执行邮箱ID: 0.表示全部邮箱',
   `other_sending_rules` tinyint(1) NOT NULL COMMENT '其他发件规则: 1.继续执行 2.不再执行',
   `status` tinyint(1) NOT NULL COMMENT '状态 1.开启 0.关闭',
   `order_num` int(11) NULL DEFAULT NULL COMMENT '顺序',
@@ -5073,8 +5078,9 @@ CREATE TABLE `mailbox_transceiver_rule`  (
   `update_id` bigint(20) NULL DEFAULT NULL COMMENT '更新者ID',
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '收发件规则表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_rule_type`(`rule_type`) USING BTREE COMMENT '规则类型索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '收发件规则表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for qrtz_blob_triggers
