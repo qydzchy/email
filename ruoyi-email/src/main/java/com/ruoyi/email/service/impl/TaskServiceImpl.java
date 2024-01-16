@@ -566,7 +566,7 @@ public class TaskServiceImpl implements ITaskService
         }
 
         // 黑名单处理
-        blacklistHandler(taskEmail, task.getCreateId());
+     //   blacklistHandler(taskEmail, task.getCreateId());
 
 
         // 收件规则处理
