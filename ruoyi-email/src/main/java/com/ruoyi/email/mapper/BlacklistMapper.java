@@ -67,20 +67,4 @@ public interface BlacklistMapper
      * @return
      */
     int countByTypeAndContent(@Param("type") Integer type, @Param("content") String content);
-
-    /**
-     * 统计当前邮箱是否存在黑名单邮箱地址中
-     * @param createId
-     * @param content
-     * @return
-     */
-    Integer countBlacklistListByEmail(@Param("createId") Long createId, @Param("content") String content);
-
-    /**
-     * 统计当前邮箱是否存在黑名单域名中
-     * @param createId
-     * @param content
-     * @return
-     */
-    Integer countBlacklistListByDomain(@Param("createId") Long createId, @Param("content") String content);
 }

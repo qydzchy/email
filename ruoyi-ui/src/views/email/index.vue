@@ -981,7 +981,7 @@ export default {
 
     // 垃圾邮件
     spamMailClick() {
-      this.triggerEmailHeaderEvent('SPAM');
+      this.triggerEmailHeaderEvent('SPAM_MAIL');
     },
 
     // 追踪邮件
@@ -994,7 +994,7 @@ export default {
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
-      this.currentEmailType = emailType
+      this.currentEmailType = emailType;
       this.setActive(emailType);
       this.switchLayout('email_header');
       this.$nextTick(() => {
