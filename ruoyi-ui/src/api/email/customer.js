@@ -30,7 +30,7 @@ export function getCustomerSearchList(query) {
 // 客户详情
 export function getCustomerDetail(query) {
     return request({
-        url: '/email/customer/detail',
+        url: '/customer/customer/detail',
         method: 'get',
         params: query
     })
