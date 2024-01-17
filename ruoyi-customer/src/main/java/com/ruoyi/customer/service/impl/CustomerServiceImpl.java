@@ -1262,7 +1262,6 @@ public class CustomerServiceImpl implements ICustomerService {
             return false;
         }
 
-        // todo 待测试
         boolean isRuleMet = true;
         for (SegmentConditionRuleBO segmentConditionRuleBO : segmentConditionRuleBOList) {
             boolean isConditionMet = columnContext.handler(customerDetail, segmentConditionRuleBO);
