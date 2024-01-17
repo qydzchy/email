@@ -16,8 +16,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.teaopenapi.Client;
 import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.AndOrEnum;
@@ -40,6 +42,7 @@ import com.ruoyi.email.service.*;
 import com.ruoyi.email.service.handler.email.column.EmailColumnContext;
 import com.ruoyi.email.util.Constant;
 import com.ruoyi.email.util.DateUtil;
+import com.ruoyi.email.util.TranslateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -743,7 +746,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public List<DealingEmailListVO> dealingEmailList(Long customerId, Boolean attachmentFlag) {
+    public List<DealingEmailListVO> customerDealingEmailList(Long customerId, Boolean attachmentFlag) {
         List<String> contactEmails = taskEmailMapper.getContactEmailList(customerId);
         if (contactEmails == null || contactEmails.isEmpty()) {
             return Collections.emptyList();
@@ -753,7 +756,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Long userId = loginUser.getUserId();
 
         // 客户往来邮件列表
-        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.dealingEmailList(contactEmails, userId);
+        List<DealingEmailListBO> dealingEmailBOList = taskEmailMapper.customerDealingEmailList(contactEmails, userId, attachmentFlag);
 
         List<Long> ids = dealingEmailBOList.stream().map(dealingEmailBO -> dealingEmailBO.getId()).collect(Collectors.toList());
         Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = new HashMap<>();
@@ -783,12 +786,18 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             dealingEmailVO.setTitle(list.get(0).getTitle());
             dealingEmailVO.setContent(list.get(0).getContent());
 
-            List<LabelListVO> labelVOList = new ArrayList<>();
+            List<EmailLabelBO> emailLabelList = new ArrayList<>();
             for (DealingEmailListBO dealingEmailListBO : list) {
                 if (dealingEmailListBO.getId() == null) break;
-                labelVOList.add(LabelListVO.builder().id(dealingEmailListBO.getLabelId()).name(dealingEmailListBO.getLabelName()).color(dealingEmailListBO.getLabelColor()).type(dealingEmailListBO.getLabelType()).build());
+
+                EmailLabelBO emailLabelBO = new EmailLabelBO();
+                emailLabelBO.setId(dealingEmailListBO.getLabelId());
+                emailLabelBO.setName(dealingEmailListBO.getLabelName());
+                emailLabelBO.setColor(dealingEmailListBO.getLabelColor());
+                emailLabelBO.setType(dealingEmailListBO.getLabelType());
+                emailLabelList.add(emailLabelBO);
             }
-            dealingEmailVO.setLabelList(labelVOList);
+            dealingEmailVO.setLabelList(emailLabelList);
             dealingEmailVO.setEmailAttachmentList(emailAttachmentList);
 
             dealingEmailVOList.add(dealingEmailVO);
@@ -880,6 +889,115 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         applyToHistoryMail(transceiverRule, null);
     }
 
+    /**
+     * 邮件往来邮件列表
+     * @param id
+     * @param attachmentFlag
+     * @return
+     */
+    @Override
+    public Pair<Integer, List<DealingEmailListVO>> emailDealingEmailList(Long id, Boolean attachmentFlag, Integer pageNum, Integer pageSize) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        TaskEmail taskEmail = taskEmailMapper.selectTaskEmailById(id);
+        // 发送方
+        String fromer = taskEmail.getFromer();
+        // 接收方任务ID
+        Long taskId = taskEmail.getTaskId();
+
+        // 邮件数量
+        Integer count = taskEmailMapper.countEmailDealingEmail(userId, taskId, fromer, attachmentFlag);
+        if (count == 0) {
+            return Pair.of(count, Collections.emptyList());
+        }
+
+        // 列表
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<DealingEmailListVO> dealingEmailVOList = taskEmailMapper.selectEmailDealingEmail(userId, taskId, fromer, attachmentFlag, offset, limit);
+
+        List<Long> ids = dealingEmailVOList.stream().map(dealingEmailBO -> dealingEmailBO.getId()).collect(Collectors.toList());
+
+        // 查询附件
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = new HashMap<>();
+        // 查询标签
+        Map<Long, List<EmailLabelBO>> labelGroupMap = new HashMap<>();
+        if (ids != null && !ids.isEmpty()) {
+            // 查询邮件附件信息
+            List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+            if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+            attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+
+            List<EmailLabelBO> emailLabelBOList = labelMapper.listByEmailIds(ids);
+            if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
+            labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabelBO -> emailLabelBO.getEmailId()));
+        }
+
+        for (DealingEmailListVO dealingEmailListVO : dealingEmailVOList) {
+            Long emailId = dealingEmailListVO.getId();
+            if (attachmentGroupMap.containsKey(emailId)) {
+                List<EmailAttachmentBO> emailAttachmentGroupList = attachmentGroupMap.get(emailId);
+                dealingEmailListVO.setEmailAttachmentList(emailAttachmentGroupList);
+            } else {
+                dealingEmailListVO.setEmailAttachmentList(Collections.emptyList());
+            }
+
+            if (labelGroupMap.containsKey(emailId)) {
+                List<EmailLabelBO> emailLabelBOList = labelGroupMap.get(emailId);
+                dealingEmailListVO.setLabelList(emailLabelBOList);
+            } else {
+                dealingEmailListVO.setLabelList(Collections.emptyList());
+            }
+        }
+
+        return Pair.of(count, dealingEmailVOList);
+    }
+
+    /**
+     * 翻译
+     * @param sourceLanguage
+     * @param targetLanguage
+     * @param sourceText
+     * @return
+     */
+    @Override
+    public String translate(String sourceLanguage, String targetLanguage, String sourceText) {
+        try {
+            // zh（中文） en（英文） ru（俄语） pt（葡萄牙语）es（西班牙语）fr（法语）ja（日语）tr（土耳其语）ar（阿拉伯语）th（泰语）vi（越南语）id（印尼语）
+            Client client = TranslateUtil.getClient();
+            com.aliyun.teaopenapi.models.Params params = TranslateUtil.createApiInfo();
+            java.util.Map<String, Object> body = new java.util.HashMap<>();
+            body.put("FormatType", "text");
+            body.put("SourceLanguage", sourceLanguage);
+            body.put("TargetLanguage", targetLanguage);
+            body.put("SourceText", sourceText);
+            body.put("Scene", "general");
+            // runtime options
+            com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
+            com.aliyun.teaopenapi.models.OpenApiRequest request = new com.aliyun.teaopenapi.models.OpenApiRequest()
+                    .setBody(body);
+            // 复制代码运行请自行打印 API 的返回值
+            // 返回值为 Map 类型，可从 Map 中获得三类数据：响应体 body、响应头 headers、HTTP 返回的状态码 statusCode。
+            Map<String, ?> map = client.callApi(params, request, runtime);
+            String jsonString = JSON.toJSONString(map);
+
+            JSONObject jsonO = JSONObject.parseObject(jsonString);
+            if (jsonO.getIntValue("statusCode") == 200) {
+                JSONObject bodyJsonO = jsonO.getJSONObject("body");
+                if (bodyJsonO.containsKey("Code") && bodyJsonO.getString("Code").equals("200")) {
+                    JSONObject dataJsonO = bodyJsonO.getJSONObject("Data");
+                    if (dataJsonO != null && dataJsonO.containsKey("Translated")) {
+                        sourceText = dataJsonO.getString("Translated");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("翻译失败：{}", e);
+        }
+
+        return sourceText;
+    }
 
     /**
      * 应用历史邮件

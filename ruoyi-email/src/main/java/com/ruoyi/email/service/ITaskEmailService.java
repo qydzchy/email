@@ -272,7 +272,7 @@ public interface ITaskEmailService
      * @param attachmentFlag
      * @return
      */
-    List<DealingEmailListVO> dealingEmailList(Long customerId, Boolean attachmentFlag);
+    List<DealingEmailListVO> customerDealingEmailList(Long customerId, Boolean attachmentFlag);
 
     /**
      * 邮件详情
@@ -310,4 +310,21 @@ public interface ITaskEmailService
      * @param transceiverRule
      */
     void applyToHistoryMailForInboxAndAllFolder(TransceiverRule transceiverRule);
+
+    /**
+     * 邮件往来邮件列表
+     * @param id
+     * @param attachmentFlag
+     * @return
+     */
+    Pair<Integer, List<DealingEmailListVO>> emailDealingEmailList(Long id, Boolean attachmentFlag, Integer pageNum, Integer pageSize);
+
+    /**
+     * 翻译
+     * @param sourceLanguage
+     * @param targetLanguage
+     * @param sourceText
+     * @return
+     */
+    String translate(String sourceLanguage, String targetLanguage, String sourceText);
 }

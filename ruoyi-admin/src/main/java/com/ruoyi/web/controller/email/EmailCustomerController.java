@@ -179,7 +179,7 @@ public class EmailCustomerController extends BaseController {
             throw new ServiceException("客户ID不能为空");
         }
 
-        return success(taskEmailService.dealingEmailList(customerId, attachmentFlag));
+        return success(taskEmailService.customerDealingEmailList(customerId, attachmentFlag));
     }
 
 }

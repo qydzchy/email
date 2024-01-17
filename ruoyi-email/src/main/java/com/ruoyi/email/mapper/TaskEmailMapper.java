@@ -256,7 +256,7 @@ public interface TaskEmailMapper
      * @param contactEmails
      * @return
      */
-    List<DealingEmailListBO> dealingEmailList(@Param("contactEmails") List<String> contactEmails, @Param("createId") Long createId);
+    List<DealingEmailListBO> customerDealingEmailList(@Param("contactEmails") List<String> contactEmails, @Param("createId") Long createId, @Param("attachmentFlag") Boolean attachmentFlag);
 
     /**
      * 邮件详情
@@ -284,4 +284,23 @@ public interface TaskEmailMapper
      * @return
      */
     List<TaskEmail> selectTaskEmailByTaskIds(@Param("taskIds") List<Long> taskIds, @Param("type") Integer type, @Param("folderId") Long folderId);
+
+    /**
+     * 统计往来邮件数量
+     * @param createId
+     * @param taskId
+     * @param fromer
+     * @return
+     */
+    int countEmailDealingEmail(@Param("createId") Long createId, @Param("taskId") Long taskId, @Param("fromer") String fromer, @Param("attachmentFlag") Boolean attachmentFlag);
+
+    /**
+     * 查询往来邮件列表
+     * @param createId
+     * @param taskId
+     * @param fromer
+     * @param attachmentFlag
+     * @return
+     */
+    List<DealingEmailListVO> selectEmailDealingEmail(@Param("createId") Long createId, @Param("taskId") Long taskId, @Param("fromer") String fromer, @Param("attachmentFlag") Boolean attachmentFlag, @Param("offset") int offset, @Param("limit") int limit);
 }

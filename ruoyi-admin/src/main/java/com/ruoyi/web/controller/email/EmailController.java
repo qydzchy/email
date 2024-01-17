@@ -7,8 +7,10 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.dto.email.*;
+import com.ruoyi.email.domain.vo.DealingEmailListVO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
@@ -361,5 +363,55 @@ public class EmailController extends BaseController {
     @GetMapping("/count/menu")
     public AjaxResult countMenu() {
         return AjaxResult.success(taskEmailService.countMenu());
+    }
+
+
+    /**
+     * 往来邮件列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:dealing:email:list')")
+    @GetMapping(value = "/dealing/email/list")
+    public TableDataInfo dealingEmailList(@NotNull(message = "id不能为空") Long id,
+                                       Boolean attachmentFlag,
+                                       @NotNull(message = "页数不能为空") Integer pageNum,
+                                       @NotNull(message = "页大小不能为空") Integer pageSize)
+    {
+        /*if (id == null) {
+            throw new ServiceException("ID不能为空");
+        }*/
+
+        Pair<Integer, List<DealingEmailListVO>> resultPair = taskEmailService.emailDealingEmailList(id, attachmentFlag, pageNum, pageSize);
+
+        long total = resultPair.getFirst();
+        List<DealingEmailListVO> rows = resultPair.getSecond();
+
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(rows);
+        rspData.setTotal(total);
+        return rspData;
+    }
+
+    /**
+     * 翻译
+     */
+    @PreAuthorize("@ss.hasPermi('email:translate')")
+    @GetMapping(value = "/translate")
+    public AjaxResult translate(String sourceLanguage, String targetLanguage, String sourceText)
+    {
+        if (StringUtils.isBlank(sourceLanguage)) {
+            throw new ServiceException("原文语言不能为空");
+        }
+
+        if (StringUtils.isBlank(targetLanguage)) {
+            throw new ServiceException("译文语言不能为空");
+        }
+
+        if (StringUtils.isBlank(sourceText)) {
+            throw new ServiceException("需要翻译的内容不能为空");
+        }
+
+        return success(taskEmailService.translate(sourceLanguage, targetLanguage, sourceText));
     }
 }
