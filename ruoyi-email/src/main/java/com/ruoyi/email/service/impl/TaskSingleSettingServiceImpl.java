@@ -84,6 +84,7 @@ public class TaskSingleSettingServiceImpl implements ITaskSingleSettingService
 
 
         taskSingleSettingList.stream().forEach(taskSingleSetting -> {
+            taskSingleSetting.setDelFlag("0");
             taskSingleSetting.setCreateId(userId);
             taskSingleSetting.setCreateBy(username);
             taskSingleSetting.setCreateTime(now);

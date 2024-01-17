@@ -7,6 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.service.ICustomerEmailService;
+import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailService;
 import org.springframework.data.util.Pair;
@@ -180,4 +181,5 @@ public class EmailCustomerController extends BaseController {
 
         return success(taskEmailService.dealingEmailList(customerId, attachmentFlag));
     }
+
 }
