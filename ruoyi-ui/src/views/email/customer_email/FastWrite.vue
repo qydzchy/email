@@ -506,6 +506,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { EventBus } from "@/api/email/event-bus";
 import emailContentDetailInfoLayout from '@/views/email/email_content_detail_info';
 import CustomTimePopover from "@/views/email/custom_time.vue";
@@ -536,6 +537,13 @@ export default {
             },
             required: false
         },
+        emailData: {
+            type: Array,
+            default: () => {
+                return []
+            },
+            required: false
+        }
     },
     components: {
         CustomTimePopover,
@@ -576,6 +584,9 @@ export default {
         }
     },
     computed: {
+        ...mapState({
+            moveDeleteReport: state => state.emailSetting.usuallySetting?.moveDeleteReport
+        }),
         dropdownStyle() {
             return this.isDropdownShown ? '' : 'display: none;';
         },
@@ -588,6 +599,13 @@ export default {
             handler(newVal) {
                 this.currentEmailDetail = newVal
                 this.activeEmailId = this.currentEmailDetail?.id || ''
+            },
+            deep: true,
+            immediate: true
+        },
+        emailData: {
+            handler(newVal) {
+                this.localEmailList = newVal
             },
             deep: true,
             immediate: true
@@ -798,40 +816,48 @@ export default {
                     const response = await deleteEmail(data);
                     if (response.code === 200) {
                         let found = false;
-                        for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
-                            const monthGroup = this.localEmailList[groupIndex];
-                            for (const month in monthGroup) {
-                                const emails = monthGroup[month];
-                                const index = emails.findIndex(email => email.id === this.activeEmailId);
-                                if (index > -1) {
-                                    emails.splice(index, 1);
-                                    this.total -= 1;
+                        if (this.moveDeleteReport === 1) {
+                            for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+                                const monthGroup = this.localEmailList[groupIndex];
+                                for (const month in monthGroup) {
+                                    const emails = monthGroup[month];
+                                    const index = emails.findIndex(email => email.id === this.activeEmailId);
+                                    if (index > -1) {
+                                        emails.splice(index, 1);
+                                        const newTotal = this.total - 1;
+                                        this.$emit('updateTotal', newTotal)
 
-                                    if (emails.length === 0) {
-                                        // 如果该monthGroup没有邮件了，从localEmailList中移除
-                                        this.localEmailList.splice(groupIndex, 1);
+                                        if (emails.length === 0) {
+                                            // 如果该monthGroup没有邮件了，从localEmailList中移除
+                                            this.localEmailList.splice(groupIndex, 1);
 
-                                        // 尝试从下一个monthGroup获取最新邮件
-                                        if (this.localEmailList[groupIndex]) {
-                                            this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                                            // 尝试从下一个monthGroup获取最新邮件
+                                            if (this.localEmailList[groupIndex]) {
+                                                this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                                            } else {
+                                                this.currentEmailDetail = {};
+                                            }
+                                        } else if (emails[index]) {
+                                            this.currentEmailDetail = emails[index];
+                                        } else if (emails[index - 1]) {
+                                            this.currentEmailDetail = emails[index - 1];
                                         } else {
                                             this.currentEmailDetail = {};
                                         }
-                                    } else if (emails[index]) {
-                                        this.currentEmailDetail = emails[index];
-                                    } else if (emails[index - 1]) {
-                                        this.currentEmailDetail = emails[index - 1];
-                                    } else {
-                                        this.currentEmailDetail = {};
-                                    }
 
-                                    this.activeEmailId = this.currentEmailDetail.id || null;
-                                    found = true;
-                                    break;
+                                        this.activeEmailId = this.currentEmailDetail.id || null;
+                                        found = true;
+                                        break;
+                                    }
                                 }
+                                if (found) break;
                             }
-                            if (found) break;
                         }
+                        else if (this.moveDeleteReport === 2) {
+                            // 返回列表
+                            this.$emit('showLabel', true)
+                        }
+
 
                         this.isDropdownEmailShown = false;
                     } else {
