@@ -314,9 +314,9 @@
                 <div class="mm-split-pane mm-split-pane__right" :style="`left:${showHeader ? '70.8455%' : '35.2041%;'}`">
                     <template v-if="!showHeader">
                         <!-- 快捷邮件 -->
-                        <FastWrite :info="fastInfo" :total="total" :labels="labels"
-                            @showLabel="(bool) => onShowLabel(bool, 'write')" @viewNewEmail="viewNewEmail"
-                            @reload="getList" />
+                        <FastWrite :info="fastInfo" :total.sync="total" :labels="labels" :emailData="list"
+                            @showLabel="(bool) => onShowLabel(bool, 'write')" @viewNewEmail="viewNewEmail" @reload="getList"
+                            @updateTotal="value => $emit('update:total', value)" />
                         <!-- 抽屉 -->
                         <div v-if="Boolean(emailReadingModeFlag)" class="mail-side-card slide-fade"
                             :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">

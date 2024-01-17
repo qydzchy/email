@@ -607,7 +607,9 @@ export default {
                         this.$message.success('修改成功')
                     }
                 }
-            } catch { }
+            } catch (e) {
+                console.error(e.message);
+            }
         },
         onSave() {
             const data = {

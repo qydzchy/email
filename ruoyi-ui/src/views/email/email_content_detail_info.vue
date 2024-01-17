@@ -178,13 +178,11 @@
         :emailAttachmentList="this.currentEmailDetail.emailAttachmentList"
         v-if="currentEmailDetail.emailAttachmentList && currentEmailDetail.emailAttachmentList.length > 0">
       </email_content_detail_attachment>
-
-      <!---->
       <div class="mail-content-body mail-detail--content">
-        <!---->
+
         <iframe :srcdoc="translateContent || currentEmailDetail.content" data-savepage-sameorigin=""
           id="mail-content-iframe-1690875340592" style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
-        <!---->
+
       </div>
     </div>
   </div>
@@ -272,5 +270,9 @@ export default {
     background-color: transparent !important;
     border: unset !important;
   }
+}
+
+.mail-content-body {
+  max-height: 60vh;
 }
 </style>
