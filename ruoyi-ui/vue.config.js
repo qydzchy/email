@@ -4,7 +4,6 @@ const path = require('path')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
-//const baseUrl = 'http://42.194.167.180:8080'
 const baseUrl = 'http://localhost:8080'
 
 const CompressionPlugin = require('compression-webpack-plugin')
