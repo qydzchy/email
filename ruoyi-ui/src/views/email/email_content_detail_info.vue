@@ -35,7 +35,8 @@
             </span>
             <span style="margin: 0px 4px;">
               <span>
-                <span style="color: #2a2a2a;">{{ currentEmailDetail.fromName }} </span>&lt;{{ currentEmailDetail.fromer }}&gt;
+                <span style="color: #2a2a2a;">{{ currentEmailDetail.fromName }} </span>&lt;{{ currentEmailDetail.fromer
+                }}&gt;
               </span> 发给
             </span>
           </div>
@@ -50,8 +51,8 @@
                     <!---->
                   </span>
                   <span style="color: rgb(42, 42, 42);">{{ currentEmailDetail.receiverName }}</span>
-                  <span
-                    style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{ currentEmailDetail.receiverEmail }}&gt;</span>
+                  <span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{ currentEmailDetail.receiverEmail
+                  }}&gt;</span>
                 </div>
               </li>
             </ul>
@@ -78,8 +79,8 @@
                   <!---->
                 </span>
                 <span>
-                  <span
-                    style="color: #2a2a2a;">{{ currentEmailDetail.fromName }}</span>&lt;{{ currentEmailDetail.fromer }}&gt;
+                  <span style="color: #2a2a2a;">{{ currentEmailDetail.fromName }}</span>&lt;{{ currentEmailDetail.fromer
+                  }}&gt;
                 </span>
               </span>
             </div>
@@ -96,8 +97,8 @@
                         <!---->
                       </span>
                       <span style="color: rgb(42, 42, 42);">{{ currentEmailDetail.receiverName }}</span>
-                      <span
-                        style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{ currentEmailDetail.receiverEmail }}&gt;;</span>
+                      <span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{ currentEmailDetail.receiverEmail
+                      }}&gt;;</span>
                     </div>
                   </li>
                 </ul>
@@ -117,8 +118,8 @@
                         <!---->
                       </span>
                       <span style="color: rgb(42, 42, 42);">{{ currentEmailDetail.ccName }}</span>
-                      <span
-                        style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{ currentEmailDetail.ccEmail }}&gt;;</span>
+                      <span style="color: rgb(144, 144, 144); margin-right: 8px;">&lt;{{ currentEmailDetail.ccEmail
+                      }}&gt;;</span>
                     </div>
                   </li>
                 </ul>
@@ -155,6 +156,22 @@
             <!---->
           </button>
         </div>
+        <!-- 翻译 -->
+        <div class="mail-detail-translate my-6">
+          <div class="translate-content">
+            <el-select v-model="sourceLanguage" style="width:100px" size="small">
+              <el-option v-for="language in languageOption" :key="language.value" :label="language.label"
+                :value="language.value"></el-option>
+            </el-select>
+            <span style="color: rgb(144, 144, 144); margin: 0px 12px;">&gt;</span>
+            <el-select v-model="targetLanguage" style="width:100px" size="small">
+              <el-option v-for="language in languageOption" :key="language.value" :label="language.label"
+                :value="language.value"></el-option>
+            </el-select>
+          </div>
+          <button type="button" class="mm-button mm-button__text mm__theme mm__theme-size__small translate-btn"
+            @click="onTranslate" v-loading="translateLoading">{{ !translateContent ? '翻译邮件' : '显示原文' }}</button>
+        </div>
       </div>
 
       <email_content_detail_attachment :emailId="currentEmailDetail.id" :emailTitle="currentEmailDetail.title"
@@ -165,20 +182,39 @@
       <!---->
       <div class="mail-content-body mail-detail--content">
         <!---->
-        <iframe :srcdoc="currentEmailDetail.content" data-savepage-sameorigin="" id="mail-content-iframe-1690875340592"
-          style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
+        <iframe :srcdoc="translateContent || currentEmailDetail.content" data-savepage-sameorigin=""
+          id="mail-content-iframe-1690875340592" style="width: 661px; height: 640px;" data-savepage-key="0-0"></iframe>
         <!---->
       </div>
     </div>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import emailContentDetailAttachmentLayout from './email_content_detail_attachment.vue';
 import { deleteEmailLabel } from "@/api/email/email";
 export default {
   data() {
     return {
       showDetailInfo: false,
+      sourceLanguage: 'zh',
+      targetLanguage: 'en',
+      languageOption: [
+        { label: '英文', value: 'en' },
+        { label: '中文', value: 'zh' },
+        { label: '俄语', value: 'ru' },
+        { label: '西班牙语', value: 'es' },
+        { label: '葡萄牙语', value: 'pt' },
+        { label: '法语', value: 'fr' },
+        { label: '日语', value: 'jp' },
+        { label: '土耳其语', value: 'tr' },
+        { label: '阿拉伯语', value: 'ar' },
+        { label: '泰语', value: 'th' },
+        { label: '越南语', value: 'vi' },
+        { label: '印尼语', value: 'id' },
+      ],
+      translateContent: '',
+      translateLoading: false
     };
   },
 
@@ -191,6 +227,11 @@ export default {
       type: Object,
       default: () => { }
     },
+  },
+  computed: {
+    ...mapState({
+      translate: state => state.otherSetting.otherSetting?.emailTranslationFunctionFlag
+    })
   },
 
   methods: {
@@ -212,8 +253,24 @@ export default {
           this.$message.error(res.message);
         }
       });
+    },
+    onTranslate() {
+      if (translateContent) {
+        this.translateContent = ''
+        return
+      }
     }
   },
 }
 
 </script>
+<style lang="scss" scoped>
+::v-deep .mail-detail-translate {
+
+  .el-input,
+  input {
+    background-color: transparent !important;
+    border: unset !important;
+  }
+}
+</style>

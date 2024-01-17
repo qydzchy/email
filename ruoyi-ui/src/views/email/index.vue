@@ -1174,6 +1174,7 @@ export default {
     this.refreshLabelList();
     this.refreshMenuCount();
     this.$store.dispatch('emailSetting/GetUsuallyInfo')
+    this.$store.dispatch('otherSetting/GetOtherInfo')
 
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';

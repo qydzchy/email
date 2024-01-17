@@ -44,7 +44,7 @@ import javax.annotation.Resource;
 
 /**
  * 客户详情Service业务层处理
- * 
+ *
  * @author tangJM.
  * @date 2023-11-02
  */
@@ -1576,7 +1576,7 @@ public class CustomerServiceImpl implements ICustomerService {
                 // 如果该客户在私海里面没有跟进记录，则移入公海
                 if (userIdSet == null || userIdSet.isEmpty()) {
                     isMovePublicleads = true;
-                // 如果存在的跟进人存在不在白名单里面的，则进行移入公海规则判断
+                    // 如果存在的跟进人存在不在白名单里面的，则进行移入公海规则判断
                 } else if (!whiteListUserIdSet.containsAll(userIdSet)) {
                     // 计算两个日期之间的天数差距
                     long diffInMillies = Math.abs(lastContactedAt.getTime() - currentDate.getTime());
@@ -1837,7 +1837,7 @@ public class CustomerServiceImpl implements ICustomerService {
         String phonePrefix = null;
         String phone = null;
         String phoneStr = map.get("phone") != null ? String.valueOf(map.get("phone")) : null;
-        if (StringUtils.isBlank(phoneStr)) {
+        if (StringUtils.isNotBlank(phoneStr)) {
             String[] split = phoneStr.split("-");
             if (split.length == 2) {
                 phonePrefix = split[0];
@@ -1861,17 +1861,19 @@ public class CustomerServiceImpl implements ICustomerService {
             String linkedIn = contactMap.get("linkedIn") != null ? String.valueOf(contactMap.get("linkedIn")) : null;
 
             JSONArray contactPhoneJsonArr = new JSONArray();
-            String[] contactPhoneArr = contactPhone.split(";");
-            for (String contactPhoneStr : contactPhoneArr) {
-                String[] arr = contactPhoneStr.split("-");
-                JSONObject jsonObj = new JSONObject();
-                if (arr.length == 2) {
-                    jsonObj.put("phone_prefix", arr[0]);
-                    jsonObj.put("phone", arr[1]);
-                } else {
-                    jsonObj.put("phone", arr[0]);
+            if (StringUtils.isNotBlank(contactPhone)) {
+                String[] contactPhoneArr = contactPhone.split(";");
+                for (String contactPhoneStr : contactPhoneArr) {
+                    String[] arr = contactPhoneStr.split("-");
+                    JSONObject jsonObj = new JSONObject();
+                    if (arr.length == 2) {
+                        jsonObj.put("phone_prefix", arr[0]);
+                        jsonObj.put("phone", arr[1]);
+                    } else {
+                        jsonObj.put("phone", arr[0]);
+                    }
+                    contactPhoneJsonArr.add(jsonObj);
                 }
-                contactPhoneJsonArr.add(jsonObj);
             }
 
             JSONArray socialPlatformJsonArr = new JSONArray();
@@ -1899,7 +1901,7 @@ public class CustomerServiceImpl implements ICustomerService {
             String position = contactMap.get("position") != null ? String.valueOf(contactMap.get("position")) : null;
             // 性别 1.不设置 2.男 3.女
             Integer sex = 1;
-            if (contactMap.containsKey("sex") && StringUtils.isNotBlank(contactMap.get("sex").toString())) {
+            if (contactMap.containsKey("sex") && contactMap.get("sex") != null) {
                 String sexStr = String.valueOf(contactMap.get("sex"));
                 if (sexStr.equals("男")) {
                     sex = 2;
