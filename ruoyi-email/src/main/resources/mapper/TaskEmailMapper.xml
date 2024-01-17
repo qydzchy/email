@@ -79,7 +79,7 @@
 
     <select id="selectTaskEmailById" parameterType="Long" resultMap="TaskEmailResult">
         <include refid="selectTaskEmailVo"/>
-        where id = #{id}
+        where id = #{id} and del_flag = '0'
     </select>
 
     <select id="count" resultType="java.lang.Integer">
@@ -96,14 +96,14 @@
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_attachment mtea
-            WHERE mte.id = mtea.email_id
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
         <if test="labelId != null">
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_label mtel
-            WHERE mte.id = mtel.email_id AND mtel.label_id = #{labelId}
+            WHERE mte.id = mtel.email_id AND mtel.label_id = #{labelId} AND mtel.del_flag = '0'
             )
         </if>
         <if test="type != null">and type = #{type}</if>
@@ -153,7 +153,7 @@
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_attachment mtea
-            WHERE mte.id = mtea.email_id
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
         <if test="labelId != null">
@@ -286,7 +286,7 @@
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_attachment mtea
-            WHERE mte.id = mtea.email_id
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
         <if test="fixedFlag != null and fixedFlag == true">
@@ -392,7 +392,7 @@
             AND EXISTS (
             SELECT 1
             FROM mailbox_task_email_attachment mtea
-            WHERE mte.id = mtea.email_id
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
         <if test="fixedFlag != null and fixedFlag == true">
@@ -498,7 +498,7 @@
         </if>
     </select>
 
-    <select id="dealingEmailList" resultType="com.ruoyi.email.domain.bo.DealingEmailListBO">
+    <select id="customerDealingEmailList" resultType="com.ruoyi.email.domain.bo.DealingEmailListBO">
         SELECT mte.id, mte.type, mte.send_date as sendDate, mte.title, mtec.content, ml.id as labelId, ml.name as labelName, ml.color as labelColor, ml.type as labelType
         FROM mailbox_task mt
         LEFT JOIN mailbox_task_email mte ON mt.id = mte.task_id
@@ -519,6 +519,13 @@
             <foreach item="email" collection="contactEmails" open="(" separator="," close=")">
                 #{email}
             </foreach>
+            )
+        </if>
+        <if test="attachmentFlag != null and attachmentFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_attachment mtea
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
         order by mte.send_date desc
@@ -549,6 +556,38 @@
             AND folder_id = #{folderId}
         </if>
         AND del_flag = '0'
+    </select>
+
+    <select id="countEmailDealingEmail" resultType="java.lang.Integer">
+        select count(1) from mailbox_task_email mte
+        where (mte.task_id = #{taskId} or mte.fromer = #{fromer}) and mte.create_id = #{createId} and mte.del_flag = '0'
+        <if test="attachmentFlag != null and attachmentFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_attachment mtea
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
+            )
+        </if>
+    </select>
+
+    <select id="selectEmailDealingEmail" resultType="com.ruoyi.email.domain.vo.DealingEmailListVO">
+        SELECT mte.id, mte.type, mte.send_date as sendDate, mte.title, mtec.content
+        FROM mailbox_task mt
+        LEFT JOIN mailbox_task_email mte ON mt.id = mte.task_id
+        LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        WHERE mt.del_flag = '0'
+        AND mte.del_flag = '0'
+        AND mt.create_id = #{createId}
+        AND (mt.task_id = #{taskid} OR mt.fromer = #{fromer})
+        <if test="attachmentFlag != null and attachmentFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM mailbox_task_email_attachment mtea
+            WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
+            )
+        </if>
+        ORDER BY mte.send_date DESC
+        LIMIT #{offset}, #{limit}
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">

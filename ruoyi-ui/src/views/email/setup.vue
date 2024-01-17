@@ -27,15 +27,15 @@ export default {
   watch: {
     "$route.query": {
       handler(newVal) {
-        if(!newVal?.tab){
+        if (!newVal?.tab) {
           return
         }
         const mapTab = {
           'template': '模板',
           'usually': '常规',
         }
-        this.currentTab = mapTab[newVal.tab]
-        this.changeTab(this.currentTab)
+        const curTab = mapTab[newVal.tab]
+        this.changeTab(curTab)
       },
       deep: true,
       immediate: true
@@ -50,6 +50,7 @@ export default {
 
     },
     changeTab(value) {
+      this.currentTab = value
       this.$nextTick(() => {
         this.$refs.headerTabRef.emitChange(value)
       })

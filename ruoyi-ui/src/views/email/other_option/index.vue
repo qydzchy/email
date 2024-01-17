@@ -223,6 +223,7 @@ export default {
 	data() {
 		return {
 			optionForm: {
+				id: '',
 				min: 30,
 				max: 1800,
 				delayedMailDelivery: 0,
@@ -246,6 +247,7 @@ export default {
 					const data = res.data
 					const sendingInterval = data?.sendingInterval?.split('~')
 					this.optionForm = {
+						id: data.id,
 						min: sendingInterval?.[0] || 30,
 						max: sendingInterval?.[1] || 1800,
 						delayedMailDelivery: data.delayedMailDelivery,
@@ -273,6 +275,7 @@ export default {
 		},
 		onSave() {
 			const {
+				id,
 				min,
 				max,
 				delayedMailDelivery,
@@ -284,6 +287,7 @@ export default {
 				abnormalMailboxDetection
 			} = this.optionForm
 			const data = {
+				id,
 				sendingInterval: `${min}~${max}`,
 				delayedMailDelivery,
 				localRealTimeTime,
@@ -296,7 +300,7 @@ export default {
 			this.editOtherConfig(data)
 		},
 		onCancel() {
-			this.$emit('changeTab', '常规');
+			this.$emit('onChangeTab', '常规');
 		},
 	},
 };

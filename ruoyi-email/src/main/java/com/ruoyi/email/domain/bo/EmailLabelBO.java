@@ -12,4 +12,6 @@ public class EmailLabelBO {
     private String name;
 
     private String color;
+
+    private Integer type;
 }

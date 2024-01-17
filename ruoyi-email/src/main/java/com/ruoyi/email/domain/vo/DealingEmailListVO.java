@@ -2,6 +2,7 @@ package com.ruoyi.email.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruoyi.email.domain.bo.EmailAttachmentBO;
+import com.ruoyi.email.domain.bo.EmailLabelBO;
 import lombok.Data;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,7 +39,7 @@ public class DealingEmailListVO {
      * 标签
      * @return
      */
-    private List<LabelListVO> labelList;
+    private List<EmailLabelBO> labelList;
 
     /**
      * 附件

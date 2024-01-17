@@ -157,7 +157,7 @@
           </button>
         </div>
         <!-- 翻译 -->
-        <div class="mail-detail-translate my-6">
+        <div class="mail-detail-translate my-6" v-if="translate">
           <div class="translate-content">
             <el-select v-model="sourceLanguage" style="width:100px" size="small">
               <el-option v-for="language in languageOption" :key="language.value" :label="language.label"
