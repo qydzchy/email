@@ -14,7 +14,9 @@ import com.ruoyi.email.domain.vo.DealingEmailListVO;
 import com.ruoyi.email.domain.vo.EmailListVO;
 import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
+import com.ruoyi.system.service.ISysConfigService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
@@ -45,9 +47,10 @@ public class EmailController extends BaseController {
 
     @Resource
     private ITaskService taskService;
-
     @Resource
     private ITaskEmailService taskEmailService;
+    @Resource
+    private ISysConfigService configService;
 
     /**
      * 获取邮件列表-（首页）
@@ -376,10 +379,6 @@ public class EmailController extends BaseController {
                                        @NotNull(message = "页数不能为空") Integer pageNum,
                                        @NotNull(message = "页大小不能为空") Integer pageSize)
     {
-        /*if (id == null) {
-            throw new ServiceException("ID不能为空");
-        }*/
-
         Pair<Integer, List<DealingEmailListVO>> resultPair = taskEmailService.emailDealingEmailList(id, attachmentFlag, pageNum, pageSize);
 
         long total = resultPair.getFirst();
@@ -412,6 +411,13 @@ public class EmailController extends BaseController {
             throw new ServiceException("需要翻译的内容不能为空");
         }
 
-        return success(taskEmailService.translate(sourceLanguage, targetLanguage, sourceText));
+        String accessKeyId = configService.selectConfigByKey("translate.access.key.id");
+        String accessKeySecret = configService.selectConfigByKey("translate.access.key.secret");
+
+        if (StringUtils.isNotBlank(accessKeyId) && StringUtils.isNotBlank(accessKeySecret)) {
+            sourceText = taskEmailService.translate(sourceLanguage, targetLanguage, sourceText, accessKeyId, accessKeySecret);
+        }
+
+        return success(sourceText);
     }
 }
