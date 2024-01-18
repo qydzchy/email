@@ -75,16 +75,7 @@
                                     </span>
                                   </span>
                                 </span>
-                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
-                                  <span class="mm-tooltip-trigger">
-                                    <span>
-                                      <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M2 6a3 3 0 013-3h4.379a3 3 0 012.108.866l1.824 1.8H19a3 3 0 013 3V18a3 3 0 01-3 3H5a3 3 0 01-3-3V6zm2 0a1 1 0 011-1h4.379a1 1 0 01.703.289l1.823 1.8a2 2 0 001.406.578H19a1 1 0 011 1V10H4V6zm16 6v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6h16z"></path>
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </span>
+                                <PopoverSelectFolder v-show="!isIconsToggled" @move-folder-success="handleMoveFolderSuccess" :ids="selectEmailIds" />
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="toggleDropdown">
                                   <span class="mm-tooltip-trigger">
                                     <span>
@@ -552,6 +543,7 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
+
 import {
   list,
   fixedEmail,
@@ -563,6 +555,7 @@ import {
   customerEmailList
 } from "@/api/customer/email";
 
+import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 export default {
   data() {
     return {
@@ -594,7 +587,11 @@ export default {
       fixedFlag: false,
       attachmentFlag: false,
       emailSlideStatus: {},
+      selectEmailIds: [],
     }
+  },
+  components: {
+    PopoverSelectFolder
   },
   props: {
     emailList: Array,
@@ -725,6 +722,13 @@ export default {
       this.fetchEmailList(this.taskId, this.type);
     },
 
+    /**
+     * 处理消息移动成功的回调
+     */
+    handleMoveFolderSuccess() {
+      this.fetchEmailData(this.currentEmailType);
+    },
+
     handlePageInputChange(event) {
       let inputValue = parseInt(event.target.value, 10);
 
@@ -739,9 +743,9 @@ export default {
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.fetchEmailList(null, 1, null, null, null, null, null, null);
+        this.fetchEmailList(null, 1, null, null, null, null, null, null, -1);
       } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
-        this.fetchEmailList(null, 2, null, null, null, null, null, null);
+        this.fetchEmailList(null, 2, null, null, null, null, null, null, -1);
       } else if (selectedEmailType === 'PENDING_MAIL') {
         this.fetchEmailList(null, null, null, true, null, null, null, null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
@@ -756,10 +760,10 @@ export default {
         this.fetchEmailList(null, null, null, null, null, null, null, true);
       } else if (/^PULL_(.+)$/.test(selectedEmailType)) {
         const taskId = RegExp.$1;
-        this.fetchEmailList(taskId, 1, null, null, null, null, null, null);
+        this.fetchEmailList(taskId, 1, null, null, null, null, null, null, -1);
       } else if (/^SEND_(.+)$/.test(selectedEmailType)) {
         const taskId = RegExp.$1;
-        this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
+        this.fetchEmailList(taskId, 2, null, null, null, null, null, null, -1);
       } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
         const folderId = RegExp.$1;
         this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
@@ -807,25 +811,6 @@ export default {
       this.isIconsToggled = !this.isIconsToggled;
     },
 
-    // 存在选中的邮件
-    existSelectedEmail() {
-      let hasSelected = false; // 创建一个变量来跟踪是否存在选中的邮件
-
-      this.localEmailList.forEach(dateGroup => {
-        for (const date in dateGroup) {
-          if (dateGroup.hasOwnProperty(date)) {
-            dateGroup[date].forEach(email => {
-              if (email.selected) {
-                hasSelected = true;
-              }
-            });
-          }
-        }
-      });
-
-      return hasSelected; // 返回这个变量
-    },
-
     setSelected(newValue) {
       this.localEmailList.forEach(dateGroup => {
         for (const date in dateGroup) {
@@ -850,15 +835,13 @@ export default {
 
     readOrSpanEmails(index) {
       this.selectedItem = index;
-
-      const selectedEmails = this.getSelectedEmailIds();
-      if (selectedEmails.length) {
+      if (this.selectEmailIds.length) {
         if (this.menuItems[index] === '标为已读') {
-          this.readEmails(selectedEmails);
+          this.readEmails(this.selectEmailIds);
         } else if (this.menuItems[index] === '标为未读') {
-          this.unReadEmails(selectedEmails);
+          this.unReadEmails(this.selectEmailIds);
         } else if (this.menuItems[index] === '标为垃圾邮件') {
-          this.spamEmails(selectedEmails);
+          this.spamEmails(this.selectEmailIds);
         }
       }
     },
@@ -885,7 +868,7 @@ export default {
           }
         }
       });
-      return selectedIds;
+      this.selectEmailIds = selectedIds;
     },
 
     // 标记为已读文件
@@ -966,10 +949,9 @@ export default {
 
     // 删除邮件
     async deleteEmails() {
-      const emailIds = this.getSelectedEmailIds();
-      if (emailIds.length) {
+      if (this.selectEmailIds.length) {
         const data = {
-          "ids": emailIds
+          "ids": this.selectEmailIds
         };
         try {
           const response = await deleteEmail(data);
@@ -991,8 +973,8 @@ export default {
     },
 
     toggleEmailSelection() {
-      let existSelected = this.existSelectedEmail();
-      if (existSelected) {
+      this.getSelectedEmailIds();
+      if (this.selectEmailIds.length) {
         this.selectAll = true;
         this.isIconsToggled = false;
       } else {

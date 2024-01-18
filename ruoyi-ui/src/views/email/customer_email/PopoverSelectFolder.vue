@@ -77,7 +77,8 @@ export default {
                 const res = await emailMoveFolder(data)
                 if (res.code === 200) {
                     this.$message.success('移动成功')
-                    this.closePopover()
+                    this.closePopover();
+                    this.$emit('move-folder-success', '移动成功');
                 }
             } catch (e) {
                 console.error(e.message);

@@ -202,6 +202,14 @@ public class EmailController extends BaseController {
     @PostMapping("/move/email/to/folder")
     public AjaxResult moveEmailToFolder(@RequestBody @Valid EmailFolderMoveDTO emailFolderMoveDTO)
     {
+        if (emailFolderMoveDTO.getFolderId() == null) {
+            throw new ServiceException("文件夹id不能为空");
+        }
+
+        if (emailFolderMoveDTO.getIds() == null || emailFolderMoveDTO.getIds().isEmpty()) {
+            throw new ServiceException("请选择邮件");
+        }
+
         return toAjax(taskEmailService.moveEmailToFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
     }
 

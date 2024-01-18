@@ -331,17 +331,7 @@
 																							</span>
                                               <!---->
 																						</span>
-																						<span class="mm-tooltip mail-toolbar-btn-item">
-																							<span class="mm-tooltip-trigger">
-																								<span>
-																									<span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
-																											<path fill-rule="evenodd" clip-rule="evenodd" d="M2 6a3 3 0 013-3h4.379a3 3 0 012.108.866l1.824 1.8H19a3 3 0 013 3V18a3 3 0 01-3 3H5a3 3 0 01-3-3V6zm2 0a1 1 0 011-1h4.379a1 1 0 01.703.289l1.823 1.8a2 2 0 001.406.578H19a1 1 0 011 1V10H4V6zm16 6v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6h16z"></path>
-																										</svg>
-																									</span>
-																								</span>
-																							</span>
-                                              <!---->
-																						</span>
+                                            <PopoverSelectFolder @move-folder-success="handleMoveFolderSuccess" :ids="[activeEmailId]" />
 																						<span class="mm-tooltip mail-toolbar-btn-item" @click="toggleDropdown">
 																							<span class="mm-tooltip-trigger">
 																								<span>
@@ -994,6 +984,7 @@ import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";
 import emailHeaderLabelLayout from './email_content_label.vue';
+import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 import {listLabel} from "@/api/email/label";
 
 export default {
@@ -1032,7 +1023,7 @@ export default {
     }
   },
   components: {
-    PendingTimePopover, CustomTimePopover, FolderComponent, emailHeaderLabelLayout,
+    PendingTimePopover, CustomTimePopover, FolderComponent, emailHeaderLabelLayout, PopoverSelectFolder,
     'email_header': emailHeaderLayout,
     'write_email': writeEmailLayout,
     'email_content_detail_info': emailContentDetailInfoLayout
@@ -1127,9 +1118,9 @@ export default {
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.fetchEmailList(null, 1, null, null, null, null, null, null);
+        this.fetchEmailList(null, 1, null, null, null, null, null, null, -1);
       } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
-        this.fetchEmailList(null, 2, null, null, null, null, null, null);
+        this.fetchEmailList(null, 2, null, null, null, null, null, null, -1);
       } else if (selectedEmailType === 'PENDING_MAIL') {
         this.fetchEmailList(null, null, null, true, null, null, null, null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
@@ -1144,10 +1135,10 @@ export default {
         this.fetchEmailList(null, null, null, null, null, null, null, true);
       } else if (/^PULL_(.+)$/.test(selectedEmailType)) {
         const taskId = RegExp.$1;
-        this.fetchEmailList(taskId, 1, null, null, null, null, null, null);
+        this.fetchEmailList(taskId, 1, null, null, null, null, null, null, -1);
       } else if (/^SEND_(.+)$/.test(selectedEmailType)) {
         const taskId = RegExp.$1;
-        this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
+        this.fetchEmailList(taskId, 2, null, null, null, null, null, null, -1);
       } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
         const folderId = RegExp.$1;
         this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
@@ -1186,6 +1177,14 @@ export default {
       }
 
       this.fetchEmailList(this.taskId);
+    },
+
+    /**
+     * 处理消息移动成功的回调
+     */
+    handleMoveFolderSuccess() {
+      this.getNextEmail();
+      this.fetchEmailData(this.currentEmailType);
     },
 
     handlePageInputChange(event) {
@@ -1299,43 +1298,7 @@ export default {
         try {
           const response = await deleteEmail(data);
           if (response.code === 200) {
-            let found = false;
-            for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
-              const monthGroup = this.localEmailList[groupIndex];
-              for (const month in monthGroup) {
-                const emails = monthGroup[month];
-                const index = emails.findIndex(email => email.id === this.activeEmailId);
-                if (index > -1) {
-                  emails.splice(index, 1);
-                  this.total -= 1;
-
-                  if (emails.length === 0) {
-                    // 如果该monthGroup没有邮件了，从localEmailList中移除
-                    this.localEmailList.splice(groupIndex, 1);
-
-                    // 尝试从下一个monthGroup获取最新邮件
-                    if (this.localEmailList[groupIndex]) {
-                      this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
-                    } else {
-                      this.currentEmailDetail = {};
-                    }
-                  } else if (emails[index]) {
-                    this.currentEmailDetail = emails[index];
-                  } else if (emails[index - 1]) {
-                    this.currentEmailDetail = emails[index - 1];
-                  } else {
-                    this.currentEmailDetail = {};
-                  }
-
-                  this.activeEmailId = this.currentEmailDetail.id || null;
-                  found = true;
-                  break;
-                }
-              }
-              if (found) break;
-            }
-
-            this.isDropdownEmailShown = false;
+            this.getNextEmail();
           } else {
             this.$message.error('删除失败');
           }
@@ -1376,7 +1339,7 @@ export default {
       }
     },
 
-    // 标记为已读文件
+    // 标记为已读邮件
     async readEmail(email) {
       const emailIds = [];
       emailIds.push(email.id);
@@ -1434,6 +1397,58 @@ export default {
         console.error('标记为未读出现错误:', error);
         throw error;
       }
+    },
+
+    /**
+     * 获取下一封邮件
+     */
+    async getNextEmail() {
+      let found = false;
+      for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+        const monthGroup = this.localEmailList[groupIndex];
+        for (const month in monthGroup) {
+
+          const emails = monthGroup[month];
+          const index = emails.findIndex(email => email.id === this.activeEmailId);
+          if (index > -1) {
+            emails.splice(index, 1);
+            this.total -= 1;
+
+            if (emails.length === 0) {
+              // 如果该monthGroup没有邮件了，从localEmailList中移除
+              this.localEmailList.splice(groupIndex, 1);
+
+              // 尝试从下一个monthGroup获取最新邮件
+              if (this.localEmailList[groupIndex]) {
+                this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+              } else {
+                this.currentEmailDetail = {};
+              }
+
+            } else if (emails[index]) {
+              this.currentEmailDetail = emails[index];
+            } else if (emails[index - 1]) {
+              this.currentEmailDetail = emails[index - 1];
+            } else {
+              this.currentEmailDetail = {};
+            }
+
+            if (Object.keys(this.currentEmailDetail).length !== 0) {
+              // 将状态改成已读
+              this.readEmail(this.currentEmailDetail);
+              let id = this.currentEmailDetail.id;
+              this.activeEmailId = id;
+              this.currentEmailDetail = this.getEmailInfo(id);
+            }
+
+            found = true;
+            break;
+          }
+        }
+        if (found) break;
+      }
+
+      this.isDropdownEmailShown = false;
     },
 
     // 标识为垃圾邮件
