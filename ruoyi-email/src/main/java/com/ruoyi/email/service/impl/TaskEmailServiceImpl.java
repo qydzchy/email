@@ -962,10 +962,10 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public String translate(String sourceLanguage, String targetLanguage, String sourceText) {
+    public String translate(String sourceLanguage, String targetLanguage, String sourceText, String accessKeyId, String accessKeySecret) {
         try {
             // zh（中文） en（英文） ru（俄语） pt（葡萄牙语）es（西班牙语）fr（法语）ja（日语）tr（土耳其语）ar（阿拉伯语）th（泰语）vi（越南语）id（印尼语）
-            Client client = TranslateUtil.getClient();
+            Client client = TranslateUtil.getClient(accessKeyId, accessKeySecret);
             com.aliyun.teaopenapi.models.Params params = TranslateUtil.createApiInfo();
             java.util.Map<String, Object> body = new java.util.HashMap<>();
             body.put("FormatType", "text");
