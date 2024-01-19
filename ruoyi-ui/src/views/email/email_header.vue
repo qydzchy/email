@@ -215,29 +215,28 @@
 																										<div class="mm-tabs-active-bar__top mm-tabs-active-bar" style="width: 103px; transform: translateX(0px);"></div>
 																										<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">
 																											<span class="mm-tooltip">
-																												<span class="mm-tooltip-trigger">全部<span class="mail-tab-unread">({{total}})</span>
+																												<span class="mm-tooltip-trigger">全部<span class="mail-tab-unread" @click="switchObjectType('all')"></span>
 																												</span>
                                                         <!---->
 																											</span>
                                                       <!---->
 																										</div>
-<!--																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
-                                                      &lt;!&ndash;&ndash;&gt;
+																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
 																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">
-																											<span class="mm-tooltip">
-																												<span class="mm-tooltip-trigger">其他<span class="mail-tab-unread">(982)</span>
-																												</span>
-                                                        &lt;!&ndash;&ndash;&gt;
-																											</span>
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</div>-->
+                                                    <!--																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>
+                                                                                                        <div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>
+                                                                                                        <div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">
+                                                                                                          <span class="mm-tooltip">
+                                                                                                            <span class="mm-tooltip-trigger">其他<span class="mail-tab-unread">(982)</span>
+                                                                                                            </span>
+                                                                                                            &lt;!&ndash;&ndash;&gt;
+                                                                                                          </span>
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>-->
 																									</div>
 																								</div>
 																							</div>
@@ -588,6 +587,7 @@ export default {
       attachmentFlag: false,
       emailSlideStatus: {},
       selectEmailIds: [],
+      objectType: null,
     }
   },
   components: {
@@ -647,6 +647,7 @@ export default {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId, labelId) {
       this.taskId = taskId;
       this.type = type;
+      let customerFlag = this.objectType === 'customer' ? true : false;
       const query = {
         taskId: this.taskId,
         // 邮件类型 1.收取 2.发送
@@ -661,6 +662,7 @@ export default {
         labelId: labelId,
         attachmentFlag: this.attachmentFlag,
         fixedFlag: this.fixedFlag,
+        customerFlag: customerFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -720,6 +722,14 @@ export default {
       }
 
       this.fetchEmailList(this.taskId, this.type);
+    },
+
+    /**
+     * 切换对象类型
+     */
+    switchObjectType(objectType) {
+      this.objectType = objectType;
+      this.fetchEmailData(this.currentEmailType);
     },
 
     /**
