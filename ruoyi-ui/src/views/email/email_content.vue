@@ -766,13 +766,13 @@
 																									</span>
 																									<div class="contact-info-user-info">
 																										<p class="" title="noreply">
-																											<span class="info-text ellipsis">noreply</span>
+																											<span class="info-text ellipsis">{{this.currentEmailDetail.fromer}}</span>
                                                       <!---->
 																										</p>
 																										<p title="noreply@k.xiaomanmail.com">
 																											<!---->
 																											<span>
-																												<a title="noreply@k.xiaomanmail.com" data-savepage-href="/pro/mail/edit?receiver=noreply@k.xiaomanmail.com" href="https://crm.xiaoman.cn/pro/mail/edit?receiver=noreply@k.xiaomanmail.com" class="c-link info-text ellipsis email-text" target="_blank">noreply@k.xiaomanmail.com</a>
+																												<a title="noreply@k.xiaomanmail.com" data-savepage-href="" class="c-link info-text ellipsis email-text" target="_blank">{{this.currentEmailDetail.fromer}}</a>
                                                         <!---->
 																											</span>
 																										</p>
@@ -867,28 +867,30 @@
 																											</div>
 																											<div class="list">
 																												<div class="total">
-																													<span>共44封邮件</span>
+																													<span>共{{dealingEmailTotal}}封邮件</span>
 																													<span class="okki-icon-wrap attachment-btn">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																															<path fill-rule="evenodd" clip-rule="evenodd" d="M4.493 11.392a6.25 6.25 0 108.959 8.718l6.8-6.988a1 1 0 10-1.434-1.395l-6.8 6.988a4.25 4.25 0 11-6.091-5.928l6.8-6.988 1.046-1.075a2.5 2.5 0 113.583 3.487l-5.928 6.092-.872.896a.75.75 0 11-1.075-1.046l5.056-5.196a1 1 0 10-1.433-1.395l-5.056 5.196a2.75 2.75 0 103.941 3.836l5.057-5.196.001-.002 1.742-1.79a4.5 4.5 0 10-6.45-6.277l-1.046 1.075-4.184 4.3-2.616 2.688z"></path>
 																														</svg>
 																													</span>
 																												</div>
 																												<ul class="contact-mail-list" cur-active-mail-id="" size="mini" module="mail" company-fields="[object Object]" is-owner="true" flow-link="[object Object]" contact-info="[object Object]" company-info="[object Object]" new-tips-count="0" identity-id="2339700037308" first-identity-id="2339700037308">
-																													<li class="contact-mail-item">
+																													<li v-for="email in dealingEmailDatas"
+                                                              :key="email.id"
+                                                              :class="{'contact-mail-item': true, 'contact-active': email.id === activeEmailId}"
+                                                              @click="toggleActive(email)"
+                                                          >
 																														<div class="title-wrapper">
-																															<h1 class="ellipsis" title="小满账号异常登录提醒">小满账号异常登录提醒</h1>
-																															<i class="contact-icon m-icon icon-mail-receive" title="收件"></i>
+																															<h1 class="ellipsis">{{email.title}}</h1>
+																															<i v-if="email.type===1" class="contact-icon m-icon icon-mail-receive" title="收件"></i>
+                                                              <i v-if="email.type===2" class="contact-icon m-icon icon-mail-sent" title="发件"></i>
 																														</div>
 																														<div class="info-wrapper">
-																															<div class="summary ellipsis">Email Rox! 亲爱的小满用户 您好：
-																																您的小满账号 sales17@allxchips.com 有异常登录行为
-																																登录时间 登录IP 登录地址 操作系统 浏览器
-																																2023-08-01 15:</div>
+																															<div class="summary ellipsis">{{email.extractTextFromContent}}</div>
 																															<div class="icons">
 																																<!---->
                                                                 <!---->
 																															</div>
-																															<div class="time">15:17</div>
+																															<div class="time">{{email.sendDate}}</div>
 																														</div>
                                                             <!---->
 																													</li>
@@ -978,7 +980,7 @@ import writeEmailLayout from './write_email.vue';
 import emailHeaderLayout from "./email_header.vue";
 import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
-import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail} from "@/api/email/email";
+import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail, dealingEmailList} from "@/api/email/email";
 import {  getCustomerEmailInfo } from '@/api/email/customer'
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
@@ -1019,7 +1021,10 @@ export default {
         '导出邮件',
         '新建日程',
         '标为垃圾邮件'
-      ]
+      ],
+      dealingEmailDatas: null,
+      dealingEmailTotal: 0,
+      dealingAttachmentFlag: null,
     }
   },
   components: {
@@ -1070,6 +1075,7 @@ export default {
     this.getEmailInfo(this.activeEmailId)
     // this.currentEmailDetail = this.selectedEmail;
     this.refreshLabelList();
+    this.dealingEmailList();
   },
 
   watch: {
@@ -1166,6 +1172,22 @@ export default {
       list(query).then(response => {
         this.localEmailList = response.rows;
         this.total = response.total;
+      }).catch(error => {
+        console.error("Failed to fetch emails:", error);
+      });
+    },
+
+    // 往来邮件列表
+    dealingEmailList() {
+      const query = {
+        id: this.activeEmailId,
+        attachmentFlag: this.dealingAttachmentFlag,
+        pageNum: 1,
+        pageSize: 20
+      };
+      dealingEmailList(query).then(response => {
+        this.dealingEmailDatas = response.rows;
+        this.dealingEmailTotal = response.total;
       }).catch(error => {
         console.error("Failed to fetch emails:", error);
       });
@@ -1439,6 +1461,7 @@ export default {
               let id = this.currentEmailDetail.id;
               this.activeEmailId = id;
               this.currentEmailDetail = this.getEmailInfo(id);
+              this.dealingEmailList();
             }
 
             found = true;
