@@ -3,6 +3,7 @@ package com.ruoyi.email.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class TranslateUtil {
     }
 
     // 获取单例实例的方法
-    public static com.aliyun.teaopenapi.Client getClient() {
+    public static com.aliyun.teaopenapi.Client getClient(String accessKeyId, String accessKeySecret) {
         // 第一次检验，如果实例已经存在，直接返回
         if (client == null) {
             // 同步块，只有第一次才会进入
@@ -23,7 +24,7 @@ public class TranslateUtil {
                 // 第二次检验，防止多线程环境下的重复创建
                 if (client == null) {
                     try {
-                        client = TranslateUtil.createClient("LTAI5tBRVRKejS2QnuVHsRMa", "hPwRn1Z2Yc7aTvpM7aVANbD7HWBfP7");
+                        client = TranslateUtil.createClient(accessKeyId, accessKeySecret);
                     } catch (Exception e) {
                         log.error("获取翻译客户端对象失败");
                     }

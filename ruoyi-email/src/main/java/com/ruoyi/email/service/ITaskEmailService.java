@@ -326,5 +326,5 @@ public interface ITaskEmailService
      * @param sourceText
      * @return
      */
-    String translate(String sourceLanguage, String targetLanguage, String sourceText);
+    String translate(String sourceLanguage, String targetLanguage, String sourceText, String accessKeyId, String accessKeySecret);
 }

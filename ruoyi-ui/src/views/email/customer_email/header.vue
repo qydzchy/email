@@ -377,7 +377,7 @@ export default {
     },
     watch: {
         emailList: {
-            handler(newList) {
+              handler(newList) {
                 this.localEmailList = [...newList];
                 let checkedValid = []
                 let ids = []

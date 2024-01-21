@@ -154,3 +154,12 @@ export function emailMoveFolder(data) {
     data
   })
 }
+
+// 往来邮件列表
+export function dealingEmailList(query) {
+  return request({
+    url: '/email/info/dealing/email/list',
+    method: 'get',
+    params: query
+  })
+}

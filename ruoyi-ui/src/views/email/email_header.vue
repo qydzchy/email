@@ -75,16 +75,7 @@
                                     </span>
                                   </span>
                                 </span>
-                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
-                                  <span class="mm-tooltip-trigger">
-                                    <span>
-                                      <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M2 6a3 3 0 013-3h4.379a3 3 0 012.108.866l1.824 1.8H19a3 3 0 013 3V18a3 3 0 01-3 3H5a3 3 0 01-3-3V6zm2 0a1 1 0 011-1h4.379a1 1 0 01.703.289l1.823 1.8a2 2 0 001.406.578H19a1 1 0 011 1V10H4V6zm16 6v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6h16z"></path>
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </span>
+                                <PopoverSelectFolder v-show="!isIconsToggled" @move-folder-success="handleMoveFolderSuccess" :ids="selectEmailIds" />
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="toggleDropdown">
                                   <span class="mm-tooltip-trigger">
                                     <span>
@@ -224,29 +215,28 @@
 																										<div class="mm-tabs-active-bar__top mm-tabs-active-bar" style="width: 103px; transform: translateX(0px);"></div>
 																										<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">
 																											<span class="mm-tooltip">
-																												<span class="mm-tooltip-trigger">全部<span class="mail-tab-unread">({{total}})</span>
+																												<span class="mm-tooltip-trigger">全部<span class="mail-tab-unread" @click="switchObjectType('all')"></span>
 																												</span>
                                                         <!---->
 																											</span>
                                                       <!---->
 																										</div>
-<!--																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
-                                                      &lt;!&ndash;&ndash;&gt;
+																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
 																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">
-																											<span class="mm-tooltip">
-																												<span class="mm-tooltip-trigger">其他<span class="mail-tab-unread">(982)</span>
-																												</span>
-                                                        &lt;!&ndash;&ndash;&gt;
-																											</span>
-                                                      &lt;!&ndash;&ndash;&gt;
-																										</div>-->
+                                                    <!--																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>
+                                                                                                        <div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>
+                                                                                                        <div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">
+                                                                                                          <span class="mm-tooltip">
+                                                                                                            <span class="mm-tooltip-trigger">其他<span class="mail-tab-unread">(982)</span>
+                                                                                                            </span>
+                                                                                                            &lt;!&ndash;&ndash;&gt;
+                                                                                                          </span>
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>-->
 																									</div>
 																								</div>
 																							</div>
@@ -552,6 +542,7 @@
 </style>
 <script>
 import { EventBus } from "@/api/email/event-bus";
+
 import {
   list,
   fixedEmail,
@@ -563,6 +554,7 @@ import {
   customerEmailList
 } from "@/api/customer/email";
 
+import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 export default {
   data() {
     return {
@@ -594,7 +586,12 @@ export default {
       fixedFlag: false,
       attachmentFlag: false,
       emailSlideStatus: {},
+      selectEmailIds: [],
+      objectType: null,
     }
+  },
+  components: {
+    PopoverSelectFolder
   },
   props: {
     emailList: Array,
@@ -650,6 +647,7 @@ export default {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId, labelId) {
       this.taskId = taskId;
       this.type = type;
+      let customerFlag = this.objectType === 'customer' ? true : false;
       const query = {
         taskId: this.taskId,
         // 邮件类型 1.收取 2.发送
@@ -664,6 +662,7 @@ export default {
         labelId: labelId,
         attachmentFlag: this.attachmentFlag,
         fixedFlag: this.fixedFlag,
+        customerFlag: customerFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -725,6 +724,21 @@ export default {
       this.fetchEmailList(this.taskId, this.type);
     },
 
+    /**
+     * 切换对象类型
+     */
+    switchObjectType(objectType) {
+      this.objectType = objectType;
+      this.fetchEmailData(this.currentEmailType);
+    },
+
+    /**
+     * 处理消息移动成功的回调
+     */
+    handleMoveFolderSuccess() {
+      this.fetchEmailData(this.currentEmailType);
+    },
+
     handlePageInputChange(event) {
       let inputValue = parseInt(event.target.value, 10);
 
@@ -739,9 +753,9 @@ export default {
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
-        this.fetchEmailList(null, 1, null, null, null, null, null, null);
+        this.fetchEmailList(null, 1, null, null, null, null, null, null, -1);
       } else if (selectedEmailType === 'COMPLETE_SHIPMENT') {
-        this.fetchEmailList(null, 2, null, null, null, null, null, null);
+        this.fetchEmailList(null, 2, null, null, null, null, null, null, -1);
       } else if (selectedEmailType === 'PENDING_MAIL') {
         this.fetchEmailList(null, null, null, true, null, null, null, null);
       } else if (selectedEmailType === 'AN_UNREAD_MAIL') {
@@ -756,10 +770,10 @@ export default {
         this.fetchEmailList(null, null, null, null, null, null, null, true);
       } else if (/^PULL_(.+)$/.test(selectedEmailType)) {
         const taskId = RegExp.$1;
-        this.fetchEmailList(taskId, 1, null, null, null, null, null, null);
+        this.fetchEmailList(taskId, 1, null, null, null, null, null, null, -1);
       } else if (/^SEND_(.+)$/.test(selectedEmailType)) {
         const taskId = RegExp.$1;
-        this.fetchEmailList(taskId, 2, null, null, null, null, null, null);
+        this.fetchEmailList(taskId, 2, null, null, null, null, null, null, -1);
       } else if (/^FOLDER_(.+)$/.test(selectedEmailType)) {
         const folderId = RegExp.$1;
         this.fetchEmailList(null, null, null, null, null, null, null, null, folderId);
@@ -807,25 +821,6 @@ export default {
       this.isIconsToggled = !this.isIconsToggled;
     },
 
-    // 存在选中的邮件
-    existSelectedEmail() {
-      let hasSelected = false; // 创建一个变量来跟踪是否存在选中的邮件
-
-      this.localEmailList.forEach(dateGroup => {
-        for (const date in dateGroup) {
-          if (dateGroup.hasOwnProperty(date)) {
-            dateGroup[date].forEach(email => {
-              if (email.selected) {
-                hasSelected = true;
-              }
-            });
-          }
-        }
-      });
-
-      return hasSelected; // 返回这个变量
-    },
-
     setSelected(newValue) {
       this.localEmailList.forEach(dateGroup => {
         for (const date in dateGroup) {
@@ -850,15 +845,13 @@ export default {
 
     readOrSpanEmails(index) {
       this.selectedItem = index;
-
-      const selectedEmails = this.getSelectedEmailIds();
-      if (selectedEmails.length) {
+      if (this.selectEmailIds.length) {
         if (this.menuItems[index] === '标为已读') {
-          this.readEmails(selectedEmails);
+          this.readEmails(this.selectEmailIds);
         } else if (this.menuItems[index] === '标为未读') {
-          this.unReadEmails(selectedEmails);
+          this.unReadEmails(this.selectEmailIds);
         } else if (this.menuItems[index] === '标为垃圾邮件') {
-          this.spamEmails(selectedEmails);
+          this.spamEmails(this.selectEmailIds);
         }
       }
     },
@@ -885,7 +878,7 @@ export default {
           }
         }
       });
-      return selectedIds;
+      this.selectEmailIds = selectedIds;
     },
 
     // 标记为已读文件
@@ -966,10 +959,9 @@ export default {
 
     // 删除邮件
     async deleteEmails() {
-      const emailIds = this.getSelectedEmailIds();
-      if (emailIds.length) {
+      if (this.selectEmailIds.length) {
         const data = {
-          "ids": emailIds
+          "ids": this.selectEmailIds
         };
         try {
           const response = await deleteEmail(data);
@@ -991,8 +983,8 @@ export default {
     },
 
     toggleEmailSelection() {
-      let existSelected = this.existSelectedEmail();
-      if (existSelected) {
+      this.getSelectedEmailIds();
+      if (this.selectEmailIds.length) {
         this.selectAll = true;
         this.isIconsToggled = false;
       } else {
