@@ -3,12 +3,8 @@
   <div class="value">
     <div class="component-email-input clearfix receiver">
       <div class="email-wrap show-last-input">
-        <div
-          v-for="(email, index) in emailList"
-          :key="index"
-          class="email-item email-item__draggable"
-          data-draggable="true"
-        >
+        <div v-for="(email, index) in emailList" :key="index" class="email-item email-item__draggable"
+          data-draggable="true">
           <span class="mm-tooltip email-info">
             <span class="mm-tooltip-trigger">
               <div>
@@ -18,21 +14,13 @@
                   </span>
                 </span>
                 <span class="name">{{ email }}</span>
-                <span
-                  class="m-icon icon-cross-thin"
-                  @click="removeEmail(index)"
-                ></span>
+                <span class="m-icon icon-cross-thin" @click="removeEmail(index)"></span>
               </div>
             </span>
           </span>
         </div>
         <div class="email-input last">
-          <input
-            type="text"
-            v-model="currentEmail"
-            :placeholder="placeholder"
-            @keyup.enter="addEmail"
-          >
+          <input type="text" v-model="currentEmail" :placeholder="placeholder" @keyup.enter="addEmail">
         </div>
       </div>
       <div class="email-item total-email-info" :style="{ display: emailList.length > 0 ? '' : 'none' }">
@@ -60,9 +48,18 @@ export default {
   },
   data() {
     return {
-      emailList: [...this.initialEmails],
+      emailList: [],
       currentEmail: ''
     };
+  },
+  watch: {
+    initialEmails: {
+      handler(newVal) {
+        this.emailList = newVal
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     addEmail() {

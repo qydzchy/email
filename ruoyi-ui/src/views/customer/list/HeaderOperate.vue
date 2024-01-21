@@ -15,6 +15,7 @@
 
 <script>
 import OperateMenu from "./OperateMenu.vue";
+import { targetBlank } from '@/utils/tools'
 
 export default {
   props: {
@@ -42,7 +43,7 @@ export default {
   },
   methods: {
     writeEmail() {
-      this.$router.push(`/email/index?type=write_email&id=${this.ids[0]}`)
+      targetBlank(`/email/index?type=write_email&id=${this.ids[0]}`)
     },
     sendSMS() {
       this.$router.push('/email/index?type=write_email')

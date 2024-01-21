@@ -590,7 +590,7 @@ export default {
             this.getSignatureOption()
         },
         // 保存配置
-        async editInfoReq(data, emailData) {
+        async editInfoReq(data) {
             try {
                 const res = await editUsuallyInfo(data)
                 if (res.code === 200) {

@@ -191,6 +191,7 @@
 import { mapState } from 'vuex'
 import emailContentDetailAttachmentLayout from './email_content_detail_attachment.vue';
 import { deleteEmailLabel } from "@/api/email/email";
+import { translate } from '@/api/email/translate'
 export default {
   data() {
     return {
@@ -252,10 +253,22 @@ export default {
         }
       });
     },
-    onTranslate() {
+    async onTranslate() {
       if (translateContent) {
         this.translateContent = ''
         return
+      }
+      try {
+        const res = await translate({
+          sourceLanguage: this.sourceLanguage,
+          targetLanguage: this.targetLanguage,
+          sourceText: this.currentEmailDetail.content
+        })
+        if (res.code === 200) {
+          this.translateContent = res?.msg || ''
+        }
+      } catch (e) {
+        console.error(e.message);
       }
     }
   },
