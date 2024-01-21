@@ -960,7 +960,6 @@ export default {
             this.receiver.push(email)
           }
         })
-        console.log(this.receiver);
       }
       // if (data.receiver) {
       //   this.receiver.push(data.fromer);

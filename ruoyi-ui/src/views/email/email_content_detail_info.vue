@@ -254,7 +254,7 @@ export default {
       });
     },
     async onTranslate() {
-      if (translateContent) {
+      if (this.translateContent) {
         this.translateContent = ''
         return
       }
