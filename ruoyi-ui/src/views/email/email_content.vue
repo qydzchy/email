@@ -743,6 +743,7 @@
 																				</div>
 																			</div>
 																			<div
+                                        v-if="Boolean(emailReadingModeFlag)"
                                         class="mail-side-card slide-fade"
                                         :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
 																				<span class="mail-position-toogle" @click="toggleRightPanel">
@@ -974,6 +975,7 @@
 @import '../../static/scss/email/index/43960.b19a070c.css';
 </style>
 <script>
+import { mapState } from 'vuex'
 import { EventBus } from "@/api/email/event-bus";
 import writeEmailLayout from './write_email.vue';
 import emailHeaderLayout from "./email_header.vue";
@@ -993,7 +995,7 @@ export default {
     return {
       activeEmailId: null,
       currentPage: 1,
-      pageSize: 30,
+      // pageSize: 30,
       total: 0,
       taskId: null,
       readFlag: null,
@@ -1053,6 +1055,10 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+        pageSize: state => state.emailSetting.usuallySetting?.maxPerPage,
+        emailReadingModeFlag: state => state.emailSetting.usuallySetting?.emailReadingModeFlag
+    }),
     totalPages() {
       return Math.ceil(this.total / this.pageSize);
     },
