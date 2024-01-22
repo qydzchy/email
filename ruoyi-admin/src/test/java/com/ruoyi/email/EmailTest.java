@@ -1,6 +1,7 @@
 package com.ruoyi.email;
 
 import com.ruoyi.email.domain.Task;
+import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -19,6 +20,8 @@ public class EmailTest {
 
     @Autowired
     private ITaskService taskService;
+    @Autowired
+    private ITaskEmailService taskEmailService;
 
     @Test
     public void getEmailTest() {

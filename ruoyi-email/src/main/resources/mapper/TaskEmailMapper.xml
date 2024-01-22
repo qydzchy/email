@@ -190,7 +190,7 @@
     </select>
 
     <select id="getUidsByTaskId" resultType="java.lang.String">
-        select uid from mailbox_task_email where task_id=#{taskId} and del_flag = '0'
+        select DISTINCT(uid) from mailbox_task_email where task_id=#{taskId} and del_flag = '0'
     </select>
 
     <select id="getEmailQuantityByIds" resultType="java.util.Map">

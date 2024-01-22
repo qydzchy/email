@@ -16,7 +16,6 @@ import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
 import com.ruoyi.system.service.ISysConfigService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
