@@ -16,7 +16,6 @@ import com.ruoyi.email.service.ITaskEmailService;
 import com.ruoyi.email.service.ITaskService;
 import com.ruoyi.system.service.ISysConfigService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
@@ -202,6 +201,14 @@ public class EmailController extends BaseController {
     @PostMapping("/move/email/to/folder")
     public AjaxResult moveEmailToFolder(@RequestBody @Valid EmailFolderMoveDTO emailFolderMoveDTO)
     {
+        if (emailFolderMoveDTO.getFolderId() == null) {
+            throw new ServiceException("文件夹id不能为空");
+        }
+
+        if (emailFolderMoveDTO.getIds() == null || emailFolderMoveDTO.getIds().isEmpty()) {
+            throw new ServiceException("请选择邮件");
+        }
+
         return toAjax(taskEmailService.moveEmailToFolder(emailFolderMoveDTO.getIds(), emailFolderMoveDTO.getFolderId()));
     }
 
@@ -396,24 +403,16 @@ public class EmailController extends BaseController {
      * 翻译
      */
     @PreAuthorize("@ss.hasPermi('email:translate')")
-    @GetMapping(value = "/translate")
-    public AjaxResult translate(String sourceLanguage, String targetLanguage, String sourceText)
+    @Log(title = "邮件内容翻译", businessType = BusinessType.OTHER)
+    @PostMapping(value = "/translate")
+    public AjaxResult translate(@RequestBody @Valid EmailTranslateDTO dto)
     {
-        if (StringUtils.isBlank(sourceLanguage)) {
-            throw new ServiceException("原文语言不能为空");
-        }
-
-        if (StringUtils.isBlank(targetLanguage)) {
-            throw new ServiceException("译文语言不能为空");
-        }
-
-        if (StringUtils.isBlank(sourceText)) {
-            throw new ServiceException("需要翻译的内容不能为空");
-        }
-
         String accessKeyId = configService.selectConfigByKey("translate.access.key.id");
         String accessKeySecret = configService.selectConfigByKey("translate.access.key.secret");
 
+        String sourceLanguage = dto.getSourceLanguage();
+        String targetLanguage = dto.getTargetLanguage();
+        String sourceText = dto.getSourceText();
         if (StringUtils.isNotBlank(accessKeyId) && StringUtils.isNotBlank(accessKeySecret)) {
             sourceText = taskEmailService.translate(sourceLanguage, targetLanguage, sourceText, accessKeyId, accessKeySecret);
         }

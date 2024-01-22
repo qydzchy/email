@@ -200,6 +200,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         }
 
         spamFlag = Optional.ofNullable(spamFlag).orElse(false);
+        delFlag = Optional.ofNullable(delFlag).orElse("0");
 
         int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, userId);
         if (count <= 0) {

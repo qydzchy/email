@@ -304,7 +304,7 @@ public class TaskServiceImpl implements ITaskService
         // 使用redis加个锁，防止拉取到重复的邮件
         Long id = task.getId();
         String lockKey = CacheConstants.EMAIL_PULL_KEY + id;
-        Boolean setIfAbsent = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, "", 10, TimeUnit.MINUTES);
+        Boolean setIfAbsent = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, "", 30, TimeUnit.MINUTES);
         if (!setIfAbsent) {
             log.info("存在任务id为【{}】在拉取邮件，请稍后...", id);
             return null;

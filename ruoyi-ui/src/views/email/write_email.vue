@@ -953,28 +953,35 @@ export default {
         this.formData.id = data.id;
         this.taskId = data.taskId;
       }
-
-      if (data.receiver) {
-        this.receiver.push(data.fromer);
-        this.receiverEmails = JSON.parse(data.receiver);
-        this.receiverEmails.forEach(receiver => {
-          const email = receiver.email;
-          // 有问题 this.selectedAccount获取不到。
+      if (data.contactList && data.contactList.length) {
+        const receiver = data.contactList?.map(val => val.email)
+        receiver.forEach(email => {
           if (email !== this.selectedAccount) {
-            this.receiver.push(email);
+            this.receiver.push(email)
           }
-        });
+        })
       }
+      // if (data.receiver) {
+      //   this.receiver.push(data.fromer);
+      //   this.receiverEmails = JSON.parse(data.receiver);
+      //   this.receiverEmails.forEach(receiver => {
+      //     const email = receiver.email;
+      //     // 有问题 this.selectedAccount获取不到。
+      //     if (email !== this.selectedAccount) {
+      //       this.receiver.push(email);
+      //     }
+      //   });
+      // }
 
-      if (data.cc) {
-        this.ccEmails = JSON.parse(data.cc);
-        this.ccEmails.forEach(receiver => {
-          const email = receiver.email;
-          if (email !== this.selectedAccount) {
-            this.cc.push(email);
-          }
-        });
-      }
+      // if (data.cc) {
+      //   this.ccEmails = JSON.parse(data.cc);
+      //   this.ccEmails.forEach(receiver => {
+      //     const email = receiver.email;
+      //     if (email !== this.selectedAccount) {
+      //       this.cc.push(email);
+      //     }
+      //   });
+      // }
 
     },
 
