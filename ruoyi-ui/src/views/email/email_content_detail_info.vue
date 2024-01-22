@@ -258,11 +258,14 @@ export default {
         this.translateContent = ''
         return
       }
+      this.translateLoading = true
       try {
         const res = await translate({
           sourceLanguage: this.sourceLanguage,
           targetLanguage: this.targetLanguage,
           sourceText: this.currentEmailDetail.content
+        }).finally(() => {
+          this.translateLoading = false
         })
         if (res.code === 200) {
           this.translateContent = res?.msg || ''

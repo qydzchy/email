@@ -633,7 +633,7 @@
                                                         <!---->
                                                       </span>
                                                     </li>
-                                                    <li
+                                                    <!-- <li
                                                       :class="[
                                                           'mail-drop-menu-item',
                                                           `DROPMENU_90471_ITEM_11`,
@@ -641,15 +641,15 @@
                                                         ]"
                                                       @mouseover="emailHoveredItem = '移动到'"
                                                       @mouseleave="emailHoveredItem = null">
-                                                      <!---->
+                                                    
                                                       <span class="mail-drop-menu-text ellipsis">
-                                                        <!---->
+                                                        
                                                         <span title="移动到" class="">移动到</span>
                                                       </span>
                                                       <span>
                                                         <i class="m-icon icon-right-thin"></i>
                                                       </span>
-                                                    </li>
+                                                    </li> -->
                                                     <li
                                                       :class="[
                                                           'mail-drop-menu-item',
