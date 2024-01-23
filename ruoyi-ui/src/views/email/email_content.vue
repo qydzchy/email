@@ -24,11 +24,11 @@
 																									<!---->
 																									<div class="mm-tabs-nav-scroll">
 																										<div class="mm-tabs-nav" role="tablist" style="transform: translateX(0px);">
-																											<div class="mm-tabs-active-bar__top mm-tabs-active-bar" style="width: 68px; transform: translateX(0px);"></div>
-																											<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">全部
+																											<div class="mm-tabs-active-bar__top mm-tabs-active-bar" :style="{ width: '68px', transform: `translateX(${objectType === 'customer' ? '68px' : '0px'})` }"></div>
+																											<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'all' }]" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true" @click="switchObjectType('all')">全部
                                                         <!---->
 																											</div>
-                                                      																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
+                                                      																											<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'customer' }]" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
                                                                                                             </div>
                                                       <!--                                                      <div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
                                                                                                               &lt;!&ndash;&ndash;&gt;
@@ -1024,6 +1024,7 @@ export default {
       dealingEmailDatas: null,
       dealingEmailTotal: 0,
       dealingAttachmentFlag: null,
+      objectType: null
     }
   },
   components: {
@@ -1153,6 +1154,7 @@ export default {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
       this.taskId = taskId;
       this.type = type;
+      let customerFlag = this.objectType === 'customer' ? true : false;
       const query = {
         taskId: this.taskId,
         // 邮件类型 1.收取 2.发送
@@ -1164,6 +1166,7 @@ export default {
         spamFlag: spamFlag,
         traceFlag: traceFlag,
         folderId: folderId,
+        customerFlag: customerFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -1198,6 +1201,14 @@ export default {
       }
 
       this.fetchEmailList(this.taskId);
+    },
+
+    /**
+     * 切换对象类型
+     */
+    switchObjectType(objectType) {
+      this.objectType = objectType;
+      this.fetchEmailData(this.currentEmailType);
     },
 
     /**
