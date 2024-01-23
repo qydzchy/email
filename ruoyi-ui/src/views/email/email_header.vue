@@ -819,6 +819,7 @@ export default {
       });
 
       this.isIconsToggled = !this.isIconsToggled;
+      this.toggleEmailSelection();
     },
 
     setSelected(newValue) {
@@ -983,7 +984,10 @@ export default {
     },
 
     toggleEmailSelection() {
+      console.log("---------------------");
       this.getSelectedEmailIds();
+
+      console.log(this.selectEmailIds);
       if (this.selectEmailIds.length) {
         this.selectAll = true;
         this.isIconsToggled = false;
