@@ -316,7 +316,7 @@
                         <!-- 快捷邮件 -->
                         <FastWrite :info="fastInfo" :total.sync="total" :labels="labels" :emailData="list"
                             @showLabel="(bool) => onShowLabel(bool, 'write')" @viewNewEmail="viewNewEmail" @reload="getList"
-                            @updateTotal="value => $emit('update:total', value)" />
+                            @updateTotal="value => $emit('update:total', value)" @changeInfo="handleInfo" />
                         <!-- 抽屉 -->
                         <div v-if="Boolean(emailReadingModeFlag)" class="mail-side-card slide-fade"
                             :class="isRightPanelExpanded ? 'expanding' : 'collapsing'">
@@ -718,6 +718,14 @@ export default {
             } else if (type === 'next') {
                 if (curIndex === (this.list.length - 1)) { return }
             }
+        },
+        async handleInfo(id) {
+            await this.getInfo(id)
+            const email = {
+                id
+            }
+            await this.readEmail(email)
+            await this.getList()
         }
     }
 }

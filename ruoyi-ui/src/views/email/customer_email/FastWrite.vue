@@ -379,7 +379,7 @@
 
                                     </span>
                                 </li>
-                                <li :class="[
+                                <!-- <li :class="[
                                     'mail-drop-menu-item',
                                     `DROPMENU_90471_ITEM_11`,
                                     { 'mail-drop-menu-item-active': emailHoveredItem === '移动到' }
@@ -392,7 +392,7 @@
                                     <span>
                                         <i class="m-icon icon-right-thin"></i>
                                     </span>
-                                </li>
+                                </li> -->
                                 <li :class="[
                                     'mail-drop-menu-item',
                                     `DROPMENU_90471_ITEM_12`,
@@ -815,51 +815,7 @@ export default {
                 try {
                     const response = await deleteEmail(data);
                     if (response.code === 200) {
-                        let found = false;
-                        if (this.moveDeleteReport === 1) {
-                            for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
-                                const monthGroup = this.localEmailList[groupIndex];
-                                for (const month in monthGroup) {
-                                    const emails = monthGroup[month];
-                                    const index = emails.findIndex(email => email.id === this.activeEmailId);
-                                    if (index > -1) {
-                                        emails.splice(index, 1);
-                                        const newTotal = this.total - 1;
-                                        this.$emit('updateTotal', newTotal)
-
-                                        if (emails.length === 0) {
-                                            // 如果该monthGroup没有邮件了，从localEmailList中移除
-                                            this.localEmailList.splice(groupIndex, 1);
-
-                                            // 尝试从下一个monthGroup获取最新邮件
-                                            if (this.localEmailList[groupIndex]) {
-                                                this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
-                                            } else {
-                                                this.currentEmailDetail = {};
-                                            }
-                                        } else if (emails[index]) {
-                                            this.currentEmailDetail = emails[index];
-                                        } else if (emails[index - 1]) {
-                                            this.currentEmailDetail = emails[index - 1];
-                                        } else {
-                                            this.currentEmailDetail = {};
-                                        }
-
-                                        this.activeEmailId = this.currentEmailDetail.id || null;
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (found) break;
-                            }
-                        }
-                        else if (this.moveDeleteReport === 2) {
-                            // 返回列表
-                            this.$emit('showLabel', true)
-                        }
-
-
-                        this.isDropdownEmailShown = false;
+                        this.nextEmail()
                     } else {
                         this.$message.error('删除失败');
                     }
@@ -868,6 +824,59 @@ export default {
                     throw error;
                 }
             }
+        },
+        // 切换下一封
+        nextEmail() {
+            let found = false;
+            if (this.moveDeleteReport === 1) {
+                for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+                    const monthGroup = this.localEmailList[groupIndex];
+                    for (const month in monthGroup) {
+                        const emails = monthGroup[month];
+                        const index = emails.findIndex(email => email.id === this.activeEmailId);
+                        if (index > -1) {
+                            emails.splice(index, 1);
+                            const newTotal = this.total - 1;
+                            this.$emit('updateTotal', newTotal)
+
+                            if (emails.length === 0) {
+                                // 如果该monthGroup没有邮件了，从localEmailList中移除
+                                this.localEmailList.splice(groupIndex, 1);
+
+                                // 尝试从下一个monthGroup获取最新邮件
+                                if (this.localEmailList[groupIndex]) {
+                                    this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                                } else {
+                                    this.currentEmailDetail = {};
+                                }
+                            } else if (emails[index]) {
+                                this.currentEmailDetail = emails[index];
+                            } else if (emails[index - 1]) {
+                                this.currentEmailDetail = emails[index - 1];
+                            } else {
+                                this.currentEmailDetail = {};
+                            }
+
+                            if (Object.keys(this.currentEmailDetail).length !== 0) {
+                                this.$emit('changeInfo', this.currentEmailDetail.id)
+                            }
+
+
+                            this.activeEmailId = this.currentEmailDetail.id || null;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+            }
+            else if (this.moveDeleteReport === 2) {
+                // 返回列表
+                this.$emit('showLabel', true)
+            }
+
+
+            this.isDropdownEmailShown = false;
         },
         handleLabel() {
             this.showLabel = !this.showLabel;
