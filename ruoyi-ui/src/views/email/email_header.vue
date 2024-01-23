@@ -212,16 +212,16 @@
 																								<!---->
 																								<div class="mm-tabs-nav-scroll">
 																									<div class="mm-tabs-nav" role="tablist" style="transform: translateX(0px);">
-																										<div class="mm-tabs-active-bar__top mm-tabs-active-bar" style="width: 103px; transform: translateX(0px);"></div>
-																										<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">
+																										<div class="mm-tabs-active-bar__top mm-tabs-active-bar" :style="{ width: '68px', transform: `translateX(${objectType === 'customer' ? '68px' : '0px'})` }"></div>
+																										<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'all' }]" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true" @click="switchObjectType('all')">
 																											<span class="mm-tooltip">
-																												<span class="mm-tooltip-trigger">全部<span class="mail-tab-unread" @click="switchObjectType('all')"></span>
+																												<span class="mm-tooltip-trigger">全部<span class="mail-tab-unread"></span>
 																												</span>
                                                         <!---->
 																											</span>
                                                       <!---->
 																										</div>
-																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
+																										<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'customer' }]" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
 																										</div>
                                                     <!--																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
                                                                                                           &lt;!&ndash;&ndash;&gt;
