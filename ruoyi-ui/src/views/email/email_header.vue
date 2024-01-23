@@ -64,7 +64,10 @@
                                     </span>
                                   </span>
                                 </span>
-                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="removeEmailToLabel">
+                                <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 500px;">
+                                  <emailHeaderLabelLayout :labels="labels" @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
+                                </div>
+                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="handleLabel">
                                   <span class="mm-tooltip-trigger">
                                     <span>
                                       <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
@@ -549,12 +552,15 @@ import {
   readEmail,
   spamEmail,
   deleteEmail,
+  moveEmailToLabel
 } from "@/api/email/email";
 import {
   customerEmailList
 } from "@/api/customer/email";
 
 import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
+import emailHeaderLabelLayout from "@/views/email/email_content_label.vue";
+import {listLabel} from "@/api/email/label";
 export default {
   data() {
     return {
@@ -575,7 +581,7 @@ export default {
       selectAll: false,
       isIconsToggled: true,  // 用于控制图标的显示状态
       isDropdownShown: false,  // 保存下拉菜单的显示状态
-
+      showLabel: false,
       selectedItem: null,
       hoveredItem: null, // 当前悬停的列表项的索引
       menuItems: [
@@ -588,9 +594,11 @@ export default {
       emailSlideStatus: {},
       selectEmailIds: [],
       objectType: null,
+      labels: [],
     }
   },
   components: {
+    emailHeaderLabelLayout,
     PopoverSelectFolder
   },
   props: {
@@ -619,6 +627,7 @@ export default {
       if (currentPage !== undefined) {
         this.currentPage = currentPage;
       }
+      this.refreshLabelList();
       this.fetchEmailData(emailType);
     });
 
@@ -806,6 +815,24 @@ export default {
       }
     },
 
+    // 移动邮件到标签
+    async moveEmailToLabel(ids, label) {
+      const data = {
+        "ids": ids,
+        "labelId": label.id
+      };
+      try {
+        const response = await moveEmailToLabel(data);
+        if (response.code === 200) {
+          this.showLabel = false;
+          this.fetchEmailData(this.currentEmailType);
+        }
+      } catch (error) {
+        console.error('操作失败:', error);
+        throw error;
+      }
+    },
+
     toggleAllEmails() {
       const shouldSelectAll = this.selectAll;
       this.localEmailList.forEach(dateGroup => {
@@ -978,16 +1005,17 @@ export default {
       }
     },
 
-    // 移动邮件到标签
-    async removeEmailToLabel() {
+    handleLabel() {
+      this.showLabel = !this.showLabel;
+    },
 
+    handleSelectedLabel(label) {
+      this.moveEmailToLabel(this.selectEmailIds, label);
     },
 
     toggleEmailSelection() {
-      console.log("---------------------");
       this.getSelectedEmailIds();
 
-      console.log(this.selectEmailIds);
       if (this.selectEmailIds.length) {
         this.selectAll = true;
         this.isIconsToggled = false;
@@ -1023,7 +1051,13 @@ export default {
       } else {
         this.emailSlideStatus[emailId].left = 0;
       }
-    }
+    },
+
+    refreshLabelList() {
+      listLabel().then((response) => {
+        this.labels = response.data;
+      });
+    },
   }
 }
 </script>

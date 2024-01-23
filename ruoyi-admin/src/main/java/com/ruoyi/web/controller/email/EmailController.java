@@ -220,7 +220,7 @@ public class EmailController extends BaseController {
     @PostMapping("/move/email/to/label")
     public AjaxResult moveEmailToLabel(@RequestBody @Valid EmailLabelMoveDTO emailLabelMoveDTO)
     {
-        return toAjax(taskEmailService.moveEmailToLabel(emailLabelMoveDTO.getId(), emailLabelMoveDTO.getLabelId()));
+        return toAjax(taskEmailService.moveEmailToLabel(emailLabelMoveDTO.getIds(), emailLabelMoveDTO.getLabelId()));
     }
 
     /**

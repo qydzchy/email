@@ -641,9 +641,9 @@
                                                         ]"
                                                       @mouseover="emailHoveredItem = '移动到'"
                                                       @mouseleave="emailHoveredItem = null">
-                                                    
+
                                                       <span class="mail-drop-menu-text ellipsis">
-                                                        
+
                                                         <span title="移动到" class="">移动到</span>
                                                       </span>
                                                       <span>
@@ -1026,7 +1026,8 @@ export default {
       dealingEmailDatas: null,
       dealingEmailTotal: 0,
       dealingAttachmentFlag: null,
-      objectType: null
+      objectType: null,
+      labels: [],
     }
   },
   components: {
@@ -1399,8 +1400,10 @@ export default {
 
     // 移动邮件到标签
     async moveEmailToLabel(email, label) {
+      let ids = [];
+      ids.push(email.id);
       const data = {
-        "id": email.id,
+        "id": ids,
         "labelId": label.id
       };
       try {

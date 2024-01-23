@@ -96,11 +96,20 @@ public class TaskEmailLabelServiceImpl implements ITaskEmailLabelService
 
     /**
      * 根据邮件id和标签id删除
-     * @param emailId
+     * @param emailIds
      * @param labelId
      */
     @Override
-    public void deleteByEmailIdAndLabelId(Long emailId, Long labelId, Long userId) {
-        taskEmailLabelMapper.deleteByEmailIdAndLabelId(emailId, labelId, userId);
+    public void deleteByEmailIdAndLabelId(List<Long> emailIds, Long labelId, Long userId) {
+        taskEmailLabelMapper.deleteByEmailIdAndLabelId(emailIds, labelId, userId);
+    }
+
+    /**
+     * 批量新增邮件标签
+     * @param taskEmailLabelList
+     */
+    @Override
+    public void batchInsertTaskEmailLabel(List<TaskEmailLabel> taskEmailLabelList) {
+        taskEmailLabelMapper.batchInsertTaskEmailLabel(taskEmailLabelList);
     }
 }

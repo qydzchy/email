@@ -61,9 +61,15 @@ public interface ITaskEmailLabelService
 
     /**
      * 根据邮件id和标签id删除
-     * @param id
+     * @param ids
      * @param labelId
      * @param userId
      */
-    void deleteByEmailIdAndLabelId(Long id, Long labelId, Long userId);
+    void deleteByEmailIdAndLabelId(List<Long> ids, Long labelId, Long userId);
+
+    /**
+     * 批量新增标签
+     * @param taskEmailLabelList
+     */
+    void batchInsertTaskEmailLabel(List<TaskEmailLabel> taskEmailLabelList);
 }

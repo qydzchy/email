@@ -1314,25 +1314,30 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     @Override
-    public boolean moveEmailToLabel(Long id, Long labelId) {
+    public boolean moveEmailToLabel(List<Long> ids, Long labelId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
         // 删除该记录
-        taskEmailLabelService.deleteByEmailIdAndLabelId(id, labelId, userId);
+        taskEmailLabelService.deleteByEmailIdAndLabelId(ids, labelId, userId);
 
         Date now = new Date();
-        TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
-        taskEmailLabel.setEmailId(id);
-        taskEmailLabel.setLabelId(labelId);
-        taskEmailLabel.setCreateId(userId);
-        taskEmailLabel.setCreateBy(username);
-        taskEmailLabel.setCreateTime(now);
-        taskEmailLabel.setUpdateId(userId);
-        taskEmailLabel.setUpdateBy(username);
-        taskEmailLabel.setUpdateTime(now);
-        taskEmailLabelService.insertTaskEmailLabel(taskEmailLabel);
+        List<TaskEmailLabel> taskEmailLabelList = new ArrayList<>();
+        for (Long id : ids) {
+            TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
+            taskEmailLabel.setEmailId(id);
+            taskEmailLabel.setLabelId(labelId);
+            taskEmailLabel.setCreateId(userId);
+            taskEmailLabel.setCreateBy(username);
+            taskEmailLabel.setCreateTime(now);
+            taskEmailLabel.setUpdateId(userId);
+            taskEmailLabel.setUpdateBy(username);
+            taskEmailLabel.setUpdateTime(now);
+            taskEmailLabelList.add(taskEmailLabel);
+        }
+
+        taskEmailLabelService.batchInsertTaskEmailLabel(taskEmailLabelList);
         return true;
     }
 
@@ -1341,7 +1346,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        taskEmailLabelService.deleteByEmailIdAndLabelId(emailId, labelId, userId);
+        taskEmailLabelService.deleteByEmailIdAndLabelId(Arrays.asList(emailId), labelId, userId);
         return true;
     }
 

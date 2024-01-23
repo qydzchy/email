@@ -62,9 +62,15 @@ public interface TaskEmailLabelMapper
 
     /**
      * 根据邮件id和标签id删除
-     * @param emailId
+     * @param emailIds
      * @param labelId
      * @param userId
      */
-    void deleteByEmailIdAndLabelId(@Param("emailId") Long emailId, @Param("labelId") Long labelId, @Param("createId") Long userId);
+    void deleteByEmailIdAndLabelId(@Param("emailIds") List<Long> emailIds, @Param("labelId") Long labelId, @Param("createId") Long userId);
+
+    /**
+     * 批量新增邮件标签
+     * @param taskEmailLabelList
+     */
+    void batchInsertTaskEmailLabel(@Param("taskEmailLabelList") List<TaskEmailLabel> taskEmailLabelList);
 }

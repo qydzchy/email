@@ -203,11 +203,11 @@ public interface ITaskEmailService
 
     /**
      * 移动邮件到标签
-     * @param id
+     * @param ids
      * @param labelId
      * @return
      */
-    boolean moveEmailToLabel(Long id, Long labelId);
+    boolean moveEmailToLabel(List<Long> ids, Long labelId);
 
     /**
      * 删除邮件标签
