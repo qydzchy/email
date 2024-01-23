@@ -470,7 +470,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        TaskEmail pullTaskEmail = taskEmailMapper.selectTaskEmailById(emailQuickReplyDTO.getId());
+        Long id = emailQuickReplyDTO.getId();
+        TaskEmail pullTaskEmail = taskEmailMapper.selectTaskEmailById(id);
         if (pullTaskEmail == null) throw new ServiceException();
 
         String username = loginUser.getUsername();
@@ -543,6 +544,16 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         content.append(historyContent);
         taskEmailContent.setContent(content.toString());
         taskEmailContentService.insertTaskEmailContent(taskEmailContent);
+
+        // 更新待关闭状态
+        OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(userId);
+        if (otherConfigVO != null && otherConfigVO.getPendingClose() != null && otherConfigVO.getPendingClose().intValue() == 1) {
+            TaskEmail currentTaskEmail = new TaskEmail();
+            currentTaskEmail.setId(id);
+            currentTaskEmail.setPendingFlag(false);
+            currentTaskEmail.setPendingTime(null);
+            taskEmailMapper.updateTaskEmail(currentTaskEmail);
+        }
 
         return true;
     }
