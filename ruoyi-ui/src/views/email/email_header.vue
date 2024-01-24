@@ -557,6 +557,7 @@ import {
 import {
   customerEmailList
 } from "@/api/customer/email";
+import { getUsuallyInfo } from '@/api/email/usually'
 
 import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 import emailHeaderLabelLayout from "@/views/email/email_content_label.vue";
@@ -627,10 +628,12 @@ export default {
       if (currentPage !== undefined) {
         this.currentPage = currentPage;
       }
+      // 常规设置
+      this.generalSetting();
+
       this.refreshLabelList();
       this.fetchEmailData(emailType);
     });
-
 
     if (this.emailList === undefined || this.emailList === null || this.emailList.length === 0) {
       this.localEmailList = [];
@@ -681,6 +684,16 @@ export default {
         this.total = response.total;
       }).catch(error => {
         console.error("Failed to fetch emails:", error);
+      });
+    },
+
+    // 常规设置
+    generalSetting() {
+      getUsuallyInfo().then((response) => {
+        const data = response.data
+        if (data !== null && data !== undefined && data.maxPerPage !== null && data.maxPerPage !== undefined) {
+          this.pageSize = data.maxPerPage;
+        }
       });
     },
 
