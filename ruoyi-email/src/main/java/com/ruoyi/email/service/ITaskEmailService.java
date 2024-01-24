@@ -230,7 +230,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Long userId, Boolean fixedFlag, Boolean attachmentFlag, Boolean readFlag, Boolean pendingFlag, Boolean traceFlag, Boolean colleagueFlag, Boolean last7DaysFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize);
 
     /**
      * 自动回复
@@ -298,7 +298,7 @@ public interface ITaskEmailService
      * 下属列表
      * @return
      */
-    List<UserInfoVO2> userList();
+    List<SubordinateListVO> userList();
 
     /**
      * 针对收件箱的历史邮件

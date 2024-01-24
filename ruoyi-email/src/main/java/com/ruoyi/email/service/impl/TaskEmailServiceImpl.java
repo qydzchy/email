@@ -23,6 +23,7 @@ import com.aliyun.teaopenapi.Client;
 import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.AndOrEnum;
+import com.ruoyi.common.enums.customer.DataScopeEnum;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.enums.email.RuleTypeEnum;
 import com.ruoyi.common.enums.email.TaskExecutionStatusEnum;
@@ -882,9 +883,77 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * 下属列表
      * @return
      */
-    @Override //todo 待开发
-    public List<UserInfoVO2> userList() {
-        return null;
+    @Override
+    public List<SubordinateListVO> userList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Long deptId = loginUser.getDeptId();
+
+        return getSubordinateList(userId, deptId);
+    }
+
+    /**
+     * 获取下属列表
+     * @param userId
+     * @param deptId
+     * @return
+     */
+    private List<SubordinateListVO> getSubordinateList(Long userId, Long deptId) {
+        List<SubordinateListVO> subordinateVOList = new ArrayList<>();
+
+        // 查询角色信息
+        List<RoleDeptSimpleInfo2VO> roleDeptSimpleInfo2VOList = taskEmailMapper.queryRoleDeptSimpleInfo(userId);
+        Map<Long, List<RoleDeptSimpleInfo2VO>> roleIdRoleDeptSimpleInfoMap = roleDeptSimpleInfo2VOList.stream().collect(Collectors.groupingBy(roleDeptSimpleInfo2VO -> roleDeptSimpleInfo2VO.getRoleId()));
+
+        for (Map.Entry<Long, List<RoleDeptSimpleInfo2VO>> entry : roleIdRoleDeptSimpleInfoMap.entrySet()) {
+            List<RoleDeptSimpleInfo2VO> roleDeptInfoVOList = entry.getValue();
+
+            RoleDeptSimpleInfo2VO firstRoleDeptSimpleInfo2VO = roleDeptInfoVOList.get(0);
+            DataScopeEnum dataScopeEnum = DataScopeEnum.getByCode(firstRoleDeptSimpleInfo2VO.getDataScope());
+
+            if (dataScopeEnum != null) {
+                switch (dataScopeEnum) {
+                    case ALL:
+                        subordinateVOList.addAll(taskEmailMapper.getAllUser());
+                        break;
+                    case DEPARTMENT_AND_BELOW:
+                        if (deptId != null) {
+                            List<Long> subordinateDeptIds = getSubordinateDeptIds(deptId);
+                            subordinateVOList.addAll(taskEmailMapper.getUserByDeptIds(subordinateDeptIds));
+                        }
+                        break;
+                }
+            }
+        }
+
+        // 剔除自己
+        subordinateVOList = subordinateVOList.stream().filter(subordinateVO -> !subordinateVO.getUserId().equals(userId)).collect(Collectors.toList());
+        return deduplicateById(subordinateVOList);
+    }
+
+    /**
+     * 去重
+     * @param list
+     * @return
+     */
+    private List<SubordinateListVO> deduplicateById(List<SubordinateListVO> list) {
+        Set<SubordinateListVO> set = new HashSet<>(list);
+        return new ArrayList<>(set);
+    }
+
+    public List<Long> getSubordinateDeptIds(Long deptId) {
+        List<Long> result = new ArrayList<>();
+        findSubordinateDeptIds(deptId, result);
+        return result;
+    }
+
+    private void findSubordinateDeptIds(Long deptId, List<Long> result) {
+        List<Long> subDepartments = taskEmailMapper.findSubordinateDeptIds(deptId);
+        for (Long subDeptId : subDepartments) {
+            result.add(subDeptId);
+            // 递归查询下属部门
+            findSubordinateDeptIds(subDeptId, result);
+        }
     }
 
     /**
@@ -1393,17 +1462,47 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        int count = taskEmailMapper.customerEmailCount(userId, customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword);
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Long userId, Boolean fixedFlag, Boolean attachmentFlag, Boolean readFlag, Boolean pendingFlag, Boolean traceFlag, Boolean colleagueFlag, Boolean last7DaysFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize) {
+        List<Long> userIds = new ArrayList<>();
+        if (userId == null) {
+            LoginUser loginUser = SecurityUtils.getLoginUser();
+            userId = loginUser.getUserId();
+        }
+
+        userIds.add(userId);
+
+        // 同事邮件
+        if (Optional.ofNullable(colleagueFlag).orElse(false)) {
+            Long deptId = taskEmailMapper.getDeptIdByUserId(userId);
+            List<SubordinateListVO> subordinateVOList = getSubordinateList(userId, deptId);
+            if (subordinateVOList != null && !subordinateVOList.isEmpty()) {
+                List<Long> userIdList = subordinateVOList.stream().map(SubordinateListVO::getUserId).collect(Collectors.toList());
+                // 查询用户邮箱
+                emailList = taskEmailMapper.getUserEmailByUserIds(userIdList);
+            }
+        }
+
+        // 最近7天往来
+        if (Optional.ofNullable(last7DaysFlag).orElse(false)) {
+            // 查询所有下属的用户ID
+            List<SubordinateListVO> subordinateVOList = userList();
+            if (subordinateVOList != null && !subordinateVOList.isEmpty()) {
+                userIds = subordinateVOList.stream().map(SubordinateListVO::getUserId).collect(Collectors.toList());
+            }
+
+            if (userIds == null || userIds.isEmpty()) {
+                userIds.add(-1L);
+            }
+        }
+
+        int count = taskEmailMapper.customerEmailCount(userIds, customerId, fixedFlag, attachmentFlag, readFlag, pendingFlag, traceFlag, emailList, type, labelIdList, keywordType, keyword);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(userId, customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(userIds, customerId, fixedFlag, attachmentFlag, readFlag, pendingFlag, traceFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }

@@ -303,8 +303,10 @@
         left join mailbox_task mt on mte.task_id = mt.id
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
-        ccc.customer_id = #{customerId}
-        AND mt.create_id = #{createId}
+        mt.create_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
         AND mt.del_flag = '0'
         AND ccc.del_flag = '0'
         AND mte.del_flag = '0'
@@ -315,11 +317,20 @@
             WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
-        <if test="fixedFlag != null and fixedFlag == true">
-            AND mte.fixed_flag = true
+        <if test="readFlag != null and readFlag == true">
+            AND mte.read_flag = true
+        </if>
+        <if test="pendingFlag != null and pendingFlag == true">
+            AND mte.pending_flag = true
+        </if>
+        <if test="traceFlag != null and traceFlag == true">
+            AND mte.trace_flag = true
         </if>
         <if test="type != null">
             AND mte.type = #{type}
+        </if>
+        <if test="customerId != null">
+            AND ccc.customer_id = #{customerId}
         </if>
         <!-- 联系人筛选 -->
         <if test="emailList != null and emailList.size() > 0">
@@ -409,8 +420,10 @@
         LEFT JOIN mailbox_task mt ON mte.task_id = mt.id
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
-        ccc.customer_id = #{customerId}
-        AND mt.create_id = #{createId}
+        mt.create_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
         AND mt.del_flag = '0'
         AND ccc.del_flag = '0'
         AND mte.del_flag = '0'
@@ -421,11 +434,23 @@
             WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
+        <if test="readFlag != null and readFlag == true">
+            AND mte.read_flag = true
+        </if>
+        <if test="pendingFlag != null and pendingFlag == true">
+            AND mte.pending_flag = true
+        </if>
+        <if test="traceFlag != null and traceFlag == true">
+            AND mte.trace_flag = true
+        </if>
         <if test="fixedFlag != null and fixedFlag == true">
             AND mte.fixed_flag = true
         </if>
         <if test="type != null">
             AND mte.type = #{type}
+        </if>
+        <if test="customerId != null">
+            AND ccc.customer_id = #{customerId}
         </if>
         <!-- 联系人筛选 -->
         <if test="emailList != null and emailList.size() > 0">
@@ -616,6 +641,46 @@
         </if>
         ORDER BY mte.send_date DESC
         LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="queryRoleDeptSimpleInfo" resultType="com.ruoyi.email.domain.vo.RoleDeptSimpleInfo2VO">
+        SELECT
+            r.role_id AS roleId,
+            r.data_scope AS dataScope,
+            rd.dept_id AS roleDeptId
+        FROM
+            sys_role r
+                LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
+                LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id
+        WHERE
+            ur.user_id = #{userId}
+    </select>
+
+    <select id="getAllUser" resultType="com.ruoyi.email.domain.vo.SubordinateListVO">
+        select user_id as userId, nick_name as nickName, dept_id as deptId from sys_user where status = 0 and del_flag = '0'
+    </select>
+
+    <select id="findSubordinateDeptIds" resultType="java.lang.Long">
+        select dept_id from sys_dept where del_flag = '0' and parent_id = #{deptId}
+    </select>
+
+    <select id="getUserByDeptIds" resultType="com.ruoyi.email.domain.vo.SubordinateListVO">
+        select user_id as userId, nick_name as nickName, dept_id as deptId from sys_user where dept_id in
+        <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        and status = 0 and del_flag = '0'
+    </select>
+
+    <select id="getUserEmailByUserIds" resultType="java.lang.String">
+        select email from sys_user where user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="getDeptIdByUserId" resultType="java.lang.Long">
+        select dept_id from sys_user where user_id = #{userId}
     </select>
 
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
