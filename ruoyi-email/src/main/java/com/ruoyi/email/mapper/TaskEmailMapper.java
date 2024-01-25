@@ -6,10 +6,7 @@ import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.bo.DealingEmailListBO;
-import com.ruoyi.email.domain.vo.DealingEmailListVO;
-import com.ruoyi.email.domain.vo.EmailDetailVO;
-import com.ruoyi.email.domain.vo.EmailListVO;
-import com.ruoyi.email.domain.vo.MenuInboxTaskCountVO;
+import com.ruoyi.email.domain.vo.*;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -78,7 +75,7 @@ public interface TaskEmailMapper
      * @param statusList
      * @return
      */
-    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList);
+    int count(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList, @Param("createId") Long createId);
 
     /**
      * 查询邮件列表数据（首页）
@@ -92,7 +89,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> selectTaskEmailPage(@Param("taskIdList") List<Long> taskIdList, @Param("type") Integer type, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("spamFlag") Boolean spamFlag, @Param("delFlag") String delFlag, @Param("traceFlag") Boolean traceFlag, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("customerFlag") Boolean customerFlag, @Param("folderId") Long folderId, @Param("labelId") Long labelId, @Param("statusList") List<Integer> statusList, @Param("createId") Long createId, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 根据id获取邮件信息
@@ -207,7 +204,7 @@ public interface TaskEmailMapper
      * @param customerId
      * @return
      */
-    int customerEmailCount(@Param("createId") Long createId, @Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword);
+    int customerEmailCount(@Param("userIds") List<Long> userIds, @Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("traceFlag") Boolean traceFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword);
 
     /**
      * 客户邮件列表
@@ -216,7 +213,7 @@ public interface TaskEmailMapper
      * @param limit
      * @return
      */
-    List<EmailListVO> customerEmailList(@Param("createId") Long createId, @Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
+    List<EmailListVO> customerEmailList(@Param("userIds") List<Long> userIds, @Param("customerId") Long customerId, @Param("fixedFlag") Boolean fixedFlag, @Param("attachmentFlag") Boolean attachmentFlag, @Param("readFlag") Boolean readFlag, @Param("pendingFlag") Boolean pendingFlag, @Param("traceFlag") Boolean traceFlag, @Param("emailList") List<String> emailList, @Param("type") Integer type, @Param("labelIdList") List<Long> labelIdList, @Param("keywordType") Integer keywordType, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 判断邮件是否存在
@@ -303,4 +300,56 @@ public interface TaskEmailMapper
      * @return
      */
     List<DealingEmailListVO> selectEmailDealingEmail(@Param("createId") Long createId, @Param("taskId") Long taskId, @Param("fromer") String fromer, @Param("attachmentFlag") Boolean attachmentFlag, @Param("offset") int offset, @Param("limit") int limit);
+
+
+    /**
+     * 查询角色部门简单信息
+     * @param userId
+     * @return
+     */
+    List<RoleDeptSimpleInfo2VO> queryRoleDeptSimpleInfo(@Param("userId") Long userId);
+
+    /**
+     * 获取所有用户
+     * @return
+     */
+    List<SubordinateListVO> getAllUser();
+
+    /**
+     * 查询部门下所有子部门
+     * @param deptId
+     * @return
+     */
+    List<Long> findSubordinateDeptIds(@Param("deptId") Long deptId);
+
+    /**
+     * 根据部门查询用户
+     * @param deptIdList
+     * @return
+     */
+    List<SubordinateListVO> getUserByDeptIds(@Param("deptIdList") List<Long> deptIdList);
+
+    /**
+     * 获取用户邮箱
+     * @param userIds
+     * @return
+     */
+    List<String> getUserEmailByUserIds(@Param("userIds") List<Long> userIds);
+
+    /**
+     * 根据用户ID查询部门ID
+     * @param userId
+     * @return
+     */
+    Long getDeptIdByUserId(@Param("userId") Long userId);
+
+    /**
+     * 更新邮件待处理
+     * @param ids
+     * @param pendingFlag
+     * @param pendingTime
+     * @param updateId
+     * @param updateBy
+     */
+    void updatePending(@Param("ids") List<Long> ids, @Param("pendingFlag") boolean pendingFlag, @Param("pendingTime") Date pendingTime, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

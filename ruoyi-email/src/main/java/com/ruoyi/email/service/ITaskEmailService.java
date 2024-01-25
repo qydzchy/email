@@ -8,6 +8,7 @@ import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.TransceiverRule;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
+import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
@@ -196,18 +197,18 @@ public interface ITaskEmailService
 
     /**
      * 标记待处理
-     * @param taskEmail
+     * @param dto
      * @return
      */
-    boolean pending(TaskEmail taskEmail);
+    boolean pending(EmailPendingDTO dto);
 
     /**
      * 移动邮件到标签
-     * @param id
+     * @param ids
      * @param labelId
      * @return
      */
-    boolean moveEmailToLabel(Long id, Long labelId);
+    boolean moveEmailToLabel(List<Long> ids, Long labelId);
 
     /**
      * 删除邮件标签
@@ -230,7 +231,7 @@ public interface ITaskEmailService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Long userId, Boolean fixedFlag, Boolean attachmentFlag, Boolean readFlag, Boolean pendingFlag, Boolean traceFlag, Boolean colleagueFlag, Boolean last7DaysFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize);
 
     /**
      * 自动回复
@@ -298,7 +299,7 @@ public interface ITaskEmailService
      * 下属列表
      * @return
      */
-    List<UserInfoVO2> userList();
+    List<SubordinateListVO> userList();
 
     /**
      * 针对收件箱的历史邮件

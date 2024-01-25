@@ -60,4 +60,11 @@ public interface ICustomerEmailService {
      * @return
      */
     List<String> contactEmailList(Long customerId);
+
+    /**
+     * 客户类别列表
+     * @param userId
+     * @return
+     */
+    CategoryVO categoryList(Long userId);
 }

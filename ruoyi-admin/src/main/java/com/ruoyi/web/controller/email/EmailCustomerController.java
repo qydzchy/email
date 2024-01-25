@@ -128,9 +128,15 @@ public class EmailCustomerController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('email:customer:email:list')")
     @GetMapping("/email/list")
-    public TableDataInfo emailList(@NotNull(message = "客户ID不能为空") Long customerId,
+    public TableDataInfo emailList(Long customerId,
+                              Long userId,
                               Boolean attachmentFlag,
                               Boolean fixedFlag,
+                              Boolean readFlag,
+                              Boolean pendingFlag,
+                              Boolean traceFlag,
+                              Boolean colleagueFlag,
+                              Boolean last7DaysFlag,
                               String emails,
                               Integer type,
                               String labelIds,
@@ -155,7 +161,7 @@ public class EmailCustomerController extends BaseController {
             }
         }
 
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, pageNum, pageSize);
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.customerEmailList(customerId, userId, fixedFlag, attachmentFlag, readFlag, pendingFlag, traceFlag, colleagueFlag, last7DaysFlag, emailList, type, labelIdList, keywordType, keyword, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 

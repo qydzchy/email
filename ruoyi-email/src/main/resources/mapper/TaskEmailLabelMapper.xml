@@ -60,6 +60,14 @@
         </trim>
     </insert>
 
+    <insert id="batchInsertTaskEmailLabel">
+        insert into mailbox_task_email_label(email_id, label_id, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        values
+        <foreach collection="taskEmailLabelList" item="item" index="index" separator=",">
+            (#{item.emailId}, #{item.labelId}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
     <update id="updateTaskEmailLabel" parameterType="TaskEmailLabel">
         update mailbox_task_email_label
         <trim prefix="SET" suffixOverrides=",">
@@ -88,6 +96,10 @@
     </delete>
 
     <update id="deleteByEmailIdAndLabelId">
-        update mailbox_task_email_label set del_flag = '2' where email_id = #{emailId} and label_id = #{labelId} and create_id = #{createId}
+        update mailbox_task_email_label set del_flag = '2' where label_id = #{labelId} and create_id = #{createId}
+        and email_id in
+        <foreach collection="emailIds" item="emailId" open="(" separator="," close=")">
+            #{emailId}
+        </foreach>
     </update>
 </mapper>

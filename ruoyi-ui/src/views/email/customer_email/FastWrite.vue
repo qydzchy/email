@@ -75,7 +75,7 @@
                     </span>
 
                 </span>
-                <PopoverSelectFolder :ids="[activeEmailId]" />
+                <PopoverSelectFolder @move-folder-success="handleMoveFolderSuccess" :ids="[activeEmailId]"/>
                 <span class="mm-tooltip mail-toolbar-btn-item" @click="toggleDropdown">
                     <span class="mm-tooltip-trigger">
                         <span>
@@ -782,6 +782,9 @@ export default {
             if (ids.length) {
                 this.spamEmails(ids);
             }
+        },
+        handleMoveFolderSuccess() {
+          this.nextEmail();
         },
         // 标记待处理
         async pendingEmail(email, pendingFlag, pendingTime) {

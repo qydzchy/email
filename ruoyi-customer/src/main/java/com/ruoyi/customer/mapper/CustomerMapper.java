@@ -208,7 +208,7 @@ public interface CustomerMapper
      * @param deptId
      * @return
      */
-    List<Long> findSubordinateDeptIds(Long deptId);
+    List<Long> findSubordinateDeptIds(@Param("deptId") Long deptId);
 
     /**
      * 获取最大的客户编号

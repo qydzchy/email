@@ -24,11 +24,11 @@
 																									<!---->
 																									<div class="mm-tabs-nav-scroll">
 																										<div class="mm-tabs-nav" role="tablist" style="transform: translateX(0px);">
-																											<div class="mm-tabs-active-bar__top mm-tabs-active-bar" style="width: 68px; transform: translateX(0px);"></div>
-																											<div class="mm-tabs-item mm-tabs-item__top mm-tabs-item--active" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true">全部
+																											<div class="mm-tabs-active-bar__top mm-tabs-active-bar" :style="{ width: '68px', transform: `translateX(${objectType === 'customer' ? '68px' : '0px'})` }"></div>
+																											<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'all' }]" id="tab-all" aria-controls="pane-all" role="tab" aria-selected="true" tabindex="0" refinfor="true" @click="switchObjectType('all')">全部
                                                         <!---->
 																											</div>
-                                                      																											<div class="mm-tabs-item mm-tabs-item__top" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true">客户
+                                                      																											<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'customer' }]" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
                                                                                                             </div>
                                                       <!--                                                      <div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
                                                                                                               &lt;!&ndash;&ndash;&gt;
@@ -295,7 +295,7 @@
 																								<div class="mm-popover">
 																									<div>
 																										<span class="">
-																											<span class="okki-icon-wrap tool-bar-icon-item" @click="handlePendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																											<span class="okki-icon-wrap tool-bar-icon-item" @click="clickPendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																													<path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
 																													<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
 																												</svg>
@@ -641,9 +641,9 @@
                                                         ]"
                                                       @mouseover="emailHoveredItem = '移动到'"
                                                       @mouseleave="emailHoveredItem = null">
-                                                    
+
                                                       <span class="mail-drop-menu-text ellipsis">
-                                                        
+
                                                         <span title="移动到" class="">移动到</span>
                                                       </span>
                                                       <span>
@@ -983,6 +983,7 @@ import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
 import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail, dealingEmailList} from "@/api/email/email";
 import {  getCustomerEmailInfo } from '@/api/email/customer'
+import { getUsuallyInfo } from '@/api/email/usually'
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";
@@ -1026,6 +1027,10 @@ export default {
       dealingEmailDatas: null,
       dealingEmailTotal: 0,
       dealingAttachmentFlag: null,
+      objectType: null,
+      labels: [],
+      // 移动/删除/举报后: 1.阅读下一封邮件(推荐) 2.回到当前邮件列表
+      moveDeleteReport: 1,
     }
   },
   components: {
@@ -1081,6 +1086,8 @@ export default {
     // this.currentEmailDetail = this.selectedEmail;
     this.refreshLabelList();
     this.dealingEmailList();
+    // 常规设置
+    this.generalSetting();
   },
 
   watch: {
@@ -1126,6 +1133,26 @@ export default {
       }
     },
 
+    clickPendingTime() {
+      if (this.showPendingTime === true || this.showCustomTime === true) {
+        this.showPendingTime = false;
+        this.showCustomTime = false;
+      } else {
+        this.showPendingTime = true;
+        this.showCustomTime = false;
+      }
+    },
+
+    // 常规设置
+    generalSetting() {
+      getUsuallyInfo().then((response) => {
+        const data = response.data
+        if (data !== null && data !== undefined && data.moveDeleteReport !== null && data.moveDeleteReport !== undefined) {
+          this.moveDeleteReport = data.moveDeleteReport;
+        }
+      });
+    },
+
     fetchEmailData(selectedEmailType) {
       this.currentEmailType = selectedEmailType;
       if (selectedEmailType === 'ALL_RECEIVED') {
@@ -1159,6 +1186,7 @@ export default {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId) {
       this.taskId = taskId;
       this.type = type;
+      let customerFlag = this.objectType === 'customer' ? true : false;
       const query = {
         taskId: this.taskId,
         // 邮件类型 1.收取 2.发送
@@ -1170,6 +1198,7 @@ export default {
         spamFlag: spamFlag,
         traceFlag: traceFlag,
         folderId: folderId,
+        customerFlag: customerFlag,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -1204,6 +1233,14 @@ export default {
       }
 
       this.fetchEmailList(this.taskId);
+    },
+
+    /**
+     * 切换对象类型
+     */
+    switchObjectType(objectType) {
+      this.objectType = objectType;
+      this.fetchEmailData(this.currentEmailType);
     },
 
     /**
@@ -1346,8 +1383,10 @@ export default {
 
     // 标记待处理
     async pendingEmail(email, pendingFlag, pendingTime) {
+      const emailIds = [];
+      emailIds.push(email.id);
       const data = {
-        "id": email.id,
+        "ids": emailIds,
         "pendingFlag": pendingFlag,
         "pendingTime": pendingTime
       };
@@ -1388,8 +1427,10 @@ export default {
 
     // 移动邮件到标签
     async moveEmailToLabel(email, label) {
+      let ids = [];
+      ids.push(email.id);
       const data = {
-        "id": email.id,
+        "id": ids,
         "labelId": label.id
       };
       try {
@@ -1431,49 +1472,53 @@ export default {
      */
     async getNextEmail() {
       let found = false;
-      for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
-        const monthGroup = this.localEmailList[groupIndex];
-        for (const month in monthGroup) {
+      if (this.moveDeleteReport === 1) {
+        for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+          const monthGroup = this.localEmailList[groupIndex];
+          for (const month in monthGroup) {
 
-          const emails = monthGroup[month];
-          const index = emails.findIndex(email => email.id === this.activeEmailId);
-          if (index > -1) {
-            emails.splice(index, 1);
-            this.total -= 1;
+            const emails = monthGroup[month];
+            const index = emails.findIndex(email => email.id === this.activeEmailId);
+            if (index > -1) {
+              emails.splice(index, 1);
+              this.total -= 1;
 
-            if (emails.length === 0) {
-              // 如果该monthGroup没有邮件了，从localEmailList中移除
-              this.localEmailList.splice(groupIndex, 1);
+              if (emails.length === 0) {
+                // 如果该monthGroup没有邮件了，从localEmailList中移除
+                this.localEmailList.splice(groupIndex, 1);
 
-              // 尝试从下一个monthGroup获取最新邮件
-              if (this.localEmailList[groupIndex]) {
-                this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                // 尝试从下一个monthGroup获取最新邮件
+                if (this.localEmailList[groupIndex]) {
+                  this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                } else {
+                  this.currentEmailDetail = {};
+                }
+
+              } else if (emails[index]) {
+                this.currentEmailDetail = emails[index];
+              } else if (emails[index - 1]) {
+                this.currentEmailDetail = emails[index - 1];
               } else {
                 this.currentEmailDetail = {};
               }
 
-            } else if (emails[index]) {
-              this.currentEmailDetail = emails[index];
-            } else if (emails[index - 1]) {
-              this.currentEmailDetail = emails[index - 1];
-            } else {
-              this.currentEmailDetail = {};
-            }
+              if (Object.keys(this.currentEmailDetail).length !== 0) {
+                // 将状态改成已读
+                this.readEmail(this.currentEmailDetail);
+                let id = this.currentEmailDetail.id;
+                this.activeEmailId = id;
+                this.currentEmailDetail = this.getEmailInfo(id);
+                this.dealingEmailList();
+              }
 
-            if (Object.keys(this.currentEmailDetail).length !== 0) {
-              // 将状态改成已读
-              this.readEmail(this.currentEmailDetail);
-              let id = this.currentEmailDetail.id;
-              this.activeEmailId = id;
-              this.currentEmailDetail = this.getEmailInfo(id);
-              this.dealingEmailList();
+              found = true;
+              break;
             }
-
-            found = true;
-            break;
           }
+          if (found) break;
         }
-        if (found) break;
+      } else if (this.moveDeleteReport === 2) {
+        EventBus.$emit('switch-email-header', this.currentEmailType, this.currentPage);
       }
 
       this.isDropdownEmailShown = false;

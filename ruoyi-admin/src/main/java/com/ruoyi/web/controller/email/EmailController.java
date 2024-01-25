@@ -220,7 +220,7 @@ public class EmailController extends BaseController {
     @PostMapping("/move/email/to/label")
     public AjaxResult moveEmailToLabel(@RequestBody @Valid EmailLabelMoveDTO emailLabelMoveDTO)
     {
-        return toAjax(taskEmailService.moveEmailToLabel(emailLabelMoveDTO.getId(), emailLabelMoveDTO.getLabelId()));
+        return toAjax(taskEmailService.moveEmailToLabel(emailLabelMoveDTO.getIds(), emailLabelMoveDTO.getLabelId()));
     }
 
     /**
@@ -229,19 +229,19 @@ public class EmailController extends BaseController {
     @PreAuthorize("@ss.hasPermi('email:pending')")
     @Log(title = "标记待处理", businessType = BusinessType.UPDATE)
     @PostMapping("/pending")
-    public AjaxResult pending(@RequestBody TaskEmail taskEmail)
+    public AjaxResult pending(@RequestBody EmailPendingDTO dto)
     {
-        if (taskEmail.getId() == null) {
-            throw new ServiceException("id不能为空");
+        if (dto.getIds() == null || dto.getIds().isEmpty()) {
+            throw new ServiceException("邮件ID不能为空");
         }
-        if (taskEmail.getPendingFlag() == null) {
-            throw new ServiceException("预处理状态不能为空");
+        if (dto.getPendingFlag() == null) {
+            throw new ServiceException("是否待处理不能为空");
         }
-        if (taskEmail.getPendingTime() == null) {
+        if (dto.getPendingTime() == null) {
             throw new ServiceException("预处理时间不能为空");
         }
 
-        return toAjax(taskEmailService.pending(taskEmail));
+        return toAjax(taskEmailService.pending(dto));
     }
 
     /**

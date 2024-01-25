@@ -126,6 +126,17 @@
         <if test="traceFlag != null "> and trace_flag = #{traceFlag}</if>
         <if test="fixedFlag != null and fixedFlag == true"> and fixed_flag = true</if>
         <if test="folderId != null "> and folder_id = #{folderId}</if>
+        <if test="customerFlag != null and customerFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM customer_customer cc
+            LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+            WHERE mte.fromer = ccc.email
+            AND cc.create_id = #{createId}
+            AND cc.del_flag = '0'
+            AND ccc.del_flag = '0'
+            )
+        </if>
         and del_flag = #{delFlag}
     </select>
 
@@ -133,9 +144,15 @@
         SELECT
         mte.id, mte.type, mte.status, mte.task_id as taskId, mte.fromer, mte.receiver, mte.folder_id as folderId, mte.title,
         mte.send_date as sendDate, mte.read_flag as readFlag, mte.pending_flag as pendingFlag, mte.pending_time as pendingTime,
-        mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content
+        mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mtec.content, ccc.nick_name as nickName
         FROM mailbox_task_email mte
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        LEFT JOIN (
+        SELECT customer_id, email, MIN(nick_name) as nick_name
+        FROM customer_customer_contact where del_flag = '0'
+        GROUP BY email
+        ) ccc ON mte.fromer = ccc.email
+        LEFT JOIN customer_customer cc ON ccc.customer_id = cc.id AND cc.create_id = #{createId} AND cc.del_flag = '0'
         WHERE
         mte.task_id in
         <foreach collection="taskIdList" item="taskId" open="(" separator="," close=")">
@@ -179,6 +196,17 @@
         <if test="traceFlag != null"> AND mte.trace_flag = #{traceFlag}</if>
         <if test="fixedFlag != null and fixedFlag == true"> AND fixed_flag = true</if>
         <if test="folderId != null"> AND mte.folder_id = #{folderId}</if>
+        <if test="customerFlag != null and customerFlag == true">
+            AND EXISTS (
+            SELECT 1
+            FROM customer_customer cc
+            LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+            WHERE mte.fromer = ccc.email
+            AND cc.create_id = #{createId}
+            AND cc.del_flag = '0'
+            AND ccc.del_flag = '0'
+            )
+        </if>
         AND mte.del_flag = #{delFlag}
         ORDER BY mte.send_date DESC
         LIMIT #{offset}, #{limit}
@@ -275,8 +303,10 @@
         left join mailbox_task mt on mte.task_id = mt.id
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
-        ccc.customer_id = #{customerId}
-        AND mt.create_id = #{createId}
+        mt.create_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
         AND mt.del_flag = '0'
         AND ccc.del_flag = '0'
         AND mte.del_flag = '0'
@@ -287,11 +317,20 @@
             WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
-        <if test="fixedFlag != null and fixedFlag == true">
-            AND mte.fixed_flag = true
+        <if test="readFlag != null and readFlag == true">
+            AND mte.read_flag = true
+        </if>
+        <if test="pendingFlag != null and pendingFlag == true">
+            AND mte.pending_flag = true
+        </if>
+        <if test="traceFlag != null and traceFlag == true">
+            AND mte.trace_flag = true
         </if>
         <if test="type != null">
             AND mte.type = #{type}
+        </if>
+        <if test="customerId != null">
+            AND ccc.customer_id = #{customerId}
         </if>
         <!-- 联系人筛选 -->
         <if test="emailList != null and emailList.size() > 0">
@@ -381,8 +420,10 @@
         LEFT JOIN mailbox_task mt ON mte.task_id = mt.id
         LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
         WHERE
-        ccc.customer_id = #{customerId}
-        AND mt.create_id = #{createId}
+        mt.create_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
         AND mt.del_flag = '0'
         AND ccc.del_flag = '0'
         AND mte.del_flag = '0'
@@ -393,11 +434,23 @@
             WHERE mte.id = mtea.email_id and mtea.del_flag = '0'
             )
         </if>
+        <if test="readFlag != null and readFlag == true">
+            AND mte.read_flag = true
+        </if>
+        <if test="pendingFlag != null and pendingFlag == true">
+            AND mte.pending_flag = true
+        </if>
+        <if test="traceFlag != null and traceFlag == true">
+            AND mte.trace_flag = true
+        </if>
         <if test="fixedFlag != null and fixedFlag == true">
             AND mte.fixed_flag = true
         </if>
         <if test="type != null">
             AND mte.type = #{type}
+        </if>
+        <if test="customerId != null">
+            AND ccc.customer_id = #{customerId}
         </if>
         <!-- 联系人筛选 -->
         <if test="emailList != null and emailList.size() > 0">
@@ -590,6 +643,46 @@
         LIMIT #{offset}, #{limit}
     </select>
 
+    <select id="queryRoleDeptSimpleInfo" resultType="com.ruoyi.email.domain.vo.RoleDeptSimpleInfo2VO">
+        SELECT
+            r.role_id AS roleId,
+            r.data_scope AS dataScope,
+            rd.dept_id AS roleDeptId
+        FROM
+            sys_role r
+                LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
+                LEFT JOIN sys_role_dept rd ON r.role_id = rd.role_id
+        WHERE
+            ur.user_id = #{userId}
+    </select>
+
+    <select id="getAllUser" resultType="com.ruoyi.email.domain.vo.SubordinateListVO">
+        select user_id as userId, nick_name as nickName, dept_id as deptId from sys_user where status = 0 and del_flag = '0'
+    </select>
+
+    <select id="findSubordinateDeptIds" resultType="java.lang.Long">
+        select dept_id from sys_dept where del_flag = '0' and parent_id = #{deptId}
+    </select>
+
+    <select id="getUserByDeptIds" resultType="com.ruoyi.email.domain.vo.SubordinateListVO">
+        select user_id as userId, nick_name as nickName, dept_id as deptId from sys_user where dept_id in
+        <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        and status = 0 and del_flag = '0'
+    </select>
+
+    <select id="getUserEmailByUserIds" resultType="java.lang.String">
+        select email from sys_user where user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="getDeptIdByUserId" resultType="java.lang.Long">
+        select dept_id from sys_user where user_id = #{userId}
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -743,6 +836,15 @@
           AND status = 1
           AND del_flag = '0'
           AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
+    </update>
+
+    <update id="updatePending">
+        update mailbox_task_email set pending_flag = #{pendingFlag}, pending_time = #{pendingTime}, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW()
+        where id in
+         <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+         </foreach>
+         and del_flag = '0'
     </update>
 
     <delete id="deleteTaskEmailById" parameterType="Long">

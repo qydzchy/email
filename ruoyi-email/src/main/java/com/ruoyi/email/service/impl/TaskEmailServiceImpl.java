@@ -23,6 +23,7 @@ import com.aliyun.teaopenapi.Client;
 import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.AndOrEnum;
+import com.ruoyi.common.enums.customer.DataScopeEnum;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.enums.email.RuleTypeEnum;
 import com.ruoyi.common.enums.email.TaskExecutionStatusEnum;
@@ -34,6 +35,7 @@ import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.*;
+import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
@@ -185,6 +187,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      */
     @Override
     public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Boolean customerFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
         if (taskIdList.isEmpty()) {
             return Pair.of(0, new ArrayList<>());
         }
@@ -199,14 +204,14 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         spamFlag = Optional.ofNullable(spamFlag).orElse(false);
         delFlag = Optional.ofNullable(delFlag).orElse("0");
 
-        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList);
+        int count = taskEmailMapper.count(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, userId);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, userId, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }
@@ -467,7 +472,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        TaskEmail pullTaskEmail = taskEmailMapper.selectTaskEmailById(emailQuickReplyDTO.getId());
+        Long id = emailQuickReplyDTO.getId();
+        TaskEmail pullTaskEmail = taskEmailMapper.selectTaskEmailById(id);
         if (pullTaskEmail == null) throw new ServiceException();
 
         String username = loginUser.getUsername();
@@ -540,6 +546,16 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         content.append(historyContent);
         taskEmailContent.setContent(content.toString());
         taskEmailContentService.insertTaskEmailContent(taskEmailContent);
+
+        // 更新待关闭状态
+        OtherConfigVO otherConfigVO = otherConfigMapper.getByCreateId(userId);
+        if (otherConfigVO != null && otherConfigVO.getPendingClose() != null && otherConfigVO.getPendingClose().intValue() == 1) {
+            TaskEmail currentTaskEmail = new TaskEmail();
+            currentTaskEmail.setId(id);
+            currentTaskEmail.setPendingFlag(false);
+            currentTaskEmail.setPendingTime(null);
+            taskEmailMapper.updateTaskEmail(currentTaskEmail);
+        }
 
         return true;
     }
@@ -868,9 +884,77 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * 下属列表
      * @return
      */
-    @Override //todo 待开发
-    public List<UserInfoVO2> userList() {
-        return null;
+    @Override
+    public List<SubordinateListVO> userList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+        Long deptId = loginUser.getDeptId();
+
+        return getSubordinateList(userId, deptId);
+    }
+
+    /**
+     * 获取下属列表
+     * @param userId
+     * @param deptId
+     * @return
+     */
+    private List<SubordinateListVO> getSubordinateList(Long userId, Long deptId) {
+        List<SubordinateListVO> subordinateVOList = new ArrayList<>();
+
+        // 查询角色信息
+        List<RoleDeptSimpleInfo2VO> roleDeptSimpleInfo2VOList = taskEmailMapper.queryRoleDeptSimpleInfo(userId);
+        Map<Long, List<RoleDeptSimpleInfo2VO>> roleIdRoleDeptSimpleInfoMap = roleDeptSimpleInfo2VOList.stream().collect(Collectors.groupingBy(roleDeptSimpleInfo2VO -> roleDeptSimpleInfo2VO.getRoleId()));
+
+        for (Map.Entry<Long, List<RoleDeptSimpleInfo2VO>> entry : roleIdRoleDeptSimpleInfoMap.entrySet()) {
+            List<RoleDeptSimpleInfo2VO> roleDeptInfoVOList = entry.getValue();
+
+            RoleDeptSimpleInfo2VO firstRoleDeptSimpleInfo2VO = roleDeptInfoVOList.get(0);
+            DataScopeEnum dataScopeEnum = DataScopeEnum.getByCode(firstRoleDeptSimpleInfo2VO.getDataScope());
+
+            if (dataScopeEnum != null) {
+                switch (dataScopeEnum) {
+                    case ALL:
+                        subordinateVOList.addAll(taskEmailMapper.getAllUser());
+                        break;
+                    case DEPARTMENT_AND_BELOW:
+                        if (deptId != null) {
+                            List<Long> subordinateDeptIds = getSubordinateDeptIds(deptId);
+                            subordinateVOList.addAll(taskEmailMapper.getUserByDeptIds(subordinateDeptIds));
+                        }
+                        break;
+                }
+            }
+        }
+
+        // 剔除自己
+        subordinateVOList = subordinateVOList.stream().filter(subordinateVO -> !subordinateVO.getUserId().equals(userId)).collect(Collectors.toList());
+        return deduplicateById(subordinateVOList);
+    }
+
+    /**
+     * 去重
+     * @param list
+     * @return
+     */
+    private List<SubordinateListVO> deduplicateById(List<SubordinateListVO> list) {
+        Set<SubordinateListVO> set = new HashSet<>(list);
+        return new ArrayList<>(set);
+    }
+
+    public List<Long> getSubordinateDeptIds(Long deptId) {
+        List<Long> result = new ArrayList<>();
+        findSubordinateDeptIds(deptId, result);
+        return result;
+    }
+
+    private void findSubordinateDeptIds(Long deptId, List<Long> result) {
+        List<Long> subDepartments = taskEmailMapper.findSubordinateDeptIds(deptId);
+        for (Long subDeptId : subDepartments) {
+            result.add(subDeptId);
+            // 递归查询下属部门
+            findSubordinateDeptIds(subDeptId, result);
+        }
     }
 
     /**
@@ -1276,49 +1360,45 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
     /**
      * 标记为预处理
-     * @param taskEmail
+     * @param dto
      * @return
      */
     @Override
-    public boolean pending(TaskEmail taskEmail) {
+    public boolean pending(EmailPendingDTO dto) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
-        TaskEmail dbTaskEmail = taskEmailMapper.selectTaskEmailById(taskEmail.getId());
-        if (dbTaskEmail == null) {
-            log.info("不存在id为{}的邮件记录", taskEmail.getId());
-            throw new ServiceException();
-        }
-
-        dbTaskEmail.setPendingFlag(taskEmail.getPendingFlag());
-        dbTaskEmail.setPendingTime(taskEmail.getPendingTime());
-        dbTaskEmail.setUpdateId(userId);
-        dbTaskEmail.setUpdateBy(username);
-        taskEmailMapper.updateTaskEmail(dbTaskEmail);
+        // 更新邮件待处理
+        taskEmailMapper.updatePending(dto.getIds(), dto.getPendingFlag(), dto.getPendingTime(), userId, username);
         return true;
     }
 
     @Override
-    public boolean moveEmailToLabel(Long id, Long labelId) {
+    public boolean moveEmailToLabel(List<Long> ids, Long labelId) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
         // 删除该记录
-        taskEmailLabelService.deleteByEmailIdAndLabelId(id, labelId, userId);
+        taskEmailLabelService.deleteByEmailIdAndLabelId(ids, labelId, userId);
 
         Date now = new Date();
-        TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
-        taskEmailLabel.setEmailId(id);
-        taskEmailLabel.setLabelId(labelId);
-        taskEmailLabel.setCreateId(userId);
-        taskEmailLabel.setCreateBy(username);
-        taskEmailLabel.setCreateTime(now);
-        taskEmailLabel.setUpdateId(userId);
-        taskEmailLabel.setUpdateBy(username);
-        taskEmailLabel.setUpdateTime(now);
-        taskEmailLabelService.insertTaskEmailLabel(taskEmailLabel);
+        List<TaskEmailLabel> taskEmailLabelList = new ArrayList<>();
+        for (Long id : ids) {
+            TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
+            taskEmailLabel.setEmailId(id);
+            taskEmailLabel.setLabelId(labelId);
+            taskEmailLabel.setCreateId(userId);
+            taskEmailLabel.setCreateBy(username);
+            taskEmailLabel.setCreateTime(now);
+            taskEmailLabel.setUpdateId(userId);
+            taskEmailLabel.setUpdateBy(username);
+            taskEmailLabel.setUpdateTime(now);
+            taskEmailLabelList.add(taskEmailLabel);
+        }
+
+        taskEmailLabelService.batchInsertTaskEmailLabel(taskEmailLabelList);
         return true;
     }
 
@@ -1327,7 +1407,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
 
-        taskEmailLabelService.deleteByEmailIdAndLabelId(emailId, labelId, userId);
+        taskEmailLabelService.deleteByEmailIdAndLabelId(Arrays.asList(emailId), labelId, userId);
         return true;
     }
 
@@ -1374,17 +1454,47 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
      * @return
      */
     @Override
-    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Boolean fixedFlag, Boolean attachmentFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize) {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        Long userId = loginUser.getUserId();
-        int count = taskEmailMapper.customerEmailCount(userId, customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword);
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> customerEmailList(Long customerId, Long userId, Boolean fixedFlag, Boolean attachmentFlag, Boolean readFlag, Boolean pendingFlag, Boolean traceFlag, Boolean colleagueFlag, Boolean last7DaysFlag, List<String> emailList, Integer type, List<Long> labelIdList, Integer keywordType, String keyword, Integer pageNum, Integer pageSize) {
+        List<Long> userIds = new ArrayList<>();
+        if (userId == null) {
+            LoginUser loginUser = SecurityUtils.getLoginUser();
+            userId = loginUser.getUserId();
+        }
+
+        userIds.add(userId);
+
+        // 同事邮件
+        if (Optional.ofNullable(colleagueFlag).orElse(false)) {
+            Long deptId = taskEmailMapper.getDeptIdByUserId(userId);
+            List<SubordinateListVO> subordinateVOList = getSubordinateList(userId, deptId);
+            if (subordinateVOList != null && !subordinateVOList.isEmpty()) {
+                List<Long> userIdList = subordinateVOList.stream().map(SubordinateListVO::getUserId).collect(Collectors.toList());
+                // 查询用户邮箱
+                emailList = taskEmailMapper.getUserEmailByUserIds(userIdList);
+            }
+        }
+
+        // 最近7天往来
+        if (Optional.ofNullable(last7DaysFlag).orElse(false)) {
+            // 查询所有下属的用户ID
+            List<SubordinateListVO> subordinateVOList = userList();
+            if (subordinateVOList != null && !subordinateVOList.isEmpty()) {
+                userIds = subordinateVOList.stream().map(SubordinateListVO::getUserId).collect(Collectors.toList());
+            }
+
+            if (userIds == null || userIds.isEmpty()) {
+                userIds.add(-1L);
+            }
+        }
+
+        int count = taskEmailMapper.customerEmailCount(userIds, customerId, fixedFlag, attachmentFlag, readFlag, pendingFlag, traceFlag, emailList, type, labelIdList, keywordType, keyword);
         if (count <= 0) {
             return Pair.of(0, new ArrayList<>());
         }
 
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(userId, customerId, fixedFlag, attachmentFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
+        List<EmailListVO> emailListVOList = taskEmailMapper.customerEmailList(userIds, customerId, fixedFlag, attachmentFlag, readFlag, pendingFlag, traceFlag, emailList, type, labelIdList, keywordType, keyword, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }
