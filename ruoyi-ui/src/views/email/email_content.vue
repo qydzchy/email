@@ -983,6 +983,7 @@ import emailContentDetailInfoLayout from './email_content_detail_info.vue';
 
 import {fixedEmail, list, quickReply, readEmail, spamEmail, pendingEmail, moveEmailToFolder, moveEmailToLabel, deleteEmail, exportEmail, dealingEmailList} from "@/api/email/email";
 import {  getCustomerEmailInfo } from '@/api/email/customer'
+import { getUsuallyInfo } from '@/api/email/usually'
 import CustomTimePopover from "@/views/email/custom_time.vue";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import FolderComponent from "@/views/email/email_content_folder_tree.vue";
@@ -1028,6 +1029,8 @@ export default {
       dealingAttachmentFlag: null,
       objectType: null,
       labels: [],
+      // 移动/删除/举报后: 1.阅读下一封邮件(推荐) 2.回到当前邮件列表
+      moveDeleteReport: 1,
     }
   },
   components: {
@@ -1083,6 +1086,8 @@ export default {
     // this.currentEmailDetail = this.selectedEmail;
     this.refreshLabelList();
     this.dealingEmailList();
+    // 常规设置
+    this.generalSetting();
   },
 
   watch: {
@@ -1126,6 +1131,16 @@ export default {
         this.currentPage = Number(this.currentPage) - 1;
         this.fetchEmailData(this.currentEmailType);
       }
+    },
+
+    // 常规设置
+    generalSetting() {
+      getUsuallyInfo().then((response) => {
+        const data = response.data
+        if (data !== null && data !== undefined && data.moveDeleteReport !== null && data.moveDeleteReport !== undefined) {
+          this.moveDeleteReport = data.moveDeleteReport;
+        }
+      });
     },
 
     fetchEmailData(selectedEmailType) {
@@ -1445,49 +1460,53 @@ export default {
      */
     async getNextEmail() {
       let found = false;
-      for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
-        const monthGroup = this.localEmailList[groupIndex];
-        for (const month in monthGroup) {
+      if (this.moveDeleteReport === 1) {
+        for (let groupIndex = 0; groupIndex < this.localEmailList.length; groupIndex++) {
+          const monthGroup = this.localEmailList[groupIndex];
+          for (const month in monthGroup) {
 
-          const emails = monthGroup[month];
-          const index = emails.findIndex(email => email.id === this.activeEmailId);
-          if (index > -1) {
-            emails.splice(index, 1);
-            this.total -= 1;
+            const emails = monthGroup[month];
+            const index = emails.findIndex(email => email.id === this.activeEmailId);
+            if (index > -1) {
+              emails.splice(index, 1);
+              this.total -= 1;
 
-            if (emails.length === 0) {
-              // 如果该monthGroup没有邮件了，从localEmailList中移除
-              this.localEmailList.splice(groupIndex, 1);
+              if (emails.length === 0) {
+                // 如果该monthGroup没有邮件了，从localEmailList中移除
+                this.localEmailList.splice(groupIndex, 1);
 
-              // 尝试从下一个monthGroup获取最新邮件
-              if (this.localEmailList[groupIndex]) {
-                this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                // 尝试从下一个monthGroup获取最新邮件
+                if (this.localEmailList[groupIndex]) {
+                  this.currentEmailDetail = this.localEmailList[groupIndex][Object.keys(this.localEmailList[groupIndex])[0]][0] || {};
+                } else {
+                  this.currentEmailDetail = {};
+                }
+
+              } else if (emails[index]) {
+                this.currentEmailDetail = emails[index];
+              } else if (emails[index - 1]) {
+                this.currentEmailDetail = emails[index - 1];
               } else {
                 this.currentEmailDetail = {};
               }
 
-            } else if (emails[index]) {
-              this.currentEmailDetail = emails[index];
-            } else if (emails[index - 1]) {
-              this.currentEmailDetail = emails[index - 1];
-            } else {
-              this.currentEmailDetail = {};
-            }
+              if (Object.keys(this.currentEmailDetail).length !== 0) {
+                // 将状态改成已读
+                this.readEmail(this.currentEmailDetail);
+                let id = this.currentEmailDetail.id;
+                this.activeEmailId = id;
+                this.currentEmailDetail = this.getEmailInfo(id);
+                this.dealingEmailList();
+              }
 
-            if (Object.keys(this.currentEmailDetail).length !== 0) {
-              // 将状态改成已读
-              this.readEmail(this.currentEmailDetail);
-              let id = this.currentEmailDetail.id;
-              this.activeEmailId = id;
-              this.currentEmailDetail = this.getEmailInfo(id);
-              this.dealingEmailList();
+              found = true;
+              break;
             }
-
-            found = true;
-            break;
           }
+          if (found) break;
         }
-        if (found) break;
+      } else if (this.moveDeleteReport === 2) {
+        EventBus.$emit('switch-email-header', this.currentEmailType, this.currentPage);
       }
 
       this.isDropdownEmailShown = false;
