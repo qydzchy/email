@@ -61,8 +61,8 @@ public class TaskEmail extends BaseEntity
     private String title;
 
     /** 发送时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "发送时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "发送时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date sendDate;
 
     /** 原始邮件存储路径 */
@@ -86,8 +86,8 @@ public class TaskEmail extends BaseEntity
     private String recipientTimeZone;
 
     /** 收件人当地时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "收件人当地时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "收件人当地时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date recipientLocalTime;
 
     /** 是否已读: 0.否 1.是 */
@@ -99,8 +99,8 @@ public class TaskEmail extends BaseEntity
     private Boolean pendingFlag;
 
     /** 待处理时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "待处理时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "待处理时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date pendingTime;
 
     /** 是否固定: 0.否 1.是 */

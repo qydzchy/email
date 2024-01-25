@@ -838,6 +838,15 @@
           AND COALESCE(recipient_local_time, '1970-01-01') &lt; NOW()
     </update>
 
+    <update id="updatePending">
+        update mailbox_task_email set pending_flag = #{pendingFlag}, pending_time = #{pendingTime}, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW()
+        where id in
+         <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+         </foreach>
+         and del_flag = '0'
+    </update>
+
     <delete id="deleteTaskEmailById" parameterType="Long">
         delete from mailbox_task_email where id = #{id}
     </delete>

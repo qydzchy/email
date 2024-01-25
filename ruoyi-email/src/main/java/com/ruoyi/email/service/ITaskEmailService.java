@@ -8,6 +8,7 @@ import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.TransceiverRule;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
+import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
@@ -196,10 +197,10 @@ public interface ITaskEmailService
 
     /**
      * 标记待处理
-     * @param taskEmail
+     * @param dto
      * @return
      */
-    boolean pending(TaskEmail taskEmail);
+    boolean pending(EmailPendingDTO dto);
 
     /**
      * 移动邮件到标签

@@ -43,8 +43,26 @@
                                   <span class="mm-tooltip-trigger">
                                     <div class="mm-popover">
                                       <div>
+                                        <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: 40px; left: -5px; will-change: top, left; transform-origin: 100% bottom;">
+                                            <!---->
+                                            <div>
+                                              <!---->
+                                              <div class="mail-pending-handler">
+                                                <div class="title" v-if="showPendingTime">
+                                                  <span>请选择稍后处理时间: </span>
+                                                </div>
+                                                <div class="title" v-if="showCustomTime">
+                                                              <span class="bold back-block">
+                                                                <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
+                                                              </span>
+                                                </div>
+                                                <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime" @time-selected="handleSelectedTime"></PendingTimePopover>
+                                                <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
+                                              </div>
+                                            </div>
+                                          </div>
                                         <span>
-                                          <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
+                                          <span class="okki-icon-wrap tool-bar-icon-item" @click="clickPendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
                                               <path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
                                               <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
                                             </svg>
@@ -64,7 +82,7 @@
                                     </span>
                                   </span>
                                 </span>
-                                <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 500px;">
+                                <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 135px;">
                                   <emailHeaderLabelLayout :labels="labels" @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
                                 </div>
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="handleLabel">
@@ -382,22 +400,35 @@
                                                             <!---->
 																														<div class="pending">
 																															<div class="mm-popover">
-																																<div>
+																																<div v-if="email.pendingFlag === 0">
 																																	<span class="okki-icon-wrap pending-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																																			<path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
 																																			<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
 																																		</svg>
 																																	</span>
 																																</div>
+
+                                                                <div v-if="email.pendingFlag === 1">
+                                                                  <span class="mm-tooltip">
+                                                                    <span class="mm-tooltip-trigger">
+                                                                      <span class="okki-icon-wrap pending-icon pending-logo">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
+                                                                          <path d="M12 7a1 1 0 011 1v4.423l2.964 1.711a1 1 0 01-1 1.732l-3.447-1.99a1.01 1.01 0 01-.384-.377.992.992 0 01-.133-.518V8a1 1 0 011-1z" fill="#fff"></path>
+                                                                        </svg>
+                                                                      </span>
+                                                                    </span>
+                                                                  </span>
+                                                                </div>
                                                                 <!---->
 																															</div>
 																														</div>
+
                                                             <div v-if="email.fixedFlag" class="mail-pin-wrapper">
                                                                 <span class="okki-icon-wrap mail-pin-icon" data-tips="取消固定" color="#0064ff" @click="toggleFixed(email, $event)">​<svg data-tips="取消固定" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="#0064ff">
                                                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M8.382 2a.963.963 0 00-.97.956c0 1.33.582 2.526 1.506 3.353l-.606 3.865C6.325 11.39 5 13.564 5 16.044c0 .528.434.956.97.956H11v3.914c0 .6.448 1.086 1 1.086s1-.486 1-1.086V17h5.03c.536 0 .97-.428.97-.956 0-2.507-1.354-4.7-3.376-5.91l-.597-3.777a4.49 4.49 0 001.56-3.4.963.963 0 00-.969-.957H8.382z"></path>
                                                                   </svg>
                                                                 </span>
-                                                              </div>
+                                                            </div>
 
 																														<div v-else class="mail-pin-wrapper">
 																															<span class="okki-icon-wrap mail-pin-icon" data-tips="固定" @click="toggleFixed(email, $event)">​<svg data-tips="固定" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
@@ -552,6 +583,7 @@ import {
   readEmail,
   spamEmail,
   deleteEmail,
+  pendingEmail,
   moveEmailToLabel
 } from "@/api/email/email";
 import {
@@ -562,6 +594,8 @@ import { getUsuallyInfo } from '@/api/email/usually'
 import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 import emailHeaderLabelLayout from "@/views/email/email_content_label.vue";
 import {listLabel} from "@/api/email/label";
+import PendingTimePopover from "@/views/email/pending_time.vue";
+import CustomTimePopover from "@/views/email/custom_time.vue";
 export default {
   data() {
     return {
@@ -596,9 +630,12 @@ export default {
       selectEmailIds: [],
       objectType: null,
       labels: [],
+      showPendingTime: false,
+      showCustomTime: false,
     }
   },
   components: {
+    CustomTimePopover, PendingTimePopover,
     emailHeaderLabelLayout,
     PopoverSelectFolder
   },
@@ -769,6 +806,51 @@ export default {
         this.currentPage = this.totalPages;
       } else if (inputValue < 1) {
         this.currentPage = 1;
+      }
+    },
+
+    clickPendingTime() {
+      if (this.showPendingTime === true || this.showCustomTime === true) {
+        this.showPendingTime = false;
+        this.showCustomTime = false;
+      } else {
+        this.showPendingTime = true;
+        this.showCustomTime = false;
+      }
+    },
+
+    handlePendingTime() {
+      this.showPendingTime = true;
+      this.showCustomTime = false;
+    },
+
+    handleCustomTime() {
+      this.showPendingTime = false;
+      this.showCustomTime = true;
+    },
+
+    handleSelectedTime(time) {
+      this.pendingEmail(this.selectEmailIds, true, time);
+    },
+
+    // 标记待处理
+    async pendingEmail(emailIds, pendingFlag, pendingTime) {
+      const data = {
+        "ids": emailIds,
+        "pendingFlag": pendingFlag,
+        "pendingTime": pendingTime
+      };
+      try {
+        const response = await pendingEmail(data);
+        if (response.code === 200) {
+          this.showPendingTime = false;
+          this.showCustomTime = false;
+          this.fetchEmailData(this.currentEmailType);
+          return;
+        }
+      } catch (error) {
+        console.error('标记为待处理出现错误:', error);
+        throw error;
       }
     },
 

@@ -295,7 +295,7 @@
 																								<div class="mm-popover">
 																									<div>
 																										<span class="">
-																											<span class="okki-icon-wrap tool-bar-icon-item" @click="handlePendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																											<span class="okki-icon-wrap tool-bar-icon-item" @click="clickPendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																													<path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
 																													<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
 																												</svg>
@@ -1133,6 +1133,16 @@ export default {
       }
     },
 
+    clickPendingTime() {
+      if (this.showPendingTime === true || this.showCustomTime === true) {
+        this.showPendingTime = false;
+        this.showCustomTime = false;
+      } else {
+        this.showPendingTime = true;
+        this.showCustomTime = false;
+      }
+    },
+
     // 常规设置
     generalSetting() {
       getUsuallyInfo().then((response) => {
@@ -1373,8 +1383,10 @@ export default {
 
     // 标记待处理
     async pendingEmail(email, pendingFlag, pendingTime) {
+      const emailIds = [];
+      emailIds.push(email.id);
       const data = {
-        "id": email.id,
+        "ids": emailIds,
         "pendingFlag": pendingFlag,
         "pendingTime": pendingTime
       };

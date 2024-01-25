@@ -342,4 +342,14 @@ public interface TaskEmailMapper
      * @return
      */
     Long getDeptIdByUserId(@Param("userId") Long userId);
+
+    /**
+     * 更新邮件待处理
+     * @param ids
+     * @param pendingFlag
+     * @param pendingTime
+     * @param updateId
+     * @param updateBy
+     */
+    void updatePending(@Param("ids") List<Long> ids, @Param("pendingFlag") boolean pendingFlag, @Param("pendingTime") Date pendingTime, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
 }

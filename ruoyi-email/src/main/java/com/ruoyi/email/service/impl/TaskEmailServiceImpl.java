@@ -35,6 +35,7 @@ import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.*;
+import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
 import com.ruoyi.email.domain.vo.*;
@@ -1359,26 +1360,17 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
     /**
      * 标记为预处理
-     * @param taskEmail
+     * @param dto
      * @return
      */
     @Override
-    public boolean pending(TaskEmail taskEmail) {
+    public boolean pending(EmailPendingDTO dto) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
 
-        TaskEmail dbTaskEmail = taskEmailMapper.selectTaskEmailById(taskEmail.getId());
-        if (dbTaskEmail == null) {
-            log.info("不存在id为{}的邮件记录", taskEmail.getId());
-            throw new ServiceException();
-        }
-
-        dbTaskEmail.setPendingFlag(taskEmail.getPendingFlag());
-        dbTaskEmail.setPendingTime(taskEmail.getPendingTime());
-        dbTaskEmail.setUpdateId(userId);
-        dbTaskEmail.setUpdateBy(username);
-        taskEmailMapper.updateTaskEmail(dbTaskEmail);
+        // 更新邮件待处理
+        taskEmailMapper.updatePending(dto.getIds(), dto.getPendingFlag(), dto.getPendingTime(), userId, username);
         return true;
     }
 
