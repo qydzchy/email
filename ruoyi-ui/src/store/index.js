@@ -9,6 +9,7 @@ import settings from './modules/settings'
 import company from './modules/company'
 import emailSetting from './modules/emailSetting'
 import otherSetting from './modules/otherSetting'
+import emailList from './modules/emailList'
 
 import getters from './getters'
 
@@ -24,7 +25,8 @@ const store = new Vuex.Store({
     settings,
     company,
     emailSetting,
-    otherSetting
+    otherSetting,
+    emailList
   },
   getters
 })

@@ -1111,6 +1111,12 @@ export default {
     onCustomerSearch(id) {
       this.selectedTaskId = id
     },
+    // 初始化状态
+    initStore() {
+      this.$store.dispatch('emailSetting/GetUsuallyInfo')
+      this.$store.dispatch('otherSetting/GetOtherInfo')
+      this.$store.dispatch('emailList/GetEmailList')
+    },
   },
 
   computed: {
@@ -1173,8 +1179,8 @@ export default {
     this.refreshFolderList();
     this.refreshLabelList();
     this.refreshMenuCount();
-    this.$store.dispatch('emailSetting/GetUsuallyInfo')
-    this.$store.dispatch('otherSetting/GetOtherInfo')
+    this.initStore()
+
 
     EventBus.$on('switch-send-success', () => {
       this.currentLayout = 'send_success';

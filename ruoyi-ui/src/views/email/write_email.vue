@@ -119,11 +119,11 @@
                 </li>
                 <li class="cc-row mail-edit-row" v-if="showCc">
                   <span class="cc-row-name mail-edit-row-name active">抄送人</span>
-                  <ReceiverInput label="抄送人" @update="updateEmailList"></ReceiverInput>
+                  <ReceiverInput :initialEmails="cc" label="抄送人" @update="updateEmailList"></ReceiverInput>
                 </li>
                 <li class="bcc-row mail-edit-row" v-if="showBcc">
                   <span class="bcc-row-name mail-edit-row-name active">密送</span>
-                  <ReceiverInput label="密送人" @update="updateEmailList"></ReceiverInput>
+                  <ReceiverInput :initialEmails="bcc" label="密送人" @update="updateEmailList"></ReceiverInput>
                 </li>
                 <li data-expose-tour="1" class="subject-row mail-edit-row novice-tour-groupmail-title-field">
                   <span class="subject-row-name mail-edit-row-name subject">主题
@@ -497,11 +497,39 @@ export default {
         }
       },
       immediate: true
+    },
+    selectedAccount: {
+      handler(newVal) {
+        if (newVal) {
+          this.$watch('emailList', (list) => {
+            if (list?.length) {
+              const item = list.find(val => val.taskName === newVal)
+              // 抄送
+              this.showCc = Boolean(item.defaultCcFlag)
+              this.updateEmailList({
+                label: '抄送人',
+                emails: item.defaultCc?.split(';') || [],
+              })
+              // 密送
+              this.showBcc = Boolean(item.defaultBccFlag)
+              this.updateEmailList({
+                label: '密送人',
+                emails: item.defaultBcc?.split(';') || [],
+              })
+              this.formData.signatureId = item?.defaultSignatureId || null
+            }
+          }, {
+            deep: true,
+            immediate: true
+          })
+        }
+      },
     }
   },
   computed: {
     ...mapState({
       defaultTaskId: state => state.emailSetting.usuallySetting?.defaultTaskId,
+      emailList: state => state.emailList.emailList
     }),
   },
   methods: {
