@@ -237,9 +237,6 @@ public class EmailController extends BaseController {
         if (dto.getPendingFlag() == null) {
             throw new ServiceException("是否待处理不能为空");
         }
-        if (dto.getPendingTime() == null) {
-            throw new ServiceException("预处理时间不能为空");
-        }
 
         return toAjax(taskEmailService.pending(dto));
     }
