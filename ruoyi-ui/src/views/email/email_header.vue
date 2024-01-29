@@ -649,9 +649,16 @@ export default {
     },
   },
 
+  mounted() {
+    EventBus.$on('pending-time-selected-success', this.pendingTimeSelectedSuccess());
+  },
+
   beforeDestroy() {
     EventBus.$off('email-header');
+    EventBus.$off('pending-time-selected-success');
   },
+
+
   methods: {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId, labelId) {
       this.taskId = taskId;
@@ -741,6 +748,15 @@ export default {
       }
 
       this.fetchEmailList(this.taskId, this.type);
+    },
+
+    /**
+     * 预处理权限
+     */
+    pendingTimeSelectedSuccess() {
+      this.showPending = false;
+      this.$refs.pending.close();
+      this.fetchEmailData(this.currentEmailType);
     },
 
     /**
