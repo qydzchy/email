@@ -352,4 +352,14 @@ public interface TaskEmailMapper
      * @param updateBy
      */
     void updatePending(@Param("ids") List<Long> ids, @Param("pendingFlag") boolean pendingFlag, @Param("pendingTime") Date pendingTime, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
+    /**
+     * 更新邮件待处理
+     * @param ids
+     * @param pendingFlag
+     * @param updateId
+     * @param updateBy
+     */
+    void updatePending2(@Param("ids") List<Long> ids, @Param("pendingFlag") boolean pendingFlag, @Param("updateId") Long updateId, @Param("updateBy") String updateBy);
+
 }

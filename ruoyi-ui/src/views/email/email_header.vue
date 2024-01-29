@@ -38,7 +38,22 @@
 																	</span>
                                   <!---->
 																</span>
-
+                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
+                                  <span class="mm-tooltip-trigger">
+                                      <span>
+                                          <span class="okki-icon-wrap tool-bar-icon-item" @click="clickCompletePending">
+                                              ​
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                                   aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M21.435 4.043a1 1 0 010 1.414l-8.839 8.84a1 1 0 01-1.414 0l-3.89-3.89a1 1 0 111.415-1.414l3.182 3.182 8.132-8.132a1 1 0 011.414 0z">
+                                                  </path>
+                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M6.002 5a1 1 0 00-1 1v12a1 1 0 001 1H18a1 1 0 001-1v-6.003a1 1 0 112 0V18a3 3 0 01-3 3H6.002a3 3 0 01-3-3V6a3 3 0 013-3H14a1 1 0 110 2H6.002z">
+                                                  </path>
+                                              </svg>
+                                          </span>
+                                      </span>
+                                  </span>
+                                </span>
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
                                   <span class="mm-tooltip-trigger">
                                     <div class="mm-popover">
@@ -858,6 +873,11 @@ export default {
         this.showPendingTime = true;
         this.showCustomTime = false;
       }
+    },
+
+    // 点击完成待处理
+    clickCompletePending() {
+      this.pendingEmail(this.selectEmailIds, false, null);
     },
 
     handlePendingTime() {
