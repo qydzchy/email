@@ -629,6 +629,18 @@
         </where>
     </update>
 
+    <update id="updateLastContactedAtOrLastFollowupAt">
+        UPDATE customer_customer
+        SET
+        last_contacted_at = IFNULL(#{lastContactedAt}, last_contacted_at),
+        last_followup_at = IFNULL(#{lastFollowupAt}, last_followup_at)
+        WHERE
+        id IN
+        <foreach collection="customerIdList" item="customerId" open="(" separator="," close=")">
+            #{customerId}
+        </foreach>
+    </update>
+
     <delete id="deleteCustomerById" parameterType="Long">
         delete from customer_customer where id = #{id}
     </delete>

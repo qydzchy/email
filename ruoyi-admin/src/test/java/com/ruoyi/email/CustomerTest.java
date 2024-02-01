@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -44,5 +46,7 @@ public class CustomerTest {
 
     @Test
     public void test02() {
+        Date lastFollowUpAt = new Date();
+        customerMapper.updateLastContactedAtOrLastFollowupAt(Arrays.asList(94L), null, lastFollowUpAt);
     }
 }

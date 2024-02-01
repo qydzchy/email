@@ -3,6 +3,7 @@ package com.ruoyi.customer.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -109,7 +110,7 @@ public class CustomerDocumentServiceImpl implements ICustomerDocumentService
         // 批量插入客户文档
         customerDocumentMapper.batchInsertCustomerDocument(customerDocumentList);
         // 客户跟进规则处理
-        customerService.customerFollowUpRulesHandler(customerId, FollowUpRulesTypeEnum.UPLOAD_CUSTOMER_DOCUMENT);
+        customerService.customerFollowUpRulesHandler(Arrays.asList(customerId), FollowUpRulesTypeEnum.UPLOAD_CUSTOMER_DOCUMENT);
         return true;
     }
 

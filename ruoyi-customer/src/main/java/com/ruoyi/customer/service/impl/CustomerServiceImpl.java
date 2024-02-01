@@ -575,7 +575,7 @@ public class CustomerServiceImpl implements ICustomerService {
         }
 
         // 编辑客户事件
-        customerFollowUpRulesHandler(id, FollowUpRulesTypeEnum.EDIT_CUSTOMER);
+        customerFollowUpRulesHandler(Arrays.asList(id), FollowUpRulesTypeEnum.EDIT_CUSTOMER);
 
         // 洗牌
         CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> shuffle(id, null));
@@ -1372,10 +1372,12 @@ public class CustomerServiceImpl implements ICustomerService {
 
     /**
      * 客户跟进规则处理
-     * @param customerId
+     * @param customerIdList
      */
     @Override
-    public void customerFollowUpRulesHandler(Long customerId, FollowUpRulesTypeEnum followUpRulesTypeEnum) {
+    public void customerFollowUpRulesHandler(List<Long> customerIdList, FollowUpRulesTypeEnum followUpRulesTypeEnum) {
+        if (customerIdList == null || customerIdList.isEmpty()) return;
+
         if (followUpRulesTypeEnum == null) return;
 
         FollowUpRules followUpRulesParam = new FollowUpRules();
@@ -1395,13 +1397,8 @@ public class CustomerServiceImpl implements ICustomerService {
             lastFollowUpAt = new Date();
         }
 
-        // 更新客户最后联系时间和最后跟进时间
-        Customer customer = new Customer();
-        customer.setId(customerId);
-        customer.setLastContactedAt(lastContactedAt);
-        customer.setLastFollowupAt(lastFollowUpAt);
         if (lastContactedAt != null || lastFollowUpAt != null) {
-            customerMapper.updateCustomer(customer);
+            customerMapper.updateLastContactedAtOrLastFollowupAt(customerIdList, lastContactedAt, lastFollowUpAt);
         }
     }
 

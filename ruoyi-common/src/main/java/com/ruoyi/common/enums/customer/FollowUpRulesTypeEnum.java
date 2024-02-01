@@ -19,11 +19,7 @@ public enum FollowUpRulesTypeEnum {
     NEW_EDIT_SALES_ORDER(9, "新建/编辑 销售订单"),
     UPLOAD_CUSTOMER_DOCUMENT(10, "上传客户文档"),
     SEND_CHAT_MESSAGE(11, "发送聊天消息 (TM+WhatsAPP+FB Messenger)"),
-    RECEIVE_CHAT_MESSAGE(12, "接收聊天消息 (TM+WhatsAPP+FB Messenger)"),
-    SEND_EMAIL_CUSTOMER_OPPORTUNITY_MARKETING(13, "发送邮件 (客户+商机) 营销"),
-    MARKETING_EMAIL_CUSTOMER_OPPORTUNITY_ADDITIONAL(14, "营销邮件 (客户+商机)"),
-    NEW_FOLLOW_UP_CUSTOMER_OPPORTUNITY_ADDITIONAL(15, "新建跟进 (客户+商机)"),
-    SEND_EMAIL_CUSTOMER_OPPORTUNITY_ADDITIONAL(16, "发送邮件 (客户+商机)");
+    RECEIVE_CHAT_MESSAGE(12, "接收聊天消息 (TM+WhatsAPP+FB Messenger)");
 
     private int type;
     private String description;

@@ -5,15 +5,21 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.ProxyTypeEnum;
+import com.ruoyi.common.enums.customer.FollowUpRulesTypeEnum;
 import com.ruoyi.common.enums.email.*;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.mailbox.MailPlusException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.customer.mapper.CustomerContactMapper;
+import com.ruoyi.customer.mapper.CustomerMapper;
+import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
 import com.ruoyi.email.domain.dto.task.EditTaskDTO;
@@ -64,6 +70,10 @@ public class TaskServiceImpl implements ITaskService
     private TransceiverRuleMapper transceiverRuleMapper;
     @Resource
     private BlacklistMapper blacklistMapper;
+    @Resource
+    private CustomerContactMapper customerContactMapper;
+    @Resource
+    private ICustomerService customerService;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -486,7 +496,7 @@ public class TaskServiceImpl implements ITaskService
                 }
             }
 
-            taskEmailService.sendEmail(taskEmail);
+            taskEmailService.sendEmail(task.getCreateId(), taskEmail);
         });
     }
 
@@ -576,6 +586,42 @@ public class TaskServiceImpl implements ITaskService
 
         // 收件规则处理
         taskEmailService.transceiverRuleHandler(taskEmail, content, transceiverRuleList);
+
+        // 客户跟进规则处理
+        String receiver = taskEmail.getReceiver();
+        String cc = taskEmail.getCc();
+        String bcc = taskEmail.getBcc();
+        List<String> emailList = new ArrayList<>();
+        emailList.addAll(extractEmail(receiver));
+        emailList.addAll(extractEmail(cc));
+        emailList.addAll(extractEmail(bcc));
+
+        List<Long> customerIdList = customerContactMapper.getCustomerIdByEmailAndCreateId(task.getCreateId(), emailList);
+        if (customerIdList != null && !customerIdList.isEmpty()) {
+            // 编辑客户事件
+            customerService.customerFollowUpRulesHandler(customerIdList, FollowUpRulesTypeEnum.SEND_EMAIL_CUSTOMER_OPPORTUNITY);
+        }
+    }
+
+    /**
+     * 提取邮件地址
+     * @return
+     */
+    private List<String> extractEmail(String emailStr) {
+        List<String> emailList = new ArrayList<>();
+        JSONArray receiverJsonA = JSONArray.parseArray(emailStr);
+        for (Object object : receiverJsonA) {
+            JSONObject jsonObject = (JSONObject) object;
+            String email = jsonObject.getString("email");
+            emailList.add(email);
+        }
+
+        return emailList;
+    }
+
+    public static void main(String[] args) {
+        String receiver = "[{\"email\":\"w0r1d_space@sohu.com\",\"name\":\"w0r1d_space@sohu.com\"}]";
+
     }
 
     /**

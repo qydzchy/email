@@ -1,5 +1,6 @@
 package com.ruoyi.customer.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.customer.domain.Customer;
@@ -314,4 +315,12 @@ public interface CustomerMapper
      * @return
      */
     List<EmailCustomerVO> selectEmailCountGroupBySearch(@Param("userId") Long userId, @Param("keyword") String keyword);
+
+    /**
+     * 更新最后联系时间或最后跟进时间
+     * @param customerIdList
+     * @param lastContactedAt
+     * @param lastFollowupAt
+     */
+    void updateLastContactedAtOrLastFollowupAt(@Param("customerIdList") List<Long> customerIdList, @Param("lastContactedAt") Date lastContactedAt, @Param("lastFollowupAt") Date lastFollowupAt);
 }

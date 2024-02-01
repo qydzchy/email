@@ -112,6 +112,15 @@
             AND ccc.customer_id = #{customerId}
     </select>
 
+    <select id="getCustomerIdByEmailAndCreateId" resultType="java.lang.Long">
+        select cc.id from customer_customer cc
+        left join customer_customer_contact ccc on cc.id = ccc.customer_id
+        where cc.del_flag = false and ccc.del_flag = false and ccc.create_id = #{createId}
+        and ccc.email IN
+        <foreach collection="emailList" item="email" open="(" separator="or" close=")">
+            #{email}
+        </foreach>
+    </select>
 
     <insert id="insertCustomerContact" parameterType="CustomerContact">
         insert into customer_customer_contact
