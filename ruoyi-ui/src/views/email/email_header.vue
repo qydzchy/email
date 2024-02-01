@@ -38,12 +38,26 @@
 																	</span>
                                   <!---->
 																</span>
-
+                                <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
+                                  <span class="mm-tooltip-trigger">
+                                      <span>
+                                          <span class="okki-icon-wrap tool-bar-icon-item" @click="clickCompletePending">
+                                              ​
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                                   aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M21.435 4.043a1 1 0 010 1.414l-8.839 8.84a1 1 0 01-1.414 0l-3.89-3.89a1 1 0 111.415-1.414l3.182 3.182 8.132-8.132a1 1 0 011.414 0z">
+                                                  </path>
+                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M6.002 5a1 1 0 00-1 1v12a1 1 0 001 1H18a1 1 0 001-1v-6.003a1 1 0 112 0V18a3 3 0 01-3 3H6.002a3 3 0 01-3-3V6a3 3 0 013-3H14a1 1 0 110 2H6.002z">
+                                                  </path>
+                                              </svg>
+                                          </span>
+                                      </span>
+                                  </span>
+                                </span>
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled">
                                   <span class="mm-tooltip-trigger">
                                     <div class="mm-popover">
                                       <div>
-
                                         <span>
                                           <span class="okki-icon-wrap tool-bar-icon-item" @click="clickPendingTime">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" class="okki-svg-icon">
                                               <path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
@@ -227,6 +241,20 @@
 																										</div>
 																										<div :class="['mm-tabs-item', 'mm-tabs-item__top', { 'mm-tabs-item--active': objectType == 'customer' }]" id="tab-1" aria-controls="pane-1" role="tab" aria-selected="false" tabindex="-1" refinfor="true" @click="switchObjectType('customer')">客户
 																										</div>
+                                                    <!--																										<div class="mm-tabs-item mm-tabs-item__top" id="tab-2" aria-controls="pane-2" role="tab" aria-selected="false" tabindex="-1" refinfor="true">同事
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>
+                                                                                                        <div class="mm-tabs-item mm-tabs-item__top" id="tab-3" aria-controls="pane-3" role="tab" aria-selected="false" tabindex="-1" refinfor="true">通讯录
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>
+                                                                                                        <div class="mm-tabs-item mm-tabs-item__top" id="tab-0" aria-controls="pane-0" role="tab" aria-selected="false" tabindex="-1" refinfor="true">
+                                                                                                          <span class="mm-tooltip">
+                                                                                                            <span class="mm-tooltip-trigger">其他<span class="mail-tab-unread">(982)</span>
+                                                                                                            </span>
+                                                                                                            &lt;!&ndash;&ndash;&gt;
+                                                                                                          </span>
+                                                                                                          &lt;!&ndash;&ndash;&gt;
+                                                                                                        </div>-->
 																									</div>
 																								</div>
 																							</div>
@@ -286,6 +314,16 @@
 																															<span class="seperator"></span>
 																															<span class="customer-name ellipsis">{{email.fromer}}</span>
 																														</span>
+                                                            <!--																														<div class="mail-info-icons">
+                                                                                                                          <span class="mail-info-icon-item">
+                                                                                                                            <i class="m-icon icon-repeated-line" data-tips="已回复" style="color: rgb(144, 144, 144);"></i>
+                                                                                                                            &lt;!&ndash;&ndash;&gt;
+                                                                                                                          </span>
+                                                                                                                          <span class="mail-info-icon-item">
+                                                                                                                            <i class="m-icon icon-attachment-line" data-tips="有附件" style="color: rgb(144, 144, 144);"></i>
+                                                                                                                            &lt;!&ndash;&ndash;&gt;
+                                                                                                                          </span>
+                                                                                                                        </div>-->
 																													</div>
 																												</div>
 																												<div class="addr-info-operations-wrapper" style="display: none;">
@@ -358,9 +396,10 @@
 																														<span class="time ellipsis">{{email.sendTime}}</span>
                                                             <!---->
 																														<div class="pending">
+
 																															<div class="mm-popover">
 																																<div v-if="email.pendingFlag === 0">
-																																	<span class="okki-icon-wrap pending-icon" @click="togglePending(email, $event)">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																																	<span class="okki-icon-wrap pending-icon" @click="editPendingDialog(email, $event)">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																																			<path d="M12 6a1 1 0 011 1v4.423l2.964 1.711a1 1 0 11-1 1.732l-3.447-1.99A1 1 0 0111 11.98V7a1 1 0 011-1z"></path>
 																																			<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z"></path>
 																																		</svg>
@@ -370,7 +409,7 @@
                                                                 <div v-if="email.pendingFlag === 1">
                                                                   <span class="mm-tooltip">
                                                                     <span class="mm-tooltip-trigger">
-                                                                      <span class="okki-icon-wrap pending-icon pending-logo" @click="togglePending(email, $event)">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                                                      <span class="okki-icon-wrap pending-icon pending-logo" @click="openPendingDialog(email, $event)">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                                                           <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
                                                                           <path d="M12 7a1 1 0 011 1v4.423l2.964 1.711a1 1 0 01-1 1.732l-3.447-1.99a1.01 1.01 0 01-.384-.377.992.992 0 01-.133-.518V8a1 1 0 011-1z" fill="#fff"></path>
                                                                         </svg>
@@ -506,9 +545,39 @@
 													</div>
 												</span>
     </div>
-    <div v-show="showPending" class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" style="position: absolute; top: 40px; left: -5px; will-change: top, left; transform-origin: 100% bottom;">
-      <PendingPopover ref="pending" :emailIds="selectEmailIds"></PendingPopover>
+    <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: 40px; left: -5px; will-change: top, left; transform-origin: 100% bottom;">
+      <!---->
+      <div>
+        <!---->
+        <div class="mail-pending-handler">
+          <div class="title" v-if="showPendingTime">
+            <span>请选择稍后处理时间: </span>
+          </div>
+          <div class="title" v-if="showCustomTime">
+                                                              <span class="bold back-block">
+                                                                <i class="m-icon icon-left-thin" @click="handlePendingTime"></i> 自定义时间
+                                                              </span>
+          </div>
+          <PendingTimePopover v-if="showPendingTime" @show-custom-time="handleCustomTime" @time-selected="handleSelectedTime"></PendingTimePopover>
+          <CustomTimePopover v-if="showCustomTime" @time-selected="handleSelectedTime"></CustomTimePopover>
+        </div>
+      </div>
     </div>
+
+    <el-dialog
+      title="待处理邮件"
+      :visible.sync="pendingDialogVisible"
+      width="10%"
+      height="10%"
+    >
+      <p>{{pendingCurrentEmail.pendingTime}}</p>
+      <div>
+        <!-- 在这里放置你的修改和完成按钮 -->
+        <el-button @click="handlePendingModify">修改</el-button>
+        <el-button type="primary" @click="handlePendingComplete">完成</el-button>
+      </div>
+      <br>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -556,7 +625,8 @@ import { getUsuallyInfo } from '@/api/email/usually'
 import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 import emailHeaderLabelLayout from "@/views/email/email_content_label.vue";
 import {listLabel} from "@/api/email/label";
-import PendingPopover from "@/views/email/pending.vue";
+import PendingTimePopover from "@/views/email/pending_time.vue";
+import CustomTimePopover from "@/views/email/custom_time.vue";
 export default {
   data() {
     return {
@@ -591,11 +661,14 @@ export default {
       selectEmailIds: [],
       objectType: null,
       labels: [],
-      showPending: false
+      showPendingTime: false,
+      showCustomTime: false,
+      pendingCurrentEmail: {},
+      pendingDialogVisible: false
     }
   },
   components: {
-    PendingPopover,
+    CustomTimePopover, PendingTimePopover,
     emailHeaderLabelLayout,
     PopoverSelectFolder
   },
@@ -646,7 +719,7 @@ export default {
 
     masterCheckbox(newValue) {
       this.setSelected(newValue);
-    },
+    }
   },
 
   beforeDestroy() {
@@ -743,6 +816,29 @@ export default {
       this.fetchEmailList(this.taskId, this.type);
     },
 
+    openPendingDialog(email, event) {
+      event.stopPropagation();
+      this.pendingDialogVisible = true;
+      this.pendingCurrentEmail = email;
+      this.selectEmailIds.push(email.id);
+    },
+
+    editPendingDialog(email, event) {
+      event.stopPropagation();
+      this.handlePendingModify();
+      this.selectEmailIds.push(email.id);
+    },
+
+    handlePendingModify() {
+      this.pendingDialogVisible = false;
+      this.showPendingTime = true;
+    },
+
+    handlePendingComplete() {
+      this.pendingEmail(this.selectEmailIds, false, null);
+      this.pendingDialogVisible = false;
+    },
+
     /**
      * 切换对象类型
      */
@@ -770,13 +866,28 @@ export default {
     },
 
     clickPendingTime() {
-      if (this.showPending === true) {
-        this.showPending = false;
-        this.$refs.pending.close();
+      if (this.showPendingTime === true || this.showCustomTime === true) {
+        this.showPendingTime = false;
+        this.showCustomTime = false;
       } else {
-        this.showPending = true;
-        this.$refs.pending.open();
+        this.showPendingTime = true;
+        this.showCustomTime = false;
       }
+    },
+
+    // 点击完成待处理
+    clickCompletePending() {
+      this.pendingEmail(this.selectEmailIds, false, null);
+    },
+
+    handlePendingTime() {
+      this.showPendingTime = true;
+      this.showCustomTime = false;
+    },
+
+    handleCustomTime() {
+      this.showPendingTime = false;
+      this.showCustomTime = true;
     },
 
     handleSelectedTime(time) {
@@ -857,24 +968,6 @@ export default {
       } catch (error) {
         console.error('固定邮件出现错误:', error);
         throw error;
-      }
-    },
-
-    async togglePending(email, event) {
-      event.stopPropagation();
-
-      if (email.pendingFlag === 1) {
-        const emailIds = [];
-        emailIds.push(email.id);
-        this.pendingEmail(emailIds, false, null);
-      } else {
-        if (this.showPendingTime === true || this.showCustomTime === true) {
-          this.showPendingTime = false;
-          this.showCustomTime = false;
-        } else {
-          this.showPendingTime = true;
-          this.showCustomTime = false;
-        }
       }
     },
 

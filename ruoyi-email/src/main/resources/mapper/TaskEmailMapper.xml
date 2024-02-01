@@ -847,6 +847,15 @@
          and del_flag = '0'
     </update>
 
+    <update id="updatePending2">
+        update mailbox_task_email set pending_flag = #{pendingFlag}, update_id = #{updateId}, update_by = #{updateBy}, update_time = NOW()
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and del_flag = '0'
+    </update>
+
     <delete id="deleteTaskEmailById" parameterType="Long">
         delete from mailbox_task_email where id = #{id}
     </delete>

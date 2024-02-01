@@ -22,12 +22,18 @@ import CustomTimePopover from "@/views/email/custom_time.vue";
 import {
   pendingEmail,
 } from "@/api/email/email";
-import emailHeaderLabelLayout from "@/views/email/email_content_label.vue";
-import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 export default {
+  props: {
+    emailIds: {
+      type: Array,
+      default: () => {
+        return []
+      },
+      required: false
+    }
+  },
   data() {
     return {
-      emailIds: [],
       showPendingTime: false,
       showCustomTime: false,
     }
@@ -47,7 +53,6 @@ export default {
     },
     handleSelectedTime(time) {
       this.pendingEmail(this.emailIds, true, time);
-      this.$emit('time-selected', time)
     },
 
     // 标记待处理
@@ -62,7 +67,7 @@ export default {
         if (response.code === 200) {
           this.showPendingTime = false;
           this.showCustomTime = false;
-          this.fetchEmailData(this.currentEmailType);
+          this.$emit('pending-time-selected-success');
           return;
         }
       } catch (error) {

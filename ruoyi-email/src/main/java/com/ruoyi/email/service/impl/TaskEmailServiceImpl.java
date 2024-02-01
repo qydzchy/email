@@ -1370,7 +1370,11 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         String username = loginUser.getUsername();
 
         // 更新邮件待处理
-        taskEmailMapper.updatePending(dto.getIds(), dto.getPendingFlag(), dto.getPendingTime(), userId, username);
+        if (Optional.ofNullable(dto.getPendingFlag()).orElse(false)) {
+            taskEmailMapper.updatePending(dto.getIds(), dto.getPendingFlag(), dto.getPendingTime(), userId, username);
+        } else {
+            taskEmailMapper.updatePending2(dto.getIds(), dto.getPendingFlag(), userId, username);
+        }
         return true;
     }
 

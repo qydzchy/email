@@ -304,8 +304,8 @@ DROP TABLE IF EXISTS `customer_customer`;
 CREATE TABLE `customer_customer`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `company_website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司网址',
-  `company_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '公司名称',
-  `short_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '简称',
+  `company_name` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `short_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `country_region` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家地区',
   `sea_type` tinyint(1) NOT NULL COMMENT '私海/公海类型 1.私海 2.公海',
   `publicleads_groups_id` bigint(20) NULL DEFAULT NULL COMMENT '公海分组ID',
@@ -314,12 +314,12 @@ CREATE TABLE `customer_customer`  (
   `rating` tinyint(1) NULL DEFAULT NULL COMMENT '客户星级 1 2 3 4 5',
   `customer_no_type` tinyint(1) NOT NULL COMMENT '客户编号类型 1.自动生成 2.自定义',
   `customer_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户编号',
-  `phone_prefix` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '座机-电话区号',
-  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '座机-电话号码',
+  `phone_prefix` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `phone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `timezone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '时区',
   `scale` tinyint(1) NULL DEFAULT NULL COMMENT '规模 1.少于59人 2.60-149人 3.150-499人 4.500-999人 5.1000-4999人 6.5000人以上',
   `fax` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '传真',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '详细地址',
+  `address` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `company_remarks` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司备注',
   `company_logo` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公司logo',
   `focus_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '关注 0.未关注 1.已关注',
@@ -340,8 +340,7 @@ CREATE TABLE `customer_customer`  (
   INDEX `idx_packet_id`(`packet_id`) USING BTREE COMMENT '分组索引',
   INDEX `idx_stage_id`(`stage_id`) USING BTREE COMMENT '阶段索引',
   INDEX `idx_focus_flag`(`focus_flag`) USING BTREE COMMENT '关注索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户详情表' ROW_FORMAT = Dynamic;
-
+) ENGINE = InnoDB AUTO_INCREMENT = 95 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户详情表' ROW_FORMAT = Dynamic;
 -- ----------------------------
 -- Records of customer_customer
 -- ----------------------------
@@ -12538,7 +12537,63 @@ INSERT INTO `sys_menu` VALUES (2231, '上传邮件附件', 2211, 16, '', NULL, N
 INSERT INTO `sys_menu` VALUES (2232, '下载邮件附件', 2211, 17, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:attachment:download', '#', 'admin', '2023-12-07 13:54:00', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2233, '删除邮件标签', 2211, 18, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:delete:label', '#', 'admin', '2023-12-07 13:54:15', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2234, '统计菜单邮件数量', 2211, 19, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:count:menu', '#', 'admin', '2023-12-07 13:54:34', '', NULL, '');
-
+INSERT INTO `sys_menu` VALUES (2235, '邮件详情', 2211, 20, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:detail', '#', 'admin', '2024-01-15 22:30:32', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2236, '客户模块', 2211, 21, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:03:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2237, '客户往来邮件列表', 2236, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:dealing:email:list', '#', 'admin', '2024-01-16 08:04:10', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2238, '搜索的客户列表', 2236, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:search:list', '#', 'admin', '2024-01-16 08:06:03', 'admin', '2024-01-16 08:12:41', '');
+INSERT INTO `sys_menu` VALUES (2239, '联系人列表', 2236, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:contact:email:list', '#', 'admin', '2024-01-16 08:06:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2240, '通用列表', 2236, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:general:list', '#', 'admin', '2024-01-16 08:10:21', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2241, '公海分组列表', 2236, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:publicleads:groups:list', '#', 'admin', '2024-01-16 08:10:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2242, '客户分组列表', 2236, 6, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:packet:list', '#', 'admin', '2024-01-16 08:10:57', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2243, '客户来源列表', 2236, 7, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:source:list', '#', 'admin', '2024-01-16 08:11:16', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2244, '客户状态列表', 2236, 8, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:stage:list', '#', 'admin', '2024-01-16 08:11:31', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2245, '客户星级列表', 2236, 9, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:rating:list', '#', 'admin', '2024-01-16 08:11:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2246, '客户活跃度列表', 2236, 10, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:activity:list', '#', 'admin', '2024-01-16 08:12:04', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2247, '客户邮件列表（分页）', 2236, 11, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:customer:email:list', '#', 'admin', '2024-01-16 08:13:09', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2248, '客户详情', 2236, 12, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:detail', '#', 'admin', '2024-01-16 08:14:29', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2249, '客户写跟进列表', 2236, 13, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:list', '#', 'admin', '2024-01-16 08:15:44', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2250, '新增客户写跟进', 2236, 14, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:add', '#', 'admin', '2024-01-16 08:16:31', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2251, '修改客户写跟进', 2236, 15, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:edit', '#', 'admin', '2024-01-16 08:17:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2252, '删除客户写跟进', 2236, 16, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:delete', '#', 'admin', '2024-01-16 08:17:50', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2253, '新增写跟进评论', 2236, 17, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:comment:add', '#', 'admin', '2024-01-16 08:18:30', 'admin', '2024-01-16 08:18:38', '');
+INSERT INTO `sys_menu` VALUES (2254, '修改写跟进评论', 2236, 18, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:comment:edit', '#', 'admin', '2024-01-16 08:19:13', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2255, '删除写跟进评论', 2236, 19, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:customer:follow:up:records:comment:delete', '#', 'admin', '2024-01-16 08:19:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2256, '常规', 2002, 18, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:23:17', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2257, '默认邮箱列表', 2256, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:general:default:task:list', '#', 'admin', '2024-01-16 08:23:38', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2258, '获取邮箱常规详细信息', 2256, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:general:get:info', '#', 'admin', '2024-01-16 08:23:52', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2259, '修改邮箱常规', 2256, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:general:edit', '#', 'admin', '2024-01-16 08:24:08', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2260, '签名', 2256, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:24:55', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2261, '个性签名列表', 2260, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:signature:list', '#', 'admin', '2024-01-16 08:25:14', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2262, '新增个性签名', 2260, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:signature:add', '#', 'admin', '2024-01-16 08:25:29', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2263, '修改个性签名', 2260, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:signature:edit', '#', 'admin', '2024-01-16 08:25:42', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2264, '删除个性签名', 2260, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:signature:delete', '#', 'admin', '2024-01-16 08:25:58', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2265, '单个邮箱设置', 2256, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:26:25', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2266, '单个邮箱设置列表', 2265, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:setting:list', '#', 'admin', '2024-01-16 08:26:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2267, '修改单个邮箱设置', 2265, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:setting:edit', '#', 'admin', '2024-01-16 08:26:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2268, '收发件规则', 2002, 19, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:28:00', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2269, '收发件规则列表', 2268, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:rule:list', '#', 'admin', '2024-01-16 08:28:16', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2270, '获取收发件规则详细信息', 2268, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:rule:query', '#', 'admin', '2024-01-16 08:28:33', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2271, '新增收发件规则', 2268, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:rule:add', '#', 'admin', '2024-01-16 08:28:48', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2272, '修改收发件规则', 2268, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:rule:edit', '#', 'admin', '2024-01-16 08:29:10', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2273, '删除收发件规则', 2268, 5, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:rule:delete', '#', 'admin', '2024-01-16 08:29:25', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2274, '更新收发件规则状态', 2268, 6, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:rule:update:status', '#', 'admin', '2024-01-16 08:29:39', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2275, '黑名单', 2002, 20, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:31:10', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2276, '黑名单列表', 2275, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:blacklist:list', '#', 'admin', '2024-01-16 08:31:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2277, '新增黑名单', 2275, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:blacklist:add', '#', 'admin', '2024-01-16 08:31:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2278, '删除黑名单', 2275, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:blacklist:delete', '#', 'admin', '2024-01-16 08:31:59', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2279, '导入邮件', 2002, 21, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:33:12', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2280, '邮箱任务列表', 2279, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:import:task:list', '#', 'admin', '2024-01-16 08:33:25', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2281, '文件夹列表', 2279, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:import:folder:list', '#', 'admin', '2024-01-16 08:33:47', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2282, '上传', 2279, 3, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:import:upload', '#', 'admin', '2024-01-16 08:34:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2283, '导入邮件列表（分页）', 2279, 4, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:import:page', '#', 'admin', '2024-01-16 08:34:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2284, '其他配置', 2002, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:38:39', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2285, '获取其他配置详细信息', 2284, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:config:get:info', '#', 'admin', '2024-01-16 08:39:08', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2286, '修改其他配置', 2284, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:config:edit', '#', 'admin', '2024-01-16 08:39:27', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2287, '客户来源列表2', 2236, 20, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:source:list', '#', 'admin', '2024-01-22 17:01:59', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2288, '客户阶段列表2', 2236, 21, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:stage:list', '#', 'admin', '2024-01-22 17:02:58', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2289, '移入公海原因列表2', 2236, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:public:leads:reason:list', '#', 'admin', '2024-01-22 17:04:05', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2290, '往来邮件列表', 2211, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:dealing:email:list', '#', 'admin', '2024-02-01 08:14:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2291, '邮件内容翻译', 2211, 23, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:translate', '#', 'admin', '2024-02-01 08:14:56', '', NULL, '');
 -- ----------------------------
 -- Table structure for sys_notice
 -- ----------------------------

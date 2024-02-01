@@ -439,7 +439,7 @@
                                                     </svg>
                                                   </span>
                                                   <span>
-                                                    <div class="mm-popover" @click="handlePendingTime">
+                                                    <div class="mm-popover" @click="openPendingDialog">
                                                       <div>
                                                         <span class="okki-icon-wrap pending-chooser-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
                                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path>
@@ -953,6 +953,21 @@
     <div v-if="showLabel" class="mail-drop-menu-wrapper" style="width: 220px; top: 40px; left: 500px;">
       <emailHeaderLabelLayout :labels="labels" @label-selected="handleSelectedLabel"></emailHeaderLabelLayout>
     </div>
+
+    <el-dialog
+      title="待处理邮件"
+      :visible.sync="pendingDialogVisible"
+      width="10%"
+      height="10%"
+    >
+      <p>{{currentEmailDetail.pendingTime}}</p>
+      <div>
+        <!-- 在这里放置你的修改和完成按钮 -->
+        <el-button @click="handlePendingModify">修改</el-button>
+        <el-button type="primary" @click="handlePendingComplete">完成</el-button>
+      </div>
+      <br>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -1031,6 +1046,7 @@ export default {
       labels: [],
       // 移动/删除/举报后: 1.阅读下一封邮件(推荐) 2.回到当前邮件列表
       moveDeleteReport: 1,
+      pendingDialogVisible: false
     }
   },
   components: {
@@ -1332,6 +1348,23 @@ export default {
     handlePendingTime() {
       this.showPendingTime = true;
       this.showCustomTime = false;
+    },
+
+
+    openPendingDialog() {
+      this.pendingDialogVisible = true;
+      this.selectEmailIds.push(this.currentEmailDetail.id);
+    },
+
+    handlePendingModify() {
+      this.pendingDialogVisible = false;
+      this.showPendingTime = true;
+    },
+
+    handlePendingComplete() {
+      this.pendingEmail(this.selectEmailIds, false, null);
+      this.$set(this.currentEmailDetail, 'pendingFlag', false);
+      this.pendingDialogVisible = false;
     },
 
     handleLabel() {
