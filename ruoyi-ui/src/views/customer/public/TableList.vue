@@ -382,7 +382,6 @@ export default {
     },
     handlePagination(type, value) {
       this.paginateOption = { ...this.paginateOption, [type]: value }
-      console.log(this.paginateOption);
       this.getList()
     },
     handleSearch() {
