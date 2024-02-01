@@ -386,5 +386,10 @@ INSERT INTO `sys_menu` VALUES (2283, '导入邮件列表（分页）', 2279, 4, 
 INSERT INTO `sys_menu` VALUES (2284, '其他配置', 2002, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', NULL, '#', 'admin', '2024-01-16 08:38:39', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2285, '获取其他配置详细信息', 2284, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:config:get:info', '#', 'admin', '2024-01-16 08:39:08', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2286, '修改其他配置', 2284, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:config:edit', '#', 'admin', '2024-01-16 08:39:27', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2287, '客户来源列表2', 2236, 20, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:source:list', '#', 'admin', '2024-01-22 17:01:59', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2288, '客户阶段列表2', 2236, 21, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:stage:list', '#', 'admin', '2024-01-22 17:02:58', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2289, '移入公海原因列表2', 2236, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:public:leads:reason:list', '#', 'admin', '2024-01-22 17:04:05', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2290, '往来邮件列表', 2211, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:dealing:email:list', '#', 'admin', '2024-02-01 08:14:24', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2291, '邮件内容翻译', 2211, 23, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:translate', '#', 'admin', '2024-02-01 08:14:56', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;
