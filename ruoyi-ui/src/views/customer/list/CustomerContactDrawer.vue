@@ -81,9 +81,10 @@ export default {
       if (!contactList) {
         return
       }
-      contactList = contactList.map(val => {
+      contactList = contactList.map((val,index) => {
         delete val.show
-        val.primaryContactFlag = +val.primaryContactFlag
+        // 兼容处理，只考虑排序，0为主要其他下标非主要
+        val.primaryContactFlag = +!index
         return val
       })
       let config = {

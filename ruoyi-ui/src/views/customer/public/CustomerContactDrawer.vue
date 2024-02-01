@@ -1,12 +1,7 @@
 <template>
   <div>
-    <el-drawer
-        title="筛选条件"
-        :visible.sync="visible"
-        :direction="direction"
-        :append-to-body="true"
-        destroy-on-close
-        @close="handleClose">
+    <el-drawer title="筛选条件" :visible.sync="visible" :direction="direction" :append-to-body="true" destroy-on-close
+      @close="handleClose">
       <template #title>
         <div class="header flex-middle space-between py-20 px-20">
           <div class="black-text">
@@ -15,7 +10,7 @@
         </div>
       </template>
       <div class="container">
-        <CustomerContactCard ref="contact-card" :contact-list.sync="rowData.contactList"/>
+        <CustomerContactCard ref="contact-card" :contact-list.sync="rowData.contactList" />
       </div>
 
       <!--   operate     -->
@@ -31,7 +26,7 @@
 
 <script>
 import CustomerContactCard from "./CustomerContactCard.vue";
-import {editCustomer} from "@/api/customer/publicleads";
+import { editCustomer } from "@/api/customer/publicleads";
 
 export default {
   props: {
@@ -63,7 +58,7 @@ export default {
     async editCustomerPrivate(data) {
       this.btnLoading = true
       try {
-        const res = await editCustomer({...data}).finally(() => {
+        const res = await editCustomer({ ...data }).finally(() => {
           this.btnLoading = false
         })
         if (res.code === 200) {
@@ -78,12 +73,13 @@ export default {
     },
     onConfirm() {
       let contactList = this.$refs['contact-card'].getInnerData()
-      if(!contactList){
+      if (!contactList) {
         return
       }
       contactList = contactList.map(val => {
         delete val.show
-        val.primaryContactFlag = +val.primaryContactFlag
+        // 兼容处理，只考虑排序，0为主要其他下标非主要
+        val.primaryContactFlag = +!index
         return val
       })
       let config = {
@@ -138,9 +134,8 @@ export default {
     justify-content: space-between;
   }
 
-  .drawer-operate > .wrap {
+  .drawer-operate>.wrap {
     width: 100%;
   }
 }
-
 </style>
