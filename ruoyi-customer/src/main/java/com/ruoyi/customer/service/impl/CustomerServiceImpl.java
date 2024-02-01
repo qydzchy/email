@@ -1947,7 +1947,7 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return
      */
     private Map<String, Long> getStageMap(List<Map<String, Object>> mapList) {
-        String stageNames = mapList.stream().filter(map -> map.get("stage") != null && !map.get("stage").toString().equals("")).map(map -> map.get("stage").toString()).collect(Collectors.joining(";"));
+        String stageNames = mapList.stream().filter(map -> map.get("stage") != null && !map.get("stage").toString().trim().equals("")).map(map -> map.get("stage").toString().trim()).collect(Collectors.joining(";"));
         if (StringUtils.isNotBlank(stageNames)) {
             List<String> stageNameList = Arrays.asList(stageNames.split(";"));
             List<Stage> stageList = stageMapper.selectByNames(stageNameList);
@@ -1965,7 +1965,7 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return
      */
     private Map<String, Long> getSourceMap(List<Map<String, Object>> mapList) {
-        String sourceNames = mapList.stream().filter(map -> map.get("source") != null && !map.get("source").toString().equals("")).map(map -> map.get("source").toString()).collect(Collectors.joining(";"));
+        String sourceNames = mapList.stream().filter(map -> map.get("source") != null && !map.get("source").toString().trim().equals("")).map(map -> map.get("source").toString().trim()).collect(Collectors.joining(";"));
         if (StringUtils.isNotBlank(sourceNames)) {
             List<String> sourceNameList = Arrays.asList(sourceNames.split(";"));
             List<Source> sourceList = sourceMapper.selectByNames(sourceNameList);
@@ -1983,7 +1983,7 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return
      */
     private Map<String, Long> getTagMap(List<Map<String, Object>> mapList) {
-        String tagNames = mapList.stream().filter(map -> map.get("tag") != null && !map.get("tag").toString().equals("")).map(map -> map.get("tag").toString()).collect(Collectors.joining(";"));
+        String tagNames = mapList.stream().filter(map -> map.get("tag") != null && !map.get("tag").toString().trim().equals("")).map(map -> map.get("tag").toString().trim()).collect(Collectors.joining(";"));
         if (StringUtils.isNotBlank(tagNames)) {
             List<String> tagNameList = Arrays.asList(tagNames.split(";"));
             List<Tag> tagList = tagMapper.selectByNames(tagNameList);

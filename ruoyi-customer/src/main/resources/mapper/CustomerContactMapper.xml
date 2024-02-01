@@ -29,7 +29,7 @@
     </resultMap>
 
     <sql id="selectCustomerContactVo">
-        select id, customer_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_contact
+        select id, customer_id, nick_name, email, social_platform, phone, `rank`, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time from customer_customer_contact
     </sql>
 
     <select id="selectCustomerContactList" parameterType="CustomerContact" resultMap="CustomerContactResult">
@@ -40,7 +40,7 @@
             <if test="email != null  and email != ''"> and email = #{email}</if>
             <if test="socialPlatform != null  and socialPlatform != ''"> and social_platform = #{socialPlatform}</if>
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
-            <if test="rank != null "> and rank = #{rank}</if>
+            <if test="rank != null "> and `rank` = #{rank}</if>
             <if test="position != null  and position != ''"> and position = #{position}</if>
             <if test="birthday != null "> and birthday = #{birthday}</if>
             <if test="sex != null "> and sex = #{sex}</if>
@@ -98,7 +98,7 @@
             ccc.email AS email,
             ccc.social_platform AS socialPlatform,
             ccc.phone,
-            ccc.rank,
+            ccc.`rank`,
             ccc.position,
             ccc.birthday,
             ccc.sex,
@@ -122,7 +122,7 @@
             <if test="email != null">email,</if>
             <if test="socialPlatform != null">social_platform,</if>
             <if test="phone != null">phone,</if>
-            <if test="rank != null">rank,</if>
+            <if test="rank != null">`rank`,</if>
             <if test="position != null">position,</if>
             <if test="birthday != null">birthday,</if>
             <if test="sex != null">sex,</if>
@@ -165,7 +165,7 @@
 
     <insert id="batchInsertCustomerContact">
         insert into customer_customer_contact
-        (id, customer_id, nick_name, email, social_platform, phone, rank, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
+        (id, customer_id, nick_name, email, social_platform, phone, `rank`, position, birthday, sex, avatar_or_business_card, contact_remarks, primary_contact_flag, order_index, del_flag, create_id, create_by, create_time, update_id, update_by, update_time)
         values
         <foreach collection="detailsContactList" item="item" separator=",">
             (#{item.id}, #{item.customerId}, #{item.nickName}, #{item.email}, #{item.socialPlatform}, #{item.phone}, #{item.rank}, #{item.position}, #{item.birthday}, #{item.sex}, #{item.avatarOrBusinessCard}, #{item.contactRemarks}, #{item.primaryContactFlag}, #{item.orderIndex}, #{item.delFlag}, #{item.createId}, #{item.createBy}, #{item.createTime}, #{item.updateId}, #{item.updateBy}, #{item.updateTime})
@@ -180,7 +180,7 @@
             <if test="email != null">email = #{email},</if>
             <if test="socialPlatform != null">social_platform = #{socialPlatform},</if>
             <if test="phone != null">phone = #{phone},</if>
-            <if test="rank != null">rank = #{rank},</if>
+            <if test="rank != null">`rank` = #{rank},</if>
             <if test="position != null">position = #{position},</if>
             <if test="birthday != null">birthday = #{birthday},</if>
             <if test="sex != null">sex = #{sex},</if>
