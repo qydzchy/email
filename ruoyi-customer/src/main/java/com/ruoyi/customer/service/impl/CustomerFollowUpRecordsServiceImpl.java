@@ -1,9 +1,6 @@
 package com.ruoyi.customer.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -93,7 +90,8 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
         customerFollowUpRecordsMapper.insertCustomerFollowUpRecords(customerFollowUpRecords);
 
         // 执行客户跟进规则
-        customerService.customerFollowUpRulesHandler(customerFollowUpRecords.getCustomerId(), FollowUpRulesTypeEnum.NEW_FOLLOW_UP_CUSTOMER_OPPORTUNITY);
+        Long customerId = customerFollowUpRecords.getCustomerId();
+        customerService.customerFollowUpRulesHandler(Arrays.asList(customerId), FollowUpRulesTypeEnum.NEW_FOLLOW_UP_CUSTOMER_OPPORTUNITY);
         return true;
     }
 

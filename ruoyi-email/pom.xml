@@ -90,6 +90,14 @@
             <artifactId>tea-util</artifactId>
             <version>0.2.21</version>
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-customer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-customer</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

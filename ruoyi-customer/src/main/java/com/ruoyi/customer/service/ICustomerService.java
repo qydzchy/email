@@ -175,10 +175,10 @@ public interface ICustomerService
 
     /**
      * 客户跟进规则处理
-     * @param customerId
+     * @param customerIdList
      * @param followUpRulesTypeEnum
      */
-    void customerFollowUpRulesHandler(Long customerId, FollowUpRulesTypeEnum followUpRulesTypeEnum);
+    void customerFollowUpRulesHandler(List<Long> customerIdList, FollowUpRulesTypeEnum followUpRulesTypeEnum);
 
     /**
      * 移入公海或私海

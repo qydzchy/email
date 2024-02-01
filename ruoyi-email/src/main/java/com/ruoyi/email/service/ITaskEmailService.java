@@ -141,7 +141,7 @@ public interface ITaskEmailService
      * @param taskEmail
      * @return
      */
-    boolean sendEmail(TaskEmail taskEmail);
+    boolean sendEmail(Long createId, TaskEmail taskEmail);
 
     /**
      * 往来邮件

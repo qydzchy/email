@@ -1,5 +1,6 @@
 package com.ruoyi.customer.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.customer.domain.CustomerContact;
 import com.ruoyi.customer.domain.bo.CustomerContactBO;
@@ -88,4 +89,20 @@ public interface CustomerContactMapper
      * @return
      */
     List<CustomerContactBO> selectCustomerContactByCustomerId(@Param("customerId") Long customerId);
+
+    /**
+     * 根据邮箱和创建人查询联系人数量
+     * @param emailList
+     * @param createId
+     * @return
+     */
+    List<Long> getCustomerIdByEmailAndCreateId(@Param("createId") Long createId, @Param("emailList") List<String> emailList);
+
+    /**
+     * 更新最后联系时间或者最后跟进时间
+     * @param customerIdList
+     * @param lastContactedAt
+     * @param lastFollowUpAt
+     */
+    void updateLastContactedAtOrLastFollowupAt(@Param("customerIdList") List<Long> customerIdList, @Param("lastContactedAt") Date lastContactedAt, @Param("lastFollowUpAt") Date lastFollowUpAt);
 }

@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.customer.AndOrEnum;
 import com.ruoyi.common.enums.customer.DataScopeEnum;
+import com.ruoyi.common.enums.customer.FollowUpRulesTypeEnum;
 import com.ruoyi.common.enums.email.EmailTypeEnum;
 import com.ruoyi.common.enums.email.RuleTypeEnum;
 import com.ruoyi.common.enums.email.TaskExecutionStatusEnum;
@@ -33,6 +34,9 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import com.ruoyi.customer.mapper.CustomerContactMapper;
+import com.ruoyi.customer.mapper.CustomerMapper;
+import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.*;
 import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
@@ -96,6 +100,10 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     private LabelMapper labelMapper;
     @Resource
     private TaskMapper taskMapper;
+    @Resource
+    private ICustomerService customerService;
+    @Resource
+    private CustomerContactMapper customerContactMapper;
 
     @Lazy
     @Resource
@@ -644,7 +652,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     @Override
-    public boolean sendEmail(TaskEmail taskEmail) {
+    public boolean sendEmail(Long createId, TaskEmail taskEmail) {
         Long id = taskEmail.getId();
         // 查询邮件内容
         TaskEmailContent emailContent = taskEmailContentService.selectTaskEmailContentByEmailId(id);
@@ -707,6 +715,19 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         int status = isSuccess ? TaskExecutionStatusEnum.SUCCESS.getStatus() : TaskExecutionStatusEnum.FAILURE.getStatus();
         // 更新邮件发送状态
         updateStatusById(status, messageId, id);
+
+        // 客户跟进规则处理
+        if (status == TaskExecutionStatusEnum.SUCCESS.getStatus()) {
+            // 判断发件人是否为客户
+            String fromer = taskEmail.getFromer();
+            if (StringUtils.isNotBlank(fromer)) {
+                List<Long> customerIdList = customerContactMapper.getCustomerIdByEmailAndCreateId(createId, Arrays.asList(fromer));
+                if (customerIdList != null && !customerIdList.isEmpty()) {
+                    // 编辑客户事件
+                    customerService.customerFollowUpRulesHandler(customerIdList, FollowUpRulesTypeEnum.SEND_EMAIL_CUSTOMER_OPPORTUNITY);
+                }
+            }
+        }
 
         return true;
     }
