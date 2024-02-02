@@ -18,7 +18,6 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.customer.mapper.CustomerContactMapper;
-import com.ruoyi.customer.mapper.CustomerMapper;
 import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.EmailOperateParamBO;
