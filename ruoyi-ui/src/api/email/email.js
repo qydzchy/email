@@ -28,6 +28,15 @@ export function sendEmail(data) {
   })
 }
 
+// 邮件详情
+export function getEmailInfo(params) {
+  return request({
+    url: '/email/info/detail',
+    method: 'get',
+    params
+  })
+}
+
 // 固定邮件
 export function fixedEmail(data) {
   return request({

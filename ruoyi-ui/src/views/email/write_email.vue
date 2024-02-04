@@ -390,7 +390,7 @@ import DelayedTxlLayout from './write_email_delayed_tx.vue';
 import { fontSizeList, fontFamilyList, colors } from '@/constant/editorOption'
 import { getSignatureList } from '@/api/email/usually'
 // 邮箱详情
-import { getCustomerDetail } from '@/api/email/customer'
+import { getCustomerDetail, getCustomerEmailInfo } from '@/api/email/customer'
 
 import DialogTemplate from './write_email/DialogTemplate.vue';
 import DialogQuickText from './write_email/DialogQuickText.vue';
@@ -493,7 +493,11 @@ export default {
     "$route.query": {
       handler(newVal) {
         if (newVal?.id) {
-          this.getEmailInfo(newVal.id)
+          this.getCustomerInfo(newVal.id)
+        }
+
+        if (newVal?.emailId) {
+            this.getEmailInfo(newVal.emailId);
         }
       },
       immediate: true
@@ -533,7 +537,7 @@ export default {
     }),
   },
   methods: {
-    async getEmailInfo(id) {
+    async getCustomerInfo(id) {
       try {
         const res = await getCustomerDetail({
           id
@@ -545,6 +549,20 @@ export default {
         console.error(e.message);
       }
     },
+
+    async getEmailInfo(id) {
+      try {
+        const res = await getCustomerEmailInfo({
+          id
+        })
+        if (res.code === 200) {
+          this.handleCurrentEmailInfo(res.data)
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    },
+
     async getSignatureOption() {
       try {
         const res = await getSignatureList()
@@ -748,14 +766,13 @@ export default {
         const response = await this.saveSendEmail();
         if (response.code === 200) {
           const id = response.data;
-          console.log("id = " + id);
 
           const data = {
             "id": id
           };
           const sendResponse = await sendEmail(data);
           if (sendResponse.code === 200) {
-            EventBus.$emit('switch-send-success');  // 发出事件
+            EventBus.$emit('switch-send-success', id);  // 发出事件
             return response;
           } else {
             console.error('发送失败');
@@ -1096,6 +1113,50 @@ export default {
       if (this.selectedEmail.id) {
         // 上传邮件eml附件
         this.uploadAttachment(this.selectedEmail.id);
+      }
+    },
+
+    // 当前邮件信息
+    handleCurrentEmailInfo(data) {
+      this.formData.title = data.title;
+      this.formData.content = data.content;
+      this.htmlText = data.content;
+      if (data.id) {
+        this.formData.id = data.id;
+        //this.taskId = data.taskId;
+      }
+
+      // todo 邮件内容和发件人回填有问题
+
+      if (data.receiver) {
+        this.receiverEmails = JSON.parse(data.receiver);
+        this.receiverEmails.forEach(receiver => {
+          const email = receiver.email;
+          // 有问题 this.selectedAccount获取不到。
+          if (email !== this.selectedAccount) {
+            this.receiver.push(email);
+          }
+        });
+      }
+
+      if (data.cc) {
+        this.ccEmails = JSON.parse(data.cc);
+        this.ccEmails.forEach(cc => {
+          const email = cc.email;
+          if (email !== this.selectedAccount) {
+            this.cc.push(email);
+          }
+        });
+      }
+
+      if (data.bcc) {
+        this.bccEmails = JSON.parse(data.bcc);
+        this.bccEmails.forEach(bcc => {
+          const email = bcc.email;
+          if (email !== this.selectedAccount) {
+            this.bcc.push(email);
+          }
+        });
       }
     },
 

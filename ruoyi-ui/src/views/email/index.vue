@@ -798,7 +798,7 @@ import CustomerEmailLayout from './customer_email/index.vue'
 import { listTaskPull, listTaskSend } from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
 import { listLabel } from "@/api/email/label";
-import { countMenu } from "@/api/email/email";
+import { countMenu,getEmailInfo } from "@/api/email/email";
 import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, ratingList, activityList } from "@/api/customer/email";
 import { EventBus } from "@/api/email/event-bus";
 import { getUsuallyInfo } from '@/api/email/usually'
@@ -820,8 +820,8 @@ export default {
       currentEmailType: '',
       emailTotal: 0,
       emailData: [],
-      selectedEmail: {},
       writeEmailType: '',
+      selectedEmail: {},
       isInboxOpen: true,
       isOutboxOpen: true,
       isShowMoreOpen: true,
@@ -858,6 +858,7 @@ export default {
       searchCustomerList: [],
     };
   },
+
   components: {
     'email_header': emailHeaderLayout,
     'email_content': emailContentLayout,
@@ -1136,7 +1137,7 @@ export default {
       handler(newVal) {
         switch (newVal.type) {
           case "write_email":
-            this.currentLayout = newVal.type
+            this.currentLayout = newVal.type;
             break;
           case "default":
             this.isMailNavNormalContainerOpen = true
@@ -1182,7 +1183,9 @@ export default {
     this.initStore()
 
 
-    EventBus.$on('switch-send-success', () => {
+    EventBus.$on('switch-send-success', (id) => {
+      this.selectedEmail = {};
+      this.selectedEmail.id = id;
       this.currentLayout = 'send_success';
     });
 

@@ -4,7 +4,7 @@
     <span class="fs-14 mr-10">已选&nbsp;{{ checkedLen.length }}&nbsp;个客户</span>
     <el-button round v-if="checkedLen.length === 1" @click="writeEmail">写邮件</el-button>
     <!-- <el-button round v-else-if="checkedLen.length > 1" @click="sendSMS">发送群发单显</el-button> -->
-    <el-button round>写营销邮件</el-button>
+<!--    <el-button round>写营销邮件</el-button>-->
     <!--    <el-button round>设置标签</el-button>-->
     <!--    <el-button round>编辑字段</el-button>-->
     <!--    <OperateMenu :ids="ids" class="ml-10">-->
