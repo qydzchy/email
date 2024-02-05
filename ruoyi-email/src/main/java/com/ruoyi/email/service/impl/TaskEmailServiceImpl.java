@@ -864,7 +864,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
         Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
 
-
         if (attachmentGroupMap.containsKey(id)) {
             List<EmailAttachmentBO> emailAttachmentGroupList = attachmentGroupMap.get(id);
             emailDetailVO.setEmailAttachmentList(emailAttachmentGroupList);

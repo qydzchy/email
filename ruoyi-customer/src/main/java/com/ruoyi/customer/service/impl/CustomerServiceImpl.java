@@ -1489,10 +1489,13 @@ public class CustomerServiceImpl implements ICustomerService {
 
             Iterator<Row> rowIterator = sheet.iterator();
 
+            // 字段映射（字段名和列下标映射）
+            //Map<String, Integer> columnMap = new HashMap<>();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
 
                 if (isFirstRow) {
+                    //columnMap = getColumnMap(row);
                     // 跳过第一行
                     isFirstRow = false;
                     continue;
@@ -1554,6 +1557,31 @@ public class CustomerServiceImpl implements ICustomerService {
         customerImport.setImportStatus(importStatus);
         customerImportMapper.updateCustomerImport(customerImport);
         return true;
+    }
+
+    /**
+     * 获取字段映射
+     * @param row
+     * @return
+     */
+    private Map<String, Integer> getColumnMap(Row row) {
+        Map<String, Integer> columnMap = new HashMap<>();
+        for (int index = 0; index < 50; index ++) {
+            Cell cell = row.getCell(index);
+            if (cell == null) {
+                continue;
+            }
+            String cellValue = getStringValue(row.getCell(index));
+            if (cellValue == null) {
+                continue;
+            }
+            ImportColumnEnum importColumnEnum = ImportColumnEnum.getByColumnAlias(cellValue);
+            if (importColumnEnum != null) {
+                columnMap.put(importColumnEnum.getColumnName(), index);
+            }
+        }
+
+        return columnMap;
     }
 
     /**
