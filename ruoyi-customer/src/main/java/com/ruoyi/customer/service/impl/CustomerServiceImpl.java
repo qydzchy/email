@@ -1490,18 +1490,18 @@ public class CustomerServiceImpl implements ICustomerService {
             Iterator<Row> rowIterator = sheet.iterator();
 
             // 字段映射（字段名和列下标映射）
-            //Map<String, Integer> columnMap = new HashMap<>();
+            Map<String, Integer> columnMap = new HashMap<>();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
 
                 if (isFirstRow) {
-                    //columnMap = getColumnMap(row);
+                    columnMap = getColumnMap(row);
                     // 跳过第一行
                     isFirstRow = false;
                     continue;
                 }
 
-                mapList.add(getExcelData(row));
+                mapList.add(getExcelData(columnMap, row));
             }
 
             // 查询存在的标签ID
@@ -1842,10 +1842,10 @@ public class CustomerServiceImpl implements ICustomerService {
      */
     private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Long id, Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
         Map<String, Object> map = contactMapList.get(0);
-        String companyName = map.get("companyName") != null ? String.valueOf(map.get("companyName")) : null;
-        String shortName = map.get("shortName") != null ? String.valueOf(map.get("shortName")) : null;
-        String countryRegion = map.get("countryRegion") != null ? String.valueOf(map.get("countryRegion")) : null;
-        String tag = map.get("tag") != null ? String.valueOf(map.get("tag")) : null;
+        String companyName = map.get(ImportColumnEnum.COMPANY_NAME.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_NAME.getColumnName())) : null;
+        String shortName = map.get(ImportColumnEnum.SHORT_NAME.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.SHORT_NAME.getColumnName())) : null;
+        String countryRegion = map.get(ImportColumnEnum.COUNTRY_REGION.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COUNTRY_REGION.getColumnName())) : null;
+        String tag = map.get(ImportColumnEnum.TAG.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.TAG.getColumnName())) : null;
         List<Long> tagIds = null;
         if (StringUtils.isNotBlank(tag)) {
             tagIds = new ArrayList<>();
@@ -1859,13 +1859,13 @@ public class CustomerServiceImpl implements ICustomerService {
         }
 
         Long stageId = null;
-        String stageName = map.get("stage") != null ? String.valueOf(map.get("stage")) : null;
+        String stageName = map.get(ImportColumnEnum.STAGE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.STAGE.getColumnName())) : null;
         if (StringUtils.isNotBlank(stageName)) {
             stageId = stageMap.get(stageName);
         }
 
         List<Long> sourceIds = null;
-        String source = map.get("source") != null ? String.valueOf(map.get("source")) : null;
+        String source = map.get(ImportColumnEnum.SOURCE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.SOURCE.getColumnName())) : null;
         if (StringUtils.isNotBlank(source)) {
             sourceIds = new ArrayList<>();
             String[] sourceArr = source.split(";");
@@ -1877,10 +1877,10 @@ public class CustomerServiceImpl implements ICustomerService {
             }
         }
 
-        String companyWebsite = map.get("companyWebsite") != null ? String.valueOf(map.get("companyWebsite")) : null;
+        String companyWebsite = map.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName())) : null;
         String phonePrefix = null;
         String phone = null;
-        String phoneStr = map.get("phone") != null ? String.valueOf(map.get("phone")) : null;
+        String phoneStr = map.get(ImportColumnEnum.PHONE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.PHONE.getColumnName())) : null;
         if (StringUtils.isNotBlank(phoneStr)) {
             String[] split = phoneStr.split("-");
             if (split.length == 2) {
@@ -1891,18 +1891,24 @@ public class CustomerServiceImpl implements ICustomerService {
             }
         }
 
-        String address = map.get("address") != null ? String.valueOf(map.get("address")) : null;
-        String companyRemarks = map.get("companyRemarks") != null ? String.valueOf(map.get("companyRemarks")) : null;
-        String customerNo = map.get("customerNo") != null ? String.valueOf(map.get("customerNo")) : null;
+        String address = map.get(ImportColumnEnum.ADDRESS.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.ADDRESS.getColumnName())) : null;
+        String companyRemarks = map.get(ImportColumnEnum.COMPANY_REMARKS.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_REMARKS.getColumnName())) : null;
+        String customerNo = map.get(ImportColumnEnum.CUSTOMER_NO.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.CUSTOMER_NO.getColumnName())) : null;
 
         List<CustomerContactAddOrUpdateDTO> contactList = new ArrayList<>();
         contactMapList.stream().forEach(contactMap -> {
-            String contactNickName = contactMap.get("contactNickName") != null ? String.valueOf(contactMap.get("contactNickName")) : null;
-            String contactEmail = contactMap.get("contactEmail") != null ? String.valueOf(contactMap.get("contactEmail")) : null;
-            String contactPhone = contactMap.get("contactPhone") != null ? String.valueOf(contactMap.get("contactPhone")) : null;
-            String facebook = contactMap.get("facebook") != null ? String.valueOf(contactMap.get("facebook")) : null;
-            String twitter = contactMap.get("twitter") != null ? String.valueOf(contactMap.get("twitter")) : null;
-            String linkedIn = contactMap.get("linkedIn") != null ? String.valueOf(contactMap.get("linkedIn")) : null;
+            String contactNickName = contactMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName())) : null;
+            String contactEmail = contactMap.get(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) != null ? String.valueOf(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) : null;
+            String contactPhone = contactMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName())) : null;
+            String facebook = contactMap.get(ImportColumnEnum.FACEBOOK.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.FACEBOOK.getColumnName())) : null;
+            String twitter = contactMap.get(ImportColumnEnum.TWITTER.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.TWITTER.getColumnName())) : null;
+            String linkedIn = contactMap.get(ImportColumnEnum.LINKED_IN.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.LINKED_IN.getColumnName())) : null;
+            String aliTM = contactMap.get(ImportColumnEnum.ALI_TM.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.ALI_TM.getColumnName())) : null;
+            String whatsapp = contactMap.get(ImportColumnEnum.WHATSAPP.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.WHATSAPP.getColumnName())) : null;
+            String skype = contactMap.get(ImportColumnEnum.SKYPE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.SKYPE.getColumnName())) : null;
+            String wechat = contactMap.get(ImportColumnEnum.WECHAT.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.WECHAT.getColumnName())) : null;
+            String messenger = contactMap.get(ImportColumnEnum.MESSENGER.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.MESSENGER.getColumnName())) : null;
+            String line = contactMap.get(ImportColumnEnum.LINE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.LINE.getColumnName())) : null;
 
             JSONArray contactPhoneJsonArr = new JSONArray();
             if (StringUtils.isNotBlank(contactPhone)) {
@@ -1920,26 +1926,8 @@ public class CustomerServiceImpl implements ICustomerService {
                 }
             }
 
-            JSONArray socialPlatformJsonArr = new JSONArray();
-            if (StringUtils.isNotBlank("facebook")) {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("facebook", facebook);
-                socialPlatformJsonArr.add(jsonObj);
-            }
-
-            if (StringUtils.isNotBlank("twitter")) {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("twitter", twitter);
-                socialPlatformJsonArr.add(jsonObj);
-            }
-
-            if (StringUtils.isNotBlank("linkedIn")) {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("linkedIn", linkedIn);
-                socialPlatformJsonArr.add(jsonObj);
-            }
-            // 社交平台
-            String socialPlatform = !socialPlatformJsonArr.isEmpty() ? JSONObject.toJSONString(socialPlatformJsonArr) : null;
+            // 获取社交平台
+            String socialPlatform = getSocialPlatform(facebook, twitter, linkedIn, aliTM, whatsapp, skype, wechat, messenger, line);
             // 手机号码
             String cPhone = !contactPhoneJsonArr.isEmpty() ? JSONObject.toJSONString(contactPhoneJsonArr) : null;
             String position = contactMap.get("position") != null ? String.valueOf(contactMap.get("position")) : null;
@@ -1985,6 +1973,88 @@ public class CustomerServiceImpl implements ICustomerService {
         customerAddOrUpdateDTO.setContactList(contactList);
 
         return customerAddOrUpdateDTO;
+    }
+
+    /**
+     * 获取社交平台信息
+     * @param facebook
+     * @param twitter
+     * @param linkedIn
+     * @param aliTM
+     * @param whatsapp
+     * @param skype
+     * @param wechat
+     * @param messenger
+     * @param line
+     * @return
+     */
+    private static String getSocialPlatform(String facebook, String twitter, String linkedIn, String aliTM, String whatsapp, String skype, String wechat, String messenger, String line) {
+        JSONArray socialPlatformJsonArr = new JSONArray();
+        if (StringUtils.isNotBlank(facebook)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Facebook");
+            jsonObj.put("account", facebook);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(twitter)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Twitter");
+            jsonObj.put("account", twitter);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(linkedIn)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "LinkedIn");
+            jsonObj.put("account", linkedIn);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(aliTM)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "阿里TM");
+            jsonObj.put("account", aliTM);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(whatsapp)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "WhatsApp");
+            jsonObj.put("account", whatsapp);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(skype)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Skype");
+            jsonObj.put("account", skype);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(wechat)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "WeChat");
+            jsonObj.put("account", wechat);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(messenger)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Messenger");
+            jsonObj.put("account", messenger);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(line)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Line");
+            jsonObj.put("account", line);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+        // 社交平台
+        String socialPlatform = !socialPlatformJsonArr.isEmpty() ? JSONObject.toJSONString(socialPlatformJsonArr) : null;
+        return socialPlatform;
     }
 
     /**
@@ -2046,29 +2116,45 @@ public class CustomerServiceImpl implements ICustomerService {
      * @param row
      * @return
      */
-    private Map<String, Object> getExcelData(Row row) {
+    private Map<String, Object> getExcelData(Map<String, Integer> columnMap, Row row) {
         Map<String, Object> map = new HashMap<>();
 
-        map.put("companyName", getStringValue(row.getCell(0)));
-        map.put("contactNickName", getStringValue(row.getCell(1)));
-        map.put("contactEmail", getStringValue(row.getCell(2)));
-        map.put("shortName", getStringValue(row.getCell(3)));
-        map.put("countryRegion", getStringValue(row.getCell(4)));
-        map.put("tag", getStringValue(row.getCell(5)));
-        map.put("stage", getStringValue(row.getCell(6)));
-        map.put("source", getStringValue(row.getCell(7)));
-        map.put("companyWebsite", getStringValue(row.getCell(8)));
-        map.put("phone", getStringValue(row.getCell(9)));
-        map.put("address", getStringValue(row.getCell(10)));
-        map.put("companyRemarks", getStringValue(row.getCell(11)));
-        map.put("customerNo", getStringValue(row.getCell(12)));
-        map.put("contactPhone", getStringValue(row.getCell(13)));
-        map.put("facebook", getStringValue(row.getCell(14)));
-        map.put("twitter", getStringValue(row.getCell(15)));
-        map.put("linkedIn", getStringValue(row.getCell(16)));
-        map.put("position", getStringValue(row.getCell(17)));
-        map.put("sex", getStringValue(row.getCell(18)));
-        map.put("contactRemarks", getStringValue(row.getCell(19)));
+        map.put(ImportColumnEnum.COMPANY_NAME.getColumnName(), getStringValue(row.getCell(columnMap.get(ImportColumnEnum.COMPANY_NAME.getColumnName()))));
+        map.put(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName()))));
+        map.put(ImportColumnEnum.CONTACT_EMAIL.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.CONTACT_EMAIL.getColumnName()))));
+        map.put(ImportColumnEnum.SHORT_NAME.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.SHORT_NAME.getColumnName()))));
+        map.put(ImportColumnEnum.COUNTRY_REGION.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.COUNTRY_REGION.getColumnName()))));
+        map.put(ImportColumnEnum.TAG.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.TAG.getColumnName()))));
+        map.put(ImportColumnEnum.STAGE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.STAGE.getColumnName()))));
+        map.put(ImportColumnEnum.SOURCE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.SOURCE.getColumnName()))));
+        map.put(ImportColumnEnum.COMPANY_WEBSITE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName()))));
+        map.put(ImportColumnEnum.PHONE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.PHONE.getColumnName()))));
+        map.put(ImportColumnEnum.ADDRESS.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.ADDRESS.getColumnName()))));
+        map.put(ImportColumnEnum.COMPANY_REMARKS.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.COMPANY_REMARKS.getColumnName()))));
+        map.put(ImportColumnEnum.CUSTOMER_NO.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.CUSTOMER_NO.getColumnName()))));
+        map.put(ImportColumnEnum.CONTACT_PHONE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName()))));
+        map.put(ImportColumnEnum.FACEBOOK.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.FACEBOOK.getColumnName()))));
+        map.put(ImportColumnEnum.TWITTER.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.TWITTER.getColumnName()))));
+        map.put(ImportColumnEnum.LINKED_IN.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.LINKED_IN.getColumnName()))));
+        map.put(ImportColumnEnum.ALI_TM.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.ALI_TM.getColumnName()))));
+        map.put(ImportColumnEnum.WHATSAPP.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.WHATSAPP.getColumnName()))));
+        map.put(ImportColumnEnum.SKYPE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.SKYPE.getColumnName()))));
+        map.put(ImportColumnEnum.WECHAT.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.WECHAT.getColumnName()))));
+        map.put(ImportColumnEnum.MESSENGER.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.MESSENGER.getColumnName()))));
+        map.put(ImportColumnEnum.LINE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.LINE.getColumnName()))));
+        map.put(ImportColumnEnum.POSITION.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.POSITION.getColumnName()))));
+        map.put(ImportColumnEnum.SEX.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.SEX.getColumnName()))));
+        map.put(ImportColumnEnum.CONTACT_REMARKS.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.CONTACT_REMARKS.getColumnName()))));
+        map.put(ImportColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName()))));
+        map.put(ImportColumnEnum.SCALE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.SCALE.getColumnName()))));
+        map.put(ImportColumnEnum.LAST_PRIVATELEADS_ENTRY.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.LAST_PRIVATELEADS_ENTRY.getColumnName()))));
+        map.put(ImportColumnEnum.BIRTHDAY.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.BIRTHDAY.getColumnName()))));
+        map.put(ImportColumnEnum.RECENT_ACTIVITY.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.RECENT_ACTIVITY.getColumnName()))));
+        map.put(ImportColumnEnum.TIMEZONE.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.TIMEZONE.getColumnName()))));
+        map.put(ImportColumnEnum.ORIGINAL_FOLLOW_UP_PERSONNEL.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.ORIGINAL_FOLLOW_UP_PERSONNEL.getColumnName()))));
+        map.put(ImportColumnEnum.UPDATE_BY.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.UPDATE_BY.getColumnName()))));
+        map.put(ImportColumnEnum.PUBLICLEADS_REASON.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.PUBLICLEADS_REASON.getColumnName()))));
+        map.put(ImportColumnEnum.LAST_FOLLOWUP_AT.getColumnName(),  getStringValue(row.getCell(columnMap.get(ImportColumnEnum.LAST_FOLLOWUP_AT.getColumnName()))));
 
         return map;
     }
