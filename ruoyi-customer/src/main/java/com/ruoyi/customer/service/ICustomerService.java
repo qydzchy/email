@@ -206,7 +206,7 @@ public interface ICustomerService
      * @param file
      * @return
      */
-    boolean importCustomer(Integer importType, MultipartFile file);
+    boolean importCustomer(Integer importType, Boolean updateFlag, MultipartFile file);
 
     /**
      * 移入公海规则处理

@@ -20,21 +20,21 @@
             <!---->
             <div class="mm-space mm-space__horizontal mail-actions">
               <div class="mm-space-item" style="margin-right: 12px;">
-                <button type="button" class="mm-button mm-button__primary mm__theme mm__theme-size__small">
+                <button type="button" class="mm-button mm-button__primary mm__theme mm__theme-size__small" @click="back">
                   <!---->
                   <!---->返回列表
                   <!---->
                 </button>
               </div>
               <div class="mm-space-item" style="margin-right: 12px;">
-                <a target="_blank" data-savepage-href="/pro/mail/detail?mail_id=10627058394787" href="https://crm.xiaoman.cn/pro/mail/detail?mail_id=10627058394787" class="mm-button mm__theme mm__theme-size__small">
+                <a target="_blank" class="mm-button mm__theme mm__theme-size__small" @click="viewThisEmail">
                   <!---->
                   <!---->查看此邮件
                   <!---->
                 </a>
               </div>
               <div class="mm-space-item" style="margin-right: 12px;">
-                <button type="button" class="mm-button mm__theme mm__theme-size__small">
+                <button type="button" class="mm-button mm__theme mm__theme-size__small" @click="writeEmail">
                   <!---->
                   <!---->再写一封
                   <!---->
@@ -79,3 +79,38 @@
 @import '../../static/scss/email/index/25242.59786a6e.css';
 @import '../../static/scss/email/index/57314.b06a5e97.css';
 </style>
+<script>
+import { targetBlank } from '@/utils/tools'
+import { EventBus } from "@/api/email/event-bus";
+export default {
+  data() {
+    return {
+
+    }
+  },
+
+  props: {
+    selectedEmail: {
+      type: Object,
+      default: {}
+    },
+  },
+
+  methods: {
+    // 返回列表
+    back() {
+      targetBlank(`/email/index?type=email_header`);
+    },
+
+    // 查看此邮件
+    viewThisEmail() {
+      targetBlank(`/email/index?type=write_email&emailId=` + this.selectedEmail.id);
+    },
+
+    // 再写一封
+    writeEmail() {
+      targetBlank(`/email/index?type=write_email`);
+    },
+  },
+}
+</script>

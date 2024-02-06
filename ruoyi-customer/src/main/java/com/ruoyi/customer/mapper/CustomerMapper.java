@@ -323,4 +323,11 @@ public interface CustomerMapper
      * @param lastFollowupAt
      */
     void updateLastContactedAtOrLastFollowupAt(@Param("customerIdList") List<Long> customerIdList, @Param("lastContactedAt") Date lastContactedAt, @Param("lastFollowupAt") Date lastFollowupAt);
+
+    /**
+     * 根据公司名称查询客户
+     * @param companyName
+     * @return
+     */
+    Customer getByCompanyName(@Param("companyName") String companyName);
 }

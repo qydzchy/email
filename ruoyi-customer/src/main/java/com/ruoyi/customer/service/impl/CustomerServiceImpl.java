@@ -1459,7 +1459,7 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public boolean importCustomer(Integer importType, MultipartFile file) {
+    public boolean importCustomer(Integer importType, Boolean updateFlag, MultipartFile file) {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         String username = loginUser.getUsername();
@@ -1489,10 +1489,13 @@ public class CustomerServiceImpl implements ICustomerService {
 
             Iterator<Row> rowIterator = sheet.iterator();
 
+            // 字段映射（字段名和列下标映射）
+            //Map<String, Integer> columnMap = new HashMap<>();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
 
                 if (isFirstRow) {
+                    //columnMap = getColumnMap(row);
                     // 跳过第一行
                     isFirstRow = false;
                     continue;
@@ -1508,17 +1511,37 @@ public class CustomerServiceImpl implements ICustomerService {
             // 查询存在的客户来源ID
             Map<String, Long> sourceMap = getSourceMap(mapList);
 
-            Map<Object, List<Map<String, Object>>> companyNameMap = mapList.stream().filter(map -> map.get("companyName") != null && !map.get("companyName").toString().equals("")).collect(Collectors.groupingBy(map -> map.get("companyName").toString()));
+            Map<String, List<Map<String, Object>>> companyNameMap = mapList.stream().filter(map -> map.get("companyName") != null && !map.get("companyName").toString().equals("")).collect(Collectors.groupingBy(map -> map.get("companyName").toString()));
 
             companyNameMap.forEach((companyName, contactMapList) -> {
-                CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(tagMap, stageMap, sourceMap, contactMapList, importType);
-                try {
-                    insertCustomer(customerAddOrUpdateDTO);
-                    successImportCount.getAndIncrement();
-                } catch (Exception e) {
-                    log.error("新增客户异常：{}", e);
-                    failedImportCount.getAndIncrement();
+                // 判断公司是否已经存在
+                Customer customer = customerMapper.getByCompanyName(companyName);
+                if (customer != null) {
+                    if (Optional.ofNullable(updateFlag).orElse(false)) {
+                        // 更新客户信息
+                        CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(customer.getId(), tagMap, stageMap, sourceMap, contactMapList, importType);
+                        try {
+                            updateCustomer(customerAddOrUpdateDTO);
+                            successImportCount.getAndIncrement();
+                        } catch (Exception e) {
+                            log.error("更新客户异常：{}", e);
+                            failedImportCount.getAndIncrement();
+                        }
+                    } else {
+                        failedImportCount.getAndIncrement();
+                    }
+
+                } else {
+                    CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(null, tagMap, stageMap, sourceMap, contactMapList, importType);
+                    try {
+                        insertCustomer(customerAddOrUpdateDTO);
+                        successImportCount.getAndIncrement();
+                    } catch (Exception e) {
+                        log.error("新增客户异常：{}", e);
+                        failedImportCount.getAndIncrement();
+                    }
                 }
+
                 expectedImportCount.getAndIncrement();
             });
 
@@ -1534,6 +1557,31 @@ public class CustomerServiceImpl implements ICustomerService {
         customerImport.setImportStatus(importStatus);
         customerImportMapper.updateCustomerImport(customerImport);
         return true;
+    }
+
+    /**
+     * 获取字段映射
+     * @param row
+     * @return
+     */
+    private Map<String, Integer> getColumnMap(Row row) {
+        Map<String, Integer> columnMap = new HashMap<>();
+        for (int index = 0; index < 50; index ++) {
+            Cell cell = row.getCell(index);
+            if (cell == null) {
+                continue;
+            }
+            String cellValue = getStringValue(row.getCell(index));
+            if (cellValue == null) {
+                continue;
+            }
+            ImportColumnEnum importColumnEnum = ImportColumnEnum.getByColumnAlias(cellValue);
+            if (importColumnEnum != null) {
+                columnMap.put(importColumnEnum.getColumnName(), index);
+            }
+        }
+
+        return columnMap;
     }
 
     /**
@@ -1792,7 +1840,7 @@ public class CustomerServiceImpl implements ICustomerService {
      * @param contactMapList
      * @return
      */
-    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
+    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Long id, Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
         Map<String, Object> map = contactMapList.get(0);
         String companyName = map.get("companyName") != null ? String.valueOf(map.get("companyName")) : null;
         String shortName = map.get("shortName") != null ? String.valueOf(map.get("shortName")) : null;
@@ -1919,6 +1967,7 @@ public class CustomerServiceImpl implements ICustomerService {
         });
 
         CustomerAddOrUpdateDTO customerAddOrUpdateDTO = new CustomerAddOrUpdateDTO();
+        customerAddOrUpdateDTO.setId(id);
         customerAddOrUpdateDTO.setCompanyName(companyName);
         customerAddOrUpdateDTO.setShortName(shortName);
         customerAddOrUpdateDTO.setSeaType(importType);

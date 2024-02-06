@@ -86,7 +86,7 @@ public class CustomerImportController extends BaseController {
             throw new ServiceException("只允许导入EXCEL文件");
         }
 
-        return toAjax(customerService.importCustomer(importType, file));
+        return toAjax(customerService.importCustomer(importType, updateFlag, file));
     }
 
     /**
