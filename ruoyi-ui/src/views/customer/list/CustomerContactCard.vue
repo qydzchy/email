@@ -256,7 +256,6 @@ export default {
         }
         return val
       })
-      console.log(this.formList);
     },
     getInnerData() {
       let valid = []
