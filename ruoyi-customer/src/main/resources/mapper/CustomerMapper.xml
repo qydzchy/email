@@ -492,6 +492,10 @@
         where company_name = #{companyName} AND del_flag = '0'
     </select>
 
+    <select id="getUserIdByNickName" resultType="java.lang.Long">
+        select user_id from sys_user where nick_name = #{nickName} order by create_time asc limit 1
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">

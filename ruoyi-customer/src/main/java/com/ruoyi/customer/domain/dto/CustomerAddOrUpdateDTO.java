@@ -1,9 +1,12 @@
 package com.ruoyi.customer.domain.dto;
 
+import com.ruoyi.customer.domain.CustomerFollowUpPersonnel;
+import com.ruoyi.customer.domain.CustomerSeaLog;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -79,7 +82,32 @@ public class CustomerAddOrUpdateDTO {
     private String companyLogo;
 
     /**
+     * 更新人
+     */
+    private Long updateId;
+
+    /**
+     * 更新人名称
+     */
+    private String updateBy;
+
+    /**
+     * 最近跟进时间
+     */
+    private Date lastFollowupAt;
+
+    /**
      * 客户联系人
      */
     private List<CustomerContactAddOrUpdateDTO> contactList;
+
+    /**
+     * 移入公/私海时间
+     */
+    private CustomerSeaLog customerSeaLog;
+
+    /**
+     * 跟进人
+     */
+    private CustomerFollowUpPersonnel customerFollowUpPersonnel;
 }
