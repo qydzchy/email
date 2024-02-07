@@ -1,6 +1,10 @@
 package com.ruoyi.customer.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -294,8 +298,8 @@ public class CustomerServiceImpl implements ICustomerService {
         customer.setCreateId(userId);
         customer.setCreateBy(username);
         customer.setCreateTime(DateUtils.getNowDate());
-        customer.setUpdateId(userId);
-        customer.setUpdateBy(username);
+        customer.setUpdateId(customerAddOrUpdateDTO.getUpdateId() != null ? customerAddOrUpdateDTO.getUpdateId() : userId);
+        customer.setUpdateBy(StringUtils.isNotBlank(customerAddOrUpdateDTO.getUpdateBy()) ? customerAddOrUpdateDTO.getUpdateBy() : username);
         customer.setUpdateTime(DateUtils.getNowDate());
         customerMapper.insertCustomer(customer);
         Long id = customer.getId();
@@ -303,7 +307,12 @@ public class CustomerServiceImpl implements ICustomerService {
         // 判断新增的客户是公海还是私海类型，如果是私海，需要将该客户关联到当下用户作为跟进人
         if (customerAddOrUpdateDTO.getSeaType().intValue() == CustomerSeaTypeEnum.PRIVATE_LEADS.getType()) {
             // 新增客户跟进人
-            insertCustomerFollowUpPersonnel(id, userId, username);
+            CustomerFollowUpPersonnel customerFollowUpPersonnel = customerAddOrUpdateDTO.getCustomerFollowUpPersonnel();
+            if (customerFollowUpPersonnel == null) {
+                customerFollowUpPersonnel = getCustomerFollowUpPersonnel(id, userId, username);
+            }
+
+            customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
         }
 
         // 新增客户来源的关联关系
@@ -313,6 +322,12 @@ public class CustomerServiceImpl implements ICustomerService {
 
         // 批量新增客户联系人
         batchInsertCustomerContact(customerAddOrUpdateDTO.getContactList(), userId, username, id);
+
+        // 保存客户私海/公海日志
+        CustomerSeaLog customerSeaLog = customerAddOrUpdateDTO.getCustomerSeaLog();
+        if (customerSeaLog != null) {
+            customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
+        }
 
         // 洗牌
         CustomerShuffleThreadPoolUtil.getThreadPool().execute(() -> shuffle(id, null));
@@ -390,12 +405,13 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     /**
-     * 新增客户跟进人
-     *
+     * 获取联系人对象
      * @param id
      * @param userId
+     * @param username
+     * @return
      */
-    private void insertCustomerFollowUpPersonnel(Long id, Long userId, String username) {
+    private CustomerFollowUpPersonnel getCustomerFollowUpPersonnel(Long id, Long userId, String username) {
         CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
         customerFollowUpPersonnel.setCustomerId(id);
         customerFollowUpPersonnel.setUserId(userId);
@@ -405,8 +421,7 @@ public class CustomerServiceImpl implements ICustomerService {
         customerFollowUpPersonnel.setUpdateId(userId);
         customerFollowUpPersonnel.setUpdateBy(username);
         customerFollowUpPersonnel.setUpdateTime(DateUtils.getNowDate());
-
-        customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
+        return customerFollowUpPersonnel;
     }
 
     /**
@@ -515,8 +530,8 @@ public class CustomerServiceImpl implements ICustomerService {
 
         // 不能修改客户编号
         customerAddOrUpdateDTO.setCustomerNo(null);
-        customer.setUpdateId(userId);
-        customer.setUpdateBy(username);
+        customer.setUpdateId(customerAddOrUpdateDTO.getUpdateId() != null ? customerAddOrUpdateDTO.getUpdateId() : userId);
+        customer.setUpdateBy(StringUtils.isNotBlank(customerAddOrUpdateDTO.getUpdateBy()) ? customerAddOrUpdateDTO.getUpdateBy() : username);
         customer.setUpdateTime(DateUtils.getNowDate());
         customerMapper.updateCustomer(customer);
 
@@ -572,6 +587,19 @@ public class CustomerServiceImpl implements ICustomerService {
                 customerContact.setUpdateTime(DateUtils.getNowDate());
                 customerContactMapper.updateCustomerContact(customerContact);
             }
+        }
+
+        // 保存客户私海/公海日志
+        CustomerSeaLog customerSeaLog = customerAddOrUpdateDTO.getCustomerSeaLog();
+        if (customerSeaLog != null) {
+            customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
+        }
+
+        // 更新跟进人
+        CustomerFollowUpPersonnel customerFollowUpPersonnel = customerAddOrUpdateDTO.getCustomerFollowUpPersonnel();
+        if (customerFollowUpPersonnel != null) {
+            customerFollowUpPersonnelMapper.deleteCustomerFollowUpPersonnelByCustomerIdAndUserId(id, customerFollowUpPersonnel.getUserId(), userId, username);
+            customerFollowUpPersonnelMapper.insertCustomerFollowUpPersonnel(customerFollowUpPersonnel);
         }
 
         // 编辑客户事件
@@ -1490,18 +1518,18 @@ public class CustomerServiceImpl implements ICustomerService {
             Iterator<Row> rowIterator = sheet.iterator();
 
             // 字段映射（字段名和列下标映射）
-            //Map<String, Integer> columnMap = new HashMap<>();
+            Map<String, Integer> columnMap = new HashMap<>();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
 
                 if (isFirstRow) {
-                    //columnMap = getColumnMap(row);
+                    columnMap = getColumnMap(row);
                     // 跳过第一行
                     isFirstRow = false;
                     continue;
                 }
 
-                mapList.add(getExcelData(row));
+                mapList.add(getExcelData(columnMap, row));
             }
 
             // 查询存在的标签ID
@@ -1519,7 +1547,7 @@ public class CustomerServiceImpl implements ICustomerService {
                 if (customer != null) {
                     if (Optional.ofNullable(updateFlag).orElse(false)) {
                         // 更新客户信息
-                        CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(customer.getId(), tagMap, stageMap, sourceMap, contactMapList, importType);
+                        CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(customer.getId(), userId, username, tagMap, stageMap, sourceMap, contactMapList, importType);
                         try {
                             updateCustomer(customerAddOrUpdateDTO);
                             successImportCount.getAndIncrement();
@@ -1532,7 +1560,7 @@ public class CustomerServiceImpl implements ICustomerService {
                     }
 
                 } else {
-                    CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(null, tagMap, stageMap, sourceMap, contactMapList, importType);
+                    CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(null, userId, username, tagMap, stageMap, sourceMap, contactMapList, importType);
                     try {
                         insertCustomer(customerAddOrUpdateDTO);
                         successImportCount.getAndIncrement();
@@ -1840,12 +1868,21 @@ public class CustomerServiceImpl implements ICustomerService {
      * @param contactMapList
      * @return
      */
-    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Long id, Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
+    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Long id, Long userId, String username, Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
         Map<String, Object> map = contactMapList.get(0);
-        String companyName = map.get("companyName") != null ? String.valueOf(map.get("companyName")) : null;
-        String shortName = map.get("shortName") != null ? String.valueOf(map.get("shortName")) : null;
-        String countryRegion = map.get("countryRegion") != null ? String.valueOf(map.get("countryRegion")) : null;
-        String tag = map.get("tag") != null ? String.valueOf(map.get("tag")) : null;
+        String companyName = map.get(ImportColumnEnum.COMPANY_NAME.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_NAME.getColumnName())) : null;
+        String shortName = map.get(ImportColumnEnum.SHORT_NAME.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.SHORT_NAME.getColumnName())) : null;
+        String countryRegion = map.get(ImportColumnEnum.COUNTRY_REGION.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COUNTRY_REGION.getColumnName())) : null;
+        String tag = map.get(ImportColumnEnum.TAG.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.TAG.getColumnName())) : null;
+        Integer scale = map.get(ImportColumnEnum.SCALE.getColumnName()) != null ? getScale(String.valueOf(map.get(ImportColumnEnum.SCALE.getColumnName()))) : null;
+        Date lastPrivateleadsEntry = map.get(ImportColumnEnum.LAST_PRIVATELEADS_ENTRY.getColumnName()) != null ? parseDateTime(String.valueOf(map.get(ImportColumnEnum.LAST_PRIVATELEADS_ENTRY.getColumnName()))) : null;
+        String timezone = map.get(ImportColumnEnum.TIMEZONE.getColumnName()) != null ? TimezoneEnum.getTimezoneEnum(String.valueOf(map.get(ImportColumnEnum.TIMEZONE.getColumnName()))).getTimezone() : null;
+        String followUpPersonnel = map.get(ImportColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName())) : null;
+        Long followUpPersonnelId = StringUtils.isNotBlank(followUpPersonnel) ? customerMapper.getUserIdByNickName(followUpPersonnel) : null;
+        String updateBy = map.get(ImportColumnEnum.UPDATE_BY.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.UPDATE_BY.getColumnName())) : null;
+        Long updateId = StringUtils.isNotBlank(updateBy) ? customerMapper.getUserIdByNickName(updateBy) : null;
+        Date lastFollowupAt = map.get(ImportColumnEnum.LAST_FOLLOWUP_AT.getColumnName()) != null ? parseDateTime(String.valueOf(map.get(ImportColumnEnum.LAST_FOLLOWUP_AT.getColumnName()))) : null;
+
         List<Long> tagIds = null;
         if (StringUtils.isNotBlank(tag)) {
             tagIds = new ArrayList<>();
@@ -1859,13 +1896,13 @@ public class CustomerServiceImpl implements ICustomerService {
         }
 
         Long stageId = null;
-        String stageName = map.get("stage") != null ? String.valueOf(map.get("stage")) : null;
+        String stageName = map.get(ImportColumnEnum.STAGE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.STAGE.getColumnName())) : null;
         if (StringUtils.isNotBlank(stageName)) {
             stageId = stageMap.get(stageName);
         }
 
         List<Long> sourceIds = null;
-        String source = map.get("source") != null ? String.valueOf(map.get("source")) : null;
+        String source = map.get(ImportColumnEnum.SOURCE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.SOURCE.getColumnName())) : null;
         if (StringUtils.isNotBlank(source)) {
             sourceIds = new ArrayList<>();
             String[] sourceArr = source.split(";");
@@ -1877,10 +1914,10 @@ public class CustomerServiceImpl implements ICustomerService {
             }
         }
 
-        String companyWebsite = map.get("companyWebsite") != null ? String.valueOf(map.get("companyWebsite")) : null;
+        String companyWebsite = map.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName())) : null;
         String phonePrefix = null;
         String phone = null;
-        String phoneStr = map.get("phone") != null ? String.valueOf(map.get("phone")) : null;
+        String phoneStr = map.get(ImportColumnEnum.PHONE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.PHONE.getColumnName())) : null;
         if (StringUtils.isNotBlank(phoneStr)) {
             String[] split = phoneStr.split("-");
             if (split.length == 2) {
@@ -1891,18 +1928,26 @@ public class CustomerServiceImpl implements ICustomerService {
             }
         }
 
-        String address = map.get("address") != null ? String.valueOf(map.get("address")) : null;
-        String companyRemarks = map.get("companyRemarks") != null ? String.valueOf(map.get("companyRemarks")) : null;
-        String customerNo = map.get("customerNo") != null ? String.valueOf(map.get("customerNo")) : null;
+        String address = map.get(ImportColumnEnum.ADDRESS.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.ADDRESS.getColumnName())) : null;
+        String companyRemarks = map.get(ImportColumnEnum.COMPANY_REMARKS.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_REMARKS.getColumnName())) : null;
+        String customerNo = map.get(ImportColumnEnum.CUSTOMER_NO.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.CUSTOMER_NO.getColumnName())) : null;
 
         List<CustomerContactAddOrUpdateDTO> contactList = new ArrayList<>();
         contactMapList.stream().forEach(contactMap -> {
-            String contactNickName = contactMap.get("contactNickName") != null ? String.valueOf(contactMap.get("contactNickName")) : null;
-            String contactEmail = contactMap.get("contactEmail") != null ? String.valueOf(contactMap.get("contactEmail")) : null;
-            String contactPhone = contactMap.get("contactPhone") != null ? String.valueOf(contactMap.get("contactPhone")) : null;
-            String facebook = contactMap.get("facebook") != null ? String.valueOf(contactMap.get("facebook")) : null;
-            String twitter = contactMap.get("twitter") != null ? String.valueOf(contactMap.get("twitter")) : null;
-            String linkedIn = contactMap.get("linkedIn") != null ? String.valueOf(contactMap.get("linkedIn")) : null;
+            String contactNickName = contactMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName())) : null;
+            String contactEmail = contactMap.get(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) != null ? String.valueOf(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) : null;
+            String contactPhone = contactMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName())) : null;
+            Date birthday = contactMap.get(ImportColumnEnum.BIRTHDAY.getColumnName()) != null ? parseDateTime(String.valueOf(contactMap.get(ImportColumnEnum.BIRTHDAY.getColumnName()))) : null;
+
+            String facebook = contactMap.get(ImportColumnEnum.FACEBOOK.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.FACEBOOK.getColumnName())) : null;
+            String twitter = contactMap.get(ImportColumnEnum.TWITTER.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.TWITTER.getColumnName())) : null;
+            String linkedIn = contactMap.get(ImportColumnEnum.LINKED_IN.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.LINKED_IN.getColumnName())) : null;
+            String aliTM = contactMap.get(ImportColumnEnum.ALI_TM.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.ALI_TM.getColumnName())) : null;
+            String whatsapp = contactMap.get(ImportColumnEnum.WHATSAPP.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.WHATSAPP.getColumnName())) : null;
+            String skype = contactMap.get(ImportColumnEnum.SKYPE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.SKYPE.getColumnName())) : null;
+            String wechat = contactMap.get(ImportColumnEnum.WECHAT.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.WECHAT.getColumnName())) : null;
+            String messenger = contactMap.get(ImportColumnEnum.MESSENGER.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.MESSENGER.getColumnName())) : null;
+            String line = contactMap.get(ImportColumnEnum.LINE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.LINE.getColumnName())) : null;
 
             JSONArray contactPhoneJsonArr = new JSONArray();
             if (StringUtils.isNotBlank(contactPhone)) {
@@ -1920,26 +1965,8 @@ public class CustomerServiceImpl implements ICustomerService {
                 }
             }
 
-            JSONArray socialPlatformJsonArr = new JSONArray();
-            if (StringUtils.isNotBlank("facebook")) {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("facebook", facebook);
-                socialPlatformJsonArr.add(jsonObj);
-            }
-
-            if (StringUtils.isNotBlank("twitter")) {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("twitter", twitter);
-                socialPlatformJsonArr.add(jsonObj);
-            }
-
-            if (StringUtils.isNotBlank("linkedIn")) {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.put("linkedIn", linkedIn);
-                socialPlatformJsonArr.add(jsonObj);
-            }
-            // 社交平台
-            String socialPlatform = !socialPlatformJsonArr.isEmpty() ? JSONObject.toJSONString(socialPlatformJsonArr) : null;
+            // 获取社交平台
+            String socialPlatform = getSocialPlatform(facebook, twitter, linkedIn, aliTM, whatsapp, skype, wechat, messenger, line);
             // 手机号码
             String cPhone = !contactPhoneJsonArr.isEmpty() ? JSONObject.toJSONString(contactPhoneJsonArr) : null;
             String position = contactMap.get("position") != null ? String.valueOf(contactMap.get("position")) : null;
@@ -1958,6 +1985,7 @@ public class CustomerServiceImpl implements ICustomerService {
             CustomerContactAddOrUpdateDTO contact = new CustomerContactAddOrUpdateDTO();
             contact.setNickName(contactNickName);
             contact.setEmail(contactEmail);
+            contact.setBirthday(birthday);
             contact.setSocialPlatform(socialPlatform);
             contact.setPhone(cPhone);
             contact.setPosition(position);
@@ -1968,6 +1996,8 @@ public class CustomerServiceImpl implements ICustomerService {
 
         CustomerAddOrUpdateDTO customerAddOrUpdateDTO = new CustomerAddOrUpdateDTO();
         customerAddOrUpdateDTO.setId(id);
+        customerAddOrUpdateDTO.setScale(scale);
+        customerAddOrUpdateDTO.setTimezone(timezone);
         customerAddOrUpdateDTO.setCompanyName(companyName);
         customerAddOrUpdateDTO.setShortName(shortName);
         customerAddOrUpdateDTO.setSeaType(importType);
@@ -1982,9 +2012,189 @@ public class CustomerServiceImpl implements ICustomerService {
         customerAddOrUpdateDTO.setPhone(phone);
         customerAddOrUpdateDTO.setAddress(address);
         customerAddOrUpdateDTO.setCompanyRemarks(companyRemarks);
+        if (updateId != null) {
+            customerAddOrUpdateDTO.setUpdateId(updateId);
+            customerAddOrUpdateDTO.setUpdateBy(updateBy);
+        }
+
+        customerAddOrUpdateDTO.setLastFollowupAt(lastFollowupAt);
         customerAddOrUpdateDTO.setContactList(contactList);
 
+        // 最近进入私海时间
+        if (lastPrivateleadsEntry != null) {
+            CustomerSeaLog customerSeaLog = getCustomerSeaLog(id, userId, lastPrivateleadsEntry);
+            customerAddOrUpdateDTO.setCustomerSeaLog(customerSeaLog);
+        }
+
+        // 跟进人
+        if (followUpPersonnelId != null) {
+            CustomerFollowUpPersonnel customerFollowUpPersonnel = getCustomerFollowUpPersonnel(id, userId, username, followUpPersonnelId);
+            customerAddOrUpdateDTO.setCustomerFollowUpPersonnel(customerFollowUpPersonnel);
+        }
+
         return customerAddOrUpdateDTO;
+    }
+
+    /**
+     * 获取客户私海/公海日志
+     * @param id
+     * @param userId
+     * @param lastPrivateleadsEntry
+     * @return
+     */
+    private static CustomerSeaLog getCustomerSeaLog(Long id, Long userId, Date lastPrivateleadsEntry) {
+        CustomerSeaLog customerSeaLog = new CustomerSeaLog();
+        customerSeaLog.setCustomerId(id);
+        customerSeaLog.setSeaType(CustomerSeaTypeEnum.PRIVATE_LEADS.getType());
+        customerSeaLog.setType(CustomerSeaLogTypeEnum.MANUAL.getType());
+        customerSeaLog.setCreateId(userId);
+        customerSeaLog.setCreateTime(lastPrivateleadsEntry);
+        return customerSeaLog;
+    }
+
+    /**
+     * 获取跟进人
+     * @param customerId
+     * @param userId
+     * @param username
+     * @param followUpPersonnelId
+     * @return
+     */
+    private CustomerFollowUpPersonnel getCustomerFollowUpPersonnel(Long customerId, Long userId, String username, Long followUpPersonnelId) {
+        Date now = DateUtils.getNowDate();
+        CustomerFollowUpPersonnel customerFollowUpPersonnel = new CustomerFollowUpPersonnel();
+        customerFollowUpPersonnel.setCustomerId(customerId);
+        customerFollowUpPersonnel.setUserId(followUpPersonnelId);
+        customerFollowUpPersonnel.setDelFlag("0");
+        customerFollowUpPersonnel.setCreateId(userId);
+        customerFollowUpPersonnel.setCreateBy(username);
+        customerFollowUpPersonnel.setCreateTime(now);
+        customerFollowUpPersonnel.setUpdateId(userId);
+        customerFollowUpPersonnel.setUpdateBy(username);
+        customerFollowUpPersonnel.setUpdateTime(now);
+        return customerFollowUpPersonnel;
+    }
+
+    /**
+     * 获取规模code
+     * @param scaleStr
+     * @return
+     */
+    private Integer getScale(String scaleStr) {
+        if (StringUtils.isBlank(scaleStr)) {
+            return null;
+        }
+
+        ScaleEnum scaleEnum = ScaleEnum.getScaleEnum(scaleStr);
+        if (scaleEnum != null) {
+            return scaleEnum.getCode();
+        }
+
+        return null;
+    }
+
+    /**
+     * 字符串转时间类型
+     * @param dateString
+     * @return
+     */
+    private Date parseDateTime(String dateString) {
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try {
+            LocalDateTime localDateTime = null;
+            try {
+                localDateTime = LocalDateTime.parse(dateString, formatter1);
+            } catch (DateTimeParseException e) {
+                localDateTime = LocalDateTime.parse(dateString, formatter2);
+            }
+            return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        } catch (DateTimeParseException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * 获取社交平台信息
+     * @param facebook
+     * @param twitter
+     * @param linkedIn
+     * @param aliTM
+     * @param whatsapp
+     * @param skype
+     * @param wechat
+     * @param messenger
+     * @param line
+     * @return
+     */
+    private String getSocialPlatform(String facebook, String twitter, String linkedIn, String aliTM, String whatsapp, String skype, String wechat, String messenger, String line) {
+        JSONArray socialPlatformJsonArr = new JSONArray();
+        if (StringUtils.isNotBlank(facebook)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Facebook");
+            jsonObj.put("account", facebook);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(twitter)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Twitter");
+            jsonObj.put("account", twitter);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(linkedIn)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "LinkedIn");
+            jsonObj.put("account", linkedIn);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(aliTM)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "阿里TM");
+            jsonObj.put("account", aliTM);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(whatsapp)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "WhatsApp");
+            jsonObj.put("account", whatsapp);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(skype)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Skype");
+            jsonObj.put("account", skype);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(wechat)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "WeChat");
+            jsonObj.put("account", wechat);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(messenger)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Messenger");
+            jsonObj.put("account", messenger);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+
+        if (StringUtils.isNotBlank(line)) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("type", "Line");
+            jsonObj.put("account", line);
+            socialPlatformJsonArr.add(jsonObj);
+        }
+        // 社交平台
+        String socialPlatform = !socialPlatformJsonArr.isEmpty() ? JSONObject.toJSONString(socialPlatformJsonArr) : null;
+        return socialPlatform;
     }
 
     /**
@@ -2046,29 +2256,16 @@ public class CustomerServiceImpl implements ICustomerService {
      * @param row
      * @return
      */
-    private Map<String, Object> getExcelData(Row row) {
+    private Map<String, Object> getExcelData(Map<String, Integer> columnMap, Row row) {
         Map<String, Object> map = new HashMap<>();
 
-        map.put("companyName", getStringValue(row.getCell(0)));
-        map.put("contactNickName", getStringValue(row.getCell(1)));
-        map.put("contactEmail", getStringValue(row.getCell(2)));
-        map.put("shortName", getStringValue(row.getCell(3)));
-        map.put("countryRegion", getStringValue(row.getCell(4)));
-        map.put("tag", getStringValue(row.getCell(5)));
-        map.put("stage", getStringValue(row.getCell(6)));
-        map.put("source", getStringValue(row.getCell(7)));
-        map.put("companyWebsite", getStringValue(row.getCell(8)));
-        map.put("phone", getStringValue(row.getCell(9)));
-        map.put("address", getStringValue(row.getCell(10)));
-        map.put("companyRemarks", getStringValue(row.getCell(11)));
-        map.put("customerNo", getStringValue(row.getCell(12)));
-        map.put("contactPhone", getStringValue(row.getCell(13)));
-        map.put("facebook", getStringValue(row.getCell(14)));
-        map.put("twitter", getStringValue(row.getCell(15)));
-        map.put("linkedIn", getStringValue(row.getCell(16)));
-        map.put("position", getStringValue(row.getCell(17)));
-        map.put("sex", getStringValue(row.getCell(18)));
-        map.put("contactRemarks", getStringValue(row.getCell(19)));
+        for (ImportColumnEnum columnEnum : ImportColumnEnum.values()) {
+            String columnName = columnEnum.getColumnName();
+            Integer columnIndex = columnMap.get(columnName);
+            if (columnIndex != null) {
+                map.put(columnName, getStringValue(row.getCell(columnIndex)));
+            }
+        }
 
         return map;
     }
@@ -2082,7 +2279,17 @@ public class CustomerServiceImpl implements ICustomerService {
             case STRING:
                 return cell.getStringCellValue();
             case NUMERIC:
-                return String.valueOf(cell.getNumericCellValue());
+                if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
+                    return DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, cell.getDateCellValue());
+                } else {
+                    double numericValue = cell.getNumericCellValue();
+                    long longValue = (long) numericValue;
+                    if (numericValue == longValue) {
+                        return String.valueOf(longValue);
+                    } else {
+                        return String.valueOf(numericValue);
+                    }
+                }
             case BOOLEAN:
                 return String.valueOf(cell.getBooleanCellValue());
             default:
