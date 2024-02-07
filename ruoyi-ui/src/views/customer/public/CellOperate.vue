@@ -12,7 +12,7 @@
 					@blur="onBlur"
 					clearable
 					placeholder="请输入"
-					@keydown.enter.native="onEnter" />
+					@keydown.enter.native="$event.target.blur()" />
 			</template>
 			<!--   select   -->
 			<template v-else-if="type === 'select'">
@@ -59,7 +59,7 @@
 							@input="handleInputTel"
 							clearable
 							placeholder="请输入"
-							@keydown.enter.native="onEnter"></el-input>
+							@keydown.enter.native="$event.target.blur()"></el-input>
 					</el-col>
 				</el-row>
 			</template>
@@ -325,9 +325,9 @@
 			handleInputTel(value) {
 				this.$emit('onInput', { ...this.curValue, phone: value });
 			},
-			onEnter() {
-				this.$emit('onEnter');
-			},
+			// onEnter() {
+			// 	this.$emit('onEnter');
+			// },
 			onEdit() {
 				this.$emit('onEdit');
 			},

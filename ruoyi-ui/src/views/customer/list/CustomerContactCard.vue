@@ -203,7 +203,6 @@ export default {
             }) || []
             return val
           })
-          console.log(this.formList);
         }
       },
       deep: true,

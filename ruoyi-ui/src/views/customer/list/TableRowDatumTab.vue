@@ -7,7 +7,7 @@
             <div>主要联系人信息</div>
             <div>
               <el-tooltip content="添加/编辑">
-                <i class="el-icon-edit pointer" @click.stop="contactVisible=true"></i>
+                <i class="el-icon-edit pointer" @click.stop="contactVisible = true"></i>
               </el-tooltip>
             </div>
           </div>
@@ -31,37 +31,36 @@
                 </el-row>
               </div>
               <div class="fs-14 my-10 flex-start flex-wrap" v-show="contactRowChecked">
-                <template v-for="(contact,index) in contactFieldList">
+                <template v-for="(contact, index) in contactFieldList">
                   <div class="wrap"
-                       v-if="contactRow[contact.field] && !['socialPlatform','phone'].includes(contact.field)"
-                       :key="index">
+                    v-if="contactRow[contact.field] && !['socialPlatform', 'phone'].includes(contact.field)" :key="index">
                     <div>{{ contact.name }}</div>
-                    <div class="flex-middle" :class="{'copy-text':contact.isCopy}">
-                            <span v-if="contact.mapValue">
-                              {{ contact.mapValue[contactRow[contact.field]] }}
-                            </span>
+                    <div class="flex-middle" :class="{ 'copy-text': contact.isCopy }">
+                      <span v-if="contact.mapValue">
+                        {{ contact.mapValue[contactRow[contact.field]] }}
+                      </span>
                       <span v-else>
-                              {{ contactRow[contact.field] }}
-                            </span>
+                        {{ contactRow[contact.field] }}
+                      </span>
                       <i v-if="contact.isCopy" class="el-icon-copy-document pl-4"
-                         @click="onCopy(contactRow[contact.field])"></i>
+                        @click="onCopy(contactRow[contact.field])"></i>
                     </div>
                   </div>
                   <div class="wrap" v-else-if="contactRow[contact.field]">
                     <div>{{ contact.name }}</div>
                     <div class="flex-column gap-10">
-                      <div class="flex-start" :class="{'copy-text': subItem[contact.childField[1]]}"
-                           v-for="(subItem,subIdx) in contactRow[contact.field]">
-                              <span :key="subIdx">
-                                {{ subItem[contact.childField[0]] || '---' }}
-                              </span>
-                        <span v-if="contact.field==='phone'">-</span>
+                      <div class="flex-start" :class="{ 'copy-text': subItem[contact.childField[1]] }"
+                        v-for="(subItem, subIdx) in contactRow[contact.field]">
+                        <span :key="subIdx">
+                          {{ subItem[contact.childField[0]] || '---' }}
+                        </span>
+                        <span v-if="contact.field === 'phone'">-</span>
                         <span v-else class="pl-10"></span>
                         <span>
-                                 {{ subItem[contact.childField[1]] || '---' }}
-                              </span>
+                          {{ subItem[contact.childField[1]] || '---' }}
+                        </span>
                         <i v-if="subItem[contact.childField[1]]" class="el-icon-copy-document pl-4"
-                           @click="onCopy(generateDiffCopy(contact.field,subItem[contact.childField[0]],subItem[contact.childField[1]]))"></i>
+                          @click="onCopy(generateDiffCopy(contact.field, subItem[contact.childField[0]], subItem[contact.childField[1]]))"></i>
                       </div>
                     </div>
                   </div>
@@ -69,9 +68,9 @@
               </div>
             </div>
             <div class="footer flex-middle flex-center fs-12 mt-10">
-            <span class="pointer" @click="contactRowChecked=!contactRowChecked">
-              {{ contactRowChecked ? '收起' : '展开' }}
-              <i :class="contactRowChecked ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i></span>
+              <span class="pointer" @click="contactRowChecked = !contactRowChecked">
+                {{ contactRowChecked ? '收起' : '展开' }}
+                <i :class="contactRowChecked ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i></span>
             </div>
           </div>
         </div>
@@ -85,13 +84,13 @@
           <div class="flex-middle space-between">
             <div class="bold">公司常用信息</div>
             <div>
-              <i class="el-icon-setting" @click.stop="()=>{}"></i>
+              <i class="el-icon-setting" @click.stop="() => { }"></i>
             </div>
           </div>
         </template>
         <div class="my-10 info-card">
           <el-row class="flex-wrap" type="flex" :gutter="10">
-            <el-col class="wrap" v-for="(usually,index) in usuallyInfo" :key="index">
+            <el-col class="wrap" v-for="(usually, index) in usuallyInfo" :key="index">
               <div>
                 {{ usually.label }}
                 <el-tooltip v-if="usually.showTooltip" placement="top">
@@ -99,19 +98,13 @@
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </div>
-              <CellOperate
-                  class="pt-6"
-                  :text="usually.value"
-                  :show-form="usually.show"
-                  :type="usually.type"
-                  :curValue.sync="usually.value"
-                  :show-copy-icon="false"
-                  :form-option="usually.options"
-                  @onInput="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
-                  @onChange="(val)=>handleSetValue('usuallyInfo',usually.field,val)"
-                  @onEnter="handleEnter('usuallyInfo',usually.field,false)"
-                  @onBlur="handleEnter('usuallyInfo',usually.field,false)"
-                  @onEdit="onShowForm('usuallyInfo',usually.field,true)">
+              <CellOperate class="pt-6" :text="usually.value" :show-form="usually.show" :type="usually.type"
+                :curValue.sync="usually.value" :show-copy-icon="false" :form-option="usually.options"
+                @onInput="(val) => handleSetValue('usuallyInfo', usually.field, val)"
+                @onChange="(val) => handleSetValue('usuallyInfo', usually.field, val)"
+                @onEnter="handleEnter('usuallyInfo', usually.field, false)"
+                @onBlur="handleEnter('usuallyInfo', usually.field, false)"
+                @onEdit="onShowForm('usuallyInfo', usually.field, true)">
               </CellOperate>
             </el-col>
           </el-row>
@@ -128,20 +121,15 @@
         </template>
         <div class="my-10 info-card">
           <el-row class="flex-wrap" type="flex" :gutter="10">
-            <el-col class="wrap" v-for="(other,index) in otherInfo" :key="index">
+            <el-col class="wrap" v-for="(other, index) in otherInfo" :key="index">
               <div>{{ other.label }}</div>
-              <CellOperate
-                  :text="other.value"
-                  :show-form="other.show"
-                  :curValue.sync="other.value"
-                  :type="other.type"
-                  :show-copy-icon="false"
-                  :form-option="other.options"
-                  @onInput="(val)=>handleSetValue('otherInfo',other.field,val)"
-                  @onChange="(val)=>handleSetValue('otherInfo',other.field,val)"
-                  @onEnter="handleEnter('otherInfo',other.field,false)"
-                  @onBlur="handleEnter('otherInfo',other.field,false)"
-                  @onEdit="onShowForm('otherInfo',other.field,true)">
+              <CellOperate :text="other.value" :show-form="other.show" :curValue.sync="other.value" :type="other.type"
+                :show-copy-icon="false" :form-option="other.options"
+                @onInput="(val) => handleSetValue('otherInfo', other.field, val)"
+                @onChange="(val) => handleSetValue('otherInfo', other.field, val)"
+                @onEnter="handleEnter('otherInfo', other.field, false)"
+                @onBlur="handleEnter('otherInfo', other.field, false)"
+                @onEdit="onShowForm('otherInfo', other.field, true)">
               </CellOperate>
             </el-col>
           </el-row>
@@ -157,7 +145,7 @@
         </template>
         <div class="my-10 echo-info">
           <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
-            <el-col class="wrap" v-for="(follow,index) in followInfo" :key="index">
+            <el-col class="wrap" v-for="(follow, index) in followInfo" :key="index">
               <div>
                 {{ follow.label }}
                 <el-tooltip v-if="follow.showTooltip" placement="top">
@@ -184,7 +172,7 @@
         </template>
         <div class="my-10 echo-info">
           <el-row class="flex-wrap mt-10" type="flex" :gutter="10">
-            <el-col class="wrap" v-for="(sys,index) in sysInfo" :key="index">
+            <el-col class="wrap" v-for="(sys, index) in sysInfo" :key="index">
               <div>
                 {{ sys.label }}
                 <el-tooltip v-if="sys.showTooltip" placement="top">
@@ -194,10 +182,10 @@
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </div>
-              <div class="flex-middle space-between py-5"  v-if="!['createId','updateId'].includes(sys.field)">
+              <div class="flex-middle space-between py-5" v-if="!['createId', 'updateId'].includes(sys.field)">
                 <span>{{ row[sys.field] || '---' }}</span>
               </div>
-              <div v-else class="flex-middle space-between py-5" >
+              <div v-else class="flex-middle space-between py-5">
                 <span>{{ generateMember(row[sys.field]) || '---' }}</span>
               </div>
             </el-col>
@@ -205,19 +193,19 @@
         </div>
       </CollapseWrap>
     </el-row>
-    <CustomerContactDrawer :visible.sync="contactVisible" :row-data="row" @onConfirm="onConfirmContact"/>
+    <CustomerContactDrawer :visible.sync="contactVisible" :row-data="row" @onConfirm="onConfirmContact" />
   </div>
 </template>
 
 <script>
-import TableNext from "@/components/TableNext/index.vue";
-import CustomerContactDrawer from "./CustomerContactDrawer.vue";
+import TableNext from "@/components/TableNext/index";
+import CustomerContactDrawer from "./CustomerContactDrawer";
 import CellOperate from "./CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap";
-import {generateMapKey} from "@/utils/tools";
-import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
-import {editCustomer} from "@/api/customer/publicleads";
-import {timeZoneList} from "@/assets/data/countryData";
+import { generateMapKey } from "@/utils/tools";
+import { rankOption, sexRadio } from "@/constant/customer/ContactCard";
+import { editCustomer } from "@/api/customer/publicleads";
+import { timeZoneList } from "@/assets/data/countryData";
 
 export default {
   props: {
@@ -241,7 +229,7 @@ export default {
       required: false
     }
   },
-  components: {TableNext, CustomerContactDrawer, CollapseWrap, CellOperate},
+  components: { TableNext, CustomerContactDrawer, CollapseWrap, CellOperate },
   data() {
     return {
       contactRow: {
@@ -256,15 +244,15 @@ export default {
       },
       contactRowChecked: false,
       contactFieldList: [
-        {field: 'email', name: '邮箱', isCopy: true},
-        {field: 'socialPlatform', name: '社交平台', isCopy: true, childField: ['type', 'account']},
-        {field: 'phone', name: '手机号', isCopy: true, childField: ['phone_prefix', 'phone']},
-        {field: 'rank', name: '职级', isCopy: false, mapValue: generateMapKey(rankOption)},
-        {field: 'position', name: '职位', isCopy: false},
-        {field: 'birthday', name: '生日', isCopy: false},
-        {field: 'sex', name: '性别', isCopy: false, mapValue: generateMapKey(sexRadio)},
-        {field: 'avatarOrBusinessCard', name: '头像/名片', isCopy: false},
-        {field: 'contactRemarks', name: '联系人备注', isCopy: false}
+        { field: 'email', name: '邮箱', isCopy: true },
+        { field: 'socialPlatform', name: '社交平台', isCopy: true, childField: ['type', 'account'] },
+        { field: 'phone', name: '手机号', isCopy: true, childField: ['phone_prefix', 'phone'] },
+        { field: 'rank', name: '职级', isCopy: false, mapValue: generateMapKey(rankOption) },
+        { field: 'position', name: '职位', isCopy: false },
+        { field: 'birthday', name: '生日', isCopy: false },
+        { field: 'sex', name: '性别', isCopy: false, mapValue: generateMapKey(sexRadio) },
+        { field: 'avatarOrBusinessCard', name: '头像/名片', isCopy: false },
+        { field: 'contactRemarks', name: '联系人备注', isCopy: false }
       ],
       usuallyInfo: [
         {
@@ -342,9 +330,9 @@ export default {
           value: '',
           options: {
             options: [],
-            props:{
-              value:'id',
-              label:'name'
+            props: {
+              value: 'id',
+              label: 'name'
             }
           },
         },
@@ -374,9 +362,9 @@ export default {
           options: {
             clearable: true,
             options: [],
-            props:{
-              value:'id',
-              label:'name'
+            props: {
+              value: 'id',
+              label: 'name'
             }
           },
         },
@@ -418,7 +406,9 @@ export default {
             options: timeZoneList,
             props: {
               filterable: true,
-              clearable: true
+              clearable: true,
+              value: 'value',
+              label: 'label'
             }
           },
         },
@@ -429,17 +419,17 @@ export default {
           value: '',
           options: {
             options: [
-              {value: 1, label: '少于59人'},
-              {value: 2, label: '60-149人'},
-              {value: 3, label: '150-499人'},
-              {value: 4, label: '500-999人'},
-              {value: 5, label: '1000-4999人'},
-              {value: 6, label: '5000人以上'},
+              { value: 1, label: '少于59人' },
+              { value: 2, label: '60-149人' },
+              { value: 3, label: '150-499人' },
+              { value: 4, label: '500-999人' },
+              { value: 5, label: '1000-4999人' },
+              { value: 6, label: '5000人以上' },
             ],
-            props:{
-              value:'value',
-              label:'label'
-            }            
+            props: {
+              value: 'value',
+              label: 'label'
+            }
           }
         },
         // {
@@ -632,23 +622,23 @@ export default {
     },
     options: {
       handler(newVal) {
-        const {indexOpt} = newVal
+        const { indexOpt } = newVal
         this.usuallyInfo.map(val => {
-          switch(val.field){
+          switch (val.field) {
             case "packetId":
-            val.options.data = indexOpt.groupOption || []
+              val.options.data = indexOpt.groupOption || []
               break;
             case "stageId":
-            val.options.options = indexOpt.stageOption || []
+              val.options.options = indexOpt.stageOption || []
               break;
             case "origin":
-            val.options.data = indexOpt.originOption || []
+              val.options.data = indexOpt.originOption || []
               break;
             case "publicleadsGroupsId":
-            val.options.options = indexOpt.poolGroupOption || []
+              val.options.options = indexOpt.poolGroupOption || []
               break;
             case "sourceIds":
-            val.options.data = indexOpt.originOption || []
+              val.options.data = indexOpt.originOption || []
               break;
           }
           return val
@@ -663,7 +653,7 @@ export default {
     editCustomer(data) {
       return new Promise(async resolve => {
         try {
-          const res = await editCustomer({...data})
+          const res = await editCustomer({ ...data })
           if (res.code === 200) {
             this.$message.success('修改成功')
             resolve(true)
@@ -675,13 +665,13 @@ export default {
     onShowForm(listType, field, bool) {
       this[listType].forEach((val, index) => {
         if (val.field === field) {
-          this.$set(this[listType], index, {...val, show: bool})
+          this.$set(this[listType], index, { ...val, show: bool })
         }
       })
     },
     handleEnter(listType, field, bool) {
       const validList = ['countryRegion']
-      if(validList.includes(field)){
+      if (validList.includes(field)) {
         return
       }
       this[listType].forEach((val, index) => {
@@ -700,7 +690,7 @@ export default {
           }
           this.editCustomer(data).then(res => {
             if (res) {
-              this.$set(this[listType], index, {...val, show: bool})
+              this.$set(this[listType], index, { ...val, show: bool })
               this.$emit('reload')
             }
           })
@@ -709,11 +699,12 @@ export default {
 
     },
     handleSetValue(listType, field, value) {
-      const validList = ['companyWebsite', 'shortName', 'companyName', 'tel', 'address', 'fax', 'companyRemarks','sourceIds', 'publicleadsGroupsId']
+      // 防止重复触发
+      const validList = ['companyWebsite', 'shortName', 'companyName', 'tel', 'address', 'fax', 'companyRemarks', 'sourceIds', 'publicleadsGroupsId', 'timezone']
       if (validList.includes(field)) {
         this[listType].forEach((val, index) => {
           if (val.field === field) {
-            this.$set(this[listType], index, {...val, value})
+            this.$set(this[listType], index, { ...val, value })
           }
         })
         return
@@ -730,7 +721,7 @@ export default {
           this[listType].forEach((val, index) => {
             if (val.field === field) {
               let newValue = value
-              this.$set(this[listType], index, {...val, show: field==='rating' ? true : false, value: newValue})
+              this.$set(this[listType], index, { ...val, show: field === 'rating' ? true : false, value: newValue })
               this.$emit('reload')
             }
           })
@@ -782,7 +773,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .datum-tab {
   .bottom-line {
     border-bottom: 1px solid #e0e0e0;
@@ -805,7 +795,7 @@ export default {
       .copy-text {
         cursor: pointer;
 
-        > i {
+        >i {
           display: none;
         }
 
@@ -851,6 +841,4 @@ export default {
     }
   }
 }
-
-
 </style>

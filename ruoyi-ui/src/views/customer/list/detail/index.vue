@@ -302,7 +302,6 @@ export default {
                   name: val.name
                 }
               })
-              console.log(val.formOption.options);
               break;
           }
           return val
