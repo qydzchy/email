@@ -104,12 +104,12 @@ export default {
 
     // 查看此邮件
     viewThisEmail() {
-      targetBlank(`/email/index?type=write_email&emailId=` + this.selectedEmail.id);
+      targetBlank(`/email/index?type=write_email&emailId=` + this.selectedEmail.id + `&writeEmailType=edit_again`);
     },
 
     // 再写一封
     writeEmail() {
-      this.$router.push({ path: '/email/index?type=write_email&event='});
+      this.$router.push({ path: '/email/index?type=write_email&writeEmailType='});
     },
 
     // 草稿箱

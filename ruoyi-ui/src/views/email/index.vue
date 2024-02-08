@@ -990,8 +990,8 @@ export default {
       this.triggerEmailHeaderEvent('TRACK_INFORMATION');
     },
 
-    switchWriteEmailPage() {
-      this.$router.push('/email/index?type=write_email')
+    switchWriteEmailPage(emailId, emailType) {
+      this.$router.push('/email/index?type=write_email&emailId=' + emailId + '&writeEmailType=' + emailType + '&timestamp=' + new Date().getTime());
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
@@ -1135,10 +1135,8 @@ export default {
   watch: {
     "$route.query": {
       handler(newVal) {
-        console.log(newVal.type);
         switch (newVal.type) {
           case "write_email":
-            console.log(1111111);
             this.currentLayout = newVal.type;
             break;
           case "email_header":
@@ -1152,7 +1150,7 @@ export default {
                 this.allReceivedClick();
                 break;
             }
-            break;
+            break;pm
           case "customer_email":
             this.isMailNavNormalContainerOpen = false
             this.currentLayout = newVal.type
@@ -1202,10 +1200,10 @@ export default {
       this.allReceivedClick();
     });
 
-    EventBus.$on('switch-write-email', (replyEmail, type) => {
-      this.selectedEmail = replyEmail;
+    EventBus.$on('switch-write-email', (email, type) => {
+      this.selectedEmail = email;
       this.writeEmailType = type;
-      this.switchWriteEmailPage();
+      this.switchWriteEmailPage(email.id, type);
     });
 
     EventBus.$on('switch-email-header', (emailType, currentPage) => {

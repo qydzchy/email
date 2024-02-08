@@ -600,6 +600,25 @@
                                                     <li
                                                       :class="[
                                                           'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_6`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '再次编辑' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '再次编辑'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleWriteEmail(currentEmailDetail, 'edit_again')"
+                                                    >
+                                                      <!---->
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        <!---->
+                                                        <span title="再次编辑" class="">再次编辑</span>
+                                                      </span>
+                                                      <span>
+                                                        <!---->
+                                                      </span>
+                                                    </li>
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
                                                           `DROPMENU_90471_ITEM_7`,
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '待处理' }
                                                         ]"
@@ -1332,7 +1351,8 @@ export default {
     // 跳转到写信页面
     toggleWriteEmail(email, writeEmailType) {
       // 触发事件并传递参数
-      EventBus.$emit('switch-write-email', email, writeEmailType);
+      //EventBus.$emit('switch-write-email', email, writeEmailType);
+      this.$router.push('/email/index?type=write_email&emailId=' + email.id + '&writeEmailType=' + writeEmailType + '&timestamp=' + new Date().getTime());
     },
 
     // 跳转到header页面

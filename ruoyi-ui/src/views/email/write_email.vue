@@ -497,7 +497,7 @@ export default {
         }
 
         if (newVal?.emailId) {
-            this.getEmailInfo(newVal.emailId);
+          this.getEmailInfo(newVal.emailId, newVal.writeEmailType);
         }
       },
       immediate: true
@@ -550,18 +550,19 @@ export default {
       }
     },
 
-    async getEmailInfo(id) {
+    async getEmailInfo(id, writeEmailType) {
       try {
         const res = await getCustomerEmailInfo({
           id
         })
         if (res.code === 200) {
-          this.handleCurrentEmailInfo(res.data)
+          this.handlerWriteEmailType(res.data, writeEmailType);
         }
       } catch (e) {
         console.error(e.message);
       }
     },
+
 
     async getSignatureOption() {
       try {
@@ -836,7 +837,6 @@ export default {
     },
 
     async saveRename(file) {
-      console.log(file.newName);
       if (!file.newName || file.newName.trim() === '') {
         this.$message.error("附件名称不能为空");
         return;
@@ -891,23 +891,23 @@ export default {
     getFileExtension(filename) {
       return filename.split('.').pop();
     },
-    formattedEmailContent() {
+    formattedEmailContent(emailData) {
       let emailContent = `
   < div style = "font-size: 12px;background:#efefef;padding:8px;" >
-        <div><b>From: </b>&nbsp;<a href="mailto:${this.selectedEmail.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${this.selectedEmail.fromer}</a></div>
-        <div><b>Send time: </b>${this.formatDate(this.selectedEmail.sendDate)}</div>
+        <div><b>From: </b>&nbsp;<a href="mailto:${emailData.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${emailData.fromer}</a></div>
+        <div><b>Send time: </b>${this.formatDate(emailData.sendDate)}</div>
 `;
 
-      if (this.selectedEmail.receiver) {
-        emailContent += `< div > <b>To: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.receiver))}</div > `;
+      if (emailData.receiver) {
+        emailContent += `< div > <b>To: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(emailData.receiver))}</div > `;
       }
 
-      if (this.selectedEmail.cc) {
-        emailContent += `< div > <b>Cc: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(this.selectedEmail.cc))}</div > `;
+      if (emailData.cc) {
+        emailContent += `< div > <b>Cc: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(emailData.cc))}</div > `;
       }
 
-      if (this.selectedEmail.title) {
-        emailContent += `< div > <b>Subject: </b> & nbsp;${this.selectedEmail.title}</div > `;
+      if (emailData.title) {
+        emailContent += `< div > <b>Subject: </b> & nbsp;${emailData.title}</div > `;
       }
 
       emailContent += '</div>';
@@ -974,23 +974,23 @@ export default {
     },
 
     // 回复，回显数据处理
-    handleReply() {
-      if (this.selectedEmail.title) {
-        this.formData.title = "Re: " + this.selectedEmail.title;
+    handleReply(emailData) {
+      if (emailData.title) {
+        this.formData.title = "Re: " + emailData.title;
       }
 
-      if (this.selectedEmail.id) {
-        this.formData.id = this.selectedEmail.id;
-        this.taskId = this.selectedEmail.taskId;
+      if (emailData.id) {
+        this.formData.id = emailData.id;
+        this.taskId = emailData.taskId;
       }
 
-      if (this.selectedEmail.fromer) {
-        this.receiver.push(this.selectedEmail.fromer);
+      if (emailData.fromer) {
+        this.receiver.push(emailData.fromer);
       }
 
-      if (this.selectedEmail.content) {
+      if (emailData.content) {
         let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
-        this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+        this.htmlText = original + this.formattedEmailContent(emailData) + emailData.content;
       }
     },
     handleReplyEmail(data) {
@@ -1031,19 +1031,19 @@ export default {
     },
 
     // 回复全部
-    handleReplyAll() {
-      if (this.selectedEmail.title) {
-        this.formData.title = "Re: " + this.selectedEmail.title;
+    handleReplyAll(emailData) {
+      if (emailData.title) {
+        this.formData.title = "Re: " + emailData.title;
       }
 
-      if (this.selectedEmail.id) {
-        this.formData.id = this.selectedEmail.id;
-        this.taskId = this.selectedEmail.taskId;
+      if (emailData.id) {
+        this.formData.id = emailData.id;
+        this.taskId = emailData.taskId;
       }
 
-      if (this.selectedEmail.receiver) {
-        this.receiver.push(this.selectedEmail.fromer);
-        this.receiverEmails = JSON.parse(this.selectedEmail.receiver);
+      if (emailData.receiver) {
+        this.receiver.push(emailData.fromer);
+        this.receiverEmails = JSON.parse(emailData.receiver);
         this.receiverEmails.forEach(receiver => {
           const email = receiver.email;
           // 有问题 this.selectedAccount获取不到。
@@ -1053,8 +1053,8 @@ export default {
         });
       }
 
-      if (this.selectedEmail.cc) {
-        this.ccEmails = JSON.parse(this.selectedEmail.cc);
+      if (emailData.cc) {
+        this.ccEmails = JSON.parse(emailData.cc);
         this.ccEmails.forEach(receiver => {
           const email = receiver.email;
           if (email !== this.selectedAccount) {
@@ -1063,56 +1063,56 @@ export default {
         });
       }
 
-      if (this.selectedEmail.content) {
+      if (emailData.content) {
         let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
-        this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+        this.htmlText = original + this.formattedEmailContent(emailData) + emailData.content;
       }
     },
 
     // 带附件回复
-    handleReplyWithAttachments() {
+    handleReplyWithAttachments(emailData) {
       this.handleReply();
-      this.uploadedFiles = this.selectedEmail.emailAttachmentList;
+      this.uploadedFiles = emailData.emailAttachmentList;
     },
 
     // 带附件回复全部
     handleReplyAllWithAttachments() {
       this.handleReplyAll();
-      this.uploadedFiles = this.selectedEmail.emailAttachmentList;
+      this.uploadedFiles = emailData.emailAttachmentList;
     },
 
     // 转发
-    handleForward() {
-      if (this.selectedEmail.title) {
-        this.formData.title = "Re: " + this.selectedEmail.title;
+    handleForward(emailData) {
+      if (emailData.title) {
+        this.formData.title = "Re: " + emailData.title;
       }
 
-      if (this.selectedEmail.id) {
-        this.formData.id = this.selectedEmail.id;
-        this.taskId = this.selectedEmail.taskId;
+      if (emailData.id) {
+        this.formData.id = emailData.id;
+        this.taskId = emailData.taskId;
       }
 
-      if (this.selectedEmail.content) {
+      if (emailData.content) {
         let original = "<br/><div style=\"font-size: 12px;font-family: Arial Narrow,serif;padding:2px 0 2px 0;\">------------------&nbsp;Original&nbsp;------------------</div>";
-        this.htmlText = original + this.formattedEmailContent() + this.selectedEmail.content;
+        this.htmlText = original + this.formattedEmailContent(emailData) + emailData.content;
       }
 
-      this.uploadedFiles = this.selectedEmail.emailAttachmentList;
+      this.uploadedFiles = emailData.emailAttachmentList;
     },
 
-    handleForwardAsAttachment() {
-      if (this.selectedEmail.title) {
-        this.formData.title = "Re: " + this.selectedEmail.title;
+    handleForwardAsAttachment(emailData) {
+      if (emailData.title) {
+        this.formData.title = "Re: " + emailData.title;
       }
 
-      if (this.selectedEmail.id) {
-        this.formData.id = this.selectedEmail.id;
-        this.taskId = this.selectedEmail.taskId;
+      if (emailData.id) {
+        this.formData.id = emailData.id;
+        this.taskId = emailData.taskId;
       }
 
-      if (this.selectedEmail.id) {
+      if (emailData.id) {
         // 上传邮件eml附件
-        this.uploadAttachment(this.selectedEmail.id);
+        this.uploadAttachment(emailData.id);
       }
     },
 
@@ -1154,6 +1154,37 @@ export default {
             this.bcc.push(email);
           }
         });
+      }
+    },
+
+    // 跟进写邮件类型处理写邮件内容
+    handlerWriteEmailType(emailData, writeEmailType) {
+      if (writeEmailType) {
+        switch (writeEmailType) {
+          case 'reply':
+            this.handleReply(emailData);
+            break;
+          case 'reply_all':
+            this.handleReplyAll(emailData);
+            break;
+          case 'reply_with_attachments':
+            this.handleReplyWithAttachments(emailData);
+            break;
+          case 'reply_all_with_attachments':
+            this.handleReplyAllWithAttachments(emailData);
+            break;
+          case 'forward':
+            this.handleForward(emailData);
+            break;
+          case 'forward_as_attachment':
+            this.handleForwardAsAttachment(emailData);
+            break;
+          case 'edit_again':
+            this.handleCurrentEmailInfo(emailData);
+            break;
+          default:
+            break;
+        }
       }
     },
 
@@ -1225,6 +1256,9 @@ export default {
       // 作为附件转发
     } else if (this.writeEmailType === 'forward_as_attachment') {
       this.handleForwardAsAttachment();
+      // 再次编辑
+    } else if (this.writeEmailType === 'edit_again') {
+      this.handleCurrentEmailInfo(this.selectedEmail);
     }
   }
 };
