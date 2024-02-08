@@ -893,21 +893,21 @@ export default {
     },
     formattedEmailContent(emailData) {
       let emailContent = `
-  < div style = "font-size: 12px;background:#efefef;padding:8px;" >
+  <div style="font-size:12px;background:#efefef;padding:8px;" >
         <div><b>From: </b>&nbsp;<a href="mailto:${emailData.fromer}" style="color: #1e7bf9; text-decoration: none;" target="_blank">${emailData.fromer}</a></div>
         <div><b>Send time: </b>${this.formatDate(emailData.sendDate)}</div>
 `;
 
       if (emailData.receiver) {
-        emailContent += `< div > <b>To: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(emailData.receiver))}</div > `;
+        emailContent += `<div><b>To: </b> &nbsp;${this.formatEmailRecipients(this.parseEmailString(emailData.receiver))}</div>`;
       }
 
       if (emailData.cc) {
-        emailContent += `< div > <b>Cc: </b> & nbsp;${this.formatEmailRecipients(this.parseEmailString(emailData.cc))}</div > `;
+        emailContent += `<div><b>Cc: </b> &nbsp;${this.formatEmailRecipients(this.parseEmailString(emailData.cc))}</div>`;
       }
 
       if (emailData.title) {
-        emailContent += `< div > <b>Subject: </b> & nbsp;${emailData.title}</div > `;
+        emailContent += `<div><b>Subject: </b> &nbsp;${emailData.title}</div>`;
       }
 
       emailContent += '</div>';
@@ -915,7 +915,7 @@ export default {
     },
 
     formatEmailRecipients(emails) {
-      return emails.map(email => `< a href = "mailto:${email}" style = "color: #1e7bf9; text-decoration: none;" target = "_blank" > ${email}</a > `).join('; ');
+      return emails.map(email => `<a href="mailto:${email}" style="color: #1e7bf9; text-decoration: none;" target="_blank"> ${email}</a>`).join('; ');
     },
 
     parseEmailString(emailString) {
