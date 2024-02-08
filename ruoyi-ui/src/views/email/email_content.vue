@@ -633,10 +633,29 @@
                                                         <i class="m-icon icon-right-thin"></i>
                                                       </span>
                                                     </li>
-                                                    <li
+<!--                                                    <li
                                                       :class="[
                                                           'mail-drop-menu-item',
                                                           `DROPMENU_90471_ITEM_8`,
+                                                          { 'mail-drop-menu-item-active': emailHoveredItem === '标记为' }
+                                                        ]"
+                                                      @mouseover="emailHoveredItem = '标记为'"
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="handleLabel"
+                                                    >
+                                                      &lt;!&ndash;&ndash;&gt;
+                                                      <span class="mail-drop-menu-text ellipsis">
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                        <span title="标记为" class="">标记为</span>
+                                                      </span>
+                                                      <span>
+                                                        &lt;!&ndash;&ndash;&gt;
+                                                      </span>
+                                                    </li>-->
+                                                    <li
+                                                      :class="[
+                                                          'mail-drop-menu-item',
+                                                          `DROPMENU_90471_ITEM_9`,
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '标为未读' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '标为未读'"
@@ -652,15 +671,16 @@
                                                         <!---->
                                                       </span>
                                                     </li>
-                                                    <!-- <li
+<!--                                                    <li
                                                       :class="[
                                                           'mail-drop-menu-item',
                                                           `DROPMENU_90471_ITEM_11`,
                                                           { 'mail-drop-menu-item-active': emailHoveredItem === '移动到' }
                                                         ]"
                                                       @mouseover="emailHoveredItem = '移动到'"
-                                                      @mouseleave="emailHoveredItem = null">
-
+                                                      @mouseleave="emailHoveredItem = null"
+                                                      @click="toggleDropdown"
+                                                    >
                                                       <span class="mail-drop-menu-text ellipsis">
 
                                                         <span title="移动到" class="">移动到</span>
@@ -668,7 +688,7 @@
                                                       <span>
                                                         <i class="m-icon icon-right-thin"></i>
                                                       </span>
-                                                    </li> -->
+                                                    </li>-->
                                                     <li
                                                       :class="[
                                                           'mail-drop-menu-item',
@@ -1483,7 +1503,7 @@ export default {
       let ids = [];
       ids.push(email.id);
       const data = {
-        "id": ids,
+        "ids": ids,
         "labelId": label.id
       };
       try {
