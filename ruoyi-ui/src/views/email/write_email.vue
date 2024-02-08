@@ -473,7 +473,7 @@ export default {
     'formData.signatureId': {
       handler(newVal) {
 
-        if (this.editor) {
+        if (this.editor && (this.formData.content === '' || this.formData.content === null || this.formData.content === undefined)) {
           const defaultSpan = `
           <span style=" font-size:${this.emailDefaultOption?.fontSize || ''};
               font-family:${this.emailDefaultOption?.defaultFont || ''};
@@ -1119,20 +1119,17 @@ export default {
     // 当前邮件信息
     handleCurrentEmailInfo(data) {
       this.formData.title = data.title;
-      this.formData.content = data.content;
-      this.htmlText = data.content;
       if (data.id) {
         this.formData.id = data.id;
-        //this.taskId = data.taskId;
+        this.taskId = data.taskId;
       }
 
-      // todo 邮件内容和发件人回填有问题
+      this.htmlText = data.content;
 
       if (data.receiver) {
         this.receiverEmails = JSON.parse(data.receiver);
         this.receiverEmails.forEach(receiver => {
           const email = receiver.email;
-          // 有问题 this.selectedAccount获取不到。
           if (email !== this.selectedAccount) {
             this.receiver.push(email);
           }

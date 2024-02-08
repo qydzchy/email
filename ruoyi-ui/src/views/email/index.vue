@@ -1135,14 +1135,23 @@ export default {
   watch: {
     "$route.query": {
       handler(newVal) {
+        console.log(newVal.type);
         switch (newVal.type) {
           case "write_email":
+            console.log(1111111);
             this.currentLayout = newVal.type;
             break;
-          case "default":
+          case "email_header":
             this.isMailNavNormalContainerOpen = true
             this.currentLayout = 'email_header'
-            this.allReceivedClick();  // 触发事件
+            switch (newVal.event) {
+              case "drafts":
+                this.draftsClick();
+                break;
+              default:
+                this.allReceivedClick();
+                break;
+            }
             break;
           case "customer_email":
             this.isMailNavNormalContainerOpen = false
@@ -1156,7 +1165,7 @@ export default {
             this.currentLayout = 'setup'
             break;
           default:
-            this.$router.push('/email/index?type=default')
+            this.$router.push('/email/index?type=email_header')
             break;
         }
       },

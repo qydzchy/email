@@ -11,7 +11,7 @@
               <!---->
               <!---->
               <!---->
-              <a data-savepage-href="/pro/mail/draft" href="https://crm.xiaoman.cn/pro/mail/draft" class="mail-success-link"> 「草稿箱」 </a>
+              <a class="mail-success-link" @click="drafts"> 「草稿箱」 </a>
               <!---->
               <span>并在指定时间为您发出。</span>
               <!---->
@@ -40,13 +40,13 @@
                   <!---->
                 </button>
               </div>
-              <div class="mm-space-item">
+<!--              <div class="mm-space-item">
                 <button type="button" class="mm-button mm__theme mm__theme-size__small">
-                  <!---->
-                  <!---->新建日程
-                  <!---->
+                  &lt;!&ndash;&ndash;&gt;
+                  &lt;!&ndash;&ndash;&gt;新建日程
+                  &lt;!&ndash;&ndash;&gt;
                 </button>
-              </div>
+              </div>-->
             </div>
           </section>
         </div>
@@ -99,7 +99,7 @@ export default {
   methods: {
     // 返回列表
     back() {
-      targetBlank(`/email/index?type=email_header`);
+      this.$router.push({ path: '/email/index?type=email_header'});
     },
 
     // 查看此邮件
@@ -109,8 +109,13 @@ export default {
 
     // 再写一封
     writeEmail() {
-      targetBlank(`/email/index?type=write_email`);
+      this.$router.push({ path: '/email/index?type=write_email&event='});
     },
+
+    // 草稿箱
+    drafts() {
+      this.$router.push({ path: '/email/index?type=email_header&event=drafts'});
+    }
   },
 }
 </script>
