@@ -36,7 +36,7 @@
                       <div class="mm-dropdown">
                         <div>
                           <div class="mm-button-group mm-dropdown-button-group">
-                            <button type="button" class="mm-button mm-button__primary" @click="switchWriteEmailPage">
+                            <button type="button" class="mm-button mm-button__primary" @click="switchWriteEmailPage(null, null)">
                               <!---->
                               <!---->写信
                               <!---->
@@ -798,7 +798,7 @@ import CustomerEmailLayout from './customer_email/index.vue'
 import { listTaskPull, listTaskSend } from "@/api/email/task";
 import { listFolder } from "@/api/email/folder";
 import { listLabel } from "@/api/email/label";
-import { countMenu,getEmailInfo } from "@/api/email/email";
+import { countMenu } from "@/api/email/email";
 import { generalList, publicleadsGroupsList, packetList, sourceList, stageList, ratingList, activityList } from "@/api/customer/email";
 import { EventBus } from "@/api/email/event-bus";
 import { getUsuallyInfo } from '@/api/email/usually'
@@ -991,7 +991,17 @@ export default {
     },
 
     switchWriteEmailPage(emailId, emailType) {
-      this.$router.push('/email/index?type=write_email&emailId=' + emailId + '&writeEmailType=' + emailType + '&timestamp=' + new Date().getTime());
+      let url = '/email/index?type=write_email';
+
+      if (emailId) {
+        url += '&emailId=' + emailId;
+      }
+      if (emailType) {
+        url += '&writeEmailType=' + emailType;
+      }
+      url += '&timestamp=' + new Date().getTime();
+
+      this.$router.push(url);
     },
 
     triggerEmailHeaderEvent(emailType, currentPage) {
