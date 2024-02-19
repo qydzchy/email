@@ -1876,7 +1876,15 @@ public class CustomerServiceImpl implements ICustomerService {
         String tag = map.get(ImportColumnEnum.TAG.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.TAG.getColumnName())) : null;
         Integer scale = map.get(ImportColumnEnum.SCALE.getColumnName()) != null ? getScale(String.valueOf(map.get(ImportColumnEnum.SCALE.getColumnName()))) : null;
         Date lastPrivateleadsEntry = map.get(ImportColumnEnum.LAST_PRIVATELEADS_ENTRY.getColumnName()) != null ? parseDateTime(String.valueOf(map.get(ImportColumnEnum.LAST_PRIVATELEADS_ENTRY.getColumnName()))) : null;
-        String timezone = map.get(ImportColumnEnum.TIMEZONE.getColumnName()) != null ? TimezoneEnum.getTimezoneEnum(String.valueOf(map.get(ImportColumnEnum.TIMEZONE.getColumnName()))).getTimezone() : null;
+        String timezone = map.get(ImportColumnEnum.TIMEZONE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.TIMEZONE.getColumnName())) : null;
+        TimezoneEnum timezoneEnum = TimezoneEnum.getTimezoneEnum(timezone);
+        if (timezoneEnum != null) {
+            timezone = timezoneEnum.getTimezone();
+        }
+
+        if (StringUtils.isBlank(timezone)) {
+            timezone = null;
+        }
         String followUpPersonnel = map.get(ImportColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.FOLLOW_UP_PERSONNEL.getColumnName())) : null;
         Long followUpPersonnelId = StringUtils.isNotBlank(followUpPersonnel) ? customerMapper.getUserIdByNickName(followUpPersonnel) : null;
         String updateBy = map.get(ImportColumnEnum.UPDATE_BY.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.UPDATE_BY.getColumnName())) : null;
