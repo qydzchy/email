@@ -2,7 +2,10 @@ package com.ruoyi.customer.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.customer.domain.vo.CustomerImportListVO;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -121,13 +124,16 @@ public class CustomerImportServiceImpl implements ICustomerImportService
      */
     @Override
     public Pair<Integer, List<CustomerImportListVO>> list(Integer pageNum, Integer pageSize) {
-        int count = customerImportMapper.count();
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        int count = customerImportMapper.count(userId);
         if (count == 0) {
             return Pair.of(0, Collections.emptyList());
         }
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
-        List<CustomerImportListVO> customerImportVOList = customerImportMapper.list(offset, limit);
+        List<CustomerImportListVO> customerImportVOList = customerImportMapper.list(userId, offset, limit);
         return Pair.of(count, customerImportVOList);
     }
 }

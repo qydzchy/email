@@ -80,7 +80,7 @@ public interface CustomerImportMapper
      * 统计
      * @return
      */
-    int count();
+    int count(@Param("createId") Long createId);
 
     /**
      * 列表
@@ -88,5 +88,5 @@ public interface CustomerImportMapper
      * @param limit
      * @return
      */
-    List<CustomerImportListVO> list(@Param("offset") int offset, @Param("limit") int limit);
+    List<CustomerImportListVO> list(@Param("createId") Long createId, @Param("offset") int offset, @Param("limit") int limit);
 }
