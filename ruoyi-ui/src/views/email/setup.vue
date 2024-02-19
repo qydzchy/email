@@ -31,6 +31,7 @@ export default {
           return
         }
         const mapTab = {
+          'email_management': '邮箱管理',
           'template': '模板',
           'usually': '常规',
         }

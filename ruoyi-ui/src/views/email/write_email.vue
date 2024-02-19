@@ -586,6 +586,10 @@ export default {
     async fetchTaskList() {
       try {
         const response = await listTaskPull();
+        if (!response || !response.rows || response.rows.length == 0) {
+          this.$router.push({ path: '/email/index?type=setting_email&tab=email_management'});
+        }
+
         this.taskList = response.rows;
 
         // 如果taskId已经存在，则尝试找到对应的任务
