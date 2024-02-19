@@ -2040,6 +2040,7 @@ public class CustomerServiceImpl implements ICustomerService {
             customerAddOrUpdateDTO.setCustomerFollowUpPersonnel(customerFollowUpPersonnel);
         }
 
+
         return customerAddOrUpdateDTO;
     }
 
