@@ -1951,7 +1951,7 @@ public class CustomerServiceImpl implements ICustomerService {
         List<CustomerContactAddOrUpdateDTO> contactList = new ArrayList<>();
         contactMapList.stream().forEach(contactMap -> {
             String contactNickName = contactMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_NICK_NAME.getColumnName())) : null;
-            String contactEmail = contactMap.get(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) != null ? String.valueOf(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) : null;
+            String contactEmail = contactMap.get(ImportColumnEnum.CONTACT_EMAIL.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_EMAIL.getColumnName())) : null;
             String contactPhone = contactMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName()) != null ? String.valueOf(contactMap.get(ImportColumnEnum.CONTACT_PHONE.getColumnName())) : null;
             Date birthday = contactMap.get(ImportColumnEnum.BIRTHDAY.getColumnName()) != null ? parseDateTime(String.valueOf(contactMap.get(ImportColumnEnum.BIRTHDAY.getColumnName()))) : null;
 
