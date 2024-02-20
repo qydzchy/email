@@ -337,4 +337,11 @@ public interface CustomerMapper
      * @return
      */
     Long getUserIdByNickName(@Param("nickName") String nickName);
+
+    /**
+     * 根据客户编号查询客户
+     * @param customerNo
+     * @return
+     */
+    Customer getByCustomerNo(@Param("customerNo") String customerNo);
 }

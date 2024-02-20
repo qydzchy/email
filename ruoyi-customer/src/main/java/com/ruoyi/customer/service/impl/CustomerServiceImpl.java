@@ -1544,6 +1544,14 @@ public class CustomerServiceImpl implements ICustomerService {
             companyNameMap.forEach((companyName, contactMapList) -> {
                 // 判断公司是否已经存在
                 Customer customer = customerMapper.getByCompanyName(companyName);
+                if (customer == null) {
+                    Map<String, Object> map = contactMapList.get(0);
+                    if (map.get("customerNo") != null && StringUtils.isNotBlank(String.valueOf(map.get("customerNo")))) {
+                        String customerNo = String.valueOf(map.get("customerNo"));
+                        customer = customerMapper.getByCustomerNo(customerNo);
+                    }
+
+                }
                 if (customer != null) {
                     if (Optional.ofNullable(updateFlag).orElse(false)) {
                         // 更新客户信息

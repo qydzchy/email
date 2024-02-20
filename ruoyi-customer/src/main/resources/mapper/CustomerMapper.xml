@@ -496,6 +496,11 @@
         select user_id from sys_user where nick_name = #{nickName} order by create_time asc limit 1
     </select>
 
+    <select id="getByCustomerNo" resultMap="CustomerResult">
+        <include refid="selectCustomerVo"/>
+        where customer_no = #{customerNo} AND del_flag = '0'
+    </select>
+
     <insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
         insert into customer_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
