@@ -19,6 +19,7 @@ public enum ImportColumnEnum {
     TAG("tag", "客户标签"),
     STAGE("stage", "客户阶段"),
     SOURCE("source", "客户来源"),
+    PACKET("packet", "客户分组"),
     COMPANY_WEBSITE("companyWebsite", "公司网址"),
     PHONE("phone", "座机"),
     ADDRESS("address", "详细地址"),

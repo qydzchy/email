@@ -1538,6 +1538,8 @@ public class CustomerServiceImpl implements ICustomerService {
             Map<String, Long> stageMap = getStageMap(mapList);
             // 查询存在的客户来源ID
             Map<String, Long> sourceMap = getSourceMap(mapList);
+            // 查询存在的客户分组
+            Map<String, Long> packetMap = getPacketMap(mapList);
 
             Map<String, List<Map<String, Object>>> companyNameMap = mapList.stream().filter(map -> map.get("companyName") != null && !map.get("companyName").toString().equals("")).collect(Collectors.groupingBy(map -> map.get("companyName").toString()));
 
@@ -1550,12 +1552,11 @@ public class CustomerServiceImpl implements ICustomerService {
                         String customerNo = String.valueOf(map.get("customerNo"));
                         customer = customerMapper.getByCustomerNo(customerNo);
                     }
-
                 }
                 if (customer != null) {
                     if (Optional.ofNullable(updateFlag).orElse(false)) {
                         // 更新客户信息
-                        CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(customer.getId(), userId, username, tagMap, stageMap, sourceMap, contactMapList, importType);
+                        CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(customer.getId(), userId, username, tagMap, stageMap, sourceMap, packetMap, contactMapList, importType);
                         try {
                             updateCustomer(customerAddOrUpdateDTO);
                             successImportCount.getAndIncrement();
@@ -1568,7 +1569,7 @@ public class CustomerServiceImpl implements ICustomerService {
                     }
 
                 } else {
-                    CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(null, userId, username, tagMap, stageMap, sourceMap, contactMapList, importType);
+                    CustomerAddOrUpdateDTO customerAddOrUpdateDTO = generateCustomerAddOrUpdateDTO(null, userId, username, tagMap, stageMap, sourceMap, packetMap, contactMapList, importType);
                     try {
                         insertCustomer(customerAddOrUpdateDTO);
                         successImportCount.getAndIncrement();
@@ -1593,6 +1594,24 @@ public class CustomerServiceImpl implements ICustomerService {
         customerImport.setImportStatus(importStatus);
         customerImportMapper.updateCustomerImport(customerImport);
         return true;
+    }
+
+    /**
+     * 获取分组map
+     * @param mapList
+     * @return
+     */
+    private Map<String, Long> getPacketMap(List<Map<String, Object>> mapList) {
+        String packetNames = mapList.stream().filter(map -> map.get("packet") != null && !map.get("packet").toString().trim().equals("")).map(map -> map.get("packet").toString().trim()).collect(Collectors.joining(";"));
+        if (StringUtils.isNotBlank(packetNames)) {
+            List<String> packetNameList = Arrays.asList(packetNames.split(";"));
+            List<Packet> packetList = packetMapper.selectByNames(packetNameList);
+            Map<String, Long> packetMap = new HashMap<>();
+            packetList.forEach(packet -> packetMap.put(packet.getName(), packet.getId()));
+            return packetMap;
+        }
+
+        return new HashMap<>();
     }
 
     /**
@@ -1876,7 +1895,7 @@ public class CustomerServiceImpl implements ICustomerService {
      * @param contactMapList
      * @return
      */
-    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Long id, Long userId, String username, Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, List<Map<String, Object>> contactMapList, Integer importType) {
+    private CustomerAddOrUpdateDTO generateCustomerAddOrUpdateDTO(Long id, Long userId, String username, Map<String, Long> tagMap, Map<String, Long> stageMap, Map<String, Long> sourceMap, Map<String, Long> packetMap, List<Map<String, Object>> contactMapList, Integer importType) {
         Map<String, Object> map = contactMapList.get(0);
         String companyName = map.get(ImportColumnEnum.COMPANY_NAME.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_NAME.getColumnName())) : null;
         String shortName = map.get(ImportColumnEnum.SHORT_NAME.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.SHORT_NAME.getColumnName())) : null;
@@ -1928,6 +1947,12 @@ public class CustomerServiceImpl implements ICustomerService {
                     sourceIds.add(sourceId);
                 }
             }
+        }
+
+        Long packetId = null;
+        String packet = map.get(ImportColumnEnum.PACKET.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.PACKET.getColumnName())) : null;
+        if (StringUtils.isNotBlank(packet)) {
+            packetId = packetMap.get(packet);
         }
 
         String companyWebsite = map.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName()) != null ? String.valueOf(map.get(ImportColumnEnum.COMPANY_WEBSITE.getColumnName())) : null;
@@ -2022,6 +2047,7 @@ public class CustomerServiceImpl implements ICustomerService {
         customerAddOrUpdateDTO.setCountryRegion(countryRegion);
         customerAddOrUpdateDTO.setTagIds(tagIds);
         customerAddOrUpdateDTO.setStageId(stageId);
+        customerAddOrUpdateDTO.setPacketId(packetId);
         customerAddOrUpdateDTO.setSourceIds(sourceIds);
         customerAddOrUpdateDTO.setCompanyWebsite(companyWebsite);
         customerAddOrUpdateDTO.setPhonePrefix(phonePrefix);
@@ -2047,7 +2073,6 @@ public class CustomerServiceImpl implements ICustomerService {
             CustomerFollowUpPersonnel customerFollowUpPersonnel = getCustomerFollowUpPersonnel(id, userId, username, followUpPersonnelId);
             customerAddOrUpdateDTO.setCustomerFollowUpPersonnel(customerFollowUpPersonnel);
         }
-
 
         return customerAddOrUpdateDTO;
     }

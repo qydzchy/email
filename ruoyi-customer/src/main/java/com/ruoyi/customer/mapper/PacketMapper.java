@@ -81,4 +81,11 @@ public interface PacketMapper
      * @return
      */
     List<SubgroupColumnListVO> selectCustomerPacketSimpleInfo();
+
+    /**
+     * 根据名称查询分组
+     * @param packetNameList
+     * @return
+     */
+    List<Packet> selectByNames(@Param("packetNameList") List<String> packetNameList);
 }
