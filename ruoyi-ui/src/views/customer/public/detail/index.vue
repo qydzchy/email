@@ -338,10 +338,9 @@ export default {
             val.value = res.data[val.field]
             return val
           })
-          console.log(this.infoRowList);
         }
       } catch(e) {
-        console.error(e);
+        console.error(e.message);
       }
     },
     onEdit(id) {

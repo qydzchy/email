@@ -10,36 +10,26 @@
           <div class="my-10 flex-middle gap-10">
             <span>{{ rowData.customerNo || '---' }}</span>
             <span>
-              <CellOperate 
-                type="country" 
-                :text="rowData.countryRegion" 
-                :show-copy-icon="false"                    
-                :show-edit-icon="false">
+              <CellOperate type="country" :text="rowData.countryRegion" :show-copy-icon="false" :show-edit-icon="false">
               </CellOperate>
             </span>
           </div>
           <div class="mb-10">跟进入: {{ rowData.followPerson || '---' }}</div>
-          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt" @onClose="getDetailData" @reloadTag="getDetailData"/>
+          <TableRowTags :detail-id="rowData.id" :tag-list="rowData.tagList" :indexOpt="options.indexOpt"
+            @onClose="getDetailData" @reloadTag="getDetailData" />
         </el-row>
       </div>
       <div class="info-wrap flex-middle">
         <div class="cell-wrap flex-middle" v-for="item in infoRowList" :key="item.id">
           <span class="fs-14 mr-6">{{ item.label }}</span>
-          <CellOperate
-              :text="item.value"
-              :curValue.sync="item.value"
-              :type="item.type"
-              :show-form="item.show"
-              :form-option="item.formOption"
-              :show-copy-icon="false"
-              :show-edit-icon="false"
-              @onEdit="onEdit(item.id)"/>
+          <CellOperate :text="item.value" :curValue.sync="item.value" :type="item.type" :show-form="item.show"
+            :form-option="item.formOption" :show-copy-icon="false" :show-edit-icon="false" @onEdit="onEdit(item.id)" />
         </div>
       </div>
     </div>
     <el-row type="flex">
       <el-col :span="17" class="card-bg mt-16 pt-8 pb-16 px-8" style="height: max-content;">
-        <TableRowTabs :options="options" :row="rowData" @reload="getDetailData"/>
+        <TableRowTabs :options="options" :row="rowData" @reload="getDetailData" />
       </el-col>
       <el-col :span="7" class="ml-16">
         <div class="card-bg  mt-16 px-16 py-16">
@@ -48,18 +38,18 @@
               <div class="flex-middle space-between">
                 <div class="fs-14 bold">计划日程</div>
                 <el-tooltip placement="top" content="添加日程">
-                  <i class="el-icon-circle-plus-outline pointer" @click.stop="dialogSchedule=true"></i>
+                  <i class="el-icon-circle-plus-outline pointer" @click.stop="dialogSchedule = true"></i>
                 </el-tooltip>
               </div>
             </template>
             <ul class="plan-ul" v-if="scheduleList && scheduleList.length">
-              <li class="plan-li pointer" v-for="(schedule,index) in scheduleList" :key="index">
-                <div class="circle" :style="{color:schedule.color}"></div>
+              <li class="plan-li pointer" v-for="(schedule, index) in scheduleList" :key="index">
+                <div class="circle" :style="{ color: schedule.color }"></div>
                 <span class="date">{{ formatMonthAndDay(schedule.scheduleStartTime) }}</span>
                 <span class="content">{{ schedule.scheduleContent }}</span>
               </li>
             </ul>
-            <el-empty v-else description="暂无日程" :image-size="40"/>
+            <el-empty v-else description="暂无日程" :image-size="40" />
           </CollapseWrap>
         </div>
         <div class="card-bg  mt-16 px-16 py-16">
@@ -70,24 +60,24 @@
                 <div class="flex-middle gap-20">
                   <el-row v-if="contactSearch">
                     <el-input size="mini" v-model="contactSearchValue" @click.native.stop @blur="handleBlurSearch"
-                              clearable>
+                      clearable>
                       <el-button slot="append" icon="el-icon-search" size="mini" @click.stop></el-button>
                     </el-input>
                   </el-row>
                   <el-row v-else>
                     <el-tooltip placement="top" content="搜索">
-                      <i class="el-icon-search pointer" @click.stop="contactSearch=true"></i>
+                      <i class="el-icon-search pointer" @click.stop="contactSearch = true"></i>
                     </el-tooltip>
                   </el-row>
                   <el-tooltip placement="top" content="编辑">
-                    <i class="el-icon-edit pointer" @click.stop="contactVisible=true"></i>
+                    <i class="el-icon-edit pointer" @click.stop="contactVisible = true"></i>
                   </el-tooltip>
                 </div>
               </div>
             </template>
             <template>
               <div class="collapse-content-box" v-if="contactList.length">
-                <div class="container py-8" v-for="(item,index) in contactList" :key="index">
+                <div class="container py-8" v-for="(item, index) in contactList" :key="index">
                   <div class="main px-16 py-12">
                     <div class="flex-middle space-between">
                       <span class="fs-14 bold">{{ item.nickName || '---' }}</span>
@@ -106,12 +96,11 @@
                     </div>
                     <!--          联系人详情          -->
                     <div class="fs-14 my-10 flex-column">
-                      <template v-for="(contact,index) in contactFieldList">
+                      <template v-for="(contact, index) in contactFieldList">
                         <div class="wrap"
-                             v-if="item[contact.field] && !['socialPlatform','phone'].includes(contact.field)"
-                             :key="index">
+                          v-if="item[contact.field] && !['socialPlatform', 'phone'].includes(contact.field)" :key="index">
                           <div>{{ contact.name }}</div>
-                          <div class="flex-middle" :class="{'copy-text':contact.isCopy}">
+                          <div class="flex-middle" :class="{ 'copy-text': contact.isCopy }">
                             <span v-if="contact.mapValue">
                               {{ contact.mapValue[item[contact.field]] }}
                             </span>
@@ -119,24 +108,24 @@
                               {{ item[contact.field] }}
                             </span>
                             <i v-if="contact.isCopy" class="el-icon-copy-document pl-4"
-                               @click="onCopy(item[contact.field])"></i>
+                              @click="onCopy(item[contact.field])"></i>
                           </div>
                         </div>
                         <div class="wrap" v-else-if="item[contact.field]">
                           <div>{{ contact.name }}</div>
                           <div class="flex-column gap-10">
-                            <div class="flex-start" :class="{'copy-text': subItem[contact.childField[1]]}"
-                                 v-for="(subItem,subIdx) in item[contact.field]">
+                            <div class="flex-start" :class="{ 'copy-text': subItem[contact.childField[1]] }"
+                              v-for="(subItem, subIdx) in item[contact.field]">
                               <span :key="subIdx">
                                 {{ subItem[contact.childField[0]] || '---' }}
                               </span>
-                              <span v-if="contact.field==='phone'">-</span>
+                              <span v-if="contact.field === 'phone'">-</span>
                               <span v-else class="pl-10"></span>
                               <span>
-                                 {{ subItem[contact.childField[1]] || '---' }}
+                                {{ subItem[contact.childField[1]] || '---' }}
                               </span>
                               <i v-if="subItem[contact.childField[1]]" class="el-icon-copy-document pl-4"
-                                 @click="onCopy(generateDiffCopy(contact.field,subItem[contact.childField[0]],subItem[contact.childField[1]]))"></i>
+                                @click="onCopy(generateDiffCopy(contact.field, subItem[contact.childField[0]], subItem[contact.childField[1]]))"></i>
                             </div>
                           </div>
                         </div>
@@ -153,8 +142,8 @@
         </div>
       </el-col>
     </el-row>
-    <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData"/>
-    <CustomerContactDrawer :visible.sync="contactVisible" :rowData="rowData" @onConfirm="onConfirm"/>
+    <DialogSchedule v-if="dialogSchedule" :visible.sync="dialogSchedule" :formData="rowData" />
+    <CustomerContactDrawer :visible.sync="contactVisible" :rowData="rowData" @onConfirm="onConfirm" />
   </div>
 </template>
 
@@ -166,16 +155,16 @@ import CellOperate from "../CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
 import TableRowTags from "../TableRowTags.vue";
-import {getScheduleList} from "@/api/customer/schedule";
-import {deepClone, formatMonthAndDay} from "@/utils";
-import {getCustomerDetail, searchGroupsCustomer} from "@/api/customer/publicleads";
-import {generateMapKey} from "@/utils/tools";
-import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
-import {packetList} from "@/api/company/group";
-import {stageList} from "@/api/company/status";
-import {getOriginList} from "@/api/company/origin";
-import {reasonList} from "@/api/company/poolRule";
-import {getCustomerTagList} from "@/api/customer/config";
+import { getScheduleList } from "@/api/customer/schedule";
+import { deepClone, formatMonthAndDay } from "@/utils";
+import { getCustomerDetail, searchGroupsCustomer } from "@/api/customer/publicleads";
+import { generateMapKey } from "@/utils/tools";
+import { rankOption, sexRadio } from "@/constant/customer/ContactCard";
+import { packetList } from "@/api/company/group";
+import { stageList } from "@/api/company/status";
+import { getOriginList } from "@/api/company/origin";
+import { reasonList } from "@/api/company/poolRule";
+import { getCustomerTagList } from "@/api/customer/config";
 
 export default {
   components: {
@@ -257,15 +246,15 @@ export default {
       ],
       contactList: [],
       contactFieldList: [
-        {field: 'email', name: '邮箱', isCopy: true},
-        {field: 'socialPlatform', name: '社交平台', isCopy: true, childField: ['type', 'account']},
-        {field: 'phone', name: '手机号', isCopy: true, childField: ['phone_prefix', 'phone']},
-        {field: 'rank', name: '职级', isCopy: false, mapValue: generateMapKey(rankOption)},
-        {field: 'position', name: '职位', isCopy: false},
-        {field: 'birthday', name: '生日', isCopy: false},
-        {field: 'sex', name: '性别', isCopy: false, mapValue: generateMapKey(sexRadio)},
-        {field: 'avatarOrBusinessCard', name: '头像/名片', isCopy: false},
-        {field: 'contactRemarks', name: '联系人备注', isCopy: false}
+        { field: 'email', name: '邮箱', isCopy: true },
+        { field: 'socialPlatform', name: '社交平台', isCopy: true, childField: ['type', 'account'] },
+        { field: 'phone', name: '手机号', isCopy: true, childField: ['phone_prefix', 'phone'] },
+        { field: 'rank', name: '职级', isCopy: false, mapValue: generateMapKey(rankOption) },
+        { field: 'position', name: '职位', isCopy: false },
+        { field: 'birthday', name: '生日', isCopy: false },
+        { field: 'sex', name: '性别', isCopy: false, mapValue: generateMapKey(sexRadio) },
+        { field: 'avatarOrBusinessCard', name: '头像/名片', isCopy: false },
+        { field: 'contactRemarks', name: '联系人备注', isCopy: false }
       ],
       contactSearchValue: '',
       contactSearch: false,
@@ -278,9 +267,9 @@ export default {
   watch: {
     options: {
       handler(newVal) {
-        const {indexOpt} = newVal
+        const { indexOpt } = newVal
         this.infoRowList.map(val => {
-          switch(val.field){
+          switch (val.field) {
             case "packetId":
               val.formOption.data = indexOpt.groupOption || []
               break;
@@ -345,15 +334,15 @@ export default {
           this.rowData.stageId = this.rowData.stage?.id
           this.rowData.packetId = this.rowData.packet?.id
           this.rowData.timezone = +this.rowData.timezone
-          this.rowData.followPerson = this.rowData.followUpPersonnelList.map(val=>val.nickName)?.join('、')
+          this.rowData.followPerson = this.rowData.followUpPersonnelList.map(val => val.nickName)?.join('、')
           this.rowData.contactList = this.generateContactList(this.rowData?.contactList)
           this.rowData.publicleadsGroupsId = this.rowData.publicleadsGroups?.id
 
           this.contactList = this.rowData.contactList
           this.infoRowList.map(val => {
-            switch(val.field){
+            switch (val.field) {
               case "publicleadsGroupsId":
-                val.value = this.rowData.publicleadsGroups.id
+                val.value = this.rowData.publicleadsGroups?.id || ''
                 break;
               default:
                 val.value = res.data[val.field]
@@ -361,8 +350,10 @@ export default {
             }
             return val
           })
+          console.log(this.infoRowList);
         }
-      } catch {
+      } catch (err) {
+        console.error(err.message);
       }
     },
     async getFollowUpRecordList() {
@@ -434,7 +425,7 @@ export default {
       try {
         const res = await getCustomerTagList()
         if (res.code === 200) {
-          this.options.indexOpt.tagOption =  res.data
+          this.options.indexOpt.tagOption = res.data
         }
       } catch {
       }
@@ -529,16 +520,14 @@ export default {
 }
 
 .base-info {
-  ::v-deep .customer-tag {
-
-  }
+  ::v-deep .customer-tag {}
 }
 
 .plan-ul {
   padding-inline-start: 0;
 }
 
-.plan-ul > .plan-li {
+.plan-ul>.plan-li {
   list-style: none;
   display: flex;
   align-items: center;
@@ -579,7 +568,7 @@ export default {
 
   .wrap {
     display: grid;
-    grid-template-columns:88px 240px;
+    grid-template-columns: 88px 240px;
     grid-column-gap: 8px;
     column-gap: 8px;
     padding: 10px 0;
@@ -587,7 +576,7 @@ export default {
     .copy-text {
       cursor: pointer;
 
-      > i {
+      >i {
         display: none;
       }
 
@@ -601,5 +590,4 @@ export default {
     }
   }
 }
-
 </style>
