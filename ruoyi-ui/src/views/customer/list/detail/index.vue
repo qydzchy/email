@@ -10,10 +10,10 @@
           <div class="my-10 flex-middle gap-10">
             <span>{{ rowData.customerNo || '---' }}</span>
             <span>
-              <CellOperate 
-                type="country" 
-                :text="rowData.countryRegion" 
-                :show-copy-icon="false"                    
+              <CellOperate
+                type="country"
+                :text="rowData.countryRegion"
+                :show-copy-icon="false"
                 :show-edit-icon="false">
               </CellOperate>
             </span>

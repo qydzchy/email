@@ -326,6 +326,7 @@ public class CustomerServiceImpl implements ICustomerService {
         // 保存客户私海/公海日志
         CustomerSeaLog customerSeaLog = customerAddOrUpdateDTO.getCustomerSeaLog();
         if (customerSeaLog != null) {
+            customerSeaLog.setCustomerId(id);
             customerSeaLogMapper.insertCustomerSeaLog(customerSeaLog);
         }
 
