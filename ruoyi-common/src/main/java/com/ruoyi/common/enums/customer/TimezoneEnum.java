@@ -39,13 +39,27 @@ public enum TimezoneEnum {
     private String timezone;
     private String desc;
 
-    public static TimezoneEnum getTimezoneEnum(String timezoneStr) {
+    /*public static TimezoneEnum getTimezoneEnum(String timezoneStr) {
         if (StringUtils.isBlank(timezoneStr)) {
             return null;
         }
 
         for (TimezoneEnum timezoneEnum : TimezoneEnum.values()) {
             if (timezoneEnum.getDesc().contains(timezoneStr)) {
+                return timezoneEnum;
+            }
+        }
+
+        return null;
+    }*/
+
+    public static TimezoneEnum getTimezoneEnum(String timezone) {
+        if (StringUtils.isBlank(timezone)) {
+            return null;
+        }
+
+        for (TimezoneEnum timezoneEnum : TimezoneEnum.values()) {
+            if (timezoneEnum.getTimezone().equals(timezone)) {
                 return timezoneEnum;
             }
         }
