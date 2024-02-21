@@ -11,12 +11,12 @@
                                 <el-input style="width:180px" placeholder="请输入模板名称"></el-input>
                                 <div class="flex-middle ml-20">
                                     <span>排序规则:</span>
-                                    <el-select style="width:160px" class="ml-10">
+                                    <el-select v-model="formSearch.orderRule" style="width:160px" class="ml-10">
                                     </el-select>
                                 </div>
                                 <div class="flex-middle ml-20">
                                     <span>模板类型:</span>
-                                    <el-select style="width:160px" class="ml-10">
+                                    <el-select v-model="formSearch.templateType" style="width:160px" class="ml-10">
                                     </el-select>
                                 </div>
                             </div>
@@ -79,6 +79,10 @@ export default {
     data() {
         return {
             curTab: '1',
+            formSearch: {
+                orderRule: '',
+                templateType: ''
+            },
             tabsList: [
                 { name: '1', title: '个人模板', disabled: false },
                 { name: '2', title: '企业模板', disabled: true },

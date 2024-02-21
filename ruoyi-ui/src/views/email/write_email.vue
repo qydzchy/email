@@ -81,7 +81,6 @@
                                   <el-dropdown @command="selectEmail" trigger="click">
                                     <!---->
                                     <span class="ellipsis">{{ selectedAccount }}</span>
-
                                     <el-dropdown-menu slot="dropdown">
                                       <el-dropdown-item v-for="task in taskList" :key="task.id" :command="task">{{
                                         task.account }}</el-dropdown-item>
@@ -472,8 +471,10 @@ export default {
   watch: {
     'formData.signatureId': {
       handler(newVal) {
-
-        if (this.editor && (this.formData.content === '' || this.formData.content === null || this.formData.content === undefined)) {
+        this.$watch('editor', (editor) => {
+          if (!editor) {
+            return
+          }
           const defaultSpan = `
           <span style=" font-size:${this.emailDefaultOption?.fontSize || ''};
               font-family:${this.emailDefaultOption?.defaultFont || ''};
@@ -486,8 +487,12 @@ export default {
           }
           let content = this.signatureOption.find(val => val.id === newVal)?.content || ''
           // 默认内容
-          this.formData.content = `<p>${defaultSpan}${content}</p > `
-        }
+          this.formData.content = this.formData.content + `<p>${defaultSpan}${content}</p > `
+        }, {
+          deep: true,
+          immediate: true
+        })
+
       }
     },
     "$route.query": {
@@ -568,7 +573,7 @@ export default {
       try {
         const res = await getSignatureList()
         if (res.code === 200) {
-          this.signatureOption = [{ id: -1, title: '不使用', content: '' }, ...res.data]
+          this.signatureOption = [{ id: -1, title: '不使用', content: '<br></br>' }, ...res.data]
           this.$watch('emailDefaultOption.signatureId', (newVal) => {
             this.formData.signatureId = newVal || ''
           })
@@ -587,11 +592,10 @@ export default {
       try {
         const response = await listTaskPull();
         if (!response || !response.rows || response.rows.length == 0) {
-          this.$router.push({ path: '/email/index?type=setting_email&tab=email_management'});
+          this.$router.push({ path: '/email/index?type=setting_email&tab=email_management' });
         }
 
         this.taskList = response.rows;
-
         // 如果taskId已经存在，则尝试找到对应的任务
         if (this.taskId) {
           const task = this.taskList.find(task => task.id === this.taskId);
@@ -604,14 +608,13 @@ export default {
         if (!this.selectedAccount && this.taskList.length > 0) {
           this.$watch('defaultTaskId', (newVal) => {
             const item = this.taskList.find(val => val.id === newVal)
-            this.selectedAccount = item?.account || ''
-            this.taskId = item?.id || ''
+            this.selectedAccount = item?.account || this.taskList[0].account || ''
+            this.taskId = item?.id || this.taskList[0].id || ''
           }, {
             immediate: true
           })
 
         }
-
         return response;
       } catch (error) {
         console.error('Failed to fetch emails:', error);
@@ -619,6 +622,7 @@ export default {
     },
 
     selectEmail(task) {
+      console.log(task);
       this.selectedAccount = task.account;
       this.taskId = task.id;
       this.isDropdownVisible = false;
@@ -1227,11 +1231,14 @@ export default {
         const foundTask = this.taskList.find(task => task.id === this.selectedEmail.taskId);
         if (foundTask) {
           this.selectedAccount = foundTask.account;
+        } else {
+          this.selectedAccount = this.taskList[0].id
         }
       }
     }).catch(error => {
       console.error("Error while fetching task list:", error);
     });
+
     this.getSignatureOption()
   },
 
