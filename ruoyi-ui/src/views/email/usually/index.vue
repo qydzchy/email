@@ -591,27 +591,31 @@ export default {
         },
         // 保存配置
         async editInfoReq(data) {
-            try {
-                const res = await editUsuallyInfo(data)
-                if (res.code === 200) {
-                    this.$store.dispatch('emailSetting/GetUsuallyInfo')
-                    let emailData = deepClone(this.emailSetList)
-                    emailData = emailData.map(val => {
-                        val.defaultBccFlag = +val.defaultBccFlag
-                        val.defaultCcFlag = +val.defaultCcFlag
-                        return val
-                    })
-                    // 保存单个邮箱设置
-                    const emailSetting = await editSingleEmailSetting(emailData)
-                    if (emailSetting.code === 200) {
-                        this.$message.success('修改成功')
-                    }
+          try {
+            const res = await editUsuallyInfo(data)
+            if (res.code === 200) {
+              this.$store.dispatch('emailSetting/GetUsuallyInfo')
+              let emailData = deepClone(this.emailSetList)
+              if (emailData && emailData.length > 0) { // 检查 emailData 是否不为空且不是空数组
+                emailData = emailData.map(val => {
+                  val.defaultBccFlag = +val.defaultBccFlag
+                  val.defaultCcFlag = +val.defaultCcFlag
+                  return val
+                })
+                // 保存单个邮箱设置
+                const emailSetting = await editSingleEmailSetting(emailData)
+                if (emailSetting.code === 200) {
+                  this.$message.success('修改成功')
                 }
-            } catch (e) {
-                console.error(e.message);
+              } else {
+                console.log('emailData为空或为空数组，不执行保存单个邮箱设置操作');
+              }
             }
+          } catch (e) {
+            console.error(e.message);
+          }
         },
-        onSave() {
+      onSave() {
             const data = {
                 ...this.formData,
             }

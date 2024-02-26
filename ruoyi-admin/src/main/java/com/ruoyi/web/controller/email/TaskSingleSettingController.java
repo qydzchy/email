@@ -47,6 +47,10 @@ public class TaskSingleSettingController extends BaseController
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody List<TaskSingleSetting> taskSingleSettingList)
     {
+        if (taskSingleSettingList == null || taskSingleSettingList.isEmpty()) {
+            throw new ServiceException("参数不能为空");
+        }
+
         for (TaskSingleSetting taskSingleSetting : taskSingleSettingList) {
             if (taskSingleSetting.getTaskId() == null) {
                 throw new ServiceException("任务id不能为空");

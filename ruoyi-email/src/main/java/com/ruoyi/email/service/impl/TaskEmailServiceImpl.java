@@ -310,6 +310,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setPendingTime(pendingTime);
         taskEmail.setUid(IdUtils.fastSimpleUUID());
         taskEmail.setType(EmailTypeEnum.SEND.getType());
+        taskEmail.setReadFlag(Boolean.TRUE);
         taskEmail.setFolder("INBOX");
         taskEmail.setSendDate(pendingTime);
         taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());

@@ -155,8 +155,14 @@ public class ImportEmailServiceImpl implements IImportEmailService
                 emlFilePathList.addAll(extractEmlFilesFromZip(file, tempDir));
             }
 
-            folderId = folderId.intValue() > 0 ? folderId : -1L;
-            int type = folderId.intValue() == -1 ? EmailTypeEnum.SEND.getType() : EmailTypeEnum.PULL.getType();
+            int type = EmailTypeEnum.PULL.getType();
+            if (folderId.intValue() == -2) {
+                type = EmailTypeEnum.PULL.getType();
+                folderId = -1L;
+            } else if (folderId.intValue() == -1) {
+                type = EmailTypeEnum.SEND.getType();
+                folderId = -1L;
+            }
 
             String newEmailPath = emailPath.concat("/").concat(task.getAccount());
             String newAttachmentPath = attachmentPath.concat("/").concat(task.getAccount());

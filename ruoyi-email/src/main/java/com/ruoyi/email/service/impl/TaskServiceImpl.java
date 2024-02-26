@@ -665,6 +665,7 @@ public class TaskServiceImpl implements ITaskService
         taskEmail.setTaskId(taskId);
         taskEmail.setFolderId(folderId);
         taskEmail.setType(type);
+        taskEmail.setReadFlag(Boolean.TRUE);
         taskEmail.setStatus(TaskExecutionStatusEnum.SUCCESS.getStatus());
         taskEmail.setCreateTime(DateUtils.getNowDate());
         taskEmailService.insertTaskEmail(taskEmail);
