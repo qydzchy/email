@@ -652,6 +652,7 @@ export default {
       }
       setTimeout(() => {
         this.editor.dangerouslyInsertHtml(this?.htmlText);
+        this.editor.focus();
       }, 500);
     },
 
@@ -1239,8 +1240,8 @@ export default {
       console.error("Error while fetching task list:", error);
     });
 
-    this.getSignatureOption()
-  },
+    this.getSignatureOption();
+    },
 
   beforeDestroy() {
     const editor = this.editor;
