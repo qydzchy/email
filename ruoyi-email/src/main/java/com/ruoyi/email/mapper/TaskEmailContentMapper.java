@@ -2,6 +2,7 @@ package com.ruoyi.email.mapper;
 
 import java.util.List;
 import com.ruoyi.email.domain.TaskEmailContent;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 邮件内容Mapper接口

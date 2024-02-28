@@ -83,6 +83,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     @Resource
     private ITaskEmailContentService taskEmailContentService;
     @Resource
+    private TaskEmailContentMapper taskEmailContentMapper;
+    @Resource
     private ITaskEmailAttachmentService taskEmailAttachmentService;
     @Resource
     private ITaskAttachmentService taskAttachmentService;
@@ -202,11 +204,11 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
             return Pair.of(0, new ArrayList<>());
         }
 
-        List<Integer> statusList = Arrays.asList(TaskExecutionStatusEnum.SUCCESS.getStatus());
+        List<Integer> statusList = Arrays.asList(TaskExecutionStatusEnum.SUCCESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
         if (Optional.ofNullable(pendingFlag).orElse(false)) {
             statusList = Arrays.asList(TaskExecutionStatusEnum.SUCCESS.getStatus(), TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
         } else if (Optional.ofNullable(draftsFlag).orElse(false)) {
-            statusList = Arrays.asList(TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
+            statusList = Arrays.asList(0, TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
         }
 
         spamFlag = Optional.ofNullable(spamFlag).orElse(false);
@@ -313,7 +315,8 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         taskEmail.setReadFlag(Boolean.TRUE);
         taskEmail.setFolder("INBOX");
         taskEmail.setSendDate(pendingTime);
-        taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
+        // 0表示邮件放在草稿箱，不发送
+        taskEmail.setStatus(0);
         taskEmail.setInReplyTo(inReplyTo);
         taskEmail.setReference(reference);
         taskEmail.setCreateId(userId);
@@ -344,9 +347,9 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         List<Long> attachmentIdList = dto.getAttachmentIdList();
         List<TaskEmailAttachment> taskEmailAttachmentList = new ArrayList<>();
         if (attachmentIdList != null) {
-            attachmentIdList.stream().forEach(attachmentId -> {
+            for (Long attachmentId : attachmentIdList) {
                 taskEmailAttachmentList.add(TaskEmailAttachment.builder().emailId(emailId).attachmentId(attachmentId).build());
-            });
+            }
         }
 
         if (!taskEmailAttachmentList.isEmpty()) {
@@ -461,7 +464,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         TaskEmail taskEmail = taskEmailMapper.getTaskEmailById(id, userId);
         if (taskEmail == null) throw new ServiceException();
 
-        taskEmail.setStatus(TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+        taskEmail.setStatus(TaskExecutionStatusEnum.NOT_STARTED.getStatus());
         taskEmail.setUpdateId(userId);
         taskEmail.setUpdateBy(username);
         taskEmail.setUpdateTime(new Date());
@@ -1413,6 +1416,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         for (Long id : ids) {
             TaskEmailLabel taskEmailLabel = new TaskEmailLabel();
             taskEmailLabel.setEmailId(id);
+            taskEmailLabel.setDelFlag("0");
             taskEmailLabel.setLabelId(labelId);
             taskEmailLabel.setCreateId(userId);
             taskEmailLabel.setCreateBy(username);
@@ -1442,7 +1446,6 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         Long userId = loginUser.getUserId();
         ExecutorService executorService = Executors.newFixedThreadPool(3);
         try {
-
             // 收件箱
             Future<List<MenuInboxTaskCountVO>> allReceivedCountFuture = executorService.submit(() -> countMenuInboxTaskCount(userId));
             // 待办
