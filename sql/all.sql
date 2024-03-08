@@ -4092,6 +4092,8 @@ CREATE TABLE `mailbox_task_email`  (
   `message_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '每封邮件都应该有一个唯一的 Message-ID',
   `in_reply_to` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '当你回复一封邮件时，你应该设置 In-Reply-To 头为原始邮件的 Message-ID。',
   `reference` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '邮件链的列表',
+  `forward_flag` tinyint(4) NULL DEFAULT NULL COMMENT '已转发 0否 1是',
+  `reply_flag` tinyint(4) NULL DEFAULT NULL COMMENT '已回复 0否 1是',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '删除标志(0代表存在2代表删除)',
   `create_id` bigint(20) NULL DEFAULT NULL COMMENT '创建者ID',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建者',
@@ -4108,7 +4110,7 @@ CREATE TABLE `mailbox_task_email`  (
   INDEX `idx_folder_id`(`folder_id`) USING BTREE COMMENT '文件夹id索引',
   INDEX `idx_fixed_flag`(`fixed_flag`) USING BTREE COMMENT '固定索引',
   INDEX `idx_del_flag`(`del_flag`) USING BTREE COMMENT '删除索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 28265 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 29361 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '邮件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mailbox_task_email_attachment
