@@ -110,6 +110,15 @@ export function deleteEmail(data) {
   })
 }
 
+// 更新邮件操作类型
+export function updateOperationType(data) {
+  return request({
+    url: '/email/info/update/operation/type',
+    method: 'post',
+    data: data
+  })
+}
+
 // 导出邮件
 export function exportEmail(data) {
   return request({

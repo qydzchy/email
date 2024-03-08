@@ -1109,6 +1109,24 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
     }
 
     /**
+     * 更新操作类型
+     * @param taskEmail
+     * @return
+     */
+    @Override
+    public boolean updateOperationType(TaskEmail taskEmail) {
+        if (taskEmail.getReplyFlag() != null) {
+            taskEmailMapper.updateReplyFlag(taskEmail.getId(), taskEmail.getReplyFlag());
+        }
+
+        if (taskEmail.getForwardFlag() != null) {
+            taskEmailMapper.updateForwardFlag(taskEmail.getId(), taskEmail.getForwardFlag());
+        }
+
+        return true;
+    }
+
+    /**
      * 应用历史邮件
      * @param transceiverRule
      */

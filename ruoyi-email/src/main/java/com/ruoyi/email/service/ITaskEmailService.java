@@ -328,4 +328,11 @@ public interface ITaskEmailService
      * @return
      */
     String translate(String sourceLanguage, String targetLanguage, String sourceText, String accessKeyId, String accessKeySecret);
+
+    /**
+     * 更新操作类型
+     * @param taskEmail
+     * @return
+     */
+    boolean updateOperationType(TaskEmail taskEmail);
 }

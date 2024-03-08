@@ -129,6 +129,26 @@ public class EmailController extends BaseController {
         return toAjax(taskEmailService.send(taskEmail.getId()));
     }
 
+    /**
+     * 更新操作类型
+     * @param taskEmail
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('email:update:operation:type')")
+    @Log(title = "更新操作类型", businessType = BusinessType.UPDATE)
+    @PostMapping("/update/operation/type")
+    public AjaxResult updateOperationType(@RequestBody TaskEmail taskEmail)
+    {
+        if (taskEmail.getId() == null) {
+            throw new ServiceException("id不能为空");
+        }
+
+        if (taskEmail.getReplyFlag() == null && taskEmail.getForwardFlag() == null) {
+            return toAjax(false);
+        }
+
+        return toAjax(taskEmailService.updateOperationType(taskEmail));
+    }
 
     /**
      * 邮件固定

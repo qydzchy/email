@@ -380,7 +380,7 @@ import { mapState } from 'vuex'
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { uploadAttachments, renameAttachment, deleteAttachment } from "@/api/email/attachment";
 import { listTaskPull } from "@/api/email/task";
-import { saveSendEmail, sendEmail, uploadAttachment } from "@/api/email/email";
+import { saveSendEmail, sendEmail, uploadAttachment, updateOperationType } from "@/api/email/email";
 import { EventBus } from '@/api/email/event-bus.js';
 import ReceiverInput from './write_email_receiver_input.vue';
 import PendingTimePopover from './pending_time.vue';
@@ -450,6 +450,9 @@ export default {
       },
       templateDialogVisible: false,
       quickDialogVisible: false,
+      operationEmailId: null,
+      replyFlag: null,
+      forwardFlag: null,
     };
   },
   props: {
@@ -502,6 +505,7 @@ export default {
         }
 
         if (newVal?.emailId) {
+          this.operationEmailId = newVal?.emailId;
           this.getEmailInfo(newVal.emailId, newVal.writeEmailType);
         }
       },
@@ -622,7 +626,6 @@ export default {
     },
 
     selectEmail(task) {
-      console.log(task);
       this.selectedAccount = task.account;
       this.taskId = task.id;
       this.isDropdownVisible = false;
@@ -782,6 +785,15 @@ export default {
           };
           const sendResponse = await sendEmail(data);
           if (sendResponse.code === 200) {
+            if (this.operationEmailId) {
+              const data2 = {
+                "id": this.operationEmailId,
+                "replyFlag": this.replyFlag,
+                "forwardFlag": this.forwardFlag
+              };
+              await updateOperationType(data2);
+            }
+
             EventBus.$emit('switch-send-success', id);  // 发出事件
             return response;
           } else {
@@ -1170,24 +1182,38 @@ export default {
     handlerWriteEmailType(emailData, writeEmailType) {
       if (writeEmailType) {
         switch (writeEmailType) {
+          // 回复
           case 'reply':
+            this.replyFlag = 1;
+            console.log("newVal?.emailId = " + newVal?.emailId);
             this.handleReply(emailData);
             break;
+          // 回复全部
           case 'reply_all':
+            this.replyFlag = 1;
             this.handleReplyAll(emailData);
             break;
+          // 带附件回复
           case 'reply_with_attachments':
+            this.replyFlag = 1;
             this.handleReplyWithAttachments(emailData);
             break;
+          // 带附件回复全部
           case 'reply_all_with_attachments':
+            this.replyFlag = 1;
             this.handleReplyAllWithAttachments(emailData);
             break;
+          // 转发
           case 'forward':
+            this.forwardFlag = 2;
             this.handleForward(emailData);
             break;
+          // 作为附件转发
           case 'forward_as_attachment':
+            this.forwardFlag = 2;
             this.handleForwardAsAttachment(emailData);
             break;
+          // 再次编辑
           case 'edit_again':
             this.handleCurrentEmailInfo(emailData);
             break;

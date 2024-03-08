@@ -123,6 +123,16 @@ public class TaskEmail extends BaseEntity
     @Excel(name = "邮件链的列表")
     private String reference;
 
+    /**
+     * 已回复 0否 1是
+     */
+    private Integer replyFlag;
+
+    /**
+     * 已转发 0否 1是
+     */
+    private Integer forwardFlag;
+
     /** 删除标志(0代表存在2代表删除) */
     private String delFlag;
 
@@ -352,6 +362,22 @@ public class TaskEmail extends BaseEntity
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public Integer getReplyFlag() {
+        return replyFlag;
+    }
+
+    public void setReplyFlag(Integer replyFlag) {
+        this.replyFlag = replyFlag;
+    }
+
+    public Integer getForwardFlag() {
+        return forwardFlag;
+    }
+
+    public void setForwardFlag(Integer forwardFlag) {
+        this.forwardFlag = forwardFlag;
     }
 
     public void setDelFlag(String delFlag)

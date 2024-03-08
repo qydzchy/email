@@ -88,6 +88,16 @@ public class EmailListVO {
     private Integer spamFlag;
 
     /**
+     * 已回复 0否 1是
+     */
+    private Integer replyFlag;
+
+    /**
+     * 已转发 0否 1是
+     */
+    private Integer forwardFlag;
+
+    /**
      * 邮件内容
      */
     @JsonIgnore
@@ -171,5 +181,14 @@ public class EmailListVO {
         }
 
         return text;
+    }
+
+
+    public boolean getHasAttachment() {
+        if (emailAttachmentList != null && emailAttachmentList.size() > 0) {
+            return true;
+        }
+
+        return false;
     }
 }

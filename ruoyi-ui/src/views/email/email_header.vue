@@ -314,16 +314,20 @@
 																															<span class="seperator"></span>
 																															<span class="customer-name ellipsis">{{email.fromer}}</span>
 																														</span>
-                                                            <!--																														<div class="mail-info-icons">
-                                                                                                                          <span class="mail-info-icon-item">
-                                                                                                                            <i class="m-icon icon-repeated-line" data-tips="已回复" style="color: rgb(144, 144, 144);"></i>
-                                                                                                                            &lt;!&ndash;&ndash;&gt;
-                                                                                                                          </span>
-                                                                                                                          <span class="mail-info-icon-item">
-                                                                                                                            <i class="m-icon icon-attachment-line" data-tips="有附件" style="color: rgb(144, 144, 144);"></i>
-                                                                                                                            &lt;!&ndash;&ndash;&gt;
-                                                                                                                          </span>
-                                                                                                                        </div>-->
+                                                            <div class="mail-info-icons">
+                                                                <span v-if="email.replyFlag" class="mail-info-icon-item">
+                                                                  <i class="m-icon icon-repeated-line" data-tips="已回复" style="color: rgb(144, 144, 144);"></i>
+                                                                </span>
+                                                                <span v-if="email.forwardFlag" class="mail-info-icon-item">
+                                                                  <i class="m-icon icon-forwarded-line" data-tips="已转发" style="color: rgb(95, 152, 214);"></i>
+                                                                </span>
+                                                                <span v-if="email.hasAttachment" class="mail-info-icon-item">
+                                                                  <i class="m-icon icon-attachment-line" data-tips="有附件" style="color: rgb(144, 144, 144);"></i>
+                                                                </span>
+                                                                <span v-if="email.type === 2 && email.status === 3" class="mail-info-icon-item">
+                                                                  <i class="m-icon icon-checked-circle-line" data-tips="发送成功" style="color: rgb(40, 183, 121);"></i>
+                                                                </span>
+                                                              </div>
 																													</div>
 																												</div>
 																												<div class="addr-info-operations-wrapper" style="display: none;">
@@ -346,11 +350,12 @@
 																															<div class="mail-info-icons">
 																																<span class="mail-info-icon-item">
 																																	<i class="m-icon icon-attachment-line" data-tips="有附件" style="color: rgb(144, 144, 144);"></i>
-                                                                  <!---->
 																																</span>
+                                                                <span class="mail-info-icon-item">
+                                                                  <i class="m-icon icon-forwarded-line" data-tips="已转发" style="color: rgb(95, 152, 214);"></i>
+                                                                </span>
 																																<span class="mail-info-icon-item">
 																																	<i class="m-icon icon-repeated-line" data-tips="已回复" style="color: rgb(144, 144, 144);"></i>
-                                                                  <!---->
 																																</span>
 																															</div>
 																														</div>
