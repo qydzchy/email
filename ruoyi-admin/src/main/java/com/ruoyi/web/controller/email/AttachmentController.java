@@ -87,7 +87,7 @@ public class AttachmentController {
     /**
      * 附件下载
      */
-    @PreAuthorize("@ss.hasPermi('email:attachment:download')")
+    //@PreAuthorize("@ss.hasPermi('email:attachment:download')")
     @Log(title = "附件下载", businessType = BusinessType.EXPORT)
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> attachmentDownload(@PathVariable("id") Long id) {

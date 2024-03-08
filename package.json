@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@wangeditor/editor": "^5.1.23"
+    "@wangeditor/editor": "^5.1.23",
+    "js-base64": "^3.6.0"
   }
 }

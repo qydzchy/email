@@ -26,7 +26,7 @@
                   </svg>
                   <div class="attach-content" data-v-4ceaee07="">
                     <h4 :title="attachment.name" class="attach-name-wrapper" data-v-4ceaee07="">
-                      <span :title="attachment.name" class="attach-name ellipsis" data-v-4ceaee07="">{{attachment.name}}</span>
+                      <span :title="attachment.name" class="attach-name ellipsis" @click="preview(attachment.id, attachment.name)" data-v-4ceaee07="">{{attachment.name}}</span>
                     </h4>
                     <div data-v-4ceaee07="" style="display: flex;">
 										<span class="mm-tooltip" data-v-4ceaee07="">
@@ -87,6 +87,9 @@
 <script>
 import {downloadEmailAttachment} from "@/api/email/email";
 import {downloadAttachment} from "@/api/email/attachment";
+import Base64 from "@/api/base64.min";
+
+
 export default {
   data() {
     return {
@@ -97,6 +100,12 @@ export default {
   props: ['emailAttachmentList', 'emailId', 'emailTitle'],
 
   methods: {
+    preview(id, name) {
+      let originUrl = window.location.origin;
+      let previewUrl = originUrl + '/dev-api/email/attachment/download/' + id + '?fullfilename=' + name;
+      window.open("http://localhost:8012/onlinePreview?url="+encodeURIComponent(global.Base64.encode(previewUrl)));
+    },
+
     toggleExpansion() {
       this.isExpanded = !this.isExpanded;
     },
