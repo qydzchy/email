@@ -89,7 +89,7 @@
                         </el-col>
                         <el-col>
                           <el-tooltip placement="top" content="发送邮件">
-                            <i class="el-icon-message"></i>
+                            <i class="el-icon-message" @click="writeEmail(item.email)"></i>
                           </el-tooltip>
                         </el-col>
                       </el-row>
@@ -158,7 +158,7 @@ import TableRowTags from "../TableRowTags.vue";
 import { getScheduleList } from "@/api/customer/schedule";
 import { deepClone, formatMonthAndDay } from "@/utils";
 import { getCustomerDetail, searchGroupsCustomer } from "@/api/customer/publicleads";
-import { generateMapKey } from "@/utils/tools";
+import {generateMapKey, targetBlank} from "@/utils/tools";
 import { rankOption, sexRadio } from "@/constant/customer/ContactCard";
 import { packetList } from "@/api/company/group";
 import { stageList } from "@/api/company/status";
@@ -488,6 +488,10 @@ export default {
       return secondVal
     },
     formatMonthAndDay,
+
+    writeEmail(email) {
+      targetBlank(`/email/index?type=write_email&email=`+email);
+    },
   }
 }
 </script>

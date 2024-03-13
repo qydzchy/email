@@ -177,7 +177,12 @@ public class CustomerFollowUpRecordsServiceImpl implements ICustomerFollowUpReco
     @Override
     public List<CustomerFollowUpRecordsListVO> list(CustomerFollowUpRecordsListDTO customerFollowUpRecordsListDTO) {
         List<CustomerFollowUpRecordsListBO> customerFollowUpRecordsBOList = customerFollowUpRecordsMapper.list(customerFollowUpRecordsListDTO.getCustomerId(), customerFollowUpRecordsListDTO.getSearchText());
-        Map<Long, List<CustomerFollowUpRecordsListBO>> customerFollowUpRecordsListBOMap = customerFollowUpRecordsBOList.stream().collect(Collectors.groupingBy(CustomerFollowUpRecordsListBO::getId));
+        Map<Long, List<CustomerFollowUpRecordsListBO>> customerFollowUpRecordsListBOMap = customerFollowUpRecordsBOList.stream()
+                .collect(Collectors.groupingBy(
+                        CustomerFollowUpRecordsListBO::getId,
+                        LinkedHashMap::new, // 使用 LinkedHashMap 保留插入顺序
+                        Collectors.toList()
+                ));
 
         List<CustomerFollowUpRecordsListVO> customerFollowUpRecordsVOList = new ArrayList<>();
         customerFollowUpRecordsListBOMap.forEach((k,v)->{

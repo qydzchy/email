@@ -25,7 +25,7 @@
                   </el-col>
                   <el-col>
                     <el-tooltip placement="top" content="发送邮件">
-                      <i class="el-icon-message"></i>
+                      <i class="el-icon-message" @click="writeEmail(contactRow.email)"></i>
                     </el-tooltip>
                   </el-col>
                 </el-row>
@@ -202,7 +202,7 @@ import TableNext from "@/components/TableNext/index";
 import CustomerContactDrawer from "./CustomerContactDrawer";
 import CellOperate from "./CellOperate.vue";
 import CollapseWrap from "@/components/CollapseWrap";
-import { generateMapKey } from "@/utils/tools";
+import {generateMapKey, targetBlank} from "@/utils/tools";
 import { rankOption, sexRadio } from "@/constant/customer/ContactCard";
 import { editCustomer } from "@/api/customer/publicleads";
 import { timeZoneList } from "@/assets/data/countryData";
@@ -765,7 +765,11 @@ export default {
         return name
       }
       return name
-    }
+    },
+
+    writeEmail(email) {
+      targetBlank(`/email/index?type=write_email&email=`+email);
+    },
   }
 
 }

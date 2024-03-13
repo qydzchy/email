@@ -73,7 +73,7 @@
                         </el-col>
                         <el-col>
                           <el-tooltip placement="top" content="发送邮件">
-                            <i class="el-icon-message"></i>
+                            <i class="el-icon-message" @click="writeEmail(item.email)"></i>
                           </el-tooltip>
                         </el-col>
                       </el-row>
@@ -139,7 +139,7 @@ import CollapseWrap from "@/components/CollapseWrap/index.vue";
 import TableNext from "@/components/TableNext/index.vue";
 import {formatMonthAndDay,deepClone} from "@/utils";
 import {getCustomerDetail, searchGroupsCustomer} from "@/api/customer/publicleads";
-import {generateMapKey} from "@/utils/tools";
+import {generateMapKey, targetBlank} from "@/utils/tools";
 import {rankOption, sexRadio} from "@/constant/customer/ContactCard";
 import TableRowTags from "@/views/customer/list/TableRowTags.vue";
 import {packetList} from "@/api/company/group";
@@ -219,7 +219,7 @@ export default {
             props:{
               value: 'id',
               label: 'name',
-            } 
+            }
           },
         },
         {
@@ -462,6 +462,9 @@ export default {
       return secondVal
     },
     formatMonthAndDay,
+    writeEmail(email) {
+      targetBlank(`/email/index?type=write_email&email=`+email);
+    },
   }
 }
 </script>

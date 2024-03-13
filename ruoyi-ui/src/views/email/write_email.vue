@@ -508,6 +508,10 @@ export default {
           this.operationEmailId = newVal?.emailId;
           this.getEmailInfo(newVal.emailId, newVal.writeEmailType);
         }
+
+        if (newVal?.email) {
+          this.receiver.push(newVal?.email);
+        }
       },
       immediate: true
     },

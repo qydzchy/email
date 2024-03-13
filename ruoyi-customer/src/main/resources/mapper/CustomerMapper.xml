@@ -137,7 +137,7 @@
               (#{segmentId} > 0 AND customerSegment.segment_id = #{segmentId})
             )
         GROUP BY customer.id
-        ORDER BY customer.create_time DESC
+        ORDER BY customer.update_time DESC
             LIMIT #{offset}, #{limit}
     </select>
 
@@ -185,7 +185,7 @@
                 AND customer.packet_id = #{packetId}
             </if>
         GROUP BY customer.id
-        ORDER BY customer.create_time DESC
+        ORDER BY customer.update_time DESC
             LIMIT #{offset}, #{limit}
     </select>
 
