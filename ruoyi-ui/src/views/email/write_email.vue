@@ -1096,13 +1096,13 @@ export default {
 
     // 带附件回复
     handleReplyWithAttachments(emailData) {
-      this.handleReply();
+      this.handleReply(emailData);
       this.uploadedFiles = emailData.emailAttachmentList;
     },
 
     // 带附件回复全部
-    handleReplyAllWithAttachments() {
-      this.handleReplyAll();
+    handleReplyAllWithAttachments(emailData) {
+      this.handleReplyAll(emailData);
       this.uploadedFiles = emailData.emailAttachmentList;
     },
 
@@ -1189,7 +1189,6 @@ export default {
           // 回复
           case 'reply':
             this.replyFlag = 1;
-            console.log("newVal?.emailId = " + newVal?.emailId);
             this.handleReply(emailData);
             break;
           // 回复全部
