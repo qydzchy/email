@@ -135,7 +135,7 @@
 																</div>
 																<span class="mm-tooltip mail-toolbar-btn-item">
 																	<span class="mm-tooltip-trigger">
-																		<span class="okki-icon-wrap filter-icon">​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																		<span class="okki-icon-wrap filter-icon" @click="advancedSearch">​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																				<path fill-rule="evenodd" clip-rule="evenodd" d="M5.055 5l5.507 7.388a1 1 0 01.198.598v5.45l2.48 1.407v-6.857a1 1 0 01.198-.598L18.945 5H5.055zm-1.91-.837C3.403 3.518 4.017 3 4.8 3h14.4c.783 0 1.397.518 1.655 1.163a2.028 2.028 0 01-.246 1.951l-5.369 7.203v6.764c0 .603-.27 1.218-.797 1.595-.546.39-1.259.434-1.85.099l-2.88-1.634c-.628-.356-.953-1.034-.953-1.694v-5.13L3.39 6.114a2.028 2.028 0 01-.245-1.951l.928.372-.928-.372z"></path>
 																			</svg>
 																		</span>
@@ -550,6 +550,7 @@
 													</div>
 												</span>
     </div>
+    <EmailSearch ref="emailSearch"></EmailSearch>
     <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: 40px; left: -5px; will-change: top, left; transform-origin: 100% bottom;">
       <!---->
       <div>
@@ -632,6 +633,7 @@ import emailHeaderLabelLayout from "@/views/email/email_content_label.vue";
 import {listLabel} from "@/api/email/label";
 import PendingTimePopover from "@/views/email/pending_time.vue";
 import CustomTimePopover from "@/views/email/custom_time.vue";
+import EmailSearch from "@/views/email/email_search.vue";
 export default {
   data() {
     return {
@@ -669,13 +671,14 @@ export default {
       showPendingTime: false,
       showCustomTime: false,
       pendingCurrentEmail: {},
-      pendingDialogVisible: false
+      pendingDialogVisible: false,
     }
   },
   components: {
     CustomTimePopover, PendingTimePopover,
     emailHeaderLabelLayout,
-    PopoverSelectFolder
+    PopoverSelectFolder,
+    EmailSearch
   },
   props: {
     emailList: Array,
@@ -850,6 +853,13 @@ export default {
     switchObjectType(objectType) {
       this.objectType = objectType;
       this.fetchEmailData(this.currentEmailType);
+    },
+
+    /**
+     * 显示高级搜索弹窗
+     */
+    advancedSearch() {
+      this.$refs.emailSearch.open();
     },
 
     /**
