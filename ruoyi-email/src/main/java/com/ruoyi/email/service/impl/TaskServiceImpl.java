@@ -595,10 +595,12 @@ public class TaskServiceImpl implements ITaskService
         emailList.addAll(extractEmail(cc));
         emailList.addAll(extractEmail(bcc));
 
-        List<Long> customerIdList = customerContactMapper.getCustomerIdByEmailAndCreateId(task.getCreateId(), emailList);
-        if (customerIdList != null && !customerIdList.isEmpty()) {
-            // 编辑客户事件
-            customerService.customerFollowUpRulesHandler(customerIdList, FollowUpRulesTypeEnum.SEND_EMAIL_CUSTOMER_OPPORTUNITY);
+        if (emailList != null && !emailList.isEmpty()) {
+            List<Long> customerIdList = customerContactMapper.getCustomerIdByEmailAndCreateId(task.getCreateId(), emailList);
+            if (customerIdList != null && !customerIdList.isEmpty()) {
+                // 编辑客户事件
+                customerService.customerFollowUpRulesHandler(customerIdList, FollowUpRulesTypeEnum.SEND_EMAIL_CUSTOMER_OPPORTUNITY);
+            }
         }
     }
 

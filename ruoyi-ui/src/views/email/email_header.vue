@@ -890,6 +890,14 @@ export default {
       }
     },
 
+    filter() {
+      const formData = this.$refs.emailSearch.getFormData();
+      console.log("formData:");
+      Object.entries(formData).forEach(([key, value]) => {
+        console.log("  ", key, ":", value);
+      });
+    },
+
     // 点击完成待处理
     clickCompletePending() {
       this.pendingEmail(this.selectEmailIds, false, null);

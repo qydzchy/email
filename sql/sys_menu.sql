@@ -391,5 +391,6 @@ INSERT INTO `sys_menu` VALUES (2288, '客户阶段列表2', 2236, 21, '', NULL, 
 INSERT INTO `sys_menu` VALUES (2289, '移入公海原因列表2', 2236, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'customer:public:leads:reason:list', '#', 'admin', '2024-01-22 17:04:05', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2290, '往来邮件列表', 2211, 22, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:dealing:email:list', '#', 'admin', '2024-02-01 08:14:24', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2291, '邮件内容翻译', 2211, 23, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:translate', '#', 'admin', '2024-02-01 08:14:56', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2292, '更新邮件操作类型', 2211, 24, '', NULL, NULL, 1, 0, 'F', '0', '0', 'email:update:operation:type', '#', 'jason', '2024-03-21 15:58:09', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;

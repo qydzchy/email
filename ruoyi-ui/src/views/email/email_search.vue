@@ -107,10 +107,10 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="radio12" label="1" value="1">包含任一标签</el-radio>
-                          <el-radio v-model="radio12" label="2" value="2">包含全部标签</el-radio>
+                          <el-radio v-model="formData.labelType" label="1" value="1">包含任一标签</el-radio>
+                          <el-radio v-model="formData.labelType" label="2" value="2">包含全部标签</el-radio>
                           <el-select
-                            v-model="value2"
+                            v-model="formData.label"
                             multiple
                             collapse-tags
                             style="width: 100%;"
@@ -139,7 +139,7 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <el-date-picker
-                          v-model="date1"
+                          v-model="formData.sendDate"
                           type="daterange"
                           style="width: 100%;"
                           range-separator="至"
@@ -171,8 +171,8 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="radio13" label="1" value="1">全部</el-radio>
-                          <el-radio v-model="radio13" label="2" value="2">指定文件夹</el-radio>
+                          <el-radio v-model="formData.folderType" label="1" value="1">全部</el-radio>
+                          <el-radio v-model="formData.folderType" label="2" value="2">指定文件夹</el-radio>
                         </div>
                       </div>
                     </div>
@@ -187,9 +187,9 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="radio14" label="1" value="1">不限</el-radio>
-                          <el-radio v-model="radio14" label="2" value="2">含附件</el-radio>
-                          <el-radio v-model="radio14" label="3" value="3">不含附件</el-radio>
+                          <el-radio v-model="formData.attachmentType" label="1" value="1">不限</el-radio>
+                          <el-radio v-model="formData.attachmentType" label="2" value="2">含附件</el-radio>
+                          <el-radio v-model="formData.attachmentType" label="3" value="3">不含附件</el-radio>
                         </div>
                         <!---->
                       </div>
@@ -207,9 +207,9 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="radio15" label="1" value="1">不限</el-radio>
-                          <el-radio v-model="radio15" label="2" value="2">有</el-radio>
-                          <el-radio v-model="radio15" label="3" value="3">无</el-radio>
+                          <el-radio v-model="formData.fixedType" label="1" value="1">不限</el-radio>
+                          <el-radio v-model="formData.fixedType" label="2" value="2">有</el-radio>
+                          <el-radio v-model="formData.fixedType" label="3" value="3">无</el-radio>
                         </div>
                         <!---->
                       </div>
@@ -227,9 +227,9 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="radio16" label="1" value="1">不限</el-radio>
-                          <el-radio v-model="radio16" label="2" value="2">收取的</el-radio>
-                          <el-radio v-model="radio16" label="3" value="3">发送的</el-radio>
+                          <el-radio v-model="formData.transceiverType" label="1" value="1">不限</el-radio>
+                          <el-radio v-model="formData.transceiverType" label="2" value="2">收取的</el-radio>
+                          <el-radio v-model="formData.transceiverType" label="3" value="3">发送的</el-radio>
                         </div>
                         <!---->
                       </div>
@@ -247,9 +247,9 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="formData.sendStaus" label="1" value="1">不限</el-radio>
-                          <el-radio v-model="formData.sendStaus" label="2" value="2">发送失败</el-radio>
-                          <el-radio v-model="formData.sendStaus" label="3" value="3">发送成功</el-radio>
+                          <el-radio v-model="formData.sendType" label="1" value="1">不限</el-radio>
+                          <el-radio v-model="formData.sendType" label="2" value="2">发送失败</el-radio>
+                          <el-radio v-model="formData.sendType" label="3" value="3">发送成功</el-radio>
                         </div>
                         <!---->
                       </div>
@@ -260,11 +260,11 @@
                 </form>
               </div>
               <div class="okki-modal-footer">
-                <button class="okki-btn okki-btn-primary okki-btn-round okki-btn-background-ghost" type="button">
+                <button class="okki-btn okki-btn-primary okki-btn-round okki-btn-background-ghost" type="button" @click="clear">
                   <!---->
                   <span>清 空</span>
                 </button>
-                <button class="okki-btn okki-btn-primary okki-btn-round do-search" type="button">
+                <button class="okki-btn okki-btn-primary okki-btn-round do-search" type="button" @click="filter">
                   <!---->
                   <span>筛 选</span>
                 </button>
@@ -284,13 +284,6 @@ export default {
   data() {
     return {
       searchPage: false,
-      radio11: "1",
-      radio12: "1",
-      radio13: "1",
-      radio14: "1",
-      radio15: "1",
-      radio16: "1",
-      radio17: "1",
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -317,6 +310,14 @@ export default {
         recipient: '',
         sender: '',
         sendStatus: "1",
+        labelType: '1',
+        label: [],
+        sendDate: '',
+        folderType: '1',
+        attachmentType: '1',
+        fixedType: '1',
+        transceiverType: '1',
+        sendType: '1'
       }
     }
   },
@@ -329,6 +330,19 @@ export default {
     close() {
       this.searchPage = false;
     },
+
+    filter() {
+      this.$emit('filter', this.formData);
+      this.close();
+    },
+
+    getFormData() {
+      return this.formData;
+    },
+
+    clear() {
+      this.formData = Object.assign({}, this.$options.data().formData);
+    }
   }
 };
 </script>
