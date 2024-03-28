@@ -35,10 +35,10 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.customer.mapper.CustomerContactMapper;
-import com.ruoyi.customer.mapper.CustomerMapper;
 import com.ruoyi.customer.service.ICustomerService;
 import com.ruoyi.email.domain.*;
 import com.ruoyi.email.domain.bo.*;
+import com.ruoyi.email.domain.dto.email.EmailListDTO;
 import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
@@ -222,6 +222,103 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         int offset = (pageNum - 1) * pageSize;
         int limit = pageSize;
         List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage(taskIdList, type, readFlag, pendingFlag, spamFlag, delFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, statusList, userId, offset, limit);
+        if (emailListVOList == null || emailListVOList.isEmpty()) {
+            return Pair.of(count, new ArrayList<>());
+        }
+
+        List<Long> ids = emailListVOList.stream().map(emailListVO -> emailListVO.getId()).collect(Collectors.toList());
+        // 查询邮件附件信息
+        List<EmailAttachmentBO> emailAttachmentBOList = taskAttachmentService.listByEmailIds(ids);
+        if (emailAttachmentBOList == null) emailAttachmentBOList = Collections.emptyList();
+        Map<Long, List<EmailAttachmentBO>> attachmentGroupMap = emailAttachmentBOList.stream().collect(Collectors.groupingBy(emailAttachment -> emailAttachment.getEmailId()));
+
+        // 查询邮件标签信息
+        List<EmailLabelBO> emailLabelBOList = labelService.listByEmailIds(ids);
+        if (emailLabelBOList == null) emailLabelBOList = Collections.emptyList();
+        Map<Long, List<EmailLabelBO>> labelGroupMap = emailLabelBOList.stream().collect(Collectors.groupingBy(emailLabel -> emailLabel.getEmailId()));
+
+        emailListVOList.stream().forEach(emailListVO -> {
+            Long id = emailListVO.getId();
+            if (attachmentGroupMap.containsKey(id)) {
+                List<EmailAttachmentBO> emailAttachmentGroupList = attachmentGroupMap.get(id);
+                emailListVO.setEmailAttachmentList(emailAttachmentGroupList);
+            } else {
+                emailListVO.setEmailAttachmentList(Collections.emptyList());
+            }
+
+            if (labelGroupMap.containsKey(id)) {
+                List<EmailLabelBO> emailLabelGroupList = labelGroupMap.get(id);
+                emailListVO.setEmailLabelList(emailLabelGroupList);
+            } else {
+                emailListVO.setEmailLabelList(Collections.emptyList());
+            }
+        });
+
+        Map<String, List<EmailListVO>> data = new LinkedHashMap<>();
+        emailListVOList.stream().forEach(emailListVO -> {
+            Date sendDate = emailListVO.getSendDate();
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(sendDate.toInstant(), ZoneId.systemDefault());
+            String dynamicLabel = getDynamicLabel(localDateTime);
+
+            if (data.containsKey(dynamicLabel)) {
+                data.get(dynamicLabel).add(emailListVO);
+            } else {
+                data.put(dynamicLabel, new ArrayList<EmailListVO>() {{
+                    add(emailListVO);
+                }});
+            }
+        });
+
+        List<Map<String, List<EmailListVO>>> dataList = new ArrayList<>();
+        data.forEach((key, value) -> {
+            dataList.add(new HashMap<String, List<EmailListVO>>() {{
+                put(key, value);
+            }});
+        });
+
+        return Pair.of(count, dataList);
+    }
+
+    @Override
+    public Pair<Integer, List<Map<String, List<EmailListVO>>>> list(EmailListDTO emailListDTO, Integer pageNum, Integer pageSize) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        Boolean isAdvancedSearch = emailListDTO.getAdvancedSearchFlag();
+        List<Long> taskIdList = new ArrayList<>();
+        if (isAdvancedSearch == true) {
+            taskIdList.addAll(taskService.getTaskIdByUserId());
+
+        } else {
+            Long taskId = emailListDTO.getTaskId();
+            taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
+
+            if (taskIdList.isEmpty()) {
+                return Pair.of(0, new ArrayList<>());
+            }
+
+            Boolean pendingFlag = emailListDTO.getPendingFlag();
+            Boolean draftsFlag = emailListDTO.getDraftsFlag();
+            List<Integer> statusList = Arrays.asList(TaskExecutionStatusEnum.SUCCESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
+            if (Optional.ofNullable(pendingFlag).orElse(false)) {
+                statusList = Arrays.asList(TaskExecutionStatusEnum.SUCCESS.getStatus(), TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus(), TaskExecutionStatusEnum.FAILURE.getStatus());
+            } else if (Optional.ofNullable(draftsFlag).orElse(false)) {
+                statusList = Arrays.asList(0, TaskExecutionStatusEnum.NOT_STARTED.getStatus(), TaskExecutionStatusEnum.IN_PROGRESS.getStatus());
+            }
+            emailListDTO.setStatusList(statusList);
+        }
+
+        emailListDTO.setTaskIdList(taskIdList);
+        emailListDTO.setCreateId(userId);
+
+        int count = taskEmailMapper.count2(emailListDTO);
+        if (count <= 0) {
+            return Pair.of(0, new ArrayList<>());
+        }
+
+        int offset = (pageNum - 1) * pageSize;
+        int limit = pageSize;
+        List<EmailListVO> emailListVOList = taskEmailMapper.selectTaskEmailPage2(emailListDTO, offset, limit);
         if (emailListVOList == null || emailListVOList.isEmpty()) {
             return Pair.of(count, new ArrayList<>());
         }

@@ -135,7 +135,7 @@
 																</div>
 																<span class="mm-tooltip mail-toolbar-btn-item">
 																	<span class="mm-tooltip-trigger">
-																		<span class="okki-icon-wrap filter-icon" @click="advancedSearch">​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+																		<span class="okki-icon-wrap filter-icon" @click="advancedSearchOpen">​<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
 																				<path fill-rule="evenodd" clip-rule="evenodd" d="M5.055 5l5.507 7.388a1 1 0 01.198.598v5.45l2.48 1.407v-6.857a1 1 0 01.198-.598L18.945 5H5.055zm-1.91-.837C3.403 3.518 4.017 3 4.8 3h14.4c.783 0 1.397.518 1.655 1.163a2.028 2.028 0 01-.246 1.951l-5.369 7.203v6.764c0 .603-.27 1.218-.797 1.595-.546.39-1.259.434-1.85.099l-2.88-1.634c-.628-.356-.953-1.034-.953-1.694v-5.13L3.39 6.114a2.028 2.028 0 01-.245-1.951l.928.372-.928-.372z"></path>
 																			</svg>
 																		</span>
@@ -550,7 +550,7 @@
 													</div>
 												</span>
     </div>
-    <EmailSearch ref="emailSearch"></EmailSearch>
+    <EmailSearch ref="emailSearch" @filter="advancedSearchFilter"></EmailSearch>
     <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: 40px; left: -5px; will-change: top, left; transform-origin: 100% bottom;">
       <!---->
       <div>
@@ -672,6 +672,7 @@ export default {
       showCustomTime: false,
       pendingCurrentEmail: {},
       pendingDialogVisible: false,
+      advancedSearchFormData: {}
     }
   },
   components: {
@@ -735,27 +736,35 @@ export default {
   },
   methods: {
     fetchEmailList(taskId, type, readFlag, pendingFlag, delFlag, draftsFlag, spamFlag, traceFlag, folderId, labelId) {
-      this.taskId = taskId;
-      this.type = type;
-      let customerFlag = this.objectType === 'customer' ? true : false;
-      const query = {
-        taskId: this.taskId,
-        // 邮件类型 1.收取 2.发送
-        type: this.type,
-        readFlag: readFlag,
-        pendingFlag: pendingFlag,
-        delFlag: delFlag,
-        draftsFlag: draftsFlag,
-        spamFlag: spamFlag,
-        traceFlag: traceFlag,
-        folderId: folderId,
-        labelId: labelId,
-        attachmentFlag: this.attachmentFlag,
-        fixedFlag: this.fixedFlag,
-        customerFlag: customerFlag,
-        pageNum: this.currentPage,
-        pageSize: this.pageSize
+      let query = {};
+      if (Object.keys(this.advancedSearchFormData).length > 0) {
+        query = this.advancedSearchFormData;
+        query.advancedSearchFlag = true;
+      } else {
+        this.taskId = taskId;
+        this.type = type;
+        let customerFlag = this.objectType === 'customer' ? true : false;
+        query = {
+          taskId: this.taskId,
+          // 邮件类型 1.收取 2.发送
+          type: this.type,
+          readFlag: readFlag,
+          pendingFlag: pendingFlag,
+          delFlag: delFlag,
+          draftsFlag: draftsFlag,
+          spamFlag: spamFlag,
+          traceFlag: traceFlag,
+          folderId: folderId,
+          labelId: labelId,
+          attachmentFlag: this.attachmentFlag,
+          fixedFlag: this.fixedFlag,
+          customerFlag: customerFlag,
+          advancedSearchFlag: false
+        }
       }
+
+      query.pageNum = this.currentPage;
+      query.pageSize = this.pageSize;
 
       list(query).then(response => {
         this.localEmailList = response.rows;
@@ -763,6 +772,11 @@ export default {
       }).catch(error => {
         console.error("Failed to fetch emails:", error);
       });
+    },
+
+    advancedSearchFilter(formData) {
+      this.advancedSearchFormData = formData;
+      this.fetchEmailList();
     },
 
     // 常规设置
@@ -858,7 +872,7 @@ export default {
     /**
      * 显示高级搜索弹窗
      */
-    advancedSearch() {
+    advancedSearchOpen() {
       this.$refs.emailSearch.open();
     },
 
@@ -888,14 +902,6 @@ export default {
         this.showPendingTime = true;
         this.showCustomTime = false;
       }
-    },
-
-    filter() {
-      const formData = this.$refs.emailSearch.getFormData();
-      console.log("formData:");
-      Object.entries(formData).forEach(([key, value]) => {
-        console.log("  ", key, ":", value);
-      });
     },
 
     // 点击完成待处理

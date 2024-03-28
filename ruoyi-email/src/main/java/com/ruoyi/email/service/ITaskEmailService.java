@@ -8,6 +8,7 @@ import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.TaskAttachment;
 import com.ruoyi.email.domain.TransceiverRule;
 import com.ruoyi.email.domain.bo.TransceiverRuleBO;
+import com.ruoyi.email.domain.dto.email.EmailListDTO;
 import com.ruoyi.email.domain.dto.email.EmailPendingDTO;
 import com.ruoyi.email.domain.dto.email.EmailQuickReplyDTO;
 import com.ruoyi.email.domain.dto.email.EmailSendSaveDTO;
@@ -84,6 +85,14 @@ public interface ITaskEmailService
      * @return
      */
     Pair<Integer, List<Map<String, List<EmailListVO>>>> list(List<Long> taskIdList, Integer type, Boolean readFlag, Boolean pendingFlag, Boolean spamFlag, String delFlag, Boolean draftsFlag, Boolean traceFlag, Boolean fixedFlag, Boolean attachmentFlag, Boolean customerFlag, Long folderId, Long labelId, Integer pageNum, Integer pageSize);
+
+    /**
+     * 查询邮件列表（首页）
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Pair<Integer, List<Map<String, List<EmailListVO>>>> list(EmailListDTO emailListDTO, Integer pageNum, Integer pageSize);
 
     /**
      * 保存发送邮件

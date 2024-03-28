@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.ruoyi.email.domain.TaskEmail;
 import com.ruoyi.email.domain.bo.DealingEmailListBO;
+import com.ruoyi.email.domain.dto.email.EmailListDTO;
 import com.ruoyi.email.domain.vo.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -375,4 +376,20 @@ public interface TaskEmailMapper
      * @param forwardFlag
      */
     void updateForwardFlag(@Param("id") Long id, @Param("forwardFlag") Integer forwardFlag);
+
+    /**
+     * 统计总数
+     * @param emailListDTO
+     * @return
+     */
+    int count2(@Param("emailListDTO") EmailListDTO emailListDTO);
+
+    /**
+     * 查询邮件列表数据（首页）
+     * @param emailListDTO
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<EmailListVO> selectTaskEmailPage2(@Param("emailListDTO") EmailListDTO emailListDTO, @Param("offset") int offset, @Param("limit") int limit);
 }

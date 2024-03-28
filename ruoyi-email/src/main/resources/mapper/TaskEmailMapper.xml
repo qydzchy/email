@@ -532,7 +532,7 @@
 
     <select id="countRepliedWithinFourDays" resultType="java.lang.Integer">
         select count(mte.id) from mailbox_task mt
-                                      left join mailbox_task_email mte on mt.id = mte.task_id
+        left join mailbox_task_email mte on mt.id = mte.task_id
         where mte.type = 2 and  mt.del_flag = '0' and mte.del_flag = '0'
           and mt.account = #{fromer}
           and mt.create_id = #{createId}
@@ -685,6 +685,433 @@
         select dept_id from sys_user where user_id = #{userId}
     </select>
 
+    <select id="count2" resultType="java.lang.Integer">
+        select count(*) from mailbox_task_email mte
+        where mte.task_id in
+        <foreach collection="emailListDTO.taskIdList" item="taskId" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        <if test="!emailListDTO.advancedSearchFlag">
+            and mte.status in
+            <foreach collection="emailListDTO.statusList" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+            <!-- 附件 -->
+            <if test="emailListDTO.attachmentFlag != null and emailListDTO.attachmentFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM mailbox_task_email_attachment mtea
+                WHERE mte.id = mtea.email_id
+                )
+            </if>
+            <if test="emailListDTO.labelIdList != null and emailListDTO.labelIdList.size() > 0">
+                AND EXISTS (
+                SELECT 1
+                FROM mailbox_task_email_label mtel
+                WHERE mte.id = mtel.email_id AND mtel.label_id IN
+                <foreach collection="emailListDTO.labelIdList" item="labelId" open="(" separator="," close=")">
+                    #{labelId}
+                </foreach>
+                AND mtel.del_flag = '0'
+                )
+            </if>
+            <if test="emailListDTO.customerFlag != null and emailListDTO.customerFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer cc
+                LEFT JOIN customer_customer_contact ccc on cc.id = ccc.customer_id
+                WHERE cc.del_flag = '0' and ccc.del_flag = '0'
+                and (ccc.email = mte.fromer
+                OR mte.receiver LIKE concat( '%"email":"', ccc.email, '"%' )
+                OR mte.bcc LIKE concat( '%"email":"', ccc.email, '"%' )
+                OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
+                )
+                )
+            </if>
+            <if test="emailListDTO.type != null">and mte.type = #{emailListDTO.type}</if>
+            <if test="emailListDTO.readFlag != null "> and mte.read_flag = #{emailListDTO.readFlag}</if>
+            <if test="emailListDTO.pendingFlag != null "> and mte.pending_flag = #{emailListDTO.pendingFlag}</if>
+            <if test="emailListDTO.spamFlag != null "> and mte.spam_flag = #{emailListDTO.spamFlag}</if>
+            <if test="emailListDTO.traceFlag != null "> and mte.trace_flag = #{emailListDTO.traceFlag}</if>
+            <if test="emailListDTO.fixedFlag != null and emailListDTO.fixedFlag == true"> and mte.fixed_flag = true</if>
+            <if test="emailListDTO.folderId != null "> and mte.folder_id = #{emailListDTO.folderId}</if>
+            <if test="emailListDTO.customerFlag != null and emailListDTO.customerFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer cc
+                LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+                WHERE mte.fromer = ccc.email
+                AND cc.create_id = #{emailListDTO.createId}
+                AND cc.del_flag = '0'
+                AND ccc.del_flag = '0'
+                )
+            </if>
+            and mte.del_flag = #{emailListDTO.delFlag}
+        </if>
+
+        <if test="emailListDTO.advancedSearchFlag">
+            <!-- 关键字 -->
+            <if test="emailListDTO.keyword != null and emailListDTO.keyword != ''">
+                <if test="emailListDTO.keywordType == null">
+                    AND (
+                    mte.title LIKE concat( '%', #{emailListDTO.keyword}, '%' )
+                    OR EXISTS (SELECT 1 FROM mailbox_task_email_content tec WHERE tec.email_id = mte.id AND tec.content LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                    OR EXISTS (SELECT 1 FROM mailbox_task_email_attachment tea LEFT JOIN mailbox_task_attachment ta ON tea.attachment_id = ta.id WHERE tea.email_id = mte.id AND ta.name LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                    )
+                </if>
+                <if test="emailListDTO.keywordType != null and emailListDTO.keywordType == 1">
+                    AND mte.title LIKE concat( '%', #{emailListDTO.keyword}, '%' )
+                </if>
+                <if test="emailListDTO.keywordType != null and emailListDTO.keywordType == 2">
+                    AND EXISTS (SELECT 1 FROM mailbox_task_email_content tec WHERE tec.email_id = mte.id AND tec.content LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                </if>
+                <if test="emailListDTO.keywordType != null and emailListDTO.keywordType == 3">
+                    AND EXISTS (SELECT 1 FROM mailbox_task_email_attachment tea LEFT JOIN mailbox_task_attachment ta ON tea.attachment_id = ta.id WHERE tea.email_id = mte.id AND ta.name LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                </if>
+            </if>
+            <!-- 客户 -->
+            <if test="emailListDTO.customerKeyword != null and emailListDTO.customerKeyword != ''">
+                AND EXISTS (
+                    SELECT 1
+                    FROM customer_customer cc
+                    LEFT JOIN customer_customer_contact ccc on cc.id = ccc.customer_id
+                    WHERE cc.del_flag = '0' and ccc.del_flag = '0'
+                    AND (
+                        cc.company_name LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                        OR cc.customer_no LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                        OR ccc.nick_name LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                        OR ccc.email LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                    )
+                )
+            </if>
+            <!-- 收发件人 -->
+            <if test="emailListDTO.recipient != null and emailListDTO.recipient != ''">
+                <if test="emailListDTO.senderRecipientType != null and emailListDTO.senderRecipientType == 1">
+                    AND (
+                        mte.receiver LIKE concat( '%"email":"', #{emailListDTO.recipient}, '"%' )
+                        OR mte.fromer LIKE concat('%', #{emailListDTO.recipient},'%')
+                    )
+                </if>
+                <if test="emailListDTO.senderRecipientType != null and emailListDTO.senderRecipientType == 2">
+                    AND mte.receiver LIKE concat( '%"email":"', #{emailListDTO.recipient}, '"%' )
+                    <if test="emailListDTO.sender != null and emailListDTO.sender != ''">
+                        AND mte.fromer LIKE concat('%', #{emailListDTO.sender},'%')
+                    </if>
+                </if>
+            </if>
+            <!-- 邮件标签 -->
+            <if test="emailListDTO.labelType != null and emailListDTO.labelIdList != null and emailListDTO.labelIdList.size() > 0" >
+                AND EXISTS (
+                    SELECT 1 FROM mailbox_task_email_label mtel
+                    WHERE mte.id = mtel.email_id
+                    AND mtel.del_flag = '0'
+                    AND mtel.label_id IN
+                    <foreach collection="emailListDTO.labelIdList" item="labelId" open="(" separator="," close=")">
+                        #{labelId}
+                    </foreach>
+                    GROUP BY mte.id
+                    HAVING
+                    <choose>
+                        <when test="emailListDTO.labelType == 1">
+                            <!-- 包含任一标签 -->
+                            COUNT(DISTINCT mtel.label_id) >= 1
+                        </when>
+                        <when test="emailListDTO.labelType == 2">
+                            <!-- 包含全部标签 -->
+                            COUNT(DISTINCT mtel.label_id) = #{emailListDTO.labelIdList.size()}
+                        </when>
+                    </choose>
+                )
+            </if>
+            <!-- 时间 -->
+            <if test="emailListDTO.startSendDate != null and emailListDTO.startSendDate != '' and emailListDTO.endSendDate != null and emailListDTO.endSendDate != ''">
+                AND mte.send_date between #{emailListDTO.startSendDate} and #{emailListDTO.endSendDate}
+            </if>
+            <!-- 文件夹 -->
+            <if test="emailListDTO.folderType != null">
+                <!-- 指定文件夹 -->
+                <if test="emailListDTO.folderType == 2">
+                    <if test="emailListDTO.folderIdList != null and emailListDTO.folderIdList.size() > 0">
+                        AND mte.folder_id IN
+                        <foreach collection="emailListDTO.folderIdList" item="folderId" open="(" separator="," close=")">
+                            #{folderId}
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+
+            <!-- 附件 -->
+            <if test="emailListDTO.attachmentType != null">
+                <if test="emailListDTO.attachmentType == 2">
+                    AND EXISTS (
+                    SELECT 1
+                    FROM mailbox_task_email_attachment mtea
+                    WHERE mte.id = mtea.email_id
+                    )
+                </if>
+                <if test="emailListDTO.attachmentType == 3">
+                    AND NOT EXISTS (
+                    SELECT 1
+                    FROM mailbox_task_email_attachment mtea
+                    WHERE mte.id = mtea.email_id
+                    )
+                </if>
+            </if>
+
+            <!-- 打钉 -->
+            <if test="emailListDTO.fixedType != null">
+                <if test="emailListDTO.fixedType == 2">
+                    AND mte.fixed_flag = true
+                </if>
+                <if test="emailListDTO.fixedType == 3">
+                    AND mte.fixed_flag = false
+                </if>
+            </if>
+
+            <!-- 收发类型 -->
+            <if test="emailListDTO.transceiverType != null">
+                <if test="emailListDTO.transceiverType == 2">
+                    AND mte.type = 1
+                </if>
+                <if test="emailListDTO.transceiverType == 3">
+                    AND mte.type = 2
+                </if>
+            </if>
+
+            <!-- 发送情况 -->
+            <if test="emailListDTO.sendType != null">
+                <!-- 发送失败 -->
+                <if test="emailListDTO.sendType == 2">
+                    AND mte.status = 4
+                </if>
+                <!-- 发送成功 -->
+                <if test="emailListDTO.sendType == 3">
+                    AND mte.status = 3
+                </if>
+            </if>
+        </if>
+    </select>
+
+    <select id="selectTaskEmailPage2" resultType="com.ruoyi.email.domain.vo.EmailListVO">
+        SELECT
+        mte.id, mte.type, mte.status, mte.task_id as taskId, mte.fromer, mte.receiver, mte.folder_id as folderId, mte.title,
+        mte.send_date as sendDate, mte.read_flag as readFlag, mte.pending_flag as pendingFlag, mte.pending_time as pendingTime,
+        mte.fixed_flag as fixedFlag, mte.spam_flag as spamFlag, mte.reply_flag as replyFlag, mte.forward_flag as forwardFlag, mtec.content, ccc.nick_name as nickName
+        FROM mailbox_task_email mte
+        LEFT JOIN mailbox_task_email_content mtec ON mte.id = mtec.email_id
+        LEFT JOIN (
+        SELECT customer_id, email, MIN(nick_name) as nick_name
+        FROM customer_customer_contact where del_flag = '0'
+        GROUP BY email
+        ) ccc ON mte.fromer = ccc.email
+        LEFT JOIN customer_customer cc ON ccc.customer_id = cc.id AND cc.create_id = #{emailListDTO.createId} AND cc.del_flag = '0'
+        where mte.task_id in
+        <foreach collection="emailListDTO.taskIdList" item="taskId" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+        <if test="!emailListDTO.advancedSearchFlag">
+            and mte.status in
+            <foreach collection="emailListDTO.statusList" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+            <!-- 附件 -->
+            <if test="emailListDTO.attachmentFlag != null and emailListDTO.attachmentFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM mailbox_task_email_attachment mtea
+                WHERE mte.id = mtea.email_id
+                )
+            </if>
+            <if test="emailListDTO.labelIdList != null and emailListDTO.labelIdList.size() > 0">
+                AND EXISTS (
+                SELECT 1
+                FROM mailbox_task_email_label mtel
+                WHERE mte.id = mtel.email_id AND mtel.label_id IN
+                <foreach collection="emailListDTO.labelIdList" item="labelId" open="(" separator="," close=")">
+                    #{labelId}
+                </foreach>
+                AND mtel.del_flag = '0'
+                )
+            </if>
+            <if test="emailListDTO.customerFlag != null and emailListDTO.customerFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer cc
+                LEFT JOIN customer_customer_contact ccc on cc.id = ccc.customer_id
+                WHERE cc.del_flag = '0' and ccc.del_flag = '0'
+                and (ccc.email = mte.fromer
+                OR mte.receiver LIKE concat( '%"email":"', ccc.email, '"%' )
+                OR mte.bcc LIKE concat( '%"email":"', ccc.email, '"%' )
+                OR mte.cc LIKE concat( '%"email":"', ccc.email, '"%' )
+                )
+                )
+            </if>
+            <if test="emailListDTO.type != null">and mte.type = #{emailListDTO.type}</if>
+            <if test="emailListDTO.readFlag != null "> and mte.read_flag = #{emailListDTO.readFlag}</if>
+            <if test="emailListDTO.pendingFlag != null "> and mte.pending_flag = #{emailListDTO.pendingFlag}</if>
+            <if test="emailListDTO.spamFlag != null "> and mte.spam_flag = #{emailListDTO.spamFlag}</if>
+            <if test="emailListDTO.traceFlag != null "> and mte.trace_flag = #{emailListDTO.traceFlag}</if>
+            <if test="emailListDTO.fixedFlag != null and emailListDTO.fixedFlag == true"> and mte.fixed_flag = true</if>
+            <if test="emailListDTO.folderId != null "> and mte.folder_id = #{emailListDTO.folderId}</if>
+            <if test="emailListDTO.customerFlag != null and emailListDTO.customerFlag == true">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer cc
+                LEFT JOIN customer_customer_contact ccc ON cc.id = ccc.customer_id
+                WHERE mte.fromer = ccc.email
+                AND cc.create_id = #{emailListDTO.createId}
+                AND cc.del_flag = '0'
+                AND ccc.del_flag = '0'
+                )
+            </if>
+            and mte.del_flag = #{emailListDTO.delFlag}
+        </if>
+
+        <if test="emailListDTO.advancedSearchFlag">
+            <!-- 关键字 -->
+            <if test="emailListDTO.keyword != null and emailListDTO.keyword != ''">
+                <if test="emailListDTO.keywordType == null">
+                    AND (
+                    mte.title LIKE concat( '%', #{emailListDTO.keyword}, '%' )
+                    OR EXISTS (SELECT 1 FROM mailbox_task_email_content tec WHERE tec.email_id = mte.id AND tec.content LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                    OR EXISTS (SELECT 1 FROM mailbox_task_email_attachment tea LEFT JOIN mailbox_task_attachment ta ON tea.attachment_id = ta.id WHERE tea.email_id = mte.id AND ta.name LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                    )
+                </if>
+                <if test="emailListDTO.keywordType != null and emailListDTO.keywordType == 1">
+                    AND mte.title LIKE concat( '%', #{emailListDTO.keyword}, '%' )
+                </if>
+                <if test="emailListDTO.keywordType != null and emailListDTO.keywordType == 2">
+                    AND EXISTS (SELECT 1 FROM mailbox_task_email_content tec WHERE tec.email_id = mte.id AND tec.content LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                </if>
+                <if test="emailListDTO.keywordType != null and emailListDTO.keywordType == 3">
+                    AND EXISTS (SELECT 1 FROM mailbox_task_email_attachment tea LEFT JOIN mailbox_task_attachment ta ON tea.attachment_id = ta.id WHERE tea.email_id = mte.id AND ta.name LIKE concat( '%', #{emailListDTO.keyword}, '%' ))
+                </if>
+            </if>
+            <!-- 客户 -->
+            <if test="emailListDTO.customerKeyword != null and emailListDTO.customerKeyword != ''">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer cc
+                LEFT JOIN customer_customer_contact ccc on cc.id = ccc.customer_id
+                WHERE cc.del_flag = '0' and ccc.del_flag = '0'
+                AND (
+                cc.company_name LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                OR cc.customer_no LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                OR ccc.nick_name LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                OR ccc.email LIKE concat( '%', #{emailListDTO.customerKeyword}, '%' )
+                )
+                )
+            </if>
+            <!-- 收发件人 -->
+            <if test="emailListDTO.recipient != null and emailListDTO.recipient != ''">
+                <if test="emailListDTO.senderRecipientType != null and emailListDTO.senderRecipientType == 1">
+                    AND (
+                    mte.receiver LIKE concat( '%"email":"', #{emailListDTO.recipient}, '"%' )
+                    OR mte.fromer LIKE concat('%', #{emailListDTO.recipient},'%')
+                    )
+                </if>
+                <if test="emailListDTO.senderRecipientType != null and emailListDTO.senderRecipientType == 2">
+                    AND mte.receiver LIKE concat( '%"email":"', #{emailListDTO.recipient}, '"%' )
+                    <if test="emailListDTO.sender != null and emailListDTO.sender != ''">
+                        AND mte.fromer LIKE concat('%', #{emailListDTO.sender},'%')
+                    </if>
+                </if>
+            </if>
+            <!-- 邮件标签 -->
+            <if test="emailListDTO.labelType != null and emailListDTO.labelIdList != null and emailListDTO.labelIdList.size() > 0" >
+                AND EXISTS (
+                SELECT 1 FROM mailbox_task_email_label mtel
+                WHERE mte.id = mtel.email_id
+                AND mtel.del_flag = '0'
+                AND mtel.label_id IN
+                <foreach collection="emailListDTO.labelIdList" item="labelId" open="(" separator="," close=")">
+                    #{labelId}
+                </foreach>
+                GROUP BY mte.id
+                HAVING
+                <choose>
+                    <when test="emailListDTO.labelType == 1">
+                        <!-- 包含任一标签 -->
+                        COUNT(DISTINCT mtel.label_id) >= 1
+                    </when>
+                    <when test="emailListDTO.labelType == 2">
+                        <!-- 包含全部标签 -->
+                        COUNT(DISTINCT mtel.label_id) = #{emailListDTO.labelIdList.size()}
+                    </when>
+                </choose>
+                )
+            </if>
+            <!-- 时间 -->
+            <if test="emailListDTO.startSendDate != null and emailListDTO.startSendDate != '' and emailListDTO.endSendDate != null and emailListDTO.endSendDate != ''">
+                AND mte.send_date between #{emailListDTO.startSendDate} and #{emailListDTO.endSendDate}
+            </if>
+            <!-- 文件夹 -->
+            <if test="emailListDTO.folderType != null">
+                <!-- 指定文件夹 -->
+                <if test="emailListDTO.folderType == 2">
+                    <if test="emailListDTO.folderIdList != null and emailListDTO.folderIdList.size() > 0">
+                        AND mte.folder_id IN
+                        <foreach collection="emailListDTO.folderIdList" item="folderId" open="(" separator="," close=")">
+                            #{folderId}
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+
+            <!-- 附件 -->
+            <if test="emailListDTO.attachmentType != null">
+                <if test="emailListDTO.attachmentType == 2">
+                    AND EXISTS (
+                    SELECT 1
+                    FROM mailbox_task_email_attachment mtea
+                    WHERE mte.id = mtea.email_id
+                    )
+                </if>
+                <if test="emailListDTO.attachmentType == 3">
+                    AND NOT EXISTS (
+                    SELECT 1
+                    FROM mailbox_task_email_attachment mtea
+                    WHERE mte.id = mtea.email_id
+                    )
+                </if>
+            </if>
+
+            <!-- 打钉 -->
+            <if test="emailListDTO.fixedType != null">
+                <if test="emailListDTO.fixedType == 2">
+                    AND mte.fixed_flag = true
+                </if>
+                <if test="emailListDTO.fixedType == 3">
+                    AND mte.fixed_flag = false
+                </if>
+            </if>
+
+            <!-- 收发类型 -->
+            <if test="emailListDTO.transceiverType != null">
+                <if test="emailListDTO.transceiverType == 2">
+                    AND mte.type = 1
+                </if>
+                <if test="emailListDTO.transceiverType == 3">
+                    AND mte.type = 2
+                </if>
+            </if>
+
+            <!-- 发送情况 -->
+            <if test="emailListDTO.sendType != null">
+                <!-- 发送失败 -->
+                <if test="emailListDTO.sendType == 2">
+                    AND mte.status = 4
+                </if>
+                <!-- 发送成功 -->
+                <if test="emailListDTO.sendType == 3">
+                    AND mte.status = 3
+                </if>
+            </if>
+        </if>
+        ORDER BY mte.send_date DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
     <insert id="insertTaskEmail" parameterType="TaskEmail" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_task_email
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -785,7 +1212,7 @@
             <if test="messageId != null">message_id = #{messageId},</if>
             <if test="inReplyTo != null">in_reply_to = #{inReplyTo},</if>
             <if test="reference != null">reference = #{reference},</if>
-            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>o
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

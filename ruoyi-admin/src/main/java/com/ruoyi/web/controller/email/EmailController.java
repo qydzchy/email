@@ -62,25 +62,15 @@ public class EmailController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('email:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Long taskId,
-                                        Boolean readFlag,
-                                        Boolean pendingFlag,
-                                        Boolean delFlag,
-                                        Boolean draftsFlag,
-                                        Boolean spamFlag,
-                                        Boolean traceFlag,
-                                        Boolean fixedFlag,
-                                        Boolean attachmentFlag,
-                                        Boolean customerFlag,
-                                        Long folderId,
-                                        Long labelId,
-                                        Integer type,
+    public TableDataInfo list(EmailListDTO emailListDTO,
                                         @NotNull(message = "页数不能为空") Integer pageNum,
                                         @NotNull(message = "页大小不能为空") Integer pageSize)
     {
+        Long taskId = emailListDTO.getTaskId();
         List<Long> taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
 
-        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, pageNum, pageSize);
+        /*Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, pageNum, pageSize);*/
+        Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(emailListDTO, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
 

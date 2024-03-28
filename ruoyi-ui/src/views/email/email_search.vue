@@ -79,8 +79,8 @@
                     <div class="okki-col okki-form-item-control">
                       <div class="okki-form-item-control-input">
                         <div class="okki-form-item-control-input-content">
-                          <el-radio v-model="formData.senderRecipient" label="1" value="1">发件人或收件人</el-radio>
-                          <el-radio v-model="formData.senderRecipient" label="2" value="2">发件人和收件人</el-radio>
+                          <el-radio v-model="formData.senderRecipientType" label="1" value="1">发件人或收件人</el-radio>
+                          <el-radio v-model="formData.senderRecipientType" label="2" value="2">发件人和收件人</el-radio>
                           <!---->
                           <div class="think-input mb-4px">
                             <!---->
@@ -144,7 +144,9 @@
                           style="width: 100%;"
                           range-separator="至"
                           start-placeholder="开始日期"
-                          end-placeholder="结束日期">
+                          end-placeholder="结束日期"
+                          :start-date="formData.startSendDate"
+                          :end-date="formData.endSendDate">
                         </el-date-picker>
                         <!---->
                       </div>
@@ -306,7 +308,7 @@ export default {
         keywordType: null,
         keyword: '',
         customerKeyword: '',
-        senderRecipient: "1",
+        senderRecipientType: '1',
         recipient: '',
         sender: '',
         sendStatus: "1",
@@ -322,6 +324,14 @@ export default {
     }
   },
 
+  watch: {
+    'formData.sendDate'(val) {
+      // 如果日期选择器的值发生变化，更新开始时间和结束时间
+      this.formData.startSendDate = val[0];
+      this.formData.endSendDate = val[1];
+    }
+  },
+
   methods: {
     open() {
       this.searchPage = true;
@@ -334,10 +344,6 @@ export default {
     filter() {
       this.$emit('filter', this.formData);
       this.close();
-    },
-
-    getFormData() {
-      return this.formData;
     },
 
     clear() {
