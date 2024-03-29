@@ -288,6 +288,19 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         List<Long> taskIdList = new ArrayList<>();
         if (isAdvancedSearch == true) {
             taskIdList.addAll(taskService.getTaskIdByUserId());
+            List<Long> labelIdList = emailListDTO.getLabelIdList();
+            if (labelIdList != null) {
+                emailListDTO.setLabelIdListSize(labelIdList.size());
+            }
+
+            List<Long> folderIdList = emailListDTO.getFolderIdList();
+            if (folderIdList != null && !folderIdList.isEmpty()) {
+                emailListDTO.setInboxSystemFolderFlag(folderIdList.contains(-1L) ? true : false);
+                emailListDTO.setOutBoxSystemFolderFlag(folderIdList.contains(-2L) ? true : false);
+                emailListDTO.setDeleteSystemFolderFlag(folderIdList.contains(-3L) ? true : false);
+                emailListDTO.setDraftsSystemFolderFlag(folderIdList.contains(-4L) ? true : false);
+                emailListDTO.setSpamSystemFolderFlag(folderIdList.contains(-5L) ? true : false);
+            }
 
         } else {
             Long taskId = emailListDTO.getTaskId();
@@ -375,6 +388,7 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
 
         return Pair.of(count, dataList);
     }
+
 
     /**
      * 保存-（保存）

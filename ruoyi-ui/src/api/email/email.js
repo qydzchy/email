@@ -1,13 +1,14 @@
 import request from '@/utils/request'
 
 // 查询邮箱任务列表
-export function list(query) {
+export function list(data) {
   return request({
     url: '/email/info/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: data
   })
 }
+
 
 // 保存发送邮件
 export function saveSendEmail(data) {

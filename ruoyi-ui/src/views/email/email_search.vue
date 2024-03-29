@@ -82,13 +82,21 @@
                           <el-radio v-model="formData.senderRecipientType" label="1" value="1">发件人或收件人</el-radio>
                           <el-radio v-model="formData.senderRecipientType" label="2" value="2">发件人和收件人</el-radio>
                           <!---->
-                          <div class="think-input mb-4px">
-                            <!---->
-                            <el-input v-model="formData.recipient" placeholder="请填写收件人"></el-input>
+                          <!-- 显示发件人和收件人文本框 -->
+                          <div v-if="formData.senderRecipientType === '2'">
+                            <div class="think-input mb-4px">
+                              <el-input v-model="formData.recipient" placeholder="请填写收件人"></el-input>
+                            </div>
+                            <div class="think-input">
+                              <el-input v-model="formData.sender" placeholder="请填写发件人"></el-input>
+                            </div>
                           </div>
-                          <div class="think-input">
-                            <el-input v-model="formData.sender" placeholder="请填写发件人"></el-input>
-                            <!---->
+
+                          <!-- 仅显示收件人文本框 -->
+                          <div v-else-if="formData.senderRecipientType === '1'">
+                            <div class="think-input mb-4px">
+                              <el-input v-model="formData.recipient" placeholder="请填写收件人"></el-input>
+                            </div>
                           </div>
                         </div>
                         <!---->
@@ -110,13 +118,13 @@
                           <el-radio v-model="formData.labelType" label="1" value="1">包含任一标签</el-radio>
                           <el-radio v-model="formData.labelType" label="2" value="2">包含全部标签</el-radio>
                           <el-select
-                            v-model="formData.label"
+                            v-model="formData.labelIdList"
                             multiple
                             collapse-tags
                             style="width: 100%;"
                             placeholder="请选择">
                             <el-option
-                              v-for="item in options"
+                              v-for="item in labelOptions"
                               :key="item.value"
                               :label="item.label"
                               :value="item.value">
@@ -175,6 +183,19 @@
                         <div class="okki-form-item-control-input-content">
                           <el-radio v-model="formData.folderType" label="1" value="1">全部</el-radio>
                           <el-radio v-model="formData.folderType" label="2" value="2">指定文件夹</el-radio>
+                          <el-select v-if="formData.folderType === '2'" v-model="formData.folderIdList" multiple collapse-tags style="width: 100%;" placeholder="请选择">
+                            <el-option-group
+                              v-for="group in folderOptions"
+                              :key="group.label"
+                              :label="group.label">
+                              <el-option
+                                v-for="item in group.options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                              </el-option>
+                            </el-option-group>
+                          </el-select>
                         </div>
                       </div>
                     </div>
@@ -281,29 +302,16 @@
 </template>
 <script>
 import {EventBus} from "@/api/email/event-bus";
-
+import {listLabel} from "@/api/email/label";
+import {listTypeFolder} from "@/api/email/folder";
+import PopoverSelectFolder from "@/views/email/customer_email/PopoverSelectFolder.vue";
 export default {
+  components: {PopoverSelectFolder},
   data() {
     return {
       searchPage: false,
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value2: [],
-      date1: '',
+      labelOptions: [],
+      folderOptions: [],
       formData: {
         keywordType: null,
         keyword: '',
@@ -313,28 +321,25 @@ export default {
         sender: '',
         sendStatus: "1",
         labelType: '1',
-        label: [],
+        labelIdList: [],
         sendDate: '',
         folderType: '1',
         attachmentType: '1',
         fixedType: '1',
         transceiverType: '1',
-        sendType: '1'
+        sendType: '1',
+        startSendTime: null,
+        endSendTime: null,
+        folderIdList:[],
       }
-    }
-  },
-
-  watch: {
-    'formData.sendDate'(val) {
-      // 如果日期选择器的值发生变化，更新开始时间和结束时间
-      this.formData.startSendDate = val[0];
-      this.formData.endSendDate = val[1];
     }
   },
 
   methods: {
     open() {
       this.searchPage = true;
+      this.refreshLabelList();
+      this.refreshListTypeFolder();
     },
 
     close() {
@@ -342,13 +347,85 @@ export default {
     },
 
     filter() {
+      // 如果发送日期不为空
+      if (this.formData.sendDate) {
+        // 获取选中的日期范围
+        const [startDate, endDate] = this.formData.sendDate;
+        // 设置开始日期为选中日期的 00:00:00
+        this.formData.startSendTime = this.formatDate(startDate, 'yyyy-MM-dd 00:00:00');
+        // 设置结束日期为选中日期的 23:59:59
+        this.formData.endSendTime = this.formatDate(endDate, 'yyyy-MM-dd 23:59:59');
+      } else {
+        // 如果发送日期为空，则开始日期和结束日期都设置为 null
+        this.formData.startSendTime = null;
+        this.formData.endSendTime = null;
+      }
+
+      this.formData.sendDate = null;
+
       this.$emit('filter', this.formData);
       this.close();
     },
 
+    formatDate(date, format) {
+      const year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      if (month < 10) month = '0' + month;
+      let day = date.getDate();
+      if (day < 10) day = '0' + day;
+      let hours = date.getHours();
+      if (hours < 10) hours = '0' + hours;
+      let minutes = date.getMinutes();
+      if (minutes < 10) minutes = '0' + minutes;
+      let seconds = date.getSeconds();
+      if (seconds < 10) seconds = '0' + seconds;
+
+      return format
+        .replace('yyyy', year)
+        .replace('MM', month)
+        .replace('dd', day)
+        .replace('HH', hours)
+        .replace('mm', minutes)
+        .replace('ss', seconds);
+    },
+
     clear() {
       this.formData = Object.assign({}, this.$options.data().formData);
+    },
+
+    refreshLabelList() {
+      listLabel().then((response) => {
+        this.labelOptions = response.data.map(item => ({ value: item.id, label: item.name }));
+      });
+    },
+
+    refreshListTypeFolder() {
+      listTypeFolder().then((response) => {
+        // 处理系统文件夹和自定义文件夹的数据
+        const systemFolders = response.data.find(folderGroup => folderGroup.label === '系统文件夹').folderList;
+        const customFolders = response.data.find(folderGroup => folderGroup.label === '自定义文件夹').folderList;
+
+        // 将数据转换成适合组件的格式
+        const formattedSystemFolders = systemFolders.map(folder => ({
+          label: folder.name,
+          value: folder.id
+        }));
+
+        const formattedCustomFolders = customFolders.map(folder => ({
+          label: folder.name,
+          value: folder.id
+        }));
+
+        // 将系统文件夹和自定义文件夹合并为一个选项数组
+        const allFolders = [
+          { label: '系统文件夹', options: formattedSystemFolders },
+          { label: '自定义文件夹', options: formattedCustomFolders }
+        ];
+
+        // 将合并后的选项数组赋值给 folderOptions
+        this.folderOptions = allFolders;
+      });
     }
-  }
+  },
 };
 </script>

@@ -35,3 +35,15 @@ export function deleteFolder(data) {
     data: data
   })
 }
+
+/**
+ * 获取类型文件夹列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function listTypeFolder() {
+  return request({
+    url: '/email/folder/type/list',
+    method: 'get'
+  })
+}

@@ -58,6 +58,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id} and create_id = #{createId} and del_flag = '0'
     </select>
 
+    <select id="queryFirstLevelFolder" resultType="com.ruoyi.email.domain.vo.FolderListVO">
+        select id, name from mailbox_folder where create_id = #{createId} and parent_folder_id = -1 and del_flag = '0' order by create_time desc
+    </select>
+
     <insert id="insertFolder" parameterType="Folder" useGeneratedKeys="true" keyProperty="id">
         insert into mailbox_folder
         <trim prefix="(" suffix=")" suffixOverrides=",">

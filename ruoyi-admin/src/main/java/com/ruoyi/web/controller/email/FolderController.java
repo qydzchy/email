@@ -76,4 +76,14 @@ public class FolderController extends BaseController
 
         return toAjax(folderService.deleteById(folder.getId()));
     }
+
+    /**
+     * 获取类型文件夹列表
+     */
+    @PreAuthorize("@ss.hasPermi('email:folder:list:type')")
+    @GetMapping("/type/list")
+    public AjaxResult typeList()
+    {
+        return AjaxResult.success(folderService.typeList());
+    }
 }

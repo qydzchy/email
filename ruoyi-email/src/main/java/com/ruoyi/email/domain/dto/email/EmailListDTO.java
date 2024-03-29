@@ -1,7 +1,9 @@
 package com.ruoyi.email.domain.dto.email;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,19 +127,31 @@ public class EmailListDTO {
     private List<Long> labelIdList;
 
     /**
+     * 标签ID集合数量
+     */
+    private Integer labelIdListSize;
+
+    /**
      * 开始发送时间
      */
-    private String startSendDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startSendTime;
 
     /**
      * 结束发送时间
      */
-    private String endSendDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date endSendTime;
 
     /**
      * 文件夹类型 1.全部 2.指定文件夹
      */
     private Long folderType;
+
+    /**
+     * 文件夹ID列表
+     */
+    private List<Long> folderIdList;
 
     /**
      * 附件类型 1.全部 2.含附件 3.不含附件
@@ -168,6 +182,41 @@ public class EmailListDTO {
      * 用户ID
      */
     private Long createId;
+
+    /**
+     * 收件箱（系统文件夹）
+     */
+    private Boolean inboxSystemFolderFlag;
+
+    /**
+     * 发件箱（系统文件夹）
+     */
+    private Boolean outBoxSystemFolderFlag;
+
+    /**
+     * 已删除邮件（系统文件夹）
+     */
+    private Boolean deleteSystemFolderFlag;
+
+    /**
+     * 草稿箱（系统文件夹）
+     */
+    private Boolean draftsSystemFolderFlag;
+
+    /**
+     * 垃圾邮件（系统文件夹）
+     */
+    private Boolean spamSystemFolderFlag;
+
+    /**
+     * 当前页
+     */
+    private Integer pageNum;
+
+    /**
+     * 每页显示条数
+     */
+    private Integer pageSize;
 
     public Boolean getSpamFlag() {
         return Optional.ofNullable(spamFlag).orElse(false);

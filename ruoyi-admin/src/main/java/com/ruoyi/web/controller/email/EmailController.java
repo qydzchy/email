@@ -53,23 +53,14 @@ public class EmailController extends BaseController {
 
     /**
      * 获取邮件列表-（首页）
-     * @param taskId
-     * @param readFlag
-     * @param pendingFlag
-     * @param pageNum
-     * @param pageSize
      * @return
      */
     @PreAuthorize("@ss.hasPermi('email:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(EmailListDTO emailListDTO,
-                                        @NotNull(message = "页数不能为空") Integer pageNum,
-                                        @NotNull(message = "页大小不能为空") Integer pageSize)
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody EmailListDTO emailListDTO)
     {
-        Long taskId = emailListDTO.getTaskId();
-        List<Long> taskIdList = taskId == null ? taskService.getTaskIdByUserId() : Arrays.asList(taskId);
-
-        /*Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(taskIdList, type, readFlag, pendingFlag, spamFlag, Optional.ofNullable(delFlag).orElse(false) ? "2" : "0", draftsFlag, traceFlag, fixedFlag, attachmentFlag, customerFlag, folderId, labelId, pageNum, pageSize);*/
+        Integer pageNum = emailListDTO.getPageNum();
+        Integer pageSize = emailListDTO.getPageSize();
         Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(emailListDTO, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();

@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.email.domain.Folder;
 import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.FolderListVO;
+import com.ruoyi.email.domain.vo.FolderTypeListVO;
 
 /**
  * 文件夹Service接口
@@ -73,4 +74,10 @@ public interface IFolderService
      * @return
      */
     int deleteById(Long id);
+
+    /**
+     * 获取类型文件夹列表
+     * @return
+     */
+    List<FolderTypeListVO> typeList();
 }

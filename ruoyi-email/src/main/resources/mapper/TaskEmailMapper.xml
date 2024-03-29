@@ -818,25 +818,44 @@
                         </when>
                         <when test="emailListDTO.labelType == 2">
                             <!-- 包含全部标签 -->
-                            COUNT(DISTINCT mtel.label_id) = #{emailListDTO.labelIdList.size()}
+                            COUNT(DISTINCT mtel.label_id) = #{emailListDTO.labelIdListSize}
                         </when>
                     </choose>
                 )
             </if>
             <!-- 时间 -->
-            <if test="emailListDTO.startSendDate != null and emailListDTO.startSendDate != '' and emailListDTO.endSendDate != null and emailListDTO.endSendDate != ''">
-                AND mte.send_date between #{emailListDTO.startSendDate} and #{emailListDTO.endSendDate}
+            <if test="emailListDTO.startSendTime != null and emailListDTO.endSendTime != null">
+                AND mte.send_date between #{emailListDTO.startSendTime} and #{emailListDTO.endSendTime}
             </if>
             <!-- 文件夹 -->
             <if test="emailListDTO.folderType != null">
                 <!-- 指定文件夹 -->
                 <if test="emailListDTO.folderType == 2">
+                    AND (
+                    1 = 2
+                    <if test="emailListDTO.inboxSystemFolderFlag">
+                        OR (mte.type = 1 and mte.folder_id = -1)
+                    </if>
+                    <if test="emailListDTO.outboxSystemFolderFlag">
+                        OR (mte.type = 2 and mte.folder_id = -1)
+                    </if>
+                    <if test="emailListDTO.deleteSystemFolderFlag">
+                        OR mte.del_flag = '2'
+                    </if>
+                    <if test="emailListDTO.draftsSystemFolderFlag">
+                        OR mte.status IN (1, 2)
+                    </if>
+                    <if test="emailListDTO.spamSystemFolderFlag">
+                        OR mte.spam_flag = 1
+                    </if>
                     <if test="emailListDTO.folderIdList != null and emailListDTO.folderIdList.size() > 0">
-                        AND mte.folder_id IN
+                        OR mte.folder_id IN
                         <foreach collection="emailListDTO.folderIdList" item="folderId" open="(" separator="," close=")">
                             #{folderId}
                         </foreach>
                     </if>
+                    )
+
                 </if>
             </if>
 
@@ -1036,25 +1055,44 @@
                     </when>
                     <when test="emailListDTO.labelType == 2">
                         <!-- 包含全部标签 -->
-                        COUNT(DISTINCT mtel.label_id) = #{emailListDTO.labelIdList.size()}
+                        COUNT(DISTINCT mtel.label_id) = #{emailListDTO.labelIdListSize}
                     </when>
                 </choose>
                 )
             </if>
             <!-- 时间 -->
-            <if test="emailListDTO.startSendDate != null and emailListDTO.startSendDate != '' and emailListDTO.endSendDate != null and emailListDTO.endSendDate != ''">
-                AND mte.send_date between #{emailListDTO.startSendDate} and #{emailListDTO.endSendDate}
+            <if test="emailListDTO.startSendTime != null and emailListDTO.endSendTime != null">
+                AND mte.send_date between #{emailListDTO.startSendTime} and #{emailListDTO.endSendTime}
             </if>
             <!-- 文件夹 -->
             <if test="emailListDTO.folderType != null">
                 <!-- 指定文件夹 -->
                 <if test="emailListDTO.folderType == 2">
+                    AND (
+                    1 = 2
+                    <if test="emailListDTO.inboxSystemFolderFlag">
+                        OR (mte.type = 1 and mte.folder_id = -1)
+                    </if>
+                    <if test="emailListDTO.outboxSystemFolderFlag">
+                        OR (mte.type = 2 and mte.folder_id = -1)
+                    </if>
+                    <if test="emailListDTO.deleteSystemFolderFlag">
+                        OR mte.del_flag = '2'
+                    </if>
+                    <if test="emailListDTO.draftsSystemFolderFlag">
+                        OR mte.status IN (1, 2)
+                    </if>
+                    <if test="emailListDTO.spamSystemFolderFlag">
+                        OR mte.spam_flag = 1
+                    </if>
                     <if test="emailListDTO.folderIdList != null and emailListDTO.folderIdList.size() > 0">
-                        AND mte.folder_id IN
+                        OR mte.folder_id IN
                         <foreach collection="emailListDTO.folderIdList" item="folderId" open="(" separator="," close=")">
                             #{folderId}
                         </foreach>
                     </if>
+                    )
+
                 </if>
             </if>
 

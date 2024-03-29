@@ -11,6 +11,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.email.domain.dto.folder.FolderSaveOrUpdateDTO;
 import com.ruoyi.email.domain.vo.FolderListVO;
+import com.ruoyi.email.domain.vo.FolderTypeListVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.ruoyi.email.mapper.FolderMapper;
@@ -171,6 +172,64 @@ public class FolderServiceImpl implements IFolderService
         LoginUser loginUser = SecurityUtils.getLoginUser();
         Long userId = loginUser.getUserId();
         return folderMapper.deleteById(id, userId);
+    }
+
+    /**
+     * 获取类型文件夹列表
+     * @return
+     */
+    @Override
+    public List<FolderTypeListVO> typeList() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        Long userId = loginUser.getUserId();
+
+        List<FolderTypeListVO> folderTypeListVOList = new ArrayList<>();
+        
+        // 系统文件夹
+        FolderTypeListVO systemFolderVO = generateSystemFolder();
+        // 自定义文件夹
+        List<FolderListVO> customFolderListVO = folderMapper.queryFirstLevelFolder(userId);
+        FolderTypeListVO customFolderVO = new FolderTypeListVO();
+        customFolderVO.setLabel("自定义文件夹");
+        customFolderVO.setFolderList(customFolderListVO);
+
+        folderTypeListVOList.add(systemFolderVO);
+        folderTypeListVOList.add(customFolderVO);
+        return folderTypeListVOList;
+    }
+
+    /**
+     * 生成系统文件夹
+     * 系统文件夹：-1.收件箱 -2.发件箱 -3.已删除邮件 -4.草稿箱 -5.垃圾邮件
+     * @return
+     */
+    private FolderTypeListVO generateSystemFolder() {
+        FolderTypeListVO systemFolderVO = new FolderTypeListVO();
+        systemFolderVO.setLabel("系统文件夹");
+        List<FolderListVO> folderList = new ArrayList<>();
+        FolderListVO inbox = new FolderListVO();
+        inbox.setId(-1L);
+        inbox.setName("收件箱");
+        FolderListVO outbox = new FolderListVO();
+        outbox.setId(-2L);
+        outbox.setName("发件箱");
+        FolderListVO delete = new FolderListVO();
+        delete.setId(-3L);
+        delete.setName("已删除邮件");
+        FolderListVO drafts = new FolderListVO();
+        drafts.setId(-4L);
+        drafts.setName("草稿箱");
+        FolderListVO spam = new FolderListVO();
+        spam.setId(-5L);
+        spam.setName("垃圾邮件");
+
+        folderList.add(inbox);
+        folderList.add(outbox);
+        folderList.add(delete);
+        folderList.add(drafts);
+        folderList.add(spam);
+        systemFolderVO.setFolderList(folderList);
+        return systemFolderVO;
     }
 
     private List<FolderListVO> buildTree(List<FolderListVO> folders, Long parentId) {
