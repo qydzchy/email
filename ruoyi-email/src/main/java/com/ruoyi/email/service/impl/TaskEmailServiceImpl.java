@@ -1893,8 +1893,11 @@ public class TaskEmailServiceImpl implements ITaskEmailService {
         if (useSSL) {
             Transport transport = session.getTransport("smtps");
             transport.connect(host, mailFrom, password);
-            transport.sendMessage(msg, msg.getAllRecipients());
-            transport.close();
+            try {
+                transport.sendMessage(msg, msg.getAllRecipients());
+            } finally {
+                transport.close();
+            }
         } else {
             Transport.send(msg);
         }
