@@ -1250,7 +1250,7 @@
             <if test="messageId != null">message_id = #{messageId},</if>
             <if test="inReplyTo != null">in_reply_to = #{inReplyTo},</if>
             <if test="reference != null">reference = #{reference},</if>
-            <if test="delFlag != null">del_flag = #{delFlag},</if>o
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createId != null">create_id = #{createId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
