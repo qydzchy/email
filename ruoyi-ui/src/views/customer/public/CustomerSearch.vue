@@ -1,0 +1,181 @@
+<template>
+  <div>
+<!--    <el-button type="primary" @click="drawerVisible = true">打开抽屉</el-button>-->
+    <el-drawer :visible.sync="drawerVisible" direction="rtl" :wrapperClosable="false" destroy-on-close :show-close="false">
+      <!-- 抽屉标题 -->
+      <template #title>
+        <div class="drawer-title">筛选条件</div>
+        <i class="el-icon-close close-icon" @click="closeDrawer"></i>
+      </template>
+      <div class="drawer-content">
+        <el-form :model="formData" ref="form">
+          <!-- 公司名称 -->
+          <el-form-item>
+            <div>
+              <span>公司名称</span>
+            </div>
+            <div>
+              <el-input v-model="formData.companyName"></el-input>
+            </div>
+          </el-form-item>
+          <!-- 邮箱 -->
+          <el-form-item>
+            <div>
+              <span>邮箱</span>
+            </div>
+            <div>
+              <el-input v-model="formData.email"></el-input>
+            </div>
+          </el-form-item>
+          <!-- 客户标签 -->
+          <el-form-item>
+            <div>
+              <span>客户标签</span>
+            </div>
+            <div>
+              <el-radio-group v-model="formData.tagType">
+                <el-radio label="包含任一标签" value="1">包含任一标签</el-radio>
+                <el-radio label="包含全部标签" value="2">包含全部标签</el-radio>
+              </el-radio-group>
+            </div>
+            <div>
+              <el-select v-model="formData.tagIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
+                <!-- 选项数据 -->
+                <el-option label="标签1" value="1"></el-option>
+                <el-option label="标签2" value="2"></el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <!-- 客户分组 -->
+          <el-form-item>
+            <div>
+              <span>客户分组</span>
+            </div>
+            <el-select v-model="formData.packetIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
+              <!-- 选项数据 -->
+              <el-option label="分组1" value="1"></el-option>
+              <el-option label="分组2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 国家地区 -->
+          <el-form-item>
+            <div>
+              <span>国家地区</span>
+            </div>
+            <el-select v-model="formData.countryList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
+              <!-- 选项数据 -->
+              <el-option label="国家/地区1" value="country1"></el-option>
+              <el-option label="国家/地区2" value="country2"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 客户来源 -->
+          <el-form-item>
+            <div>
+              <span>客户来源</span>
+            </div>
+            <el-select v-model="formData.sourceIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
+              <!-- 选项数据 -->
+              <el-option label="来源1" value="1"></el-option>
+              <el-option label="来源2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 跟进人 -->
+          <el-form-item>
+            <div>
+              <span>跟进人</span>
+            </div>
+            <el-select v-model="formData.followerIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
+              <!-- 选项数据 -->
+              <el-option label="人员1" value="1"></el-option>
+              <el-option label="人员2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 跟进时间 -->
+          <el-form-item>
+            <div>
+              <span>最近跟进时间</span>
+            </div>
+            最近
+            <el-input-number v-model="formData.followupDays" controls-position="right" :min="0" :step="1" style="width: 100px;"></el-input-number>
+            天内
+            <el-select v-model="formData.followupType">
+              <el-option label="未跟进" value="unfollowed"></el-option>
+              <el-option label="已跟进" value="followed"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- 抽屉底部按钮 -->
+      <div class="drawer-footer">
+        <el-button @click="clearForm">清空</el-button>
+        <el-button type="primary" @click="submitForm">筛选</el-button>
+      </div>
+    </el-drawer>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      drawerVisible: false,
+      formData: {
+        companyName: '',
+        email: '',
+        tagType: 1,
+        tagIdList:[],
+        packetIdList: [],
+        countryList: [],
+        sourceIdList: [],
+        followerIdList: [],
+        followupDays: '',
+        followupType: ''
+      }
+    };
+  },
+  methods: {
+    clearForm() {
+      // 清空表单数据
+      Object.keys(this.formData).forEach(key => {
+        this.formData[key] = '';
+      });
+    },
+    submitForm() {
+      // 表单验证
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          // 提交表单数据
+          console.log('表单数据:', this.formData);
+          // 关闭抽屉
+          this.drawerVisible = false;
+        }
+      });
+    },
+    openDrawer() {
+      this.drawerVisible = true;
+    },
+    closeDrawer() {
+      this.drawerVisible = false;
+    }
+  }
+};
+</script>
+
+<style scoped>
+  .drawer-title {
+    margin-bottom: 2px;
+  }
+
+  .close-icon {
+    cursor: pointer;
+  }
+
+  .drawer-content {
+    padding: 20px;
+  }
+
+  .drawer-footer {
+    padding: 10px 20px;
+    text-align: right;
+  }
+</style>

@@ -5,6 +5,22 @@
         <span class="bold">全部客户</span>
         <span class="gray-text ml-2">{{ paginateOption.total }} 个客户</span>
       </div>
+      <div style="margin-right: 2%;">
+        <span class="okki-badge okki-badge-status" data-v-158b5110="" style="cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" spin="false"
+                 rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill=""
+                 role="presentation" data-v-9e8d377d="" data-v-158b5110="">
+                    <g data-v-9e8d377d="">
+                        <path fill-rule="evenodd" fill="#FFF" fill-opacity=".01" d="M0 0h48v48H0z"
+                              data-v-9e8d377d="">
+                        </path>
+                        <path stroke-linejoin="round" fill="none" stroke-width="4" d="m6 9 14.4 16.818v12.626L27.6 42V25.818L42 9z"
+                              data-follow-stroke="currentColor" data-v-9e8d377d="" stroke="currentColor">
+                        </path>
+                    </g>
+                </svg>
+        </span>
+      </div>
       <!--      <HeaderFilter :index-opt="indexOpt" :query="searchQuery" @handleSearch="handleSearch"/>-->
     </div>
     <div class="table-list mt-20">
@@ -206,11 +222,11 @@ export default {
                 }}
             >
             <template  slot="content">
-                <PopoverCustomerTag 
-                    id={rowId} 
-                    visible={isShowForm} 
-                    tagList={field} 
-                    tagOption={this.indexOpt.tagOption} 
+                <PopoverCustomerTag
+                    id={rowId}
+                    visible={isShowForm}
+                    tagList={field}
+                    tagOption={this.indexOpt.tagOption}
                     showBtn={true}
                     on={{
                       hide:()=> this.confirmInput(),
@@ -222,10 +238,10 @@ export default {
                         <div slot="default">
                           {wrap()}
                         </div>
-                        <div 
-                          slot="reference" 
-                          class="line-clamp1" 
-                          style="width:144px;height:20px;" 
+                        <div
+                          slot="reference"
+                          class="line-clamp1"
+                          style="width:144px;height:20px;"
                           onClick={(e) => e.stopPropagation()}>
                           {wrap()}
                         </div>
@@ -297,9 +313,9 @@ export default {
                       onBlur: () => this.onBlur(),
                     }}
                 >
-                <span 
-                  slot="content" 
-                  class="px-6 py-6 radius-8" 
+                <span
+                  slot="content"
+                  class="px-6 py-6 radius-8"
                   style={{backgroundColor: color || '#c7bfbf', color: '#fffffa'}}
                 >
                   {name || '无'}
@@ -564,7 +580,7 @@ export default {
           id:this.curEditId,
           [this.tableCell.fieldName]: newVal[this.tableCell.fieldName]
         }
-        
+
         const res = await this.editCustomer(data)
         if(!res) {
           let itemIdx = this.list.findIndex(val=>val.id===this.curEditId)

@@ -18,6 +18,21 @@
           :props="{ value: 'id', label: 'name' }" :default-expand-all="true" multiple collapse-tags clearable
           :check-strictly="true" @change="handleSearch">
         </el-select-tree>
+        &nbsp;&nbsp;&nbsp;
+        <span class="okki-badge okki-badge-status" data-v-158b5110="" style="cursor: pointer;" @click="search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" spin="false"
+                   rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill=""
+                   role="presentation" data-v-9e8d377d="" data-v-158b5110="">
+                      <g data-v-9e8d377d="">
+                          <path fill-rule="evenodd" fill="#FFF" fill-opacity=".01" d="M0 0h48v48H0z"
+                                data-v-9e8d377d="">
+                          </path>
+                          <path stroke-linejoin="round" fill="none" stroke-width="4" d="m6 9 14.4 16.818v12.626L27.6 42V25.818L42 9z"
+                                data-follow-stroke="currentColor" data-v-9e8d377d="" stroke="currentColor">
+                          </path>
+                      </g>
+              </svg>
+          </span>
         <el-button round class="ml-10" @click="moveToGroupVisible = true">移动到</el-button>
         <el-button round @click="moveToPrivateLeadsVisible = true">移入私海</el-button>
       </div>
@@ -30,6 +45,8 @@
     <DialogMoveToGroup :visible.sync="moveToGroupVisible" :row="{ id: ids }" :groupOption="indexOpt.groupOption" />
     <DialogMoveToPrivateLeads :visible.sync="moveToPrivateLeadsVisible" :privateOption="indexOpt.groupOption"
       :row="{ id: ids }" @onConfirm="reloadList" />
+
+    <CustomerSearch ref="customerSearch"/>
   </div>
 </template>
 
@@ -42,6 +59,7 @@ import DialogMoveToGroup from "./DialogMoveToGroup.vue";
 import DialogMoveToPrivateLeads from "./DialogMoveToPrivateLeads.vue";
 import { EmptyStr, targetBlank } from "@/utils/tools";
 import { getPublicLeadsList } from "@/api/customer/publicleads";
+import CustomerSearch from "./CustomerSearch.vue";
 
 export default {
   props: {
@@ -55,7 +73,7 @@ export default {
       required: false
     }
   },
-  components: { TableRowDrawer, TableNext, DialogMoveToGroup, DialogMoveToPrivateLeads },
+  components: {CustomerSearch, TableRowDrawer, TableNext, DialogMoveToGroup, DialogMoveToPrivateLeads },
   data() {
     return {
       list: [],
@@ -126,10 +144,10 @@ export default {
         //                 <div slot="default">
         //                   {wrap()}
         //                 </div>
-        //                 <div 
-        //                   slot="reference" 
-        //                   class="line-clamp1" 
-        //                   style="width:144px;height:20px;" 
+        //                 <div
+        //                   slot="reference"
+        //                   class="line-clamp1"
+        //                   style="width:144px;height:20px;"
         //                   onClick={(e) => e.stopPropagation()}>
         //                   {wrap()}
         //                 </div>
@@ -416,6 +434,10 @@ export default {
       setTimeout(() => {
         this.getList()
       }, 400)
+    },
+
+    search() {
+      this.$refs.customerSearch.openDrawer();
     }
   }
 }
