@@ -10,11 +10,11 @@ export function getPrivateLeadsList(params) {
 }
 
 // 公海列表
-export function getPublicLeadsList(params) {
+export function getPublicLeadsList(data) {
     return request({
         url: '/customer/customer/publicleads/list',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 

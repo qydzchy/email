@@ -145,14 +145,70 @@
         SELECT COUNT(*)
         FROM customer_customer customer
         WHERE
-          customer.sea_type = 2
-          AND customer.del_flag = '0'
-          <if test="publicleadsGroupsId != null">
-            AND customer.publicleads_groups_id = #{publicleadsGroupsId}
-          </if>
-          <if test="packetId != null">
-            AND customer.packet_id = #{packetId}
-          </if>
+        customer.sea_type = 2
+        AND customer.del_flag = '0'
+        <!--公海分组ID-->
+        <if test="publicleadsListDTO.publicleadsGroupsId != null">
+          AND customer.publicleads_groups_id = #{publicleadsListDTO.publicleadsGroupsId}
+        </if>
+        <!--分组ID-->
+        <if test="publicleadsListDTO.packetId != null">
+          AND customer.packet_id = #{publicleadsListDTO.packetId}
+        </if>
+        <!--公司名称-->
+        <if test="publicleadsListDTO.companyName != null and publicleadsListDTO.companyName != ''">
+          AND customer.company_name = #{publicleadsListDTO.companyName}
+        </if>
+        <!--邮箱-->
+        <if test="publicleadsListDTO.email != null and publicleadsListDTO.email != ''">
+          AND EXISTS(select 1 from customer_customer_contact contact where customer.id = contact.customer_id and contact.email = #{publicleadsListDTO.email})
+        </if>
+        <!--标签-->
+        <if test="publicleadsListDTO.tagType != null and publicleadsListDTO.tagType != null and publicleadsListDTO.tagIdList.size() > 0" >
+            AND EXISTS (
+            SELECT 1 FROM customer_customer_tag customerTag
+            WHERE customerTag.id = customer.email_id
+            AND customerTag.tag_id IN
+            <foreach collection="emailListDTO.tagIdList" item="tagId" open="(" separator="," close=")">
+                #{tagId}
+            </foreach>
+            GROUP BY customerTag.id
+            HAVING
+            <choose>
+                <when test="publicleadsListDTO.tagType == 1">
+                    <!-- 包含任一标签 -->
+                    COUNT(DISTINCT customerTag.tag_id) >= 1
+                </when>
+                <when test="publicleadsListDTO.tagType == 2">
+                    <!-- 包含全部标签 -->
+                    COUNT(DISTINCT customerTag.tag_id) = #{emailListDTO.tagIdListSize}
+                </when>
+            </choose>
+            )
+        </if>
+        <!--分组-->
+        <if test="publicleadsListDTO.packetIdList != null and publicleadsListDTO.packetIdList.size() > 0">
+            customer.packet_id IN
+            <foreach collection="emailListDTO.packetIdList" item="packetId" open="(" separator="," close=")">
+                #{packetId}
+            </foreach>
+        </if>
+        <!--国家/地区-->
+        <if test="publicleadsListDTO.countryList != null and publicleadsListDTO.countryList.size() > 0">
+            customer.country_region IN
+            <foreach collection="emailListDTO.countryList" item="country" open="(" separator="," close=")">
+                #{country}
+            </foreach>
+        </if>
+        <!--国家/地区-->
+        <if test="publicleadsListDTO.sourceIdList != null and publicleadsListDTO.sourceIdList.size() > 0">
+            AND EXISTS (SELECT 1 FROM customer_customer_source customerSource WHERE customer.id = customerSource.customer_id
+                AND customerSource.source_id IN
+                <foreach collection="emailListDTO.sourceIdList" item="sourceId" open="(" separator="," close=")">
+                    #{sourceId}
+                </foreach>
+            )
+        </if>
     </select>
 
     <select id="selectPublicleadsCustomerPage"
@@ -178,11 +234,11 @@
         WHERE
             customer.sea_type = 2
             AND customer.del_flag = '0'
-            <if test="publicleadsGroupsId != null">
-                AND customer.publicleads_groups_id = #{publicleadsGroupsId}
+            <if test="publicleadsListDTO.publicleadsGroupsId != null">
+                AND customer.publicleads_groups_id = #{publicleadsListDTO.publicleadsGroupsId}
             </if>
-            <if test="packetId != null">
-                AND customer.packet_id = #{packetId}
+            <if test="publicleadsListDTO.packetId != null">
+                AND customer.packet_id = #{publicleadsListDTO.packetId}
             </if>
         GROUP BY customer.id
         ORDER BY customer.update_time DESC

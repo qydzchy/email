@@ -1317,16 +1317,19 @@ public class CustomerServiceImpl implements ICustomerService {
 
 
     @Override
-    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long publicleadsGroupsId, Long packetId, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(PublicleadsListDTO publicleadsListDTO, Integer pageNum, Integer pageSize) {
+        List<Long> tagIdList = publicleadsListDTO.getTagIdList();
+        publicleadsListDTO.setTagIdListSize(tagIdList != null && !tagIdList.isEmpty() ? tagIdList.size() : 0);
+
         try {
-            int count = customerMapper.countPublicleadsCustomer(publicleadsGroupsId, packetId);
+            int count = customerMapper.countPublicleadsCustomer(publicleadsListDTO);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PublicleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPublicleadsCustomerPage(publicleadsGroupsId, packetId, offset, limit);
+            List<PublicleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPublicleadsCustomerPage(publicleadsListDTO, offset, limit);
             if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }

@@ -92,14 +92,18 @@ public class CustomerController extends BaseController
      * 查询公海客户列表
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:publicleads:list')")
-    @GetMapping("/publicleads/list")
-    public TableDataInfo publicleadsList(
-            Long publicleadsGroupsId,
-            Long packetId,
-            @NotNull(message = "页数不能为空") Integer pageNum,
-            @NotNull(message = "页大小不能为空") Integer pageSize)
+    @PostMapping("/publicleads/list")
+    public TableDataInfo publicleadsList(@RequestBody PublicleadsListDTO publicleadsListDTO)
     {
-        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(publicleadsGroupsId, packetId, pageNum, pageSize);
+        Integer pageNum = publicleadsListDTO.getPageNum();
+        Integer pageSize = publicleadsListDTO.getPageSize();
+        if (pageNum == null) {
+            throw new ServiceException("当前页不能为空");
+        }
+        if (pageSize == null) {
+            throw new ServiceException("页大小不能为空");
+        }
+        Pair<Integer, List<PublicleadsCustomerSimpleListVO>> pair = customerService.publicleadsList(publicleadsListDTO, pageNum, pageSize);
         List<PublicleadsCustomerSimpleListVO> rows = pair.getSecond();
         long total = pair.getFirst();
 

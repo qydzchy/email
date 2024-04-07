@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.bo.*;
+import com.ruoyi.customer.domain.dto.PublicleadsListDTO;
 import com.ruoyi.customer.domain.vo.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -112,21 +113,19 @@ public interface CustomerMapper
 
     /**
      * 统计公海客户数量
-     * @param publicleadsGroupsId
-     * @param packetId
+     * @param publicleadsListDTO
      * @return
      */
-    int countPublicleadsCustomer(@Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("packetId") Long packetId);
+    int countPublicleadsCustomer(@Param("publicleadsListDTO") PublicleadsListDTO publicleadsListDTO);
 
     /**
      * 获取公海客户列表
-     * @param publicleadsGroupsId
-     * @param packetId
+     * @param publicleadsListDTO
      * @param offset
      * @param limit
      * @return
      */
-    List<PublicleadsCustomerSimpleListVO> selectPublicleadsCustomerPage(@Param("publicleadsGroupsId") Long publicleadsGroupsId, @Param("packetId") Long packetId, @Param("offset") int offset, @Param("limit") int limit);
+    List<PublicleadsCustomerSimpleListVO> selectPublicleadsCustomerPage(@Param("publicleadsListDTO") PublicleadsListDTO publicleadsListDTO, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 查询客户ID列表

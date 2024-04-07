@@ -171,7 +171,7 @@ public interface ICustomerService
      * @param pageSize
      * @return
      */
-    Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(Long publicleadsGroupsId, Long packetId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<PublicleadsCustomerSimpleListVO>> publicleadsList(PublicleadsListDTO publicleadsListDTO, Integer pageNum, Integer pageSize);
 
     /**
      * 客户跟进规则处理

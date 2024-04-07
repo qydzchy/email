@@ -40,9 +40,12 @@
             </div>
             <div>
               <el-select v-model="formData.tagIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
-                <!-- 选项数据 -->
-                <el-option label="标签1" value="1"></el-option>
-                <el-option label="标签2" value="2"></el-option>
+                <el-option
+                  v-for="item in tagList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
               </el-select>
             </div>
           </el-form-item>
@@ -51,11 +54,13 @@
             <div>
               <span>客户分组</span>
             </div>
-            <el-select v-model="formData.packetIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
-              <!-- 选项数据 -->
-              <el-option label="分组1" value="1"></el-option>
-              <el-option label="分组2" value="2"></el-option>
-            </el-select>
+            <el-cascader
+              v-model="formData.packetIdList"
+              :options="packetOptions"
+              :props="{ value: 'id', label: 'name', children: 'children', multiple: true }"
+              collapse-tags
+              style="width: calc(100%);"
+              clearable></el-cascader>
           </el-form-item>
           <!-- 国家地区 -->
           <el-form-item>
@@ -74,9 +79,12 @@
               <span>客户来源</span>
             </div>
             <el-select v-model="formData.sourceIdList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
-              <!-- 选项数据 -->
-              <el-option label="来源1" value="1"></el-option>
-              <el-option label="来源2" value="2"></el-option>
+              <el-option
+                v-for="item in sourceList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
             </el-select>
           </el-form-item>
           <!-- 跟进人 -->
@@ -99,8 +107,8 @@
             <el-input-number v-model="formData.followupDays" controls-position="right" :min="0" :step="1" style="width: 100px;"></el-input-number>
             天内
             <el-select v-model="formData.followupType">
-              <el-option label="未跟进" value="unfollowed"></el-option>
-              <el-option label="已跟进" value="followed"></el-option>
+              <el-option label="未跟进" value="1"></el-option>
+              <el-option label="已跟进" value="2"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -115,10 +123,16 @@
 </template>
 
 <script>
+import {getCustomerTagList} from "@/api/customer/config";
+import {packetList} from "@/api/company/group";
+import {getOriginList} from "@/api/company/origin";
 export default {
   data() {
     return {
       drawerVisible: false,
+      tagList: [],
+      packetOptions: [],
+      sourceList: [],
       formData: {
         companyName: '',
         email: '',
@@ -151,12 +165,45 @@ export default {
         }
       });
     },
+    fetchTagList() {
+      getCustomerTagList().then((response) => {
+        this.tagList = response.data.map(item => ({ value: item.id, label: item.name }));
+      });
+    },
+    fetchPacketList() {
+      packetList()
+        .then(response => {
+          const packetData = response.data;
+          const formattedOptions = packetData.map(group => ({
+            id: group.id,
+            name: group.name,
+            children: group.children.map(child => ({
+              id: child.id,
+              name: child.name
+            }))
+          }));
+          this.packetOptions = formattedOptions;
+        })
+        .catch(error => {
+          console.error('Failed to fetch packet list:', error);
+        });
+    },
+    fetchSourceList() {
+      getOriginList().then((response) => {
+        this.sourceList = response.data.map(item => ({ value: item.id, label: item.name }));
+      });
+    },
     openDrawer() {
       this.drawerVisible = true;
     },
     closeDrawer() {
       this.drawerVisible = false;
     }
+  },
+  created() {
+    this.fetchTagList();
+    this.fetchPacketList();
+    this.fetchSourceList();
   }
 };
 </script>

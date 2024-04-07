@@ -61,6 +61,12 @@ public class EmailController extends BaseController {
     {
         Integer pageNum = emailListDTO.getPageNum();
         Integer pageSize = emailListDTO.getPageSize();
+        if (pageNum == null) {
+            throw new ServiceException("当前页不能为空");
+        }
+        if (pageSize == null) {
+            throw new ServiceException("页大小不能为空");
+        }
         Pair<Integer, List<Map<String, List<EmailListVO>>>> pair = taskEmailService.list(emailListDTO, pageNum, pageSize);
         List<Map<String, List<EmailListVO>>> rows = pair.getSecond();
         long total = pair.getFirst();
