@@ -151,28 +151,24 @@
         <if test="publicleadsListDTO.publicleadsGroupsId != null">
           AND customer.publicleads_groups_id = #{publicleadsListDTO.publicleadsGroupsId}
         </if>
-        <!--分组ID-->
-        <if test="publicleadsListDTO.packetId != null">
-          AND customer.packet_id = #{publicleadsListDTO.packetId}
-        </if>
         <!--公司名称-->
         <if test="publicleadsListDTO.companyName != null and publicleadsListDTO.companyName != ''">
-          AND customer.company_name = #{publicleadsListDTO.companyName}
+          AND customer.company_name LIKE CONCAT('%', #{publicleadsListDTO.companyName}, '%')
         </if>
         <!--邮箱-->
         <if test="publicleadsListDTO.email != null and publicleadsListDTO.email != ''">
-          AND EXISTS(select 1 from customer_customer_contact contact where customer.id = contact.customer_id and contact.email = #{publicleadsListDTO.email})
+          AND EXISTS(select 1 from customer_customer_contact contact where customer.id = contact.customer_id and contact.email LIKE CONCAT('%', #{publicleadsListDTO.email}, '%'))
         </if>
         <!--标签-->
         <if test="publicleadsListDTO.tagType != null and publicleadsListDTO.tagType != null and publicleadsListDTO.tagIdList.size() > 0" >
             AND EXISTS (
             SELECT 1 FROM customer_customer_tag customerTag
-            WHERE customerTag.id = customer.email_id
+            WHERE customerTag.customer_id = customer.id
             AND customerTag.tag_id IN
-            <foreach collection="emailListDTO.tagIdList" item="tagId" open="(" separator="," close=")">
+            <foreach collection="publicleadsListDTO.tagIdList" item="tagId" open="(" separator="," close=")">
                 #{tagId}
             </foreach>
-            GROUP BY customerTag.id
+            GROUP BY customerTag.customer_id
             HAVING
             <choose>
                 <when test="publicleadsListDTO.tagType == 1">
@@ -181,30 +177,30 @@
                 </when>
                 <when test="publicleadsListDTO.tagType == 2">
                     <!-- 包含全部标签 -->
-                    COUNT(DISTINCT customerTag.tag_id) = #{emailListDTO.tagIdListSize}
+                    COUNT(DISTINCT customerTag.tag_id) = #{publicleadsListDTO.tagIdListSize}
                 </when>
             </choose>
             )
         </if>
         <!--分组-->
         <if test="publicleadsListDTO.packetIdList != null and publicleadsListDTO.packetIdList.size() > 0">
-            customer.packet_id IN
-            <foreach collection="emailListDTO.packetIdList" item="packetId" open="(" separator="," close=")">
+            AND customer.packet_id IN
+            <foreach collection="publicleadsListDTO.packetIdList" item="packetId" open="(" separator="," close=")">
                 #{packetId}
             </foreach>
         </if>
         <!--国家/地区-->
         <if test="publicleadsListDTO.countryList != null and publicleadsListDTO.countryList.size() > 0">
-            customer.country_region IN
+            AND customer.country_region IN
             <foreach collection="emailListDTO.countryList" item="country" open="(" separator="," close=")">
                 #{country}
             </foreach>
         </if>
-        <!--国家/地区-->
+        <!--来源-->
         <if test="publicleadsListDTO.sourceIdList != null and publicleadsListDTO.sourceIdList.size() > 0">
             AND EXISTS (SELECT 1 FROM customer_customer_source customerSource WHERE customer.id = customerSource.customer_id
                 AND customerSource.source_id IN
-                <foreach collection="emailListDTO.sourceIdList" item="sourceId" open="(" separator="," close=")">
+                <foreach collection="publicleadsListDTO.sourceIdList" item="sourceId" open="(" separator="," close=")">
                     #{sourceId}
                 </foreach>
             )
@@ -232,14 +228,66 @@
             LEFT JOIN customer_packet packet ON customer.packet_id = packet.id AND packet.del_flag = '0'
             LEFT JOIN customer_stage stage ON customer.stage_id = stage.id AND stage.del_flag = '0'
         WHERE
-            customer.sea_type = 2
-            AND customer.del_flag = '0'
-            <if test="publicleadsListDTO.publicleadsGroupsId != null">
-                AND customer.publicleads_groups_id = #{publicleadsListDTO.publicleadsGroupsId}
-            </if>
-            <if test="publicleadsListDTO.packetId != null">
-                AND customer.packet_id = #{publicleadsListDTO.packetId}
-            </if>
+        customer.sea_type = 2
+        AND customer.del_flag = '0'
+        <!--公海分组ID-->
+        <if test="publicleadsListDTO.publicleadsGroupsId != null">
+            AND customer.publicleads_groups_id = #{publicleadsListDTO.publicleadsGroupsId}
+        </if>
+        <!--公司名称-->
+        <if test="publicleadsListDTO.companyName != null and publicleadsListDTO.companyName != ''">
+            AND customer.company_name LIKE CONCAT('%', #{publicleadsListDTO.companyName}, '%')
+        </if>
+        <!--邮箱-->
+        <if test="publicleadsListDTO.email != null and publicleadsListDTO.email != ''">
+            AND EXISTS(select 1 from customer_customer_contact contact where customer.id = contact.customer_id and contact.email LIKE CONCAT('%', #{publicleadsListDTO.email}, '%'))
+        </if>
+        <!--标签-->
+        <if test="publicleadsListDTO.tagType != null and publicleadsListDTO.tagType != null and publicleadsListDTO.tagIdList.size() > 0" >
+            AND EXISTS (
+            SELECT 1 FROM customer_customer_tag customerTag
+            WHERE customerTag.customer_id = customer.id
+            AND customerTag.tag_id IN
+            <foreach collection="publicleadsListDTO.tagIdList" item="tagId" open="(" separator="," close=")">
+                #{tagId}
+            </foreach>
+            GROUP BY customerTag.customer_id
+            HAVING
+            <choose>
+                <when test="publicleadsListDTO.tagType == 1">
+                    <!-- 包含任一标签 -->
+                    COUNT(DISTINCT customerTag.tag_id) >= 1
+                </when>
+                <when test="publicleadsListDTO.tagType == 2">
+                    <!-- 包含全部标签 -->
+                    COUNT(DISTINCT customerTag.tag_id) = #{publicleadsListDTO.tagIdListSize}
+                </when>
+            </choose>
+            )
+        </if>
+        <!--分组-->
+        <if test="publicleadsListDTO.packetIdList != null and publicleadsListDTO.packetIdList.size() > 0">
+            AND customer.packet_id IN
+            <foreach collection="publicleadsListDTO.packetIdList" item="packetId" open="(" separator="," close=")">
+                #{packetId}
+            </foreach>
+        </if>
+        <!--国家/地区-->
+        <if test="publicleadsListDTO.countryList != null and publicleadsListDTO.countryList.size() > 0">
+            AND customer.country_region IN
+            <foreach collection="emailListDTO.countryList" item="country" open="(" separator="," close=")">
+                #{country}
+            </foreach>
+        </if>
+        <!--来源-->
+        <if test="publicleadsListDTO.sourceIdList != null and publicleadsListDTO.sourceIdList.size() > 0">
+            AND EXISTS (SELECT 1 FROM customer_customer_source customerSource WHERE customer.id = customerSource.customer_id
+            AND customerSource.source_id IN
+            <foreach collection="publicleadsListDTO.sourceIdList" item="sourceId" open="(" separator="," close=")">
+                #{sourceId}
+            </foreach>
+            )
+        </if>
         GROUP BY customer.id
         ORDER BY customer.update_time DESC
             LIMIT #{offset}, #{limit}

@@ -46,7 +46,7 @@
     <DialogMoveToPrivateLeads :visible.sync="moveToPrivateLeadsVisible" :privateOption="indexOpt.groupOption"
       :row="{ id: ids }" @onConfirm="reloadList" />
 
-    <CustomerSearch ref="customerSearch"/>
+    <CustomerSearch ref="customerSearch" @customerFilter="advancedSearchFilter"/>
   </div>
 </template>
 
@@ -76,6 +76,7 @@ export default {
   components: {CustomerSearch, TableRowDrawer, TableNext, DialogMoveToGroup, DialogMoveToPrivateLeads },
   data() {
     return {
+      advancedSearchFormData: {},
       list: [],
       columns: [
         { type: 'selection', width: '50' },
@@ -376,13 +377,14 @@ export default {
       }
       this.tableLoading = true
       try {
-        const { currentPage, pageSize } = this.paginateOption
-        const res = await getPublicLeadsList({
-          publicleadsGroupsId: this.searchQuery.pool,
-          packetId: this.searchQuery.group,
-          pageNum: currentPage,
-          pageSize: pageSize
-        }).finally(() => {
+        const { currentPage, pageSize } = this.paginateOption;
+        this.advancedSearchFormData.publicleadsGroupsId = this.searchQuery.pool;
+        if (this.searchQuery.group && this.searchQuery.group.trim() !== '') {
+          this.advancedSearchFormData.packetIdList = this.searchQuery.group;
+        }
+        this.advancedSearchFormData.pageNum = currentPage;
+        this.advancedSearchFormData.pageSize = pageSize;
+        const res = await getPublicLeadsList(this.advancedSearchFormData).finally(() => {
           this.tableLoading = false
         })
         if (res.code === 200) {
@@ -438,6 +440,12 @@ export default {
 
     search() {
       this.$refs.customerSearch.openDrawer();
+    },
+
+    advancedSearchFilter(formData) {
+      console.log("表单数据：" + formData);
+      this.advancedSearchFormData = formData;
+      this.getList();
     }
   }
 }

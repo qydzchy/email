@@ -363,7 +363,7 @@ export default {
 
       this.formData.sendDate = null;
 
-      this.$emit('filter', this.formData);
+      this.$emit('emailFilter', this.formData);
       this.close();
     },
 

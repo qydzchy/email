@@ -15,7 +15,7 @@ public class PublicleadsListDTO {
     /**
      * 分组ID
      */
-    private Long packetId;
+    private List<Long> packetIdList;
 
     /**
      * 公司名称
@@ -41,11 +41,6 @@ public class PublicleadsListDTO {
      * 标签ID集合大小
      */
     private Integer tagIdListSize;
-
-    /**
-     * 分组ID集合
-     */
-    private List<Long> packetIdList;
 
     /**
      * 国家/地区集合

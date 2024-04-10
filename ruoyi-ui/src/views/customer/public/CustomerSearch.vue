@@ -34,8 +34,8 @@
             </div>
             <div>
               <el-radio-group v-model="formData.tagType">
-                <el-radio label="包含任一标签" value="1">包含任一标签</el-radio>
-                <el-radio label="包含全部标签" value="2">包含全部标签</el-radio>
+                <el-radio label="1" value="1">包含任一标签</el-radio>
+                <el-radio label="2" value="2">包含全部标签</el-radio>
               </el-radio-group>
             </div>
             <div>
@@ -54,13 +54,17 @@
             <div>
               <span>客户分组</span>
             </div>
-            <el-cascader
+<!--            <el-cascader
               v-model="formData.packetIdList"
               :options="packetOptions"
               :props="{ value: 'id', label: 'name', children: 'children', multiple: true }"
               collapse-tags
               style="width: calc(100%);"
-              clearable></el-cascader>
+              clearable></el-cascader>-->
+            <el-select-tree v-model="formData.packetIdList" placeholder="全部分组" :data="packetOptions"
+                            :props="{ value: 'id', label: 'name' }" :default-expand-all="true" multiple collapse-tags clearable
+                            :check-strictly="true" style="width: calc(100%);">
+            </el-select-tree>
           </el-form-item>
           <!-- 国家地区 -->
           <el-form-item>
@@ -136,7 +140,7 @@ export default {
       formData: {
         companyName: '',
         email: '',
-        tagType: 1,
+        tagType: '1',
         tagIdList:[],
         packetIdList: [],
         countryList: [],
@@ -151,7 +155,16 @@ export default {
     clearForm() {
       // 清空表单数据
       Object.keys(this.formData).forEach(key => {
-        this.formData[key] = '';
+        this.formData.companyName = '';
+        this.formData.email = '';
+        this.formData.tagType = '1';
+        this.formData.tagIdList = [];
+        this.formData.packetIdList = [];
+        this.formData.countryList = [];
+        this.formData.sourceIdList = [];
+        this.formData.followerIdList = [];
+        this.formData.followupDays = '';
+        this.formData.followupType = '';
       });
     },
     submitForm() {
@@ -159,7 +172,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           // 提交表单数据
-          console.log('表单数据:', this.formData);
+          this.$emit('customerFilter', this.formData);
           // 关闭抽屉
           this.drawerVisible = false;
         }

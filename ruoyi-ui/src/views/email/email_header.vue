@@ -550,7 +550,7 @@
 													</div>
 												</span>
     </div>
-    <EmailSearch ref="emailSearch" @filter="advancedSearchFilter"></EmailSearch>
+    <EmailSearch ref="emailSearch" @emailFilter="advancedSearchFilter"></EmailSearch>
     <div class="mm-outside mail-pending-popover mm-popover-popper" x-placement="top-end" v-if="showPendingTime || showCustomTime" style="position: absolute; top: 40px; left: -5px; will-change: top, left; transform-origin: 100% bottom;">
       <!---->
       <div>
