@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ruoyi.customer.domain.Customer;
 import com.ruoyi.customer.domain.bo.*;
+import com.ruoyi.customer.domain.dto.PrivateleadsListDTO;
 import com.ruoyi.customer.domain.dto.PublicleadsListDTO;
 import com.ruoyi.customer.domain.vo.*;
 import org.apache.ibatis.annotations.Param;
@@ -67,10 +68,10 @@ public interface CustomerMapper
 
     /**
      * 统计客户数量
-     * @param segmentId
+     * @param privateleadsListDTO
      * @return
      */
-    int countPrivateleadsCustomer(@Param("userIdList") List<Long> userIdList, @Param("segmentId") Long segmentId);
+    int countPrivateleadsCustomer(@Param("privateleadsListDTO") PrivateleadsListDTO privateleadsListDTO);
 
     /**
      * 移动客户到分组
@@ -104,12 +105,12 @@ public interface CustomerMapper
 
     /**
      * 获取私海客户列表
-     * @param segmentId
+     * @param privateleadsListDTO
      * @param offset
      * @param limit
      * @return
      */
-    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("userIdList") List<Long> userIdList, @Param("segmentId") Long segmentId, @Param("offset") int offset, @Param("limit") int limit);
+    List<PrivateleadsCustomerSimpleListVO> selectPrivateleadsCustomerPage(@Param("privateleadsListDTO") PrivateleadsListDTO privateleadsListDTO, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 统计公海客户数量

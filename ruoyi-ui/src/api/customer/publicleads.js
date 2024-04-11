@@ -1,11 +1,11 @@
 import request from "@/utils/request";
 
 //  私海列表
-export function getPrivateLeadsList(params) {
+export function getPrivateLeadsList(data) {
     return request({
         url: '/customer/customer/privateleads/list',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 

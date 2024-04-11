@@ -68,15 +68,26 @@ public class CustomerController extends BaseController
      * 查询私海客户列表
      */
     @PreAuthorize("@ss.hasPermi('customer:customer:privateleads:list')")
-    @GetMapping("/privateleads/list")
-    public TableDataInfo privateleadsList(
-            @NotNull(message = "客群不能为空") Long segmentId,
-            @NotNull(message = "类型不能为空") Integer type,
-            Long userId,
-            @NotNull(message = "页数不能为空") Integer pageNum,
-            @NotNull(message = "页大小不能为空") Integer pageSize)
+    @PostMapping("/privateleads/list")
+    public TableDataInfo privateleadsList(@RequestBody PrivateleadsListDTO privateleadsListDTO)
     {
-        Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> pair = customerService.privateleadsList(segmentId, type, userId, pageNum, pageSize);
+        Long segmentId = privateleadsListDTO.getSegmentId();
+        Integer type = privateleadsListDTO.getType();
+        Integer pageNum = privateleadsListDTO.getPageNum();
+        Integer pageSize = privateleadsListDTO.getPageSize();
+        if (segmentId == null) {
+            throw new ServiceException("客群不能为空");
+        }
+        if (type == null) {
+            throw new ServiceException("类型不能为空");
+        }
+        if (pageNum == null) {
+            throw new ServiceException("当前页不能为空");
+        }
+        if (pageSize == null) {
+            throw new ServiceException("页大小不能为空");
+        }
+        Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> pair = customerService.privateleadsList(privateleadsListDTO, pageNum, pageSize);
         List<PrivateleadsCustomerSimpleListVO> rows = pair.getSecond();
         long total = pair.getFirst();
 

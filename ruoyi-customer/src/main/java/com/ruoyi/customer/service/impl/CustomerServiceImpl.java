@@ -634,7 +634,9 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer type, Long teamMemberId, Integer pageNum, Integer pageSize) {
+    public Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(PrivateleadsListDTO privateleadsListDTO, Integer pageNum, Integer pageSize) {
+        Integer type = privateleadsListDTO.getType();
+        Long teamMemberId = privateleadsListDTO.getUserId();
         List<Long> userIdList = new ArrayList<>();
         if (type.intValue() == 1) {
             LoginUser loginUser = SecurityUtils.getLoginUser();
@@ -654,15 +656,19 @@ public class CustomerServiceImpl implements ICustomerService {
             return Pair.of(0, new ArrayList<>());
         }
 
+        privateleadsListDTO.setUserIdList(userIdList);
+        List<Long> tagIdList = privateleadsListDTO.getTagIdList();
+        privateleadsListDTO.setTagIdListSize(tagIdList != null && !tagIdList.isEmpty() ? tagIdList.size() : 0);
+
         try {
-            int count = customerMapper.countPrivateleadsCustomer(userIdList, segmentId);
+            int count = customerMapper.countPrivateleadsCustomer(privateleadsListDTO);
             if (count <= 0) {
                 return Pair.of(count, new ArrayList<>());
             }
 
             int offset = (pageNum - 1) * pageSize;
             int limit = pageSize;
-            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(userIdList, segmentId, offset, limit);
+            List<PrivateleadsCustomerSimpleListVO> customerSimpleVOList = customerMapper.selectPrivateleadsCustomerPage(privateleadsListDTO, offset, limit);
             if (customerSimpleVOList == null || customerSimpleVOList.isEmpty()) {
                 return Pair.of(count, new ArrayList<>());
             }

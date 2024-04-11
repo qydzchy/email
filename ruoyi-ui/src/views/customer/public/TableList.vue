@@ -443,7 +443,6 @@ export default {
     },
 
     advancedSearchFilter(formData) {
-      console.log("表单数据：" + formData);
       this.advancedSearchFormData = formData;
       this.getList();
     }

@@ -83,22 +83,76 @@
     </select>
 
     <select id="countPrivateleadsCustomer" resultType="java.lang.Integer">
-        SELECT COUNT(DISTINCT (c.id))
-        FROM customer_customer c
-        LEFT JOIN customer_customer_segment cs ON c.id = cs.customer_id
-        LEFT JOIN customer_customer_follow_up_personnel fup ON c.id = fup.customer_id AND fup.del_flag = '0'
+        SELECT COUNT(DISTINCT (customer.id))
+        FROM customer_customer customer
+        LEFT JOIN customer_customer_segment customerSegment ON customer.id = customerSegment.customer_id
+        LEFT JOIN customer_customer_follow_up_personnel fup ON customer.id = fup.customer_id AND fup.del_flag = '0'
         WHERE
-            c.sea_type = 1
-          AND c.del_flag = '0'
+          customer.sea_type = 1
+          AND customer.del_flag = '0'
           AND fup.user_id in
-            <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+            <foreach collection="privateleadsListDTO.userIdList" item="userId" open="(" separator="," close=")">
                 #{userId}
             </foreach>
           AND (
-            #{segmentId} = -2 OR
-            (#{segmentId} = -1 AND c.focus_flag = 1) OR
-            (#{segmentId} > 0 AND cs.segment_id = #{segmentId})
+            #{privateleadsListDTO.segmentId} = -2 OR
+            (#{privateleadsListDTO.segmentId} = -1 AND customer.focus_flag = 1) OR
+            (#{privateleadsListDTO.segmentId} > 0 AND customerSegment.segment_id = #{privateleadsListDTO.segmentId})
           )
+        <!--公司名称-->
+        <if test="privateleadsListDTO.companyName != null and privateleadsListDTO.companyName != ''">
+            AND customer.company_name LIKE CONCAT('%', #{privateleadsListDTO.companyName}, '%')
+        </if>
+        <!--邮箱-->
+        <if test="privateleadsListDTO.email != null and privateleadsListDTO.email != ''">
+            AND EXISTS(select 1 from customer_customer_contact contact where customer.id = contact.customer_id and contact.email LIKE CONCAT('%', #{privateleadsListDTO.email}, '%'))
+        </if>
+        <!--标签-->
+        <if test="privateleadsListDTO.tagType != null and privateleadsListDTO.tagType != null and privateleadsListDTO.tagIdList.size() > 0" >
+            AND EXISTS (
+            SELECT 1 FROM customer_customer_tag customerTag
+            WHERE customerTag.customer_id = customer.id
+            AND customerTag.tag_id IN
+            <foreach collection="privateleadsListDTO.tagIdList" item="tagId" open="(" separator="," close=")">
+                #{tagId}
+            </foreach>
+            GROUP BY customerTag.customer_id
+            HAVING
+            <choose>
+                <when test="privateleadsListDTO.tagType == 1">
+                    <!-- 包含任一标签 -->
+                    COUNT(DISTINCT customerTag.tag_id) >= 1
+                </when>
+                <when test="privateleadsListDTO.tagType == 2">
+                    <!-- 包含全部标签 -->
+                    COUNT(DISTINCT customerTag.tag_id) = #{privateleadsListDTO.tagIdListSize}
+                </when>
+            </choose>
+            )
+        </if>
+        <!--分组-->
+        <if test="privateleadsListDTO.packetIdList != null and privateleadsListDTO.packetIdList.size() > 0">
+            AND customer.packet_id IN
+            <foreach collection="privateleadsListDTO.packetIdList" item="packetId" open="(" separator="," close=")">
+                #{packetId}
+            </foreach>
+        </if>
+        <!--国家/地区-->
+        <if test="privateleadsListDTO.countryList != null and privateleadsListDTO.countryList.size() > 0">
+            AND customer.country_region IN
+            <foreach collection="privateleadsListDTO.countryList" item="country" open="(" separator="," close=")">
+                #{country}
+            </foreach>
+        </if>
+        <!--来源-->
+        <if test="privateleadsListDTO.sourceIdList != null and privateleadsListDTO.sourceIdList.size() > 0">
+            AND EXISTS (SELECT 1 FROM customer_customer_source customerSource WHERE customer.id = customerSource.customer_id
+            AND customerSource.source_id IN
+            <foreach collection="privateleadsListDTO.sourceIdList" item="sourceId" open="(" separator="," close=")">
+                #{sourceId}
+            </foreach>
+            )
+        </if>
     </select>
 
     <select id="selectPrivateleadsCustomerPage"
@@ -127,15 +181,69 @@
         WHERE
             customer.sea_type = 1
             AND customer.del_flag = '0'
-            AND fup.user_id IN
-            <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+            AND fup.user_id in
+            <foreach collection="privateleadsListDTO.userIdList" item="userId" open="(" separator="," close=")">
                 #{userId}
             </foreach>
             AND (
-              #{segmentId} = -2 OR
-              (#{segmentId} = -1 AND customer.focus_flag = 1) OR
-              (#{segmentId} > 0 AND customerSegment.segment_id = #{segmentId})
+            #{privateleadsListDTO.segmentId} = -2 OR
+            (#{privateleadsListDTO.segmentId} = -1 AND customer.focus_flag = 1) OR
+            (#{privateleadsListDTO.segmentId} > 0 AND customerSegment.segment_id = #{privateleadsListDTO.segmentId})
             )
+            <!--公司名称-->
+            <if test="privateleadsListDTO.companyName != null and privateleadsListDTO.companyName != ''">
+                AND customer.company_name LIKE CONCAT('%', #{privateleadsListDTO.companyName}, '%')
+            </if>
+            <!--邮箱-->
+            <if test="privateleadsListDTO.email != null and privateleadsListDTO.email != ''">
+                AND EXISTS(select 1 from customer_customer_contact contact where customer.id = contact.customer_id and contact.email LIKE CONCAT('%', #{privateleadsListDTO.email}, '%'))
+            </if>
+            <!--标签-->
+            <if test="privateleadsListDTO.tagType != null and privateleadsListDTO.tagType != null and privateleadsListDTO.tagIdList.size() > 0" >
+                AND EXISTS (
+                SELECT 1 FROM customer_customer_tag customerTag
+                WHERE customerTag.customer_id = customer.id
+                AND customerTag.tag_id IN
+                <foreach collection="privateleadsListDTO.tagIdList" item="tagId" open="(" separator="," close=")">
+                    #{tagId}
+                </foreach>
+                GROUP BY customerTag.customer_id
+                HAVING
+                <choose>
+                    <when test="privateleadsListDTO.tagType == 1">
+                        <!-- 包含任一标签 -->
+                        COUNT(DISTINCT customerTag.tag_id) >= 1
+                    </when>
+                    <when test="privateleadsListDTO.tagType == 2">
+                        <!-- 包含全部标签 -->
+                        COUNT(DISTINCT customerTag.tag_id) = #{privateleadsListDTO.tagIdListSize}
+                    </when>
+                </choose>
+                )
+            </if>
+            <!--分组-->
+            <if test="privateleadsListDTO.packetIdList != null and privateleadsListDTO.packetIdList.size() > 0">
+                AND customer.packet_id IN
+                <foreach collection="privateleadsListDTO.packetIdList" item="packetId" open="(" separator="," close=")">
+                    #{packetId}
+                </foreach>
+            </if>
+            <!--国家/地区-->
+            <if test="privateleadsListDTO.countryList != null and privateleadsListDTO.countryList.size() > 0">
+                AND customer.country_region IN
+                <foreach collection="privateleadsListDTO.countryList" item="country" open="(" separator="," close=")">
+                    #{country}
+                </foreach>
+            </if>
+            <!--来源-->
+            <if test="privateleadsListDTO.sourceIdList != null and privateleadsListDTO.sourceIdList.size() > 0">
+                AND EXISTS (SELECT 1 FROM customer_customer_source customerSource WHERE customer.id = customerSource.customer_id
+                AND customerSource.source_id IN
+                <foreach collection="privateleadsListDTO.sourceIdList" item="sourceId" open="(" separator="," close=")">
+                    #{sourceId}
+                </foreach>
+                )
+            </if>
         GROUP BY customer.id
         ORDER BY customer.update_time DESC
             LIMIT #{offset}, #{limit}
@@ -192,7 +300,7 @@
         <!--国家/地区-->
         <if test="publicleadsListDTO.countryList != null and publicleadsListDTO.countryList.size() > 0">
             AND customer.country_region IN
-            <foreach collection="emailListDTO.countryList" item="country" open="(" separator="," close=")">
+            <foreach collection="publicleadsListDTO.countryList" item="country" open="(" separator="," close=")">
                 #{country}
             </foreach>
         </if>
@@ -275,7 +383,7 @@
         <!--国家/地区-->
         <if test="publicleadsListDTO.countryList != null and publicleadsListDTO.countryList.size() > 0">
             AND customer.country_region IN
-            <foreach collection="emailListDTO.countryList" item="country" open="(" separator="," close=")">
+            <foreach collection="publicleadsListDTO.countryList" item="country" open="(" separator="," close=")">
                 #{country}
             </foreach>
         </if>

@@ -69,12 +69,10 @@ public interface ICustomerService
 
     /**
      * 客户列表（分页）
-     * @param segmentId
-     * @param pageNum
-     * @param pageSize
+     * @param privateleadsListDTO
      * @return
      */
-    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(Long segmentId, Integer type, Long teamMemberId, Integer pageNum, Integer pageSize);
+    Pair<Integer, List<PrivateleadsCustomerSimpleListVO>> privateleadsList(PrivateleadsListDTO privateleadsListDTO, Integer pageNum, Integer pageSize);
 
     /**
      * 移入客户至分组

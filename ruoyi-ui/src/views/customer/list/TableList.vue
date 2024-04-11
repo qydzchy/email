@@ -6,7 +6,7 @@
         <span class="gray-text ml-2">{{ paginateOption.total }} 个客户</span>
       </div>
       <div style="margin-right: 2%;">
-        <span class="okki-badge okki-badge-status" data-v-158b5110="" style="cursor: pointer;">
+        <span class="okki-badge okki-badge-status" data-v-158b5110="" style="cursor: pointer;" @click="search">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" spin="false"
                  rtl="false" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" fill=""
                  role="presentation" data-v-9e8d377d="" data-v-158b5110="">
@@ -45,8 +45,9 @@
           @load="reloadList"
       />
     </div>
-  </div>
 
+    <CustomerSearch ref="customerSearch" @customerFilter="advancedSearchFilter"/>
+  </div>
 </template>
 
 <script>
@@ -60,6 +61,7 @@ import CollageIcon from "@/views/components/Customer/CollageIcon.vue";
 import PopoverCustomerTag from "./PopoverCustomerTag.vue";
 import {EmptyStr, targetBlank} from "@/utils/tools";
 import {editFocusFlagCustomer, getPrivateLeadsList,editCustomer} from "@/api/customer/publicleads";
+import CustomerSearch from "@/views/customer/public/CustomerSearch.vue";
 
 const initCommandList =  ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'transfer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
 const groupCommandList = ['follow', 'write', 'schedule', 'moveGroup', 'mergeCustomer', 'share', 'cancel', 'movePool', 'reassign', 'removeAndInto', 'changePoolGroup']
@@ -85,9 +87,12 @@ export default {
       required: false
     }
   },
-  components: {HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon, HeaderFilter},
+  components: {
+    CustomerSearch,
+    HeaderOperate, TableRowDrawer, TableNext, OperateMenu, CellOperate, CollageIcon, HeaderFilter},
   data() {
     return {
+      advancedSearchFormData: {},
       extraOption: {
         height: '66vh',
         border: true,
@@ -482,15 +487,14 @@ export default {
     async getList() {
       this.tableLoading = true
       try {
-        const {currentPage, pageSize} = this.paginateOption
-        const res = await getPrivateLeadsList({
-          segmentId: this.params.segmentId,
-          type: this.params.listType,
-          userId: this.params.userId,
-          [this.searchQuery.columnName]: this.searchQuery.value,
-          pageNum: currentPage,
-          pageSize: pageSize
-        }).finally(() => {
+        const {currentPage, pageSize} = this.paginateOption;
+        this.advancedSearchFormData.segmentId = this.params.segmentId;
+        this.advancedSearchFormData.type = this.params.listType;
+        this.advancedSearchFormData.userId = this.params.userId;
+        this.advancedSearchFormData[this.searchQuery.columnName] = this.searchQuery.value;
+        this.advancedSearchFormData.pageNum = currentPage;
+        this.advancedSearchFormData.pageSize = pageSize;
+        const res = await getPrivateLeadsList(this.advancedSearchFormData).finally(() => {
           this.tableLoading = false
         })
         if (res.code === 200) {
@@ -653,6 +657,15 @@ export default {
     reloadTag(){
       this.$emit('reloadTag')
     },
+
+    search() {
+      this.$refs.customerSearch.openDrawer();
+    },
+
+    advancedSearchFilter(formData) {
+      this.advancedSearchFormData = formData;
+      this.getList();
+    }
   }
 }
 </script>
