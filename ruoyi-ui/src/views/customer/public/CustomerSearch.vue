@@ -54,13 +54,6 @@
             <div>
               <span>客户分组</span>
             </div>
-<!--            <el-cascader
-              v-model="formData.packetIdList"
-              :options="packetOptions"
-              :props="{ value: 'id', label: 'name', children: 'children', multiple: true }"
-              collapse-tags
-              style="width: calc(100%);"
-              clearable></el-cascader>-->
             <el-select-tree v-model="formData.packetIdList" placeholder="全部分组" :data="packetOptions"
                             :props="{ value: 'id', label: 'name' }" :default-expand-all="true" multiple collapse-tags clearable
                             :check-strictly="true" style="width: calc(100%);">
@@ -71,11 +64,7 @@
             <div>
               <span>国家地区</span>
             </div>
-            <el-select v-model="formData.countryList" multiple collapse-tags :style="{ width: 'calc(100%)' }">
-              <!-- 选项数据 -->
-              <el-option label="国家/地区1" value="country1"></el-option>
-              <el-option label="国家/地区2" value="country2"></el-option>
-            </el-select>
+            <select-country v-model="formData.countryList"></select-country>
           </el-form-item>
           <!-- 客户来源 -->
           <el-form-item>
@@ -130,7 +119,9 @@
 import {getCustomerTagList} from "@/api/customer/config";
 import {packetList} from "@/api/company/group";
 import {getOriginList} from "@/api/company/origin";
+import CellOperate from "@/views/customer/list/CellOperate.vue";
 export default {
+  components: {CellOperate},
   data() {
     return {
       drawerVisible: false,

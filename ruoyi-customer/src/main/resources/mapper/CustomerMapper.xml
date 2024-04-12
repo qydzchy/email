@@ -153,6 +153,27 @@
             </foreach>
             )
         </if>
+        <!--最近跟进时间-->
+        <if test="privateleadsListDTO.followupDays != null and privateleadsListDTO.followupType != null">
+            <if test="privateleadsListDTO.followupType == 1">
+                AND NOT EXISTS (
+                SELECT 1
+                FROM customer_customer_sea_log AS customerSeaLog
+                WHERE customerSeaLog.customer_id = customer.id
+                    AND customerSeaLog.sea_type = 1
+                    AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{privateleadsListDTO.followupDays} DAY)
+                )
+            </if>
+            <if test="privateleadsListDTO.followupType == 2">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer_sea_log AS customerSeaLog
+                WHERE customerSeaLog.customer_id = customer.id
+                    AND customerSeaLog.sea_type = 1
+                    AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{privateleadsListDTO.followupDays} DAY)
+                )
+            </if>
+        </if>
     </select>
 
     <select id="selectPrivateleadsCustomerPage"
@@ -244,6 +265,27 @@
                 </foreach>
                 )
             </if>
+            <!--最近跟进时间-->
+            <if test="privateleadsListDTO.followupDays != null and privateleadsListDTO.followupType != null">
+                <if test="privateleadsListDTO.followupType == 1">
+                    AND NOT EXISTS (
+                    SELECT 1
+                    FROM customer_customer_sea_log AS customerSeaLog
+                    WHERE customerSeaLog.customer_id = customer.id
+                    AND customerSeaLog.sea_type = 1
+                    AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{privateleadsListDTO.followupDays} DAY)
+                    )
+                </if>
+                <if test="privateleadsListDTO.followupType == 2">
+                    AND EXISTS (
+                    SELECT 1
+                    FROM customer_customer_sea_log AS customerSeaLog
+                    WHERE customerSeaLog.customer_id = customer.id
+                    AND customerSeaLog.sea_type = 1
+                    AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{privateleadsListDTO.followupDays} DAY)
+                    )
+                </if>
+            </if>
         GROUP BY customer.id
         ORDER BY customer.update_time DESC
             LIMIT #{offset}, #{limit}
@@ -312,6 +354,27 @@
                     #{sourceId}
                 </foreach>
             )
+        </if>
+        <!--最近跟进时间-->
+        <if test="publicleadsListDTO.followupDays != null and publicleadsListDTO.followupType != null">
+            <if test="publicleadsListDTO.followupType == 1">
+                AND NOT EXISTS (
+                SELECT 1
+                FROM customer_customer_sea_log AS customerSeaLog
+                WHERE customerSeaLog.customer_id = customer.id
+                AND customerSeaLog.sea_type = 1
+                AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{publicleadsListDTO.followupDays} DAY)
+                )
+            </if>
+            <if test="publicleadsListDTO.followupType == 2">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer_sea_log AS customerSeaLog
+                WHERE customerSeaLog.customer_id = customer.id
+                AND customerSeaLog.sea_type = 1
+                AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{publicleadsListDTO.followupDays} DAY)
+                )
+            </if>
         </if>
     </select>
 
@@ -395,6 +458,27 @@
                 #{sourceId}
             </foreach>
             )
+        </if>
+        <!--最近跟进时间-->
+        <if test="publicleadsListDTO.followupDays != null and publicleadsListDTO.followupType != null">
+            <if test="publicleadsListDTO.followupType == 1">
+                AND NOT EXISTS (
+                SELECT 1
+                FROM customer_customer_sea_log AS customerSeaLog
+                WHERE customerSeaLog.customer_id = customer.id
+                AND customerSeaLog.sea_type = 1
+                AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{publicleadsListDTO.followupDays} DAY)
+                )
+            </if>
+            <if test="publicleadsListDTO.followupType == 2">
+                AND EXISTS (
+                SELECT 1
+                FROM customer_customer_sea_log AS customerSeaLog
+                WHERE customerSeaLog.customer_id = customer.id
+                AND customerSeaLog.sea_type = 1
+                AND customerSeaLog.create_time &gt; DATE_SUB(CURDATE(), INTERVAL #{publicleadsListDTO.followupDays} DAY)
+                )
+            </if>
         </if>
         GROUP BY customer.id
         ORDER BY customer.update_time DESC
