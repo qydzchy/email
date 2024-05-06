@@ -94,6 +94,18 @@
                                   </span>
                                 </span>
                                 <PopoverSelectFolder v-show="!isIconsToggled" @move-folder-success="handleMoveFolderSuccess" :ids="selectEmailIds" />
+                                <span class="mm-tooltip mail-toolbar-btn-item-trust mail-toolbar-btn-item" v-if="!isIconsToggled" @click="handlerNonSpanEmail()">
+                                  <span class="mm-tooltip-trigger">
+                                    <span>
+                                      <span class="okki-icon-wrap tool-bar-icon-item">​<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" class="okki-svg-icon" fill="currentColor">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M11.495 2.073a1.815 1.815 0 011.017 0l7.182 2.098A1.815 1.815 0 0121 5.913v4.304a12.322 12.322 0 01-8.425 11.69 1.815 1.815 0 01-1.148 0A12.324 12.324 0 013 10.215V5.913c0-.806.532-1.516 1.306-1.742l7.189-2.098.28.96.002.008m-.282-.968l.28.96zm.508 1.935L5 6.052v4.163c0 4.424 2.818 8.353 7.001 9.775A10.322 10.322 0 0019 10.217V6.052l-6.997-2.044z"></path>
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16.71 8.297a1 1 0 01-.007 1.414l-5.052 5a1 1 0 01-1.407 0l-2.947-2.917a1 1 0 111.406-1.421l2.244 2.22 4.35-4.304a1 1 0 011.414.008z"></path>
+                                        </svg>
+                                      </span>
+                                    </span>
+                                  </span>
+                                                                  <!---->
+                                </span>
                                 <span class="mm-tooltip mail-toolbar-btn-item" v-if="!isIconsToggled" @click="toggleDropdown">
                                   <span class="mm-tooltip-trigger">
                                     <span>
@@ -1069,6 +1081,10 @@ export default {
       }
     },
 
+    handlerNonSpanEmail() {
+      this.nonSpamEmails(this.selectEmailIds);
+    },
+
     closeSelected() {
       this.selectAll = false;
       this.isDropdownShown = false;
@@ -1166,6 +1182,25 @@ export default {
         }
       } catch (error) {
         console.error('垃圾邮件标记出现错误:', error);
+        throw error;
+      }
+    },
+
+    // 标识为非垃圾邮件
+    async nonSpamEmails(emailIds) {
+      const data = {
+        "ids": emailIds,
+        "spamFlag": false
+      };
+      try {
+        const response = await spamEmail(data);
+        if (response.code === 200) {
+          this.$message.success("成功标记为非垃圾邮件");
+          this.closeSelected();
+          return;
+        }
+      } catch (error) {
+        console.error('非垃圾邮件标记出现错误:', error);
         throw error;
       }
     },
